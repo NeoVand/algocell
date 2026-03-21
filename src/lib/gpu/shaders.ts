@@ -896,7 +896,11 @@ struct RenderParams {
     canvas_height: f32,
     show_average: u32,
     hover_cell: i32,
-    _pad: u32,
+    zoom: f32,         // cells visible across width
+    offset_x: f32,     // pan offset in cell units
+    offset_y: f32,
+    _pad1: u32,
+    _pad2: u32,
 }
 
 @group(0) @binding(0) var<storage, read> soup: array<u32>;
@@ -938,49 +942,77 @@ fn read_soup_byte(cell: u32, byte_idx: u32) -> u32 {
 
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4f {
-    let sw = rparams.soup_width;
-    let sh = rparams.soup_height;
+    let sw = f32(rparams.soup_width);
+    let sh = f32(rparams.soup_height);
     let ts = rparams.tile_size;
-    let grid_w = sw * ts;
-    let grid_h = sh * ts;
 
-    // Map UV to pixel coordinates (flip Y)
-    let px = u32(in.uv.x * f32(grid_w));
-    let py = u32((1.0 - in.uv.y) * f32(grid_h));
+    // Zoom/pan: convert UV to grid coordinates
+    let aspect = rparams.canvas_width / rparams.canvas_height;
+    let cells_x = rparams.zoom;
+    let cells_y = rparams.zoom / aspect;
 
-    if (px >= grid_w || py >= grid_h) {
-        return vec4f(0.05, 0.05, 0.08, 1.0);
+    // Grid position in cell units (with sub-cell precision)
+    let grid_x = in.uv.x * cells_x + rparams.offset_x;
+    let grid_y = (1.0 - in.uv.y) * cells_y + rparams.offset_y;
+
+    // Clamp to grid bounds
+    if (grid_x < 0.0 || grid_x >= sw || grid_y < 0.0 || grid_y >= sh) {
+        return vec4f(0.04, 0.04, 0.06, 1.0);
     }
 
-    // Which cell (tile) are we in?
-    let cell_x = px / ts;
-    let cell_y = py / ts;
-    let cell_idx = cell_y * sw + cell_x;
+    let cell_x = u32(grid_x);
+    let cell_y = u32(grid_y);
+    let cell_idx = cell_y * u32(sw) + cell_x;
 
-    if (rparams.show_average != 0u) {
-        // Average mode: average all 16 byte colors in the cell
+    // Sub-cell position (0..1 within the cell)
+    let frac_x = fract(grid_x);
+    let frac_y = fract(grid_y);
+
+    // Determine pixel size relative to cell for grid lines
+    let pixel_cell_size = cells_x / rparams.canvas_width; // cells per pixel
+
+    if (rparams.show_average != 0u || pixel_cell_size > 0.25) {
+        // Average mode OR zoomed out too far to see individual bytes
         var acc = vec3f(0.0);
         for (var i = 0u; i < 16u; i++) {
             let byte_val = read_soup_byte(cell_idx, i);
             let col = unpack_color(colormap[byte_val]);
-            acc += col.rgb * col.rgb; // RMS
+            acc += col.rgb * col.rgb;
         }
-        let avg = sqrt(acc / 16.0);
+        var avg = sqrt(acc / 16.0);
+
+        // Highlight hovered cell
+        if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
+            avg = avg * 1.4 + vec3f(0.05);
+        }
+
+        // Subtle grid lines when somewhat zoomed in
+        if (pixel_cell_size < 0.15) {
+            let edge = step(0.97, max(frac_x, frac_y));
+            avg = mix(avg, vec3f(0.15), edge * 0.3);
+        }
+
         return vec4f(avg, 1.0);
     }
 
-    // Tile mode: show individual bytes
-    let local_x = px % ts;
-    let local_y = py % ts;
+    // Tile mode: show individual bytes (zoomed in enough)
+    let local_x = u32(frac_x * f32(ts));
+    let local_y = u32(frac_y * f32(ts));
     let byte_idx = local_y * ts + local_x;
     let byte_val = read_soup_byte(cell_idx, byte_idx);
-    let color = unpack_color(colormap[byte_val]);
+    var color = unpack_color(colormap[byte_val]).rgb;
 
     // Highlight hovered cell
     if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
-        return vec4f(color.rgb * 1.3, 1.0);
+        color = color * 1.4 + vec3f(0.08);
     }
 
-    return vec4f(color.rgb, 1.0);
+    // Subtle byte grid lines when very zoomed in
+    if (pixel_cell_size < 0.05) {
+        let byte_edge = step(0.92, max(fract(frac_x * f32(ts)), fract(frac_y * f32(ts))));
+        color = mix(color, vec3f(0.08), byte_edge * 0.4);
+    }
+
+    return vec4f(color, 1.0);
 }
 `;

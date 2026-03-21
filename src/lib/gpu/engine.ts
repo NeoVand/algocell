@@ -67,6 +67,9 @@ export class GPUEngine {
 	private simBindGroup!: GPUBindGroup;
 	private renderBindGroup!: GPUBindGroup;
 
+	// View state (zoom/pan)
+	view = { zoom: SOUP_WIDTH, offsetX: 0, offsetY: 0 };
+
 	// State
 	private batchIndex = 0;
 	private cpuRng: SplitMix64;
@@ -219,7 +222,7 @@ export class GPUEngine {
 		});
 
 		this.renderParamsBuffer = dev.createBuffer({
-			size: 32, // RenderParams struct
+			size: 48, // RenderParams struct (12 fields)
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -511,10 +514,55 @@ export class GPUEngine {
 		return data;
 	}
 
+	zoomAt(screenX: number, screenY: number, canvasW: number, canvasH: number, factor: number): void {
+		const aspect = canvasW / canvasH;
+		const cellsX = this.view.zoom;
+		const cellsY = this.view.zoom / aspect;
+
+		// Grid position under cursor before zoom
+		const gridX = (screenX / canvasW) * cellsX + this.view.offsetX;
+		const gridY = (screenY / canvasH) * cellsY + this.view.offsetY;
+
+		const maxZoom = Math.max(SOUP_WIDTH, SOUP_HEIGHT) * 2;
+		const newZoom = Math.max(4, Math.min(maxZoom, this.view.zoom * factor));
+		const newCellsX = newZoom;
+		const newCellsY = newZoom / aspect;
+
+		// Keep grid position under cursor at same screen position
+		this.view.zoom = newZoom;
+		this.view.offsetX = gridX - (screenX / canvasW) * newCellsX;
+		this.view.offsetY = gridY - (screenY / canvasH) * newCellsY;
+	}
+
+	pan(deltaX: number, deltaY: number, canvasW: number, canvasH: number): void {
+		const aspect = canvasW / canvasH;
+		const cellsX = this.view.zoom;
+		const cellsY = this.view.zoom / aspect;
+		this.view.offsetX -= (deltaX / canvasW) * cellsX;
+		this.view.offsetY -= (deltaY / canvasH) * cellsY;
+	}
+
+	resetView(): void {
+		this.view = { zoom: SOUP_WIDTH, offsetX: 0, offsetY: 0 };
+	}
+
+	// Convert screen position to cell index
+	screenToCell(screenX: number, screenY: number, canvasW: number, canvasH: number): number {
+		const aspect = canvasW / canvasH;
+		const cellsX = this.view.zoom;
+		const cellsY = this.view.zoom / aspect;
+		const gridX = (screenX / canvasW) * cellsX + this.view.offsetX;
+		const gridY = (screenY / canvasH) * cellsY + this.view.offsetY;
+		const cx = Math.floor(gridX);
+		const cy = Math.floor(gridY);
+		if (cx < 0 || cx >= SOUP_WIDTH || cy < 0 || cy >= SOUP_HEIGHT) return -1;
+		return cy * SOUP_WIDTH + cx;
+	}
+
 	// Render the soup to the canvas
 	render(canvas: HTMLCanvasElement): void {
 		const tileSize = 4;
-		const renderParams = new ArrayBuffer(32);
+		const renderParams = new ArrayBuffer(48); // 12 fields * 4 bytes
 		const view = new DataView(renderParams);
 		view.setUint32(0, SOUP_WIDTH, true);
 		view.setUint32(4, SOUP_HEIGHT, true);
@@ -523,7 +571,11 @@ export class GPUEngine {
 		view.setFloat32(16, canvas.height, true);
 		view.setUint32(20, this.showAverage, true);
 		view.setInt32(24, this.hoverCell, true);
-		view.setUint32(28, 0, true); // padding
+		view.setFloat32(28, this.view.zoom, true);
+		view.setFloat32(32, this.view.offsetX, true);
+		view.setFloat32(36, this.view.offsetY, true);
+		view.setUint32(40, 0, true); // pad1
+		view.setUint32(44, 0, true); // pad2
 
 		this.device.queue.writeBuffer(this.renderParamsBuffer, 0, renderParams);
 

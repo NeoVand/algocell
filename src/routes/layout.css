@@ -1,3 +1,46 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+:root {
+	--bg-base: #0a0b0d;
+	--bg-panel: rgba(8, 8, 12, 0.92);
+	--bg-elevated: rgba(20, 20, 25, 0.98);
+	--bg-subtle: rgba(255, 255, 255, 0.02);
+	--bg-muted: rgba(255, 255, 255, 0.05);
+	--bg-hover: rgba(255, 255, 255, 0.08);
+	--border-subtle: rgba(255, 255, 255, 0.04);
+	--border-muted: rgba(255, 255, 255, 0.08);
+	--border-default: rgba(255, 255, 255, 0.12);
+	--text-primary: #f4f4f5;
+	--text-secondary: #e4e4e7;
+	--text-muted: #a1a1aa;
+	--text-subtle: #71717a;
+	--accent: rgb(99, 102, 241);
+	--accent-cyan: #22d3ee;
+	--accent-amber: #f59e0b;
+	--accent-rose: #f43f5e;
+	--accent-emerald: #10b981;
+}
+
+body {
+	background: var(--bg-base);
+	color: var(--text-primary);
+	overflow: hidden;
+	margin: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 4px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--border-muted);
+	border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--border-default);
+}
