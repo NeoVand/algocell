@@ -3,24 +3,24 @@
 @plugin '@tailwindcss/typography';
 
 :root {
-	--bg-base: #0a0b0d;
-	--bg-panel: rgba(8, 8, 12, 0.92);
-	--bg-elevated: rgba(20, 20, 25, 0.98);
-	--bg-subtle: rgba(255, 255, 255, 0.02);
-	--bg-muted: rgba(255, 255, 255, 0.05);
-	--bg-hover: rgba(255, 255, 255, 0.08);
-	--border-subtle: rgba(255, 255, 255, 0.04);
-	--border-muted: rgba(255, 255, 255, 0.08);
-	--border-default: rgba(255, 255, 255, 0.12);
-	--text-primary: #f4f4f5;
-	--text-secondary: #e4e4e7;
-	--text-muted: #a1a1aa;
-	--text-subtle: #71717a;
-	--accent: rgb(99, 102, 241);
-	--accent-cyan: #22d3ee;
-	--accent-amber: #f59e0b;
-	--accent-rose: #f43f5e;
-	--accent-emerald: #10b981;
+	--bg-base: #1a1512;
+	--bg-panel: rgba(26, 21, 18, 0.92);
+	--bg-elevated: rgba(35, 28, 22, 0.98);
+	--bg-subtle: rgba(255, 235, 210, 0.03);
+	--bg-muted: rgba(255, 235, 210, 0.06);
+	--bg-hover: rgba(255, 235, 210, 0.08);
+	--border-subtle: rgba(255, 220, 180, 0.06);
+	--border-muted: rgba(255, 220, 180, 0.1);
+	--border-default: rgba(255, 220, 180, 0.15);
+	--text-primary: #f0e6dc;
+	--text-secondary: #ddd0c4;
+	--text-muted: #a89888;
+	--text-subtle: #7a6c5e;
+	--accent: #c8875a;
+	--accent-warm: #d4956a;
+	--accent-amber: #d4a06a;
+	--accent-rose: #c47060;
+	--accent-emerald: #7aad8a;
 }
 
 body {

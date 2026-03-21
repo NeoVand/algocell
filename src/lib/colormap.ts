@@ -1,58 +1,125 @@
 // Z80 opcode-aware colormap
 // Maps each of the 256 byte values to an RGBA color
-// Special colors for key Z80 instructions that appear in self-replicators
+// Uses HSL-based palette for visual harmony
+
+function hsl(h: number, s: number, l: number): number {
+	// Convert HSL to RGB
+	h = ((h % 360) + 360) % 360;
+	s = Math.max(0, Math.min(1, s));
+	l = Math.max(0, Math.min(1, l));
+	const c = (1 - Math.abs(2 * l - 1)) * s;
+	const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+	const m = l - c / 2;
+	let r = 0,
+		g = 0,
+		b = 0;
+	if (h < 60) {
+		r = c;
+		g = x;
+	} else if (h < 120) {
+		r = x;
+		g = c;
+	} else if (h < 180) {
+		g = c;
+		b = x;
+	} else if (h < 240) {
+		g = x;
+		b = c;
+	} else if (h < 300) {
+		r = x;
+		b = c;
+	} else {
+		r = c;
+		b = x;
+	}
+	return packRGBA(
+		Math.round((r + m) * 255),
+		Math.round((g + m) * 255),
+		Math.round((b + m) * 255),
+		255
+	);
+}
 
 export function createDefaultColormap(): Uint32Array {
 	const cmap = new Uint32Array(256);
 
-	// Base: grayscale gradient
+	// Base: subtle hue-shifted gradient based on byte value
+	// Each byte gets a unique color from a continuous HSL sweep
 	for (let i = 0; i < 256; i++) {
-		const g = 64 + Math.floor(i / 8);
-		cmap[i] = packRGBA(g, g, g, 255);
+		const hue = (i * 1.41) % 360; // Golden-angle-ish sweep
+		cmap[i] = hsl(hue, 0.15, 0.28); // Muted dark tones
 	}
 
-	// Special opcodes - colors matching the original
-	cmap[0x00] = packRGBA(0, 0, 0, 255); // NOP - black
-	cmap[0x76] = packRGBA(40, 40, 40, 255); // HALT - dark gray
+	// NOP - very dark (near black)
+	cmap[0x00] = hsl(0, 0, 0.06);
+	// HALT - dark charcoal
+	cmap[0x76] = hsl(0, 0, 0.14);
 
-	// 16-bit immediate loads
-	cmap[0x01] = packRGBA(220, 60, 60, 255); // LD BC,nn - red
-	cmap[0x11] = packRGBA(60, 200, 60, 255); // LD DE,nn - green
-	cmap[0x21] = packRGBA(60, 100, 220, 255); // LD HL,nn - blue
-	cmap[0x31] = packRGBA(200, 200, 60, 255); // LD SP,nn - yellow
+	// 16-bit immediate loads - vivid saturated
+	cmap[0x01] = hsl(350, 0.75, 0.55); // LD BC,nn - rose
+	cmap[0x11] = hsl(150, 0.7, 0.48); // LD DE,nn - emerald
+	cmap[0x21] = hsl(220, 0.75, 0.58); // LD HL,nn - royal blue
+	cmap[0x31] = hsl(50, 0.8, 0.55); // LD SP,nn - amber
 
-	// Memory loads
-	cmap[0x2a] = packRGBA(255, 255, 255, 255); // LD HL,(nn) - white
-	cmap[0x3a] = packRGBA(200, 200, 200, 255); // LD A,(nn) - light gray
-	cmap[0x22] = packRGBA(180, 180, 255, 255); // LD (nn),HL - light blue
-	cmap[0x32] = packRGBA(180, 255, 180, 255); // LD (nn),A - light green
+	// Memory loads - lighter pastel variants
+	cmap[0x2a] = hsl(210, 0.5, 0.75); // LD HL,(nn) - light periwinkle
+	cmap[0x3a] = hsl(0, 0, 0.78); // LD A,(nn) - silver
+	cmap[0x22] = hsl(230, 0.45, 0.68); // LD (nn),HL - soft blue
+	cmap[0x32] = hsl(140, 0.4, 0.62); // LD (nn),A - soft green
 
-	// Block transfer (ED prefix marker)
-	cmap[0xed] = packRGBA(255, 50, 50, 255); // ED prefix - bright red
-	cmap[0xb0] = packRGBA(255, 80, 80, 255); // LDIR (after ED) - red
-	cmap[0xb8] = packRGBA(255, 100, 100, 255); // LDDR (after ED) - lighter red
-	cmap[0xa0] = packRGBA(220, 80, 80, 255); // LDI (after ED) - red variant
-	cmap[0xa8] = packRGBA(220, 100, 100, 255); // LDD (after ED) - red variant
+	// Block transfer - warm reds/corals
+	cmap[0xed] = hsl(5, 0.85, 0.58); // ED prefix - coral red
+	cmap[0xb0] = hsl(0, 0.8, 0.6); // LDIR - bright red
+	cmap[0xb8] = hsl(10, 0.75, 0.62); // LDDR - warm red
+	cmap[0xa0] = hsl(355, 0.7, 0.55); // LDI - crimson
+	cmap[0xa8] = hsl(15, 0.65, 0.58); // LDD - salmon
 
-	// Push/Pop
-	cmap[0xc5] = packRGBA(180, 130, 200, 255); // PUSH BC - purple
-	cmap[0xd5] = packRGBA(130, 200, 180, 255); // PUSH DE - teal
-	cmap[0xe5] = packRGBA(200, 180, 130, 255); // PUSH HL - tan
-	cmap[0xf5] = packRGBA(200, 130, 180, 255); // PUSH AF - pink
-	cmap[0xc1] = packRGBA(160, 110, 180, 255); // POP BC
-	cmap[0xd1] = packRGBA(110, 180, 160, 255); // POP DE
-	cmap[0xe1] = packRGBA(180, 160, 110, 255); // POP HL
-	cmap[0xf1] = packRGBA(180, 110, 160, 255); // POP AF
+	// Push/Pop - jewel tones
+	cmap[0xc5] = hsl(280, 0.55, 0.58); // PUSH BC - amethyst
+	cmap[0xd5] = hsl(170, 0.55, 0.5); // PUSH DE - teal
+	cmap[0xe5] = hsl(35, 0.6, 0.55); // PUSH HL - bronze
+	cmap[0xf5] = hsl(320, 0.5, 0.58); // PUSH AF - orchid
+	cmap[0xc1] = hsl(275, 0.45, 0.5); // POP BC - purple
+	cmap[0xd1] = hsl(165, 0.45, 0.45); // POP DE - dark teal
+	cmap[0xe1] = hsl(30, 0.5, 0.5); // POP HL - dark bronze
+	cmap[0xf1] = hsl(315, 0.4, 0.5); // POP AF - mauve
 
-	// Jumps
-	cmap[0xc3] = packRGBA(255, 180, 0, 255); // JP nn - orange
-	cmap[0xcd] = packRGBA(255, 220, 0, 255); // CALL nn - gold
-	cmap[0xc9] = packRGBA(200, 150, 0, 255); // RET - amber
-	cmap[0x18] = packRGBA(220, 160, 40, 255); // JR - light orange
-	cmap[0x10] = packRGBA(200, 140, 40, 255); // DJNZ - darker orange
+	// Jumps/Calls - warm gold/orange family
+	cmap[0xc3] = hsl(30, 0.9, 0.55); // JP nn - tangerine
+	cmap[0xcd] = hsl(45, 0.85, 0.55); // CALL nn - gold
+	cmap[0xc9] = hsl(38, 0.7, 0.5); // RET - dark gold
+	cmap[0x18] = hsl(25, 0.75, 0.52); // JR - burnt orange
+	cmap[0x10] = hsl(20, 0.65, 0.48); // DJNZ - russet
 
-	// CB prefix
-	cmap[0xcb] = packRGBA(100, 180, 255, 255); // CB prefix - sky blue
+	// CB prefix - electric blue
+	cmap[0xcb] = hsl(200, 0.8, 0.6); // CB prefix - cyan-blue
+
+	// EX instructions - distinctive
+	cmap[0xe3] = hsl(60, 0.6, 0.55); // EX (SP),HL - chartreuse
+	cmap[0xeb] = hsl(90, 0.5, 0.5); // EX DE,HL - lime
+	cmap[0x08] = hsl(55, 0.5, 0.5); // EX AF,AF' - olive
+
+	// DD/FD prefixes
+	cmap[0xdd] = hsl(190, 0.6, 0.5); // DD - steel blue
+	cmap[0xfd] = hsl(260, 0.5, 0.5); // FD - indigo
+
+	// 8-bit loads between registers (x=1 group, 0x40-0x7F minus HALT)
+	// Give them subtle distinct hues based on destination register
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			if (y === 6 && z === 6) continue; // HALT
+			const op = 0x40 + y * 8 + z;
+			cmap[op] = hsl(200 + y * 18, 0.2 + z * 0.03, 0.32 + y * 0.02);
+		}
+	}
+
+	// ALU group (x=2, 0x80-0xBF) - warm shifted
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			const op = 0x80 + y * 8 + z;
+			cmap[op] = hsl(340 + y * 12, 0.18 + z * 0.02, 0.3 + y * 0.02);
+		}
+	}
 
 	return cmap;
 }
@@ -63,4 +130,137 @@ function packRGBA(r: number, g: number, b: number, a: number): number {
 
 export function unpackRGBA(packed: number): [number, number, number, number] {
 	return [packed & 0xff, (packed >> 8) & 0xff, (packed >> 16) & 0xff, (packed >> 24) & 0xff];
+}
+
+// Colormap: ocean theme - cool blues and teals
+export function createOceanColormap(): Uint32Array {
+	const cmap = new Uint32Array(256);
+	for (let i = 0; i < 256; i++) {
+		cmap[i] = hsl(200 + (i * 0.3), 0.2, 0.22 + (i / 256) * 0.08);
+	}
+	cmap[0x00] = hsl(210, 0.1, 0.05);
+	cmap[0x76] = hsl(210, 0.1, 0.12);
+	cmap[0x01] = hsl(340, 0.65, 0.55);
+	cmap[0x11] = hsl(160, 0.7, 0.45);
+	cmap[0x21] = hsl(210, 0.85, 0.55);
+	cmap[0x31] = hsl(180, 0.7, 0.5);
+	cmap[0xed] = hsl(0, 0.75, 0.55);
+	cmap[0xb0] = hsl(355, 0.7, 0.55);
+	cmap[0xb8] = hsl(5, 0.65, 0.55);
+	cmap[0xa0] = hsl(350, 0.6, 0.5);
+	cmap[0xa8] = hsl(10, 0.55, 0.52);
+	cmap[0xc5] = hsl(260, 0.5, 0.55);
+	cmap[0xd5] = hsl(180, 0.6, 0.48);
+	cmap[0xe5] = hsl(195, 0.55, 0.5);
+	cmap[0xf5] = hsl(290, 0.45, 0.52);
+	cmap[0xc1] = hsl(255, 0.4, 0.48);
+	cmap[0xd1] = hsl(175, 0.5, 0.42);
+	cmap[0xe1] = hsl(190, 0.45, 0.45);
+	cmap[0xf1] = hsl(285, 0.35, 0.48);
+	cmap[0xc3] = hsl(40, 0.8, 0.55);
+	cmap[0xcd] = hsl(50, 0.75, 0.55);
+	cmap[0xc9] = hsl(35, 0.6, 0.48);
+	cmap[0x18] = hsl(30, 0.65, 0.5);
+	cmap[0x10] = hsl(25, 0.55, 0.45);
+	cmap[0xcb] = hsl(190, 0.75, 0.58);
+	cmap[0xe3] = hsl(170, 0.6, 0.52);
+	cmap[0xeb] = hsl(150, 0.5, 0.48);
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			if (y === 6 && z === 6) continue;
+			cmap[0x40 + y * 8 + z] = hsl(195 + y * 10, 0.18 + z * 0.02, 0.28 + y * 0.015);
+		}
+	}
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			cmap[0x80 + y * 8 + z] = hsl(220 + y * 8, 0.15 + z * 0.02, 0.26 + y * 0.015);
+		}
+	}
+	return cmap;
+}
+
+// Colormap: thermal - blacks to reds to yellows to white
+export function createThermalColormap(): Uint32Array {
+	const cmap = new Uint32Array(256);
+	for (let i = 0; i < 256; i++) {
+		const t = i / 255;
+		const r = Math.min(1, t * 2.5);
+		const g = Math.max(0, Math.min(1, (t - 0.35) * 2.5));
+		const b = Math.max(0, Math.min(1, (t - 0.7) * 3.3));
+		cmap[i] = packRGBA(Math.round(r * 180 * 0.4), Math.round(g * 180 * 0.4), Math.round(b * 180 * 0.4), 255);
+	}
+	cmap[0x00] = packRGBA(0, 0, 0, 255);
+	cmap[0x76] = packRGBA(20, 5, 5, 255);
+	cmap[0x01] = hsl(350, 0.8, 0.5);
+	cmap[0x11] = hsl(120, 0.7, 0.45);
+	cmap[0x21] = hsl(220, 0.8, 0.55);
+	cmap[0x31] = hsl(45, 0.85, 0.55);
+	cmap[0xed] = hsl(0, 0.9, 0.55);
+	cmap[0xb0] = hsl(5, 0.85, 0.5);
+	cmap[0xb8] = hsl(10, 0.8, 0.52);
+	cmap[0xa0] = hsl(355, 0.75, 0.48);
+	cmap[0xa8] = hsl(15, 0.7, 0.5);
+	cmap[0xc5] = hsl(290, 0.6, 0.55);
+	cmap[0xd5] = hsl(170, 0.55, 0.48);
+	cmap[0xe5] = hsl(30, 0.65, 0.55);
+	cmap[0xf5] = hsl(320, 0.5, 0.52);
+	cmap[0xc1] = hsl(285, 0.5, 0.48);
+	cmap[0xd1] = hsl(165, 0.45, 0.42);
+	cmap[0xe1] = hsl(25, 0.55, 0.48);
+	cmap[0xf1] = hsl(315, 0.4, 0.48);
+	cmap[0xc3] = hsl(35, 0.9, 0.55);
+	cmap[0xcd] = hsl(50, 0.9, 0.58);
+	cmap[0xc9] = hsl(40, 0.7, 0.5);
+	cmap[0x18] = hsl(28, 0.75, 0.48);
+	cmap[0x10] = hsl(20, 0.65, 0.45);
+	cmap[0xcb] = hsl(200, 0.7, 0.55);
+	cmap[0xe3] = hsl(55, 0.65, 0.55);
+	cmap[0xeb] = hsl(80, 0.5, 0.48);
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			if (y === 6 && z === 6) continue;
+			cmap[0x40 + y * 8 + z] = hsl(15 + y * 5, 0.25 + z * 0.03, 0.25 + y * 0.02);
+		}
+	}
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			cmap[0x80 + y * 8 + z] = hsl(0 + y * 6, 0.2 + z * 0.03, 0.23 + y * 0.02);
+		}
+	}
+	return cmap;
+}
+
+// Colormap: grayscale
+export function createGrayscaleColormap(): Uint32Array {
+	const cmap = new Uint32Array(256);
+	for (let i = 0; i < 256; i++) {
+		const v = 50 + Math.floor(i * 0.55);
+		cmap[i] = packRGBA(v, v, v, 255);
+	}
+	cmap[0x00] = packRGBA(0, 0, 0, 255);
+	cmap[0x76] = packRGBA(25, 25, 25, 255);
+	cmap[0x01] = packRGBA(255, 255, 255, 255);
+	cmap[0x11] = packRGBA(230, 230, 230, 255);
+	cmap[0x21] = packRGBA(210, 210, 210, 255);
+	cmap[0x31] = packRGBA(245, 245, 245, 255);
+	cmap[0xed] = packRGBA(200, 200, 200, 255);
+	cmap[0xe1] = packRGBA(190, 190, 190, 255);
+	cmap[0xe3] = packRGBA(180, 180, 180, 255);
+	cmap[0xc3] = packRGBA(170, 170, 170, 255);
+	cmap[0xcd] = packRGBA(160, 160, 160, 255);
+	cmap[0xc9] = packRGBA(150, 150, 150, 255);
+	return cmap;
+}
+
+export type ColormapName = 'default' | 'ocean' | 'thermal' | 'grayscale';
+
+export const COLORMAP_NAMES: ColormapName[] = ['default', 'ocean', 'thermal', 'grayscale'];
+
+export function createColormap(name: ColormapName): Uint32Array {
+	switch (name) {
+		case 'ocean': return createOceanColormap();
+		case 'thermal': return createThermalColormap();
+		case 'grayscale': return createGrayscaleColormap();
+		default: return createDefaultColormap();
+	}
 }
