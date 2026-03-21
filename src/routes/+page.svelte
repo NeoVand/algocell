@@ -13,6 +13,7 @@
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
 	import { untrack } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 	import Mermaid from '$lib/components/Mermaid.svelte';
 
 	let colormapName: ColormapName = $state('rainbow');
@@ -78,6 +79,9 @@
 	let toolbarCollapsed = $state(false);
 	let openTip = $state<string | null>(null);
 	let showInfoChart = $state(true);
+	let showSuppressMenu = $state(false);
+	let suppressFilter = $state('');
+	let suppressedOpcodes = new SvelteSet<number>();
 
 	// Frequency chart: track top N bytes normalized over time
 	// Total bytes counted by shader = cells * wordsPerCell * 4 (word-aligned)
@@ -85,13 +89,13 @@
 		gridWidth * gridHeight * Math.ceil((gridType === 'hex' ? 19 : 16) / 4) * 4
 	);
 	const MAX_TRACKED = 10;
-	const MAX_HISTORY = 500;
+	const MAX_HISTORY = 300;
 
-	interface StatsPoint {
-		batch: number;
-		freqs: { byte: number; frac: number }[]; // fraction of total cells (0..1)
-	}
-	let statsHistory: StatsPoint[] = $state([]);
+	// Efficient ring-buffer chart storage: Float32Array(256) per point for O(1) byte lookup
+	// Non-reactive — we only trigger Svelte updates via chartVersion counter
+	const chartRing: Float32Array[] = []; // ring buffer of Float32Array(256), each indexed by byte
+	let chartLen = 0; // current number of valid entries
+	let chartVersion = $state(0); // bump to trigger reactive re-derive
 
 	// Tracked bytes: stable set of bytes we draw lines for, with colormap-derived colors
 	let trackedBytes: { byte: number; mnemonic: string }[] = $state([]);
@@ -122,26 +126,37 @@
 	// concentration = frac * 256 (uniform = 1.0, a byte at 50% = 128.0)
 	// Log scale ensures both dominant and minor bytes are visible
 	let freqLines = $derived.by(() => {
-		const allSeries = trackedBytes.map((tb) => ({
-			byte: tb.byte,
-			mnemonic: tb.mnemonic,
-			color: byteChartColor(tb.byte),
-			values: statsHistory.map((s) => {
-				const found = s.freqs.find((f) => f.byte === tb.byte);
-				const conc = found ? found.frac * 256 : 0; // concentration factor
-				return conc > 0 ? Math.log2(conc + 1) : 0; // log scale
-			})
-		}));
+		// Touch chartVersion to subscribe to updates
+		void chartVersion;
+		const len = chartLen;
+		if (len < 2) return [];
+
+		const allSeries = trackedBytes.map((tb) => {
+			const values = new Float64Array(len);
+			for (let i = 0; i < len; i++) {
+				const frac = chartRing[i][tb.byte];
+				const conc = frac * 256; // concentration factor
+				values[i] = conc > 0 ? Math.log2(conc + 1) : 0;
+			}
+			return {
+				byte: tb.byte,
+				mnemonic: tb.mnemonic,
+				color: byteChartColor(tb.byte),
+				values
+			};
+		});
 		// Shared max across all lines
-		let globalMax = Math.log2(2.5); // at least log2(2.5) so early jitter is visible
+		let globalMax = Math.log2(2.5);
 		for (const s of allSeries) {
-			for (const v of s.values) {
-				if (v > globalMax) globalMax = v;
+			for (let i = 0; i < s.values.length; i++) {
+				if (s.values[i] > globalMax) globalMax = s.values[i];
 			}
 		}
 		return allSeries.map((s) => ({
-			...s,
-			path: buildSparklinePathShared(s.values, 200, 120, globalMax)
+			byte: s.byte,
+			mnemonic: s.mnemonic,
+			color: s.color,
+			path: buildSparklinePathTyped(s.values, 200, 120, globalMax)
 		}));
 	});
 
@@ -179,16 +194,16 @@
 		return `left:${x}px;top:${y}px`;
 	}
 
-	function buildSparklinePathShared(values: number[], w: number, h: number, max: number): string {
+	function buildSparklinePathTyped(values: Float64Array, w: number, h: number, max: number): string {
 		if (values.length < 2) return '';
 		const step = w / (values.length - 1);
-		return values
-			.map((v, i) => {
-				const x = i * step;
-				const y = h - (v / max) * (h - 4) - 2;
-				return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
-			})
-			.join(' ');
+		const parts: string[] = new Array(values.length);
+		for (let i = 0; i < values.length; i++) {
+			const x = i * step;
+			const y = h - (values[i] / max) * (h - 4) - 2;
+			parts[i] = `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+		}
+		return parts.join(' ');
 	}
 
 	$effect(() => {
@@ -293,13 +308,27 @@
 			const topN = entries.slice(0, MAX_TRACKED);
 			trackedBytes = topN.map((e) => ({ byte: e.byte, mnemonic: e.mnemonic }));
 
-			// Record normalized frequencies for all 256 bytes (so history is complete)
-			const freqs = entries.map((e) => ({
-				byte: e.byte,
-				frac: e.count / TOTAL_BYTES
-			}));
-
-			statsHistory = [...statsHistory.slice(-(MAX_HISTORY - 1)), { batch: batchCount, freqs }];
+			// Only record chart history when chart is visible
+			if (showInfoChart) {
+				// Reuse or allocate a Float32Array(256) for O(1) byte lookup
+				let slot: Float32Array;
+				if (chartLen < MAX_HISTORY) {
+					slot = new Float32Array(256);
+					chartRing[chartLen] = slot;
+					chartLen++;
+				} else {
+					// Shift ring: move slot 0 to end, shift everything left
+					slot = chartRing[0];
+					for (let i = 1; i < MAX_HISTORY; i++) chartRing[i - 1] = chartRing[i];
+					chartRing[MAX_HISTORY - 1] = slot;
+					slot.fill(0);
+				}
+				const total = TOTAL_BYTES;
+				for (const e of entries) {
+					slot[e.byte] = e.count / total;
+				}
+				chartVersion++;
+			}
 		} catch {
 			// stats readback failed silently
 		} finally {
@@ -548,7 +577,9 @@
 		engine.reset(seed);
 		batchCount = 0;
 		opsPerSec = 0;
-		statsHistory = [];
+		chartRing.length = 0;
+		chartLen = 0;
+		chartVersion++;
 		trackedBytes = [];
 	}
 
@@ -586,12 +617,95 @@
 		if (!engine) return;
 		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
 		engine.changeGridConfig(config, canvasW, canvasH);
+		// Re-apply suppressed opcodes (changeGridConfig recreates GPU buffers)
+		engine.setSuppressedOpcodes(suppressedOpcodes);
 		// Reset stats
 		batchCount = 0;
 		opsPerSec = 0;
-		statsHistory = [];
+		chartRing.length = 0;
+		chartLen = 0;
+		chartVersion++;
 		trackedBytes = [];
 	}
+
+	function toggleSuppressOpcode(opcode: number) {
+		if (suppressedOpcodes.has(opcode)) {
+			suppressedOpcodes.delete(opcode);
+		} else {
+			suppressedOpcodes.add(opcode);
+		}
+		engine?.setSuppressedOpcodes(suppressedOpcodes);
+	}
+
+	function clearSuppressedOpcodes() {
+		suppressedOpcodes.clear();
+		engine?.setSuppressedOpcodes(suppressedOpcodes);
+	}
+
+	// Stable list of opcodes for the suppress menu.
+	// Pinned opcodes always at top; new tracked opcodes appended (never reordered/removed).
+	const PINNED_OPCODES = [0x00, 0xe1, 0xe3]; // NOP, POP HL, EX (SP),HL
+	let suppressMenuSeen = new Uint8Array(256);
+	let suppressMenuOpcodes: number[] = $state([...PINNED_OPCODES]);
+	// Mark pinned as seen
+	for (const op of PINNED_OPCODES) suppressMenuSeen[op] = 1;
+
+	// Reactively grow the list as new tracked bytes appear
+	$effect(() => {
+		let changed = false;
+		for (const tb of trackedBytes) {
+			if (!suppressMenuSeen[tb.byte]) {
+				suppressMenuSeen[tb.byte] = 1;
+				suppressMenuOpcodes.push(tb.byte);
+				changed = true;
+			}
+		}
+		for (const op of suppressedOpcodes) {
+			if (!suppressMenuSeen[op]) {
+				suppressMenuSeen[op] = 1;
+				suppressMenuOpcodes.push(op);
+				changed = true;
+			}
+		}
+		if (changed) {
+			// Trigger reactivity update (array identity)
+			suppressMenuOpcodes = [...suppressMenuOpcodes];
+		}
+	});
+
+	// Filtered list for suppress menu search, with checked items at top
+	let filteredSuppressOpcodes = $derived.by(() => {
+		let list = suppressMenuOpcodes;
+		const q = suppressFilter.trim().toLowerCase();
+		if (q) {
+			list = list.filter((op) => {
+				const mnemonic = (byteToMnemonic(op) || '').toLowerCase();
+				const hex = '0x' + hexByte(op).toLowerCase();
+				return mnemonic.includes(q) || hex.includes(q) || hexByte(op).toLowerCase().includes(q);
+			});
+		}
+		// Sort suppressed opcodes to top, preserve order within each group
+		const checked: number[] = [];
+		const unchecked: number[] = [];
+		for (const op of list) {
+			if (suppressedOpcodes.has(op)) checked.push(op);
+			else unchecked.push(op);
+		}
+		return [...checked, ...unchecked];
+	});
+
+	// Suppressed opcodes not in the current top tracked bytes (for the widget's 3rd row)
+	let extraSuppressed = $derived.by(() => {
+		const tracked = new Uint8Array(256);
+		for (const tb of trackedBytes) tracked[tb.byte] = 1;
+		const extras: { byte: number; mnemonic: string }[] = [];
+		for (const op of suppressedOpcodes) {
+			if (!tracked[op]) {
+				extras.push({ byte: op, mnemonic: byteToMnemonic(op) || hexByte(op) });
+			}
+		}
+		return extras;
+	});
 
 	function togglePlay() {
 		playing = !playing;
@@ -603,16 +717,206 @@
 	}
 
 	function formatNumber(n: number): string {
-		// Fixed-width: always N.Ns where N is digits and s is suffix
-		// This prevents layout shift when digit count changes
-		if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + 'B';
-		if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
-		if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
-		return n.toFixed(0).padStart(3, '\u2007'); // figure space padding
+		// Fixed 5-char output: "XXXX" + suffix or padded digits
+		// Always produces exactly 5 visible characters to prevent layout shift
+		if (n >= 1_000_000_000) {
+			const v = (n / 1_000_000_000).toFixed(1);
+			return v.padStart(4, '\u2007') + 'B'; // e.g. " 1.2B", "12.3B"
+		}
+		if (n >= 1_000_000) {
+			const v = (n / 1_000_000).toFixed(1);
+			return v.padStart(4, '\u2007') + 'M';
+		}
+		if (n >= 1_000) {
+			const v = (n / 1_000).toFixed(1);
+			return v.padStart(4, '\u2007') + 'K';
+		}
+		return n.toFixed(0).padStart(5, '\u2007');
 	}
 
 	function hexByte(b: number): string {
 		return b.toString(16).toUpperCase().padStart(2, '0');
+	}
+
+	// Z80 opcode descriptions — plain-English decoder for non-experts
+	// Register glossary:
+	//   A = main working value, HL = address pointer (2 bytes), SP = stack pointer (read/write position)
+	//   BC/DE = auxiliary 2-byte registers, AF = working value + status flags
+	function opcodeDescription(op: number): string {
+		const x = (op >> 6) & 3;
+		const y = (op >> 3) & 7;
+		const z = op & 7;
+		const p = y >> 1;
+		const q = y & 1;
+		const R_DESC = [
+			'counter B',
+			'counter C',
+			'register D',
+			'register E',
+			'high byte of address pointer',
+			'low byte of address pointer',
+			'the byte in memory that the address pointer points to',
+			'the working value'
+		];
+		const RP_DESC = [
+			'the BC counter pair',
+			'the DE register pair',
+			'the address pointer',
+			'the read/write position (stack pointer)'
+		];
+		const RP2_DESC = [
+			'the BC counter pair',
+			'the DE register pair',
+			'the address pointer',
+			'the working value + status flags'
+		];
+		const CC_DESC = [
+			'result was not zero',
+			'result was zero',
+			'no carry occurred',
+			'a carry occurred',
+			'parity is odd',
+			'parity is even',
+			'result is positive',
+			'result is negative'
+		];
+		const ALUDESC = [
+			'Add {0} to the working value',
+			'Add {0} to the working value (with carry)',
+			'Subtract {0} from the working value',
+			'Subtract {0} from the working value (with borrow)',
+			'Bitwise AND the working value with {0}',
+			'Bitwise XOR the working value with {0}',
+			'Bitwise OR the working value with {0}',
+			'Compare the working value with {0} (updates status flags)'
+		];
+		if (x === 0) {
+			if (z === 0) {
+				if (y === 0) return 'No operation — does nothing, wastes one cycle';
+				if (y === 1) return 'Swap the working value and status flags with a hidden backup copy';
+				if (y === 2)
+					return 'Subtract 1 from counter B; if B ≠ 0, jump by an offset (creates a tight loop)';
+				if (y === 3) return 'Jump forward or backward by a short offset (unconditional)';
+				return `Jump by a short offset if ${CC_DESC[y - 4]}`;
+			}
+			if (z === 1)
+				return q === 0
+					? `Load a 2-byte number from the code into ${RP_DESC[p]}`
+					: `Add ${RP_DESC[p]} to the address pointer (shifts where it points)`;
+			if (z === 2) {
+				if (q === 0) {
+					if (p === 0) return 'Write the working value into memory at the address in BC';
+					if (p === 1) return 'Write the working value into memory at the address in DE';
+					if (p === 2)
+						return 'Write the address pointer (2 bytes) into memory at a specific address';
+					return 'Write the working value into memory at a specific address';
+				}
+				if (p === 0) return 'Read a byte from memory (at the address in BC) into the working value';
+				if (p === 1) return 'Read a byte from memory (at the address in DE) into the working value';
+				if (p === 2) return 'Read 2 bytes from a specific memory address into the address pointer';
+				return 'Read a byte from a specific memory address into the working value';
+			}
+			if (z === 3)
+				return q === 0
+					? `Add 1 to ${RP_DESC[p]}`
+					: `Subtract 1 from ${RP_DESC[p]}`;
+			if (z === 4)
+				return y === 6
+					? 'Add 1 to the byte in memory that the address pointer points to'
+					: `Add 1 to ${R_DESC[y]}`;
+			if (z === 5)
+				return y === 6
+					? 'Subtract 1 from the byte in memory that the address pointer points to'
+					: `Subtract 1 from ${R_DESC[y]}`;
+			if (z === 6)
+				return y === 6
+					? 'Write a byte from the code into the memory location the address pointer points to'
+					: `Load a byte from the code into ${R_DESC[y]}`;
+			// z === 7
+			const rot = [
+				'Rotate the working value left one bit (fast bit shift)',
+				'Rotate the working value right one bit (fast bit shift)',
+				'Rotate the working value left through the carry flag',
+				'Rotate the working value right through the carry flag',
+				'Adjust the working value for decimal (BCD) arithmetic',
+				'Flip every bit of the working value (0↔1)',
+				'Set the carry flag to 1',
+				'Toggle the carry flag (0↔1)'
+			];
+			return rot[y];
+		}
+		if (x === 1) {
+			if (y === 6 && z === 6) return 'Halt — stop executing until reset (cell goes dormant)';
+			if (z === 6) return `Read a byte from memory (at the address pointer) into ${R_DESC[y]}`;
+			if (y === 6) return `Write ${R_DESC[z]} into memory at the address pointer`;
+			if (y === z) return `Copy ${R_DESC[y]} to itself (does nothing)`;
+			return `Copy ${R_DESC[z]} into ${R_DESC[y]}`;
+		}
+		if (x === 2) {
+			const target = z === 6 ? 'the byte at the address pointer' : R_DESC[z];
+			return ALUDESC[y].replace('{0}', target);
+		}
+		// x === 3
+		if (z === 0) return `Return from subroutine if ${CC_DESC[y]}`;
+		if (z === 1) {
+			if (q === 0)
+				return `Read 2 bytes from memory (at the stack pointer) into ${RP2_DESC[p]}`;
+			if (p === 0) return 'Return from subroutine (jump back to where we came from)';
+			if (p === 1) return 'Swap BC, DE, and the address pointer with hidden backup copies';
+			if (p === 2) return 'Jump to the memory address stored in the address pointer';
+			return 'Set the stack pointer (read/write position) to the address pointer value';
+		}
+		if (z === 2) return `Jump to a specific address if ${CC_DESC[y]}`;
+		if (z === 3) {
+			if (y === 0) return 'Jump to a specific address (unconditional)';
+			if (y === 1) return 'Prefix for extended bit/rotate instructions';
+			if (y === 2) return 'Send the working value to a hardware port (I/O output)';
+			if (y === 3) return 'Read a byte from a hardware port into the working value (I/O input)';
+			if (y === 4)
+				return 'Swap the address pointer with the 2 bytes at the stack pointer — this is the key self-replication instruction: it writes data into a neighbor cell\'s memory';
+			if (y === 5)
+				return 'Swap the address pointer with the DE register pair';
+			if (y === 6) return 'Disable interrupts';
+			return 'Enable interrupts';
+		}
+		if (z === 4) return `Call a subroutine at a specific address if ${CC_DESC[y]}`;
+		if (z === 5) {
+			if (q === 0)
+				return `Write ${RP2_DESC[p]} (2 bytes) to memory at the stack pointer`;
+			if (p === 0) return 'Call a subroutine at a specific address (saves return point)';
+			if (p === 1) return 'Prefix for index register instructions (IX)';
+			if (p === 2) return 'Prefix for extended instructions (block copy, I/O)';
+			return 'Prefix for index register instructions (IY)';
+		}
+		if (z === 6) {
+			return ALUDESC[y].replace('{0}', 'a byte from the code');
+		}
+		// z === 7
+		return `Call a built-in routine at address ${(y * 8).toString(16).toUpperCase().padStart(2, '0')}h (fast subroutine call)`;
+	}
+
+	// Freq tile tooltip state
+	let tileTooltip = $state<{
+		byte: number;
+		mnemonic: string;
+		rank: number;
+		x: number;
+		y: number;
+	} | null>(null);
+
+	function showTileTooltip(e: MouseEvent, byte: number, mnemonic: string, rank: number) {
+		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+		tileTooltip = {
+			byte,
+			mnemonic,
+			rank,
+			x: rect.right + 6,
+			y: rect.top - 6
+		};
+	}
+
+	function hideTileTooltip() {
+		tileTooltip = null;
 	}
 
 	function byteColor(b: number): string {
@@ -869,11 +1173,6 @@
 <div class="info-bar">
 	<div class="info-row">
 		<span class="info-item">
-			<span class="info-label">batch</span>
-			<span class="info-value">{formatNumber(batchCount)}</span>
-		</span>
-		<span class="info-sep"></span>
-		<span class="info-item">
 			<span class="info-label">ops/s</span>
 			<span class="info-value">{formatNumber(opsPerSec)}</span>
 		</span>
@@ -898,7 +1197,7 @@
 			</svg>
 		</button>
 	</div>
-	{#if showInfoChart && statsHistory.length > 1}
+	{#if showInfoChart && chartVersion > 0 && chartLen > 1}
 		<div class="info-chart">
 			<svg
 				viewBox="0 0 200 120"
@@ -930,14 +1229,18 @@
 						class="freq-cell"
 						class:dimmed={chartHoveredByte >= 0 && chartHoveredByte !== tb.byte}
 						class:highlighted={chartHoveredByte === tb.byte}
+						class:suppressed={suppressedOpcodes.has(tb.byte)}
 						style="background:{byteColor(tb.byte)};color:{cellTextColor(tb.byte)}"
 						role="button"
 						tabindex="0"
-						onmouseenter={() => {
+						onclick={() => toggleSuppressOpcode(tb.byte)}
+						onmouseenter={(e) => {
 							chartHoveredByte = tb.byte;
+							showTileTooltip(e, tb.byte, tb.mnemonic, i + 1);
 						}}
 						onmouseleave={() => {
 							chartHoveredByte = -1;
+							hideTileTooltip();
 						}}
 					>
 						<span class="freq-rank">{i + 1}</span>
@@ -945,9 +1248,52 @@
 					</div>
 				{/each}
 			</div>
+			{#if extraSuppressed.length > 0}
+				<div class="freq-suppressed-row">
+					{#each extraSuppressed as tb (tb.byte)}
+						<div
+							class="freq-cell suppressed"
+							style="background:{byteColor(tb.byte)};color:{cellTextColor(tb.byte)}"
+							role="button"
+							tabindex="0"
+							onclick={() => toggleSuppressOpcode(tb.byte)}
+							onmouseenter={(e) => showTileTooltip(e, tb.byte, tb.mnemonic, -1)}
+							onmouseleave={hideTileTooltip}
+						>
+							<span class="freq-label">{tb.mnemonic}</span>
+						</div>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	{/if}
 </div>
+
+<!-- Tile tooltip -->
+{#if tileTooltip}
+	{@const tt = tileTooltip}
+	{@const desc = opcodeDescription(tt.byte)}
+	{@const bg = byteColor(tt.byte)}
+	{@const lum = byteLuminance(tt.byte)}
+	<div class="tile-tip" style="left:{tt.x}px;top:{tt.y}px">
+		<div
+			class="tile-tip-header"
+			style="background:{bg};color:{lum > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)'}"
+		>
+			<span class="tile-tip-mnemonic">{tt.mnemonic}</span>
+			<span class="tile-tip-hex">0x{hexByte(tt.byte)}</span>
+		</div>
+		<div class="tile-tip-body">
+			<p class="tile-tip-desc">{desc}</p>
+			{#if suppressedOpcodes.has(tt.byte)}
+				<span class="tile-tip-status suppressed">⊘ Suppressed</span>
+			{/if}
+			<span class="tile-tip-hint"
+				>Click to {suppressedOpcodes.has(tt.byte) ? 'enable' : 'suppress'}</span
+			>
+		</div>
+	</div>
+{/if}
 
 <!-- Settings panel -->
 {#if showSettings}
@@ -1316,6 +1662,120 @@
 						}
 					}}
 				/>
+			</div>
+		</div>
+
+		<div class="param">
+			<div class="param-head">
+				<label class="param-label"
+					><svg
+						width="12"
+						height="12"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="var(--accent)"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><circle cx="12" cy="12" r="10" /><line
+							x1="4.93"
+							y1="4.93"
+							x2="19.07"
+							y2="19.07"
+						/></svg
+					> Suppress opcodes</label
+				>
+				<span class="param-info-wrap" class:show-tip={openTip === 'suppress'}>
+					<button
+						class="param-info"
+						onmouseenter={() => {
+							openTip = 'suppress';
+						}}
+						onmouseleave={() => {
+							openTip = null;
+						}}
+						onclick={() => {
+							openTip = openTip === 'suppress' ? null : 'suppress';
+						}}>?</button
+					>
+					<span class="param-tip"
+						>Disable specific Z80 opcodes (treat as NOP). Use to block the dominant self-replicator
+						and see if other patterns emerge.</span
+					>
+				</span>
+				{#if suppressedOpcodes.size > 0}
+					<button class="suppress-clear" onclick={clearSuppressedOpcodes} title="Clear all">
+						<svg
+							width="10"
+							height="10"
+							viewBox="0 0 10 10"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
+						</svg>
+					</button>
+				{/if}
+			</div>
+			<div class="suppress-wrap">
+				<button class="suppress-toggle" onclick={() => (showSuppressMenu = !showSuppressMenu)}>
+					{#if suppressedOpcodes.size === 0}
+						<span class="suppress-placeholder">None — all opcodes active</span>
+					{:else}
+						<span class="suppress-tags">
+							{#each [...suppressedOpcodes].sort((a, b) => a - b) as op (op)}
+								<span
+									class="suppress-tag"
+									style="background:{byteColor(op)};color:{byteLuminance(op) > 0.4
+										? 'rgba(0,0,0,0.85)'
+										: 'rgba(255,255,255,0.9)'}"
+								>
+									{byteToMnemonic(op) || hexByte(op)}
+								</span>
+							{/each}
+						</span>
+					{/if}
+					<svg
+						class="suppress-chevron"
+						class:open={showSuppressMenu}
+						width="10"
+						height="10"
+						viewBox="0 0 10 10"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.5"
+						stroke-linecap="round"
+					>
+						<path d="M2 3.5L5 6.5L8 3.5" />
+					</svg>
+				</button>
+				{#if showSuppressMenu}
+					<div class="suppress-menu">
+						<input
+							class="suppress-search"
+							type="text"
+							placeholder="Filter opcodes…"
+							bind:value={suppressFilter}
+						/>
+						<div class="suppress-list">
+							{#each filteredSuppressOpcodes as op (op)}
+								<label class="suppress-item">
+									<input
+										type="checkbox"
+										checked={suppressedOpcodes.has(op)}
+										onchange={() => toggleSuppressOpcode(op)}
+									/>
+									<span class="suppress-swatch" style="background:{byteColor(op)}"></span>
+									<span class="suppress-mnemonic">{byteToMnemonic(op) || '??'}</span>
+									<span class="suppress-hex">0x{hexByte(op)}</span>
+								</label>
+							{/each}
+							{#if filteredSuppressOpcodes.length === 0}
+								<div class="suppress-empty">No matches</div>
+							{/if}
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 
@@ -2449,7 +2909,6 @@ graph TD
 		backdrop-filter: blur(12px);
 		font-size: 11px;
 		font-family: monospace;
-		width: 260px;
 	}
 	.info-row {
 		display: flex;
@@ -2470,9 +2929,10 @@ graph TD
 	.info-value {
 		color: var(--text-secondary);
 		font-variant-numeric: tabular-nums;
-		min-width: 4ch;
+		width: 5ch;
 		text-align: right;
 		display: inline-block;
+		white-space: pre;
 	}
 	.info-sep {
 		width: 1px;
@@ -2483,14 +2943,16 @@ graph TD
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 18px;
-		height: 18px;
+		width: 22px;
+		height: 22px;
 		border: none;
 		background: transparent;
 		cursor: pointer;
 		color: var(--text-subtle);
 		margin-left: auto;
+		margin-right: 4px;
 		border-radius: 4px;
+		padding: 4px;
 	}
 	.info-chart-toggle:hover {
 		background: var(--bg-hover);
@@ -2538,6 +3000,20 @@ graph TD
 	.freq-cell.dimmed {
 		opacity: 0.35;
 	}
+	.freq-cell.suppressed::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: repeating-linear-gradient(
+			-45deg,
+			transparent,
+			transparent 3px,
+			rgba(0, 0, 0, 0.4) 3px,
+			rgba(0, 0, 0, 0.4) 5px
+		);
+		border-radius: 6px;
+		pointer-events: none;
+	}
 	.freq-rank {
 		position: absolute;
 		top: 2px;
@@ -2553,6 +3029,81 @@ graph TD
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+	.freq-suppressed-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 3px;
+		margin-top: 4px;
+		padding-top: 4px;
+		border-top: 1px solid var(--border-subtle);
+	}
+	.freq-suppressed-row .freq-cell {
+		width: auto;
+		height: 22px;
+		min-width: 36px;
+		padding: 2px 5px;
+		font-size: 7.5px;
+		border-radius: 4px;
+	}
+
+	/* ── Tile tooltip ── */
+	.tile-tip {
+		position: fixed;
+		z-index: 55;
+		pointer-events: none;
+		min-width: 140px;
+		max-width: 180px;
+		border-radius: 8px;
+		overflow: hidden;
+		filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
+		font-family:
+			system-ui,
+			-apple-system,
+			sans-serif;
+		transform: translateY(-100%);
+	}
+	.tile-tip-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 6px 10px;
+		gap: 8px;
+	}
+	.tile-tip-mnemonic {
+		font-family: monospace;
+		font-weight: 700;
+		font-size: 13px;
+		letter-spacing: 0.02em;
+	}
+	.tile-tip-hex {
+		font-family: monospace;
+		font-size: 11px;
+		opacity: 0.7;
+	}
+	.tile-tip-body {
+		background: #111116;
+		padding: 8px 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.tile-tip-desc {
+		margin: 0;
+		font-size: 11.5px;
+		line-height: 1.4;
+		color: var(--text-secondary, #ccc);
+	}
+	.tile-tip-status.suppressed {
+		font-size: 10px;
+		color: #e07050;
+		font-weight: 600;
+	}
+	.tile-tip-hint {
+		font-size: 9.5px;
+		color: var(--text-subtle, #666);
+		font-style: italic;
+		margin-top: 2px;
 	}
 
 	/* ── Panels (shared) ── */
@@ -2830,6 +3381,183 @@ graph TD
 		background: rgba(255, 255, 255, 0.12);
 		border-radius: 2px;
 		border: none;
+	}
+
+	/* Suppress opcodes */
+	.suppress-toggle {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: var(--bg-input, rgba(255, 255, 255, 0.06));
+		border: 1px solid var(--border-muted);
+		border-radius: 6px;
+		padding: 6px 8px;
+		color: var(--text-secondary);
+		font-size: 11px;
+		cursor: pointer;
+		min-height: 32px;
+		transition: border-color 0.15s;
+	}
+	.suppress-toggle:hover {
+		border-color: var(--accent);
+	}
+	.suppress-placeholder {
+		opacity: 0.5;
+		font-style: italic;
+	}
+	.suppress-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 3px;
+		flex: 1;
+	}
+	.suppress-tag {
+		font-size: 9px;
+		font-family: var(--font-mono, monospace);
+		font-weight: 600;
+		padding: 1px 5px;
+		border-radius: 3px;
+		line-height: 1.4;
+	}
+	.suppress-chevron {
+		flex-shrink: 0;
+		margin-left: 6px;
+		transition: transform 0.15s;
+	}
+	.suppress-chevron.open {
+		transform: rotate(180deg);
+	}
+	.suppress-clear {
+		background: none;
+		border: none;
+		color: var(--text-muted);
+		cursor: pointer;
+		padding: 2px;
+		opacity: 0.6;
+		margin-left: auto;
+	}
+	.suppress-clear:hover {
+		opacity: 1;
+		color: var(--accent);
+	}
+	.suppress-wrap {
+		position: relative;
+	}
+	.suppress-menu {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 100%;
+		margin-top: 4px;
+		z-index: 60;
+		background: var(--bg-elevated, #1a1a20);
+		border: 1px solid var(--border-muted);
+		border-radius: 6px;
+		padding: 4px;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+		display: flex;
+		flex-direction: column;
+	}
+	.suppress-search {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 5px 8px;
+		margin-bottom: 4px;
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid var(--border-muted);
+		border-radius: 4px;
+		color: var(--text-primary);
+		font-size: 11px;
+		font-family: monospace;
+		outline: none;
+		transition: border-color 0.15s;
+	}
+	.suppress-search::placeholder {
+		color: var(--text-muted);
+		opacity: 0.5;
+	}
+	.suppress-search:focus {
+		border-color: var(--accent);
+		outline: none;
+	}
+	.suppress-list {
+		max-height: 180px;
+		overflow-y: auto;
+	}
+	.suppress-empty {
+		padding: 8px;
+		text-align: center;
+		color: var(--text-muted);
+		font-size: 11px;
+		font-style: italic;
+	}
+	.suppress-item {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 4px 6px;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 11px;
+		transition: background 0.1s;
+	}
+	.suppress-item:hover {
+		background: rgba(255, 255, 255, 0.06);
+	}
+	.suppress-item input[type='checkbox'] {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 14px;
+		height: 14px;
+		border: 1.5px solid var(--border-muted);
+		border-radius: 3px;
+		background: transparent;
+		cursor: pointer;
+		flex-shrink: 0;
+		position: relative;
+		transition:
+			background 0.12s,
+			border-color 0.12s;
+	}
+	.suppress-item input[type='checkbox']:checked {
+		background: var(--accent);
+		border-color: var(--accent);
+	}
+	.suppress-item input[type='checkbox']:checked::after {
+		content: '';
+		position: absolute;
+		left: 3px;
+		top: 0.5px;
+		width: 5px;
+		height: 8px;
+		border: solid #0a0a0e;
+		border-width: 0 1.5px 1.5px 0;
+		transform: rotate(40deg);
+	}
+	.suppress-item input[type='checkbox']:focus {
+		outline: none;
+	}
+	.suppress-item input[type='checkbox']:hover {
+		border-color: var(--accent);
+	}
+	.suppress-swatch {
+		width: 12px;
+		height: 12px;
+		border-radius: 2px;
+		flex-shrink: 0;
+	}
+	.suppress-mnemonic {
+		font-family: var(--font-mono, monospace);
+		font-weight: 600;
+		color: var(--text-primary);
+		min-width: 70px;
+	}
+	.suppress-hex {
+		font-family: var(--font-mono, monospace);
+		font-size: 10px;
+		color: var(--text-muted);
+		margin-left: auto;
 	}
 
 	/* Colormap selector */
@@ -3434,6 +4162,14 @@ graph TD
 		/* Hide keys tab on mobile (no keyboard) */
 		.tab-keys {
 			display: none;
+		}
+
+		/* Suppress menu: open upward on mobile */
+		.suppress-menu {
+			top: auto;
+			bottom: 100%;
+			margin-top: 0;
+			margin-bottom: 4px;
 		}
 
 		/* Genome tooltip: smaller on mobile */

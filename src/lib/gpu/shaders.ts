@@ -66,6 +66,16 @@ struct Params {
     mutation_count: u32,
     z80_steps: u32,
     batch_seed: u32,
+    // 256-bit opcode suppression bitmask (8 × u32)
+    // If bit N is set, opcode N is treated as NOP
+    suppress0: u32, // opcodes 0x00–0x1F
+    suppress1: u32, // opcodes 0x20–0x3F
+    suppress2: u32, // opcodes 0x40–0x5F
+    suppress3: u32, // opcodes 0x60–0x7F
+    suppress4: u32, // opcodes 0x80–0x9F
+    suppress5: u32, // opcodes 0xA0–0xBF
+    suppress6: u32, // opcodes 0xC0–0xDF
+    suppress7: u32, // opcodes 0xE0–0xFF
 }
 
 @group(0) @binding(0) var<storage, read_write> soup: array<u32>;
@@ -726,6 +736,24 @@ fn z80_execute(op: u32) {
     }
 }
 
+fn is_opcode_suppressed(op: u32) -> bool {
+    let word_idx = op >> 5u;   // 0–7: which u32
+    let bit_idx  = op & 31u;   // 0–31: which bit
+    var mask = 0u;
+    switch (word_idx) {
+        case 0u: { mask = params.suppress0; }
+        case 1u: { mask = params.suppress1; }
+        case 2u: { mask = params.suppress2; }
+        case 3u: { mask = params.suppress3; }
+        case 4u: { mask = params.suppress4; }
+        case 5u: { mask = params.suppress5; }
+        case 6u: { mask = params.suppress6; }
+        case 7u: { mask = params.suppress7; }
+        default: {}
+    }
+    return ((mask >> bit_idx) & 1u) != 0u;
+}
+
 fn z80_step() {
     if (cpu_halted != 0u) { return; }
     var op = z80_fetch();
@@ -735,6 +763,8 @@ fn z80_step() {
         if (op != 0xddu && op != 0xfdu) { break; }
         op = z80_fetch();
     }
+    // Suppressed opcodes are treated as NOP (already fetched, just skip execution)
+    if (is_opcode_suppressed(op)) { return; }
     z80_execute(op);
 }
 

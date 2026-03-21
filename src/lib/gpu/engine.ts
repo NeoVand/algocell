@@ -72,6 +72,7 @@ export class GPUEngine {
 	private hoverCell = -1;
 	private showAverage = 0;
 	private colormap: Uint32Array;
+	private suppressedOpcodes = new Set<number>();
 
 	// Stats (read back from GPU periodically)
 	byteCounts = new Uint32Array(256);
@@ -138,6 +139,20 @@ export class GPUEngine {
 
 	get batchCount(): number {
 		return this.batchIndex;
+	}
+
+	setSuppressedOpcodes(opcodes: Set<number>): void {
+		this.suppressedOpcodes = new Set(opcodes);
+	}
+
+	private buildSuppressMask(): Uint32Array {
+		const mask = new Uint32Array(8);
+		for (const op of this.suppressedOpcodes) {
+			const wordIdx = op >> 5;
+			const bitIdx = op & 31;
+			mask[wordIdx] |= 1 << bitIdx;
+		}
+		return mask;
 	}
 
 	async init(canvas: HTMLCanvasElement): Promise<boolean> {
@@ -212,9 +227,9 @@ export class GPUEngine {
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
-		// Params uniform
+		// Params uniform (8 base + 8 suppress mask = 16 u32s = 64 bytes)
 		this.paramsBuffer = dev.createBuffer({
-			size: 32, // 8 u32s
+			size: 64,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -442,7 +457,8 @@ export class GPUEngine {
 		const noiseCoef = 1 / Math.pow(2, this._noiseExp);
 		const mutationCount = Math.floor(this._pairCount * noiseCoef);
 
-		// Update params
+		// Update params (8 base fields + 8 suppress mask words = 16 u32s)
+		const suppressMask = this.buildSuppressMask();
 		const paramsData = new Uint32Array([
 			this.soupWidth,
 			this.soupHeight,
@@ -451,7 +467,15 @@ export class GPUEngine {
 			this._pairCount,
 			mutationCount,
 			this._z80Steps,
-			this.cpuRng.nextU32() // batch_seed - different each batch
+			this.cpuRng.nextU32(), // batch_seed - different each batch
+			suppressMask[0],
+			suppressMask[1],
+			suppressMask[2],
+			suppressMask[3],
+			suppressMask[4],
+			suppressMask[5],
+			suppressMask[6],
+			suppressMask[7]
 		]);
 		this.device.queue.writeBuffer(this.paramsBuffer, 0, paramsData);
 
