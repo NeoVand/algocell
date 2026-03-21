@@ -733,7 +733,6 @@ export class GPUEngine {
 			}
 		}
 
-		if (bestCellDist > 2) return -1; // gap between cells
 		if (cellA < 0 || cellA >= this.soupWidth || cellB < 0 || cellB >= this.soupHeight) return -1;
 		return cellB * this.soupWidth + cellA;
 	}

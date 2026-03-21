@@ -1881,6 +1881,7 @@ graph TD
 		background: #0a0a0e;
 		padding: 4px;
 		border-radius: 3px;
+		filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
 	}
 	.tip-grid {
 		display: grid;
@@ -1912,6 +1913,7 @@ graph TD
 		background: none;
 		padding: 2px !important;
 		overflow: visible;
+		filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
 	}
 	.hex-byte-cell::before {
 		content: '';
