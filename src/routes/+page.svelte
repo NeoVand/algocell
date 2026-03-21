@@ -278,6 +278,7 @@
 	}
 
 	function handleCanvasMouseMove(e: MouseEvent) {
+		if (touchHandled) return; // ignore synthetic mouse events from touch
 		if (!engine || !canvas) return;
 		const rect = canvas.getBoundingClientRect();
 		const sx = e.clientX - rect.left;
@@ -334,7 +335,11 @@
 		});
 	}
 
+	// Track if touch just handled an interaction, to suppress synthetic mouse events
+	let touchHandled = false;
+
 	function handleCanvasMouseDown(e: MouseEvent) {
+		if (touchHandled) return; // ignore synthetic mouse events from touch
 		if (e.button === 0 || e.button === 1) {
 			e.preventDefault();
 			isPanning = true;
@@ -348,6 +353,7 @@
 	}
 
 	function handleCanvasMouseUp(e: MouseEvent) {
+		if (touchHandled) return;
 		if (e.button === 0 || e.button === 1) {
 			isPanning = false;
 		}
@@ -379,6 +385,8 @@
 	function handleTouchStart(e: TouchEvent) {
 		if (!engine || !canvas) return;
 		e.preventDefault();
+		// Suppress synthetic mouse events that fire after touch
+		touchHandled = true;
 		if (e.touches.length === 2) {
 			// Pinch start
 			const dx = e.touches[1].clientX - e.touches[0].clientX;
@@ -448,6 +456,11 @@
 	}
 
 	function handleTouchEnd(e: TouchEvent) {
+		// Reset touchHandled after synthetic events have fired (~300ms)
+		setTimeout(() => {
+			touchHandled = false;
+		}, 400);
+
 		if (e.touches.length === 0) {
 			// All fingers lifted — check for tap
 			if (!touchMoved && engine && canvas) {
