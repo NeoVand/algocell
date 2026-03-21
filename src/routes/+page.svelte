@@ -5,7 +5,8 @@
 		SOUP_HEIGHT,
 		DEFAULT_SEED,
 		DEFAULT_NOISE_EXP,
-		MAX_BATCH_PAIR_N
+		MAX_BATCH_PAIR_N,
+		Z80_STEPS
 	} from '$lib/sim/constants';
 	import { disassemble, byteToMnemonic } from '$lib/z80-disasm';
 	import { getCellData } from '$lib/sim/soup';
@@ -14,8 +15,8 @@
 	import { untrack } from 'svelte';
 	import Mermaid from '$lib/components/Mermaid.svelte';
 
-	let colormapName: ColormapName = $state('default');
-	let colormap = $state(createColormap('default'));
+	let colormapName: ColormapName = $state('rainbow');
+	let colormap = $state(createColormap('rainbow'));
 
 	let canvas: HTMLCanvasElement;
 	let canvasContainer: HTMLDivElement;
@@ -26,6 +27,7 @@
 	let seed = $state(DEFAULT_SEED);
 	let noiseExp = $state(DEFAULT_NOISE_EXP);
 	let pairCount = $state(MAX_BATCH_PAIR_N);
+	let z80Steps = $state(Z80_STEPS);
 	let playing = $state(true);
 	let speed = $state(1);
 
@@ -34,7 +36,7 @@
 	let opsPerSec = $state(0);
 	let topBytes: { byte: number; count: number; mnemonic: string }[] = $state([]);
 	let showHelp = $state(false);
-	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys'>('overview');
+	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'about'>('overview');
 	let showSpeedMenu = $state(false);
 	let showSettings = $state(false);
 	let toolbarCollapsed = $state(false);
@@ -702,7 +704,7 @@
 {#if showSettings}
 	<div class="panel settings-panel">
 		<div class="panel-header">
-			<span class="panel-title">Parameters</span>
+			<span class="panel-title"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="var(--accent)" stroke-width="1.4"><path d="M2 3.5h10M2 7h10M2 10.5h10" stroke-linecap="round"/><circle cx="5" cy="3.5" r="1.3" fill="var(--accent)" stroke="none"/><circle cx="9" cy="7" r="1.3" fill="var(--accent)" stroke="none"/><circle cx="6" cy="10.5" r="1.3" fill="var(--accent)" stroke="none"/></svg>Parameters</span>
 			<button
 				class="panel-close"
 				aria-label="Close settings"
@@ -716,7 +718,7 @@
 
 		<div class="param">
 			<div class="param-head">
-				<label class="param-label" for="seed-input">Seed</label>
+				<label class="param-label" for="seed-input"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg> Seed</label>
 				<span class="param-info-wrap" class:show-tip={openTip === 'seed'}>
 					<button class="param-info" onmouseenter={() => { openTip = 'seed'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'seed' ? null : 'seed'; }}>?</button>
 					<span class="param-tip">Random seed for initial soup generation. Changing seed requires reset.</span>
@@ -742,7 +744,7 @@
 
 		<div class="param">
 			<div class="param-head">
-				<label class="param-label" for="noise-input">Mutation rate</label>
+				<label class="param-label" for="noise-input"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Mutation rate</label>
 				<span class="param-info-wrap" class:show-tip={openTip === 'mutation'}>
 					<button class="param-info" onmouseenter={() => { openTip = 'mutation'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'mutation' ? null : 'mutation'; }}>?</button>
 					<span class="param-tip">Random byte flips per batch. Higher = more mutations = faster evolution. Applied live.</span>
@@ -754,18 +756,18 @@
 					id="noise-input"
 					type="range"
 					class="slider"
-					value={11 - noiseExp}
+					value={13 - noiseExp}
 					min="1"
-					max="10"
+					max="12"
 					step="1"
-					oninput={(e) => { const val = 11 - parseInt((e.target as HTMLInputElement).value); if (!isNaN(val) && engine) { noiseExp = val; engine.noiseExp = val; } }}
+					oninput={(e) => { const val = 13 - parseInt((e.target as HTMLInputElement).value); if (!isNaN(val) && engine) { noiseExp = val; engine.noiseExp = val; } }}
 				/>
 			</div>
 		</div>
 
 		<div class="param">
 			<div class="param-head">
-				<label class="param-label" for="pairs-input">Pairs/batch</label>
+				<label class="param-label" for="pairs-input"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> Pairs/batch</label>
 				<span class="param-info-wrap" class:show-tip={openTip === 'pairs'}>
 					<button class="param-info" onmouseenter={() => { openTip = 'pairs'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'pairs' ? null : 'pairs'; }}>?</button>
 					<span class="param-tip">Cell pairs evaluated per step. More = faster evolution, higher GPU load. Applied live.</span>
@@ -777,10 +779,10 @@
 					id="pairs-input"
 					type="range"
 					class="slider"
-					value={pairCount}
-					min="256"
+					bind:value={pairCount}
+					min={256}
 					max={MAX_BATCH_PAIR_N}
-					step="256"
+					step={256}
 					oninput={handlePairCountChange}
 				/>
 			</div>
@@ -788,7 +790,30 @@
 
 		<div class="param">
 			<div class="param-head">
-				<label class="param-label">Colormap</label>
+				<label class="param-label" for="steps-input"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Z80 steps</label>
+				<span class="param-info-wrap" class:show-tip={openTip === 'steps'}>
+					<button class="param-info" onmouseenter={() => { openTip = 'steps'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'steps' ? null : 'steps'; }}>?</button>
+					<span class="param-tip">CPU cycles per pair execution. More steps = longer programs can run, slower throughput. Applied live.</span>
+				</span>
+				<span class="param-val">{z80Steps}</span>
+			</div>
+			<div class="slider-track-wrap">
+				<input
+					id="steps-input"
+					type="range"
+					class="slider"
+					bind:value={z80Steps}
+					min={16}
+					max={1024}
+					step={16}
+					oninput={(e) => { const val = parseInt((e.target as HTMLInputElement).value); if (!isNaN(val) && engine) { z80Steps = val; engine.z80Steps = val; } }}
+				/>
+			</div>
+		</div>
+
+		<div class="param">
+			<div class="param-head">
+				<label class="param-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 0 0 20 4 4 0 0 1 0-8 4 4 0 0 0 0-8z"/><circle cx="12" cy="9" r="1" fill="var(--accent)"/></svg> Colormap</label>
 				<span class="param-info-wrap" class:show-tip={openTip === 'cmap'}>
 					<button class="param-info" onmouseenter={() => { openTip = 'cmap'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'cmap' ? null : 'cmap'; }}>?</button>
 					<span class="param-tip">Color scheme for byte values. Each Z80 opcode category gets a distinct color family.</span>
@@ -800,7 +825,10 @@
 						class="cmap-btn"
 						class:active={colormapName === name}
 						onclick={() => handleColormapChange(name)}
-					>{name}</button>
+					>
+						<span class="cmap-preview cmap-preview-{name}"></span>
+						{name}
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -831,11 +859,30 @@
 		<div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
 			<div class="modal-header">
 				<div class="modal-tabs">
-					<button class="modal-tab" class:active={helpTab === 'overview'} onclick={() => (helpTab = 'overview')}>Overview</button>
-					<button class="modal-tab" class:active={helpTab === 'visuals'} onclick={() => (helpTab = 'visuals')}>Visuals</button>
-					<button class="modal-tab" class:active={helpTab === 'z80'} onclick={() => (helpTab = 'z80')}>Z80</button>
-					<button class="modal-tab" class:active={helpTab === 'params'} onclick={() => (helpTab = 'params')}>Params</button>
-					<button class="modal-tab" class:active={helpTab === 'keys'} onclick={() => (helpTab = 'keys')}>Keys</button>
+					<button class="modal-tab" class:active={helpTab === 'overview'} onclick={() => (helpTab = 'overview')}>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Overview
+					</button>
+					<button class="modal-tab" class:active={helpTab === 'visuals'} onclick={() => (helpTab = 'visuals')}>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2.5"/><circle cx="6" cy="18" r="2.5"/></svg>
+						Visuals
+					</button>
+					<button class="modal-tab" class:active={helpTab === 'z80'} onclick={() => (helpTab = 'z80')}>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+						Z80
+					</button>
+					<button class="modal-tab" class:active={helpTab === 'params'} onclick={() => (helpTab = 'params')}>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+						Params
+					</button>
+					<button class="modal-tab" class:active={helpTab === 'keys'} onclick={() => (helpTab = 'keys')}>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/><line x1="14" y1="12" x2="14.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+						Keys
+					</button>
+					<button class="modal-tab" class:active={helpTab === 'about'} onclick={() => (helpTab = 'about')}>
+						<svg width="14" height="14" viewBox="0 0 32 32"><ellipse cx="16" cy="20" rx="14" ry="14" fill="#c8875a"/><line x1="16" y1="8" x2="16" y2="32" stroke="#1a1210" stroke-width="1.5"/><circle cx="9" cy="16" r="2.5" fill="#1a1210"/><circle cx="10.5" cy="24" r="2.2" fill="#1a1210"/><circle cx="23" cy="16" r="2.5" fill="#1a1210"/><circle cx="21.5" cy="24" r="2.2" fill="#1a1210"/><circle cx="16" cy="7" r="7" fill="#1a1210"/><circle cx="12.8" cy="5.8" r="1.5" fill="#e0cfc0"/><circle cx="19.2" cy="5.8" r="1.5" fill="#e0cfc0"/><path d="M12 1.5 Q9 -2 5 0" fill="none" stroke="#1a1210" stroke-width="1.8" stroke-linecap="round"/><path d="M20 1.5 Q23 -2 27 0" fill="none" stroke="#1a1210" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="0" r="1.8" fill="#1a1210"/><circle cx="27" cy="0" r="1.8" fill="#1a1210"/></svg>
+						About
+					</button>
 				</div>
 				<button class="panel-close" aria-label="Close help" onclick={() => (showHelp = false)}>
 					<svg
@@ -892,16 +939,16 @@ graph TD
 						<!-- axis labels -->
 						<text x="170" y="168" text-anchor="middle" fill="#8a7a6a" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Time</text>
 						<text x="14" y="80" text-anchor="middle" fill="#8a7a6a" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" transform="rotate(-90,14,80)">Concentration</text>
-						<!-- NOP curve (white/gray, starts low, rises sharply to peak, then declines) -->
-						<path d="M 40,125 C 50,80 60,45 80,40 S 120,42 150,65 Q 200,105 300,122" fill="none" stroke="rgba(220,215,210,0.7)" stroke-width="2"/>
-						<text x="68" y="32" fill="rgba(220,215,210,0.8)" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">NOP</text>
+						<!-- NOP curve (white/gray, starts low, rises to moderate peak, then declines) -->
+						<path d="M 40,125 C 50,95 60,68 80,62 S 120,64 150,78 Q 200,108 300,122" fill="none" stroke="rgba(220,215,210,0.7)" stroke-width="2"/>
+						<text x="68" y="54" fill="rgba(220,215,210,0.8)" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">NOP</text>
 						<!-- Self-replicating curve (orange, stays low then rises smoothly) -->
 						<path d="M 40,130 C 100,130 150,120 186,88 C 220,58 260,42 300,42" fill="none" stroke="#c8875a" stroke-width="2"/>
 						<text x="195" y="36" fill="#c8875a" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Self-Replicating Bytes</text>
-						<!-- Phase transition dashed line at crossing (x≈186) -->
-						<line x1="186" y1="22" x2="186" y2="140" stroke="rgba(120,160,220,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+						<!-- Phase transition dashed line at crossing (x≈180) -->
+						<line x1="180" y1="22" x2="180" y2="140" stroke="rgba(120,160,220,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
 						<!-- Phase transition label -->
-						<text x="186" y="155" text-anchor="middle" fill="rgba(120,160,220,0.7)" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Phase Transition</text>
+						<text x="180" y="155" text-anchor="middle" fill="rgba(120,160,220,0.7)" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Phase Transition</text>
 					</svg>
 				{:else if helpTab === 'visuals'}
 					<p>Each cell is colored by its first byte. The colormap assigns distinct colors to Z80 opcode categories. Other bytes get a muted hue from a continuous sweep.</p>
@@ -993,7 +1040,12 @@ graph TD
 					<p class="cmap-note">All other bytes get a muted tone from a continuous hue sweep. Switch colormaps in Settings.</p>
 
 					<h4>Cell Tooltips</h4>
-					<p>Hover any cell to see a 4x4 grid of its 16 bytes with Z80 mnemonics. Operand bytes appear dimmed.</p>
+					<p>Hover any cell to see a 4x4 grid of its 16 bytes, disassembled as Z80 instructions.</p>
+					<ul class="help-list">
+						<li><strong>Opcode bytes</strong> show the instruction mnemonic (e.g. <code>NOP</code>, <code>POP HL</code>, <code>LD B,C</code>)</li>
+						<li><strong>Operand bytes</strong> show the raw hex value (e.g. <code>00</code>, <code>3F</code>) and appear dimmed &mdash; these are data consumed by the preceding instruction</li>
+					</ul>
+					<p>For example, byte 0x00 appears as <code>NOP</code> when executed as an instruction, but as <code>00</code> when it is an operand of a multi-byte instruction like <code>LD BC,nn</code>.</p>
 
 					<h4>Frequency Chart</h4>
 					<p>Tracks the top 10 most common bytes over time. Y-axis is concentration factor (fraction &times; 256). Value of 1.0 = uniform distribution.</p>
@@ -1125,7 +1177,7 @@ graph TD
 					<h4>Colormap</h4>
 					<p>
 						Choose between four visual themes: Default (warm opcode-aware), Ocean (cool
-						blues), Thermal (heat map), and Grayscale.
+						blues), and Thermal (heat map).
 					</p>
 				{:else if helpTab === 'keys'}
 					<div class="modal-shortcuts">
@@ -1138,6 +1190,28 @@ graph TD
 						<div class="shortcut"><kbd>Drag</kbd> Pan</div>
 						<div class="shortcut"><kbd>Dbl-click</kbd> Reset view</div>
 					</div>
+				{:else if helpTab === 'about'}
+					<p>
+						<strong>Algocell</strong> is a WebGPU-accelerated artificial life simulator
+						that runs Z80 machine code on a 200&times;200 grid of cells. Self-replicating
+						programs spontaneously emerge from random noise.
+					</p>
+					<p>
+						Based on the paper by
+						<a href="https://arxiv.org/abs/2406.19108" target="_blank" rel="noopener" class="help-link">Hartley &amp; Colton (2024)</a>
+						and the
+						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link">original implementation</a>
+						by Alexander Mordvintsev. This browser version uses WebGPU compute shaders
+						instead of Python/JAX, so it runs anywhere with no setup required.
+					</p>
+					<p>
+						Developed by <strong>Neo Mohsenvand</strong> with the help of
+						<a href="https://claude.ai" target="_blank" rel="noopener" class="help-link">Claude Code</a>.
+					</p>
+					<p class="cmap-note" style="margin-top: 12px;">
+						<a href="https://github.com/NeoVand/algocell" target="_blank" rel="noopener" class="help-link">GitHub</a>
+						&middot; SvelteKit &middot; TypeScript &middot; WebGPU &middot; Tailwind CSS
+					</p>
 				{/if}
 			</div>
 		</div>
@@ -1400,6 +1474,9 @@ graph TD
 		margin-bottom: 12px;
 	}
 	.panel-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
@@ -1427,8 +1504,7 @@ graph TD
 	.settings-panel {
 		top: 60px;
 		right: 12px;
-		width: auto;
-		min-width: 180px;
+		width: 229px;
 	}
 	.param {
 		margin-bottom: 14px;
@@ -1447,6 +1523,9 @@ graph TD
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		color: var(--text-subtle);
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 	}
 	.param-info-wrap {
 		position: relative;
@@ -1509,14 +1588,15 @@ graph TD
 	}
 	.seed-input {
 		flex: 1;
+		min-width: 0;
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
 		border-radius: 6px;
-		padding: 0 10px;
-		height: 30px;
-		font-size: 13px;
+		padding: 0 8px;
+		height: 26px;
+		font-size: 12px;
 		font-family: monospace;
-		color: var(--text-primary);
+		color: var(--accent);
 		outline: none;
 		transition: border-color 0.15s;
 		-moz-appearance: textfield;
@@ -1533,8 +1613,8 @@ graph TD
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 30px;
-		height: 30px;
+		width: 26px;
+		height: 26px;
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
 		border-radius: 6px;
@@ -1565,12 +1645,12 @@ graph TD
 	}
 	.slider::-webkit-slider-thumb {
 		-webkit-appearance: none;
-		width: 14px;
-		height: 14px;
+		width: 12px;
+		height: 12px;
 		border-radius: 50%;
 		background: var(--accent);
-		border: 2px solid rgba(255, 255, 255, 0.9);
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+		border: none;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 		cursor: pointer;
 		transition: transform 0.1s;
 	}
@@ -1578,12 +1658,12 @@ graph TD
 		transform: scale(1.15);
 	}
 	.slider::-moz-range-thumb {
-		width: 14px;
-		height: 14px;
+		width: 12px;
+		height: 12px;
 		border-radius: 50%;
 		background: var(--accent);
-		border: 2px solid rgba(255, 255, 255, 0.9);
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+		border: none;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 		cursor: pointer;
 	}
 	.slider::-moz-range-track {
@@ -1600,7 +1680,11 @@ graph TD
 	}
 	.cmap-btn {
 		flex: 1;
-		padding: 5px 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 3px;
+		padding: 5px 0 4px;
 		font-size: 10px;
 		font-family: monospace;
 		text-transform: capitalize;
@@ -1610,6 +1694,20 @@ graph TD
 		border-radius: 5px;
 		cursor: pointer;
 		transition: all 0.15s;
+	}
+	.cmap-preview {
+		width: 80%;
+		height: 4px;
+		border-radius: 2px;
+	}
+	.cmap-preview-rainbow {
+		background: linear-gradient(90deg, #1a0404, #c85a5a, #c8a05a, #5ac85a, #5a8ac8, #8a5ac8, #c85a8a);
+	}
+	.cmap-preview-ocean {
+		background: linear-gradient(90deg, #0a1218, #2a4a5a, #3a7a8a, #4a9aaa, #5ab0c0, #6ac0d0, #8ad0e0);
+	}
+	.cmap-preview-thermal {
+		background: linear-gradient(90deg, #000000, #4a0a2a, #8a1a1a, #c84a0a, #e88a2a, #f0c050, #f8f0c0);
 	}
 	.cmap-btn:hover {
 		background: var(--bg-hover);
@@ -1687,12 +1785,15 @@ graph TD
 	.modal-tab {
 		background: none;
 		border: none;
-		padding: 8px 12px;
-		font-size: 12px;
+		padding: 8px 10px;
+		font-size: 11px;
 		color: var(--text-muted);
 		cursor: pointer;
 		border-bottom: 2px solid transparent;
 		margin-bottom: -1px;
+		display: flex;
+		align-items: center;
+		gap: 4px;
 		transition: color 0.15s, border-color 0.15s;
 	}
 	.modal-tab:hover {

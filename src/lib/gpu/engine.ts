@@ -12,7 +12,7 @@ import {
 	Z80_STEPS
 } from '$lib/sim/constants';
 import { SplitMix64 } from '$lib/sim/prng';
-import { createDefaultColormap } from '$lib/colormap';
+import { createColormap } from '$lib/colormap';
 import { simShader, renderShader } from './shaders';
 
 interface SimParams {
@@ -75,6 +75,7 @@ export class GPUEngine {
 	private cpuRng: SplitMix64;
 	private _noiseExp = 4; // 1/2^4 = 1/16
 	private _pairCount = MAX_BATCH_PAIR_N;
+	private _z80Steps = Z80_STEPS;
 	private hoverCell = -1;
 	private showAverage = 0;
 	private colormap: Uint32Array;
@@ -87,7 +88,7 @@ export class GPUEngine {
 
 	constructor(private seed: number) {
 		this.cpuRng = new SplitMix64(seed);
-		this.colormap = createDefaultColormap();
+		this.colormap = createColormap('rainbow');
 	}
 
 	get noiseExp(): number {
@@ -102,6 +103,13 @@ export class GPUEngine {
 	}
 	set pairCount(v: number) {
 		this._pairCount = Math.min(v, MAX_BATCH_PAIR_N);
+	}
+
+	get z80Steps(): number {
+		return this._z80Steps;
+	}
+	set z80Steps(v: number) {
+		this._z80Steps = Math.max(16, Math.min(1024, v));
 	}
 
 	get batchCount(): number {
@@ -396,7 +404,7 @@ export class GPUEngine {
 			PAIR_LENGTH,
 			this._pairCount,
 			mutationCount,
-			Z80_STEPS,
+			this._z80Steps,
 			this.cpuRng.nextU32() // batch_seed - different each batch
 		]);
 		this.device.queue.writeBuffer(this.paramsBuffer, 0, paramsData);
@@ -456,7 +464,7 @@ export class GPUEngine {
 		if (this.lastStatsTime > 0) {
 			const dt = (now - this.lastStatsTime) / 1000;
 			if (dt > 0) {
-				const ops = this._pairCount * Z80_STEPS;
+				const ops = this._pairCount * this._z80Steps;
 				this.statsOpsAccum = this.statsOpsAccum * 0.9 + (ops / dt) * 0.1;
 				this.opsPerSec = this.statsOpsAccum;
 			}

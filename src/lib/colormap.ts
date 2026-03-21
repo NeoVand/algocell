@@ -179,52 +179,84 @@ export function createOceanColormap(): Uint32Array {
 	return cmap;
 }
 
-// Colormap: thermal - blacks to reds to yellows to white
+// Colormap: thermal - black → deep magenta → red → orange → yellow → white
 export function createThermalColormap(): Uint32Array {
 	const cmap = new Uint32Array(256);
+	// Base: true thermal gradient mapped by byte value
 	for (let i = 0; i < 256; i++) {
 		const t = i / 255;
-		const r = Math.min(1, t * 2.5);
-		const g = Math.max(0, Math.min(1, (t - 0.35) * 2.5));
-		const b = Math.max(0, Math.min(1, (t - 0.7) * 3.3));
-		cmap[i] = packRGBA(Math.round(r * 180 * 0.4), Math.round(g * 180 * 0.4), Math.round(b * 180 * 0.4), 255);
+		// Black → deep purple → red → orange → yellow
+		const h = 300 - t * 300; // 300(magenta) → 0(red) for low-mid, wraps to yellow
+		const hue = t < 0.5 ? 300 - t * 240 : 60 - (t - 0.5) * 120; // magenta→red→orange→yellow
+		const sat = 0.6 + t * 0.2;
+		const lit = 0.1 + t * 0.22;
+		cmap[i] = hsl(hue, sat, lit);
 	}
+
+	// NOP - pure black
 	cmap[0x00] = packRGBA(0, 0, 0, 255);
-	cmap[0x76] = packRGBA(20, 5, 5, 255);
-	cmap[0x01] = hsl(350, 0.8, 0.5);
-	cmap[0x11] = hsl(120, 0.7, 0.45);
-	cmap[0x21] = hsl(220, 0.8, 0.55);
-	cmap[0x31] = hsl(45, 0.85, 0.55);
-	cmap[0xed] = hsl(0, 0.9, 0.55);
-	cmap[0xb0] = hsl(5, 0.85, 0.5);
-	cmap[0xb8] = hsl(10, 0.8, 0.52);
-	cmap[0xa0] = hsl(355, 0.75, 0.48);
-	cmap[0xa8] = hsl(15, 0.7, 0.5);
-	cmap[0xc5] = hsl(290, 0.6, 0.55);
-	cmap[0xd5] = hsl(170, 0.55, 0.48);
-	cmap[0xe5] = hsl(30, 0.65, 0.55);
-	cmap[0xf5] = hsl(320, 0.5, 0.52);
-	cmap[0xc1] = hsl(285, 0.5, 0.48);
-	cmap[0xd1] = hsl(165, 0.45, 0.42);
-	cmap[0xe1] = hsl(25, 0.55, 0.48);
-	cmap[0xf1] = hsl(315, 0.4, 0.48);
-	cmap[0xc3] = hsl(35, 0.9, 0.55);
-	cmap[0xcd] = hsl(50, 0.9, 0.58);
-	cmap[0xc9] = hsl(40, 0.7, 0.5);
-	cmap[0x18] = hsl(28, 0.75, 0.48);
-	cmap[0x10] = hsl(20, 0.65, 0.45);
-	cmap[0xcb] = hsl(200, 0.7, 0.55);
-	cmap[0xe3] = hsl(55, 0.65, 0.55);
-	cmap[0xeb] = hsl(80, 0.5, 0.48);
+	// HALT - very dark
+	cmap[0x76] = packRGBA(15, 5, 10, 255);
+
+	// 16-bit immediate loads - hot bright colors
+	cmap[0x01] = hsl(50, 0.95, 0.6);   // LD BC,nn - bright yellow
+	cmap[0x11] = hsl(30, 0.9, 0.55);   // LD DE,nn - hot orange
+	cmap[0x21] = hsl(10, 0.9, 0.55);   // LD HL,nn - bright red
+	cmap[0x31] = hsl(60, 0.85, 0.65);  // LD SP,nn - pale yellow
+
+	// Memory loads - warm mid tones
+	cmap[0x2a] = hsl(25, 0.7, 0.5);
+	cmap[0x3a] = hsl(35, 0.65, 0.52);
+	cmap[0x22] = hsl(15, 0.65, 0.48);
+	cmap[0x32] = hsl(40, 0.6, 0.5);
+
+	// Block transfer - intense reds
+	cmap[0xed] = hsl(355, 0.9, 0.5);
+	cmap[0xb0] = hsl(0, 0.85, 0.52);
+	cmap[0xb8] = hsl(350, 0.8, 0.48);
+	cmap[0xa0] = hsl(345, 0.75, 0.45);
+	cmap[0xa8] = hsl(5, 0.7, 0.5);
+
+	// Push/Pop - warm oranges and deep reds
+	cmap[0xc5] = hsl(20, 0.7, 0.52);   // PUSH BC
+	cmap[0xd5] = hsl(35, 0.65, 0.5);   // PUSH DE
+	cmap[0xe5] = hsl(45, 0.75, 0.55);  // PUSH HL - gold
+	cmap[0xf5] = hsl(340, 0.6, 0.48);  // PUSH AF - deep rose
+	cmap[0xc1] = hsl(15, 0.6, 0.45);   // POP BC
+	cmap[0xd1] = hsl(30, 0.55, 0.42);  // POP DE
+	cmap[0xe1] = hsl(42, 0.65, 0.5);   // POP HL - amber
+	cmap[0xf1] = hsl(335, 0.5, 0.42);  // POP AF
+
+	// Jumps/Calls - brightest yellows/whites (hottest)
+	cmap[0xc3] = hsl(55, 0.95, 0.65);  // JP nn - bright yellow
+	cmap[0xcd] = hsl(48, 0.9, 0.62);   // CALL nn - gold
+	cmap[0xc9] = hsl(42, 0.8, 0.55);   // RET
+	cmap[0x18] = hsl(38, 0.75, 0.5);   // JR
+	cmap[0x10] = hsl(32, 0.7, 0.48);   // DJNZ
+
+	// CB prefix - deep magenta (cool end of thermal)
+	cmap[0xcb] = hsl(310, 0.7, 0.5);
+
+	// EX instructions - hot orange-yellow
+	cmap[0xe3] = hsl(40, 0.85, 0.58);  // EX (SP),HL
+	cmap[0xeb] = hsl(50, 0.7, 0.52);   // EX DE,HL
+	cmap[0x08] = hsl(35, 0.6, 0.48);   // EX AF,AF'
+
+	// DD/FD prefixes - deep warm tones
+	cmap[0xdd] = hsl(320, 0.55, 0.45);
+	cmap[0xfd] = hsl(290, 0.5, 0.42);
+
+	// 8-bit register loads - warm gradient (dark red → orange)
 	for (let y = 0; y < 8; y++) {
 		for (let z = 0; z < 8; z++) {
 			if (y === 6 && z === 6) continue;
-			cmap[0x40 + y * 8 + z] = hsl(15 + y * 5, 0.25 + z * 0.03, 0.25 + y * 0.02);
+			cmap[0x40 + y * 8 + z] = hsl(350 + y * 8, 0.35 + z * 0.04, 0.2 + y * 0.03);
 		}
 	}
+	// ALU group - deep magenta → red
 	for (let y = 0; y < 8; y++) {
 		for (let z = 0; z < 8; z++) {
-			cmap[0x80 + y * 8 + z] = hsl(0 + y * 6, 0.2 + z * 0.03, 0.23 + y * 0.02);
+			cmap[0x80 + y * 8 + z] = hsl(310 + y * 10, 0.3 + z * 0.04, 0.18 + y * 0.025);
 		}
 	}
 	return cmap;
@@ -283,15 +315,15 @@ export function createRainbowColormap(): Uint32Array {
 	return cmap;
 }
 
-export type ColormapName = 'default' | 'ocean' | 'thermal' | 'rainbow';
+export type ColormapName = 'rainbow' | 'ocean' | 'thermal';
 
-export const COLORMAP_NAMES: ColormapName[] = ['default', 'ocean', 'thermal', 'rainbow'];
+export const COLORMAP_NAMES: ColormapName[] = ['rainbow', 'ocean', 'thermal'];
 
 export function createColormap(name: ColormapName): Uint32Array {
 	switch (name) {
 		case 'ocean': return createOceanColormap();
 		case 'thermal': return createThermalColormap();
 		case 'rainbow': return createRainbowColormap();
-		default: return createDefaultColormap();
+		default: return createRainbowColormap();
 	}
 }
