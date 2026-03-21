@@ -366,11 +366,15 @@
 		engine.zoomAt(sx, sy, canvasW, canvasH, factor);
 	}
 
-	// --- Touch events for mobile pinch-zoom & pan ---
+	// --- Touch events for mobile pinch-zoom, pan & tap-to-inspect ---
 	let lastTouchDist = 0;
 	let lastTouchX = 0;
 	let lastTouchY = 0;
 	let touchPanning = false;
+	let touchStartX = 0;
+	let touchStartY = 0;
+	let touchMoved = false;
+	const TAP_THRESHOLD = 8; // pixels of movement allowed for a tap
 
 	function handleTouchStart(e: TouchEvent) {
 		if (!engine || !canvas) return;
@@ -383,15 +387,13 @@
 			lastTouchX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
 			lastTouchY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 			touchPanning = false;
+			touchMoved = true; // multi-touch is never a tap
 		} else if (e.touches.length === 1) {
-			// Pan start
+			// Pan start — also track for potential tap
 			touchPanning = true;
-			panStartX = e.touches[0].clientX;
-			panStartY = e.touches[0].clientY;
-			hoveredCell = -1;
-			cellData = null;
-			disasmLines = [];
-			engine.setHoverCell(-1);
+			touchMoved = false;
+			touchStartX = panStartX = e.touches[0].clientX;
+			touchStartY = panStartY = e.touches[0].clientY;
 		}
 	}
 
@@ -421,10 +423,25 @@
 			lastTouchDist = dist;
 			touchPanning = false;
 		} else if (e.touches.length === 1 && touchPanning) {
-			// Pan
 			const dx = e.touches[0].clientX - panStartX;
 			const dy = e.touches[0].clientY - panStartY;
-			engine.pan(dx, dy, rect.width, rect.height);
+			// Check if finger moved enough to count as pan (not tap)
+			const totalDx = e.touches[0].clientX - touchStartX;
+			const totalDy = e.touches[0].clientY - touchStartY;
+			if (Math.abs(totalDx) > TAP_THRESHOLD || Math.abs(totalDy) > TAP_THRESHOLD) {
+				touchMoved = true;
+			}
+			if (touchMoved) {
+				// Dismiss tooltip when panning starts
+				if (hoveredCell >= 0) {
+					hoveredCell = -1;
+					cellData = null;
+					disasmLines = [];
+					engine.setHoverCell(-1);
+					clearInterval(tooltipRefreshTimer);
+				}
+				engine.pan(dx, dy, rect.width, rect.height);
+			}
 			panStartX = e.touches[0].clientX;
 			panStartY = e.touches[0].clientY;
 		}
@@ -432,12 +449,39 @@
 
 	function handleTouchEnd(e: TouchEvent) {
 		if (e.touches.length === 0) {
+			// All fingers lifted — check for tap
+			if (!touchMoved && engine && canvas) {
+				const rect = canvas.getBoundingClientRect();
+				const sx = (touchStartX - rect.left) * (canvasW / rect.width);
+				const sy = (touchStartY - rect.top) * (canvasH / rect.height);
+				const cell = engine.screenToCell(sx, sy, canvasW, canvasH);
+
+				if (cell >= 0 && cell !== hoveredCell) {
+					// Tap on a cell — show tooltip
+					hoveredCell = cell;
+					mouseX = touchStartX;
+					mouseY = touchStartY;
+					engine.setHoverCell(cell);
+					clearInterval(tooltipRefreshTimer);
+					tooltipRefreshTimer = setInterval(() => refreshCellData(cell), 500);
+					refreshCellData(cell);
+				} else {
+					// Tap on same cell or empty space — dismiss tooltip
+					hoveredCell = -1;
+					cellData = null;
+					disasmLines = [];
+					engine.setHoverCell(-1);
+					clearInterval(tooltipRefreshTimer);
+				}
+			}
 			lastTouchDist = 0;
 			touchPanning = false;
+			touchMoved = false;
 		} else if (e.touches.length === 1) {
 			// Went from pinch to single finger — start pan
 			lastTouchDist = 0;
 			touchPanning = true;
+			touchMoved = true; // already moved (was pinching)
 			panStartX = e.touches[0].clientX;
 			panStartY = e.touches[0].clientY;
 		}
@@ -619,7 +663,11 @@
 </svelte:head>
 
 <!-- Full-screen canvas -->
-<div bind:this={canvasContainer} class="fixed inset-0">
+<div
+	bind:this={canvasContainer}
+	class="fixed inset-0"
+	style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none"
+>
 	{#if gpuError}
 		<div
 			class="absolute inset-0 z-50 flex items-center justify-center"
