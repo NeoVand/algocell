@@ -261,36 +261,25 @@ function formatRel(d: number): string {
 	return d >= 0 ? `+${d}` : `${d}`;
 }
 
+// Build a lookup table for all 256 single-byte mnemonics using the full disassembler.
+// We pass a 3-byte buffer (opcode + two zero operand bytes) so multi-byte instructions
+// decode cleanly, then strip specific address/immediate values for a generic label.
+const _mnemonicCache: string[] = (() => {
+	const table: string[] = [];
+	for (let b = 0; b < 256; b++) {
+		const buf = new Uint8Array([b, 0x00, 0x00]);
+		const lines = disassemble(buf, 0);
+		let m = lines[0]?.mnemonic ?? `DB ${hex8(b)}`;
+		// Strip specific immediate values to show generic form
+		m = m.replace(/\$[0-9A-F]{4}/g, 'nn');
+		m = m.replace(/\$[0-9A-F]{2}/g, 'n');
+		m = m.replace(/[+-]0/g, 'd');
+		table.push(m);
+	}
+	return table;
+})();
+
 // Get the mnemonic name for a single byte (used for byte frequency display)
 export function byteToMnemonic(byte: number): string {
-	const simple: Record<number, string> = {
-		0x00: 'NOP',
-		0x76: 'HALT',
-		0x01: 'LD BC,nn',
-		0x11: 'LD DE,nn',
-		0x21: 'LD HL,nn',
-		0x31: 'LD SP,nn',
-		0xc3: 'JP nn',
-		0xcd: 'CALL nn',
-		0xc9: 'RET',
-		0xed: 'ED prefix',
-		0xcb: 'CB prefix',
-		0xdd: 'DD prefix',
-		0xfd: 'FD prefix',
-		0xb0: 'LDIR*',
-		0xb8: 'LDDR*',
-		0xa0: 'LDI*',
-		0xa8: 'LDD*',
-		0xc5: 'PUSH BC',
-		0xd5: 'PUSH DE',
-		0xe5: 'PUSH HL',
-		0xf5: 'PUSH AF',
-		0xc1: 'POP BC',
-		0xd1: 'POP DE',
-		0xe1: 'POP HL',
-		0xf1: 'POP AF',
-		0x18: 'JR d',
-		0x10: 'DJNZ d'
-	};
-	return simple[byte] || '';
+	return _mnemonicCache[byte & 0xff] || '';
 }

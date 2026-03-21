@@ -230,37 +230,68 @@ export function createThermalColormap(): Uint32Array {
 	return cmap;
 }
 
-// Colormap: grayscale
-export function createGrayscaleColormap(): Uint32Array {
+// Colormap: rainbow - full spectrum cycle
+export function createRainbowColormap(): Uint32Array {
 	const cmap = new Uint32Array(256);
 	for (let i = 0; i < 256; i++) {
-		const v = 50 + Math.floor(i * 0.55);
-		cmap[i] = packRGBA(v, v, v, 255);
+		const hue = (i / 256) * 360;
+		cmap[i] = hsl(hue, 0.55, 0.38);
 	}
-	cmap[0x00] = packRGBA(0, 0, 0, 255);
-	cmap[0x76] = packRGBA(25, 25, 25, 255);
-	cmap[0x01] = packRGBA(255, 255, 255, 255);
-	cmap[0x11] = packRGBA(230, 230, 230, 255);
-	cmap[0x21] = packRGBA(210, 210, 210, 255);
-	cmap[0x31] = packRGBA(245, 245, 245, 255);
-	cmap[0xed] = packRGBA(200, 200, 200, 255);
-	cmap[0xe1] = packRGBA(190, 190, 190, 255);
-	cmap[0xe3] = packRGBA(180, 180, 180, 255);
-	cmap[0xc3] = packRGBA(170, 170, 170, 255);
-	cmap[0xcd] = packRGBA(160, 160, 160, 255);
-	cmap[0xc9] = packRGBA(150, 150, 150, 255);
+	cmap[0x00] = hsl(0, 0, 0.04);
+	cmap[0x76] = hsl(0, 0, 0.12);
+	// Key opcodes get brighter saturated versions of their hue position
+	cmap[0x01] = hsl(350, 0.85, 0.55);
+	cmap[0x11] = hsl(150, 0.8, 0.48);
+	cmap[0x21] = hsl(220, 0.85, 0.58);
+	cmap[0x31] = hsl(50, 0.85, 0.55);
+	cmap[0xed] = hsl(0, 0.85, 0.55);
+	cmap[0xb0] = hsl(5, 0.8, 0.52);
+	cmap[0xb8] = hsl(10, 0.75, 0.54);
+	cmap[0xa0] = hsl(355, 0.7, 0.5);
+	cmap[0xa8] = hsl(15, 0.65, 0.52);
+	cmap[0xc5] = hsl(280, 0.65, 0.55);
+	cmap[0xd5] = hsl(170, 0.6, 0.48);
+	cmap[0xe5] = hsl(35, 0.7, 0.55);
+	cmap[0xf5] = hsl(320, 0.55, 0.55);
+	cmap[0xc1] = hsl(275, 0.55, 0.48);
+	cmap[0xd1] = hsl(165, 0.5, 0.42);
+	cmap[0xe1] = hsl(30, 0.6, 0.5);
+	cmap[0xf1] = hsl(315, 0.45, 0.48);
+	cmap[0xc3] = hsl(35, 0.9, 0.55);
+	cmap[0xcd] = hsl(50, 0.85, 0.58);
+	cmap[0xc9] = hsl(40, 0.7, 0.5);
+	cmap[0x18] = hsl(28, 0.75, 0.5);
+	cmap[0x10] = hsl(20, 0.65, 0.45);
+	cmap[0xcb] = hsl(200, 0.8, 0.58);
+	cmap[0xe3] = hsl(60, 0.7, 0.55);
+	cmap[0xeb] = hsl(90, 0.55, 0.48);
+	cmap[0xdd] = hsl(190, 0.65, 0.52);
+	cmap[0xfd] = hsl(260, 0.55, 0.52);
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			if (y === 6 && z === 6) continue;
+			const op = 0x40 + y * 8 + z;
+			cmap[op] = hsl((op / 256) * 360, 0.35 + z * 0.03, 0.35 + y * 0.015);
+		}
+	}
+	for (let y = 0; y < 8; y++) {
+		for (let z = 0; z < 8; z++) {
+			const op = 0x80 + y * 8 + z;
+			cmap[op] = hsl((op / 256) * 360, 0.3 + z * 0.03, 0.33 + y * 0.015);
+		}
+	}
 	return cmap;
 }
 
-export type ColormapName = 'default' | 'ocean' | 'thermal' | 'grayscale';
+export type ColormapName = 'default' | 'ocean' | 'thermal' | 'rainbow';
 
-export const COLORMAP_NAMES: ColormapName[] = ['default', 'ocean', 'thermal', 'grayscale'];
+export const COLORMAP_NAMES: ColormapName[] = ['default', 'ocean', 'thermal', 'rainbow'];
 
 export function createColormap(name: ColormapName): Uint32Array {
 	switch (name) {
 		case 'ocean': return createOceanColormap();
 		case 'thermal': return createThermalColormap();
-		case 'grayscale': return createGrayscaleColormap();
+		case 'rainbow': return createRainbowColormap();
 		default: return createDefaultColormap();
 	}
 }

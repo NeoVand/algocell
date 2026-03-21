@@ -12,6 +12,7 @@
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
 	import { untrack } from 'svelte';
+	import Mermaid from '$lib/components/Mermaid.svelte';
 
 	let colormapName: ColormapName = $state('default');
 	let colormap = $state(createColormap('default'));
@@ -24,6 +25,7 @@
 	// Controls
 	let seed = $state(DEFAULT_SEED);
 	let noiseExp = $state(DEFAULT_NOISE_EXP);
+	let pairCount = $state(MAX_BATCH_PAIR_N);
 	let playing = $state(true);
 	let speed = $state(1);
 
@@ -32,6 +34,7 @@
 	let opsPerSec = $state(0);
 	let topBytes: { byte: number; count: number; mnemonic: string }[] = $state([]);
 	let showHelp = $state(false);
+	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys'>('overview');
 	let showSpeedMenu = $state(false);
 	let showSettings = $state(false);
 	let toolbarCollapsed = $state(false);
@@ -360,6 +363,7 @@
 	function handlePairCountChange(e: Event) {
 		const val = parseInt((e.target as HTMLInputElement).value);
 		if (!isNaN(val) && engine) {
+			pairCount = val;
 			engine.pairCount = val;
 		}
 	}
@@ -498,7 +502,7 @@
 	<canvas
 		bind:this={canvas}
 		class="block w-full h-full"
-		style="cursor:{isPanning ? 'grabbing' : 'grab'}"
+		style="cursor:{isPanning ? 'grabbing' : 'crosshair'}"
 		onmousemove={handleCanvasMouseMove}
 		onmouseleave={handleCanvasMouseLeave}
 		onmousedown={handleCanvasMouseDown}
@@ -646,8 +650,8 @@
 		</span>
 		<span class="info-sep"></span>
 		<span class="info-item">
-			<span class="info-label">zoom</span>
-			<span class="info-value">{zoomPercent}%</span>
+			<span class="info-label">mut</span>
+			<span class="info-value">1/2<sup>{noiseExp}</sup></span>
 		</span>
 		<button class="info-chart-toggle" onclick={() => (showInfoChart = !showInfoChart)} title="Toggle chart">
 			<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:{showInfoChart ? 1 : 0.4}">
@@ -765,14 +769,14 @@
 					<button class="param-info" onmouseenter={() => { openTip = 'pairs'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'pairs' ? null : 'pairs'; }}>?</button>
 					<span class="param-tip">Cell pairs evaluated per step. More = faster evolution, higher GPU load. Applied live.</span>
 				</span>
-				<span class="param-val">{engine?.pairCount ?? MAX_BATCH_PAIR_N}</span>
+				<span class="param-val">{pairCount}</span>
 			</div>
 			<div class="slider-track-wrap">
 				<input
 					id="pairs-input"
 					type="range"
 					class="slider"
-					value={engine?.pairCount ?? MAX_BATCH_PAIR_N}
+					value={pairCount}
 					min="256"
 					max={MAX_BATCH_PAIR_N}
 					step="256"
@@ -825,7 +829,13 @@
 	<div class="modal-backdrop" onclick={() => (showHelp = false)} role="presentation">
 		<div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
 			<div class="modal-header">
-				<span>About this experiment</span>
+				<div class="modal-tabs">
+					<button class="modal-tab" class:active={helpTab === 'overview'} onclick={() => (helpTab = 'overview')}>Overview</button>
+					<button class="modal-tab" class:active={helpTab === 'visuals'} onclick={() => (helpTab = 'visuals')}>Visuals</button>
+					<button class="modal-tab" class:active={helpTab === 'z80'} onclick={() => (helpTab = 'z80')}>Z80</button>
+					<button class="modal-tab" class:active={helpTab === 'params'} onclick={() => (helpTab = 'params')}>Params</button>
+					<button class="modal-tab" class:active={helpTab === 'keys'} onclick={() => (helpTab = 'keys')}>Keys</button>
+				</div>
 				<button class="panel-close" aria-label="Close help" onclick={() => (showHelp = false)}>
 					<svg
 						width="10"
@@ -839,36 +849,299 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<p>
-					A 200x200 grid of cells, each containing 16 random bytes interpreted as Z80 machine
-					code. Every simulation step, random pairs of adjacent cells are selected. The 32-byte
-					pair is executed as a Z80 program for 128 steps, then the result is written back.
-				</p>
-				<p>
-					With a small mutation rate (random byte flips), self-replicating programs spontaneously
-					emerge and compete for space -- a computational analogue to the origin of life.
-				</p>
-				<p>
-					Watch for the phase transition: initially all bytes are uniformly distributed (NOP
-					count is ~1/256 of total). When replicators emerge, certain byte patterns dominate and
-					the distribution becomes highly skewed.
-				</p>
-				<div class="modal-shortcuts">
-					<div class="shortcut"><kbd>Space</kbd> Play / Pause</div>
-					<div class="shortcut"><kbd>R</kbd> Reset</div>
-					<div class="shortcut"><kbd>S</kbd> Toggle chart</div>
-					<div class="shortcut"><kbd>H</kbd> Toggle help</div>
-					<div class="shortcut"><kbd>F</kbd> Fit view</div>
-					<div class="shortcut"><kbd>Scroll</kbd> Zoom</div>
-					<div class="shortcut"><kbd>Drag</kbd> Pan</div>
-					<div class="shortcut"><kbd>Dbl-click</kbd> Reset view</div>
-				</div>
+				{#if helpTab === 'overview'}
+					<p>
+						A 200&times;200 grid of cells, each containing 16 random bytes interpreted as Z80
+						machine code. Every step, random adjacent pairs are selected, executed, and
+						written back. Self-replicating programs spontaneously emerge.
+					</p>
+					<p class="cmap-note">
+						Based on <a href="https://arxiv.org/abs/2406.19108" target="_blank" rel="noopener" class="help-link">Hartley &amp; Colton (2024)</a>.
+						Re-implemented in WebGPU + SvelteKit from the
+						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link">original code</a>.
+					</p>
+
+					<!-- Simulation cycle diagram -->
+					<Mermaid chart={`
+graph TD
+    GRID("200×200 Grid\n40,000 cells · 16 bytes each") -->|"pick random pair"| PAIR("Cell A + Cell B\n32 bytes combined")
+    PAIR -->|"execute as Z80"| CPU("Z80 CPU · 128 steps")
+    CPU -->|"write back + mutate"| GRID
+`} />
+
+					<h4>The Phase Transition</h4>
+					<p>
+						Initially all 256 byte values are uniformly distributed (concentration &asymp; 1.0).
+						When self-replicators emerge, certain bytes dominate
+						(concentration &gg; 1) while others vanish. Watch the frequency chart to
+						see this happen in real time.
+					</p>
+					<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin:8px 0;display:block;border-radius:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.04);padding:12px 8px;">
+						<!-- axes -->
+						<line x1="40" y1="20" x2="40" y2="140" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+						<line x1="40" y1="140" x2="300" y2="140" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+						<!-- axis labels -->
+						<text x="170" y="168" text-anchor="middle" fill="#8a7a6a" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Time</text>
+						<text x="14" y="80" text-anchor="middle" fill="#8a7a6a" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" transform="rotate(-90,14,80)">Concentration</text>
+						<!-- NOP curve (white/gray, declining from ~65% to ~10%) -->
+						<path d="M 40,58 C 100,58 140,70 170,85 S 250,118 300,122" fill="none" stroke="rgba(220,215,210,0.7)" stroke-width="2"/>
+						<text x="58" y="46" fill="rgba(220,215,210,0.8)" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">NOP</text>
+						<!-- Self-replicating curve (orange, rising from ~10% to ~80%) -->
+						<path d="M 40,122 C 100,118 140,108 170,82 S 250,44 300,42" fill="none" stroke="#c8875a" stroke-width="2"/>
+						<text x="195" y="36" fill="#c8875a" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Self-Replicating Bytes</text>
+						<!-- Phase transition dashed line -->
+						<line x1="166" y1="22" x2="166" y2="140" stroke="rgba(120,160,220,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+						<!-- Phase transition label -->
+						<text x="166" y="155" text-anchor="middle" fill="rgba(120,160,220,0.7)" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Phase Transition</text>
+					</svg>
+				{:else if helpTab === 'visuals'}
+					<p>Each cell is colored by its first byte. The colormap assigns distinct colors to Z80 opcode categories. Other bytes get a muted hue from a continuous sweep.</p>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Special</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x00)}"></span><span class="cmap-hex">00</span> NOP</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x76)}"></span><span class="cmap-hex">76</span> HALT</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">16-bit loads</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x01)}"></span><span class="cmap-hex">01</span> LD BC,nn</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x11)}"></span><span class="cmap-hex">11</span> LD DE,nn</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x21)}"></span><span class="cmap-hex">21</span> LD HL,nn</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x31)}"></span><span class="cmap-hex">31</span> LD SP,nn</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Memory access</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x2A)}"></span><span class="cmap-hex">2A</span> LD HL,(nn)</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x3A)}"></span><span class="cmap-hex">3A</span> LD A,(nn)</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x22)}"></span><span class="cmap-hex">22</span> LD (nn),HL</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x32)}"></span><span class="cmap-hex">32</span> LD (nn),A</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Block transfer</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xED)}"></span><span class="cmap-hex">ED</span> ED prefix</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xB0)}"></span><span class="cmap-hex">B0</span> LDIR</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xB8)}"></span><span class="cmap-hex">B8</span> LDDR</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xA0)}"></span><span class="cmap-hex">A0</span> LDI</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xA8)}"></span><span class="cmap-hex">A8</span> LDD</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Stack</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xC5)}"></span><span class="cmap-hex">C5</span> PUSH BC</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xD5)}"></span><span class="cmap-hex">D5</span> PUSH DE</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xE5)}"></span><span class="cmap-hex">E5</span> PUSH HL</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xF5)}"></span><span class="cmap-hex">F5</span> PUSH AF</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xC1)}"></span><span class="cmap-hex">C1</span> POP BC</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xD1)}"></span><span class="cmap-hex">D1</span> POP DE</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xE1)}"></span><span class="cmap-hex">E1</span> POP HL</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xF1)}"></span><span class="cmap-hex">F1</span> POP AF</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Flow control</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xC3)}"></span><span class="cmap-hex">C3</span> JP nn</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xCD)}"></span><span class="cmap-hex">CD</span> CALL nn</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xC9)}"></span><span class="cmap-hex">C9</span> RET</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x18)}"></span><span class="cmap-hex">18</span> JR</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x10)}"></span><span class="cmap-hex">10</span> DJNZ</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Prefixes &amp; exchange</div>
+						<div class="cmap-grid">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xCB)}"></span><span class="cmap-hex">CB</span> Bit ops</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xDD)}"></span><span class="cmap-hex">DD</span> IX ops</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xFD)}"></span><span class="cmap-hex">FD</span> IY ops</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xE3)}"></span><span class="cmap-hex">E3</span> EX (SP),HL</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xEB)}"></span><span class="cmap-hex">EB</span> EX DE,HL</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x08)}"></span><span class="cmap-hex">08</span> EX AF,AF'</div>
+						</div>
+					</div>
+
+					<div class="cmap-section">
+						<div class="cmap-label">Ranges</div>
+						<div class="cmap-grid wide">
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0x60)}"></span><span class="cmap-hex">40-7F</span> Register LD</div>
+							<div class="cmap-entry"><span class="help-swatch" style="background:{byteColor(0xA0)}"></span><span class="cmap-hex">80-BF</span> ALU ops</div>
+						</div>
+					</div>
+
+					<p class="cmap-note">All other bytes get a muted tone from a continuous hue sweep. Switch colormaps in Settings.</p>
+
+					<h4>Cell Tooltips</h4>
+					<p>Hover any cell to see a 4x4 grid of its 16 bytes with Z80 mnemonics. Operand bytes appear dimmed.</p>
+
+					<h4>Frequency Chart</h4>
+					<p>Tracks the top 10 most common bytes over time. Y-axis is concentration factor (fraction &times; 256). Value of 1.0 = uniform distribution.</p>
+				{:else if helpTab === 'z80'}
+					<h4>Registers</h4>
+					<p>The Z80 has 8-bit and 16-bit registers used as operands:</p>
+					<div class="z80-reg-table">
+						<div class="z80-reg-row head"><span>Name</span><span>Size</span><span>Role</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">A</span><span>8-bit</span><span>Accumulator &mdash; main arithmetic register</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">F</span><span>8-bit</span><span>Flags (zero, carry, sign, parity)</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">B, C</span><span>8-bit</span><span>General purpose; B is loop counter for DJNZ</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">D, E</span><span>8-bit</span><span>General purpose; DE = destination for block ops</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">H, L</span><span>8-bit</span><span>General purpose; HL = primary memory pointer</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">SP</span><span>16-bit</span><span>Stack pointer</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">BC, DE, HL</span><span>16-bit</span><span>Register pairs (B+C, D+E, H+L)</span></div>
+						<div class="z80-reg-row"><span class="z80-reg">AF</span><span>16-bit</span><span>Accumulator + flags pair</span></div>
+					</div>
+
+					<h4>Notation</h4>
+					<div class="z80-notation-table">
+						<div class="z80-notation-row head"><span>Syntax</span><span>Meaning</span></div>
+						<div class="z80-notation-row"><span class="z80-reg">nn</span><span>16-bit immediate value (e.g. $1234)</span></div>
+						<div class="z80-notation-row"><span class="z80-reg">n</span><span>8-bit immediate value (e.g. $FF)</span></div>
+						<div class="z80-notation-row"><span class="z80-reg">d</span><span>Signed offset for relative jumps</span></div>
+						<div class="z80-notation-row"><span class="z80-reg">(HL)</span><span>Memory at address in HL</span></div>
+						<div class="z80-notation-row"><span class="z80-reg">(nn)</span><span>Memory at absolute address nn</span></div>
+						<div class="z80-notation-row"><span class="z80-reg">(SP)</span><span>Memory at top of stack</span></div>
+					</div>
+
+					<h4>Instruction Reference</h4>
+
+					<div class="z80-cat">
+						<div class="z80-cat-label">Data Movement</div>
+						<div class="z80-instr-grid">
+							<div class="z80-instr"><span class="z80-op">LD x,y</span> Copy y into x</div>
+							<div class="z80-instr"><span class="z80-op">PUSH rr</span> Push 16-bit pair onto stack</div>
+							<div class="z80-instr"><span class="z80-op">POP rr</span> Pop 16 bits from stack into pair</div>
+							<div class="z80-instr"><span class="z80-op">EX x,y</span> Exchange (swap) x and y</div>
+						</div>
+					</div>
+
+					<div class="z80-cat">
+						<div class="z80-cat-label">Arithmetic &amp; Logic</div>
+						<div class="z80-instr-grid">
+							<div class="z80-instr"><span class="z80-op">ADD A,x</span> A = A + x</div>
+							<div class="z80-instr"><span class="z80-op">ADC A,x</span> A = A + x + carry</div>
+							<div class="z80-instr"><span class="z80-op">SUB x</span> A = A &minus; x</div>
+							<div class="z80-instr"><span class="z80-op">SBC A,x</span> A = A &minus; x &minus; carry</div>
+							<div class="z80-instr"><span class="z80-op">AND x</span> A = A &amp; x</div>
+							<div class="z80-instr"><span class="z80-op">OR x</span> A = A | x</div>
+							<div class="z80-instr"><span class="z80-op">XOR x</span> A = A ^ x</div>
+							<div class="z80-instr"><span class="z80-op">CP x</span> Compare A with x (sets flags)</div>
+							<div class="z80-instr"><span class="z80-op">INC x</span> x = x + 1</div>
+							<div class="z80-instr"><span class="z80-op">DEC x</span> x = x &minus; 1</div>
+						</div>
+					</div>
+
+					<div class="z80-cat">
+						<div class="z80-cat-label">Flow Control</div>
+						<div class="z80-instr-grid">
+							<div class="z80-instr"><span class="z80-op">JP nn</span> Jump to address</div>
+							<div class="z80-instr"><span class="z80-op">JR d</span> Jump relative by offset d</div>
+							<div class="z80-instr"><span class="z80-op">DJNZ d</span> Decrement B, jump if B &ne; 0</div>
+							<div class="z80-instr"><span class="z80-op">CALL nn</span> Push PC, jump to address</div>
+							<div class="z80-instr"><span class="z80-op">RET</span> Pop PC (return from call)</div>
+							<div class="z80-instr"><span class="z80-op">NOP</span> No operation (do nothing)</div>
+							<div class="z80-instr"><span class="z80-op">HALT</span> Stop execution</div>
+						</div>
+					</div>
+
+					<div class="z80-cat">
+						<div class="z80-cat-label">Block Operations</div>
+						<div class="z80-instr-grid">
+							<div class="z80-instr"><span class="z80-op">LDI</span> Copy (HL)&rarr;(DE), inc both, dec BC</div>
+							<div class="z80-instr"><span class="z80-op">LDD</span> Copy (HL)&rarr;(DE), dec both, dec BC</div>
+							<div class="z80-instr"><span class="z80-op">LDIR</span> LDI repeated until BC = 0</div>
+							<div class="z80-instr"><span class="z80-op">LDDR</span> LDD repeated until BC = 0</div>
+						</div>
+					</div>
+
+					<div class="z80-cat">
+						<div class="z80-cat-label">Bit &amp; Rotate</div>
+						<div class="z80-instr-grid">
+							<div class="z80-instr"><span class="z80-op">BIT n,x</span> Test bit n of x</div>
+							<div class="z80-instr"><span class="z80-op">SET n,x</span> Set bit n of x</div>
+							<div class="z80-instr"><span class="z80-op">RES n,x</span> Reset bit n of x</div>
+							<div class="z80-instr"><span class="z80-op">RL x</span> Rotate left through carry</div>
+							<div class="z80-instr"><span class="z80-op">RR x</span> Rotate right through carry</div>
+							<div class="z80-instr"><span class="z80-op">SLA x</span> Shift left arithmetic</div>
+							<div class="z80-instr"><span class="z80-op">SRL x</span> Shift right logical</div>
+						</div>
+					</div>
+
+					<h4>Why POP HL &amp; EX (SP),HL Win</h4>
+					<p>
+						<span class="z80-op">POP HL</span> reads 2 bytes from memory via the stack
+						pointer. <span class="z80-op">EX (SP),HL</span> writes them forward to the
+						next position. Repeating this copies the cell's own bytes into its neighbor
+						&mdash; a minimal self-replicating loop. Once one cell contains this pattern,
+						it spreads exponentially.
+					</p>
+
+					<Mermaid chart={`
+graph TD
+    A("POP HL\nread 2 bytes from memory") -->|"HL now holds data"| B("EX (SP),HL\nwrite 2 bytes forward")
+    B -->|"repeat"| A
+`} />
+				{:else if helpTab === 'params'}
+					<h4>Seed</h4>
+					<p>
+						The random seed used to initialize the grid. Same seed produces the same
+						starting state. Change it and press Reset to try different initial conditions.
+					</p>
+
+					<h4>Mutation Rate</h4>
+					<p>
+						Controls the probability of random byte flips after each execution step.
+						Higher slider values mean more mutations. Too low and replicators can't
+						emerge; too high and they can't survive. Sweet spot is usually 3&ndash;5.
+					</p>
+
+					<h4>Pairs / Batch</h4>
+					<p>
+						How many cell pairs are selected and executed each simulation step. Higher
+						values speed up evolution but use more GPU time. At 5000, roughly 10,000 of
+						the 40,000 cells are updated per step.
+					</p>
+
+					<h4>Colormap</h4>
+					<p>
+						Choose between four visual themes: Default (warm opcode-aware), Ocean (cool
+						blues), Thermal (heat map), and Grayscale.
+					</p>
+				{:else if helpTab === 'keys'}
+					<div class="modal-shortcuts">
+						<div class="shortcut"><kbd>Space</kbd> Play / Pause</div>
+						<div class="shortcut"><kbd>R</kbd> Reset</div>
+						<div class="shortcut"><kbd>S</kbd> Toggle chart</div>
+						<div class="shortcut"><kbd>H</kbd> Toggle help</div>
+						<div class="shortcut"><kbd>F</kbd> Fit view</div>
+						<div class="shortcut"><kbd>Scroll</kbd> Zoom</div>
+						<div class="shortcut"><kbd>Drag</kbd> Pan</div>
+						<div class="shortcut"><kbd>Dbl-click</kbd> Reset view</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
 {/if}
 
 <style>
+	/* Remove focus outlines on all buttons */
+	button:focus,
+	button:focus-visible {
+		outline: none;
+	}
+
 	/* ── Toolbar ── */
 	.toolbar {
 		position: fixed;
@@ -991,14 +1264,14 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0;
-		padding: 8px 12px;
+		padding: 8px;
 		background: var(--bg-panel);
 		border: 1px solid var(--border-subtle);
 		border-radius: 10px;
 		backdrop-filter: blur(12px);
-		font-size: 13px;
+		font-size: 11px;
 		font-family: monospace;
-		min-width: 260px;
+		width: 252px;
 	}
 	.info-row {
 		display: flex;
@@ -1054,8 +1327,8 @@
 	}
 	.freq-grid {
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
-		gap: 2px;
+		grid-template-columns: repeat(5, 44px);
+		gap: 4px;
 		margin-top: 6px;
 	}
 	.freq-cell {
@@ -1063,15 +1336,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		aspect-ratio: 1;
+		width: 44px;
+		height: 44px;
 		border: none;
+		border-radius: 6px;
 		cursor: pointer;
 		font-size: 8.5px;
 		font-family: monospace;
 		font-weight: 600;
 		text-align: center;
 		line-height: 1.15;
-		padding: 3px;
+		padding: 2px;
 		overflow: hidden;
 		transition: opacity 0.1s;
 	}
@@ -1143,7 +1418,8 @@
 	.settings-panel {
 		top: 60px;
 		right: 12px;
-		width: 260px;
+		width: auto;
+		min-width: 180px;
 	}
 	.param {
 		margin-bottom: 14px;
@@ -1227,7 +1503,8 @@
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
 		border-radius: 6px;
-		padding: 6px 10px;
+		padding: 0 10px;
+		height: 30px;
 		font-size: 13px;
 		font-family: monospace;
 		color: var(--text-primary);
@@ -1241,7 +1518,7 @@
 		margin: 0;
 	}
 	.seed-input:focus {
-		border-color: var(--accent);
+		border-color: var(--border-muted);
 	}
 	.seed-apply {
 		display: flex;
@@ -1377,8 +1654,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(0, 0, 0, 0.6);
-		backdrop-filter: blur(4px);
+		background: rgba(0, 0, 0, 0.4);
 	}
 	.modal {
 		background: var(--bg-elevated);
@@ -1392,21 +1668,173 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 14px 16px;
+		padding: 6px 10px 0 10px;
 		border-bottom: 1px solid var(--border-subtle);
-		font-size: 14px;
-		font-weight: 600;
-		color: var(--text-primary);
+	}
+	.modal-tabs {
+		display: flex;
+		gap: 0;
+	}
+	.modal-tab {
+		background: none;
+		border: none;
+		padding: 8px 12px;
+		font-size: 12px;
+		color: var(--text-muted);
+		cursor: pointer;
+		border-bottom: 2px solid transparent;
+		margin-bottom: -1px;
+		transition: color 0.15s, border-color 0.15s;
+	}
+	.modal-tab:hover {
+		color: var(--text-secondary);
+	}
+	.modal-tab.active {
+		color: var(--accent);
+		border-bottom-color: var(--accent);
 	}
 	.modal-body {
 		padding: 16px;
 		font-size: 13px;
 		line-height: 1.6;
 		color: var(--text-muted);
+		max-height: 65vh;
+		overflow-y: auto;
+	}
+	.modal-body h4 {
+		color: var(--text-secondary);
+		font-size: 13px;
+		font-weight: 600;
+		margin: 14px 0 4px;
+	}
+	.modal-body h4:first-of-type {
+		margin-top: 2px;
 	}
 	.modal-body p {
 		margin-bottom: 10px;
 	}
+	.cmap-section {
+		margin-bottom: 10px;
+	}
+	.cmap-label {
+		font-size: 10px;
+		font-weight: 600;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		margin-bottom: 4px;
+	}
+	.cmap-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 1px 8px;
+	}
+	.cmap-entry {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		font-size: 11px;
+		line-height: 1.8;
+	}
+	.help-swatch {
+		width: 12px;
+		height: 12px;
+		border-radius: 2px;
+		flex-shrink: 0;
+		border: 1px solid rgba(255,255,255,0.08);
+	}
+	.cmap-hex {
+		font-family: monospace;
+		font-size: 10px;
+		color: var(--text-subtle);
+		min-width: 22px;
+	}
+	.cmap-note {
+		font-size: 11px;
+		color: var(--text-subtle);
+		margin: 8px 0 12px;
+	}
+	.help-link {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.help-link:hover {
+		text-decoration: underline;
+	}
+	/* ── Z80 reference tab ── */
+	.z80-reg-table {
+		margin-bottom: 10px;
+	}
+	.z80-reg-row {
+		display: grid;
+		grid-template-columns: 80px 48px 1fr;
+		gap: 6px;
+		font-size: 11px;
+		line-height: 1.9;
+		color: var(--text-muted);
+		border-bottom: 1px solid rgba(255,255,255,0.03);
+	}
+	.z80-reg-row.head {
+		font-weight: 600;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+		font-size: 10px;
+		letter-spacing: 0.5px;
+		border-bottom: 1px solid var(--border-subtle);
+	}
+	.z80-reg {
+		font-family: monospace;
+		color: var(--accent);
+		font-weight: 600;
+	}
+	.z80-notation-table {
+		margin-bottom: 10px;
+	}
+	.z80-notation-row {
+		display: grid;
+		grid-template-columns: 56px 1fr;
+		gap: 8px;
+		font-size: 11px;
+		line-height: 1.9;
+		color: var(--text-muted);
+		border-bottom: 1px solid rgba(255,255,255,0.03);
+	}
+	.z80-notation-row.head {
+		font-weight: 600;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+		font-size: 10px;
+		letter-spacing: 0.5px;
+		border-bottom: 1px solid var(--border-subtle);
+	}
+	.z80-cat {
+		margin-bottom: 10px;
+	}
+	.z80-cat-label {
+		font-size: 10px;
+		font-weight: 600;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		margin-bottom: 3px;
+	}
+	.z80-instr-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1px 12px;
+	}
+	.z80-instr {
+		font-size: 11px;
+		line-height: 1.8;
+		color: var(--text-muted);
+	}
+	.z80-op {
+		font-family: monospace;
+		color: var(--accent);
+		font-weight: 600;
+		font-size: 11px;
+	}
+
 	.modal-shortcuts {
 		margin-top: 14px;
 		display: grid;
