@@ -136,7 +136,7 @@ export function unpackRGBA(packed: number): [number, number, number, number] {
 export function createOceanColormap(): Uint32Array {
 	const cmap = new Uint32Array(256);
 	for (let i = 0; i < 256; i++) {
-		cmap[i] = hsl(200 + (i * 0.3), 0.2, 0.22 + (i / 256) * 0.08);
+		cmap[i] = hsl(200 + i * 0.3, 0.2, 0.22 + (i / 256) * 0.08);
 	}
 	cmap[0x00] = hsl(210, 0.1, 0.05);
 	cmap[0x76] = hsl(210, 0.1, 0.12);
@@ -186,7 +186,6 @@ export function createThermalColormap(): Uint32Array {
 	for (let i = 0; i < 256; i++) {
 		const t = i / 255;
 		// Black → deep purple → red → orange → yellow
-		const h = 300 - t * 300; // 300(magenta) → 0(red) for low-mid, wraps to yellow
 		const hue = t < 0.5 ? 300 - t * 240 : 60 - (t - 0.5) * 120; // magenta→red→orange→yellow
 		const sat = 0.6 + t * 0.2;
 		const lit = 0.1 + t * 0.22;
@@ -199,10 +198,10 @@ export function createThermalColormap(): Uint32Array {
 	cmap[0x76] = packRGBA(15, 5, 10, 255);
 
 	// 16-bit immediate loads - hot bright colors
-	cmap[0x01] = hsl(50, 0.95, 0.6);   // LD BC,nn - bright yellow
-	cmap[0x11] = hsl(30, 0.9, 0.55);   // LD DE,nn - hot orange
-	cmap[0x21] = hsl(10, 0.9, 0.55);   // LD HL,nn - bright red
-	cmap[0x31] = hsl(60, 0.85, 0.65);  // LD SP,nn - pale yellow
+	cmap[0x01] = hsl(50, 0.95, 0.6); // LD BC,nn - bright yellow
+	cmap[0x11] = hsl(30, 0.9, 0.55); // LD DE,nn - hot orange
+	cmap[0x21] = hsl(10, 0.9, 0.55); // LD HL,nn - bright red
+	cmap[0x31] = hsl(60, 0.85, 0.65); // LD SP,nn - pale yellow
 
 	// Memory loads - warm mid tones
 	cmap[0x2a] = hsl(25, 0.7, 0.5);
@@ -218,29 +217,29 @@ export function createThermalColormap(): Uint32Array {
 	cmap[0xa8] = hsl(5, 0.7, 0.5);
 
 	// Push/Pop - warm oranges and deep reds
-	cmap[0xc5] = hsl(20, 0.7, 0.52);   // PUSH BC
-	cmap[0xd5] = hsl(35, 0.65, 0.5);   // PUSH DE
-	cmap[0xe5] = hsl(45, 0.75, 0.55);  // PUSH HL - gold
-	cmap[0xf5] = hsl(340, 0.6, 0.48);  // PUSH AF - deep rose
-	cmap[0xc1] = hsl(15, 0.6, 0.45);   // POP BC
-	cmap[0xd1] = hsl(30, 0.55, 0.42);  // POP DE
-	cmap[0xe1] = hsl(42, 0.65, 0.5);   // POP HL - amber
-	cmap[0xf1] = hsl(335, 0.5, 0.42);  // POP AF
+	cmap[0xc5] = hsl(20, 0.7, 0.52); // PUSH BC
+	cmap[0xd5] = hsl(35, 0.65, 0.5); // PUSH DE
+	cmap[0xe5] = hsl(45, 0.75, 0.55); // PUSH HL - gold
+	cmap[0xf5] = hsl(340, 0.6, 0.48); // PUSH AF - deep rose
+	cmap[0xc1] = hsl(15, 0.6, 0.45); // POP BC
+	cmap[0xd1] = hsl(30, 0.55, 0.42); // POP DE
+	cmap[0xe1] = hsl(42, 0.65, 0.5); // POP HL - amber
+	cmap[0xf1] = hsl(335, 0.5, 0.42); // POP AF
 
 	// Jumps/Calls - brightest yellows/whites (hottest)
-	cmap[0xc3] = hsl(55, 0.95, 0.65);  // JP nn - bright yellow
-	cmap[0xcd] = hsl(48, 0.9, 0.62);   // CALL nn - gold
-	cmap[0xc9] = hsl(42, 0.8, 0.55);   // RET
-	cmap[0x18] = hsl(38, 0.75, 0.5);   // JR
-	cmap[0x10] = hsl(32, 0.7, 0.48);   // DJNZ
+	cmap[0xc3] = hsl(55, 0.95, 0.65); // JP nn - bright yellow
+	cmap[0xcd] = hsl(48, 0.9, 0.62); // CALL nn - gold
+	cmap[0xc9] = hsl(42, 0.8, 0.55); // RET
+	cmap[0x18] = hsl(38, 0.75, 0.5); // JR
+	cmap[0x10] = hsl(32, 0.7, 0.48); // DJNZ
 
 	// CB prefix - deep magenta (cool end of thermal)
 	cmap[0xcb] = hsl(310, 0.7, 0.5);
 
 	// EX instructions - hot orange-yellow
-	cmap[0xe3] = hsl(40, 0.85, 0.58);  // EX (SP),HL
-	cmap[0xeb] = hsl(50, 0.7, 0.52);   // EX DE,HL
-	cmap[0x08] = hsl(35, 0.6, 0.48);   // EX AF,AF'
+	cmap[0xe3] = hsl(40, 0.85, 0.58); // EX (SP),HL
+	cmap[0xeb] = hsl(50, 0.7, 0.52); // EX DE,HL
+	cmap[0x08] = hsl(35, 0.6, 0.48); // EX AF,AF'
 
 	// DD/FD prefixes - deep warm tones
 	cmap[0xdd] = hsl(320, 0.55, 0.45);
@@ -321,9 +320,13 @@ export const COLORMAP_NAMES: ColormapName[] = ['rainbow', 'ocean', 'thermal'];
 
 export function createColormap(name: ColormapName): Uint32Array {
 	switch (name) {
-		case 'ocean': return createOceanColormap();
-		case 'thermal': return createThermalColormap();
-		case 'rainbow': return createRainbowColormap();
-		default: return createRainbowColormap();
+		case 'ocean':
+			return createOceanColormap();
+		case 'thermal':
+			return createThermalColormap();
+		case 'rainbow':
+			return createRainbowColormap();
+		default:
+			return createRainbowColormap();
 	}
 }

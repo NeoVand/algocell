@@ -36,22 +36,24 @@ Based on [Hartley & Colton (2024)](https://arxiv.org/abs/2406.19108) and the [or
 ## Grid Topologies
 
 ### Square Grid
+
 The classic mode. Each cell is a 4×4 block of bytes (16 bytes). Cells interact with their 4 cardinal neighbors (up, down, left, right).
 
 ### Hexagonal Grid
+
 Each cell holds 19 bytes arranged in a 3-4-5-4-3 hexagonal pattern. Cells interact with 6 neighbors, creating more organic-looking emergent structures. The hex topology uses odd-r offset coordinates — odd rows are shifted right, producing a natural honeycomb layout with rectangular grid boundaries.
 
 ## Controls
 
-| Key | Action |
-|---|---|
-| **Space** | Play / Pause |
-| **R** | Reset simulation |
-| **H** | Help / Guide |
-| **1-8** | Set speed multiplier |
-| **Scroll** | Zoom in/out |
-| **Click + Drag** | Pan |
-| **Hover** | Inspect cell (Z80 disassembly tooltip) |
+| Key              | Action                                 |
+| ---------------- | -------------------------------------- |
+| **Space**        | Play / Pause                           |
+| **R**            | Reset simulation                       |
+| **H**            | Help / Guide                           |
+| **1-8**          | Set speed multiplier                   |
+| **Scroll**       | Zoom in/out                            |
+| **Click + Drag** | Pan                                    |
+| **Hover**        | Inspect cell (Z80 disassembly tooltip) |
 
 ## Parameters
 
@@ -84,6 +86,6 @@ Outputs a static site (via `@sveltejs/adapter-static`) that can be deployed anyw
 
 ## Credits
 
-- Paper: *"Self-Replicating Programs in a Z80 Virtual Machine"* — Hartley & Colton (2024) ([arXiv:2406.19108](https://arxiv.org/abs/2406.19108))
+- Paper: _"Self-Replicating Programs in a Z80 Virtual Machine"_ — Hartley & Colton (2024) ([arXiv:2406.19108](https://arxiv.org/abs/2406.19108))
 - Original implementation: [znah/zff](https://github.com/znah/zff) by Alexander Mordvintsev
 - Developed by [Neo Mohsenvand](https://github.com/NeoVand) with the help of [Claude Code](https://claude.ai)

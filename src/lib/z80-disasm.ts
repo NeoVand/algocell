@@ -177,7 +177,7 @@ export function disassemble(data: Uint8Array, startOffset: number = 0): DisasmLi
 						// ED prefix
 						if (pos < data.length) {
 							const ed = data[pos++];
-							mnemonic = disasmED(ed, data, pos);
+							mnemonic = disasmED(ed);
 							pos += edExtraBytes(ed);
 						} else {
 							mnemonic = 'ED ??';
@@ -211,7 +211,7 @@ export function disassemble(data: Uint8Array, startOffset: number = 0): DisasmLi
 	return lines;
 }
 
-function disasmED(op: number, _data: Uint8Array, _pos: number): string {
+function disasmED(op: number): string {
 	const edMap: Record<number, string> = {
 		0xa0: 'LDI',
 		0xa8: 'LDD',

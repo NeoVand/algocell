@@ -514,8 +514,7 @@ export class Z80 {
 				break;
 			case 2: // RLA
 				this.a = ((a << 1) | c) & 0xff;
-				this.f =
-					(this.f & (Z80.SF | Z80.ZF | Z80.PF)) | (a >> 7) | (this.a & (Z80.F3 | Z80.F5));
+				this.f = (this.f & (Z80.SF | Z80.ZF | Z80.PF)) | (a >> 7) | (this.a & (Z80.F3 | Z80.F5));
 				break;
 			case 3: // RRA
 				this.a = ((a >> 1) | (c << 7)) & 0xff;
@@ -545,7 +544,11 @@ export class Z80 {
 			}
 			case 5: // CPL
 				this.a = ~a & 0xff;
-				this.f = (this.f & (Z80.SF | Z80.ZF | Z80.PF | Z80.CF)) | Z80.HF | Z80.NF | (this.a & (Z80.F3 | Z80.F5));
+				this.f =
+					(this.f & (Z80.SF | Z80.ZF | Z80.PF | Z80.CF)) |
+					Z80.HF |
+					Z80.NF |
+					(this.a & (Z80.F3 | Z80.F5));
 				break;
 			case 6: // SCF
 				this.f = (this.f & (Z80.SF | Z80.ZF | Z80.PF)) | Z80.CF | (this.a & (Z80.F3 | Z80.F5));
@@ -738,8 +741,7 @@ export class Z80 {
 				return result;
 			case 1: // RRC
 				result = ((val >> 1) | (val << 7)) & 0xff;
-				this.f =
-					this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
+				this.f = this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
 				return result;
 			case 2: // RL
 				result = ((val << 1) | c) & 0xff;
@@ -747,8 +749,7 @@ export class Z80 {
 				return result;
 			case 3: // RR
 				result = ((val >> 1) | (c << 7)) & 0xff;
-				this.f =
-					this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
+				this.f = this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
 				return result;
 			case 4: // SLA
 				result = (val << 1) & 0xff;
@@ -756,8 +757,7 @@ export class Z80 {
 				return result;
 			case 5: // SRA
 				result = ((val >> 1) | (val & 0x80)) & 0xff;
-				this.f =
-					this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
+				this.f = this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
 				return result;
 			case 6: // SLL (undocumented, sets bit 0)
 				result = ((val << 1) | 1) & 0xff;
@@ -765,8 +765,7 @@ export class Z80 {
 				return result;
 			case 7: // SRL
 				result = (val >> 1) & 0xff;
-				this.f =
-					this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
+				this.f = this.szFlags(result) | (val & 1) | (this.parity(result) ? Z80.PF : 0);
 				return result;
 			default:
 				return val;
@@ -843,17 +842,11 @@ export class Z80 {
 				break;
 			case 0x57:
 				this.a = this.i;
-				this.f =
-					(this.f & Z80.CF) |
-					this.szFlags(this.a) |
-					(this.iff2 ? Z80.PF : 0);
+				this.f = (this.f & Z80.CF) | this.szFlags(this.a) | (this.iff2 ? Z80.PF : 0);
 				break;
 			case 0x5f:
 				this.a = this.r;
-				this.f =
-					(this.f & Z80.CF) |
-					this.szFlags(this.a) |
-					(this.iff2 ? Z80.PF : 0);
+				this.f = (this.f & Z80.CF) | this.szFlags(this.a) | (this.iff2 ? Z80.PF : 0);
 				break;
 
 			// 16-bit load from/to memory
@@ -964,8 +957,7 @@ export class Z80 {
 				const m = this.readByte(this.hl);
 				this.writeByte(this.hl, ((this.a << 4) | (m >> 4)) & 0xff);
 				this.a = (this.a & 0xf0) | (m & 0x0f);
-				this.f =
-					(this.f & Z80.CF) | this.szFlags(this.a) | (this.parity(this.a) ? Z80.PF : 0);
+				this.f = (this.f & Z80.CF) | this.szFlags(this.a) | (this.parity(this.a) ? Z80.PF : 0);
 				break;
 			}
 			case 0x6f: {
@@ -973,8 +965,7 @@ export class Z80 {
 				const m = this.readByte(this.hl);
 				this.writeByte(this.hl, ((m << 4) | (this.a & 0x0f)) & 0xff);
 				this.a = (this.a & 0xf0) | (m >> 4);
-				this.f =
-					(this.f & Z80.CF) | this.szFlags(this.a) | (this.parity(this.a) ? Z80.PF : 0);
+				this.f = (this.f & Z80.CF) | this.szFlags(this.a) | (this.parity(this.a) ? Z80.PF : 0);
 				break;
 			}
 

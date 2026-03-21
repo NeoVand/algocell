@@ -5,12 +5,16 @@ import { Z80_STEPS, getTapeLength, getPairLength, type GridType } from './consta
 import { Z80 } from './z80';
 
 // Get a neighbor index for CPU-side trace (picks first neighbor: right for square, appropriate for hex)
-function getNeighborIndex(cellIndex: number, width: number, height: number, gridType: GridType): number {
+function getNeighborIndex(
+	cellIndex: number,
+	width: number,
+	height: number,
+	gridType: GridType
+): number {
 	const x = cellIndex % width;
 	const y = Math.floor(cellIndex / width);
 
 	if (gridType === 'hex') {
-		const isOddRow = (y & 1) !== 0;
 		// Pick the right neighbor for hex (same row, x+1)
 		const nx = Math.min(x + 1, width - 1);
 		return y * width + nx;
@@ -23,7 +27,13 @@ function getNeighborIndex(cellIndex: number, width: number, height: number, grid
 
 // Run Z80 trace on a specific cell for visualization
 // Returns a pairLength x Z80_STEPS RGBA image (reads=green, writes=red)
-export function traceCell(soupData: Uint8Array, cellIndex: number, width: number = 200, height: number = 200, gridType: GridType = 'square'): Uint8Array {
+export function traceCell(
+	soupData: Uint8Array,
+	cellIndex: number,
+	width: number = 200,
+	height: number = 200,
+	gridType: GridType = 'square'
+): Uint8Array {
 	const tapeLength = getTapeLength(gridType);
 	const pairLength = getPairLength(gridType);
 	const wordsPerCell = Math.ceil(tapeLength / 4);
@@ -68,7 +78,11 @@ export function traceCell(soupData: Uint8Array, cellIndex: number, width: number
 	return traceImage;
 }
 
-export function getCellData(soupData: Uint8Array, cellIndex: number, gridType: GridType = 'square'): Uint8Array {
+export function getCellData(
+	soupData: Uint8Array,
+	cellIndex: number,
+	gridType: GridType = 'square'
+): Uint8Array {
 	const tapeLength = getTapeLength(gridType);
 	const wordsPerCell = Math.ceil(tapeLength / 4);
 	const byteOffset = cellIndex * wordsPerCell * 4;

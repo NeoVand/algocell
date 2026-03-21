@@ -42,11 +42,11 @@
 				padding: 10,
 				nodeSpacing: 30,
 				rankSpacing: 35,
-				defaultRenderer: 'dagre'
+				defaultRenderer: 'dagre-wrapper'
 			}
 		});
 		const { svg } = await mermaid.render(id, chart.trim());
-		container.innerHTML = svg;
+		container.innerHTML = svg; // eslint-disable-line svelte/no-dom-manipulating -- Mermaid requires direct DOM injection
 	});
 </script>
 

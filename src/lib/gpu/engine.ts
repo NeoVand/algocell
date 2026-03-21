@@ -16,17 +16,6 @@ import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
 import { createSimShader, createRenderShader } from './shaders';
 
-interface SimParams {
-	soup_width: number;
-	soup_height: number;
-	tape_length: number;
-	pair_length: number;
-	pair_count: number;
-	mutation_count: number;
-	z80_steps: number;
-	batch_seed: number;
-}
-
 export class GPUEngine {
 	private device!: GPUDevice;
 	private context!: GPUCanvasContext;
@@ -74,7 +63,6 @@ export class GPUEngine {
 	// View state (zoom/pan) - initialized in constructor
 	view = { zoom: SOUP_WIDTH, offsetX: 0, offsetY: 0 }; // default, reset in constructor
 
-
 	// State
 	private batchIndex = 0;
 	private cpuRng: SplitMix64;
@@ -92,16 +80,35 @@ export class GPUEngine {
 	private statsOpsAccum = 0;
 
 	// Derived dimensions (from gridConfig)
-	private get soupWidth(): number { return this.gridConfig.width; }
-	private get soupHeight(): number { return this.gridConfig.height; }
-	private get cellCount(): number { return this.gridConfig.width * this.gridConfig.height; }
-	private get tapeLength(): number { return getTapeLength(this.gridType); }
-	private get pairLength(): number { return getPairLength(this.gridType); }
-	private get wordsPerCell(): number { return Math.ceil(this.tapeLength / 4); }
-	private get soupSize(): number { return this.cellCount * this.wordsPerCell * 4; }
-	private get gridType(): GridType { return this.gridConfig.gridType; }
+	private get soupWidth(): number {
+		return this.gridConfig.width;
+	}
+	private get soupHeight(): number {
+		return this.gridConfig.height;
+	}
+	private get cellCount(): number {
+		return this.gridConfig.width * this.gridConfig.height;
+	}
+	private get tapeLength(): number {
+		return getTapeLength(this.gridType);
+	}
+	private get pairLength(): number {
+		return getPairLength(this.gridType);
+	}
+	private get wordsPerCell(): number {
+		return Math.ceil(this.tapeLength / 4);
+	}
+	private get soupSize(): number {
+		return this.cellCount * this.wordsPerCell * 4;
+	}
+	private get gridType(): GridType {
+		return this.gridConfig.gridType;
+	}
 
-	constructor(private seed: number, config: GridConfig = DEFAULT_GRID_CONFIG) {
+	constructor(
+		private seed: number,
+		config: GridConfig = DEFAULT_GRID_CONFIG
+	) {
 		this.gridConfig = { ...config };
 		this.view.zoom = config.width;
 		this.cpuRng = new SplitMix64(seed);
@@ -176,8 +183,7 @@ export class GPUEngine {
 		const soupWords = this.cellCount * this.wordsPerCell;
 		this.soupBuffer = dev.createBuffer({
 			size: soupWords * 4,
-			usage:
-				GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
 		});
 
 		// Pairs: 2 u32s per pair
@@ -604,9 +610,16 @@ export class GPUEngine {
 			const H = this.soupHeight;
 			const CELL_SPACING = 5;
 			const ODD_SHIFT = 2;
-			const corners = [[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]];
-			let minPx = Infinity, maxPx = -Infinity;
-			let minPy = Infinity, maxPy = -Infinity;
+			const corners = [
+				[0, 0],
+				[W - 1, 0],
+				[0, H - 1],
+				[W - 1, H - 1]
+			];
+			let minPx = Infinity,
+				maxPx = -Infinity;
+			let minPy = Infinity,
+				maxPy = -Infinity;
 
 			for (const [cx, cy] of corners) {
 				const centerCol = cx * CELL_SPACING + (cy & 1) * ODD_SHIFT;
@@ -637,8 +650,8 @@ export class GPUEngine {
 			const margin = 1;
 			this.view.offsetX = minPx - margin;
 			this.view.offsetY = minPy - margin;
-			const extentX = (maxPx - minPx) + 2 * margin;
-			const extentY = (maxPy - minPy) + 2 * margin;
+			const extentX = maxPx - minPx + 2 * margin;
+			const extentY = maxPy - minPy + 2 * margin;
 			this.view.zoom = Math.max(extentX, extentY);
 		} else {
 			this.view = { zoom: this.soupWidth, offsetX: 0, offsetY: 0 };
