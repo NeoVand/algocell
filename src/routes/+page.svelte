@@ -6,7 +6,10 @@
 		DEFAULT_SEED,
 		DEFAULT_NOISE_EXP,
 		MAX_BATCH_PAIR_N,
-		Z80_STEPS
+		Z80_STEPS,
+		DEFAULT_GRID_CONFIG,
+		type GridType,
+		type GridConfig
 	} from '$lib/sim/constants';
 	import { disassemble, byteToMnemonic } from '$lib/z80-disasm';
 	import { getCellData } from '$lib/sim/soup';
@@ -30,6 +33,9 @@
 	let z80Steps = $state(Z80_STEPS);
 	let playing = $state(true);
 	let speed = $state(1);
+	let gridType: GridType = $state('square');
+	let gridWidth = $state(SOUP_WIDTH);
+	let gridHeight = $state(SOUP_HEIGHT);
 
 	// Stats
 	let batchCount = $state(0);
@@ -44,7 +50,7 @@
 	let showInfoChart = $state(true);
 
 	// Frequency chart: track top N bytes normalized over time
-	const TOTAL_CELLS = SOUP_WIDTH * SOUP_HEIGHT;
+	let TOTAL_CELLS = $derived(gridWidth * gridHeight);
 	const MAX_TRACKED = 10;
 	const MAX_HISTORY = 500;
 
@@ -80,8 +86,8 @@
 	let statsLoading = false;
 
 	// Derived
-	let currentZoom = $derived(engine != null ? engine.view.zoom : SOUP_WIDTH);
-	let zoomPercent = $derived(Math.round((SOUP_WIDTH / currentZoom) * 100));
+	let currentZoom = $derived(engine != null ? engine.view.zoom : gridWidth);
+	let zoomPercent = $derived(Math.round((gridWidth / currentZoom) * 100));
 
 	// Build frequency lines using concentration factor (frac * 256)
 	// Uniform distribution = 1.0, a byte at 50% = 128.0
@@ -113,7 +119,7 @@
 
 	let cellCoords = $derived(
 		hoveredCell >= 0
-			? { x: hoveredCell % SOUP_WIDTH, y: Math.floor(hoveredCell / SOUP_WIDTH) }
+			? { x: hoveredCell % gridWidth, y: Math.floor(hoveredCell / gridWidth) }
 			: null
 	);
 
@@ -122,16 +128,18 @@
 	);
 
 	function computeTooltipStyle(mx: number, my: number): string {
-		const tooltipW = 196;
-		const tooltipH = 196;
+		const isHex = gridType === 'hex';
+		const tooltipW = isHex ? 280 : 196;
+		const tooltipH = isHex ? 260 : 196;
 		const vw = window.innerWidth;
 		const vh = window.innerHeight;
-		let x = mx + 16;
-		let y = my + 16;
-		if (x + tooltipW > vw) x = mx - tooltipW - 16;
-		if (y + tooltipH > vh) y = my - tooltipH - 16;
-		if (x < 8) x = 8;
-		if (y < 8) y = 8;
+		const gap = 8;
+		let x = mx + gap;
+		let y = my + gap;
+		if (x + tooltipW > vw) x = mx - tooltipW - gap;
+		if (y + tooltipH > vh) y = my - tooltipH - gap;
+		if (x < 4) x = 4;
+		if (y < 4) y = 4;
 		return `left:${x}px;top:${y}px`;
 	}
 
@@ -151,7 +159,8 @@
 		if (!canvas) return;
 
 		const initialSeed = untrack(() => seed);
-		const eng = new GPUEngine(initialSeed);
+		const initialConfig: GridConfig = untrack(() => ({ width: gridWidth, height: gridHeight, gridType: gridType }));
+		const eng = new GPUEngine(initialSeed, initialConfig);
 
 		eng.init(canvas).then((ok) => {
 			if (!ok) {
@@ -201,6 +210,7 @@
 			}
 
 			engine.render(canvas);
+			flushCellRefresh();
 			frameCount++;
 
 			if (playing && frameCount % 30 === 0 && !statsLoading) {
@@ -285,11 +295,20 @@
 		}
 	}
 
+	let pendingCellRefresh = -1;
+
 	function refreshCellData(cell: number) {
-		if (!engine) return;
+		// Mark for readback after next render (so data matches what's on screen)
+		pendingCellRefresh = cell;
+	}
+
+	function flushCellRefresh() {
+		if (pendingCellRefresh < 0 || !engine) return;
+		const cell = pendingCellRefresh;
+		pendingCellRefresh = -1;
 		engine.readSoupData().then((soupData) => {
 			if (soupData.length === 0 || hoveredCell !== cell) return;
-			const data = getCellData(soupData, cell);
+			const data = getCellData(soupData, cell, gridType);
 			cellData = data;
 			disasmLines = disassemble(data);
 		});
@@ -320,7 +339,10 @@
 		const rect = canvas.getBoundingClientRect();
 		const sx = (e.clientX - rect.left) * (canvasW / rect.width);
 		const sy = (e.clientY - rect.top) * (canvasH / rect.height);
-		const factor = e.deltaY > 0 ? 1.12 : 1 / 1.12;
+		// Proportional to scroll amount, clamped for consistency between trackpad/mouse
+		const normalizedDelta = Math.sign(e.deltaY) * Math.min(Math.abs(e.deltaY), 100);
+		const zoomSpeed = 0.002;
+		const factor = Math.exp(normalizedDelta * zoomSpeed);
 		engine.zoomAt(sx, sy, canvasW, canvasH, factor);
 	}
 
@@ -374,6 +396,23 @@
 		colormapName = name;
 		colormap = createColormap(name);
 		engine?.updateColormap(colormap);
+	}
+
+	function handleGridTypeChange(type: GridType) {
+		gridType = type;
+		applyGridConfig();
+	}
+
+	function applyGridConfig() {
+		if (!engine) return;
+		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
+		engine.changeGridConfig(config);
+		// Reset stats
+		batchCount = 0;
+		opsPerSec = 0;
+		topBytes = [];
+		statsHistory = [];
+		trackedBytes = [];
 	}
 
 	function togglePlay() {
@@ -718,6 +757,37 @@
 
 		<div class="param">
 			<div class="param-head">
+				<label class="param-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z"/><path d="M12 12L20 7.5"/><path d="M12 12V21"/><path d="M12 12L4 7.5"/></svg> Grid</label>
+				<span class="param-info-wrap" class:show-tip={openTip === 'grid'}>
+					<button class="param-info" onmouseenter={() => { openTip = 'grid'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'grid' ? null : 'grid'; }}>?</button>
+					<span class="param-tip">Grid topology and dimensions. Hex grids produce more organic patterns. Changing resets simulation.</span>
+				</span>
+			</div>
+			<div class="grid-type-row">
+				<button class="grid-type-btn" class:active={gridType === 'square'} onclick={() => handleGridTypeChange('square')}>Square</button>
+				<button class="grid-type-btn" class:active={gridType === 'hex'} onclick={() => handleGridTypeChange('hex')}>Hex</button>
+			</div>
+			<div class="grid-size-row">
+				<label class="grid-size-label">
+					W
+					<input type="number" class="grid-size-input" bind:value={gridWidth} min="50" max="500" step="10" />
+				</label>
+				<span class="grid-size-x">&times;</span>
+				<label class="grid-size-label">
+					H
+					<input type="number" class="grid-size-input" bind:value={gridHeight} min="50" max="500" step="10" />
+				</label>
+				<button class="seed-apply" onclick={applyGridConfig} title="Apply & Reset">
+					<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
+						<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</button>
+			</div>
+		</div>
+
+		<div class="param">
+			<div class="param-head">
 				<label class="param-label" for="seed-input"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg> Seed</label>
 				<span class="param-info-wrap" class:show-tip={openTip === 'seed'}>
 					<button class="param-info" onmouseenter={() => { openTip = 'seed'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'seed' ? null : 'seed'; }}>?</button>
@@ -837,19 +907,41 @@
 
 <!-- Genome tooltip -->
 {#if hoveredCell >= 0 && cellData && !isPanning}
-	<div class="genome-tip" style={tooltipStyle}>
-		<div class="tip-grid">
-			{#each genomeCells as cell, i (i)}
-				<div
-					class="tip-cell"
-					class:operand={!cell.isOpcode}
-					style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)'}"
-				>
-					{cell.label}
-				</div>
-			{/each}
+	{#if gridType === 'hex'}
+		<!-- Hex byte tooltip: 19 hex-shaped bytes in 3-4-5-4-3 hexagonal arrangement -->
+		<div class="genome-tip hex-tip" style={tooltipStyle}>
+			<div class="hex-byte-grid">
+				{#each genomeCells as cell, i (i)}
+					<div
+						class="hex-byte-cell hex-byte-pos-{i}"
+						class:operand={!cell.isOpcode}
+					>
+						<div
+							class="hex-byte-inner"
+							style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)'}"
+						>
+							{cell.label}
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
-	</div>
+	{:else}
+		<!-- Square grid tooltip -->
+		<div class="genome-tip" style={tooltipStyle}>
+			<div class="tip-grid">
+				{#each genomeCells as cell, i (i)}
+					<div
+						class="tip-cell"
+						class:operand={!cell.isOpcode}
+						style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)'}"
+					>
+						{cell.label}
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
 {/if}
 
 <!-- Help modal -->
@@ -1040,7 +1132,7 @@ graph TD
 					<p class="cmap-note">All other bytes get a muted tone from a continuous hue sweep. Switch colormaps in Settings.</p>
 
 					<h4>Cell Tooltips</h4>
-					<p>Hover any cell to see a 4x4 grid of its 16 bytes, disassembled as Z80 instructions.</p>
+					<p>Hover any cell to see its bytes disassembled as Z80 instructions (16 bytes in 4x4 grid for square, 19 bytes in hexagonal layout for hex).</p>
 					<ul class="help-list">
 						<li><strong>Opcode bytes</strong> show the instruction mnemonic (e.g. <code>NOP</code>, <code>POP HL</code>, <code>LD B,C</code>)</li>
 						<li><strong>Operand bytes</strong> show the raw hex value (e.g. <code>00</code>, <code>3F</code>) and appear dimmed &mdash; these are data consumed by the preceding instruction</li>
@@ -1628,6 +1720,67 @@ graph TD
 		border-color: var(--accent);
 	}
 
+	/* Grid type toggle */
+	.grid-type-row {
+		display: flex;
+		gap: 4px;
+		margin-bottom: 8px;
+	}
+	.grid-type-btn {
+		flex: 1;
+		height: 26px;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid var(--border-muted);
+		border-radius: 6px;
+		color: var(--text-subtle);
+		font-size: 11px;
+		cursor: pointer;
+		transition: all 0.15s;
+	}
+	.grid-type-btn.active {
+		background: rgba(200, 135, 90, 0.15);
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.grid-type-btn:hover:not(.active) {
+		background: var(--bg-hover);
+	}
+	.grid-size-row {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+	.grid-size-label {
+		display: flex;
+		align-items: center;
+		gap: 3px;
+		font-size: 10px;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+	}
+	.grid-size-input {
+		width: 52px;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid var(--border-muted);
+		border-radius: 6px;
+		padding: 0 6px;
+		height: 24px;
+		font-size: 11px;
+		font-family: monospace;
+		color: var(--accent);
+		outline: none;
+		-moz-appearance: textfield;
+	}
+	.grid-size-input::-webkit-inner-spin-button,
+	.grid-size-input::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	.grid-size-x {
+		color: var(--text-subtle);
+		font-size: 12px;
+	}
+
 	/* Custom slider */
 	.slider-track-wrap {
 		position: relative;
@@ -1726,7 +1879,8 @@ graph TD
 		pointer-events: none;
 		overflow: hidden;
 		background: #0a0a0e;
-		padding: 2px;
+		padding: 4px;
+		border-radius: 3px;
 	}
 	.tip-grid {
 		display: grid;
@@ -1748,10 +1902,84 @@ graph TD
 		padding: 2px;
 	}
 	.tip-cell.operand {
-		opacity: 0.5;
+		opacity: 0.75;
 		font-weight: 400;
 		font-size: 10px;
 	}
+
+	/* ── Hex byte tooltip: 19 hex cells in 3-4-5-4-3 hexagonal arrangement ── */
+	.hex-tip {
+		background: none;
+		padding: 2px !important;
+		overflow: visible;
+	}
+	.hex-byte-cell::before {
+		content: '';
+		position: absolute;
+		inset: -4px;
+		background: #0a0a0e;
+		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+		z-index: -1;
+	}
+	.hex-byte-grid {
+		--hex-w: 48px;
+		--hex-gap: 2px;
+		--hex-dx: calc(var(--hex-w) + var(--hex-gap));
+		--hex-dy: calc(var(--hex-dx) * 0.866);
+		--hex-h: calc(var(--hex-w) * 1.1547);
+		display: block;
+		position: relative;
+		width: calc(var(--hex-dx) * 4 + var(--hex-w));
+		height: calc(var(--hex-dy) * 4 + var(--hex-h));
+	}
+	.hex-byte-cell {
+		position: absolute;
+		width: var(--hex-w);
+		height: var(--hex-h);
+	}
+	.hex-byte-inner {
+		width: 100%;
+		height: 100%;
+		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		font-size: 8px;
+		font-family: monospace;
+		font-weight: 600;
+		text-align: center;
+		line-height: 1.1;
+		padding: 2px;
+	}
+	.hex-byte-cell.operand .hex-byte-inner {
+		opacity: 0.75;
+		font-weight: 400;
+		font-size: 9px;
+	}
+	/* Byte positions in 3-4-5-4-3 hexagonal arrangement */
+	/* Byte 0: center (row 2, col 2) */
+	.hex-byte-pos-0 { left: calc(var(--hex-dx) * 2); top: calc(var(--hex-dy) * 2); }
+	/* Ring 1: bytes 1-6 (clockwise from N) */
+	.hex-byte-pos-1 { left: calc(var(--hex-dx) * 2.5); top: calc(var(--hex-dy) * 1); }
+	.hex-byte-pos-2 { left: calc(var(--hex-dx) * 3); top: calc(var(--hex-dy) * 2); }
+	.hex-byte-pos-3 { left: calc(var(--hex-dx) * 2.5); top: calc(var(--hex-dy) * 3); }
+	.hex-byte-pos-4 { left: calc(var(--hex-dx) * 1.5); top: calc(var(--hex-dy) * 3); }
+	.hex-byte-pos-5 { left: calc(var(--hex-dx) * 1); top: calc(var(--hex-dy) * 2); }
+	.hex-byte-pos-6 { left: calc(var(--hex-dx) * 1.5); top: calc(var(--hex-dy) * 1); }
+	/* Ring 2: bytes 7-18 (clockwise from NE) */
+	.hex-byte-pos-7 { left: calc(var(--hex-dx) * 3.5); top: calc(var(--hex-dy) * 1); }
+	.hex-byte-pos-8 { left: calc(var(--hex-dx) * 4); top: calc(var(--hex-dy) * 2); }
+	.hex-byte-pos-9 { left: calc(var(--hex-dx) * 3.5); top: calc(var(--hex-dy) * 3); }
+	.hex-byte-pos-10 { left: calc(var(--hex-dx) * 3); top: calc(var(--hex-dy) * 4); }
+	.hex-byte-pos-11 { left: calc(var(--hex-dx) * 2); top: calc(var(--hex-dy) * 4); }
+	.hex-byte-pos-12 { left: calc(var(--hex-dx) * 1); top: calc(var(--hex-dy) * 4); }
+	.hex-byte-pos-13 { left: calc(var(--hex-dx) * 0.5); top: calc(var(--hex-dy) * 3); }
+	.hex-byte-pos-14 { left: calc(var(--hex-dx) * 0); top: calc(var(--hex-dy) * 2); }
+	.hex-byte-pos-15 { left: calc(var(--hex-dx) * 0.5); top: calc(var(--hex-dy) * 1); }
+	.hex-byte-pos-16 { left: calc(var(--hex-dx) * 1); top: calc(var(--hex-dy) * 0); }
+	.hex-byte-pos-17 { left: calc(var(--hex-dx) * 2); top: calc(var(--hex-dy) * 0); }
+	.hex-byte-pos-18 { left: calc(var(--hex-dx) * 3); top: calc(var(--hex-dy) * 0); }
 
 	/* ── Help modal ── */
 	.modal-backdrop {

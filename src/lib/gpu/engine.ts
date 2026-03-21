@@ -3,17 +3,18 @@
 
 import {
 	SOUP_WIDTH,
-	SOUP_HEIGHT,
-	TAPE_LENGTH,
-	PAIR_LENGTH,
-	SOUP_SIZE,
-	CELL_COUNT,
 	MAX_BATCH_PAIR_N,
-	Z80_STEPS
+	Z80_STEPS,
+	HEX_HEIGHT_RATIO,
+	DEFAULT_GRID_CONFIG,
+	getTapeLength,
+	getPairLength,
+	type GridConfig,
+	type GridType
 } from '$lib/sim/constants';
 import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
-import { simShader, renderShader } from './shaders';
+import { createSimShader, createRenderShader } from './shaders';
 
 interface SimParams {
 	soup_width: number;
@@ -67,8 +68,12 @@ export class GPUEngine {
 	private simBindGroup!: GPUBindGroup;
 	private renderBindGroup!: GPUBindGroup;
 
-	// View state (zoom/pan)
-	view = { zoom: SOUP_WIDTH, offsetX: 0, offsetY: 0 };
+	// Grid configuration
+	private gridConfig: GridConfig;
+
+	// View state (zoom/pan) - initialized in constructor
+	view = { zoom: SOUP_WIDTH, offsetX: 0, offsetY: 0 }; // default, reset in constructor
+
 
 	// State
 	private batchIndex = 0;
@@ -86,7 +91,19 @@ export class GPUEngine {
 	private lastStatsTime = 0;
 	private statsOpsAccum = 0;
 
-	constructor(private seed: number) {
+	// Derived dimensions (from gridConfig)
+	private get soupWidth(): number { return this.gridConfig.width; }
+	private get soupHeight(): number { return this.gridConfig.height; }
+	private get cellCount(): number { return this.gridConfig.width * this.gridConfig.height; }
+	private get tapeLength(): number { return getTapeLength(this.gridType); }
+	private get pairLength(): number { return getPairLength(this.gridType); }
+	private get wordsPerCell(): number { return Math.ceil(this.tapeLength / 4); }
+	private get soupSize(): number { return this.cellCount * this.wordsPerCell * 4; }
+	private get gridType(): GridType { return this.gridConfig.gridType; }
+
+	constructor(private seed: number, config: GridConfig = DEFAULT_GRID_CONFIG) {
+		this.gridConfig = { ...config };
+		this.view.zoom = config.width;
 		this.cpuRng = new SplitMix64(seed);
 		this.colormap = createColormap('rainbow');
 	}
@@ -156,8 +173,7 @@ export class GPUEngine {
 	private createBuffers(): void {
 		const dev = this.device;
 
-		// Soup: 640,000 bytes = 160,000 u32s
-		const soupWords = CELL_COUNT * (TAPE_LENGTH / 4);
+		const soupWords = this.cellCount * this.wordsPerCell;
 		this.soupBuffer = dev.createBuffer({
 			size: soupWords * 4,
 			usage:
@@ -170,9 +186,10 @@ export class GPUEngine {
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
-		// Pair data: 8 u32s (32 bytes) per pair
+		// Pair data: wordsPerCell*2 u32s per pair
+		const wordsPerPair = this.wordsPerCell * 2;
 		this.pairDataBuffer = dev.createBuffer({
-			size: MAX_BATCH_PAIR_N * 8 * 4,
+			size: MAX_BATCH_PAIR_N * wordsPerPair * 4,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
@@ -206,9 +223,9 @@ export class GPUEngine {
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
 		});
 
-		// Collision mask: CELL_COUNT atomic u32s
+		// Collision mask: cellCount atomic u32s
 		this.collisionMaskBuffer = dev.createBuffer({
-			size: CELL_COUNT * 4,
+			size: this.cellCount * 4,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
@@ -218,8 +235,9 @@ export class GPUEngine {
 			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
 		});
 
+		const soupStagingWords = this.cellCount * this.wordsPerCell;
 		this.soupStagingBuffer = dev.createBuffer({
-			size: soupWords * 4,
+			size: soupStagingWords * 4,
 			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
 		});
 
@@ -235,7 +253,7 @@ export class GPUEngine {
 		});
 
 		this.traceImageBuffer = dev.createBuffer({
-			size: PAIR_LENGTH * Z80_STEPS * 4,
+			size: this.pairLength * 1024 * 4, // max Z80 steps
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 	}
@@ -244,7 +262,7 @@ export class GPUEngine {
 		const dev = this.device;
 
 		// Simulation shader module
-		const simModule = dev.createShaderModule({ code: simShader });
+		const simModule = dev.createShaderModule({ code: createSimShader(this.gridType) });
 
 		// Simulation bind group layout
 		const simBindGroupLayout = dev.createBindGroupLayout({
@@ -299,7 +317,7 @@ export class GPUEngine {
 		this.clearByteCountsPipeline = makeComputePipeline('clear_byte_counts');
 
 		// Render pipeline
-		const renderModule = dev.createShaderModule({ code: renderShader });
+		const renderModule = dev.createShaderModule({ code: createRenderShader(this.gridType) });
 
 		const renderBindGroupLayout = dev.createBindGroupLayout({
 			entries: [
@@ -350,14 +368,14 @@ export class GPUEngine {
 
 	private initSoup(): void {
 		// Generate random soup data on CPU and upload
-		const soupData = new Uint8Array(SOUP_SIZE);
+		const soupData = new Uint8Array(this.soupSize);
 		const rng = new SplitMix64(this.seed);
-		for (let i = 0; i < SOUP_SIZE; i += 4) {
+		for (let i = 0; i < this.soupSize; i += 4) {
 			const r = rng.nextU32();
 			soupData[i] = r & 0xff;
-			if (i + 1 < SOUP_SIZE) soupData[i + 1] = (r >> 8) & 0xff;
-			if (i + 2 < SOUP_SIZE) soupData[i + 2] = (r >> 16) & 0xff;
-			if (i + 3 < SOUP_SIZE) soupData[i + 3] = (r >> 24) & 0xff;
+			if (i + 1 < this.soupSize) soupData[i + 1] = (r >> 8) & 0xff;
+			if (i + 2 < this.soupSize) soupData[i + 2] = (r >> 16) & 0xff;
+			if (i + 3 < this.soupSize) soupData[i + 3] = (r >> 24) & 0xff;
 		}
 		this.device.queue.writeBuffer(this.soupBuffer, 0, soupData);
 		this.batchIndex = 0;
@@ -383,6 +401,27 @@ export class GPUEngine {
 		this.byteCounts.fill(0);
 	}
 
+	get config(): GridConfig {
+		return { ...this.gridConfig };
+	}
+
+	changeGridConfig(config: GridConfig): void {
+		this.gridConfig = { ...config };
+		// Destroy old buffers
+		this.destroy();
+		// Recreate everything with new dimensions
+		this.createBuffers();
+		this.createPipelines();
+		this.initSoup();
+		this.uploadColormap();
+		this.resetView();
+		this.batchIndex = 0;
+		this.opsPerSec = 0;
+		this.lastStatsTime = 0;
+		this.statsOpsAccum = 0;
+		this.byteCounts.fill(0);
+	}
+
 	setHoverCell(cell: number): void {
 		this.hoverCell = cell;
 	}
@@ -398,10 +437,10 @@ export class GPUEngine {
 
 		// Update params
 		const paramsData = new Uint32Array([
-			SOUP_WIDTH,
-			SOUP_HEIGHT,
-			TAPE_LENGTH,
-			PAIR_LENGTH,
+			this.soupWidth,
+			this.soupHeight,
+			this.tapeLength,
+			this.pairLength,
 			this._pairCount,
 			mutationCount,
 			this._z80Steps,
@@ -416,7 +455,7 @@ export class GPUEngine {
 			const pass = encoder.beginComputePass();
 			pass.setPipeline(this.clearCollisionPipeline);
 			pass.setBindGroup(0, this.simBindGroup);
-			pass.dispatchWorkgroups(Math.ceil(CELL_COUNT / 256));
+			pass.dispatchWorkgroups(Math.ceil(this.cellCount / 256));
 			pass.end();
 		}
 
@@ -487,7 +526,7 @@ export class GPUEngine {
 
 		// Count bytes
 		{
-			const soupWords = CELL_COUNT * (TAPE_LENGTH / 4);
+			const soupWords = this.cellCount * this.wordsPerCell;
 			const pass = encoder.beginComputePass();
 			pass.setPipeline(this.countBytesPipeline);
 			pass.setBindGroup(0, this.simBindGroup);
@@ -515,7 +554,7 @@ export class GPUEngine {
 		if (this._soupMapPending) return new Uint8Array(0);
 		this._soupMapPending = true;
 		try {
-			const soupBytes = CELL_COUNT * TAPE_LENGTH;
+			const soupBytes = this.cellCount * this.wordsPerCell * 4;
 			const encoder = this.device.createCommandEncoder();
 			encoder.copyBufferToBuffer(this.soupBuffer, 0, this.soupStagingBuffer, 0, soupBytes);
 			this.device.queue.submit([encoder.finish()]);
@@ -538,7 +577,8 @@ export class GPUEngine {
 		const gridX = (screenX / canvasW) * cellsX + this.view.offsetX;
 		const gridY = (screenY / canvasH) * cellsY + this.view.offsetY;
 
-		const maxZoom = Math.max(SOUP_WIDTH, SOUP_HEIGHT) * 2;
+		const zoomScale = this.gridType === 'hex' ? 10 : 2;
+		const maxZoom = Math.max(this.soupWidth, this.soupHeight) * zoomScale;
 		const newZoom = Math.max(4, Math.min(maxZoom, this.view.zoom * factor));
 		const newCellsX = newZoom;
 		const newCellsY = newZoom / aspect;
@@ -558,7 +598,51 @@ export class GPUEngine {
 	}
 
 	resetView(): void {
-		this.view = { zoom: SOUP_WIDTH, offsetX: 0, offsetY: 0 };
+		if (this.gridType === 'hex') {
+			// Cells on offset hex grid: cell (cx, cy) center at offset (cx*5 + (cy&1)*2, cy*5)
+			const W = this.soupWidth;
+			const H = this.soupHeight;
+			const CELL_SPACING = 5;
+			const ODD_SHIFT = 2;
+			const corners = [[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]];
+			let minPx = Infinity, maxPx = -Infinity;
+			let minPy = Infinity, maxPy = -Infinity;
+
+			for (const [cx, cy] of corners) {
+				const centerCol = cx * CELL_SPACING + (cy & 1) * ODD_SHIFT;
+				const centerRow = cy * CELL_SPACING;
+				// Cell center in axial
+				const qCell = centerCol - Math.floor((centerRow - (centerRow & 1)) / 2);
+				const rCell = centerRow;
+				// Check byte positions at hex distance ≤ 2 from center
+				for (let dq = -2; dq <= 2; dq++) {
+					for (let dr = -2; dr <= 2; dr++) {
+						if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) > 2) continue;
+						const bq = qCell + dq;
+						const br = rCell + dr;
+						// Axial to offset coords
+						const col = bq + Math.floor((br - (br & 1)) / 2);
+						const row = br;
+						const isOdd = (row & 1) !== 0;
+						const px = col + 0.5 + (isOdd ? 0.5 : 0.0);
+						const py = (row + 0.5) * HEX_HEIGHT_RATIO;
+						minPx = Math.min(minPx, px - 0.6);
+						maxPx = Math.max(maxPx, px + 0.6);
+						minPy = Math.min(minPy, py - 0.6);
+						maxPy = Math.max(maxPy, py + 0.6);
+					}
+				}
+			}
+
+			const margin = 1;
+			this.view.offsetX = minPx - margin;
+			this.view.offsetY = minPy - margin;
+			const extentX = (maxPx - minPx) + 2 * margin;
+			const extentY = (maxPy - minPy) + 2 * margin;
+			this.view.zoom = Math.max(extentX, extentY);
+		} else {
+			this.view = { zoom: this.soupWidth, offsetX: 0, offsetY: 0 };
+		}
 	}
 
 	// Convert screen position to cell index
@@ -568,10 +652,90 @@ export class GPUEngine {
 		const cellsY = this.view.zoom / aspect;
 		const gridX = (screenX / canvasW) * cellsX + this.view.offsetX;
 		const gridY = (screenY / canvasH) * cellsY + this.view.offsetY;
+
+		if (this.gridType === 'hex') {
+			return this.hexScreenToCell(gridX, gridY);
+		}
+
 		const cx = Math.floor(gridX);
 		const cy = Math.floor(gridY);
-		if (cx < 0 || cx >= SOUP_WIDTH || cy < 0 || cy >= SOUP_HEIGHT) return -1;
-		return cy * SOUP_WIDTH + cx;
+		if (cx < 0 || cx >= this.soupWidth || cy < 0 || cy >= this.soupHeight) return -1;
+		return cy * this.soupWidth + cx;
+	}
+
+	private hexScreenToCell(pixelX: number, pixelY: number): number {
+		// pixelX, pixelY are in hex-byte pixel space (same as shader)
+
+		// Find nearest hex byte
+		const rowEst = pixelY / HEX_HEIGHT_RATIO - 0.5;
+		const rowGuess = Math.round(rowEst);
+
+		let bestDist = Infinity;
+		let bestHx = 0;
+		let bestHy = 0;
+
+		for (let dr = -1; dr <= 1; dr++) {
+			const hy = rowGuess + dr;
+			const isOdd = (hy & 1) !== 0;
+			const xOff = isOdd ? 0.5 : 0.0;
+			const centerY = (hy + 0.5) * HEX_HEIGHT_RATIO;
+			const colEst = pixelX - xOff - 0.5;
+			const colGuess = Math.round(colEst);
+
+			for (let dc = -1; dc <= 1; dc++) {
+				const hx = colGuess + dc;
+				const centerX = hx + 0.5 + xOff;
+				const dx = pixelX - centerX;
+				const dy = pixelY - centerY;
+				const dist = dx * dx + dy * dy;
+				if (dist < bestDist) {
+					bestDist = dist;
+					bestHx = hx;
+					bestHy = hy;
+				}
+			}
+		}
+
+		// Find cell using offset hex grid (same as shader find_cell)
+		const col = bestHx;
+		const row = bestHy;
+		const CELL_SPACING = 5;
+		const ODD_SHIFT = 2;
+		const cy0 = Math.floor(row / CELL_SPACING);
+
+		let bestCellDist = 100;
+		let cellA = 0;
+		let cellB = 0;
+
+		for (let dcy = 0; dcy <= 1; dcy++) {
+			const cy = cy0 + dcy;
+			const centerRow = cy * CELL_SPACING;
+			const shift = (cy & 1) * ODD_SHIFT;
+			const adjCol = col - shift;
+			const cx0 = Math.floor(adjCol / CELL_SPACING);
+
+			for (let dcx = 0; dcx <= 1; dcx++) {
+				const cx = cx0 + dcx;
+				const centerCol = cx * CELL_SPACING + shift;
+
+				// Convert both to axial for hex distance
+				const qByte = col - Math.floor((row - (row & 1)) / 2);
+				const qCell = centerCol - Math.floor((centerRow - (centerRow & 1)) / 2);
+				const dq = qByte - qCell;
+				const dr = row - centerRow;
+				const dist = Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr));
+
+				if (dist < bestCellDist) {
+					bestCellDist = dist;
+					cellA = cx;
+					cellB = cy;
+				}
+			}
+		}
+
+		if (bestCellDist > 2) return -1; // gap between cells
+		if (cellA < 0 || cellA >= this.soupWidth || cellB < 0 || cellB >= this.soupHeight) return -1;
+		return cellB * this.soupWidth + cellA;
 	}
 
 	// Render the soup to the canvas
@@ -579,8 +743,8 @@ export class GPUEngine {
 		const tileSize = 4;
 		const renderParams = new ArrayBuffer(48); // 12 fields * 4 bytes
 		const view = new DataView(renderParams);
-		view.setUint32(0, SOUP_WIDTH, true);
-		view.setUint32(4, SOUP_HEIGHT, true);
+		view.setUint32(0, this.soupWidth, true);
+		view.setUint32(4, this.soupHeight, true);
 		view.setUint32(8, tileSize, true);
 		view.setFloat32(12, canvas.width, true);
 		view.setFloat32(16, canvas.height, true);
@@ -589,7 +753,7 @@ export class GPUEngine {
 		view.setFloat32(28, this.view.zoom, true);
 		view.setFloat32(32, this.view.offsetX, true);
 		view.setFloat32(36, this.view.offsetY, true);
-		view.setUint32(40, 0, true); // pad1
+		view.setUint32(40, this.tapeLength, true); // tape_length
 		view.setUint32(44, 0, true); // pad2
 
 		this.device.queue.writeBuffer(this.renderParamsBuffer, 0, renderParams);

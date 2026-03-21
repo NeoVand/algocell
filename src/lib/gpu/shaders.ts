@@ -1,10 +1,60 @@
-// All WGSL shaders as string constants
+// All WGSL shaders — factory functions for topology variants
+import type { GridType } from '$lib/sim/constants';
 
 // ============================================================
 // SIMULATION COMPUTE SHADER
 // Z80 emulator + batch management, fully parallel on GPU
 // ============================================================
-export const simShader = /* wgsl */ `
+
+// Neighbor selection code block for square grid (4 cardinal neighbors)
+const SQUARE_NEIGHBOR_SELECTION = /* wgsl */ `
+    let dir = rand_bounded(4u);
+    var nx = x;
+    var ny = y;
+    switch(dir) {
+        case 0u: { nx = min(x + 1u, w - 1u); }
+        case 1u: { ny = min(y + 1u, h - 1u); }
+        case 2u: { if (x > 0u) { nx = x - 1u; } }
+        case 3u: { if (y > 0u) { ny = y - 1u; } }
+        default: {}
+    }
+    let j = ny * w + nx;
+`;
+
+// Neighbor selection for hex grid: cells on axial lattice (6 axial neighbors, no parity needed)
+const HEX_NEIGHBOR_SELECTION = /* wgsl */ `
+    let dir = rand_bounded(6u);
+    var nx = x;
+    var ny = y;
+    let is_odd = (y & 1u) != 0u;
+    switch(dir) {
+        case 0u: { nx = min(x + 1u, w - 1u); }                                        // right
+        case 1u: { if (x > 0u) { nx = x - 1u; } }                                     // left
+        case 2u: {                                                                      // NE
+            if (is_odd) { nx = min(x + 1u, w - 1u); }
+            if (y > 0u) { ny = y - 1u; }
+        }
+        case 3u: {                                                                      // NW
+            if (!is_odd && x > 0u) { nx = x - 1u; }
+            if (y > 0u) { ny = y - 1u; }
+        }
+        case 4u: {                                                                      // SE
+            if (is_odd) { nx = min(x + 1u, w - 1u); }
+            ny = min(y + 1u, h - 1u);
+        }
+        case 5u: {                                                                      // SW
+            if (!is_odd && x > 0u) { nx = x - 1u; }
+            ny = min(y + 1u, h - 1u);
+        }
+        default: {}
+    }
+    let j = ny * w + nx;
+`;
+
+export function createSimShader(gridType: GridType): string {
+	const neighborBlock = gridType === 'hex' ? HEX_NEIGHBOR_SELECTION : SQUARE_NEIGHBOR_SELECTION;
+
+	return /* wgsl */ `
 
 // === Bindings ===
 struct Params {
@@ -71,8 +121,8 @@ var<private> cpu_writes_b: u32;
 var<private> cpu_iff1: u32;
 var<private> cpu_iff2: u32;
 
-// Pair memory: 32 bytes, one byte per u32 element
-var<private> mem: array<u32, 32>;
+// Pair memory: one byte per u32 element (max 38 for hex mode, 32 for square)
+var<private> mem: array<u32, 40>;
 
 // Z80 flag bits
 const CF: u32 = 0x01u;
@@ -86,13 +136,13 @@ const SFl: u32 = 0x80u;
 
 // === Memory Access ===
 fn mem_read(addr: u32) -> u32 {
-    return mem[addr & 31u];
+    return mem[addr % params.pair_length];
 }
 
 fn mem_write(addr: u32, val: u32) {
-    let a = addr & 31u;
+    let a = addr % params.pair_length;
     mem[a] = val & 0xffu;
-    if (a < 16u) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
+    if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
 
 fn z80_fetch() -> u32 {
@@ -690,13 +740,14 @@ fn z80_step() {
 
 // === Soup byte access helpers ===
 fn read_soup_byte(cell: u32, byte_idx: u32) -> u32 {
-    let word_idx = cell * 4u + (byte_idx >> 2u);
+    let wpc = (params.tape_length + 3u) / 4u;
+    let word_idx = cell * wpc + (byte_idx >> 2u);
     let shift = (byte_idx & 3u) * 8u;
     return (soup[word_idx] >> shift) & 0xffu;
 }
 
 fn write_soup_byte(cell: u32, byte_idx: u32, val: u32) {
-    let word_idx = cell * 4u + (byte_idx >> 2u);
+    let word_idx = cell * ((params.tape_length + 3u) / 4u) + (byte_idx >> 2u);
     let shift = (byte_idx & 3u) * 8u;
     let mask = ~(0xffu << shift);
     soup[word_idx] = (soup[word_idx] & mask) | ((val & 0xffu) << shift);
@@ -728,19 +779,10 @@ fn prepare_batch(@builtin(global_invocation_id) id: vec3u) {
     let h = params.soup_height;
     let x = rand_bounded(w);
     let y = rand_bounded(h);
-    let dir = rand_bounded(4u);
     let i = y * w + x;
 
-    var nx = x;
-    var ny = y;
-    switch(dir) {
-        case 0u: { nx = min(x + 1u, w - 1u); }
-        case 1u: { ny = min(y + 1u, h - 1u); }
-        case 2u: { if (x > 0u) { nx = x - 1u; } }
-        case 3u: { if (y > 0u) { ny = y - 1u; } }
-        default: {}
-    }
-    let j = ny * w + nx;
+    // --- Topology-specific neighbor selection ---
+${neighborBlock}
 
     // Collision detection with atomics
     var is_active = 0u;
@@ -762,12 +804,14 @@ fn prepare_batch(@builtin(global_invocation_id) id: vec3u) {
 
     if (is_active != 0u) {
         // Copy tape data into pair_data
-        let base = pair_id * 8u;
-        for (var w_idx = 0u; w_idx < 4u; w_idx++) {
-            pair_data[base + w_idx] = soup[i * 4u + w_idx];
+        let words_per_cell = (params.tape_length + 3u) / 4u;
+        let words_per_pair = words_per_cell * 2u;
+        let base = pair_id * words_per_pair;
+        for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+            pair_data[base + w_idx] = soup[i * words_per_cell + w_idx];
         }
-        for (var w_idx = 0u; w_idx < 4u; w_idx++) {
-            pair_data[base + 4u + w_idx] = soup[j * 4u + w_idx];
+        for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+            pair_data[base + words_per_cell + w_idx] = soup[j * words_per_cell + w_idx];
         }
     }
 
@@ -783,8 +827,10 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
     if (pair_active[pair_id] == 0u) { return; }
 
     // Load pair memory into private array
-    let base = pair_id * 8u;
-    for (var i = 0u; i < 8u; i++) {
+    let words_per_cell = (params.tape_length + 3u) / 4u;
+    let words_per_pair = words_per_cell * 2u;
+    let base = pair_id * words_per_pair;
+    for (var i = 0u; i < words_per_pair; i++) {
         let word = pair_data[base + i];
         mem[i * 4u] = word & 0xffu;
         mem[i * 4u + 1u] = (word >> 8u) & 0xffu;
@@ -810,7 +856,7 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
     }
 
     // Save pair memory back
-    for (var i = 0u; i < 8u; i++) {
+    for (var i = 0u; i < words_per_pair; i++) {
         pair_data[base + i] = mem[i * 4u] |
                               (mem[i * 4u + 1u] << 8u) |
                               (mem[i * 4u + 2u] << 16u) |
@@ -830,13 +876,15 @@ fn absorb_results(@builtin(global_invocation_id) id: vec3u) {
 
     let i = pairs[pair_id * 2u];
     let j = pairs[pair_id * 2u + 1u];
-    let base = pair_id * 8u;
+    let words_per_cell = (params.tape_length + 3u) / 4u;
+    let words_per_pair = words_per_cell * 2u;
+    let base = pair_id * words_per_pair;
 
-    for (var w_idx = 0u; w_idx < 4u; w_idx++) {
-        soup[i * 4u + w_idx] = pair_data[base + w_idx];
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        soup[i * words_per_cell + w_idx] = pair_data[base + w_idx];
     }
-    for (var w_idx = 0u; w_idx < 4u; w_idx++) {
-        soup[j * 4u + w_idx] = pair_data[base + 4u + w_idx];
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        soup[j * words_per_cell + w_idx] = pair_data[base + words_per_cell + w_idx];
     }
 }
 
@@ -853,8 +901,12 @@ fn mutate_soup(@builtin(global_invocation_id) id: vec3u) {
     let pos = rand_bounded(total_bytes);
     let val = rand() & 0xffu;
 
-    let word_idx = pos >> 2u;
-    let shift = (pos & 3u) * 8u;
+    // Map flat byte position to word-aligned soup buffer
+    let cell = pos / params.tape_length;
+    let byte_in_cell = pos % params.tape_length;
+    let wpc = (params.tape_length + 3u) / 4u;
+    let word_idx = cell * wpc + (byte_in_cell >> 2u);
+    let shift = (byte_in_cell & 3u) * 8u;
     let mask = ~(0xffu << shift);
     soup[word_idx] = (soup[word_idx] & mask) | (val << shift);
 }
@@ -863,7 +915,7 @@ fn mutate_soup(@builtin(global_invocation_id) id: vec3u) {
 @compute @workgroup_size(256)
 fn count_bytes(@builtin(global_invocation_id) id: vec3u) {
     let idx = id.x;
-    let total_words = params.soup_width * params.soup_height * 4u; // 4 u32s per cell
+    let total_words = params.soup_width * params.soup_height * ((params.tape_length + 3u) / 4u);
     if (idx >= total_words) { return; }
 
     let word = soup[idx];
@@ -881,12 +933,361 @@ fn clear_byte_counts(@builtin(global_invocation_id) id: vec3u) {
     }
 }
 `;
+}
 
 // ============================================================
 // RENDER SHADER
-// Full-screen quad rendering the soup as colored tiles
+// Full-screen quad rendering the soup as colored tiles/hexagons
 // ============================================================
-export const renderShader = /* wgsl */ `
+
+const SQUARE_RENDER_FRAGMENT = /* wgsl */ `
+@fragment
+fn fs_main(in: VertexOutput) -> @location(0) vec4f {
+    let sw = f32(rparams.soup_width);
+    let sh = f32(rparams.soup_height);
+    let ts = rparams.tile_size;
+
+    // Zoom/pan: convert UV to grid coordinates
+    let aspect = rparams.canvas_width / rparams.canvas_height;
+    let cells_x = rparams.zoom;
+    let cells_y = rparams.zoom / aspect;
+
+    // Grid position in cell units (with sub-cell precision)
+    let grid_x = in.uv.x * cells_x + rparams.offset_x;
+    let grid_y = (1.0 - in.uv.y) * cells_y + rparams.offset_y;
+
+    // Clamp to grid bounds
+    if (grid_x < 0.0 || grid_x >= sw || grid_y < 0.0 || grid_y >= sh) {
+        return vec4f(0.04, 0.04, 0.06, 1.0);
+    }
+
+    let cell_x = u32(grid_x);
+    let cell_y = u32(grid_y);
+    let cell_idx = cell_y * u32(sw) + cell_x;
+
+    // Sub-cell position (0..1 within the cell)
+    let frac_x = fract(grid_x);
+    let frac_y = fract(grid_y);
+
+    // Determine pixel size relative to cell for grid lines
+    let pixel_cell_size = cells_x / rparams.canvas_width; // cells per pixel
+
+    if (rparams.show_average != 0u || pixel_cell_size > 0.25) {
+        // Average mode OR zoomed out too far to see individual bytes
+        var acc = vec3f(0.0);
+        for (var i = 0u; i < rparams.tape_length; i++) {
+            let byte_val = read_soup_byte(cell_idx, i);
+            let col = unpack_color(colormap[byte_val]);
+            acc += col.rgb * col.rgb;
+        }
+        var avg = sqrt(acc / f32(rparams.tape_length));
+
+        // Highlight hovered cell
+        if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
+            avg = avg * 1.4 + vec3f(0.05);
+        }
+
+        // Cell boundary grid lines (fade out when zoomed out)
+        let avg_line_fade = smoothstep(0.15, 0.04, pixel_cell_size);
+        if (avg_line_fade > 0.01) {
+            let cell_dist = min(min(frac_x, 1.0 - frac_x), min(frac_y, 1.0 - frac_y));
+            let cell_lw = pixel_cell_size * 2.5;
+            let cell_t = smoothstep(0.0, cell_lw, cell_dist);
+            let lined = mix(vec3f(0.18), avg, cell_t);
+            avg = mix(avg, lined, avg_line_fade);
+        }
+
+        return vec4f(avg, 1.0);
+    }
+
+    // Tile mode: show individual bytes (zoomed in enough)
+    let local_x = u32(frac_x * f32(ts));
+    let local_y = u32(frac_y * f32(ts));
+    let byte_idx = local_y * ts + local_x;
+    let byte_val = read_soup_byte(cell_idx, byte_idx);
+    var color = unpack_color(colormap[byte_val]).rgb;
+
+    // Highlight hovered cell
+    if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
+        color = color * 1.4 + vec3f(0.08);
+    }
+
+    // Grid lines fade factor
+    let line_fade = smoothstep(0.25, 0.05, pixel_cell_size);
+
+    // Byte grid lines (thin, within cell)
+    if (pixel_cell_size < 0.05) {
+        let byte_fade = smoothstep(0.05, 0.02, pixel_cell_size);
+        let bfx = fract(frac_x * f32(ts));
+        let bfy = fract(frac_y * f32(ts));
+        let byte_dist = min(min(bfx, 1.0 - bfx), min(bfy, 1.0 - bfy));
+        let byte_lw = pixel_cell_size * f32(ts) * 1.0;
+        let byte_t = smoothstep(0.0, byte_lw, byte_dist);
+        let byte_lined = mix(vec3f(0.06), color, byte_t);
+        color = mix(color, byte_lined, byte_fade);
+    }
+
+    // Cell boundary lines (thicker, between cells)
+    if (line_fade > 0.01) {
+        let cell_dist = min(min(frac_x, 1.0 - frac_x), min(frac_y, 1.0 - frac_y));
+        let cell_lw = pixel_cell_size * 2.5;
+        let cell_t = smoothstep(0.0, cell_lw, cell_dist);
+        let cell_lined = mix(vec3f(0.18), color, cell_t);
+        color = mix(color, cell_lined, line_fade);
+    }
+
+    return vec4f(color, 1.0);
+}
+`;
+
+const HEX_RENDER_FRAGMENT = /* wgsl */ `
+const HEX_H: f32 = 0.8660254;  // sqrt(3)/2
+const CELL_SPACING: i32 = 5;   // hex-byte distance between cell centers
+
+// Map from axial offset (dq+2, dr+2) in 5x5 grid to byte index, -1 = gap
+// 19 valid positions within hex distance 2, 6 invalid corners
+const BYTE_FROM_OFFSET: array<i32, 25> = array<i32, 25>(
+    -1, -1, 14, 13, 12,
+    -1, 15,  5,  4, 11,
+    16,  6,  0,  3, 10,
+    17,  1,  2,  9, -1,
+    18,  7,  8, -1, -1
+);
+
+// Center of a hex byte in the global hex-byte grid (offset coords)
+fn byte_hex_center(hx: i32, hy: i32) -> vec2f {
+    let odd = (hy & 1) == 1;
+    return vec2f(f32(hx) + 0.5 + select(0.0, 0.5, odd), (f32(hy) + 0.5) * HEX_H);
+}
+
+// Find nearest hex-byte in the global hex grid
+fn nearest_byte_hex(gx: f32, gy: f32) -> vec2i {
+    let row_f = gy / HEX_H - 0.5;
+    let row = i32(round(row_f));
+    let odd = (row & 1) == 1;
+    let col_f = gx - 0.5 - select(0.0, 0.5, odd);
+    let col = i32(round(col_f));
+
+    var best = vec2i(col, row);
+    var best_d = 1e10;
+    for (var dy = -1; dy <= 1; dy++) {
+        for (var dx = -1; dx <= 1; dx++) {
+            let cc = col + dx;
+            let cr = row + dy;
+            let c = byte_hex_center(cc, cr);
+            let d = (gx - c.x) * (gx - c.x) + (gy - c.y) * (gy - c.y);
+            if (d < best_d) {
+                best_d = d;
+                best = vec2i(cc, cr);
+            }
+        }
+    }
+    return best;
+}
+
+// Find which cell a hex byte at offset (col, row) belongs to
+// Cells on offset hex grid: cell (cx, cy) center at offset (cx*5 + (cy&1)*2, cy*5)
+// Returns vec3i(cell_x, cell_y, byte_index) or byte_index=-1 if gap
+const ODD_SHIFT: i32 = 2;
+
+fn find_cell(col: i32, row: i32) -> vec3i {
+    let cy0 = i32(floor(f32(row) / f32(CELL_SPACING)));
+
+    var best_cx = 0;
+    var best_cy = 0;
+    var best_dist = 100;
+
+    for (var dcy = 0; dcy <= 1; dcy++) {
+        let cy = cy0 + dcy;
+        let center_row = cy * CELL_SPACING;
+        let shift = (cy & 1) * ODD_SHIFT;
+        let adj_col = col - shift;
+        let cx0 = i32(floor(f32(adj_col) / f32(CELL_SPACING)));
+
+        for (var dcx = 0; dcx <= 1; dcx++) {
+            let cx = cx0 + dcx;
+            let center_col = cx * CELL_SPACING + shift;
+
+            // Convert both to axial for hex distance
+            let q_byte = col - (row - (row & 1)) / 2;
+            let q_cell = center_col - (center_row - (center_row & 1)) / 2;
+            let dq = q_byte - q_cell;
+            let dr = row - center_row;
+            let dist = max(max(abs(dq), abs(dr)), abs(dq + dr));
+
+            if (dist < best_dist) {
+                best_dist = dist;
+                best_cx = cx;
+                best_cy = cy;
+            }
+        }
+    }
+
+    if (best_dist > 2) {
+        return vec3i(best_cx, best_cy, -1); // gap between cells
+    }
+
+    // Recompute axial diff for byte lookup
+    let center_col = best_cx * CELL_SPACING + (best_cy & 1) * ODD_SHIFT;
+    let center_row = best_cy * CELL_SPACING;
+    let q_byte = col - (row - (row & 1)) / 2;
+    let q_cell = center_col - (center_row - (center_row & 1)) / 2;
+    let dq = q_byte - q_cell;
+    let dr = row - center_row;
+    let lookup_idx = (dq + 2) * 5 + (dr + 2);
+    let byte_idx = BYTE_FROM_OFFSET[lookup_idx];
+
+    return vec3i(best_cx, best_cy, byte_idx);
+}
+
+@fragment
+fn fs_main(in: VertexOutput) -> @location(0) vec4f {
+    let sw = i32(rparams.soup_width);
+    let sh = i32(rparams.soup_height);
+
+    let aspect = rparams.canvas_width / rparams.canvas_height;
+    let zoom = rparams.zoom;
+
+    // Map UV to hex-byte pixel space
+    let pixel_x = in.uv.x * zoom + rparams.offset_x;
+    let pixel_y = (1.0 - in.uv.y) * zoom / aspect + rparams.offset_y;
+
+    // Find nearest hex byte (offset coords)
+    let hex = nearest_byte_hex(pixel_x, pixel_y);
+    let hx = hex.x;
+    let hy = hex.y;
+
+    // Find which cell this byte belongs to (using offset coords)
+    let cell_info = find_cell(hx, hy);
+    let cell_a = cell_info.x;
+    let cell_b = cell_info.y;
+    let byte_idx_i = cell_info.z;
+
+    // Out of bounds
+    if (cell_a < 0 || cell_a >= sw || cell_b < 0 || cell_b >= sh) {
+        return vec4f(0.04, 0.04, 0.06, 1.0);
+    }
+
+    let cell_idx = u32(cell_b) * u32(sw) + u32(cell_a);
+    let in_gap = byte_idx_i < 0;
+
+    // LOD: bytes per screen pixel
+    let bytes_per_pixel = zoom / rparams.canvas_width;
+
+    // Helper: compute cell average color
+    // (inlined below to avoid WGSL function limitations)
+
+    // Zoomed out: average all 19 bytes per cell
+    if (rparams.show_average != 0u || bytes_per_pixel > 1.0) {
+        var acc = vec3f(0.0);
+        for (var i = 0u; i < rparams.tape_length; i++) {
+            let bv = read_soup_byte(cell_idx, i);
+            let col = unpack_color(colormap[bv]);
+            acc += col.rgb * col.rgb;
+        }
+        var avg = sqrt(acc / f32(rparams.tape_length));
+        if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
+            avg = avg * 1.4 + vec3f(0.05);
+        }
+        // Gaps: blend toward cell color when zoomed out
+        if (in_gap) {
+            let gap_blend = smoothstep(0.2, 1.0, bytes_per_pixel);
+            avg = mix(avg * 0.3, avg, gap_blend);
+        }
+        return vec4f(avg, 1.0);
+    }
+
+    // Gap between cells: blend from dark to cell avg as zoom decreases
+    if (in_gap) {
+        let gap_blend = smoothstep(0.1, 0.6, bytes_per_pixel);
+        if (gap_blend < 0.01) {
+            return vec4f(0.04, 0.04, 0.06, 1.0);
+        }
+        var acc = vec3f(0.0);
+        for (var i = 0u; i < rparams.tape_length; i++) {
+            let bv = read_soup_byte(cell_idx, i);
+            let col = unpack_color(colormap[bv]);
+            acc += col.rgb * col.rgb;
+        }
+        var avg = sqrt(acc / f32(rparams.tape_length));
+        let gap_color = mix(vec3f(0.04, 0.04, 0.06), avg * 0.7, gap_blend);
+        return vec4f(gap_color, 1.0);
+    }
+
+    let byte_idx = u32(byte_idx_i);
+
+    // Read byte value and get color
+    let byte_val = read_soup_byte(cell_idx, byte_idx);
+    var color = unpack_color(colormap[byte_val]).rgb;
+
+    // Highlight hovered cell
+    if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
+        color = color * 1.4 + vec3f(0.08);
+    }
+
+    // Grid lines (fade out as zoom increases)
+    let line_fade = smoothstep(0.3, 0.08, bytes_per_pixel);
+    if (line_fade > 0.01) {
+        let center = byte_hex_center(hx, hy);
+        let dist_to_center = distance(vec2f(pixel_x, pixel_y), center);
+
+        var min_neighbor_dist = 1e10;
+        let h_odd = (hy & 1) == 1;
+        let offsets_even = array<vec2i, 6>(
+            vec2i(-1, -1), vec2i(0, -1),
+            vec2i(-1, 0), vec2i(1, 0),
+            vec2i(-1, 1), vec2i(0, 1)
+        );
+        let offsets_odd = array<vec2i, 6>(
+            vec2i(0, -1), vec2i(1, -1),
+            vec2i(-1, 0), vec2i(1, 0),
+            vec2i(0, 1), vec2i(1, 1)
+        );
+        for (var n = 0; n < 6; n++) {
+            var off: vec2i;
+            if (h_odd) { off = offsets_odd[n]; } else { off = offsets_even[n]; }
+            let nc = byte_hex_center(hx + off.x, hy + off.y);
+            let nd = distance(vec2f(pixel_x, pixel_y), nc);
+            min_neighbor_dist = min(min_neighbor_dist, nd);
+        }
+
+        let boundary_raw = (min_neighbor_dist - dist_to_center) * 0.5;
+
+        // Check if boundary is between cells or gap
+        var is_cell_boundary = false;
+        for (var n = 0; n < 6; n++) {
+            var off: vec2i;
+            if (h_odd) { off = offsets_odd[n]; } else { off = offsets_even[n]; }
+            let nhx = hx + off.x;
+            let nhy = hy + off.y;
+            let n_cell = find_cell(nhx, nhy);
+            if (n_cell.z < 0 || n_cell.x != cell_a || n_cell.y != cell_b) {
+                let nc = byte_hex_center(nhx, nhy);
+                let nd = distance(vec2f(pixel_x, pixel_y), nc);
+                if (abs(nd - min_neighbor_dist) < 0.01) {
+                    is_cell_boundary = true;
+                    break;
+                }
+            }
+        }
+
+        let line_w = bytes_per_pixel * select(1.0, 2.5, is_cell_boundary);
+        let line_color = select(vec3f(0.06), vec3f(0.18), is_cell_boundary);
+        if (boundary_raw < line_w) {
+            let t = smoothstep(0.0, line_w, boundary_raw);
+            let lined = mix(line_color, color, t);
+            color = mix(color, lined, line_fade);
+        }
+    }
+
+    return vec4f(color, 1.0);
+}
+`;
+
+export function createRenderShader(gridType: GridType): string {
+	const fragmentBlock = gridType === 'hex' ? HEX_RENDER_FRAGMENT : SQUARE_RENDER_FRAGMENT;
+
+	return /* wgsl */ `
 
 struct RenderParams {
     soup_width: u32,
@@ -899,7 +1300,7 @@ struct RenderParams {
     zoom: f32,         // cells visible across width
     offset_x: f32,     // pan offset in cell units
     offset_y: f32,
-    _pad1: u32,
+    tape_length: u32,
     _pad2: u32,
 }
 
@@ -935,84 +1336,12 @@ fn unpack_color(packed: u32) -> vec4f {
 }
 
 fn read_soup_byte(cell: u32, byte_idx: u32) -> u32 {
-    let word_idx = cell * 4u + (byte_idx >> 2u);
+    let wpc = (rparams.tape_length + 3u) / 4u;
+    let word_idx = cell * wpc + (byte_idx >> 2u);
     let shift = (byte_idx & 3u) * 8u;
     return (soup[word_idx] >> shift) & 0xffu;
 }
 
-@fragment
-fn fs_main(in: VertexOutput) -> @location(0) vec4f {
-    let sw = f32(rparams.soup_width);
-    let sh = f32(rparams.soup_height);
-    let ts = rparams.tile_size;
-
-    // Zoom/pan: convert UV to grid coordinates
-    let aspect = rparams.canvas_width / rparams.canvas_height;
-    let cells_x = rparams.zoom;
-    let cells_y = rparams.zoom / aspect;
-
-    // Grid position in cell units (with sub-cell precision)
-    let grid_x = in.uv.x * cells_x + rparams.offset_x;
-    let grid_y = (1.0 - in.uv.y) * cells_y + rparams.offset_y;
-
-    // Clamp to grid bounds
-    if (grid_x < 0.0 || grid_x >= sw || grid_y < 0.0 || grid_y >= sh) {
-        return vec4f(0.04, 0.04, 0.06, 1.0);
-    }
-
-    let cell_x = u32(grid_x);
-    let cell_y = u32(grid_y);
-    let cell_idx = cell_y * u32(sw) + cell_x;
-
-    // Sub-cell position (0..1 within the cell)
-    let frac_x = fract(grid_x);
-    let frac_y = fract(grid_y);
-
-    // Determine pixel size relative to cell for grid lines
-    let pixel_cell_size = cells_x / rparams.canvas_width; // cells per pixel
-
-    if (rparams.show_average != 0u || pixel_cell_size > 0.25) {
-        // Average mode OR zoomed out too far to see individual bytes
-        var acc = vec3f(0.0);
-        for (var i = 0u; i < 16u; i++) {
-            let byte_val = read_soup_byte(cell_idx, i);
-            let col = unpack_color(colormap[byte_val]);
-            acc += col.rgb * col.rgb;
-        }
-        var avg = sqrt(acc / 16.0);
-
-        // Highlight hovered cell
-        if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
-            avg = avg * 1.4 + vec3f(0.05);
-        }
-
-        // Subtle grid lines when somewhat zoomed in
-        if (pixel_cell_size < 0.15) {
-            let edge = step(0.97, max(frac_x, frac_y));
-            avg = mix(avg, vec3f(0.15), edge * 0.3);
-        }
-
-        return vec4f(avg, 1.0);
-    }
-
-    // Tile mode: show individual bytes (zoomed in enough)
-    let local_x = u32(frac_x * f32(ts));
-    let local_y = u32(frac_y * f32(ts));
-    let byte_idx = local_y * ts + local_x;
-    let byte_val = read_soup_byte(cell_idx, byte_idx);
-    var color = unpack_color(colormap[byte_val]).rgb;
-
-    // Highlight hovered cell
-    if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
-        color = color * 1.4 + vec3f(0.08);
-    }
-
-    // Subtle byte grid lines when very zoomed in
-    if (pixel_cell_size < 0.05) {
-        let byte_edge = step(0.92, max(fract(frac_x * f32(ts)), fract(frac_y * f32(ts))));
-        color = mix(color, vec3f(0.08), byte_edge * 0.4);
-    }
-
-    return vec4f(color, 1.0);
-}
+${fragmentBlock}
 `;
+}
