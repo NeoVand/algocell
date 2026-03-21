@@ -11,6 +11,7 @@
 	import { getCellData } from '$lib/sim/soup';
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
+	import { untrack } from 'svelte';
 
 	let colormapName: ColormapName = $state('default');
 	let colormap = $state(createColormap('default'));
@@ -34,6 +35,7 @@
 	let showSpeedMenu = $state(false);
 	let showSettings = $state(false);
 	let toolbarCollapsed = $state(false);
+	let openTip = $state<string | null>(null);
 	let showInfoChart = $state(true);
 
 	// Frequency chart: track top N bytes normalized over time
@@ -143,8 +145,8 @@
 	$effect(() => {
 		if (!canvas) return;
 
-		const eng = new GPUEngine(seed);
-		eng.noiseExp = noiseExp;
+		const initialSeed = untrack(() => seed);
+		const eng = new GPUEngine(initialSeed);
 
 		eng.init(canvas).then((ok) => {
 			if (!ok) {
@@ -519,12 +521,12 @@
 			onclick={togglePlay}
 		>
 			{#if playing}
-				<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+				<svg width="16" height="16" viewBox="0 0 14 14" fill="currentColor">
 					<rect x="2" y="1" width="3.5" height="12" rx="1" />
 					<rect x="8.5" y="1" width="3.5" height="12" rx="1" />
 				</svg>
 			{:else}
-				<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+				<svg width="16" height="16" viewBox="0 0 14 14" fill="currentColor">
 					<path d="M3 1.5v11l9-5.5z" />
 				</svg>
 			{/if}
@@ -578,7 +580,7 @@
 			title="Settings"
 			onclick={() => (showSettings = !showSettings)}
 		>
-			<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
+			<svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
 				<path d="M2 3.5h10M2 7h10M2 10.5h10" stroke-linecap="round"/>
 				<circle cx="5" cy="3.5" r="1.3" fill="currentColor" stroke="none"/>
 				<circle cx="9" cy="7" r="1.3" fill="currentColor" stroke="none"/>
@@ -710,7 +712,10 @@
 		<div class="param">
 			<div class="param-head">
 				<label class="param-label" for="seed-input">Seed</label>
-				<span class="param-info" title="Random seed for initial soup generation. Changing seed requires reset.">?</span>
+				<span class="param-info-wrap" class:show-tip={openTip === 'seed'}>
+					<button class="param-info" onmouseenter={() => { openTip = 'seed'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'seed' ? null : 'seed'; }}>?</button>
+					<span class="param-tip">Random seed for initial soup generation. Changing seed requires reset.</span>
+				</span>
 			</div>
 			<div class="seed-row">
 				<input
@@ -732,8 +737,11 @@
 
 		<div class="param">
 			<div class="param-head">
-				<label class="param-label" for="noise-input">Mutation</label>
-				<span class="param-info" title="Rate of random byte flips per batch. Higher exponent = fewer mutations. Applied live without reset.">?</span>
+				<label class="param-label" for="noise-input">Mutation rate</label>
+				<span class="param-info-wrap" class:show-tip={openTip === 'mutation'}>
+					<button class="param-info" onmouseenter={() => { openTip = 'mutation'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'mutation' ? null : 'mutation'; }}>?</button>
+					<span class="param-tip">Random byte flips per batch. Higher = more mutations = faster evolution. Applied live.</span>
+				</span>
 				<span class="param-val">1/2<sup>{noiseExp}</sup></span>
 			</div>
 			<div class="slider-track-wrap">
@@ -741,11 +749,11 @@
 					id="noise-input"
 					type="range"
 					class="slider"
-					value={noiseExp}
+					value={11 - noiseExp}
 					min="1"
 					max="10"
 					step="1"
-					oninput={handleNoiseExpChange}
+					oninput={(e) => { const val = 11 - parseInt((e.target as HTMLInputElement).value); if (!isNaN(val) && engine) { noiseExp = val; engine.noiseExp = val; } }}
 				/>
 			</div>
 		</div>
@@ -753,7 +761,10 @@
 		<div class="param">
 			<div class="param-head">
 				<label class="param-label" for="pairs-input">Pairs/batch</label>
-				<span class="param-info" title="Number of random cell pairs evaluated per simulation step. More pairs = faster evolution but higher GPU load. Applied live.">?</span>
+				<span class="param-info-wrap" class:show-tip={openTip === 'pairs'}>
+					<button class="param-info" onmouseenter={() => { openTip = 'pairs'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'pairs' ? null : 'pairs'; }}>?</button>
+					<span class="param-tip">Cell pairs evaluated per step. More = faster evolution, higher GPU load. Applied live.</span>
+				</span>
 				<span class="param-val">{engine?.pairCount ?? MAX_BATCH_PAIR_N}</span>
 			</div>
 			<div class="slider-track-wrap">
@@ -773,7 +784,10 @@
 		<div class="param">
 			<div class="param-head">
 				<label class="param-label">Colormap</label>
-				<span class="param-info" title="Color scheme for visualizing byte values. Each Z80 opcode category gets a distinct color family.">?</span>
+				<span class="param-info-wrap" class:show-tip={openTip === 'cmap'}>
+					<button class="param-info" onmouseenter={() => { openTip = 'cmap'; }} onmouseleave={() => { openTip = null; }} onclick={() => { openTip = openTip === 'cmap' ? null : 'cmap'; }}>?</button>
+					<span class="param-tip">Color scheme for byte values. Each Z80 opcode category gets a distinct color family.</span>
+				</span>
 			</div>
 			<div class="cmap-row">
 				{#each COLORMAP_NAMES as name (name)}
@@ -902,9 +916,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
-		border-radius: 14px;
+		width: 34px;
+		height: 34px;
+		border-radius: 17px;
 		border: none;
 		background: transparent;
 		cursor: pointer;
@@ -916,14 +930,14 @@
 		background: var(--bg-hover);
 	}
 	.tb.mono {
-		font-size: 11px;
+		font-size: 13px;
 		font-family: monospace;
 	}
 	.tb-sep {
 		width: 1px;
-		height: 14px;
+		height: 16px;
 		background: var(--border-subtle);
-		margin: 0 1px;
+		margin: 0 2px;
 		flex-shrink: 0;
 	}
 	.collapse-btn {
@@ -952,8 +966,8 @@
 		min-width: 48px;
 	}
 	.speed-opt {
-		padding: 6px 12px;
-		font-size: 11px;
+		padding: 7px 14px;
+		font-size: 13px;
 		font-family: monospace;
 		color: var(--text-secondary);
 		background: transparent;
@@ -977,14 +991,14 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0;
-		padding: 6px 10px;
+		padding: 8px 12px;
 		background: var(--bg-panel);
 		border: 1px solid var(--border-subtle);
 		border-radius: 10px;
 		backdrop-filter: blur(12px);
-		font-size: 11px;
+		font-size: 13px;
 		font-family: monospace;
-		min-width: 240px;
+		min-width: 260px;
 	}
 	.info-row {
 		display: flex;
@@ -999,7 +1013,7 @@
 	.info-label {
 		color: var(--text-subtle);
 		text-transform: uppercase;
-		font-size: 9px;
+		font-size: 10px;
 		letter-spacing: 0.05em;
 	}
 	.info-value {
@@ -1052,12 +1066,12 @@
 		aspect-ratio: 1;
 		border: none;
 		cursor: pointer;
-		font-size: 7.5px;
+		font-size: 8.5px;
 		font-family: monospace;
 		font-weight: 600;
 		text-align: center;
 		line-height: 1.15;
-		padding: 2px;
+		padding: 3px;
 		overflow: hidden;
 		transition: opacity 0.1s;
 	}
@@ -1102,7 +1116,7 @@
 		margin-bottom: 12px;
 	}
 	.panel-title {
-		font-size: 10px;
+		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		color: var(--text-subtle);
@@ -1112,8 +1126,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 20px;
-		height: 20px;
+		width: 22px;
+		height: 22px;
 		border-radius: 6px;
 		border: none;
 		background: transparent;
@@ -1127,9 +1141,9 @@
 
 	/* ── Settings panel ── */
 	.settings-panel {
-		top: 56px;
+		top: 60px;
 		right: 12px;
-		width: 240px;
+		width: 260px;
 	}
 	.param {
 		margin-bottom: 14px;
@@ -1144,29 +1158,60 @@
 		margin-bottom: 6px;
 	}
 	.param-label {
-		font-size: 10px;
+		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		color: var(--text-subtle);
+	}
+	.param-info-wrap {
+		position: relative;
+		display: inline-flex;
+		flex-shrink: 0;
 	}
 	.param-info {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 14px;
-		height: 14px;
+		width: 16px;
+		height: 16px;
 		border-radius: 50%;
 		background: var(--bg-muted);
+		border: none;
 		color: var(--text-subtle);
-		font-size: 9px;
+		font-size: 10px;
 		font-family: Georgia, serif;
 		font-style: italic;
-		cursor: help;
+		cursor: pointer;
 		flex-shrink: 0;
+		transition: background 0.15s;
+	}
+	.param-info:hover {
+		background: var(--bg-hover);
+		color: var(--text-secondary);
+	}
+	.param-tip {
+		display: none;
+		position: absolute;
+		top: calc(100% + 6px);
+		right: 0;
+		width: 200px;
+		padding: 8px 10px;
+		background: var(--bg-elevated);
+		border: 1px solid var(--border-muted);
+		border-radius: 6px;
+		font-size: 11px;
+		font-style: normal;
+		font-family: -apple-system, sans-serif;
+		line-height: 1.4;
+		color: var(--text-muted);
+		z-index: 10;
+	}
+	.param-info-wrap.show-tip .param-tip {
+		display: block;
 	}
 	.param-val {
 		margin-left: auto;
-		font-size: 11px;
+		font-size: 13px;
 		font-family: monospace;
 		color: var(--accent);
 		font-variant-numeric: tabular-nums;
@@ -1182,8 +1227,8 @@
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
 		border-radius: 6px;
-		padding: 5px 8px;
-		font-size: 12px;
+		padding: 6px 10px;
+		font-size: 13px;
 		font-family: monospace;
 		color: var(--text-primary);
 		outline: none;
@@ -1269,8 +1314,8 @@
 	}
 	.cmap-btn {
 		flex: 1;
-		padding: 4px 0;
-		font-size: 9px;
+		padding: 5px 0;
+		font-size: 10px;
 		font-family: monospace;
 		text-transform: capitalize;
 		color: var(--text-muted);
@@ -1349,13 +1394,13 @@
 		justify-content: space-between;
 		padding: 14px 16px;
 		border-bottom: 1px solid var(--border-subtle);
-		font-size: 13px;
+		font-size: 14px;
 		font-weight: 600;
 		color: var(--text-primary);
 	}
 	.modal-body {
 		padding: 16px;
-		font-size: 12px;
+		font-size: 13px;
 		line-height: 1.6;
 		color: var(--text-muted);
 	}
