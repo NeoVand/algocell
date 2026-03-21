@@ -34,9 +34,27 @@
 
 	// Compute grid dimensions from viewport aspect ratio
 	// ~20K cells: enough for emergence, large enough to see patterns clearly
-	function computeGridDimensions(vw: number, vh: number): { w: number; h: number } {
+	// For hex grids, cells are visually compressed vertically by sqrt(3)/2 ≈ 0.866
+	// so we can fit more rows in the same vertical space
+	const HEX_Y_RATIO = 0.866025404; // sqrt(3)/2
+	function computeGridDimensions(
+		vw: number,
+		vh: number,
+		type: GridType = 'square'
+	): { w: number; h: number } {
 		const aspect = vw / vh;
 		const TARGET_CELLS = 20_000;
+		if (type === 'hex') {
+			// Hex cells are compressed vertically: effective aspect = aspect / HEX_Y_RATIO
+			// This means we need more rows to fill the same visual height
+			const effectiveAspect = aspect * HEX_Y_RATIO;
+			const h = Math.round(Math.sqrt(TARGET_CELLS / effectiveAspect));
+			const w = Math.round(h * effectiveAspect);
+			return {
+				w: Math.max(40, Math.min(400, w)),
+				h: Math.max(40, Math.min(400, h))
+			};
+		}
 		const h = Math.round(Math.sqrt(TARGET_CELLS / aspect));
 		const w = Math.round(h * aspect);
 		return {
@@ -139,12 +157,24 @@
 		const tooltipH = isHex ? 260 : 196;
 		const vw = window.innerWidth;
 		const vh = window.innerHeight;
-		const gap = 8;
-		let x = mx + gap;
-		let y = my + gap;
-		if (x + tooltipW > vw) x = mx - tooltipW - gap;
-		if (y + tooltipH > vh) y = my - tooltipH - gap;
+		const gap = 12;
+
+		// Center tooltip horizontally on the cursor
+		let x = mx - tooltipW / 2;
+		let y: number;
+
+		// Try placing above the cursor first
+		if (my - gap - tooltipH >= 4) {
+			y = my - gap - tooltipH;
+		} else {
+			// Place below
+			y = my + gap;
+		}
+
+		// Keep within viewport
+		if (x + tooltipW > vw - 4) x = vw - 4 - tooltipW;
 		if (x < 4) x = 4;
+		if (y + tooltipH > vh - 4) y = vh - 4 - tooltipH;
 		if (y < 4) y = 4;
 		return `left:${x}px;top:${y}px`;
 	}
@@ -166,7 +196,7 @@
 
 		// Compute grid dimensions from actual viewport on first mount
 		if (!gridInitialized) {
-			const dims = computeGridDimensions(window.innerWidth, window.innerHeight);
+			const dims = computeGridDimensions(window.innerWidth, window.innerHeight, gridType);
 			gridWidth = dims.w;
 			gridHeight = dims.h;
 			gridInitialized = true;
@@ -545,6 +575,10 @@
 
 	function handleGridTypeChange(type: GridType) {
 		gridType = type;
+		// Recompute grid dimensions for the new grid type
+		const dims = computeGridDimensions(window.innerWidth, window.innerHeight, type);
+		gridWidth = dims.w;
+		gridHeight = dims.h;
 		applyGridConfig();
 	}
 
@@ -3405,7 +3439,7 @@ graph TD
 		/* Genome tooltip: smaller on mobile */
 		.genome-tip {
 			transform: scale(0.8);
-			transform-origin: top left;
+			transform-origin: top center;
 		}
 	}
 </style>
