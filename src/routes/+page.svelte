@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { GPUEngine } from '$lib/gpu/engine';
 	import {
-		SOUP_WIDTH,
-		SOUP_HEIGHT,
 		DEFAULT_SEED,
 		DEFAULT_NOISE_EXP,
 		MAX_BATCH_PAIR_N,
@@ -33,8 +31,24 @@
 	let playing = $state(true);
 	let speed = $state(1);
 	let gridType: GridType = $state('square');
-	let gridWidth = $state(SOUP_WIDTH);
-	let gridHeight = $state(SOUP_HEIGHT);
+
+	// Compute grid dimensions from viewport aspect ratio
+	// ~20K cells: enough for emergence, large enough to see patterns clearly
+	function computeGridDimensions(vw: number, vh: number): { w: number; h: number } {
+		const aspect = vw / vh;
+		const TARGET_CELLS = 20_000;
+		const h = Math.round(Math.sqrt(TARGET_CELLS / aspect));
+		const w = Math.round(h * aspect);
+		return {
+			w: Math.max(40, Math.min(400, w)),
+			h: Math.max(40, Math.min(400, h))
+		};
+	}
+
+	// Initial dimensions — will be recomputed on mount from actual viewport
+	let gridWidth = $state(200);
+	let gridHeight = $state(200);
+	let gridInitialized = false;
 
 	// Stats
 	let batchCount = $state(0);
@@ -150,12 +164,25 @@
 	$effect(() => {
 		if (!canvas) return;
 
+		// Compute grid dimensions from actual viewport on first mount
+		if (!gridInitialized) {
+			const dims = computeGridDimensions(window.innerWidth, window.innerHeight);
+			gridWidth = dims.w;
+			gridHeight = dims.h;
+			gridInitialized = true;
+		}
+
 		const initialSeed = untrack(() => seed);
 		const initialConfig: GridConfig = untrack(() => ({
 			width: gridWidth,
 			height: gridHeight,
 			gridType: gridType
 		}));
+		// Set canvas pixel dimensions before init so resetView gets correct aspect
+		const dpr = window.devicePixelRatio || 1;
+		canvas.width = canvasW = Math.round(canvas.clientWidth * dpr);
+		canvas.height = canvasH = Math.round(canvas.clientHeight * dpr);
+
 		const eng = new GPUEngine(initialSeed, initialConfig);
 
 		eng.init(canvas).then((ok) => {
@@ -339,6 +366,83 @@
 		engine.zoomAt(sx, sy, canvasW, canvasH, factor);
 	}
 
+	// --- Touch events for mobile pinch-zoom & pan ---
+	let lastTouchDist = 0;
+	let lastTouchX = 0;
+	let lastTouchY = 0;
+	let touchPanning = false;
+
+	function handleTouchStart(e: TouchEvent) {
+		if (!engine || !canvas) return;
+		e.preventDefault();
+		if (e.touches.length === 2) {
+			// Pinch start
+			const dx = e.touches[1].clientX - e.touches[0].clientX;
+			const dy = e.touches[1].clientY - e.touches[0].clientY;
+			lastTouchDist = Math.sqrt(dx * dx + dy * dy);
+			lastTouchX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+			lastTouchY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+			touchPanning = false;
+		} else if (e.touches.length === 1) {
+			// Pan start
+			touchPanning = true;
+			panStartX = e.touches[0].clientX;
+			panStartY = e.touches[0].clientY;
+			hoveredCell = -1;
+			cellData = null;
+			disasmLines = [];
+			engine.setHoverCell(-1);
+		}
+	}
+
+	function handleTouchMove(e: TouchEvent) {
+		if (!engine || !canvas) return;
+		e.preventDefault();
+		const rect = canvas.getBoundingClientRect();
+		if (e.touches.length === 2) {
+			// Pinch zoom
+			const dx = e.touches[1].clientX - e.touches[0].clientX;
+			const dy = e.touches[1].clientY - e.touches[0].clientY;
+			const dist = Math.sqrt(dx * dx + dy * dy);
+			if (lastTouchDist > 0) {
+				const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+				const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+				const sx = (midX - rect.left) * (canvasW / rect.width);
+				const sy = (midY - rect.top) * (canvasH / rect.height);
+				const factor = lastTouchDist / dist; // invert: pinch out = zoom in
+				engine.zoomAt(sx, sy, canvasW, canvasH, factor);
+				// Also pan with pinch movement
+				const panDx = midX - lastTouchX;
+				const panDy = midY - lastTouchY;
+				engine.pan(panDx, panDy, rect.width, rect.height);
+				lastTouchX = midX;
+				lastTouchY = midY;
+			}
+			lastTouchDist = dist;
+			touchPanning = false;
+		} else if (e.touches.length === 1 && touchPanning) {
+			// Pan
+			const dx = e.touches[0].clientX - panStartX;
+			const dy = e.touches[0].clientY - panStartY;
+			engine.pan(dx, dy, rect.width, rect.height);
+			panStartX = e.touches[0].clientX;
+			panStartY = e.touches[0].clientY;
+		}
+	}
+
+	function handleTouchEnd(e: TouchEvent) {
+		if (e.touches.length === 0) {
+			lastTouchDist = 0;
+			touchPanning = false;
+		} else if (e.touches.length === 1) {
+			// Went from pinch to single finger — start pan
+			lastTouchDist = 0;
+			touchPanning = true;
+			panStartX = e.touches[0].clientX;
+			panStartY = e.touches[0].clientY;
+		}
+	}
+
 	function handleCanvasMouseLeave() {
 		hoveredCell = -1;
 		cellData = null;
@@ -349,7 +453,7 @@
 	}
 
 	function handleCanvasDblClick() {
-		engine?.resetView();
+		engine?.resetView(canvasW, canvasH);
 	}
 
 	function handleReset() {
@@ -390,7 +494,7 @@
 	function applyGridConfig() {
 		if (!engine) return;
 		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
-		engine.changeGridConfig(config);
+		engine.changeGridConfig(config, canvasW, canvasH);
 		// Reset stats
 		batchCount = 0;
 		opsPerSec = 0;
@@ -408,10 +512,12 @@
 	}
 
 	function formatNumber(n: number): string {
+		// Fixed-width: always N.Ns where N is digits and s is suffix
+		// This prevents layout shift when digit count changes
 		if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + 'B';
 		if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
 		if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
-		return n.toString();
+		return n.toFixed(0).padStart(3, '\u2007'); // figure space padding
 	}
 
 	function hexByte(b: number): string {
@@ -497,7 +603,7 @@
 				showInfoChart = !showInfoChart;
 				break;
 			case 'KeyF':
-				engine?.resetView();
+				engine?.resetView(canvasW, canvasH);
 				break;
 			case 'Escape':
 				showHelp = false;
@@ -525,13 +631,16 @@
 	<canvas
 		bind:this={canvas}
 		class="block h-full w-full"
-		style="cursor:{isPanning ? 'grabbing' : 'crosshair'}"
+		style="cursor:{isPanning ? 'grabbing' : 'crosshair'};touch-action:none"
 		onmousemove={handleCanvasMouseMove}
 		onmouseleave={handleCanvasMouseLeave}
 		onmousedown={handleCanvasMouseDown}
 		onmouseup={handleCanvasMouseUp}
 		onwheel={handleCanvasWheel}
 		ondblclick={handleCanvasDblClick}
+		ontouchstart={handleTouchStart}
+		ontouchmove={handleTouchMove}
+		ontouchend={handleTouchEnd}
 		oncontextmenu={(e) => e.preventDefault()}
 	></canvas>
 </div>
@@ -1325,7 +1434,7 @@
 						Params
 					</button>
 					<button
-						class="modal-tab"
+						class="modal-tab tab-keys"
 						class:active={helpTab === 'keys'}
 						onclick={() => (helpTab = 'keys')}
 					>
@@ -2245,7 +2354,7 @@ graph TD
 		backdrop-filter: blur(12px);
 		font-size: 11px;
 		font-family: monospace;
-		width: 252px;
+		width: 260px;
 	}
 	.info-row {
 		display: flex;
@@ -2266,6 +2375,9 @@ graph TD
 	.info-value {
 		color: var(--text-secondary);
 		font-variant-numeric: tabular-nums;
+		min-width: 4ch;
+		text-align: right;
+		display: inline-block;
 	}
 	.info-sep {
 		width: 1px;
@@ -3088,46 +3200,151 @@ graph TD
 
 	/* ── Mobile ── */
 	@media (max-width: 768px) {
+		/* Toolbar: horizontal pill at bottom center */
 		.toolbar {
 			top: auto;
-			bottom: 12px;
-			right: 12px;
-			flex-direction: column;
+			bottom: 8px;
+			right: auto;
+			left: 50%;
+			transform: translateX(-50%);
+			flex-direction: row;
 			width: auto;
 		}
+		.toolbar.collapsed {
+			left: auto;
+			right: 8px;
+			transform: none;
+		}
 		.toolbar-buttons {
-			flex-direction: column;
-			max-width: unset;
+			flex-direction: row;
+			max-width: 400px;
 		}
 		.toolbar-buttons.hidden {
-			max-height: 0;
-			max-width: unset;
+			max-height: unset;
+			max-width: 0;
 			opacity: 0;
 			overflow: hidden;
 			pointer-events: none;
 		}
 		.tb-sep {
-			width: 14px;
-			height: 1px;
-			margin: 1px 0;
+			width: 1px;
+			height: 14px;
+			margin: 0 1px;
 		}
 		.speed-menu {
-			top: 50%;
-			left: auto;
-			right: calc(100% + 6px);
-			transform: translateY(-50%);
+			top: auto;
+			bottom: calc(100% + 6px);
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
 		}
+
+		/* Info bar: compact at top-left, scaled down */
 		.info-bar {
 			bottom: auto;
-			top: 12px;
-			left: 12px;
-			min-width: 200px;
+			top: 8px;
+			left: 8px;
+			width: auto;
+			min-width: 0;
+			max-width: min(260px, calc(100vw - 16px));
+			padding: 6px 8px;
+			font-size: 10px;
+			border-radius: 8px;
 		}
+		.info-row {
+			gap: 5px;
+		}
+		.info-label {
+			font-size: 8px;
+		}
+		.info-value {
+			font-size: 10px;
+		}
+		.info-chart-svg {
+			height: 56px;
+		}
+		.freq-grid {
+			grid-template-columns: repeat(5, 1fr);
+			gap: 2px;
+		}
+		.freq-cell {
+			width: auto;
+			height: 28px;
+			font-size: 7px;
+			border-radius: 4px;
+			padding: 1px;
+		}
+		.freq-rank {
+			font-size: 5px;
+			top: 1px;
+			left: 2px;
+		}
+
+		/* Settings panel: full width at bottom above toolbar */
 		.settings-panel {
 			top: auto;
-			bottom: 56px;
-			right: 12px;
-			width: 220px;
+			bottom: 52px;
+			right: 8px;
+			left: 8px;
+			width: auto;
+			max-height: calc(100vh - 120px);
+			overflow-y: auto;
+		}
+
+		/* Help modal: full-screen on mobile */
+		.modal {
+			max-width: 100%;
+			width: 100%;
+			height: 100%;
+			max-height: 100%;
+			border-radius: 0;
+			display: flex;
+			flex-direction: column;
+		}
+		.modal-header {
+			padding: 4px 8px 0 8px;
+			flex-shrink: 0;
+		}
+		.modal-tabs {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+			gap: 0;
+		}
+		.modal-tabs::-webkit-scrollbar {
+			display: none;
+		}
+		.modal-tab {
+			padding: 6px 8px;
+			font-size: 10px;
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
+		.modal-tab svg {
+			display: none;
+		}
+		.modal-body {
+			max-height: none;
+			flex: 1;
+			overflow-y: auto;
+			padding: 12px;
+			font-size: 12px;
+		}
+		.modal-backdrop {
+			align-items: stretch;
+			justify-content: stretch;
+		}
+
+		/* Hide keys tab on mobile (no keyboard) */
+		.tab-keys {
+			display: none;
+		}
+
+		/* Genome tooltip: smaller on mobile */
+		.genome-tip {
+			transform: scale(0.8);
+			transform-origin: top left;
 		}
 	}
 </style>

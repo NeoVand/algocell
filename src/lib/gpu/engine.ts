@@ -110,7 +110,7 @@ export class GPUEngine {
 		config: GridConfig = DEFAULT_GRID_CONFIG
 	) {
 		this.gridConfig = { ...config };
-		this.view.zoom = config.width;
+		this.view.zoom = config.width; // rough default, resetView corrects after init
 		this.cpuRng = new SplitMix64(seed);
 		this.colormap = createColormap('rainbow');
 	}
@@ -173,6 +173,7 @@ export class GPUEngine {
 		this.createPipelines();
 		this.initSoup();
 		this.uploadColormap();
+		this.resetView(canvas.width, canvas.height);
 
 		return true;
 	}
@@ -411,7 +412,7 @@ export class GPUEngine {
 		return { ...this.gridConfig };
 	}
 
-	changeGridConfig(config: GridConfig): void {
+	changeGridConfig(config: GridConfig, canvasW?: number, canvasH?: number): void {
 		this.gridConfig = { ...config };
 		// Destroy old buffers
 		this.destroy();
@@ -420,7 +421,7 @@ export class GPUEngine {
 		this.createPipelines();
 		this.initSoup();
 		this.uploadColormap();
-		this.resetView();
+		this.resetView(canvasW, canvasH);
 		this.batchIndex = 0;
 		this.opsPerSec = 0;
 		this.lastStatsTime = 0;
@@ -603,7 +604,8 @@ export class GPUEngine {
 		this.view.offsetY -= (deltaY / canvasH) * cellsY;
 	}
 
-	resetView(): void {
+	resetView(canvasW?: number, canvasH?: number): void {
+		const aspect = canvasW && canvasH ? canvasW / canvasH : 1;
 		if (this.gridType === 'hex') {
 			// Cells on offset hex grid: cell (cx, cy) center at offset (cx*5 + (cy&1)*2, cy*5)
 			const W = this.soupWidth;
@@ -648,13 +650,28 @@ export class GPUEngine {
 			}
 
 			const margin = 1;
-			this.view.offsetX = minPx - margin;
-			this.view.offsetY = minPy - margin;
 			const extentX = maxPx - minPx + 2 * margin;
 			const extentY = maxPy - minPy + 2 * margin;
-			this.view.zoom = Math.max(extentX, extentY);
+			// Fit to canvas: zoom = cellsX, cellsY = zoom / aspect
+			// Need cellsX >= extentX and cellsY >= extentY
+			// So zoom >= extentX AND zoom >= extentY * aspect
+			this.view.zoom = Math.max(extentX, extentY * aspect);
+			// Center the content
+			const cellsX = this.view.zoom;
+			const cellsY = this.view.zoom / aspect;
+			this.view.offsetX = minPx - margin - (cellsX - extentX) / 2;
+			this.view.offsetY = minPy - margin - (cellsY - extentY) / 2;
 		} else {
-			this.view = { zoom: this.soupWidth, offsetX: 0, offsetY: 0 };
+			// Square mode: grid is soupWidth × soupHeight in cell units
+			const W = this.soupWidth;
+			const H = this.soupHeight;
+			// Fit to canvas aspect: zoom = cellsX, cellsY = zoom / aspect
+			const zoom = Math.max(W, H * aspect);
+			const cellsX = zoom;
+			const cellsY = zoom / aspect;
+			this.view.zoom = zoom;
+			this.view.offsetX = -(cellsX - W) / 2;
+			this.view.offsetY = -(cellsY - H) / 2;
 		}
 	}
 
