@@ -502,16 +502,23 @@ export class GPUEngine {
 	}
 
 	// Read soup data from GPU for CPU-side trace/disassembly
+	private _soupMapPending = false;
 	async readSoupData(): Promise<Uint8Array> {
-		const soupBytes = CELL_COUNT * TAPE_LENGTH;
-		const encoder = this.device.createCommandEncoder();
-		encoder.copyBufferToBuffer(this.soupBuffer, 0, this.soupStagingBuffer, 0, soupBytes);
-		this.device.queue.submit([encoder.finish()]);
+		if (this._soupMapPending) return new Uint8Array(0);
+		this._soupMapPending = true;
+		try {
+			const soupBytes = CELL_COUNT * TAPE_LENGTH;
+			const encoder = this.device.createCommandEncoder();
+			encoder.copyBufferToBuffer(this.soupBuffer, 0, this.soupStagingBuffer, 0, soupBytes);
+			this.device.queue.submit([encoder.finish()]);
 
-		await this.soupStagingBuffer.mapAsync(GPUMapMode.READ);
-		const data = new Uint8Array(this.soupStagingBuffer.getMappedRange().slice(0));
-		this.soupStagingBuffer.unmap();
-		return data;
+			await this.soupStagingBuffer.mapAsync(GPUMapMode.READ);
+			const data = new Uint8Array(this.soupStagingBuffer.getMappedRange().slice(0));
+			this.soupStagingBuffer.unmap();
+			return data;
+		} finally {
+			this._soupMapPending = false;
+		}
 	}
 
 	zoomAt(screenX: number, screenY: number, canvasW: number, canvasH: number, factor: number): void {

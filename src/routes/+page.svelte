@@ -201,7 +201,7 @@
 			engine.render(canvas);
 			frameCount++;
 
-			if (frameCount % 30 === 0 && !statsLoading) {
+			if (playing && frameCount % 30 === 0 && !statsLoading) {
 				batchCount = engine.batchCount;
 				opsPerSec = engine.opsPerSec;
 				updateTopBytes();
@@ -286,7 +286,7 @@
 	function refreshCellData(cell: number) {
 		if (!engine) return;
 		engine.readSoupData().then((soupData) => {
-			if (hoveredCell !== cell) return;
+			if (soupData.length === 0 || hoveredCell !== cell) return;
 			const data = getCellData(soupData, cell);
 			cellData = data;
 			disasmLines = disassemble(data);
@@ -384,6 +384,7 @@
 	}
 
 	function formatNumber(n: number): string {
+		if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + 'B';
 		if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
 		if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
 		return n.toString();
@@ -670,7 +671,7 @@
 							points={fl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
 							fill="none"
 							stroke={fl.color}
-							stroke-width={chartHoveredByte === fl.byte ? '3' : '1.5'}
+							stroke-width={chartHoveredByte === fl.byte ? '4' : '2.5'}
 							opacity={chartHoveredByte >= 0 ? (chartHoveredByte === fl.byte ? '1' : '0.15') : '0.8'}
 						/>
 					{/if}
@@ -852,8 +853,9 @@
 				{#if helpTab === 'overview'}
 					<p>
 						A 200&times;200 grid of cells, each containing 16 random bytes interpreted as Z80
-						machine code. Every step, random adjacent pairs are selected, executed, and
-						written back. Self-replicating programs spontaneously emerge.
+						machine code. Every step, random adjacent pairs are selected, their 32 bytes
+						concatenated and executed as a Z80 program (128 steps), and the modified
+						memory is written back. Self-replicating programs spontaneously emerge.
 					</p>
 					<p class="cmap-note">
 						Based on <a href="https://arxiv.org/abs/2406.19108" target="_blank" rel="noopener" class="help-link">Hartley &amp; Colton (2024)</a>.
@@ -871,10 +873,17 @@ graph TD
 
 					<h4>The Phase Transition</h4>
 					<p>
-						Initially all 256 byte values are uniformly distributed (concentration &asymp; 1.0).
-						When self-replicators emerge, certain bytes dominate
-						(concentration &gg; 1) while others vanish. Watch the frequency chart to
-						see this happen in real time.
+						Initially all 256 byte values are uniformly distributed. But the Z80 CPU
+						starts every execution with all registers set to zero, so instructions like
+						<code>LD (HL),A</code> or <code>PUSH BC</code> tend to write zeros into
+						memory. This makes NOP (0x00) accumulate rapidly &mdash; random
+						code acts as a &ldquo;zero pump.&rdquo;
+					</p>
+					<p>
+						Once self-replicators emerge (typically <code>POP HL</code> +
+						<code>EX (SP),HL</code> loops), they actively copy their own bytes forward,
+						displacing the NOPs. Watch the frequency chart to see this happen in real
+						time.
 					</p>
 					<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin:8px 0;display:block;border-radius:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.04);padding:12px 8px;">
 						<!-- axes -->
@@ -883,16 +892,16 @@ graph TD
 						<!-- axis labels -->
 						<text x="170" y="168" text-anchor="middle" fill="#8a7a6a" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Time</text>
 						<text x="14" y="80" text-anchor="middle" fill="#8a7a6a" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" transform="rotate(-90,14,80)">Concentration</text>
-						<!-- NOP curve (white/gray, declining from ~65% to ~10%) -->
-						<path d="M 40,58 C 100,58 140,70 170,85 S 250,118 300,122" fill="none" stroke="rgba(220,215,210,0.7)" stroke-width="2"/>
-						<text x="58" y="46" fill="rgba(220,215,210,0.8)" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">NOP</text>
-						<!-- Self-replicating curve (orange, rising from ~10% to ~80%) -->
-						<path d="M 40,122 C 100,118 140,108 170,82 S 250,44 300,42" fill="none" stroke="#c8875a" stroke-width="2"/>
+						<!-- NOP curve (white/gray, starts low, rises sharply to peak, then declines) -->
+						<path d="M 40,125 C 50,80 60,45 80,40 S 120,42 150,65 Q 200,105 300,122" fill="none" stroke="rgba(220,215,210,0.7)" stroke-width="2"/>
+						<text x="68" y="32" fill="rgba(220,215,210,0.8)" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">NOP</text>
+						<!-- Self-replicating curve (orange, stays low then rises smoothly) -->
+						<path d="M 40,130 C 100,130 150,120 186,88 C 220,58 260,42 300,42" fill="none" stroke="#c8875a" stroke-width="2"/>
 						<text x="195" y="36" fill="#c8875a" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Self-Replicating Bytes</text>
-						<!-- Phase transition dashed line -->
-						<line x1="166" y1="22" x2="166" y2="140" stroke="rgba(120,160,220,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+						<!-- Phase transition dashed line at crossing (x≈186) -->
+						<line x1="186" y1="22" x2="186" y2="140" stroke="rgba(120,160,220,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
 						<!-- Phase transition label -->
-						<text x="166" y="155" text-anchor="middle" fill="rgba(120,160,220,0.7)" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Phase Transition</text>
+						<text x="186" y="155" text-anchor="middle" fill="rgba(120,160,220,0.7)" font-size="9" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Phase Transition</text>
 					</svg>
 				{:else if helpTab === 'visuals'}
 					<p>Each cell is colored by its first byte. The colormap assigns distinct colors to Z80 opcode categories. Other bytes get a muted hue from a continuous sweep.</p>
