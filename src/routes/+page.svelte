@@ -991,10 +991,10 @@
 			<div class="modal-body">
 				{#if helpTab === 'overview'}
 					<p>
-						A 200&times;200 grid of cells, each containing 16 random bytes interpreted as Z80
-						machine code. Every step, random adjacent pairs are selected, their 32 bytes
-						concatenated and executed as a Z80 program (128 steps), and the modified
-						memory is written back. Self-replicating programs spontaneously emerge.
+						A configurable grid of cells (default 200&times;200), each containing random
+						bytes interpreted as Z80 machine code. Every step, random adjacent pairs are
+						selected, their bytes concatenated and executed as a Z80 program, and the
+						modified memory is written back. Self-replicating programs spontaneously emerge.
 					</p>
 					<p class="cmap-note">
 						Based on <a href="https://arxiv.org/abs/2406.19108" target="_blank" rel="noopener" class="help-link">Hartley &amp; Colton (2024)</a>.
@@ -1002,11 +1002,22 @@
 						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link">original code</a>.
 					</p>
 
+					<h4>Grid Topologies</h4>
+					<p>
+						<strong>Square</strong> &mdash; Each cell is a 4&times;4 block of 16 bytes.
+						Cells interact with 4 cardinal neighbors.
+					</p>
+					<p>
+						<strong>Hexagonal</strong> &mdash; Each cell holds 19 bytes in a 3-4-5-4-3
+						hexagonal arrangement. Cells interact with 6 neighbors, producing more
+						organic emergent structures. Uses odd-r offset coordinates (odd rows shift right).
+					</p>
+
 					<!-- Simulation cycle diagram -->
 					<Mermaid chart={`
 graph TD
-    GRID("200×200 Grid\n40,000 cells · 16 bytes each") -->|"pick random pair"| PAIR("Cell A + Cell B\n32 bytes combined")
-    PAIR -->|"execute as Z80"| CPU("Z80 CPU · 128 steps")
+    GRID("Cell Grid\nconfigurable size · square or hex") -->|"pick random pair"| PAIR("Cell A + Cell B\nbytes combined")
+    PAIR -->|"execute as Z80"| CPU("Z80 CPU · configurable steps")
     CPU -->|"write back + mutate"| GRID
 `} />
 
@@ -1132,7 +1143,7 @@ graph TD
 					<p class="cmap-note">All other bytes get a muted tone from a continuous hue sweep. Switch colormaps in Settings.</p>
 
 					<h4>Cell Tooltips</h4>
-					<p>Hover any cell to see its bytes disassembled as Z80 instructions (16 bytes in 4x4 grid for square, 19 bytes in hexagonal layout for hex).</p>
+					<p>Hover any cell to see its bytes disassembled as Z80 instructions. Square mode shows a 4&times;4 grid of 16 bytes; hex mode shows a 3-4-5-4-3 hexagonal cluster of 19 bytes matching the cell's honeycomb shape.</p>
 					<ul class="help-list">
 						<li><strong>Opcode bytes</strong> show the instruction mnemonic (e.g. <code>NOP</code>, <code>POP HL</code>, <code>LD B,C</code>)</li>
 						<li><strong>Operand bytes</strong> show the raw hex value (e.g. <code>00</code>, <code>3F</code>) and appear dimmed &mdash; these are data consumed by the preceding instruction</li>
@@ -1246,6 +1257,20 @@ graph TD
     B -->|"repeat"| A
 `} />
 				{:else if helpTab === 'params'}
+					<h4>Grid Type</h4>
+					<p>
+						Switch between <strong>Square</strong> and <strong>Hex</strong> topologies.
+						Square cells hold 16 bytes (4&times;4) with 4 neighbors. Hex cells hold 19
+						bytes (3-4-5-4-3 honeycomb) with 6 neighbors. Changing resets the simulation.
+					</p>
+
+					<h4>Grid Size (W &times; H)</h4>
+					<p>
+						Width and height of the grid in cells. Default is 200&times;200. Larger grids
+						give more space for diverse species to evolve, but use more GPU memory and
+						compute. Changing resets the simulation.
+					</p>
+
 					<h4>Seed</h4>
 					<p>
 						The random seed used to initialize the grid. Same seed produces the same
@@ -1254,7 +1279,7 @@ graph TD
 
 					<h4>Mutation Rate</h4>
 					<p>
-						Controls the probability of random byte flips after each execution step.
+						Controls the probability of random byte flips after each execution step (1/2<sup>n</sup>).
 						Higher slider values mean more mutations. Too low and replicators can't
 						emerge; too high and they can't survive. Sweet spot is usually 3&ndash;5.
 					</p>
@@ -1262,13 +1287,21 @@ graph TD
 					<h4>Pairs / Batch</h4>
 					<p>
 						How many cell pairs are selected and executed each simulation step. Higher
-						values speed up evolution but use more GPU time. At 5000, roughly 10,000 of
-						the 40,000 cells are updated per step.
+						values speed up evolution but use more GPU time. At max, roughly a quarter
+						of all cells are updated per step.
+					</p>
+
+					<h4>Z80 Steps</h4>
+					<p>
+						Maximum CPU cycles per pair execution (16&ndash;1024). Lower values make the
+						simulation faster but limit program complexity &mdash; simple replicators
+						emerge quickly. Higher values allow more complex programs to develop but
+						slow down the simulation. Default (128) balances speed and complexity.
 					</p>
 
 					<h4>Colormap</h4>
 					<p>
-						Choose between four visual themes: Default (warm opcode-aware), Ocean (cool
+						Choose between three visual themes: Rainbow (warm opcode-aware), Ocean (cool
 						blues), and Thermal (heat map).
 					</p>
 				{:else if helpTab === 'keys'}
@@ -1285,8 +1318,10 @@ graph TD
 				{:else if helpTab === 'about'}
 					<p>
 						<strong>Algocell</strong> is a WebGPU-accelerated artificial life simulator
-						that runs Z80 machine code on a 200&times;200 grid of cells. Self-replicating
-						programs spontaneously emerge from random noise.
+						that runs Z80 machine code on a configurable grid of cells. Choose between
+						square and hexagonal topologies, adjust grid size, Z80 execution depth,
+						mutation rate, and more. Self-replicating programs spontaneously emerge from
+						random noise.
 					</p>
 					<p>
 						Based on the paper by
@@ -1294,7 +1329,9 @@ graph TD
 						and the
 						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link">original implementation</a>
 						by Alexander Mordvintsev. This browser version uses WebGPU compute shaders
-						instead of Python/JAX, so it runs anywhere with no setup required.
+						instead of Python/JAX, so it runs anywhere with no setup required. The
+						hexagonal grid mode produces more organic emergent structures thanks to
+						6-neighbor interactions.
 					</p>
 					<p>
 						Developed by <strong>Neo Mohsenvand</strong> with the help of

@@ -22,16 +22,24 @@
 
 ![Algocell screenshot](image.png)
 
-Watch self-replicating Z80 programs spontaneously emerge from a grid of random bytes. A 200x200 grid of cells, each containing 16 random bytes, is continuously executed as Z80 machine code. Within seconds, self-replicating programs appear and compete for space — digital life from pure noise.
+Watch self-replicating Z80 programs spontaneously emerge from a grid of random bytes. Each cell in the grid contains a handful of random bytes that are continuously executed as Z80 machine code. Within seconds, self-replicating programs appear and compete for space — digital life from pure noise.
 
 Based on [Hartley & Colton (2024)](https://arxiv.org/abs/2406.19108) and the [original Python/JAX implementation](https://github.com/znah/zff) by Alexander Mordvintsev. This version re-implements the simulation using WebGPU compute shaders, so it runs directly in the browser with no installation or GPU drivers required. At max settings on a MacBook Air M3, it reaches over 50 billion Z80 operations per second.
 
 ## How it works
 
-1. **Grid**: 200x200 cells, each holding 16 bytes (640KB total)
-2. **Each step**: Random adjacent cell pairs are selected. Their 32 bytes are concatenated and executed as a Z80 program for up to 1024 steps. The modified memory is written back.
-3. **Mutation**: Random bytes are flipped at a configurable rate (default 1/2^4)
+1. **Grid**: A configurable grid of cells (default 200×200). Choose between **square** (4×4 = 16 bytes per cell) or **hexagonal** (19 bytes per cell in a 3-4-5-4-3 hex arrangement) topologies.
+2. **Each step**: Random adjacent cell pairs are selected. Their bytes are concatenated and executed as a Z80 program for a configurable number of steps. The modified memory is written back.
+3. **Mutation**: Random bytes are flipped at a configurable rate (default 1/2⁴).
 4. **Emergent behavior**: The Z80 CPU starts with all registers zeroed, so random code tends to write zeros — NOP (0x00) accumulates rapidly. Then self-replicating programs (typically `POP HL` + `EX (SP),HL` loops) emerge and outcompete the NOPs.
+
+## Grid Topologies
+
+### Square Grid
+The classic mode. Each cell is a 4×4 block of bytes (16 bytes). Cells interact with their 4 cardinal neighbors (up, down, left, right).
+
+### Hexagonal Grid
+Each cell holds 19 bytes arranged in a 3-4-5-4-3 hexagonal pattern. Cells interact with 6 neighbors, creating more organic-looking emergent structures. The hex topology uses odd-r offset coordinates — odd rows are shifted right, producing a natural honeycomb layout with rectangular grid boundaries.
 
 ## Controls
 
@@ -43,15 +51,21 @@ Based on [Hartley & Colton (2024)](https://arxiv.org/abs/2406.19108) and the [or
 | **1-8** | Set speed multiplier |
 | **Scroll** | Zoom in/out |
 | **Click + Drag** | Pan |
-| **Hover** | Inspect cell (Z80 disassembly) |
+| **Hover** | Inspect cell (Z80 disassembly tooltip) |
 
 ## Parameters
 
-- **Seed** — Random seed for initial grid state
-- **Mutation Rate** — Probability of random byte flips (1/2^n, from 1/2 to 1/2^12)
-- **Pairs/Batch** — Cell pairs evaluated per GPU dispatch (controls throughput vs. GPU load)
-- **Z80 Steps** — CPU cycles per pair execution (16–1024, controls program complexity vs. speed)
-- **Colormap** — Visual theme (Rainbow, Ocean, Thermal)
+- **Grid Type** — Switch between **Square** and **Hex** topologies. Changing resets the simulation.
+- **Grid Size** (W × H) — Width and height of the grid in cells (default 200×200). Changing resets the simulation.
+- **Seed** — Random seed for initial grid state. Same seed produces the same starting state.
+- **Mutation Rate** — Probability of random byte flips (1/2ⁿ, from 1/2 to 1/2¹²). Too low and replicators can't emerge; too high and they can't survive. The sweet spot is usually 3–5.
+- **Pairs/Batch** — Cell pairs evaluated per GPU dispatch (controls throughput vs. GPU load). At max, roughly a quarter of all cells are updated per step.
+- **Z80 Steps** — Maximum CPU cycles per pair execution (16–1024). Lower values make the simulation faster but limit program complexity — simple replicators emerge quickly. Higher values allow more complex programs to develop but slow down the simulation. The default (128) balances speed and complexity well.
+- **Colormap** — Visual theme (Rainbow, Ocean, Thermal). Each maps Z80 opcode categories to distinct colors.
+
+## Cell Tooltips
+
+Hover over any cell to see its bytes disassembled as Z80 instructions. In square mode, this shows a 4×4 grid; in hex mode, a hexagonal cluster of 19 bytes matching the cell's shape. Opcode bytes show the instruction mnemonic, while operand bytes (consumed by multi-byte instructions) appear slightly dimmed with their raw hex value.
 
 ## Development
 
