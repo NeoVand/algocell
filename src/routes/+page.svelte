@@ -17,6 +17,7 @@
 
 	let colormapName: ColormapName = $state('rainbow');
 	let colormap = $state(createColormap('rainbow'));
+	let simpleView = $state(false);
 
 	let canvas: HTMLCanvasElement;
 	let canvasContainer: HTMLDivElement;
@@ -687,6 +688,12 @@
 	$effect(() => {
 		if (!engine) return;
 		engine.setSuppressedOpcodes(suppressedOpcodes);
+	});
+
+	// Sync simple view mode to GPU engine
+	$effect(() => {
+		if (!engine) return;
+		engine.setShowAverage(simpleView);
 	});
 
 
@@ -1853,6 +1860,52 @@
 						{name}
 					</button>
 				{/each}
+			</div>
+		</div>
+
+		<div class="param">
+			<div class="param-head">
+				<label class="param-label"
+					><svg
+						width="12"
+						height="12"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="var(--accent)"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="12" y1="3" x2="12" y2="21" /></svg
+					> Detail</label
+				>
+				<span class="param-info-wrap" class:show-tip={openTip === 'detail'}>
+					<button
+						class="param-info"
+						onmouseenter={() => { openTip = 'detail'; }}
+						onmouseleave={() => { openTip = null; }}
+						onclick={() => { openTip = openTip === 'detail' ? null : 'detail'; }}
+					>?</button>
+					<span class="param-tip"
+						>Toggle between detailed view (showing individual bytes within each cell) and simple view
+						(one averaged color per cell). Hover tooltip always shows full detail.</span
+					>
+				</span>
+				<div class="detail-toggle">
+					<button
+						class="grid-type-btn"
+						class:active={!simpleView}
+						onclick={() => (simpleView = false)}
+						title="Detailed — show individual bytes"
+					><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="4" height="4" /><rect x="5.5" y="0.5" width="4" height="4" /><rect x="0.5" y="5.5" width="4" height="4" /><rect x="5.5" y="5.5" width="4" height="4" /></svg></button
+					>
+					<button
+						class="grid-type-btn"
+						class:active={simpleView}
+						onclick={() => (simpleView = true)}
+						title="Simple — one color per cell"
+					><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="8" height="8" rx="1" /></svg></button
+					>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -3416,6 +3469,11 @@ graph TD
 	}
 	.grid-type-btn:hover:not(.active) {
 		background: var(--bg-hover);
+	}
+	.detail-toggle {
+		display: flex;
+		gap: 2px;
+		margin-left: 6px;
 	}
 	.grid-size-row {
 		display: flex;

@@ -1090,6 +1090,45 @@ fn byte_hex_center(hx: i32, hy: i32) -> vec2f {
     return vec2f(f32(hx) + 0.5 + select(0.0, 0.5, odd), (f32(hy) + 0.5) * HEX_H);
 }
 
+// Center of a CELL in pixel space for simple-mode rendering
+// Clean hex grid: cells spaced CELL_SPACING apart with odd-row offset
+fn cell_px(cx: i32, cy: i32) -> vec2f {
+    let odd = (cy & 1) == 1;
+    let sx = f32(CELL_SPACING);
+    let sy = f32(CELL_SPACING) * HEX_H;
+    return vec2f(
+        (f32(cx) + 0.5) * sx + select(0.0, sx * 0.5, odd),
+        (f32(cy) + 0.5) * sy
+    );
+}
+
+// Find nearest cell directly from pixel coordinates (bypasses byte-level hex grid)
+fn find_nearest_cell(px: f32, py: f32) -> vec2i {
+    let sy = f32(CELL_SPACING) * HEX_H;
+    let sx = f32(CELL_SPACING);
+    let cy_f = py / sy - 0.5;
+    let cy0 = i32(floor(cy_f));
+
+    var best = vec2i(0, 0);
+    var best_d = 1e10;
+    for (var dcy = 0; dcy <= 1; dcy++) {
+        let cy = cy0 + dcy;
+        let odd = (cy & 1) == 1;
+        let cx_f = (px - select(0.0, sx * 0.5, odd)) / sx - 0.5;
+        let cx0 = i32(floor(cx_f));
+        for (var dcx = 0; dcx <= 1; dcx++) {
+            let cx = cx0 + dcx;
+            let c = cell_px(cx, cy);
+            let d = (px - c.x) * (px - c.x) + (py - c.y) * (py - c.y);
+            if (d < best_d) {
+                best_d = d;
+                best = vec2i(cx, cy);
+            }
+        }
+    }
+    return best;
+}
+
 // Find nearest hex-byte in the global hex grid
 fn nearest_byte_hex(gx: f32, gy: f32) -> vec2i {
     let row_f = gy / HEX_H - 0.5;
@@ -1182,6 +1221,64 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     let pixel_x = in.uv.x * zoom + rparams.offset_x;
     let pixel_y = (1.0 - in.uv.y) * zoom / aspect + rparams.offset_y;
 
+    // ── Simple mode: completely bypass byte-level hex grid ──
+    if (rparams.show_average != 0u) {
+        let pt = vec2f(pixel_x, pixel_y);
+
+        // Find nearest cell directly from pixel coords (no byte grid)
+        let cell = find_nearest_cell(pixel_x, pixel_y);
+        let cx = cell.x;
+        let cy = cell.y;
+
+        if (cx < 0 || cx >= sw || cy < 0 || cy >= sh) {
+            return vec4f(0.04, 0.04, 0.06, 1.0);
+        }
+
+        let cell_idx = u32(cy) * u32(sw) + u32(cx);
+
+        // Average color of all bytes in cell
+        var acc = vec3f(0.0);
+        for (var i = 0u; i < rparams.tape_length; i++) {
+            let bv = read_soup_byte(cell_idx, i);
+            let col = unpack_color(colormap[bv]);
+            acc += col.rgb * col.rgb;
+        }
+        var avg = sqrt(acc / f32(rparams.tape_length));
+
+        if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
+            avg = avg * 1.4 + vec3f(0.05);
+        }
+
+        // Voronoi boundary: check all 6 cell neighbors
+        let cc = cell_px(cx, cy);
+        let dist_self = distance(pt, cc);
+        let is_odd = (cy & 1) == 1;
+        var min_nd = 1e10;
+        min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy)));
+        min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy)));
+        if (is_odd) {
+            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy - 1)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy - 1)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy + 1)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy + 1)));
+        } else {
+            min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy - 1)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy - 1)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy + 1)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy + 1)));
+        }
+
+        let boundary = (min_nd - dist_self) * 0.5;
+        let bpp = zoom / rparams.canvas_width;
+        let line_w = bpp * 3.0 + 0.04;
+        let edge_t = 1.0 - smoothstep(0.0, line_w, boundary);
+        avg = mix(avg, vec3f(0.06), edge_t * 0.8);
+
+        return vec4f(avg, 1.0);
+    }
+
+    // ── Detailed mode: use byte-level hex grid ──
+
     // Find nearest hex byte (offset coords)
     let hex = nearest_byte_hex(pixel_x, pixel_y);
     let hx = hex.x;
@@ -1204,11 +1301,8 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     // LOD: bytes per screen pixel
     let bytes_per_pixel = zoom / rparams.canvas_width;
 
-    // Helper: compute cell average color
-    // (inlined below to avoid WGSL function limitations)
-
     // Zoomed out: average all 19 bytes per cell
-    if (rparams.show_average != 0u || bytes_per_pixel > 1.0) {
+    if (bytes_per_pixel > 1.0) {
         var acc = vec3f(0.0);
         for (var i = 0u; i < rparams.tape_length; i++) {
             let bv = read_soup_byte(cell_idx, i);
@@ -1219,7 +1313,6 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         if (rparams.hover_cell >= 0 && cell_idx == u32(rparams.hover_cell)) {
             avg = avg * 1.4 + vec3f(0.05);
         }
-        // Gaps: blend toward cell color when zoomed out
         if (in_gap) {
             let gap_blend = smoothstep(0.2, 1.0, bytes_per_pixel);
             avg = mix(avg * 0.3, avg, gap_blend);
