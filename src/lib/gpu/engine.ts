@@ -143,6 +143,15 @@ export class GPUEngine {
 
 	setSuppressedOpcodes(opcodes: Set<number>): void {
 		this.suppressedOpcodes = new Set(opcodes);
+		// Immediately write the suppress mask to the GPU so it takes effect
+		// even before the next simulateStep() call
+		this.flushSuppressMask();
+	}
+
+	private flushSuppressMask(): void {
+		const mask = this.buildSuppressMask();
+		// Suppress mask starts at offset 32 (8 base u32s × 4 bytes)
+		this.device.queue.writeBuffer(this.paramsBuffer, 32, mask.buffer);
 	}
 
 	private buildSuppressMask(): Uint32Array {
@@ -421,6 +430,7 @@ export class GPUEngine {
 		this.lastStatsTime = 0;
 		this.statsOpsAccum = 0;
 		this.byteCounts.fill(0);
+		this.flushSuppressMask();
 	}
 
 	get config(): GridConfig {
@@ -429,6 +439,8 @@ export class GPUEngine {
 
 	changeGridConfig(config: GridConfig, canvasW?: number, canvasH?: number): void {
 		this.gridConfig = { ...config };
+		// Preserve suppress list across buffer recreation
+		const savedSuppressed = new Set(this.suppressedOpcodes);
 		// Destroy old buffers
 		this.destroy();
 		// Recreate everything with new dimensions
@@ -438,6 +450,9 @@ export class GPUEngine {
 		this.uploadColormap();
 		this.resetView(canvasW, canvasH);
 		this.batchIndex = 0;
+		// Restore and flush suppress mask to the new paramsBuffer
+		this.suppressedOpcodes = savedSuppressed;
+		this.flushSuppressMask();
 		this.opsPerSec = 0;
 		this.lastStatsTime = 0;
 		this.statsOpsAccum = 0;

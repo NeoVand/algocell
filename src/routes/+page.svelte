@@ -13,7 +13,6 @@
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
 	import { untrack } from 'svelte';
-	import { SvelteSet } from 'svelte/reactivity';
 	import Mermaid from '$lib/components/Mermaid.svelte';
 
 	let colormapName: ColormapName = $state('rainbow');
@@ -79,9 +78,26 @@
 	let toolbarCollapsed = $state(false);
 	let openTip = $state<string | null>(null);
 	let showInfoChart = $state(true);
-	let showSuppressMenu = $state(false);
-	let suppressFilter = $state('');
-	let suppressedOpcodes = new SvelteSet<number>();
+	let suppressPatterns: string[] = $state([]);
+	let suppressInput = $state('');
+
+	// Derive the actual set of suppressed opcodes from substring patterns
+	let suppressedOpcodes = $derived.by(() => {
+		const set = new Set<number>();
+		if (suppressPatterns.length === 0) return set;
+		for (let i = 0; i < 256; i++) {
+			const mnemonic = (byteToMnemonic(i) || '').toUpperCase();
+			const hex = i.toString(16).toUpperCase().padStart(2, '0');
+			for (const pat of suppressPatterns) {
+				const p = pat.toUpperCase();
+				if (mnemonic.includes(p) || hex.includes(p) || ('0X' + hex).includes(p)) {
+					set.add(i);
+					break;
+				}
+			}
+		}
+		return set;
+	});
 
 	// Frequency chart: track top N bytes normalized over time
 	// Total bytes counted by shader = cells * wordsPerCell * 4 (word-aligned)
@@ -89,6 +105,7 @@
 		gridWidth * gridHeight * Math.ceil((gridType === 'hex' ? 19 : 16) / 4) * 4
 	);
 	const MAX_TRACKED = 10;
+	const MAX_TRACKED_RAW = 30; // fetch more so we can fill 10 slots after filtering suppressed
 	const MAX_HISTORY = 300;
 
 	// Efficient ring-buffer chart storage: Float32Array(256) per point for O(1) byte lookup
@@ -131,7 +148,8 @@
 		const len = chartLen;
 		if (len < 2) return [];
 
-		const allSeries = trackedBytes.map((tb) => {
+		const chartBytes = displayTiles.filter((t) => t.type === 'byte');
+		const allSeries = chartBytes.map((tb) => {
 			const values = new Float64Array(len);
 			for (let i = 0; i < len; i++) {
 				const frac = chartRing[i][tb.byte];
@@ -211,7 +229,8 @@
 
 		// Compute grid dimensions from actual viewport on first mount
 		if (!gridInitialized) {
-			const dims = computeGridDimensions(window.innerWidth, window.innerHeight, gridType);
+			const initialGridType = untrack(() => gridType);
+			const dims = computeGridDimensions(window.innerWidth, window.innerHeight, initialGridType);
 			gridWidth = dims.w;
 			gridHeight = dims.h;
 			gridInitialized = true;
@@ -304,8 +323,8 @@
 			}
 			entries.sort((a, b) => b.count - a.count);
 
-			// Update tracked bytes to current top N
-			const topN = entries.slice(0, MAX_TRACKED);
+			// Update tracked bytes — fetch extra so we can fill slots after collapsing suppressed
+			const topN = entries.slice(0, MAX_TRACKED_RAW);
 			trackedBytes = topN.map((e) => ({ byte: e.byte, mnemonic: e.mnemonic }));
 
 			// Only record chart history when chart is visible
@@ -617,8 +636,6 @@
 		if (!engine) return;
 		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
 		engine.changeGridConfig(config, canvasW, canvasH);
-		// Re-apply suppressed opcodes (changeGridConfig recreates GPU buffers)
-		engine.setSuppressedOpcodes(suppressedOpcodes);
 		// Reset stats
 		batchCount = 0;
 		opsPerSec = 0;
@@ -628,83 +645,78 @@
 		trackedBytes = [];
 	}
 
+	function addSuppressPattern(pattern: string) {
+		const p = pattern.trim().toUpperCase();
+		if (!p || suppressPatterns.includes(p)) return;
+		suppressPatterns.push(p);
+		// Svelte needs identity change for array reactivity
+		suppressPatterns = [...suppressPatterns];
+	}
+
+	function removeSuppressPattern(pattern: string) {
+		suppressPatterns = suppressPatterns.filter((p) => p !== pattern);
+	}
+
 	function toggleSuppressOpcode(opcode: number) {
+		const mnemonic = byteToMnemonic(opcode) || hexByte(opcode);
 		if (suppressedOpcodes.has(opcode)) {
-			suppressedOpcodes.delete(opcode);
+			// Find and remove patterns that match this opcode
+			// If the exact mnemonic is a pattern, remove it; otherwise remove patterns that only match this one
+			const upper = mnemonic.toUpperCase();
+			if (suppressPatterns.includes(upper)) {
+				removeSuppressPattern(upper);
+			}
 		} else {
-			suppressedOpcodes.add(opcode);
+			addSuppressPattern(mnemonic);
 		}
-		engine?.setSuppressedOpcodes(suppressedOpcodes);
 	}
 
 	function clearSuppressedOpcodes() {
-		suppressedOpcodes.clear();
-		engine?.setSuppressedOpcodes(suppressedOpcodes);
+		suppressPatterns = [];
 	}
 
-	// Stable list of opcodes for the suppress menu.
-	// Pinned opcodes always at top; new tracked opcodes appended (never reordered/removed).
-	const PINNED_OPCODES = [0x00, 0xe1, 0xe3]; // NOP, POP HL, EX (SP),HL
-	let suppressMenuSeen = new Uint8Array(256);
-	let suppressMenuOpcodes: number[] = $state([...PINNED_OPCODES]);
-	// Mark pinned as seen
-	for (const op of PINNED_OPCODES) suppressMenuSeen[op] = 1;
-
-	// Reactively grow the list as new tracked bytes appear
+	// Sync derived suppressedOpcodes to the GPU engine
 	$effect(() => {
-		let changed = false;
-		for (const tb of trackedBytes) {
-			if (!suppressMenuSeen[tb.byte]) {
-				suppressMenuSeen[tb.byte] = 1;
-				suppressMenuOpcodes.push(tb.byte);
-				changed = true;
-			}
-		}
-		for (const op of suppressedOpcodes) {
-			if (!suppressMenuSeen[op]) {
-				suppressMenuSeen[op] = 1;
-				suppressMenuOpcodes.push(op);
-				changed = true;
-			}
-		}
-		if (changed) {
-			// Trigger reactivity update (array identity)
-			suppressMenuOpcodes = [...suppressMenuOpcodes];
-		}
+		if (!engine) return;
+		engine.setSuppressedOpcodes(suppressedOpcodes);
 	});
 
-	// Filtered list for suppress menu search, with checked items at top
-	let filteredSuppressOpcodes = $derived.by(() => {
-		let list = suppressMenuOpcodes;
-		const q = suppressFilter.trim().toLowerCase();
-		if (q) {
-			list = list.filter((op) => {
-				const mnemonic = (byteToMnemonic(op) || '').toLowerCase();
-				const hex = '0x' + hexByte(op).toLowerCase();
-				return mnemonic.includes(q) || hex.includes(q) || hexByte(op).toLowerCase().includes(q);
+
+	// Build display tiles: collapse all suppressed into one card, fill remaining with non-suppressed
+	interface DisplayTile {
+		type: 'byte' | 'suppressed';
+		byte: number; // for 'byte' type
+		mnemonic: string;
+		count: number; // for 'suppressed': how many suppressed bytes in top rankings
+	}
+	let displayTiles = $derived.by(() => {
+		const tiles: DisplayTile[] = [];
+		let suppressedCount = 0;
+		const hasSuppression = suppressedOpcodes.size > 0;
+
+		for (const tb of trackedBytes) {
+			if (hasSuppression && suppressedOpcodes.has(tb.byte)) {
+				suppressedCount++;
+			} else {
+				if (tiles.length < (hasSuppression && suppressedCount > 0 ? MAX_TRACKED - 1 : MAX_TRACKED)) {
+					tiles.push({ type: 'byte', byte: tb.byte, mnemonic: tb.mnemonic, count: 0 });
+				}
+			}
+		}
+
+		// If there are suppressed bytes, insert the collapsed card at the end
+		if (suppressedCount > 0) {
+			// Make room if we filled all slots
+			while (tiles.length >= MAX_TRACKED) tiles.pop();
+			tiles.push({
+				type: 'suppressed',
+				byte: -1,
+				mnemonic: `⊘ ${suppressedOpcodes.size}`,
+				count: suppressedCount
 			});
 		}
-		// Sort suppressed opcodes to top, preserve order within each group
-		const checked: number[] = [];
-		const unchecked: number[] = [];
-		for (const op of list) {
-			if (suppressedOpcodes.has(op)) checked.push(op);
-			else unchecked.push(op);
-		}
-		return [...checked, ...unchecked];
-	});
 
-	// Suppressed opcodes not in the current top tracked bytes (for the widget's 3rd row)
-	let extraSuppressed = $derived.by(() => {
-		const tracked = new Uint8Array(256);
-		for (const tb of trackedBytes) tracked[tb.byte] = 1;
-		const extras: { byte: number; mnemonic: string }[] = [];
-		for (const op of suppressedOpcodes) {
-			if (!tracked[op]) {
-				extras.push({ byte: op, mnemonic: byteToMnemonic(op) || hexByte(op) });
-			}
-		}
-		return extras;
+		return tiles;
 	});
 
 	function togglePlay() {
@@ -904,7 +916,10 @@
 		y: number;
 	} | null>(null);
 
+	let tileTooltipSuppressUntil = 0;
+
 	function showTileTooltip(e: MouseEvent, byte: number, mnemonic: string, rank: number) {
+		if (Date.now() < tileTooltipSuppressUntil) return;
 		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
 		tileTooltip = {
 			byte,
@@ -917,6 +932,12 @@
 
 	function hideTileTooltip() {
 		tileTooltip = null;
+	}
+
+	function toggleChart() {
+		showInfoChart = !showInfoChart;
+		tileTooltip = null;
+		tileTooltipSuppressUntil = Date.now() + 300;
 	}
 
 	function byteColor(b: number): string {
@@ -995,7 +1016,7 @@
 				showHelp = !showHelp;
 				break;
 			case 'KeyS':
-				showInfoChart = !showInfoChart;
+				toggleChart();
 				break;
 			case 'KeyF':
 				engine?.resetView(canvasW, canvasH);
@@ -1183,7 +1204,7 @@
 		</span>
 		<button
 			class="info-chart-toggle"
-			onclick={() => (showInfoChart = !showInfoChart)}
+			onclick={toggleChart}
 			title="Toggle chart"
 		>
 			<svg
@@ -1224,45 +1245,54 @@
 				{/each}
 			</svg>
 			<div class="freq-grid">
-				{#each trackedBytes as tb, i (tb.byte)}
-					<div
-						class="freq-cell"
-						class:dimmed={chartHoveredByte >= 0 && chartHoveredByte !== tb.byte}
-						class:highlighted={chartHoveredByte === tb.byte}
-						class:suppressed={suppressedOpcodes.has(tb.byte)}
-						style="background:{byteColor(tb.byte)};color:{cellTextColor(tb.byte)}"
-						role="button"
-						tabindex="0"
-						onclick={() => toggleSuppressOpcode(tb.byte)}
-						onmouseenter={(e) => {
-							chartHoveredByte = tb.byte;
-							showTileTooltip(e, tb.byte, tb.mnemonic, i + 1);
-						}}
-						onmouseleave={() => {
-							chartHoveredByte = -1;
-							hideTileTooltip();
-						}}
-					>
-						<span class="freq-rank">{i + 1}</span>
-						<span class="freq-label">{tb.mnemonic || hexByte(tb.byte)}</span>
-					</div>
-				{/each}
-			</div>
-			{#if extraSuppressed.length > 0}
-				<div class="freq-suppressed-row">
-					{#each extraSuppressed as tb (tb.byte)}
+				{#each displayTiles as tile, i (tile.type === 'suppressed' ? 'suppressed' : tile.byte)}
+					{#if tile.type === 'suppressed'}
 						<div
-							class="freq-cell suppressed"
-							style="background:{byteColor(tb.byte)};color:{cellTextColor(tb.byte)}"
+							class="freq-cell freq-cell-suppressed-group"
 							role="button"
 							tabindex="0"
-							onclick={() => toggleSuppressOpcode(tb.byte)}
-							onmouseenter={(e) => showTileTooltip(e, tb.byte, tb.mnemonic, -1)}
-							onmouseleave={hideTileTooltip}
 						>
-							<span class="freq-label">{tb.mnemonic}</span>
+							<span class="freq-label">{tile.mnemonic}</span>
 						</div>
+					{:else}
+						<div
+							class="freq-cell"
+							class:dimmed={chartHoveredByte >= 0 && chartHoveredByte !== tile.byte}
+							class:highlighted={chartHoveredByte === tile.byte}
+							style="background:{byteColor(tile.byte)};color:{cellTextColor(tile.byte)}"
+							role="button"
+							tabindex="0"
+							onclick={() => toggleSuppressOpcode(tile.byte)}
+							onmouseenter={(e) => {
+								chartHoveredByte = tile.byte;
+								showTileTooltip(e, tile.byte, tile.mnemonic, i + 1);
+							}}
+							onmouseleave={() => {
+								chartHoveredByte = -1;
+								hideTileTooltip();
+							}}
+						>
+							<span class="freq-rank">{i + 1}</span>
+							<span class="freq-label">{tile.mnemonic || hexByte(tile.byte)}</span>
+						</div>
+					{/if}
+				{/each}
+			</div>
+			{#if suppressPatterns.length > 0}
+				<div class="freq-suppressed-row">
+					{#each suppressPatterns as pat (pat)}
+						<button
+							class="freq-suppress-chip"
+							onclick={() => removeSuppressPattern(pat)}
+							title="Remove pattern: {pat}"
+						>
+							{pat}
+							<svg width="7" height="7" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.5">
+								<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+							</svg>
+						</button>
 					{/each}
+					<span class="freq-suppress-count">⊘ {suppressedOpcodes.size}</span>
 				</div>
 			{/if}
 		</div>
@@ -1703,7 +1733,7 @@
 						and see if other patterns emerge.</span
 					>
 				</span>
-				{#if suppressedOpcodes.size > 0}
+				{#if suppressPatterns.length > 0}
 					<button class="suppress-clear" onclick={clearSuppressedOpcodes} title="Clear all">
 						<svg
 							width="10"
@@ -1717,66 +1747,50 @@
 					</button>
 				{/if}
 			</div>
-			<div class="suppress-wrap">
-				<button class="suppress-toggle" onclick={() => (showSuppressMenu = !showSuppressMenu)}>
-					{#if suppressedOpcodes.size === 0}
-						<span class="suppress-placeholder">None — all opcodes active</span>
-					{:else}
-						<span class="suppress-tags">
-							{#each [...suppressedOpcodes].sort((a, b) => a - b) as op (op)}
-								<span
-									class="suppress-tag"
-									style="background:{byteColor(op)};color:{byteLuminance(op) > 0.4
-										? 'rgba(0,0,0,0.85)'
-										: 'rgba(255,255,255,0.9)'}"
-								>
-									{byteToMnemonic(op) || hexByte(op)}
-								</span>
-							{/each}
-						</span>
-					{/if}
-					<svg
-						class="suppress-chevron"
-						class:open={showSuppressMenu}
-						width="10"
-						height="10"
-						viewBox="0 0 10 10"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-					>
-						<path d="M2 3.5L5 6.5L8 3.5" />
-					</svg>
-				</button>
-				{#if showSuppressMenu}
-					<div class="suppress-menu">
-						<input
-							class="suppress-search"
-							type="text"
-							placeholder="Filter opcodes…"
-							bind:value={suppressFilter}
-						/>
-						<div class="suppress-list">
-							{#each filteredSuppressOpcodes as op (op)}
-								<label class="suppress-item">
-									<input
-										type="checkbox"
-										checked={suppressedOpcodes.has(op)}
-										onchange={() => toggleSuppressOpcode(op)}
-									/>
-									<span class="suppress-swatch" style="background:{byteColor(op)}"></span>
-									<span class="suppress-mnemonic">{byteToMnemonic(op) || '??'}</span>
-									<span class="suppress-hex">0x{hexByte(op)}</span>
-								</label>
-							{/each}
-							{#if filteredSuppressOpcodes.length === 0}
-								<div class="suppress-empty">No matches</div>
-							{/if}
-						</div>
-					</div>
+			<div class="suppress-input-wrap">
+				<input
+					class="suppress-input"
+					type="text"
+					placeholder="Type to suppress, e.g. LD, POP, EX…"
+					bind:value={suppressInput}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' && suppressInput.trim()) {
+							addSuppressPattern(suppressInput);
+							suppressInput = '';
+						}
+					}}
+				/>
+				{#if suppressInput.trim()}
+					{@const preview = (() => {
+						const p = suppressInput.trim().toUpperCase();
+						let count = 0;
+						for (let i = 0; i < 256; i++) {
+							const m = (byteToMnemonic(i) || '').toUpperCase();
+							const h = i.toString(16).toUpperCase().padStart(2, '0');
+							if (m.includes(p) || h.includes(p) || ('0X' + h).includes(p)) count++;
+						}
+						return count;
+					})()}
+					<span class="suppress-preview">↵ to suppress {preview} opcode{preview !== 1 ? 's' : ''}</span>
 				{/if}
 			</div>
+			{#if suppressPatterns.length > 0}
+				<div class="suppress-chips">
+					{#each suppressPatterns as pat (pat)}
+						<button
+							class="suppress-chip"
+							onclick={() => removeSuppressPattern(pat)}
+							title="Remove pattern: {pat} (click to remove)"
+						>
+							{pat}
+							<svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.5">
+								<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+							</svg>
+						</button>
+					{/each}
+					<span class="suppress-count">{suppressedOpcodes.size} opcode{suppressedOpcodes.size !== 1 ? 's' : ''}</span>
+				</div>
+			{/if}
 		</div>
 
 		<div class="param">
@@ -2100,7 +2114,7 @@
 							href="https://arxiv.org/abs/2406.19108"
 							target="_blank"
 							rel="noopener"
-							class="help-link">Hartley &amp; Colton (2024)</a
+							class="help-link">Agüera y Arcas et al. (2024)</a
 						>. Re-implemented in WebGPU + SvelteKit from the
 						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link"
 							>original code</a
@@ -2742,7 +2756,7 @@ graph TD
 							href="https://arxiv.org/abs/2406.19108"
 							target="_blank"
 							rel="noopener"
-							class="help-link">Hartley &amp; Colton (2024)</a
+							class="help-link">Agüera y Arcas et al. (2024)</a
 						>
 						and the
 						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link"
@@ -2909,6 +2923,8 @@ graph TD
 		backdrop-filter: blur(12px);
 		font-size: 11px;
 		font-family: monospace;
+		width: 252px;
+		overflow: visible;
 	}
 	.info-row {
 		display: flex;
@@ -3000,6 +3016,13 @@ graph TD
 	.freq-cell.dimmed {
 		opacity: 0.35;
 	}
+	.freq-cell-suppressed-group {
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px dashed var(--border-muted);
+		color: var(--text-muted);
+		cursor: default;
+		font-size: 9px;
+	}
 	.freq-cell.suppressed::after {
 		content: '';
 		position: absolute;
@@ -3037,14 +3060,39 @@ graph TD
 		margin-top: 4px;
 		padding-top: 4px;
 		border-top: 1px solid var(--border-subtle);
+		align-items: center;
 	}
-	.freq-suppressed-row .freq-cell {
-		width: auto;
-		height: 22px;
-		min-width: 36px;
-		padding: 2px 5px;
-		font-size: 7.5px;
-		border-radius: 4px;
+	.freq-suppress-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
+		padding: 1px 6px;
+		font-size: 9px;
+		font-family: var(--font-mono, monospace);
+		font-weight: 600;
+		color: var(--text-secondary);
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid var(--border-muted);
+		border-radius: 3px;
+		cursor: pointer;
+		line-height: 1.4;
+		transition: all 0.12s;
+	}
+	.freq-suppress-chip:hover {
+		background: rgba(220, 80, 60, 0.25);
+		border-color: rgba(220, 80, 60, 0.5);
+	}
+	.freq-suppress-chip svg {
+		opacity: 0.4;
+		flex-shrink: 0;
+	}
+	.freq-suppress-chip:hover svg {
+		opacity: 1;
+	}
+	.freq-suppress-count {
+		font-size: 8.5px;
+		color: var(--text-muted);
+		margin-left: 2px;
 	}
 
 	/* ── Tile tooltip ── */
@@ -3384,50 +3432,6 @@ graph TD
 	}
 
 	/* Suppress opcodes */
-	.suppress-toggle {
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		background: var(--bg-input, rgba(255, 255, 255, 0.06));
-		border: 1px solid var(--border-muted);
-		border-radius: 6px;
-		padding: 6px 8px;
-		color: var(--text-secondary);
-		font-size: 11px;
-		cursor: pointer;
-		min-height: 32px;
-		transition: border-color 0.15s;
-	}
-	.suppress-toggle:hover {
-		border-color: var(--accent);
-	}
-	.suppress-placeholder {
-		opacity: 0.5;
-		font-style: italic;
-	}
-	.suppress-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 3px;
-		flex: 1;
-	}
-	.suppress-tag {
-		font-size: 9px;
-		font-family: var(--font-mono, monospace);
-		font-weight: 600;
-		padding: 1px 5px;
-		border-radius: 3px;
-		line-height: 1.4;
-	}
-	.suppress-chevron {
-		flex-shrink: 0;
-		margin-left: 6px;
-		transition: transform 0.15s;
-	}
-	.suppress-chevron.open {
-		transform: rotate(180deg);
-	}
 	.suppress-clear {
 		background: none;
 		border: none;
@@ -3441,123 +3445,75 @@ graph TD
 		opacity: 1;
 		color: var(--accent);
 	}
-	.suppress-wrap {
+	.suppress-input-wrap {
 		position: relative;
 	}
-	.suppress-menu {
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: 100%;
-		margin-top: 4px;
-		z-index: 60;
-		background: var(--bg-elevated, #1a1a20);
-		border: 1px solid var(--border-muted);
-		border-radius: 6px;
-		padding: 4px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-		display: flex;
-		flex-direction: column;
-	}
-	.suppress-search {
+	.suppress-input {
 		width: 100%;
 		box-sizing: border-box;
-		padding: 5px 8px;
-		margin-bottom: 4px;
-		background: rgba(255, 255, 255, 0.06);
+		padding: 6px 8px;
+		background: var(--bg-input, rgba(255, 255, 255, 0.06));
 		border: 1px solid var(--border-muted);
-		border-radius: 4px;
+		border-radius: 6px;
 		color: var(--text-primary);
 		font-size: 11px;
 		font-family: monospace;
 		outline: none;
 		transition: border-color 0.15s;
 	}
-	.suppress-search::placeholder {
+	.suppress-input::placeholder {
 		color: var(--text-muted);
 		opacity: 0.5;
 	}
-	.suppress-search:focus {
+	.suppress-input:focus {
 		border-color: var(--accent);
 		outline: none;
 	}
-	.suppress-list {
-		max-height: 180px;
-		overflow-y: auto;
-	}
-	.suppress-empty {
-		padding: 8px;
-		text-align: center;
+	.suppress-preview {
+		display: block;
+		font-size: 9.5px;
 		color: var(--text-muted);
-		font-size: 11px;
-		font-style: italic;
+		margin-top: 3px;
+		padding-left: 2px;
 	}
-	.suppress-item {
+	.suppress-chips {
 		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-top: 6px;
 		align-items: center;
-		gap: 6px;
-		padding: 4px 6px;
-		border-radius: 4px;
-		cursor: pointer;
-		font-size: 11px;
-		transition: background 0.1s;
 	}
-	.suppress-item:hover {
-		background: rgba(255, 255, 255, 0.06);
-	}
-	.suppress-item input[type='checkbox'] {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 14px;
-		height: 14px;
-		border: 1.5px solid var(--border-muted);
-		border-radius: 3px;
-		background: transparent;
-		cursor: pointer;
-		flex-shrink: 0;
-		position: relative;
-		transition:
-			background 0.12s,
-			border-color 0.12s;
-	}
-	.suppress-item input[type='checkbox']:checked {
-		background: var(--accent);
-		border-color: var(--accent);
-	}
-	.suppress-item input[type='checkbox']:checked::after {
-		content: '';
-		position: absolute;
-		left: 3px;
-		top: 0.5px;
-		width: 5px;
-		height: 8px;
-		border: solid #0a0a0e;
-		border-width: 0 1.5px 1.5px 0;
-		transform: rotate(40deg);
-	}
-	.suppress-item input[type='checkbox']:focus {
-		outline: none;
-	}
-	.suppress-item input[type='checkbox']:hover {
-		border-color: var(--accent);
-	}
-	.suppress-swatch {
-		width: 12px;
-		height: 12px;
-		border-radius: 2px;
-		flex-shrink: 0;
-	}
-	.suppress-mnemonic {
+	.suppress-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 2px 7px;
+		font-size: 10px;
 		font-family: var(--font-mono, monospace);
 		font-weight: 600;
 		color: var(--text-primary);
-		min-width: 70px;
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid var(--border-muted);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.12s;
+		line-height: 1.4;
 	}
-	.suppress-hex {
-		font-family: var(--font-mono, monospace);
-		font-size: 10px;
+	.suppress-chip:hover {
+		background: rgba(220, 80, 60, 0.25);
+		border-color: rgba(220, 80, 60, 0.5);
+	}
+	.suppress-chip svg {
+		opacity: 0.5;
+		flex-shrink: 0;
+	}
+	.suppress-chip:hover svg {
+		opacity: 1;
+	}
+	.suppress-count {
+		font-size: 9px;
 		color: var(--text-muted);
-		margin-left: auto;
+		margin-left: 2px;
 	}
 
 	/* Colormap selector */
@@ -4164,13 +4120,6 @@ graph TD
 			display: none;
 		}
 
-		/* Suppress menu: open upward on mobile */
-		.suppress-menu {
-			top: auto;
-			bottom: 100%;
-			margin-top: 0;
-			margin-bottom: 4px;
-		}
 
 		/* Genome tooltip: smaller on mobile */
 		.genome-tip {

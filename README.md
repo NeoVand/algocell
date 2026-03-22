@@ -24,7 +24,7 @@
 
 Watch self-replicating Z80 programs spontaneously emerge from a grid of random bytes. Each cell in the grid contains a handful of random bytes that are continuously executed as Z80 machine code. Within seconds, self-replicating programs appear and compete for space — digital life from pure noise.
 
-Based on [Hartley & Colton (2024)](https://arxiv.org/abs/2406.19108) and the [original Python/JAX implementation](https://github.com/znah/zff) by Alexander Mordvintsev. This version re-implements the simulation using WebGPU compute shaders, so it runs directly in the browser with no installation or GPU drivers required. At max settings on a MacBook Air M3, it reaches over 50 billion Z80 operations per second.
+Based on [Agüera y Arcas et al. (2024)](https://arxiv.org/abs/2406.19108) and the [original Python/JAX implementation](https://github.com/znah/zff) by Alexander Mordvintsev. This version re-implements the simulation using WebGPU compute shaders, so it runs directly in the browser with no installation or GPU drivers required. At max settings on a MacBook Air M3, it reaches over 50 billion Z80 operations per second.
 
 ## How it works
 
@@ -86,6 +86,6 @@ Outputs a static site (via `@sveltejs/adapter-static`) that can be deployed anyw
 
 ## Credits
 
-- Paper: _"Self-Replicating Programs in a Z80 Virtual Machine"_ — Hartley & Colton (2024) ([arXiv:2406.19108](https://arxiv.org/abs/2406.19108))
+- Paper: _"Computational Life: How Well-formed, Self-replicating Programs Emerge from Simple Interaction"_ — Agüera y Arcas, Alakuijala, Evans, Laurie, Mordvintsev, Niklasson, Randazzo & Versari (2024) ([arXiv:2406.19108](https://arxiv.org/abs/2406.19108))
 - Original implementation: [znah/zff](https://github.com/znah/zff) by Alexander Mordvintsev
 - Developed by [Neo Mohsenvand](https://github.com/NeoVand) with the help of [Claude Code](https://claude.ai)
