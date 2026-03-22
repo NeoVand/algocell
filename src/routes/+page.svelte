@@ -4123,15 +4123,32 @@ graph TD
 			left: 2px;
 		}
 
-		/* Settings panel: full width at bottom above toolbar */
+		/* Settings panel: compact, anchored bottom-right above toolbar */
 		.settings-panel {
 			top: auto;
 			bottom: 52px;
 			right: 8px;
-			left: 8px;
-			width: auto;
+			left: auto;
+			width: 220px;
 			max-height: calc(100vh - 120px);
 			overflow-y: auto;
+			font-size: 10px;
+		}
+		/* Bigger slider thumbs for touch */
+		.slider {
+			height: 6px;
+			padding: 8px 0;
+		}
+		.slider::-webkit-slider-thumb {
+			width: 22px;
+			height: 22px;
+		}
+		.slider::-moz-range-thumb {
+			width: 22px;
+			height: 22px;
+		}
+		.slider-track-wrap {
+			padding: 8px 0;
 		}
 
 		/* Help modal: full-screen on mobile */
