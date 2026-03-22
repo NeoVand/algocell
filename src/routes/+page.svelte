@@ -4129,7 +4129,7 @@ graph TD
 			bottom: 52px;
 			right: 8px;
 			left: auto;
-			width: 220px;
+			width: 286px;
 			max-height: calc(100vh - 120px);
 			overflow-y: auto;
 			font-size: 10px;
