@@ -672,6 +672,8 @@
 	}
 
 	function toggleSuppressOpcode(opcode: number) {
+		tileTooltip = null;
+		chartHoveredByte = -1;
 		const mnemonic = byteToMnemonic(opcode) || hexByte(opcode);
 		if (suppressedOpcodes.has(opcode)) {
 			// Find and remove patterns that match this opcode
