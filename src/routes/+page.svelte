@@ -635,6 +635,8 @@
 		if (!engine) return;
 		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
 		engine.changeGridConfig(config, canvasW, canvasH);
+		// Re-apply suppress mask after buffer recreation
+		engine.setSuppressedOpcodes(suppressedOpcodes);
 		// Reset stats
 		opsPerSec = 0;
 		chartRing.length = 0;
@@ -644,11 +646,19 @@
 	}
 
 	function addSuppressPattern(pattern: string) {
-		const p = pattern.trim().toUpperCase();
-		if (!p || suppressPatterns.includes(p)) return;
-		suppressPatterns.push(p);
-		// Svelte needs identity change for array reactivity
-		suppressPatterns = [...suppressPatterns];
+		// Support multiple patterns separated by semicolons
+		// (commas are NOT delimiters because Z80 mnemonics contain commas, e.g. LD A,B)
+		const parts = pattern.split(';').map((s) => s.trim().toUpperCase()).filter(Boolean);
+		let added = false;
+		for (const p of parts) {
+			if (!p || suppressPatterns.includes(p)) continue;
+			suppressPatterns.push(p);
+			added = true;
+		}
+		if (added) {
+			// Svelte needs identity change for array reactivity
+			suppressPatterns = [...suppressPatterns];
+		}
 	}
 
 	function removeSuppressPattern(pattern: string) {
@@ -1750,7 +1760,7 @@
 				<input
 					class="suppress-input"
 					type="text"
-					placeholder="Type to suppress, e.g. LD, POP, EX…"
+					placeholder="e.g. LD; POP; EX (use ; to separate)"
 					bind:value={suppressInput}
 					onkeydown={(e) => {
 						if (e.key === 'Enter' && suppressInput.trim()) {
@@ -1761,12 +1771,15 @@
 				/>
 				{#if suppressInput.trim()}
 					{@const preview = (() => {
-						const p = suppressInput.trim().toUpperCase();
+						const parts = suppressInput.split(';').map(s => s.trim().toUpperCase()).filter(Boolean);
+						if (parts.length === 0) return 0;
 						let count = 0;
 						for (let i = 0; i < 256; i++) {
 							const m = (byteToMnemonic(i) || '').toUpperCase();
 							const h = i.toString(16).toUpperCase().padStart(2, '0');
-							if (m.includes(p) || h.includes(p) || ('0X' + h).includes(p)) count++;
+							for (const p of parts) {
+								if (m.includes(p) || h.includes(p) || ('0X' + h).includes(p)) { count++; break; }
+							}
 						}
 						return count;
 					})()}
@@ -2825,6 +2838,14 @@ graph TD
 {/if}
 
 <style>
+	/* Prevent mobile zoom/scroll escaping on all UI overlays */
+	:global(html),
+	:global(body) {
+		touch-action: manipulation;
+		overscroll-behavior: none;
+		-webkit-text-size-adjust: 100%;
+	}
+
 	/* Remove focus outlines on all buttons */
 	button:focus,
 	button:focus-visible {
@@ -3499,7 +3520,7 @@ graph TD
 		border: 1px solid var(--border-muted);
 		border-radius: 6px;
 		color: var(--text-primary);
-		font-size: 11px;
+		font-size: 16px; /* ≥16px prevents iOS auto-zoom on focus */
 		font-family: monospace;
 		outline: none;
 		transition: border-color 0.15s;
@@ -4163,6 +4184,13 @@ graph TD
 			display: none;
 		}
 
+
+		/* Prevent iOS zoom on input focus — font-size must be ≥ 16px */
+		.seed-input,
+		.grid-size-input,
+		.suppress-input {
+			font-size: 16px;
+		}
 
 		/* Genome tooltip: smaller on mobile */
 		.genome-tip {
