@@ -1383,9 +1383,7 @@
 						stroke-width="2"
 						stroke-linecap="round"
 						stroke-linejoin="round"
-						><path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z" /><path d="M12 12L20 7.5" /><path
-							d="M12 12V21"
-						/><path d="M12 12L4 7.5" /></svg
+						><rect x="3" y="3" width="8" height="8" /><rect x="13" y="3" width="8" height="8" /><rect x="3" y="13" width="8" height="8" /><rect x="13" y="13" width="8" height="8" /></svg
 					> Grid</label
 				>
 				<span class="param-info-wrap" class:show-tip={openTip === 'grid'}>
@@ -1406,18 +1404,22 @@
 						simulation.</span
 					>
 				</span>
-			</div>
-			<div class="grid-type-row">
-				<button
-					class="grid-type-btn"
-					class:active={gridType === 'square'}
-					onclick={() => handleGridTypeChange('square')}>Square</button
-				>
-				<button
-					class="grid-type-btn"
-					class:active={gridType === 'hex'}
-					onclick={() => handleGridTypeChange('hex')}>Hex</button
-				>
+				<div class="grid-type-toggle">
+					<button
+						class="grid-type-btn"
+						class:active={gridType === 'square'}
+						onclick={() => handleGridTypeChange('square')}
+						title="Square grid — 4 neighbors"
+					><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="3.5" height="3.5" /><rect x="5.5" y="1" width="3.5" height="3.5" /><rect x="1" y="5.5" width="3.5" height="3.5" /><rect x="5.5" y="5.5" width="3.5" height="3.5" /></svg></button
+					>
+					<button
+						class="grid-type-btn"
+						class:active={gridType === 'hex'}
+						onclick={() => handleGridTypeChange('hex')}
+						title="Hex grid — 6 neighbors"
+					><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 1L8.5 3V7L5 9L1.5 7V3Z" /></svg></button
+					>
+				</div>
 			</div>
 			<div class="grid-size-row">
 				<label class="grid-size-label">
@@ -1760,7 +1762,7 @@
 				<input
 					class="suppress-input"
 					type="text"
-					placeholder="e.g. LD; POP; EX (use ; to separate)"
+					placeholder="LD; POP; EX; PUSH; ADD"
 					bind:value={suppressInput}
 					onkeydown={(e) => {
 						if (e.key === 'Enter' && suppressInput.trim()) {
@@ -2063,7 +2065,7 @@
 						onclick={() => (helpTab = 'about')}
 					>
 						<svg width="14" height="14" viewBox="0 0 32 32"
-							><ellipse cx="16" cy="20" rx="14" ry="14" fill="#c8875a" /><line
+							><ellipse cx="16" cy="20" rx="14" ry="14" fill="var(--accent)" /><line
 								x1="16"
 								y1="8"
 								x2="16"
@@ -2224,13 +2226,13 @@ graph TD
 						<path
 							d="M 40,130 C 100,130 150,120 186,88 C 220,58 260,42 300,42"
 							fill="none"
-							stroke="#c8875a"
+							stroke="var(--accent)"
 							stroke-width="2"
 						/>
 						<text
 							x="195"
 							y="36"
-							fill="#c8875a"
+							fill="var(--accent)"
 							font-size="10"
 							font-family="-apple-system, BlinkMacSystemFont, sans-serif"
 							>Self-Replicating Bytes</text
@@ -2865,7 +2867,8 @@ graph TD
 		background: var(--bg-panel);
 		border: 1px solid var(--border-subtle);
 		border-radius: 20px;
-		backdrop-filter: blur(12px);
+		backdrop-filter: blur(16px);
+		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 		transition:
 			border-radius 0.2s ease,
 			gap 0.2s ease,
@@ -2978,7 +2981,8 @@ graph TD
 		background: var(--bg-panel);
 		border: 1px solid var(--border-subtle);
 		border-radius: 10px;
-		backdrop-filter: blur(12px);
+		backdrop-filter: blur(16px);
+		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 		font-size: 11px;
 		font-family: monospace;
 		width: 252px;
@@ -3039,7 +3043,7 @@ graph TD
 	.info-chart-svg {
 		width: 100%;
 		height: 90px;
-		background: rgba(255, 235, 210, 0.04);
+		background: var(--bg-subtle);
 		border-radius: 4px;
 	}
 	.freq-grid {
@@ -3189,7 +3193,7 @@ graph TD
 		opacity: 0.7;
 	}
 	.tile-tip-body {
-		background: #111116;
+		background: var(--bg-elevated);
 		padding: 8px 10px;
 		display: flex;
 		flex-direction: column;
@@ -3203,7 +3207,7 @@ graph TD
 	}
 	.tile-tip-status.suppressed {
 		font-size: 10px;
-		color: #e07050;
+		color: var(--accent-rose);
 		font-weight: 600;
 	}
 	.tile-tip-hint {
@@ -3220,20 +3224,21 @@ graph TD
 		background: var(--bg-panel);
 		border: 1px solid var(--border-subtle);
 		border-radius: 12px;
-		backdrop-filter: blur(12px);
-		padding: 14px;
+		backdrop-filter: blur(16px);
+		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+		padding: 12px;
 	}
 	.panel-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 12px;
+		margin-bottom: 8px;
 	}
 	.panel-title {
 		display: inline-flex;
 		align-items: center;
 		gap: 4px;
-		font-size: 11px;
+		font-size: 10.5px;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		color: var(--text-subtle);
@@ -3263,7 +3268,7 @@ graph TD
 		width: 229px;
 	}
 	.param {
-		margin-bottom: 14px;
+		margin-bottom: 10px;
 	}
 	.param:last-child {
 		margin-bottom: 0;
@@ -3272,13 +3277,13 @@ graph TD
 		display: flex;
 		align-items: center;
 		gap: 4px;
-		margin-bottom: 6px;
+		margin-bottom: 4px;
 	}
 	.param-label {
-		font-size: 11px;
+		font-size: 10.5px;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--text-subtle);
+		letter-spacing: 0.04em;
+		color: var(--text-muted);
 		display: inline-flex;
 		align-items: center;
 		gap: 4px;
@@ -3331,7 +3336,7 @@ graph TD
 	}
 	.param-val {
 		margin-left: auto;
-		font-size: 13px;
+		font-size: 11px;
 		font-family: monospace;
 		color: var(--accent);
 		font-variant-numeric: tabular-nums;
@@ -3345,16 +3350,15 @@ graph TD
 	.seed-input {
 		flex: 1;
 		min-width: 0;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-muted);
-		border-radius: 6px;
-		padding: 0 8px;
-		height: 26px;
-		font-size: 12px;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.10);
+		border-radius: 5px;
+		padding: 0 7px;
+		height: 24px;
+		font-size: 11px;
 		font-family: monospace;
-		color: var(--accent);
+		color: var(--text-primary);
 		outline: none;
-		transition: border-color 0.15s;
 		-moz-appearance: textfield;
 		appearance: textfield;
 	}
@@ -3365,17 +3369,17 @@ graph TD
 		margin: 0;
 	}
 	.seed-input:focus {
-		border-color: var(--border-muted);
+		border-color: rgba(255, 255, 255, 0.15);
 	}
 	.seed-apply {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 26px;
-		height: 26px;
+		width: 24px;
+		height: 24px;
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
-		border-radius: 6px;
+		border-radius: 5px;
 		color: var(--accent);
 		cursor: pointer;
 		transition: all 0.15s;
@@ -3386,20 +3390,22 @@ graph TD
 		border-color: var(--accent);
 	}
 
-	/* Grid type toggle */
-	.grid-type-row {
+	/* Grid type toggle — inline with param label */
+	.grid-type-toggle {
 		display: flex;
-		gap: 4px;
-		margin-bottom: 8px;
+		gap: 2px;
+		margin-left: 6px;
 	}
 	.grid-type-btn {
-		flex: 1;
-		height: 26px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 20px;
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
-		border-radius: 6px;
+		border-radius: 4px;
 		color: var(--text-subtle);
-		font-size: 11px;
 		cursor: pointer;
 		transition: all 0.15s;
 	}
@@ -3416,6 +3422,9 @@ graph TD
 		align-items: center;
 		gap: 4px;
 	}
+	.grid-size-row .seed-apply {
+		margin-left: auto;
+	}
 	.grid-size-label {
 		display: flex;
 		align-items: center;
@@ -3425,15 +3434,15 @@ graph TD
 		text-transform: uppercase;
 	}
 	.grid-size-input {
-		width: 52px;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-muted);
-		border-radius: 6px;
+		width: 48px;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.10);
+		border-radius: 5px;
 		padding: 0 6px;
-		height: 24px;
+		height: 22px;
 		font-size: 11px;
 		font-family: monospace;
-		color: var(--accent);
+		color: var(--text-primary);
 		outline: none;
 		-moz-appearance: textfield;
 		appearance: textfield;
@@ -3452,7 +3461,7 @@ graph TD
 	/* Custom slider */
 	.slider-track-wrap {
 		position: relative;
-		padding: 4px 0;
+		padding: 2px 0;
 	}
 	.slider {
 		width: 100%;
@@ -3515,22 +3524,22 @@ graph TD
 	.suppress-input {
 		width: 100%;
 		box-sizing: border-box;
-		padding: 6px 8px;
-		background: var(--bg-input, rgba(255, 255, 255, 0.06));
-		border: 1px solid var(--border-muted);
-		border-radius: 6px;
+		padding: 0 7px;
+		height: 24px;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.10);
+		border-radius: 5px;
 		color: var(--text-primary);
-		font-size: 16px; /* ≥16px prevents iOS auto-zoom on focus */
+		font-size: 11px;
 		font-family: monospace;
 		outline: none;
-		transition: border-color 0.15s;
 	}
 	.suppress-input::placeholder {
-		color: var(--text-muted);
-		opacity: 0.5;
+		color: var(--text-subtle);
+		opacity: 1;
 	}
 	.suppress-input:focus {
-		border-color: var(--accent);
+		border-color: rgba(255, 255, 255, 0.15);
 		outline: none;
 	}
 	.suppress-preview {
@@ -3590,9 +3599,9 @@ graph TD
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 3px;
-		padding: 5px 0 4px;
-		font-size: 10px;
+		gap: 2px;
+		padding: 4px 0 3px;
+		font-size: 9px;
 		font-family: monospace;
 		text-transform: capitalize;
 		color: var(--text-muted);
@@ -4089,7 +4098,7 @@ graph TD
 			left: 8px;
 			width: auto;
 			min-width: 0;
-			max-width: min(260px, calc(100vw - 16px));
+			max-width: min(210px, calc(100vw - 16px));
 			padding: 6px 8px;
 			font-size: 10px;
 			border-radius: 8px;
@@ -4104,16 +4113,16 @@ graph TD
 			font-size: 10px;
 		}
 		.info-chart-svg {
-			height: 56px;
+			height: 68px;
 		}
 		.freq-grid {
-			grid-template-columns: repeat(5, 28px);
-			gap: 2px;
+			grid-template-columns: repeat(5, 34px);
+			gap: 3px;
 		}
 		.freq-cell {
-			width: 28px;
-			height: 28px;
-			font-size: 7px;
+			width: 34px;
+			height: 34px;
+			font-size: 8px;
 			border-radius: 4px;
 			padding: 1px;
 		}
@@ -4134,11 +4143,7 @@ graph TD
 			overflow-y: auto;
 			font-size: 10px;
 		}
-		/* Bigger slider thumbs for touch */
-		.slider {
-			height: 6px;
-			padding: 8px 0;
-		}
+		/* Bigger slider thumbs for touch (track stays thin) */
 		.slider::-webkit-slider-thumb {
 			width: 22px;
 			height: 22px;
@@ -4148,7 +4153,7 @@ graph TD
 			height: 22px;
 		}
 		.slider-track-wrap {
-			padding: 8px 0;
+			padding: 6px 0;
 		}
 
 		/* Help modal: full-screen on mobile */
@@ -4204,9 +4209,14 @@ graph TD
 
 		/* Prevent iOS zoom on input focus — font-size must be ≥ 16px */
 		.seed-input,
-		.grid-size-input,
 		.suppress-input {
 			font-size: 16px;
+			height: 28px;
+		}
+		.grid-size-input {
+			font-size: 16px;
+			height: 26px;
+			width: 54px;
 		}
 
 		/* Genome tooltip: smaller on mobile */

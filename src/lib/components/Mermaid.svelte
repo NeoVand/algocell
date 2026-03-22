@@ -13,26 +13,26 @@
 			themeVariables: {
 				darkMode: true,
 				background: 'transparent',
-				primaryColor: 'rgba(200,135,90,0.15)',
+				primaryColor: 'rgba(200,135,90,0.12)',
 				primaryBorderColor: '#c8875a',
-				primaryTextColor: '#e0cfc0',
-				secondaryColor: 'rgba(200,135,90,0.08)',
-				secondaryBorderColor: '#c8875a',
-				secondaryTextColor: '#d0c0b0',
-				tertiaryColor: 'rgba(200,135,90,0.06)',
-				tertiaryBorderColor: 'rgba(200,135,90,0.3)',
-				tertiaryTextColor: '#d0c0b0',
-				lineColor: '#9a7050',
-				textColor: '#d0c0b0',
-				mainBkg: 'rgba(200,135,90,0.12)',
+				primaryTextColor: '#e8e4e0',
+				secondaryColor: 'rgba(200,135,90,0.06)',
+				secondaryBorderColor: '#a0704a',
+				secondaryTextColor: '#c4bfb8',
+				tertiaryColor: 'rgba(255,255,255,0.04)',
+				tertiaryBorderColor: 'rgba(200,135,90,0.25)',
+				tertiaryTextColor: '#c4bfb8',
+				lineColor: '#806048',
+				textColor: '#c4bfb8',
+				mainBkg: 'rgba(200,135,90,0.10)',
 				nodeBorder: '#c8875a',
-				nodeTextColor: '#e0cfc0',
+				nodeTextColor: '#e8e4e0',
 				clusterBkg: 'rgba(255,255,255,0.03)',
 				clusterBorder: 'rgba(255,255,255,0.08)',
 				edgeLabelBackground: 'transparent',
-				noteBkgColor: 'rgba(200,135,90,0.1)',
-				noteBorderColor: '#c8875a',
-				noteTextColor: '#d0c0b0',
+				noteBkgColor: 'rgba(200,135,90,0.08)',
+				noteBorderColor: '#a0704a',
+				noteTextColor: '#c4bfb8',
 				fontSize: '11px',
 				fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif'
 			},
@@ -80,7 +80,7 @@
 		background: transparent !important;
 	}
 	.mermaid-container :global(.edgeLabel rect) {
-		fill: rgba(30, 22, 18, 0.85) !important;
+		fill: rgba(14, 14, 14, 0.85) !important;
 		stroke: none !important;
 		rx: 4;
 		ry: 4;

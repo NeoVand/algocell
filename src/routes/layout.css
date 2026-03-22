@@ -3,19 +3,19 @@
 @plugin '@tailwindcss/typography';
 
 :root {
-	--bg-base: #1a1512;
-	--bg-panel: rgba(26, 21, 18, 0.92);
-	--bg-elevated: rgba(35, 28, 22, 0.98);
-	--bg-subtle: rgba(255, 235, 210, 0.03);
-	--bg-muted: rgba(255, 235, 210, 0.06);
-	--bg-hover: rgba(255, 235, 210, 0.08);
-	--border-subtle: rgba(255, 220, 180, 0.06);
-	--border-muted: rgba(255, 220, 180, 0.1);
-	--border-default: rgba(255, 220, 180, 0.15);
-	--text-primary: #f0e6dc;
-	--text-secondary: #ddd0c4;
-	--text-muted: #c4b8aa;
-	--text-subtle: #a09282;
+	--bg-base: #0e0e0e;
+	--bg-panel: rgba(18, 18, 18, 0.94);
+	--bg-elevated: rgba(24, 24, 24, 0.98);
+	--bg-subtle: rgba(255, 255, 255, 0.03);
+	--bg-muted: rgba(255, 255, 255, 0.06);
+	--bg-hover: rgba(255, 255, 255, 0.08);
+	--border-subtle: rgba(255, 255, 255, 0.06);
+	--border-muted: rgba(255, 255, 255, 0.10);
+	--border-default: rgba(255, 255, 255, 0.15);
+	--text-primary: #e8e4e0;
+	--text-secondary: #d5d0ca;
+	--text-muted: #b0a89e;
+	--text-subtle: #8a8078;
 	--accent: #c8875a;
 	--accent-warm: #d4956a;
 	--accent-amber: #d4a06a;
