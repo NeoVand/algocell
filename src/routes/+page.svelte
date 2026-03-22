@@ -18,6 +18,10 @@
 	let colormapName: ColormapName = $state('rainbow');
 	let colormap = $state(createColormap('rainbow'));
 	let simpleView = $state(false);
+	let showColorAdj = $state(false);
+	let brightness = $state(0);
+	let contrast = $state(1);
+	let saturation = $state(1);
 
 	let canvas: HTMLCanvasElement;
 	let canvasContainer: HTMLDivElement;
@@ -694,6 +698,12 @@
 	$effect(() => {
 		if (!engine) return;
 		engine.setShowAverage(simpleView);
+	});
+
+	// Sync brightness/contrast/saturation to GPU
+	$effect(() => {
+		if (!engine) return;
+		engine.setBCS(brightness, contrast, saturation);
 	});
 
 
@@ -1848,6 +1858,16 @@
 						>Color scheme for byte values. Each Z80 opcode category gets a distinct color family.</span
 					>
 				</span>
+				<button
+					class="color-adj-toggle"
+					class:active={showColorAdj}
+					onclick={() => (showColorAdj = !showColorAdj)}
+					title="Color adjustments"
+				>
+					<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+					</svg>
+				</button>
 			</div>
 			<div class="cmap-row">
 				{#each COLORMAP_NAMES as name (name)}
@@ -1861,6 +1881,23 @@
 					</button>
 				{/each}
 			</div>
+			{#if showColorAdj}
+				<div class="color-adj-panel">
+					<div class="color-adj-row">
+						<span class="color-adj-label">Brightness</span>
+						<input type="range" class="slider color-adj-slider" min="-0.5" max="0.5" step="0.01" bind:value={brightness} />
+					</div>
+					<div class="color-adj-row">
+						<span class="color-adj-label">Contrast</span>
+						<input type="range" class="slider color-adj-slider" min="0.3" max="2.5" step="0.01" bind:value={contrast} />
+					</div>
+					<div class="color-adj-row">
+						<span class="color-adj-label">Saturation</span>
+						<input type="range" class="slider color-adj-slider" min="0" max="3" step="0.01" bind:value={saturation} />
+					</div>
+					<button class="color-adj-reset" onclick={() => { brightness = 0; contrast = 1; saturation = 1; }}>Reset</button>
+				</div>
+			{/if}
 		</div>
 
 		<div class="param">
@@ -3718,6 +3755,67 @@ graph TD
 		background: rgba(200, 135, 90, 0.12);
 		border-color: var(--accent);
 		color: var(--accent);
+	}
+
+	/* Color adjustments */
+	.color-adj-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 20px;
+		height: 20px;
+		margin-left: auto;
+		background: none;
+		border: 1px solid var(--border-muted);
+		border-radius: 4px;
+		color: var(--text-subtle);
+		cursor: pointer;
+		transition: all 0.15s;
+	}
+	.color-adj-toggle:hover,
+	.color-adj-toggle.active {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+	.color-adj-panel {
+		margin-top: 6px;
+		padding: 8px;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 6px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+	.color-adj-row {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.color-adj-label {
+		font-size: 9.5px;
+		color: var(--text-muted);
+		width: 58px;
+		flex-shrink: 0;
+	}
+	.color-adj-slider {
+		flex: 1;
+		min-width: 0;
+	}
+	.color-adj-reset {
+		align-self: flex-end;
+		padding: 2px 8px;
+		font-size: 9px;
+		color: var(--text-subtle);
+		background: none;
+		border: 1px solid var(--border-muted);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.15s;
+	}
+	.color-adj-reset:hover {
+		color: var(--text-secondary);
+		border-color: var(--text-subtle);
 	}
 
 	/* ── Genome tooltip ── */

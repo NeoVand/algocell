@@ -71,6 +71,9 @@ export class GPUEngine {
 	private _z80Steps = Z80_STEPS;
 	private hoverCell = -1;
 	private showAverage = 0;
+	private brightness = 0;   // -1..1
+	private contrast = 1;     // 0..2
+	private saturation = 1;   // 0..2
 	private colormap: Uint32Array;
 	private suppressedOpcodes = new Set<number>();
 
@@ -279,7 +282,7 @@ export class GPUEngine {
 		});
 
 		this.renderParamsBuffer = dev.createBuffer({
-			size: 48, // RenderParams struct (12 fields)
+			size: 64, // RenderParams struct (16 fields)
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -465,6 +468,12 @@ export class GPUEngine {
 
 	setShowAverage(show: boolean): void {
 		this.showAverage = show ? 1 : 0;
+	}
+
+	setBCS(brightness: number, contrast: number, saturation: number): void {
+		this.brightness = brightness;
+		this.contrast = contrast;
+		this.saturation = saturation;
 	}
 
 	// Run one simulation step (all on GPU)
@@ -809,7 +818,7 @@ export class GPUEngine {
 	// Render the soup to the canvas
 	render(canvas: HTMLCanvasElement): void {
 		const tileSize = 4;
-		const renderParams = new ArrayBuffer(48); // 12 fields * 4 bytes
+		const renderParams = new ArrayBuffer(64); // 16 fields * 4 bytes
 		const view = new DataView(renderParams);
 		view.setUint32(0, this.soupWidth, true);
 		view.setUint32(4, this.soupHeight, true);
@@ -821,8 +830,12 @@ export class GPUEngine {
 		view.setFloat32(28, this.view.zoom, true);
 		view.setFloat32(32, this.view.offsetX, true);
 		view.setFloat32(36, this.view.offsetY, true);
-		view.setUint32(40, this.tapeLength, true); // tape_length
-		view.setUint32(44, 0, true); // pad2
+		view.setUint32(40, this.tapeLength, true);
+		view.setFloat32(44, this.brightness, true);
+		view.setFloat32(48, this.contrast, true);
+		view.setFloat32(52, this.saturation, true);
+		view.setUint32(56, 0, true); // pad3
+		view.setUint32(60, 0, true); // pad4
 
 		this.device.queue.writeBuffer(this.renderParamsBuffer, 0, renderParams);
 

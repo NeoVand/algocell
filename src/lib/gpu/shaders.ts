@@ -1027,7 +1027,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
             avg = mix(avg, lined, avg_line_fade);
         }
 
-        return vec4f(avg, 1.0);
+        return vec4f(apply_bcs(avg), 1.0);
     }
 
     // Tile mode: show individual bytes (zoomed in enough)
@@ -1066,7 +1066,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         color = mix(color, cell_lined, line_fade);
     }
 
-    return vec4f(color, 1.0);
+    return vec4f(apply_bcs(color), 1.0);
 }
 `;
 
@@ -1274,7 +1274,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         let edge_t = 1.0 - smoothstep(0.0, line_w, boundary);
         avg = mix(avg, vec3f(0.06), edge_t * 0.8);
 
-        return vec4f(avg, 1.0);
+        return vec4f(apply_bcs(avg), 1.0);
     }
 
     // ── Detailed mode: use byte-level hex grid ──
@@ -1317,7 +1317,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
             let gap_blend = smoothstep(0.2, 1.0, bytes_per_pixel);
             avg = mix(avg * 0.3, avg, gap_blend);
         }
-        return vec4f(avg, 1.0);
+        return vec4f(apply_bcs(avg), 1.0);
     }
 
     // Gap between cells: blend from dark to cell avg as zoom decreases
@@ -1334,7 +1334,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         }
         var avg = sqrt(acc / f32(rparams.tape_length));
         let gap_color = mix(vec3f(0.04, 0.04, 0.06), avg * 0.7, gap_blend);
-        return vec4f(gap_color, 1.0);
+        return vec4f(apply_bcs(gap_color), 1.0);
     }
 
     let byte_idx = u32(byte_idx_i);
@@ -1403,7 +1403,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         }
     }
 
-    return vec4f(color, 1.0);
+    return vec4f(apply_bcs(color), 1.0);
 }
 `;
 
@@ -1424,7 +1424,11 @@ struct RenderParams {
     offset_x: f32,     // pan offset in cell units
     offset_y: f32,
     tape_length: u32,
-    _pad2: u32,
+    brightness: f32,   // -1..1, default 0
+    contrast: f32,     // 0..2, default 1
+    saturation: f32,   // 0..2, default 1
+    _pad3: u32,
+    _pad4: u32,
 }
 
 @group(0) @binding(0) var<storage, read> soup: array<u32>;
@@ -1463,6 +1467,18 @@ fn read_soup_byte(cell: u32, byte_idx: u32) -> u32 {
     let word_idx = cell * wpc + (byte_idx >> 2u);
     let shift = (byte_idx & 3u) * 8u;
     return (soup[word_idx] >> shift) & 0xffu;
+}
+
+// Apply brightness, contrast, saturation adjustments
+fn apply_bcs(c: vec3f) -> vec3f {
+    // Brightness: shift
+    var col = c + rparams.brightness;
+    // Contrast: scale around 0.5
+    col = (col - 0.5) * rparams.contrast + 0.5;
+    // Saturation: lerp toward luminance
+    let lum = dot(col, vec3f(0.299, 0.587, 0.114));
+    col = mix(vec3f(lum), col, rparams.saturation);
+    return clamp(col, vec3f(0.0), vec3f(1.0));
 }
 
 ${fragmentBlock}
