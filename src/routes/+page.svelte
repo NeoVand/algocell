@@ -4107,11 +4107,11 @@ graph TD
 			height: 56px;
 		}
 		.freq-grid {
-			grid-template-columns: repeat(5, 1fr);
+			grid-template-columns: repeat(5, 28px);
 			gap: 2px;
 		}
 		.freq-cell {
-			width: auto;
+			width: 28px;
 			height: 28px;
 			font-size: 7px;
 			border-radius: 4px;
