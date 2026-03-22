@@ -30,7 +30,7 @@
 	let z80Steps = $state(Z80_STEPS);
 	let playing = $state(true);
 	let speed = $state(1);
-	let gridType: GridType = $state('square');
+	let gridType = $state<GridType>('square');
 
 	// Compute grid dimensions from viewport aspect ratio
 	// ~20K cells: enough for emergence, large enough to see patterns clearly
@@ -69,7 +69,6 @@
 	let gridInitialized = false;
 
 	// Stats
-	let batchCount = $state(0);
 	let opsPerSec = $state(0);
 	let showHelp = $state(false);
 	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'about'>('overview');
@@ -82,6 +81,7 @@
 	let suppressInput = $state('');
 
 	// Derive the actual set of suppressed opcodes from substring patterns
+	/* eslint-disable svelte/prefer-svelte-reactivity -- derived recreates the Set each time */
 	let suppressedOpcodes = $derived.by(() => {
 		const set = new Set<number>();
 		if (suppressPatterns.length === 0) return set;
@@ -98,6 +98,7 @@
 		}
 		return set;
 	});
+	/* eslint-enable svelte/prefer-svelte-reactivity */
 
 	// Frequency chart: track top N bytes normalized over time
 	// Total bytes counted by shader = cells * wordsPerCell * 4 (word-aligned)
@@ -111,7 +112,7 @@
 	// Efficient ring-buffer chart storage: Float32Array(256) per point for O(1) byte lookup
 	// Non-reactive — we only trigger Svelte updates via chartVersion counter
 	const chartRing: Float32Array[] = []; // ring buffer of Float32Array(256), each indexed by byte
-	let chartLen = 0; // current number of valid entries
+	let chartLen = $state(0); // current number of valid entries
 	let chartVersion = $state(0); // bump to trigger reactive re-derive
 
 	// Tracked bytes: stable set of bytes we draw lines for, with colormap-derived colors
@@ -302,7 +303,6 @@
 
 			// Update stats: immediately on first frame, then every 15 frames
 			if (playing && (frameCount === 1 || frameCount % 15 === 0) && !statsLoading) {
-				batchCount = engine.batchCount;
 				opsPerSec = engine.opsPerSec;
 				updateTopBytes();
 			}
@@ -594,7 +594,6 @@
 	function handleReset() {
 		if (!engine) return;
 		engine.reset(seed);
-		batchCount = 0;
 		opsPerSec = 0;
 		chartRing.length = 0;
 		chartLen = 0;
@@ -637,7 +636,6 @@
 		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
 		engine.changeGridConfig(config, canvasW, canvasH);
 		// Reset stats
-		batchCount = 0;
 		opsPerSec = 0;
 		chartRing.length = 0;
 		chartLen = 0;
@@ -3090,6 +3088,7 @@ graph TD
 		max-height: 100%;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
+		line-clamp: 2;
 		-webkit-box-orient: vertical;
 	}
 	.freq-suppressed-row {
@@ -3336,10 +3335,12 @@ graph TD
 		outline: none;
 		transition: border-color 0.15s;
 		-moz-appearance: textfield;
+		appearance: textfield;
 	}
 	.seed-input::-webkit-inner-spin-button,
 	.seed-input::-webkit-outer-spin-button {
 		-webkit-appearance: none;
+		appearance: none;
 		margin: 0;
 	}
 	.seed-input:focus {
@@ -3414,10 +3415,12 @@ graph TD
 		color: var(--accent);
 		outline: none;
 		-moz-appearance: textfield;
+		appearance: textfield;
 	}
 	.grid-size-input::-webkit-inner-spin-button,
 	.grid-size-input::-webkit-outer-spin-button {
 		-webkit-appearance: none;
+		appearance: none;
 		margin: 0;
 	}
 	.grid-size-x {
@@ -3442,6 +3445,7 @@ graph TD
 	}
 	.slider::-webkit-slider-thumb {
 		-webkit-appearance: none;
+		appearance: none;
 		width: 12px;
 		height: 12px;
 		border-radius: 50%;
