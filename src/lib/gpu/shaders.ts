@@ -1018,13 +1018,15 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         }
 
         // Cell boundary grid lines (fade out when zoomed out)
-        let avg_line_fade = smoothstep(0.15, 0.04, pixel_cell_size);
-        if (avg_line_fade > 0.01) {
-            let cell_dist = min(min(frac_x, 1.0 - frac_x), min(frac_y, 1.0 - frac_y));
-            let cell_lw = pixel_cell_size * 2.5;
-            let cell_t = smoothstep(0.0, cell_lw, cell_dist);
-            let lined = mix(vec3f(0.18), avg, cell_t);
-            avg = mix(avg, lined, avg_line_fade);
+        if (rparams.show_grid != 0u) {
+            let avg_line_fade = smoothstep(0.15, 0.04, pixel_cell_size);
+            if (avg_line_fade > 0.01) {
+                let cell_dist = min(min(frac_x, 1.0 - frac_x), min(frac_y, 1.0 - frac_y));
+                let cell_lw = pixel_cell_size * 2.5;
+                let cell_t = smoothstep(0.0, cell_lw, cell_dist);
+                let lined = mix(vec3f(0.18), avg, cell_t);
+                avg = mix(avg, lined, avg_line_fade);
+            }
         }
 
         return vec4f(apply_bcs(avg), 1.0);
@@ -1042,28 +1044,30 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         color = color * 1.4 + vec3f(0.08);
     }
 
-    // Grid lines fade factor
-    let line_fade = smoothstep(0.25, 0.05, pixel_cell_size);
+    // Grid lines (only when enabled)
+    if (rparams.show_grid != 0u) {
+        let line_fade = smoothstep(0.25, 0.05, pixel_cell_size);
 
-    // Byte grid lines (thin, within cell)
-    if (pixel_cell_size < 0.05) {
-        let byte_fade = smoothstep(0.05, 0.02, pixel_cell_size);
-        let bfx = fract(frac_x * f32(ts));
-        let bfy = fract(frac_y * f32(ts));
-        let byte_dist = min(min(bfx, 1.0 - bfx), min(bfy, 1.0 - bfy));
-        let byte_lw = pixel_cell_size * f32(ts) * 1.0;
-        let byte_t = smoothstep(0.0, byte_lw, byte_dist);
-        let byte_lined = mix(vec3f(0.06), color, byte_t);
-        color = mix(color, byte_lined, byte_fade);
-    }
+        // Byte grid lines (thin, within cell)
+        if (pixel_cell_size < 0.05) {
+            let byte_fade = smoothstep(0.05, 0.02, pixel_cell_size);
+            let bfx = fract(frac_x * f32(ts));
+            let bfy = fract(frac_y * f32(ts));
+            let byte_dist = min(min(bfx, 1.0 - bfx), min(bfy, 1.0 - bfy));
+            let byte_lw = pixel_cell_size * f32(ts) * 1.0;
+            let byte_t = smoothstep(0.0, byte_lw, byte_dist);
+            let byte_lined = mix(vec3f(0.06), color, byte_t);
+            color = mix(color, byte_lined, byte_fade);
+        }
 
-    // Cell boundary lines (thicker, between cells)
-    if (line_fade > 0.01) {
-        let cell_dist = min(min(frac_x, 1.0 - frac_x), min(frac_y, 1.0 - frac_y));
-        let cell_lw = pixel_cell_size * 2.5;
-        let cell_t = smoothstep(0.0, cell_lw, cell_dist);
-        let cell_lined = mix(vec3f(0.18), color, cell_t);
-        color = mix(color, cell_lined, line_fade);
+        // Cell boundary lines (thicker, between cells)
+        if (line_fade > 0.01) {
+            let cell_dist = min(min(frac_x, 1.0 - frac_x), min(frac_y, 1.0 - frac_y));
+            let cell_lw = pixel_cell_size * 2.5;
+            let cell_t = smoothstep(0.0, cell_lw, cell_dist);
+            let cell_lined = mix(vec3f(0.18), color, cell_t);
+            color = mix(color, cell_lined, line_fade);
+        }
     }
 
     return vec4f(apply_bcs(color), 1.0);
@@ -1250,29 +1254,31 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
         }
 
         // Voronoi boundary: check all 6 cell neighbors
-        let cc = cell_px(cx, cy);
-        let dist_self = distance(pt, cc);
-        let is_odd = (cy & 1) == 1;
-        var min_nd = 1e10;
-        min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy)));
-        min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy)));
-        if (is_odd) {
-            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy - 1)));
-            min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy - 1)));
-            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy + 1)));
-            min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy + 1)));
-        } else {
-            min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy - 1)));
-            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy - 1)));
-            min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy + 1)));
-            min_nd = min(min_nd, distance(pt, cell_px(cx,     cy + 1)));
-        }
+        if (rparams.show_grid != 0u) {
+            let cc = cell_px(cx, cy);
+            let dist_self = distance(pt, cc);
+            let is_odd = (cy & 1) == 1;
+            var min_nd = 1e10;
+            min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy)));
+            min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy)));
+            if (is_odd) {
+                min_nd = min(min_nd, distance(pt, cell_px(cx,     cy - 1)));
+                min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy - 1)));
+                min_nd = min(min_nd, distance(pt, cell_px(cx,     cy + 1)));
+                min_nd = min(min_nd, distance(pt, cell_px(cx + 1, cy + 1)));
+            } else {
+                min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy - 1)));
+                min_nd = min(min_nd, distance(pt, cell_px(cx,     cy - 1)));
+                min_nd = min(min_nd, distance(pt, cell_px(cx - 1, cy + 1)));
+                min_nd = min(min_nd, distance(pt, cell_px(cx,     cy + 1)));
+            }
 
-        let boundary = (min_nd - dist_self) * 0.5;
-        let bpp = zoom / rparams.canvas_width;
-        let line_w = bpp * 3.0 + 0.04;
-        let edge_t = 1.0 - smoothstep(0.0, line_w, boundary);
-        avg = mix(avg, vec3f(0.06), edge_t * 0.8);
+            let boundary = (min_nd - dist_self) * 0.5;
+            let bpp = zoom / rparams.canvas_width;
+            let line_w = bpp * 3.0 + 0.04;
+            let edge_t = 1.0 - smoothstep(0.0, line_w, boundary);
+            avg = mix(avg, vec3f(0.06), edge_t * 0.8);
+        }
 
         return vec4f(apply_bcs(avg), 1.0);
     }
@@ -1349,57 +1355,59 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     }
 
     // Grid lines (fade out as zoom increases)
-    let line_fade = smoothstep(0.3, 0.08, bytes_per_pixel);
-    if (line_fade > 0.01) {
-        let center = byte_hex_center(hx, hy);
-        let dist_to_center = distance(vec2f(pixel_x, pixel_y), center);
+    if (rparams.show_grid != 0u) {
+        let line_fade = smoothstep(0.3, 0.08, bytes_per_pixel);
+        if (line_fade > 0.01) {
+            let center = byte_hex_center(hx, hy);
+            let dist_to_center = distance(vec2f(pixel_x, pixel_y), center);
 
-        var min_neighbor_dist = 1e10;
-        let h_odd = (hy & 1) == 1;
-        let offsets_even = array<vec2i, 6>(
-            vec2i(-1, -1), vec2i(0, -1),
-            vec2i(-1, 0), vec2i(1, 0),
-            vec2i(-1, 1), vec2i(0, 1)
-        );
-        let offsets_odd = array<vec2i, 6>(
-            vec2i(0, -1), vec2i(1, -1),
-            vec2i(-1, 0), vec2i(1, 0),
-            vec2i(0, 1), vec2i(1, 1)
-        );
-        for (var n = 0; n < 6; n++) {
-            var off: vec2i;
-            if (h_odd) { off = offsets_odd[n]; } else { off = offsets_even[n]; }
-            let nc = byte_hex_center(hx + off.x, hy + off.y);
-            let nd = distance(vec2f(pixel_x, pixel_y), nc);
-            min_neighbor_dist = min(min_neighbor_dist, nd);
-        }
-
-        let boundary_raw = (min_neighbor_dist - dist_to_center) * 0.5;
-
-        // Check if boundary is between cells or gap
-        var is_cell_boundary = false;
-        for (var n = 0; n < 6; n++) {
-            var off: vec2i;
-            if (h_odd) { off = offsets_odd[n]; } else { off = offsets_even[n]; }
-            let nhx = hx + off.x;
-            let nhy = hy + off.y;
-            let n_cell = find_cell(nhx, nhy);
-            if (n_cell.z < 0 || n_cell.x != cell_a || n_cell.y != cell_b) {
-                let nc = byte_hex_center(nhx, nhy);
+            var min_neighbor_dist = 1e10;
+            let h_odd = (hy & 1) == 1;
+            let offsets_even = array<vec2i, 6>(
+                vec2i(-1, -1), vec2i(0, -1),
+                vec2i(-1, 0), vec2i(1, 0),
+                vec2i(-1, 1), vec2i(0, 1)
+            );
+            let offsets_odd = array<vec2i, 6>(
+                vec2i(0, -1), vec2i(1, -1),
+                vec2i(-1, 0), vec2i(1, 0),
+                vec2i(0, 1), vec2i(1, 1)
+            );
+            for (var n = 0; n < 6; n++) {
+                var off: vec2i;
+                if (h_odd) { off = offsets_odd[n]; } else { off = offsets_even[n]; }
+                let nc = byte_hex_center(hx + off.x, hy + off.y);
                 let nd = distance(vec2f(pixel_x, pixel_y), nc);
-                if (abs(nd - min_neighbor_dist) < 0.01) {
-                    is_cell_boundary = true;
-                    break;
+                min_neighbor_dist = min(min_neighbor_dist, nd);
+            }
+
+            let boundary_raw = (min_neighbor_dist - dist_to_center) * 0.5;
+
+            // Check if boundary is between cells or gap
+            var is_cell_boundary = false;
+            for (var n = 0; n < 6; n++) {
+                var off: vec2i;
+                if (h_odd) { off = offsets_odd[n]; } else { off = offsets_even[n]; }
+                let nhx = hx + off.x;
+                let nhy = hy + off.y;
+                let n_cell = find_cell(nhx, nhy);
+                if (n_cell.z < 0 || n_cell.x != cell_a || n_cell.y != cell_b) {
+                    let nc = byte_hex_center(nhx, nhy);
+                    let nd = distance(vec2f(pixel_x, pixel_y), nc);
+                    if (abs(nd - min_neighbor_dist) < 0.01) {
+                        is_cell_boundary = true;
+                        break;
+                    }
                 }
             }
-        }
 
-        let line_w = bytes_per_pixel * select(1.0, 2.5, is_cell_boundary);
-        let line_color = select(vec3f(0.06), vec3f(0.18), is_cell_boundary);
-        if (boundary_raw < line_w) {
-            let t = smoothstep(0.0, line_w, boundary_raw);
-            let lined = mix(line_color, color, t);
-            color = mix(color, lined, line_fade);
+            let line_w = bytes_per_pixel * select(1.0, 2.5, is_cell_boundary);
+            let line_color = select(vec3f(0.06), vec3f(0.18), is_cell_boundary);
+            if (boundary_raw < line_w) {
+                let t = smoothstep(0.0, line_w, boundary_raw);
+                let lined = mix(line_color, color, t);
+                color = mix(color, lined, line_fade);
+            }
         }
     }
 
@@ -1427,7 +1435,7 @@ struct RenderParams {
     brightness: f32,   // -1..1, default 0
     contrast: f32,     // 0..2, default 1
     saturation: f32,   // 0..2, default 1
-    _pad3: u32,
+    show_grid: u32,    // 1 = show grid lines, 0 = hide
     _pad4: u32,
 }
 

@@ -18,6 +18,7 @@
 	let colormapName: ColormapName = $state('rainbow');
 	let colormap = $state(createColormap('rainbow'));
 	let simpleView = $state(false);
+	let showGridLines = $state(true);
 	let showColorAdj = $state(false);
 	let brightness = $state(0);
 	let contrast = $state(1);
@@ -704,6 +705,12 @@
 	$effect(() => {
 		if (!engine) return;
 		engine.setBCS(brightness, contrast, saturation);
+	});
+
+	// Sync grid lines visibility to GPU
+	$effect(() => {
+		if (!engine) return;
+		engine.setShowGrid(showGridLines);
 	});
 
 
@@ -1839,7 +1846,7 @@
 						><circle cx="12" cy="12" r="10" /><path
 							d="M12 2a7 7 0 0 0 0 20 4 4 0 0 1 0-8 4 4 0 0 0 0-8z"
 						/><circle cx="12" cy="9" r="1" fill="var(--accent)" /></svg
-					> Colormap</label
+					> Appearance</label
 				>
 				<span class="param-info-wrap" class:show-tip={openTip === 'cmap'}>
 					<button
@@ -1898,6 +1905,15 @@
 					<button class="color-adj-reset" onclick={() => { brightness = 0; contrast = 1; saturation = 1; }}>Reset</button>
 				</div>
 			{/if}
+			<label class="grid-lines-toggle">
+				<input type="checkbox" bind:checked={showGridLines} class="sr-only" />
+				<span class="check-box" class:checked={showGridLines}>
+					{#if showGridLines}
+						<svg width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg>
+					{/if}
+				</span>
+				<span>Grid lines</span>
+			</label>
 		</div>
 
 		<div class="param">
@@ -3816,6 +3832,49 @@ graph TD
 	.color-adj-reset:hover {
 		color: var(--text-secondary);
 		border-color: var(--text-subtle);
+	}
+
+	.grid-lines-toggle {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: 6px;
+		font-size: 10px;
+		color: var(--text-muted);
+		cursor: pointer;
+		user-select: none;
+	}
+	.grid-lines-toggle .sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		border: 0;
+	}
+	.grid-lines-toggle .check-box {
+		width: 12px;
+		height: 12px;
+		border-radius: 3px;
+		border: 1px solid var(--border-default);
+		background: rgba(255, 255, 255, 0.03);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		transition: border-color 0.15s, background 0.15s;
+	}
+	.grid-lines-toggle .check-box.checked {
+		border-color: var(--accent);
+		background: rgba(200, 135, 90, 0.15);
+	}
+	.grid-lines-toggle:hover .check-box {
+		border-color: var(--text-subtle);
+	}
+	.grid-lines-toggle:hover .check-box.checked {
+		border-color: var(--accent-warm);
 	}
 
 	/* ── Genome tooltip ── */

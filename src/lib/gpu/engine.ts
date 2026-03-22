@@ -74,6 +74,7 @@ export class GPUEngine {
 	private brightness = 0;   // -1..1
 	private contrast = 1;     // 0..2
 	private saturation = 1;   // 0..2
+	private showGrid = 1;     // 1 = show grid lines, 0 = hide
 	private colormap: Uint32Array;
 	private suppressedOpcodes = new Set<number>();
 
@@ -476,6 +477,10 @@ export class GPUEngine {
 		this.saturation = saturation;
 	}
 
+	setShowGrid(show: boolean): void {
+		this.showGrid = show ? 1 : 0;
+	}
+
 	// Run one simulation step (all on GPU)
 	simulateStep(): void {
 		const noiseCoef = 1 / Math.pow(2, this._noiseExp);
@@ -834,7 +839,7 @@ export class GPUEngine {
 		view.setFloat32(44, this.brightness, true);
 		view.setFloat32(48, this.contrast, true);
 		view.setFloat32(52, this.saturation, true);
-		view.setUint32(56, 0, true); // pad3
+		view.setUint32(56, this.showGrid, true);
 		view.setUint32(60, 0, true); // pad4
 
 		this.device.queue.writeBuffer(this.renderParamsBuffer, 0, renderParams);
