@@ -60,10 +60,15 @@ Each cell holds 19 bytes arranged in a 3-4-5-4-3 hexagonal pattern. Cells intera
 - **Grid Type** — Switch between **Square** and **Hex** topologies. Changing resets the simulation.
 - **Grid Size** (W × H) — Width and height of the grid in cells (default 200×200). Changing resets the simulation.
 - **Seed** — Random seed for initial grid state. Same seed produces the same starting state.
+- **Suppress Opcodes** — Type a substring pattern (e.g. `LD`, `POP`, `EX`) and press Enter to suppress all matching opcodes. The Z80 CPU skips these as NOPs. Patterns appear as removable chips; click × to remove. Use this to block the dominant `POP HL` + `EX (SP),HL` self-replicator and observe whether alternative strategies evolve. You can also click tiles in the frequency widget to suppress individual opcodes.
 - **Mutation Rate** — Probability of random byte flips (1/2ⁿ, from 1/2 to 1/2¹²). Too low and replicators can't emerge; too high and they can't survive. The sweet spot is usually 3–5.
 - **Pairs/Batch** — Cell pairs evaluated per GPU dispatch (controls throughput vs. GPU load). At max, roughly a quarter of all cells are updated per step.
 - **Z80 Steps** — Maximum CPU cycles per pair execution (16–1024). Lower values make the simulation faster but limit program complexity — simple replicators emerge quickly. Higher values allow more complex programs to develop but slow down the simulation. The default (128) balances speed and complexity well.
 - **Colormap** — Visual theme (Rainbow, Ocean, Thermal). Each maps Z80 opcode categories to distinct colors.
+
+## Frequency Widget
+
+The bottom-left widget shows the most common byte values in real time. When opcode suppression is active, suppressed bytes are collapsed into a single card so the widget always shows the top non-suppressed opcodes. Hover any tile for a plain-English description of what the Z80 instruction does; click to suppress or un-suppress it. Toggle the sparkline chart with `S`.
 
 ## Cell Tooltips
 

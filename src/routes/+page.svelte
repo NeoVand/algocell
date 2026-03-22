@@ -1729,8 +1729,9 @@
 						}}>?</button
 					>
 					<span class="param-tip"
-						>Disable specific Z80 opcodes (treat as NOP). Use to block the dominant self-replicator
-						and see if other patterns emerge.</span
+						>Type a substring pattern (e.g. LD, POP, EX) and press Enter to disable all matching
+						opcodes. Suppressed instructions are skipped as NOPs. Use to block the dominant
+						self-replicator and see if other strategies emerge.</span
 					>
 				</span>
 				{#if suppressPatterns.length > 0}
@@ -2507,8 +2508,37 @@ graph TD
 
 					<h4>Frequency Chart</h4>
 					<p>
-						Tracks the top 10 most common bytes over time. Y-axis is concentration factor (fraction
-						&times; 256). Value of 1.0 = uniform distribution.
+						The bottom-left widget shows the most common byte values in real time. When suppression
+						is active, suppressed bytes are collapsed into a single card so you always see the top
+						non-suppressed opcodes. Hover any tile for a plain-English description; click to
+						suppress or un-suppress it. Toggle the chart sparkline with <kbd>S</kbd>.
+					</p>
+
+					<h4>Opcode Suppression</h4>
+					<p>
+						Type a substring pattern (e.g. <code>LD</code>, <code>POP</code>, <code>EX</code>)
+						into the Suppress field in Settings and press Enter. All opcodes whose mnemonic contains
+						that substring are disabled &mdash; the Z80 CPU skips them as if they were NOPs.
+					</p>
+					<ul class="help-list">
+						<li>
+							<strong>Pattern matching</strong> &mdash; <code>LD</code> suppresses all load
+							instructions (~100 opcodes), <code>POP</code> suppresses all pop instructions,
+							<code>E1</code> matches by hex code
+						</li>
+						<li>
+							<strong>Click-to-suppress</strong> &mdash; click any tile in the frequency widget
+							to add its exact mnemonic as a pattern
+						</li>
+						<li>
+							<strong>Remove patterns</strong> &mdash; click the &times; on any chip to remove
+							it, or use the clear button to remove all
+						</li>
+					</ul>
+					<p>
+						Note: suppression prevents <em>execution</em>, not <em>existence</em>. A suppressed
+						byte value can still appear in memory if other instructions write it or replicators
+						carry it as data.
 					</p>
 				{:else if helpTab === 'z80'}
 					<h4>Registers</h4>
@@ -2725,6 +2755,15 @@ graph TD
 						faster but limit program complexity &mdash; simple replicators emerge quickly. Higher
 						values allow more complex programs to develop but slow down the simulation. Default
 						(128) balances speed and complexity.
+					</p>
+
+					<h4>Suppress Opcodes</h4>
+					<p>
+						Type a substring (e.g. <code>LD</code>, <code>POP</code>, <code>EX</code>) and press
+						Enter to suppress all matching opcodes. The Z80 CPU will skip these instructions as if
+						they were NOPs. Use this to block the dominant self-replicator pattern and observe
+						whether alternative replication strategies evolve. Patterns appear as removable chips
+						showing how many opcodes are affected.
 					</p>
 
 					<h4>Colormap</h4>
