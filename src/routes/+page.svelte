@@ -2239,7 +2239,7 @@
 							class="help-link">Agüera y Arcas et al. (2024)</a
 						>. Re-implemented in WebGPU + SvelteKit from the
 						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link"
-							>original code</a
+							>original JavaScript/WASM implementation</a
 						>.
 					</p>
 
@@ -2922,9 +2922,9 @@ graph TD
 						<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link"
 							>original implementation</a
 						>
-						by Alexander Mordvintsev. This browser version uses WebGPU compute shaders instead of Python/JAX,
-						so it runs anywhere with no setup required. The hexagonal grid mode produces more organic
-						emergent structures thanks to 6-neighbor interactions.
+						by Alexander Mordvintsev. This version uses WebGPU compute shaders instead of the original
+						JavaScript/WASM approach, enabling massively parallel execution on the GPU. The hexagonal grid
+						mode produces more organic emergent structures thanks to 6-neighbor interactions.
 					</p>
 					<p>
 						Developed by <strong>Neo Mohsenvand</strong> with the help of
