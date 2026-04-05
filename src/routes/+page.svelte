@@ -2263,18 +2263,18 @@
 						</div>
 						<div class="tape-layout-item">
 							<div class="tape-layout-label">Hexagonal &mdash; 19 bytes (3-4-5-4-3)</div>
-							<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" class="tape-svg">
+							<svg viewBox="0 -2 160 148" xmlns="http://www.w3.org/2000/svg" class="tape-svg">
 								{#each [
-									{x:54,y:17,i:0},{x:90,y:17,i:1},{x:126,y:17,i:2},
-									{x:36,y:45,i:3},{x:72,y:45,i:4},{x:108,y:45,i:5},{x:144,y:45,i:6},
-									{x:18,y:73,i:7},{x:54,y:73,i:8},{x:90,y:73,i:9},{x:126,y:73,i:10},{x:162,y:73,i:11},
-									{x:36,y:101,i:12},{x:72,y:101,i:13},{x:108,y:101,i:14},{x:144,y:101,i:15},
-									{x:54,y:129,i:16},{x:90,y:129,i:17},{x:126,y:129,i:18}
+									{x:49,y:16,i:0},{x:80,y:16,i:1},{x:111,y:16,i:2},
+									{x:33,y:44,i:3},{x:64,y:44,i:4},{x:95,y:44,i:5},{x:126,y:44,i:6},
+									{x:18,y:72,i:7},{x:49,y:72,i:8},{x:80,y:72,i:9},{x:111,y:72,i:10},{x:142,y:72,i:11},
+									{x:33,y:100,i:12},{x:64,y:100,i:13},{x:95,y:100,i:14},{x:126,y:100,i:15},
+									{x:49,y:128,i:16},{x:80,y:128,i:17},{x:111,y:128,i:18}
 								] as h}
 									<polygon
 										points={Array.from({length: 6}, (_, k) => {
 											const a = Math.PI / 180 * (60 * k - 30);
-											return `${h.x + 16 * Math.cos(a)},${h.y + 16 * Math.sin(a)}`;
+											return `${h.x + 15 * Math.cos(a)},${h.y + 15 * Math.sin(a)}`;
 										}).join(' ')}
 										fill="hsl({h.i * 19}, 45%, 32%)"
 										stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
@@ -4360,10 +4360,13 @@ graph TD
 		gap: 16px;
 		margin: 10px 0;
 		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: center;
 	}
 	.tape-layout-item {
 		flex: 1;
 		min-width: 140px;
+		max-width: 200px;
 		text-align: center;
 	}
 	.tape-layout-label {
@@ -4379,7 +4382,7 @@ graph TD
 	}
 	.tape-svg {
 		width: 100%;
-		max-width: 140px;
+		max-width: 110px;
 		display: block;
 		margin: 0 auto;
 	}
