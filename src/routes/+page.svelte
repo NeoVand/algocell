@@ -2226,10 +2226,14 @@
 			<div class="modal-body">
 				{#if helpTab === 'overview'}
 					<p>
-						A configurable grid of cells (default 200&times;200), each containing random bytes
-						interpreted as Z80 machine code. Every step, random adjacent pairs are selected, their
-						bytes concatenated and executed as a Z80 program, and the modified memory is written
-						back. Self-replicating programs spontaneously emerge.
+						A configurable grid of cells (default 200&times;200), each holding random bytes
+						interpreted as Z80 machine code. Every step, random pairs of neighboring cells are
+						selected. Each pair's bytes are placed into a shared memory space (Cell&nbsp;A's tape
+						followed by Cell&nbsp;B's tape, with wrapping). A single Z80 CPU &mdash; starting with
+						all registers at zero &mdash; executes from the beginning of this shared memory for a
+						configurable number of steps. The modified memory is then written back to both cells,
+						and random mutations are applied. Self-replicating programs spontaneously emerge from
+						this process.
 					</p>
 					<p class="cmap-note">
 						Based on <a
@@ -2258,9 +2262,10 @@
 					<Mermaid
 						chart={`
 graph TD
-    GRID("Cell Grid\nconfigurable size · square or hex") -->|"pick random pair"| PAIR("Cell A + Cell B\nbytes combined")
-    PAIR -->|"execute as Z80"| CPU("Z80 CPU · configurable steps")
-    CPU -->|"write back + mutate"| GRID
+    GRID("Cell Grid\nconfigurable size · square or hex") -->|"pick random\nneighbor pairs"| PAIR("Shared Memory\nCell A tape | Cell B tape\nwrapping address space")
+    PAIR -->|"single Z80 CPU\nall registers = 0\nconfigurable steps"| EXEC("Execute Z80\nreads & writes anywhere\nin shared memory")
+    EXEC -->|"write back\nboth cells"| MUT("Mutate\nrandom bit-flips")
+    MUT --> GRID
 `}
 					/>
 
@@ -3334,7 +3339,7 @@ graph TD
 		border-radius: 12px;
 		backdrop-filter: blur(16px);
 		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-		padding: 12px;
+		padding: 10px;
 	}
 	.panel-header {
 		display: flex;
@@ -3346,7 +3351,7 @@ graph TD
 		display: inline-flex;
 		align-items: center;
 		gap: 4px;
-		font-size: 10.5px;
+		font-size: 10px;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		color: var(--text-subtle);
@@ -3373,10 +3378,10 @@ graph TD
 	.settings-panel {
 		top: 60px;
 		right: 12px;
-		width: 229px;
+		width: 220px;
 	}
 	.param {
-		margin-bottom: 10px;
+		margin-bottom: 8px;
 	}
 	.param:last-child {
 		margin-bottom: 0;
@@ -3385,10 +3390,10 @@ graph TD
 		display: flex;
 		align-items: center;
 		gap: 4px;
-		margin-bottom: 4px;
+		margin-bottom: 3px;
 	}
 	.param-label {
-		font-size: 10.5px;
+		font-size: 10px;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 		color: var(--text-muted);
@@ -3405,13 +3410,13 @@ graph TD
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 16px;
-		height: 16px;
+		width: 14px;
+		height: 14px;
 		border-radius: 50%;
 		background: var(--bg-muted);
 		border: none;
 		color: var(--text-subtle);
-		font-size: 10px;
+		font-size: 9px;
 		font-family: Georgia, serif;
 		font-style: italic;
 		cursor: pointer;
@@ -3460,13 +3465,14 @@ graph TD
 		min-width: 0;
 		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid rgba(255, 255, 255, 0.10);
-		border-radius: 5px;
+		border-radius: 4px;
 		padding: 0 7px;
-		height: 24px;
+		height: 22px;
 		font-size: 11px;
 		font-family: monospace;
 		color: var(--text-primary);
 		outline: none;
+		transition: border-color 0.15s;
 		-moz-appearance: textfield;
 		appearance: textfield;
 	}
@@ -3483,8 +3489,8 @@ graph TD
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 24px;
-		height: 24px;
+		width: 22px;
+		height: 22px;
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-muted);
 		border-radius: 5px;
@@ -3550,13 +3556,14 @@ graph TD
 		width: 48px;
 		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid rgba(255, 255, 255, 0.10);
-		border-radius: 5px;
+		border-radius: 4px;
 		padding: 0 6px;
-		height: 22px;
+		height: 20px;
 		font-size: 11px;
 		font-family: monospace;
 		color: var(--text-primary);
 		outline: none;
+		transition: border-color 0.15s;
 		-moz-appearance: textfield;
 		appearance: textfield;
 	}
@@ -3578,7 +3585,7 @@ graph TD
 	}
 	.slider {
 		width: 100%;
-		height: 4px;
+		height: 3px;
 		-webkit-appearance: none;
 		appearance: none;
 		background: rgba(255, 255, 255, 0.12);
@@ -3589,12 +3596,12 @@ graph TD
 	.slider::-webkit-slider-thumb {
 		-webkit-appearance: none;
 		appearance: none;
-		width: 12px;
-		height: 12px;
+		width: 10px;
+		height: 10px;
 		border-radius: 50%;
 		background: var(--accent);
 		border: none;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 		cursor: pointer;
 		transition: transform 0.1s;
 	}
@@ -3602,16 +3609,16 @@ graph TD
 		transform: scale(1.15);
 	}
 	.slider::-moz-range-thumb {
-		width: 12px;
-		height: 12px;
+		width: 10px;
+		height: 10px;
 		border-radius: 50%;
 		background: var(--accent);
 		border: none;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 		cursor: pointer;
 	}
 	.slider::-moz-range-track {
-		height: 4px;
+		height: 3px;
 		background: rgba(255, 255, 255, 0.12);
 		border-radius: 2px;
 		border: none;
@@ -3638,17 +3645,19 @@ graph TD
 		width: 100%;
 		box-sizing: border-box;
 		padding: 0 7px;
-		height: 24px;
+		height: 22px;
 		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid rgba(255, 255, 255, 0.10);
-		border-radius: 5px;
+		border-radius: 4px;
 		color: var(--text-primary);
-		font-size: 11px;
+		font-size: 10px;
 		font-family: monospace;
 		outline: none;
+		transition: border-color 0.15s;
 	}
 	.suppress-input::placeholder {
 		color: var(--text-subtle);
+		font-size: 9.5px;
 		opacity: 1;
 	}
 	.suppress-input:focus {
@@ -3673,14 +3682,14 @@ graph TD
 		display: inline-flex;
 		align-items: center;
 		gap: 4px;
-		padding: 2px 7px;
-		font-size: 10px;
+		padding: 2px 6px;
+		font-size: 9px;
 		font-family: var(--font-mono, monospace);
 		font-weight: 600;
 		color: var(--text-primary);
 		background: rgba(255, 255, 255, 0.1);
 		border: 1px solid var(--border-muted);
-		border-radius: 4px;
+		border-radius: 3px;
 		cursor: pointer;
 		transition: all 0.12s;
 		line-height: 1.4;
@@ -3713,14 +3722,14 @@ graph TD
 		flex-direction: column;
 		align-items: center;
 		gap: 2px;
-		padding: 4px 0 3px;
-		font-size: 9px;
+		padding: 3px 0 2px;
+		font-size: 8.5px;
 		font-family: monospace;
 		text-transform: capitalize;
 		color: var(--text-muted);
 		background: rgba(255, 255, 255, 0.04);
 		border: 1px solid var(--border-subtle);
-		border-radius: 5px;
+		border-radius: 4px;
 		cursor: pointer;
 		transition: all 0.15s;
 	}
@@ -3840,7 +3849,7 @@ graph TD
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		margin-top: 6px;
+		margin-top: 4px;
 		font-size: 10px;
 		color: var(--text-muted);
 		cursor: pointer;

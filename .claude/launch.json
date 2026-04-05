@@ -3,7 +3,7 @@
 	"configurations": [
 		{
 			"name": "dev",
-			"runtimeExecutable": "npm",
+			"runtimeExecutable": "/Users/neo/.vite-plus/bin/npm",
 			"runtimeArgs": ["run", "dev"],
 			"port": 5173
 		}
