@@ -6,9 +6,16 @@
 
 ## What is it?
 
-Algocell fills a grid with random bytes and executes them as Z80 machine code. Pairs of neighboring cells combine their bytes into a shared memory space, and a single Z80 CPU — starting with all registers zeroed — executes across both, reading and writing freely within the combined tape. No fitness function, no selection pressure — just raw execution.
+Algocell fills a grid of cells with random bytes. Each cell holds a short tape (16 bytes in square mode, 19 in hex). Every simulation step, the following happens thousands of times in parallel on the GPU:
 
-Within seconds, self-replicating loops emerge spontaneously (typically `POP HL` + `EX (SP),HL` patterns that copy bytes forward). Once a replicator appears, it spreads exponentially, displacing the noise. You can suppress dominant patterns to see if alternative replication strategies evolve.
+1. A random cell and one of its neighbors are chosen
+2. Their tapes are copied into a single contiguous buffer (Cell A's bytes, then Cell B's), forming a small wrapping address space
+3. A fresh Z80 CPU — all registers set to zero, program counter at 0 — executes instructions from this buffer for up to 128 steps. It can read and write anywhere in the combined buffer, so Cell A's code can overwrite Cell B's bytes and vice versa
+4. The modified buffer is split and written back to both cells
+
+After all pairs are processed, random mutations replace a configurable number of bytes across the grid with new random values. No fitness function, no selection pressure — just execution and mutation.
+
+Because all registers start at zero, many Z80 instructions end up writing zeros, flooding the grid with NOP (0x00). Eventually, by chance, a short sequence like `POP HL` + `EX (SP),HL` forms a self-copying loop that propagates itself into neighboring cells. Once a replicator appears, it spreads exponentially, displacing the NOPs. You can suppress dominant patterns to see if alternative replication strategies evolve.
 
 ## Features
 
@@ -33,11 +40,13 @@ Requires a browser with [WebGPU support](https://caniuse.com/webgpu) (Chrome 113
 
 ## How it works
 
-1. A grid of cells is initialized with random bytes (the "primordial soup")
-2. Each simulation step, random pairs of neighboring cells are selected
-3. Both cells' bytes are placed into a shared memory space (Cell A's tape followed by Cell B's, wrapping at the boundary). A single Z80 CPU executes from the start of this memory with all registers set to zero, reading and writing anywhere in the shared space
-4. The modified memory is written back to both cells, and random bit-flip mutations are applied at a configurable rate
-5. The process repeats — no goal, no reward, just execution and emergence
+See "What is it?" above for the full mechanism. In short:
+
+1. Initialize a grid of cells with random bytes
+2. Each step, pick thousands of random neighbor pairs in parallel
+3. For each pair: combine tapes → run a fresh Z80 CPU → write results back to both cells
+4. Apply random mutations across the grid
+5. Repeat — self-replicating programs emerge spontaneously
 
 ## Tech stack
 

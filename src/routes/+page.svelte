@@ -2225,16 +2225,6 @@
 			</div>
 			<div class="modal-body">
 				{#if helpTab === 'overview'}
-					<p>
-						A configurable grid of cells (default 200&times;200), each holding random bytes
-						interpreted as Z80 machine code. Every step, random pairs of neighboring cells are
-						selected. Each pair's bytes are placed into a shared memory space (Cell&nbsp;A's tape
-						followed by Cell&nbsp;B's tape, with wrapping). A single Z80 CPU &mdash; starting with
-						all registers at zero &mdash; executes from the beginning of this shared memory for a
-						configurable number of steps. The modified memory is then written back to both cells,
-						and random mutations are applied. Self-replicating programs spontaneously emerge from
-						this process.
-					</p>
 					<p class="cmap-note">
 						Based on <a
 							href="https://arxiv.org/abs/2406.19108"
@@ -2247,39 +2237,227 @@
 						>.
 					</p>
 
-					<h4>Grid Topologies</h4>
+					<h4>Cells &amp; Tapes</h4>
 					<p>
-						<strong>Square</strong> &mdash; Each cell is a 4&times;4 block of 16 bytes. Cells interact
-						with 4 cardinal neighbors.
-					</p>
-					<p>
-						<strong>Hexagonal</strong> &mdash; Each cell holds 19 bytes in a 3-4-5-4-3 hexagonal arrangement.
-						Cells interact with 6 neighbors, producing more organic emergent structures. Uses odd-r offset
-						coordinates (odd rows shift right).
+						A grid of cells (default 200&times;200) is filled with random bytes. Each cell holds
+						a short <strong>tape</strong> &mdash; a sequence of bytes treated as Z80 machine
+						code. The tape layout depends on the grid topology:
 					</p>
 
-					<!-- Simulation cycle diagram -->
-					<Mermaid
-						chart={`
-graph TD
-    GRID("Cell Grid\nconfigurable size · square or hex") -->|"pick random\nneighbor pairs"| PAIR("Shared Memory\nCell A tape | Cell B tape\nwrapping address space")
-    PAIR -->|"single Z80 CPU\nall registers = 0\nconfigurable steps"| EXEC("Execute Z80\nreads & writes anywhere\nin shared memory")
-    EXEC -->|"write back\nboth cells"| MUT("Mutate\nrandom bit-flips")
-    MUT --> GRID
-`}
-					/>
+					<!-- Tape layout visuals -->
+					<div class="tape-layouts">
+						<div class="tape-layout-item">
+							<div class="tape-layout-label">Square &mdash; 16 bytes (4&times;4)</div>
+							<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" class="tape-svg">
+								{#each Array(16) as _, i}
+									{@const col = i % 4}
+									{@const row = Math.floor(i / 4)}
+									<rect x={col * 40} y={row * 40} width="38" height="38" rx="3"
+										fill="hsl({i * 22}, 45%, 32%)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+									<text x={col * 40 + 19} y={row * 40 + 23} text-anchor="middle"
+										fill="rgba(255,255,255,0.7)" font-size="11"
+										font-family="monospace">{i.toString(16).toUpperCase().padStart(2, '0')}</text>
+								{/each}
+							</svg>
+							<div class="tape-layout-note">4 neighbors (up, down, left, right)</div>
+						</div>
+						<div class="tape-layout-item">
+							<div class="tape-layout-label">Hexagonal &mdash; 19 bytes (3-4-5-4-3)</div>
+							<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" class="tape-svg">
+								{#each [
+									{x:54,y:17,i:0},{x:90,y:17,i:1},{x:126,y:17,i:2},
+									{x:36,y:45,i:3},{x:72,y:45,i:4},{x:108,y:45,i:5},{x:144,y:45,i:6},
+									{x:18,y:73,i:7},{x:54,y:73,i:8},{x:90,y:73,i:9},{x:126,y:73,i:10},{x:162,y:73,i:11},
+									{x:36,y:101,i:12},{x:72,y:101,i:13},{x:108,y:101,i:14},{x:144,y:101,i:15},
+									{x:54,y:129,i:16},{x:90,y:129,i:17},{x:126,y:129,i:18}
+								] as h}
+									<polygon
+										points={Array.from({length: 6}, (_, k) => {
+											const a = Math.PI / 180 * (60 * k - 30);
+											return `${h.x + 16 * Math.cos(a)},${h.y + 16 * Math.sin(a)}`;
+										}).join(' ')}
+										fill="hsl({h.i * 19}, 45%, 32%)"
+										stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+									<text x={h.x} y={h.y + 4} text-anchor="middle"
+										fill="rgba(255,255,255,0.7)" font-size="9"
+										font-family="monospace">{h.i.toString(16).toUpperCase().padStart(2, '0')}</text>
+								{/each}
+							</svg>
+							<div class="tape-layout-note">6 neighbors per cell</div>
+						</div>
+					</div>
 
-					<h4>The Phase Transition</h4>
+					<h4>What Happens Each Step</h4>
 					<p>
-						Initially all 256 byte values are uniformly distributed. But the Z80 CPU starts every
-						execution with all registers set to zero, so instructions like
-						<code>LD (HL),A</code> or <code>PUSH BC</code> tend to write zeros into memory. This makes
-						NOP (0x00) accumulate rapidly &mdash; random code acts as a &ldquo;zero pump.&rdquo;
+						Every simulation step, the following cycle runs thousands of times in parallel on
+						the GPU:
+					</p>
+					<ol class="help-steps">
+						<li><strong>Pick a pair.</strong> Choose a random cell and one of its neighbors.</li>
+						<li><strong>Combine their tapes.</strong> Both cells' bytes are copied into a
+							single contiguous buffer &mdash; Cell&nbsp;A's tape first, then Cell&nbsp;B's.
+							The buffer wraps around, so address 31 is followed by address 0.</li>
+					</ol>
+
+					<!-- Full-cycle tape combination visual -->
+					{@const subs = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉','₁₀','₁₁','₁₂','₁₃','₁₄','₁₅']}
+					{@const sz = 18}
+					{@const gap = 2}
+					{@const step = sz + gap}
+					{@const gridW = 4 * step - gap}
+					{@const axL = 160 - gridW - 20}
+					{@const bxL = 160 + 20}
+					{@const bufY = 140}
+					{@const bufCellW = 9}
+					{@const bufGap = 0.5}
+					{@const bufTotalW = 32 * (bufCellW + bufGap) - bufGap}
+					{@const bufXStart = (320 - bufTotalW) / 2}
+					{@const z80Y = bufY + 34}
+					{@const wbArrowY = z80Y + 22}
+					{@const wbCellY = wbArrowY + 32}
+					<svg viewBox="0 0 320 325" xmlns="http://www.w3.org/2000/svg" class="tape-combine-svg">
+						<!-- ── Row 1: Source cells ── -->
+						<text x={axL + gridW / 2} y="10" text-anchor="middle" fill="#c8a060" font-size="9.5"
+							font-family="-apple-system, sans-serif" font-weight="600">Cell A</text>
+						{#each Array(16) as _, i}
+							{@const col = i % 4}
+							{@const row = Math.floor(i / 4)}
+							<rect x={axL + col * step} y={14 + row * step} width={sz} height={sz} rx="2"
+								fill="hsl({i * 22}, 45%, 32%)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+							<text x={axL + col * step + sz / 2} y={14 + row * step + sz / 2 + 3} text-anchor="middle"
+								fill="rgba(255,255,255,0.85)" font-size="7" font-family="monospace">a{subs[i]}</text>
+						{/each}
+
+						<text x="160" y="58" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="16"
+							font-family="monospace" font-weight="300">+</text>
+
+						<text x={bxL + gridW / 2} y="10" text-anchor="middle" fill="#60a0c8" font-size="9.5"
+							font-family="-apple-system, sans-serif" font-weight="600">Cell B</text>
+						{#each Array(16) as _, i}
+							{@const col = i % 4}
+							{@const row = Math.floor(i / 4)}
+							<rect x={bxL + col * step} y={14 + row * step} width={sz} height={sz} rx="2"
+								fill="hsl({i * 19 + 200}, 40%, 32%)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+							<text x={bxL + col * step + sz / 2} y={14 + row * step + sz / 2 + 3} text-anchor="middle"
+								fill="rgba(255,255,255,0.85)" font-size="7" font-family="monospace">b{subs[i]}</text>
+						{/each}
+
+						<!-- ── Row 2: Arrow down ── -->
+						<line x1="160" y1="100" x2="160" y2="116" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+						<polygon points="160,122 155,114 165,114" fill="rgba(255,255,255,0.3)"/>
+						<text x="160" y="134" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="8"
+							font-family="-apple-system, sans-serif">Shared buffer (wrapping)</text>
+
+						<!-- ── Row 3: Combined buffer ── -->
+						{#each Array(32) as _, i}
+							{@const isA = i < 16}
+							{@const bx = bufXStart + i * (bufCellW + bufGap)}
+							<rect x={bx} y={bufY} width={bufCellW} height="14" rx="1"
+								fill={isA ? `hsl(${i * 22}, 45%, 32%)` : `hsl(${(i-16) * 19 + 200}, 40%, 32%)`}
+								stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+							{#if i % 4 === 0}
+								<text x={bx + bufCellW / 2} y={bufY + 10} text-anchor="middle"
+									fill="rgba(255,255,255,0.7)" font-size="5" font-family="monospace"
+									>{isA ? 'a' : 'b'}{subs[isA ? i : i - 16]}</text>
+							{/if}
+						{/each}
+						<!-- Labels under buffer -->
+						<text x={bufXStart + 16 * (bufCellW + bufGap) / 2 - bufGap / 2} y={bufY + 24} text-anchor="middle"
+							fill="#c8a060" font-size="7" font-family="-apple-system, sans-serif">a₀ – a₁₅</text>
+						<text x={bufXStart + 16 * (bufCellW + bufGap) + 16 * (bufCellW + bufGap) / 2 - bufGap / 2} y={bufY + 24} text-anchor="middle"
+							fill="#60a0c8" font-size="7" font-family="-apple-system, sans-serif">b₀ – b₁₅</text>
+						<!-- Wrap indicator -->
+						<path d="M {bufXStart + bufTotalW + 2},{bufY + 7} C {bufXStart + bufTotalW + 8},{bufY + 7} {bufXStart + bufTotalW + 8},{bufY - 4} {bufXStart + bufTotalW + 2},{bufY - 4} L {bufXStart - 2},{bufY - 4} C {bufXStart - 8},{bufY - 4} {bufXStart - 8},{bufY + 7} {bufXStart - 2},{bufY + 7}"
+							fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.7" stroke-dasharray="2,2"/>
+						<text x={bufXStart + bufTotalW + 6} y={bufY + 2} fill="rgba(255,255,255,0.2)" font-size="6"
+							font-family="-apple-system, sans-serif">↻</text>
+
+						<!-- ── Z80 execution arrow ── -->
+						<line x1={bufXStart} y1={z80Y} x2={bufXStart + bufTotalW - 6} y2={z80Y}
+							stroke="var(--accent)" stroke-width="1" opacity="0.5"/>
+						<polygon points="{bufXStart + bufTotalW},{z80Y} {bufXStart + bufTotalW - 6},{z80Y - 3} {bufXStart + bufTotalW - 6},{z80Y + 3}"
+							fill="var(--accent)" opacity="0.5"/>
+						<text x="160" y={z80Y + 12} text-anchor="middle" fill="var(--accent)" font-size="7.5" opacity="0.7"
+							font-family="-apple-system, sans-serif">⚡ Z80 executes (PC=0, regs=0)</text>
+
+						<!-- ── Row 4: Write-back ── -->
+						<!-- Split arrows -->
+						<line x1="160" y1={wbArrowY} x2="160" y2={wbArrowY + 12} stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+						<line x1="160" y1={wbArrowY + 12} x2={axL + gridW / 2} y2={wbArrowY + 24}
+							stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+						<line x1="160" y1={wbArrowY + 12} x2={bxL + gridW / 2} y2={wbArrowY + 24}
+							stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+						<polygon points="{axL + gridW / 2},{wbArrowY + 28} {axL + gridW / 2 - 4},{wbArrowY + 21} {axL + gridW / 2 + 4},{wbArrowY + 21}"
+							fill="rgba(255,255,255,0.25)"/>
+						<polygon points="{bxL + gridW / 2},{wbArrowY + 28} {bxL + gridW / 2 - 4},{wbArrowY + 21} {bxL + gridW / 2 + 4},{wbArrowY + 21}"
+							fill="rgba(255,255,255,0.25)"/>
+
+						<!-- Write-back label -->
+						<text x="160" y={wbArrowY + 8} text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="7"
+							font-family="-apple-system, sans-serif">write back</text>
+
+						<!-- Modified Cell A -->
+						<text x={axL + gridW / 2} y={wbCellY} text-anchor="middle" fill="#c8a060" font-size="8"
+							font-family="-apple-system, sans-serif" opacity="0.7">Cell A′</text>
+						{#each Array(16) as _, i}
+							{@const col = i % 4}
+							{@const row = Math.floor(i / 4)}
+							{@const swapped = i === 2 || i === 7 || i === 11}
+							<rect x={axL + col * step} y={wbCellY + 4 + row * step} width={sz} height={sz} rx="2"
+								fill={swapped ? `hsl(${i * 19 + 200}, 40%, 32%)` : `hsl(${i * 22}, 45%, 32%)`}
+								stroke={swapped ? 'rgba(96,160,200,0.5)' : 'rgba(255,255,255,0.12)'} stroke-width={swapped ? 1 : 0.5}/>
+							<text x={axL + col * step + sz / 2} y={wbCellY + 4 + row * step + sz / 2 + 3} text-anchor="middle"
+								fill="rgba(255,255,255,0.85)" font-size="7" font-family="monospace"
+								>{swapped ? `b${subs[i]}` : `a${subs[i]}`}</text>
+						{/each}
+
+						<!-- Modified Cell B -->
+						<text x={bxL + gridW / 2} y={wbCellY} text-anchor="middle" fill="#60a0c8" font-size="8"
+							font-family="-apple-system, sans-serif" opacity="0.7">Cell B′</text>
+						{#each Array(16) as _, i}
+							{@const col = i % 4}
+							{@const row = Math.floor(i / 4)}
+							{@const swapped = i === 1 || i === 5 || i === 13}
+							<rect x={bxL + col * step} y={wbCellY + 4 + row * step} width={sz} height={sz} rx="2"
+								fill={swapped ? `hsl(${i * 22}, 45%, 32%)` : `hsl(${i * 19 + 200}, 40%, 32%)`}
+								stroke={swapped ? 'rgba(200,160,96,0.5)' : 'rgba(255,255,255,0.12)'} stroke-width={swapped ? 1 : 0.5}/>
+							<text x={bxL + col * step + sz / 2} y={wbCellY + 4 + row * step + sz / 2 + 3} text-anchor="middle"
+								fill="rgba(255,255,255,0.85)" font-size="7" font-family="monospace"
+								>{swapped ? `a${subs[i]}` : `b${subs[i]}`}</text>
+						{/each}
+
+						<!-- Mutate annotation -->
+						<text x="160" y={wbCellY + 4 * step + 12} text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="7.5"
+							font-family="-apple-system, sans-serif">~ random mutations applied ~</text>
+					</svg>
+
+					<ol class="help-steps" start="3">
+						<li><strong>Run Z80.</strong> A fresh Z80 CPU (all registers&nbsp;=&nbsp;0,
+							PC&nbsp;=&nbsp;0) executes instructions from byte 0 onward. It can read and
+							write anywhere in the 32-byte buffer, so Cell&nbsp;A's code can overwrite
+							Cell&nbsp;B's bytes and vice versa.</li>
+						<li><strong>Write back.</strong> The modified buffer is split and written back to
+							both cells in the grid. Note some bytes have been cross-contaminated (highlighted).</li>
+						<li><strong>Mutate.</strong> Random bit-flips are applied across the grid.</li>
+					</ol>
+					<p>
+						After all pairs are processed, the next step begins. Over time, self-replicating
+						programs emerge from this cycle.
+					</p>
+
+					<h4>Why Life Emerges</h4>
+					<p>
+						Because every Z80 execution starts with all registers at zero, instructions like
+						<code>LD (HL),A</code> (store&nbsp;A at address&nbsp;HL) write zeros &mdash; since A,
+						H, and L are all zero. This makes NOP (0x00) accumulate rapidly. Random code acts as
+						a &ldquo;zero pump,&rdquo; flooding the grid with NOPs.
 					</p>
 					<p>
-						Once self-replicators emerge (typically <code>POP HL</code> +
-						<code>EX (SP),HL</code> loops), they actively copy their own bytes forward, displacing the
-						NOPs. Watch the frequency chart to see this happen in real time.
+						Eventually, by chance, a short byte sequence forms a self-copying loop &mdash;
+						typically <code>POP HL</code> + <code>EX (SP),HL</code>, which reads bytes from one
+						location and writes them to another, propagating itself into neighboring cells.
+						Once a replicator appears it spreads exponentially, displacing the NOPs. Watch the
+						frequency chart to see this phase transition happen in real time.
 					</p>
 					<svg
 						viewBox="0 0 320 180"
@@ -4168,6 +4346,51 @@ graph TD
 		font-size: 11px;
 		color: var(--text-subtle);
 		margin: 8px 0 12px;
+	}
+	.help-steps {
+		margin: 8px 0;
+		padding-left: 20px;
+	}
+	.help-steps li {
+		margin-bottom: 6px;
+		line-height: 1.45;
+	}
+	.tape-layouts {
+		display: flex;
+		gap: 16px;
+		margin: 10px 0;
+		flex-wrap: wrap;
+	}
+	.tape-layout-item {
+		flex: 1;
+		min-width: 140px;
+		text-align: center;
+	}
+	.tape-layout-label {
+		font-size: 11px;
+		font-weight: 600;
+		color: var(--text-secondary);
+		margin-bottom: 6px;
+	}
+	.tape-layout-note {
+		font-size: 10px;
+		color: var(--text-muted);
+		margin-top: 4px;
+	}
+	.tape-svg {
+		width: 100%;
+		max-width: 140px;
+		display: block;
+		margin: 0 auto;
+	}
+	.tape-combine-svg {
+		width: 100%;
+		margin: 8px 0;
+		display: block;
+		border-radius: 8px;
+		background: rgba(0, 0, 0, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.04);
+		padding: 8px;
 	}
 	.help-link {
 		color: var(--accent);
