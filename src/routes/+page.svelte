@@ -157,7 +157,9 @@
 	// speciesHashOrder[i] = hash for index i (stable across frames when possible)
 	const speciesRing: Float32Array[] = [];
 	let speciesHashOrder: number[] = $state([]); // maps index -> hash
+	/* eslint-disable svelte/prefer-svelte-reactivity -- not reactive, only read inside derived */
 	let speciesExemplars: Map<number, Uint8Array> = new Map(); // hash -> exemplar bytes
+	/* eslint-enable svelte/prefer-svelte-reactivity */
 	let speciesLen = $state(0);
 	let speciesVersion = $state(0);
 	let currentSpecies = $state<SpeciesSnapshot | null>(null);
@@ -456,8 +458,10 @@
 			if (hashes.length === 0) return;
 
 			// Count unique hashes and find first exemplar cell index for each
+			/* eslint-disable svelte/prefer-svelte-reactivity -- local function variables, not reactive */
 			const counts = new Map<number, number>();
 			const exemplarIdx = new Map<number, number>(); // hash -> first cell index
+			/* eslint-enable svelte/prefer-svelte-reactivity */
 			for (let i = 0; i < hashes.length; i++) {
 				const h = hashes[i];
 				counts.set(h, (counts.get(h) || 0) + 1);
@@ -3807,6 +3811,7 @@ graph TD
 
 					<h4>Diversity Metrics</h4>
 					<p>The <strong>Diversity</strong> tab tracks four metrics over time, each independently scaled:</p>
+					<!-- eslint-disable svelte/no-at-html-tags -- KaTeX output is safe (static strings) -->
 					<div class="help-metric-list">
 						<div class="help-metric-item">
 							<span class="help-metric-swatch" style="background:rgb(255,180,50)"></span>
@@ -3839,6 +3844,7 @@ graph TD
 							</div>
 						</div>
 					</div>
+					<!-- eslint-enable svelte/no-at-html-tags -->
 
 					<h4>Checkpoints</h4>
 					<p>
