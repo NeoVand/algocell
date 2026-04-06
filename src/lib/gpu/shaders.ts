@@ -87,6 +87,7 @@ struct Params {
 @group(0) @binding(6) var<storage, read_write> pair_active: array<u32>;
 @group(0) @binding(7) var<storage, read_write> byte_counts: array<atomic<u32>>;
 @group(0) @binding(8) var<storage, read_write> collision_mask: array<atomic<u32>>;
+@group(0) @binding(9) var<storage, read_write> cell_hashes: array<u32>;
 
 // === PRNG (PCG-based) ===
 fn pcg(state: ptr<private, u32>) -> u32 {
@@ -961,6 +962,31 @@ fn clear_byte_counts(@builtin(global_invocation_id) id: vec3u) {
     if (id.x < 256u) {
         atomicStore(&byte_counts[id.x], 0u);
     }
+}
+
+// --- Hash cells (FNV-1a per cell for species tracking) ---
+@compute @workgroup_size(256)
+fn hash_cells(@builtin(global_invocation_id) id: vec3u) {
+    let cell_idx = id.x;
+    let cell_count = params.soup_width * params.soup_height;
+    if (cell_idx >= cell_count) { return; }
+
+    let words_per_cell = (params.tape_length + 3u) / 4u;
+    let base = cell_idx * words_per_cell;
+
+    // FNV-1a hash
+    var hash = 2166136261u;
+    for (var w = 0u; w < words_per_cell; w++) {
+        let word = soup[base + w];
+        let bytes_remaining = params.tape_length - w * 4u;
+        let byte_count = min(4u, bytes_remaining);
+        for (var b = 0u; b < byte_count; b++) {
+            let byte_val = (word >> (b * 8u)) & 0xffu;
+            hash = hash ^ byte_val;
+            hash = hash * 16777619u;
+        }
+    }
+    cell_hashes[cell_idx] = hash;
 }
 `;
 }

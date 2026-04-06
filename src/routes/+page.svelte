@@ -14,6 +14,8 @@
 	import type { ColormapName } from '$lib/colormap';
 	import { untrack } from 'svelte';
 	import Mermaid from '$lib/components/Mermaid.svelte';
+	import { saveCheckpoint, loadCheckpoint, type CheckpointMetadata } from '$lib/checkpoint';
+	import katex from 'katex';
 
 	let colormapName: ColormapName = $state('rainbow');
 	let colormap = $state(createColormap('rainbow'));
@@ -77,7 +79,7 @@
 	// Stats
 	let opsPerSec = $state(0);
 	let showHelp = $state(false);
-	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'about'>('overview');
+	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'analysis' | 'about'>('overview');
 	let showSpeedMenu = $state(false);
 	let showSettings = $state(false);
 	let toolbarCollapsed = $state(false);
@@ -126,6 +128,88 @@
 
 	// Chart hover
 	let chartHoveredByte = $state(-1);
+
+	// Info widget tab: opcodes (byte frequency) or species (block identity)
+	let infoTab = $state<'opcodes' | 'species' | 'diversity'>('opcodes');
+
+	// === Species tracking ===
+	interface SpeciesEntry {
+		hash: number;
+		count: number;
+		fraction: number;
+		color: string;
+		textColor: string;
+		exemplar: Uint8Array | null; // cell bytes for this species
+		exemplarCells: GenomeCell[]; // disassembled genome grid
+	}
+	interface SpeciesSnapshot {
+		species: SpeciesEntry[];
+		richness: number; // unique hashes above threshold
+		shannon: number; // Shannon entropy H
+		simpson: number; // Simpson's index D = 1 - sum(p_i^2)
+		totalUnique: number;
+	}
+	const MAX_SPECIES_DISPLAY = 10;
+	const MAX_SPECIES_TRACKED = 20;
+	const SPECIES_THRESHOLD = 0.001; // 0.1% of cells
+
+	// Species ring buffer: stores fraction for each tracked species hash over time
+	// speciesHashOrder[i] = hash for index i (stable across frames when possible)
+	const speciesRing: Float32Array[] = [];
+	let speciesHashOrder: number[] = $state([]); // maps index -> hash
+	let speciesExemplars: Map<number, Uint8Array> = new Map(); // hash -> exemplar bytes
+	let speciesLen = $state(0);
+	let speciesVersion = $state(0);
+	let currentSpecies = $state<SpeciesSnapshot | null>(null);
+	let speciesHoveredIdx = $state(-1);
+	let speciesModal = $state<SpeciesEntry | null>(null);
+	let speciesModalTip = $state<{ idx: number; byteVal: number; x: number; y: number } | null>(null);
+	let speciesLoading = false;
+
+	// Diversity metrics time series ring buffer
+	// Each slot: [shannon, simpson, richness, totalUnique]
+	const diversityRing: Float32Array[] = [];
+	let diversityLen = $state(0);
+	let diversityVersion = $state(0);
+
+	function speciesAvgColor(exemplar: Uint8Array | null): { color: string; textColor: string } {
+		if (!exemplar || exemplar.length === 0) {
+			return { color: 'rgba(128,128,128,0.5)', textColor: 'rgba(255,255,255,0.9)' };
+		}
+		let rSum = 0, gSum = 0, bSum = 0;
+		for (let i = 0; i < exemplar.length; i++) {
+			const [r, g, b] = unpackRGBA(colormap[exemplar[i]]);
+			rSum += r;
+			gSum += g;
+			bSum += b;
+		}
+		const n = exemplar.length;
+		const r = Math.round(rSum / n);
+		const g = Math.round(gSum / n);
+		const b = Math.round(bSum / n);
+		const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+		return {
+			color: `rgb(${r},${g},${b})`,
+			textColor: lum > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)'
+		};
+	}
+
+	/** Brightened species color for chart lines */
+	function speciesChartColor(exemplar: Uint8Array | null): string {
+		const { color } = speciesAvgColor(exemplar);
+		// Parse and brighten if too dark
+		const m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
+		if (!m) return color;
+		let [r, g, b] = [+m[1], +m[2], +m[3]];
+		const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+		if (lum < 0.2) {
+			const boost = 0.35;
+			r = Math.round(r + (255 - r) * boost);
+			g = Math.round(g + (255 - g) * boost);
+			b = Math.round(b + (255 - b) * boost);
+		}
+		return `rgb(${r},${g},${b})`;
+	}
 
 	// Hover / genome tooltip
 	let hoveredCell = $state(-1);
@@ -311,6 +395,9 @@
 			if (playing && (frameCount === 1 || frameCount % 15 === 0) && !statsLoading) {
 				opsPerSec = engine.opsPerSec;
 				updateTopBytes();
+				if (infoTab === 'species' || infoTab === 'diversity') {
+					updateSpecies();
+				}
 			}
 		}
 		tick();
@@ -360,6 +447,207 @@
 			statsLoading = false;
 		}
 	}
+
+	async function updateSpecies() {
+		if (!engine || speciesLoading) return;
+		speciesLoading = true;
+		try {
+			const hashes = await engine.readCellHashes();
+			if (hashes.length === 0) return;
+
+			// Count unique hashes and find first exemplar cell index for each
+			const counts = new Map<number, number>();
+			const exemplarIdx = new Map<number, number>(); // hash -> first cell index
+			for (let i = 0; i < hashes.length; i++) {
+				const h = hashes[i];
+				counts.set(h, (counts.get(h) || 0) + 1);
+				if (!exemplarIdx.has(h)) exemplarIdx.set(h, i);
+			}
+
+			const total = hashes.length;
+			const threshold = Math.max(1, Math.floor(total * SPECIES_THRESHOLD));
+
+			// Compute diversity metrics
+			let richness = 0;
+			let shannonH = 0;
+			let simpsonSum = 0;
+			for (const [, count] of counts) {
+				if (count >= threshold) richness++;
+				const p = count / total;
+				if (p > 0) {
+					shannonH -= p * Math.log(p);
+					simpsonSum += p * p;
+				}
+			}
+
+			// Read soup data to extract exemplar cell bytes
+			const soupData = await engine.readSoupData();
+
+			// Sort by frequency, take top species
+			const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+			const topSpecies: SpeciesEntry[] = sorted
+				.slice(0, MAX_SPECIES_TRACKED)
+				.map(([hash, count]) => {
+					const cellIdx = exemplarIdx.get(hash) ?? 0;
+					const exemplar = soupData.length > 0 ? getCellData(soupData, cellIdx, gridType) : null;
+					const { color, textColor } = speciesAvgColor(exemplar);
+					const exemplarCells = exemplar
+						? buildGenomeGrid(exemplar, disassemble(exemplar))
+						: [];
+					return {
+						hash,
+						count,
+						fraction: count / total,
+						color,
+						textColor,
+						exemplar,
+						exemplarCells
+					};
+				});
+
+			currentSpecies = {
+				species: topSpecies,
+				richness,
+				shannon: shannonH,
+				simpson: 1 - simpsonSum,
+				totalUnique: counts.size
+			};
+
+			// Record diversity metrics time series
+			if (showInfoChart) {
+				let slot: Float32Array;
+				if (diversityLen < MAX_HISTORY) {
+					slot = new Float32Array(4);
+					diversityRing[diversityLen] = slot;
+					diversityLen++;
+				} else {
+					slot = diversityRing[0];
+					for (let i = 1; i < MAX_HISTORY; i++) diversityRing[i - 1] = diversityRing[i];
+					diversityRing[MAX_HISTORY - 1] = slot;
+				}
+				slot[0] = shannonH;
+				slot[1] = 1 - simpsonSum;
+				slot[2] = richness;
+				slot[3] = counts.size;
+				diversityVersion++;
+			}
+
+			// Cache exemplar data for chart colors
+			for (const sp of topSpecies) {
+				if (sp.exemplar) speciesExemplars.set(sp.hash, sp.exemplar);
+			}
+
+			// Update ring buffer for sparklines
+			if (showInfoChart) {
+				// Build or update hash order (keep stable identity when possible)
+				const newHashes = topSpecies.map((s) => s.hash);
+				if (speciesHashOrder.length === 0) {
+					speciesHashOrder = newHashes;
+				} else {
+					// Add any new hashes not yet tracked
+					for (const h of newHashes) {
+						if (!speciesHashOrder.includes(h)) {
+							if (speciesHashOrder.length < MAX_SPECIES_TRACKED) {
+								speciesHashOrder.push(h);
+							}
+						}
+					}
+				}
+
+				// Record fractions for all tracked hashes
+				let slot: Float32Array;
+				if (speciesLen < MAX_HISTORY) {
+					slot = new Float32Array(MAX_SPECIES_TRACKED);
+					speciesRing[speciesLen] = slot;
+					speciesLen++;
+				} else {
+					slot = speciesRing[0];
+					for (let i = 1; i < MAX_HISTORY; i++) speciesRing[i - 1] = speciesRing[i];
+					speciesRing[MAX_HISTORY - 1] = slot;
+					slot.fill(0);
+				}
+				for (let idx = 0; idx < speciesHashOrder.length; idx++) {
+					const c = counts.get(speciesHashOrder[idx]);
+					slot[idx] = c ? c / total : 0;
+				}
+				speciesVersion++;
+			}
+		} catch {
+			// silent fail
+		} finally {
+			speciesLoading = false;
+		}
+	}
+
+	// Species sparklines (parallel to freqLines)
+	let speciesLines = $derived.by(() => {
+		void speciesVersion;
+		const len = speciesLen;
+		if (len < 2 || speciesHashOrder.length === 0) return [];
+
+		const lines: { hash: number; color: string; path: string }[] = [];
+		let globalMax = 0.1;
+
+		// Pre-compute all series values to find globalMax
+		const allValues: Float64Array[] = [];
+		for (let idx = 0; idx < Math.min(speciesHashOrder.length, MAX_SPECIES_DISPLAY); idx++) {
+			const values = new Float64Array(len);
+			for (let i = 0; i < len; i++) {
+				const frac = speciesRing[i][idx];
+				values[i] = frac > 0 ? Math.log2(frac * 100 + 1) : 0;
+			}
+			allValues.push(values);
+			for (let i = 0; i < values.length; i++) {
+				if (values[i] > globalMax) globalMax = values[i];
+			}
+		}
+
+		for (let idx = 0; idx < allValues.length; idx++) {
+			const hash = speciesHashOrder[idx];
+			const exemplar = speciesExemplars.get(hash) ?? null;
+			lines.push({
+				hash,
+				color: speciesChartColor(exemplar),
+				path: buildSparklinePathTyped(allValues[idx], 200, 120, globalMax)
+			});
+		}
+		return lines;
+	});
+
+	// Diversity sparklines: each metric gets its own line with independent scaling
+	const DIVERSITY_METRICS = [
+		{ key: 0, label: 'H', name: 'Shannon entropy', color: 'rgb(255,180,50)' },
+		{ key: 1, label: 'D', name: 'Simpson diversity', color: 'rgb(100,200,255)' },
+		{ key: 2, label: 'spp', name: 'Species richness', color: 'rgb(120,255,120)' },
+		{ key: 3, label: 'uniq', name: 'Unique blocks', color: 'rgb(255,130,180)' }
+	] as const;
+
+	let diversityHoveredIdx = $state(-1);
+
+	let diversityLines = $derived.by(() => {
+		void diversityVersion;
+		const len = diversityLen;
+		if (len < 2) return [];
+
+		return DIVERSITY_METRICS.map((m, idx) => {
+			const values = new Float64Array(len);
+			let maxVal = 0;
+			for (let i = 0; i < len; i++) {
+				values[i] = diversityRing[i][m.key];
+				if (values[i] > maxVal) maxVal = values[i];
+			}
+			// Each metric is normalized to its own max
+			const normMax = maxVal > 0 ? maxVal : 1;
+			return {
+				idx,
+				label: m.label,
+				name: m.name,
+				color: m.color,
+				path: buildSparklinePathTyped(values, 200, 120, normMax),
+				current: len > 0 ? diversityRing[len - 1][m.key] : 0
+			};
+		});
+	});
 
 	function handleCanvasMouseMove(e: MouseEvent) {
 		if (touchHandled) return; // ignore synthetic mouse events from touch
@@ -605,6 +893,111 @@
 		chartLen = 0;
 		chartVersion++;
 		trackedBytes = [];
+		speciesRing.length = 0;
+		speciesHashOrder = [];
+		speciesLen = 0;
+		speciesVersion++;
+		currentSpecies = null;
+		speciesExemplars = new Map();
+		speciesModal = null;
+		diversityRing.length = 0;
+		diversityLen = 0;
+		diversityVersion++;
+	}
+
+	// Checkpoint save/load
+	let fileInput: HTMLInputElement;
+
+	async function handleSave() {
+		if (!engine || !canvas) return;
+		const blob = await new Promise<Blob>((resolve) => {
+			canvas.toBlob((b) => resolve(b!), 'image/png');
+		});
+		const soupData = await engine.readSoupData();
+		const metadata: CheckpointMetadata = {
+			version: 1,
+			gridWidth,
+			gridHeight,
+			gridType,
+			seed,
+			noiseExp,
+			z80Steps: engine.z80Steps,
+			pairCount: engine.pairCount,
+			suppressPatterns: [...suppressPatterns],
+			batchCount: engine.batchCount,
+			timestamp: Date.now()
+		};
+		const checkpoint = await saveCheckpoint(blob, metadata, soupData);
+		const url = URL.createObjectURL(checkpoint);
+		const a = document.createElement('a');
+		a.href = url;
+		const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+		a.download = `algocell-${ts}.acell`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	async function handleLoadFile(file: File) {
+		const data = new Uint8Array(await file.arrayBuffer());
+		const result = await loadCheckpoint(data);
+		if (!result) return;
+
+		const { metadata, soupData } = result;
+
+		// Apply grid config if different
+		if (
+			metadata.gridWidth !== gridWidth ||
+			metadata.gridHeight !== gridHeight ||
+			metadata.gridType !== gridType
+		) {
+			gridType = metadata.gridType;
+			gridWidth = metadata.gridWidth;
+			gridHeight = metadata.gridHeight;
+			applyGridConfig();
+		}
+
+		// Restore params
+		seed = metadata.seed;
+		noiseExp = metadata.noiseExp;
+		if (engine) {
+			engine.noiseExp = noiseExp;
+			engine.z80Steps = metadata.z80Steps;
+			engine.pairCount = metadata.pairCount;
+			engine.writeSoupData(soupData);
+		}
+
+		// Restore suppression
+		suppressPatterns = metadata.suppressPatterns;
+
+		// Reset chart/species
+		chartRing.length = 0;
+		chartLen = 0;
+		chartVersion++;
+		trackedBytes = [];
+		speciesRing.length = 0;
+		speciesHashOrder = [];
+		speciesLen = 0;
+		speciesVersion++;
+		currentSpecies = null;
+		speciesExemplars = new Map();
+		speciesModal = null;
+		diversityRing.length = 0;
+		diversityLen = 0;
+		diversityVersion++;
+	}
+
+	function handleFileInputChange(e: Event) {
+		const input = e.target as HTMLInputElement;
+		if (input.files?.[0]) {
+			handleLoadFile(input.files[0]);
+			input.value = '';
+		}
+	}
+
+	function handleDrop(e: DragEvent) {
+		e.preventDefault();
+		const file = e.dataTransfer?.files[0];
+		if (file) handleLoadFile(file);
 	}
 
 	function handleSeedChange(e: Event) {
@@ -649,6 +1042,16 @@
 		chartLen = 0;
 		chartVersion++;
 		trackedBytes = [];
+		speciesRing.length = 0;
+		speciesHashOrder = [];
+		speciesLen = 0;
+		speciesVersion++;
+		currentSpecies = null;
+		speciesExemplars = new Map();
+		speciesModal = null;
+		diversityRing.length = 0;
+		diversityLen = 0;
+		diversityVersion++;
 	}
 
 	function addSuppressPattern(pattern: string) {
@@ -782,6 +1185,14 @@
 
 	function hexByte(b: number): string {
 		return b.toString(16).toUpperCase().padStart(2, '0');
+	}
+
+	function tex(expr: string): string {
+		return katex.renderToString(expr, { throwOnError: false, displayMode: false });
+	}
+
+	function texBlock(expr: string): string {
+		return katex.renderToString(expr, { throwOnError: false, displayMode: true });
 	}
 
 	// Z80 opcode descriptions — plain-English decoder for non-experts
@@ -1038,6 +1449,19 @@
 <svelte:window
 	onkeydown={(e) => {
 		if (e.target !== document.body) return;
+		// Ctrl/Cmd shortcuts
+		if (e.metaKey || e.ctrlKey) {
+			if (e.code === 'KeyS') {
+				e.preventDefault();
+				handleSave();
+				return;
+			}
+			if (e.code === 'KeyO') {
+				e.preventDefault();
+				fileInput?.click();
+				return;
+			}
+		}
 		switch (e.code) {
 			case 'Space':
 				e.preventDefault();
@@ -1059,6 +1483,7 @@
 				showHelp = false;
 				showSpeedMenu = false;
 				showSettings = false;
+				speciesModal = null;
 				break;
 		}
 	}}
@@ -1066,13 +1491,25 @@
 
 <svelte:head>
 	<title>Algocell</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" />
 </svelte:head>
+
+<!-- Hidden file input for checkpoint load -->
+<input
+	bind:this={fileInput}
+	type="file"
+	accept=".acell,.png"
+	style="display:none"
+	onchange={handleFileInputChange}
+/>
 
 <!-- Full-screen canvas -->
 <div
 	bind:this={canvasContainer}
 	class="fixed inset-0"
 	style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none"
+	ondragover={(e) => e.preventDefault()}
+	ondrop={handleDrop}
 >
 	{#if gpuError}
 		<div
@@ -1159,6 +1596,27 @@
 				<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
 			</svg>
 		</button>
+
+		<div class="tb-sep"></div>
+
+		<!-- Save checkpoint -->
+		<button class="tb" style="color:var(--text-subtle)" title="Save checkpoint (Cmd+S)" onclick={handleSave}>
+			<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
+				<rect x="2" y="1" width="10" height="12" rx="1" />
+				<path d="M4 1v4h6V1" />
+				<path d="M4 8h6M4 10h4" stroke-linecap="round" />
+			</svg>
+		</button>
+
+		<!-- Load checkpoint -->
+		<button class="tb" style="color:var(--text-subtle)" title="Load checkpoint (Cmd+O)" onclick={() => fileInput?.click()}>
+			<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
+				<path d="M2 6V3a1 1 0 0 1 1-1h3l1.5 1.5H11a1 1 0 0 1 1 1V11a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6z" />
+				<path d="M7 6v4M5 8l2-2 2 2" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</button>
+
+		<div class="tb-sep"></div>
 
 		<!-- Settings -->
 		<button
@@ -1252,7 +1710,26 @@
 			</svg>
 		</button>
 	</div>
-	{#if showInfoChart && chartVersion > 0 && chartLen > 1}
+	{#if showInfoChart}
+		<div class="info-tabs">
+			<button
+				class="info-tab"
+				class:active={infoTab === 'opcodes'}
+				onclick={() => (infoTab = 'opcodes')}
+			>Opcodes</button>
+			<button
+				class="info-tab"
+				class:active={infoTab === 'species'}
+				onclick={() => (infoTab = 'species')}
+			>Species</button>
+			<button
+				class="info-tab"
+				class:active={infoTab === 'diversity'}
+				onclick={() => (infoTab = 'diversity')}
+			>Diversity</button>
+		</div>
+	{/if}
+	{#if showInfoChart && infoTab === 'opcodes' && chartVersion > 0 && chartLen > 1}
 		<div class="info-chart">
 			<svg
 				viewBox="0 0 200 120"
@@ -1330,8 +1807,242 @@
 				</div>
 			{/if}
 		</div>
+	{:else if showInfoChart && infoTab === 'species'}
+		<div class="info-chart">
+			{#if speciesLen > 1 && speciesLines.length > 0}
+				<svg
+					viewBox="0 0 200 120"
+					class="info-chart-svg"
+					preserveAspectRatio="none"
+					onmouseleave={() => { speciesHoveredIdx = -1; }}
+				>
+					{#each speciesLines as sl, idx (sl.hash)}
+						{#if sl.path}
+							<!-- Thick invisible hit area for hover -->
+							<polyline
+								points={sl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+								fill="none"
+								stroke="transparent"
+								stroke-width="12"
+								onmouseenter={() => { speciesHoveredIdx = idx; }}
+							/>
+							<polyline
+								points={sl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+								fill="none"
+								stroke={sl.color}
+								stroke-width={speciesHoveredIdx === idx ? '4' : '2.5'}
+								opacity={speciesHoveredIdx >= 0
+									? speciesHoveredIdx === idx ? '1' : '0.15'
+									: '0.8'}
+								style="pointer-events:none"
+							/>
+						{/if}
+					{/each}
+				</svg>
+			{:else}
+				<div class="species-waiting">Collecting species data...</div>
+			{/if}
+			{#if currentSpecies}
+				<div class="freq-grid">
+					{#each currentSpecies.species.slice(0, MAX_SPECIES_DISPLAY) as sp, i (sp.hash)}
+						{@const chartIdx = speciesHashOrder.indexOf(sp.hash)}
+						<div
+							class="freq-cell"
+							class:dimmed={speciesHoveredIdx >= 0 && speciesHoveredIdx !== chartIdx}
+							class:highlighted={speciesHoveredIdx === chartIdx}
+							style="background:{sp.color};color:{sp.textColor}"
+							role="button"
+							tabindex="0"
+							title="Click to inspect"
+							onmouseenter={() => { speciesHoveredIdx = chartIdx; }}
+							onmouseleave={() => { speciesHoveredIdx = -1; }}
+							onclick={() => { speciesModal = sp; }}
+						>
+							<span class="freq-rank">{i + 1}</span>
+							<span class="freq-label">{(sp.fraction * 100).toFixed(1)}%</span>
+						</div>
+					{/each}
+				</div>
+			{/if}
+			{#if suppressPatterns.length > 0}
+				<div class="freq-suppressed-row">
+					{#each suppressPatterns as pat (pat)}
+						<button
+							class="freq-suppress-chip"
+							onclick={() => removeSuppressPattern(pat)}
+							title="Remove pattern: {pat}"
+						>
+							{pat}
+							<svg width="7" height="7" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.5">
+								<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+							</svg>
+						</button>
+					{/each}
+					<span class="freq-suppress-count">⊘ {suppressedOpcodes.size}</span>
+				</div>
+			{/if}
+		</div>
+	{:else if showInfoChart && infoTab === 'diversity'}
+		<div class="info-chart">
+			{#if diversityLen > 1 && diversityLines.length > 0}
+				<svg
+					viewBox="0 0 200 120"
+					class="info-chart-svg"
+					preserveAspectRatio="none"
+					onmouseleave={() => { diversityHoveredIdx = -1; }}
+				>
+					{#each diversityLines as dl (dl.idx)}
+						{#if dl.path}
+							<polyline
+								points={dl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+								fill="none"
+								stroke="transparent"
+								stroke-width="12"
+								onmouseenter={() => { diversityHoveredIdx = dl.idx; }}
+							/>
+							<polyline
+								points={dl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+								fill="none"
+								stroke={dl.color}
+								stroke-width={diversityHoveredIdx === dl.idx ? '4' : '2'}
+								opacity={diversityHoveredIdx >= 0
+									? diversityHoveredIdx === dl.idx ? '1' : '0.15'
+									: '0.8'}
+								style="pointer-events:none"
+							/>
+						{/if}
+					{/each}
+				</svg>
+			{:else}
+				<div class="species-waiting">Collecting diversity data...</div>
+			{/if}
+			<div class="diversity-grid">
+				{#each diversityLines as dl (dl.idx)}
+					<div
+						class="diversity-card"
+						class:dimmed={diversityHoveredIdx >= 0 && diversityHoveredIdx !== dl.idx}
+						class:highlighted={diversityHoveredIdx === dl.idx}
+						onmouseenter={() => { diversityHoveredIdx = dl.idx; }}
+						onmouseleave={() => { diversityHoveredIdx = -1; }}
+					>
+						<span class="diversity-swatch" style="background:{dl.color}"></span>
+						<span class="diversity-label">{dl.label}</span>
+						<span class="diversity-value">{dl.current < 100 ? dl.current.toFixed(dl.current < 10 ? 2 : 1) : formatNumber(dl.current)}</span>
+					</div>
+				{/each}
+			</div>
+			{#if suppressPatterns.length > 0}
+				<div class="freq-suppressed-row">
+					{#each suppressPatterns as pat (pat)}
+						<button
+							class="freq-suppress-chip"
+							onclick={() => removeSuppressPattern(pat)}
+							title="Remove pattern: {pat}"
+						>
+							{pat}
+							<svg width="7" height="7" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.5">
+								<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+							</svg>
+						</button>
+					{/each}
+					<span class="freq-suppress-count">⊘ {suppressedOpcodes.size}</span>
+				</div>
+			{/if}
+		</div>
 	{/if}
 </div>
+
+<!-- Species inspect modal -->
+{#if speciesModal}
+	{@const sp = speciesModal}
+	{@const cells = sp.exemplarCells}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div class="species-modal-backdrop" onclick={() => { speciesModal = null; speciesModalTip = null; }} role="presentation">
+		<div class="species-modal" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
+			<div class="species-modal-header" style="background:{sp.color};color:{sp.textColor}">
+				<span>{(sp.fraction * 100).toFixed(1)}% &mdash; {sp.count} cells</span>
+				<button class="species-modal-close" onclick={() => (speciesModal = null)}>
+					<svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.5">
+						<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
+					</svg>
+				</button>
+			</div>
+			{#if cells.length > 0}
+				<div class="species-modal-body">
+					{#if gridType === 'hex'}
+						<div class="hex-byte-grid species-modal-hex" onmouseleave={() => { speciesModalTip = null; }}>
+							{#each cells as cell, i (i)}
+								<div
+									class="hex-byte-cell hex-byte-pos-{i}"
+									class:operand={!cell.isOpcode}
+									class:modal-cell-hovered={speciesModalTip?.idx === i}
+									onmouseenter={(e) => {
+										const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+										speciesModalTip = { idx: i, byteVal: cell.byteVal, x: rect.left + rect.width / 2, y: rect.top };
+									}}
+								>
+									<div
+										class="hex-byte-inner"
+										style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4
+											? 'rgba(0,0,0,0.85)'
+											: 'rgba(255,255,255,0.9)'}"
+									>
+										{cell.label}
+									</div>
+								</div>
+							{/each}
+						</div>
+					{:else}
+						<div class="tip-grid species-modal-grid" onmouseleave={() => { speciesModalTip = null; }}>
+							{#each cells as cell, i (i)}
+								<div
+									class="tip-cell"
+									class:operand={!cell.isOpcode}
+									class:modal-cell-hovered={speciesModalTip?.idx === i}
+									style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4
+										? 'rgba(0,0,0,0.85)'
+										: 'rgba(255,255,255,0.9)'}"
+									onmouseenter={(e) => {
+										const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+										speciesModalTip = { idx: i, byteVal: cell.byteVal, x: rect.left + rect.width / 2, y: rect.top };
+									}}
+								>
+									{cell.label}
+								</div>
+							{/each}
+						</div>
+					{/if}
+					<div class="species-modal-hash">
+						{(sp.hash >>> 0).toString(16).padStart(8, '0')}
+					</div>
+				</div>
+			{/if}
+		</div>
+	</div>
+{/if}
+
+<!-- Species byte tooltip (floating above modal) -->
+{#if speciesModalTip}
+	{@const sb = speciesModalTip.byteVal}
+	{@const sdesc = opcodeDescription(sb)}
+	{@const sbg = byteColor(sb)}
+	{@const slum = byteLuminance(sb)}
+	<div class="tile-tip" style="left:{speciesModalTip.x}px;top:{speciesModalTip.y}px;transform:translate(-50%,-100%) translateY(-8px);z-index:70">
+		<div
+			class="tile-tip-header"
+			style="background:{sbg};color:{slum > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)'}"
+		>
+			<span class="tile-tip-mnemonic">{byteToMnemonic(sb) || hexByte(sb)}</span>
+			<span class="tile-tip-hex">0x{hexByte(sb)}</span>
+		</div>
+		<div class="tile-tip-body">
+			<p class="tile-tip-desc">{sdesc}</p>
+			{#if suppressedOpcodes.has(sb)}
+				<span class="tile-tip-status suppressed">⊘ Suppressed</span>
+			{/if}
+		</div>
+	</div>
+{/if}
 
 <!-- Tile tooltip -->
 {#if tileTooltip}
@@ -2123,6 +2834,16 @@
 							/></svg
 						>
 						Params
+					</button>
+					<button
+						class="modal-tab"
+						class:active={helpTab === 'analysis'}
+						onclick={() => (helpTab = 'analysis')}
+					>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+						</svg>
+						Analysis
 					</button>
 					<button
 						class="modal-tab tab-keys"
@@ -3075,6 +3796,65 @@ graph TD
 						Choose between three visual themes: Rainbow (warm opcode-aware), Ocean (cool blues), and
 						Thermal (heat map).
 					</p>
+				{:else if helpTab === 'analysis'}
+					<h4>Species Tracking</h4>
+					<p>
+						The <strong>Species</strong> tab identifies distinct cell types by hashing each cell's full byte content (FNV-1a).
+						Cells with identical bytes share a hash and are counted as one species. The top 10 are shown as colored tiles
+						whose color matches the cell's average appearance on the grid. Click any species tile to inspect its genome
+						(the 4x4 byte grid with Z80 disassembly). Hover over individual bytes in the modal to see what each instruction does.
+					</p>
+
+					<h4>Diversity Metrics</h4>
+					<p>The <strong>Diversity</strong> tab tracks four metrics over time, each independently scaled:</p>
+					<div class="help-metric-list">
+						<div class="help-metric-item">
+							<span class="help-metric-swatch" style="background:rgb(255,180,50)"></span>
+							<div>
+								<strong>H</strong> (Shannon entropy) &mdash; measures evenness of species distribution.
+								High H = many species at similar frequency. Low H = monoculture.
+								<div class="help-metric-eq">{@html texBlock('H = -\\sum_{i} p_i \\ln p_i')}</div>
+							</div>
+						</div>
+						<div class="help-metric-item">
+							<span class="help-metric-swatch" style="background:rgb(100,200,255)"></span>
+							<div>
+								<strong>D</strong> (Simpson's diversity) &mdash; probability that two random cells are
+								different species. {@html tex('D \\to 1')} = diverse, {@html tex('D \\to 0')} = monoculture.
+								<div class="help-metric-eq">{@html texBlock('D = 1 - \\sum_{i} p_i^{\\,2}')}</div>
+							</div>
+						</div>
+						<div class="help-metric-item">
+							<span class="help-metric-swatch" style="background:rgb(120,255,120)"></span>
+							<div>
+								<strong>SPP</strong> (species richness) &mdash; count of species with {@html tex('p_i > 0.1\\%')}.
+								Tracks how many distinct genomes are meaningfully present.
+							</div>
+						</div>
+						<div class="help-metric-item">
+							<span class="help-metric-swatch" style="background:rgb(255,130,180)"></span>
+							<div>
+								<strong>UNIQ</strong> (total unique blocks) &mdash; every distinct 16-byte sequence in the grid.
+								Raw genetic diversity before any abundance threshold.
+							</div>
+						</div>
+					</div>
+
+					<h4>Checkpoints</h4>
+					<p>
+						<kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+S</kbd> saves a checkpoint as an <code>.acell</code> file.
+						This is a valid PNG image (viewable in any image app) with the full simulation state appended after the image data.
+						Load checkpoints with <kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+O</kbd> or drag &amp; drop onto the canvas.
+						The file contains the complete grid, all parameters, and suppression patterns &mdash; everything needed to resume
+						exactly where you left off.
+					</p>
+
+					<h4>Opcode Suppression</h4>
+					<p>
+						Suppressing opcodes (e.g. LD, EX, ADD) forces the system to find replication strategies using only
+						the remaining instructions. This can push the system past trivial self-replication into richer emergent
+						behavior like spatial speciation, error-correcting patterns, and division of labor between cell types.
+					</p>
 				{:else if helpTab === 'keys'}
 					<div class="modal-shortcuts">
 						<div class="shortcut"><kbd>Space</kbd> Play / Pause</div>
@@ -3082,6 +3862,8 @@ graph TD
 						<div class="shortcut"><kbd>S</kbd> Toggle chart</div>
 						<div class="shortcut"><kbd>H</kbd> Toggle help</div>
 						<div class="shortcut"><kbd>F</kbd> Fit view</div>
+						<div class="shortcut"><kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+S</kbd> Save checkpoint</div>
+						<div class="shortcut"><kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+O</kbd> Load checkpoint</div>
 						<div class="shortcut"><kbd>Scroll</kbd> Zoom</div>
 						<div class="shortcut"><kbd>Drag</kbd> Pan</div>
 						<div class="shortcut"><kbd>Dbl-click</kbd> Reset view</div>
@@ -3447,6 +4229,158 @@ graph TD
 		font-size: 8.5px;
 		color: var(--text-muted);
 		margin-left: 2px;
+	}
+
+	/* ── Info tabs ── */
+	.info-tabs {
+		display: flex;
+		gap: 0;
+		margin-top: 6px;
+		border-bottom: 1px solid var(--border-subtle);
+	}
+	.info-tab {
+		background: none;
+		border: none;
+		padding: 4px 10px;
+		font-size: 9px;
+		color: var(--text-muted);
+		cursor: pointer;
+		border-bottom: 2px solid transparent;
+		margin-bottom: -1px;
+		font-family: monospace;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		transition: color 0.15s, border-color 0.15s;
+	}
+	.info-tab:hover {
+		color: var(--text-secondary);
+	}
+	.info-tab.active {
+		color: var(--accent);
+		border-bottom-color: var(--accent);
+	}
+
+	.species-waiting {
+		height: 90px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 9px;
+		color: var(--text-muted);
+		background: var(--bg-subtle);
+		border-radius: 4px;
+	}
+
+	/* ── Diversity tab ── */
+	.diversity-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 4px;
+		margin-top: 6px;
+	}
+	.diversity-card {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		padding: 4px 6px;
+		border-radius: 5px;
+		background: var(--bg-subtle);
+		cursor: default;
+		transition: opacity 0.1s;
+		font-size: 10px;
+		font-family: monospace;
+	}
+	.diversity-card.dimmed {
+		opacity: 0.35;
+	}
+	.diversity-card.highlighted {
+		outline: 1px solid rgba(255, 255, 255, 0.3);
+	}
+	.diversity-swatch {
+		width: 8px;
+		height: 8px;
+		border-radius: 2px;
+		flex-shrink: 0;
+	}
+	.diversity-label {
+		color: var(--text-muted);
+		text-transform: uppercase;
+		font-size: 8px;
+		letter-spacing: 0.05em;
+		min-width: 24px;
+	}
+	.diversity-value {
+		color: var(--text-primary);
+		font-weight: 600;
+		margin-left: auto;
+	}
+
+	/* ── Species inspect modal ── */
+	.species-modal-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 60;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.species-modal {
+		background: var(--bg-elevated);
+		border: 1px solid var(--border-muted);
+		border-radius: 10px;
+		overflow: hidden;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+		min-width: 200px;
+	}
+	.species-modal-header {
+		padding: 8px 12px;
+		font-size: 11px;
+		font-family: monospace;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 12px;
+	}
+	.species-modal-close {
+		background: none;
+		border: none;
+		color: inherit;
+		cursor: pointer;
+		padding: 2px;
+		opacity: 0.6;
+	}
+	.species-modal-close:hover {
+		opacity: 1;
+	}
+	.species-modal-body {
+		padding: 8px;
+	}
+	.species-modal-grid {
+		margin: 0;
+	}
+	.species-modal-hex {
+		margin: 0 auto;
+	}
+	.species-modal-hex .hex-byte-cell.modal-cell-hovered .hex-byte-inner {
+		outline: 2px solid rgba(255, 255, 255, 0.8);
+		z-index: 1;
+	}
+	.species-modal-grid .tip-cell {
+		cursor: default;
+		transition: outline 0.1s;
+	}
+	.species-modal-grid .tip-cell.modal-cell-hovered {
+		outline: 2px solid rgba(255, 255, 255, 0.8);
+		z-index: 1;
+	}
+	.species-modal-hash {
+		text-align: center;
+		font-size: 8px;
+		font-family: monospace;
+		color: var(--text-muted);
+		margin-top: 6px;
+		letter-spacing: 0.1em;
 	}
 
 	/* ── Tile tooltip ── */
@@ -4266,18 +5200,24 @@ graph TD
 	.modal-tab {
 		background: none;
 		border: none;
-		padding: 8px 10px;
-		font-size: 11px;
+		padding: 7px 8px;
+		font-size: 10.5px;
 		color: var(--text-muted);
 		cursor: pointer;
 		border-bottom: 2px solid transparent;
 		margin-bottom: -1px;
 		display: flex;
 		align-items: center;
-		gap: 4px;
+		gap: 3px;
 		transition:
 			color 0.15s,
 			border-color 0.15s;
+		white-space: nowrap;
+	}
+	.modal-tab svg {
+		width: 12px;
+		height: 12px;
+		flex-shrink: 0;
 	}
 	.modal-tab:hover {
 		color: var(--text-secondary);
@@ -4401,6 +5341,33 @@ graph TD
 	}
 	.help-link:hover {
 		text-decoration: underline;
+	}
+	/* ── Analysis help tab ── */
+	.help-metric-list {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		margin: 8px 0;
+	}
+	.help-metric-item {
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
+		font-size: 12px;
+		line-height: 1.4;
+	}
+	.help-metric-swatch {
+		width: 8px;
+		height: 8px;
+		border-radius: 2px;
+		flex-shrink: 0;
+		margin-top: 5px;
+	}
+	.help-metric-eq {
+		margin: 4px 0 2px;
+	}
+	.help-metric-eq :global(.katex) {
+		font-size: 1em;
 	}
 	/* ── Z80 reference tab ── */
 	.z80-reg-table {

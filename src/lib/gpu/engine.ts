@@ -31,6 +31,7 @@ export class GPUEngine {
 	private pairActiveBuffer!: GPUBuffer;
 	private byteCountsBuffer!: GPUBuffer;
 	private collisionMaskBuffer!: GPUBuffer;
+	private cellHashBuffer!: GPUBuffer;
 
 	// Render buffers
 	private colormapBuffer!: GPUBuffer;
@@ -40,6 +41,7 @@ export class GPUEngine {
 	// Staging buffer for readback
 	private byteCountsStagingBuffer!: GPUBuffer;
 	private soupStagingBuffer!: GPUBuffer;
+	private cellHashStagingBuffer!: GPUBuffer;
 
 	// Compute pipelines
 	private clearCollisionPipeline!: GPUComputePipeline;
@@ -49,6 +51,7 @@ export class GPUEngine {
 	private mutatePipeline!: GPUComputePipeline;
 	private countBytesPipeline!: GPUComputePipeline;
 	private clearByteCountsPipeline!: GPUComputePipeline;
+	private hashCellsPipeline!: GPUComputePipeline;
 
 	// Render pipeline
 	private renderPipeline!: GPURenderPipeline;
@@ -185,7 +188,11 @@ export class GPUEngine {
 		this.device = await adapter.requestDevice({
 			requiredLimits: {
 				maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-				maxBufferSize: adapter.limits.maxBufferSize
+				maxBufferSize: adapter.limits.maxBufferSize,
+				maxStorageBuffersPerShaderStage: Math.min(
+					10,
+					adapter.limits.maxStorageBuffersPerShaderStage
+				)
 			}
 		});
 
@@ -264,6 +271,12 @@ export class GPUEngine {
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
+		// Cell hashes: one u32 per cell for species tracking
+		this.cellHashBuffer = dev.createBuffer({
+			size: this.cellCount * 4,
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+		});
+
 		// Staging buffers for readback
 		this.byteCountsStagingBuffer = dev.createBuffer({
 			size: 256 * 4,
@@ -273,6 +286,11 @@ export class GPUEngine {
 		const soupStagingWords = this.cellCount * this.wordsPerCell;
 		this.soupStagingBuffer = dev.createBuffer({
 			size: soupStagingWords * 4,
+			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+		});
+
+		this.cellHashStagingBuffer = dev.createBuffer({
+			size: this.cellCount * 4,
 			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
 		});
 
@@ -314,7 +332,8 @@ export class GPUEngine {
 				},
 				{ binding: 6, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 7, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-				{ binding: 8, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
+				{ binding: 8, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 9, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
 			]
 		});
 
@@ -333,7 +352,8 @@ export class GPUEngine {
 				{ binding: 5, resource: { buffer: this.paramsBuffer } },
 				{ binding: 6, resource: { buffer: this.pairActiveBuffer } },
 				{ binding: 7, resource: { buffer: this.byteCountsBuffer } },
-				{ binding: 8, resource: { buffer: this.collisionMaskBuffer } }
+				{ binding: 8, resource: { buffer: this.collisionMaskBuffer } },
+				{ binding: 9, resource: { buffer: this.cellHashBuffer } }
 			]
 		});
 
@@ -350,6 +370,7 @@ export class GPUEngine {
 		this.mutatePipeline = makeComputePipeline('mutate_soup');
 		this.countBytesPipeline = makeComputePipeline('count_bytes');
 		this.clearByteCountsPipeline = makeComputePipeline('clear_byte_counts');
+		this.hashCellsPipeline = makeComputePipeline('hash_cells');
 
 		// Render pipeline
 		const renderModule = dev.createShaderModule({ code: createRenderShader(this.gridType) });
@@ -606,6 +627,45 @@ export class GPUEngine {
 
 		this.byteCounts.set(data);
 		return data;
+	}
+
+	// Read cell hashes from GPU for species tracking
+	private _hashMapPending = false;
+	async readCellHashes(): Promise<Uint32Array> {
+		if (this._hashMapPending) return new Uint32Array(0);
+		this._hashMapPending = true;
+		try {
+			const encoder = this.device.createCommandEncoder();
+
+			// Dispatch hash_cells
+			const pass = encoder.beginComputePass();
+			pass.setPipeline(this.hashCellsPipeline);
+			pass.setBindGroup(0, this.simBindGroup);
+			pass.dispatchWorkgroups(Math.ceil(this.cellCount / 256));
+			pass.end();
+
+			// Copy to staging
+			encoder.copyBufferToBuffer(
+				this.cellHashBuffer,
+				0,
+				this.cellHashStagingBuffer,
+				0,
+				this.cellCount * 4
+			);
+			this.device.queue.submit([encoder.finish()]);
+
+			await this.cellHashStagingBuffer.mapAsync(GPUMapMode.READ);
+			const data = new Uint32Array(this.cellHashStagingBuffer.getMappedRange().slice(0));
+			this.cellHashStagingBuffer.unmap();
+			return data;
+		} finally {
+			this._hashMapPending = false;
+		}
+	}
+
+	// Write soup data back to GPU (for checkpoint restore)
+	writeSoupData(data: Uint8Array): void {
+		this.device.queue.writeBuffer(this.soupBuffer, 0, data.buffer, data.byteOffset, data.byteLength);
 	}
 
 	// Read soup data from GPU for CPU-side trace/disassembly
@@ -881,5 +941,7 @@ export class GPUEngine {
 		this.traceImageBuffer?.destroy();
 		this.byteCountsStagingBuffer?.destroy();
 		this.soupStagingBuffer?.destroy();
+		this.cellHashBuffer?.destroy();
+		this.cellHashStagingBuffer?.destroy();
 	}
 }
