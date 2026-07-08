@@ -11,8 +11,27 @@
 
 import { Z80, type Hal } from 'z80-emulator';
 
+// z80-emulator has one known deviation from real hardware: it NOPs DD/FD-prefixed
+// opcodes that have no IX/IY form (a real Z80 — and superzazu, the paper's own
+// emulator — executes them as the base opcode). It announces every such NOP with
+// console.log("Unhandled opcode in DD/FD: XX"). We intercept that once so we can
+// (a) silence the spam and (b) flag any oracle run that relied on the quirk, so
+// the harness can separate genuine Zilion bugs from this reference-emulator wart.
+let ddQuirkFired = false;
+const _origConsoleLog = console.log.bind(console);
+console.log = (...args: unknown[]) => {
+	const m = args[0];
+	if (typeof m === 'string' && m.startsWith('Unhandled opcode in ')) {
+		ddQuirkFired = true;
+		return;
+	}
+	_origConsoleLog(...args);
+};
+
 export interface OracleResult {
 	mem: Uint8Array;
+	/** True if this run hit z80-emulator's DD/FD-NOP quirk (see above). */
+	ddQuirk: boolean;
 	a: number;
 	f: number;
 	b: number;
@@ -64,6 +83,7 @@ export function runOracle(input: Uint8Array, steps: number, pairLength = 32): Or
 	r.im = 0;
 	r.halted = 0;
 
+	ddQuirkFired = false;
 	for (let s = 0; s < steps; s++) {
 		if (r.halted) break;
 		z80.step();
@@ -71,6 +91,7 @@ export function runOracle(input: Uint8Array, steps: number, pairLength = 32): Or
 
 	return {
 		mem,
+		ddQuirk: ddQuirkFired,
 		a: r.a,
 		f: r.f,
 		b: r.b,
