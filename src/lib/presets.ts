@@ -101,28 +101,41 @@ function hasStorage(): boolean {
 	}
 }
 
-export function loadUserPresets(): Preset[] {
-	if (!hasStorage()) return [];
+function isValidPreset(p: unknown): p is Preset {
+	return (
+		!!p &&
+		typeof (p as Preset).id === 'string' &&
+		typeof (p as Preset).name === 'string' &&
+		typeof (p as Preset).values === 'object'
+	);
+}
+
+// Load the full preset list. On first run (no stored key) the built-ins are
+// seeded into storage so that, from then on, EVERY preset — built-in or user —
+// is a regular stored entry that can be renamed via overwrite or deleted, and
+// the change sticks across reloads. If the user has deleted all of them the
+// stored value is an empty array (not absent), so built-ins do not reappear.
+export function loadPresets(): Preset[] {
+	if (!hasStorage()) return [...BUILTIN_PRESETS];
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
-		if (!raw) return [];
+		if (raw === null) {
+			const seeded = [...BUILTIN_PRESETS];
+			savePresets(seeded);
+			return seeded;
+		}
 		const parsed = JSON.parse(raw);
-		if (!Array.isArray(parsed)) return [];
-		// Keep only well-formed entries; drop anything that isn't a preset.
-		return parsed.filter(
-			(p): p is Preset =>
-				p && typeof p.id === 'string' && typeof p.name === 'string' && typeof p.values === 'object'
-		);
+		if (!Array.isArray(parsed)) return [...BUILTIN_PRESETS];
+		return parsed.filter(isValidPreset);
 	} catch {
-		return [];
+		return [...BUILTIN_PRESETS];
 	}
 }
 
-export function saveUserPresets(presets: Preset[]): void {
+export function savePresets(presets: Preset[]): void {
 	if (!hasStorage()) return;
 	try {
-		const userOnly = presets.filter((p) => !p.builtin);
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(userOnly));
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
 	} catch {
 		// storage full or unavailable — non-fatal
 	}
