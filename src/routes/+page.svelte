@@ -15,6 +15,17 @@
 	import { untrack } from 'svelte';
 	import Mermaid from '$lib/components/Mermaid.svelte';
 	import { saveCheckpoint, loadCheckpoint, type CheckpointMetadata } from '$lib/checkpoint';
+	import {
+		type ApplyMode,
+		type SettingKey,
+		type SettingValues,
+		type Preset,
+		BUILTIN_PRESETS,
+		loadUserPresets,
+		saveUserPresets,
+		makePresetId,
+		valuesEqual
+	} from '$lib/presets';
 	import katex from 'katex';
 
 	let colormapName: ColormapName = $state('rainbow');
@@ -114,7 +125,6 @@
 		gridWidth * gridHeight * Math.ceil((gridType === 'hex' ? 19 : 16) / 4) * 4
 	);
 	const MAX_TRACKED = 10;
-	const MAX_TRACKED_RAW = 30; // fetch more so we can fill 10 slots after filtering suppressed
 	const MAX_HISTORY = 300;
 
 	// Efficient ring-buffer chart storage: Float32Array(256) per point for O(1) byte lookup
@@ -418,9 +428,13 @@
 			}
 			entries.sort((a, b) => b.count - a.count);
 
-			// Update tracked bytes — fetch extra so we can fill slots after collapsing suppressed
-			const topN = entries.slice(0, MAX_TRACKED_RAW);
-			trackedBytes = topN.map((e) => ({ byte: e.byte, mnemonic: e.mnemonic }));
+			// Track every non-zero byte, ranked by frequency. displayTiles filters
+			// out suppressed opcodes and shows the top non-suppressed ones, so we
+			// must keep the full ranked list here — otherwise broad suppression
+			// (e.g. "LD" matches 100+ opcodes) can consume every tracked slot and
+			// leave the top-10 empty. Keeping all non-zero bytes lets the freed
+			// slots refill with the next-most-common non-suppressed opcodes.
+			trackedBytes = entries.map((e) => ({ byte: e.byte, mnemonic: e.mnemonic }));
 
 			// Only record chart history when chart is visible
 			if (showInfoChart) {
@@ -1098,6 +1112,146 @@
 		suppressPatterns = [];
 	}
 
+	// ── Presets ────────────────────────────────────────────────────────────
+	// Declarative schema: one entry per tunable setting. `mode` says how
+	// disruptive a change is (see presets.ts). `get`/`set` wire the setting to
+	// this component's state + engine. To add a new tunable setting later, add
+	// one row here and one key to SETTING_KEYS in presets.ts — nothing else.
+	interface SettingDef {
+		key: SettingKey;
+		mode: ApplyMode;
+		get: () => unknown;
+		set: (v: unknown) => void;
+	}
+	const SETTINGS: SettingDef[] = [
+		{ key: 'gridType', mode: 'grid', get: () => gridType, set: (v) => (gridType = v as GridType) },
+		{ key: 'gridWidth', mode: 'grid', get: () => gridWidth, set: (v) => (gridWidth = v as number) },
+		{ key: 'gridHeight', mode: 'grid', get: () => gridHeight, set: (v) => (gridHeight = v as number) },
+		{ key: 'seed', mode: 'reset', get: () => seed, set: (v) => (seed = v as number) },
+		{
+			key: 'noiseExp',
+			mode: 'live',
+			get: () => noiseExp,
+			set: (v) => {
+				noiseExp = v as number;
+				if (engine) engine.noiseExp = noiseExp;
+			}
+		},
+		{
+			key: 'pairCount',
+			mode: 'live',
+			get: () => pairCount,
+			set: (v) => {
+				pairCount = v as number;
+				if (engine) engine.pairCount = pairCount;
+			}
+		},
+		{
+			key: 'z80Steps',
+			mode: 'live',
+			get: () => z80Steps,
+			set: (v) => {
+				z80Steps = v as number;
+				if (engine) engine.z80Steps = z80Steps;
+			}
+		},
+		{
+			key: 'suppressPatterns',
+			mode: 'live',
+			get: () => [...suppressPatterns],
+			// suppressedOpcodes (derived) -> $effect pushes the mask to the engine
+			set: (v) => (suppressPatterns = [...((v as string[]) ?? [])])
+		},
+		{
+			key: 'colormapName',
+			mode: 'live',
+			get: () => colormapName,
+			set: (v) => handleColormapChange(v as ColormapName)
+		},
+		{ key: 'brightness', mode: 'live', get: () => brightness, set: (v) => (brightness = v as number) },
+		{ key: 'contrast', mode: 'live', get: () => contrast, set: (v) => (contrast = v as number) },
+		{ key: 'saturation', mode: 'live', get: () => saturation, set: (v) => (saturation = v as number) },
+		{
+			key: 'showGridLines',
+			mode: 'live',
+			get: () => showGridLines,
+			set: (v) => (showGridLines = v as boolean)
+		},
+		{ key: 'simpleView', mode: 'live', get: () => simpleView, set: (v) => (simpleView = v as boolean) }
+	];
+
+	let presets = $state<Preset[]>([...BUILTIN_PRESETS, ...loadUserPresets()]);
+	let newPresetName = $state('');
+	let showPresetSave = $state(false);
+
+	function captureSettings(): SettingValues {
+		const values: SettingValues = {};
+		for (const def of SETTINGS) values[def.key] = def.get();
+		return values;
+	}
+
+	// Which stored preset (if any) exactly matches the current settings.
+	let activePresetId = $derived.by(() => {
+		// Re-read current values reactively.
+		const current: SettingValues = {};
+		for (const def of SETTINGS) current[def.key] = def.get();
+		for (const p of presets) {
+			let match = true;
+			for (const def of SETTINGS) {
+				if (!(def.key in p.values)) continue; // partial presets only constrain the keys they carry
+				if (!valuesEqual(current[def.key], p.values[def.key])) {
+					match = false;
+					break;
+				}
+			}
+			if (match) return p.id;
+		}
+		return null;
+	});
+
+	function applyPreset(preset: Preset) {
+		// Apply each changed setting, tracking the most disruptive action needed.
+		let disruption: ApplyMode | 'none' = 'none';
+		const rank: Record<ApplyMode | 'none', number> = { none: 0, live: 0, reset: 1, grid: 2 };
+		for (const def of SETTINGS) {
+			if (!(def.key in preset.values)) continue;
+			const nextVal = preset.values[def.key];
+			if (valuesEqual(def.get(), nextVal)) continue;
+			def.set(nextVal);
+			if (rank[def.mode] > rank[disruption]) disruption = def.mode;
+		}
+		// Perform the single disruptive action, if any. Live-only changes leave
+		// the running simulation untouched — it steers, it does not restart.
+		if (disruption === 'grid') applyGridConfig();
+		else if (disruption === 'reset') handleReset();
+	}
+
+	function saveCurrentAsPreset(name: string) {
+		const trimmed = name.trim();
+		if (!trimmed) return;
+		const existing = presets.find((p) => !p.builtin && p.name === trimmed);
+		if (existing) {
+			// Overwrite a user preset of the same name.
+			existing.values = captureSettings();
+			presets = [...presets];
+		} else {
+			const preset: Preset = {
+				id: makePresetId(presets),
+				name: trimmed,
+				values: captureSettings()
+			};
+			presets = [...presets, preset];
+		}
+		saveUserPresets(presets);
+		newPresetName = '';
+		showPresetSave = false;
+	}
+
+	function deletePreset(id: string) {
+		presets = presets.filter((p) => p.id !== id);
+		saveUserPresets(presets);
+	}
+
 	// Sync derived suppressedOpcodes to the GPU engine
 	$effect(() => {
 		if (!engine) return;
@@ -1132,28 +1286,29 @@
 	}
 	let displayTiles = $derived.by(() => {
 		const tiles: DisplayTile[] = [];
-		let suppressedCount = 0;
 		const hasSuppression = suppressedOpcodes.size > 0;
+		// Reserve one slot for the collapsed "suppressed" card when suppression
+		// is active, so the ranked non-suppressed opcodes always fill the rest.
+		const byteLimit = hasSuppression ? MAX_TRACKED - 1 : MAX_TRACKED;
+		let suppressedInTop = 0;
 
 		for (const tb of trackedBytes) {
 			if (hasSuppression && suppressedOpcodes.has(tb.byte)) {
-				suppressedCount++;
-			} else {
-				if (tiles.length < (hasSuppression && suppressedCount > 0 ? MAX_TRACKED - 1 : MAX_TRACKED)) {
-					tiles.push({ type: 'byte', byte: tb.byte, mnemonic: tb.mnemonic, count: 0 });
-				}
+				suppressedInTop++;
+				continue;
+			}
+			if (tiles.length < byteLimit) {
+				tiles.push({ type: 'byte', byte: tb.byte, mnemonic: tb.mnemonic, count: 0 });
 			}
 		}
 
-		// If there are suppressed bytes, insert the collapsed card at the end
-		if (suppressedCount > 0) {
-			// Make room if we filled all slots
-			while (tiles.length >= MAX_TRACKED) tiles.pop();
+		// Append the collapsed card summarizing suppressed opcodes present in the soup.
+		if (hasSuppression && suppressedInTop > 0) {
 			tiles.push({
 				type: 'suppressed',
 				byte: -1,
 				mnemonic: `⊘ ${suppressedOpcodes.size}`,
-				count: suppressedCount
+				count: suppressedInTop
 			});
 		}
 
@@ -1720,16 +1875,19 @@
 				class="info-tab"
 				class:active={infoTab === 'opcodes'}
 				onclick={() => (infoTab = 'opcodes')}
+				title="Opcode frequency — most common byte values (Z80 instructions) over time"
 			>Opcodes</button>
 			<button
 				class="info-tab"
 				class:active={infoTab === 'species'}
 				onclick={() => (infoTab = 'species')}
+				title="Species — distinct cell genomes (by content hash) and their populations"
 			>Species</button>
 			<button
 				class="info-tab"
 				class:active={infoTab === 'diversity'}
 				onclick={() => (infoTab = 'diversity')}
+				title="Diversity — richness and Shannon/Simpson indices of the species distribution"
 			>Diversity</button>
 		</div>
 	{/if}
@@ -2110,6 +2268,130 @@
 					<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
 				</svg>
 			</button>
+		</div>
+
+		<!-- Presets -->
+		<div class="param">
+			<div class="param-head">
+				<label class="param-label"
+					><svg
+						width="12"
+						height="12"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="var(--accent)"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z" /></svg
+					> Presets</label
+				>
+				<span class="param-info-wrap" class:show-tip={openTip === 'presets'}>
+					<button
+						class="param-info"
+						onmouseenter={() => {
+							openTip = 'presets';
+						}}
+						onmouseleave={() => {
+							openTip = null;
+						}}
+						onclick={() => {
+							openTip = openTip === 'presets' ? null : 'presets';
+						}}>?</button
+					>
+					<span class="param-tip"
+						>Save and switch between full setting configurations. Applying a preset that only changes
+						live parameters (mutation, pairs, steps, suppression, appearance) steers the running
+						simulation without resetting it. Grid or seed changes reset the soup.</span
+					>
+				</span>
+				<button
+					class="preset-save-toggle"
+					class:active={showPresetSave}
+					onclick={() => {
+						showPresetSave = !showPresetSave;
+						if (showPresetSave) newPresetName = '';
+					}}
+					title="Save current settings as a preset"
+				>
+					<svg
+						width="11"
+						height="11"
+						viewBox="0 0 12 12"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.4"
+					>
+						<path d="M6 2v8M2 6h8" stroke-linecap="round" />
+					</svg>
+				</button>
+			</div>
+			{#if showPresetSave}
+				<div class="preset-save-row">
+					<input
+						class="preset-name-input"
+						type="text"
+						placeholder="Preset name…"
+						bind:value={newPresetName}
+						onkeydown={(e) => {
+							if (e.key === 'Enter' && newPresetName.trim()) {
+								saveCurrentAsPreset(newPresetName);
+							} else if (e.key === 'Escape') {
+								showPresetSave = false;
+								newPresetName = '';
+							}
+						}}
+					/>
+					<button
+						class="preset-name-save"
+						disabled={!newPresetName.trim()}
+						onclick={() => saveCurrentAsPreset(newPresetName)}
+						title="Save preset">Save</button
+					>
+				</div>
+			{/if}
+			<div class="preset-chips">
+				{#each presets as preset (preset.id)}
+					<div class="preset-chip-wrap">
+						<button
+							class="preset-chip"
+							class:active={activePresetId === preset.id}
+							class:builtin={preset.builtin}
+							onclick={() => applyPreset(preset)}
+							title={preset.builtin
+								? `Built-in preset: ${preset.name}`
+								: `Apply preset: ${preset.name}`}
+						>
+							{#if activePresetId === preset.id}
+								<svg
+									class="preset-chip-check"
+									width="9"
+									height="9"
+									viewBox="0 0 12 12"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
+								>
+							{/if}
+							{preset.name}
+						</button>
+						{#if !preset.builtin}
+							<button
+								class="preset-chip-del"
+								onclick={() => deletePreset(preset.id)}
+								title="Delete preset: {preset.name}"
+								aria-label="Delete preset {preset.name}"
+							>
+								<svg width="7" height="7" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.5">
+									<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+								</svg>
+							</button>
+						{/if}
+					</div>
+				{/each}
+			</div>
 		</div>
 
 		<div class="param">
@@ -3941,6 +4223,7 @@ graph TD
 		z-index: 40;
 		display: flex;
 		align-items: center;
+		box-sizing: border-box;
 		gap: 2px;
 		padding: 3px;
 		background: var(--bg-panel);
@@ -3950,13 +4233,21 @@ graph TD
 		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 		transition:
 			border-radius 0.2s ease,
+			width 0.2s ease,
+			height 0.2s ease,
 			gap 0.2s ease,
 			padding 0.2s ease;
 	}
 	.toolbar.collapsed {
-		border-radius: 50%;
+		/* Fixed square + centered content guarantees a perfect circle regardless
+		   of the (zero-width) hidden button row still in the flex flow. */
+		width: 40px;
+		height: 40px;
+		padding: 0;
 		gap: 0;
-		padding: 3px;
+		justify-content: center;
+		overflow: hidden;
+		border-radius: 50%;
 		border-color: var(--border-muted);
 	}
 	.toolbar-buttons {
@@ -4827,6 +5118,142 @@ graph TD
 		font-size: 9px;
 		color: var(--text-muted);
 		margin-left: 2px;
+	}
+
+	/* Presets */
+	.preset-save-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		padding: 0;
+		margin-left: auto;
+		background: none;
+		border: none;
+		border-radius: 4px;
+		color: var(--text-muted);
+		cursor: pointer;
+		transition: all 0.12s;
+	}
+	.preset-save-toggle:hover {
+		color: var(--accent);
+		background: var(--bg-hover);
+	}
+	.preset-save-toggle.active {
+		color: var(--accent);
+		transform: rotate(45deg);
+	}
+	.preset-save-row {
+		display: flex;
+		gap: 4px;
+		margin-top: 6px;
+	}
+	.preset-name-input {
+		flex: 1;
+		min-width: 0;
+		box-sizing: border-box;
+		padding: 0 7px;
+		height: 22px;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 4px;
+		color: var(--text-primary);
+		font-size: 10px;
+		outline: none;
+		transition: border-color 0.15s;
+	}
+	.preset-name-input::placeholder {
+		color: var(--text-subtle);
+		font-size: 9.5px;
+		opacity: 1;
+	}
+	.preset-name-input:focus {
+		border-color: var(--accent);
+	}
+	.preset-name-save {
+		padding: 0 10px;
+		height: 22px;
+		font-size: 10px;
+		color: var(--accent);
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid var(--border-muted);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.12s;
+	}
+	.preset-name-save:hover:not(:disabled) {
+		background: var(--bg-hover);
+		border-color: var(--accent);
+	}
+	.preset-name-save:disabled {
+		opacity: 0.4;
+		cursor: default;
+	}
+	.preset-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-top: 6px;
+	}
+	.preset-chip-wrap {
+		display: inline-flex;
+		align-items: stretch;
+	}
+	.preset-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
+		padding: 3px 8px;
+		font-size: 9.5px;
+		font-weight: 600;
+		color: var(--text-secondary);
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid var(--border-subtle);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.12s;
+		line-height: 1.4;
+		white-space: nowrap;
+	}
+	.preset-chip:hover {
+		background: var(--bg-hover);
+		border-color: var(--border-muted);
+		color: var(--text-primary);
+	}
+	.preset-chip.builtin {
+		font-style: italic;
+	}
+	.preset-chip.active {
+		color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 14%, transparent);
+		border-color: var(--accent);
+	}
+	.preset-chip-check {
+		flex-shrink: 0;
+	}
+	.preset-chip-wrap:has(.preset-chip-del) .preset-chip {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		border-right: none;
+	}
+	.preset-chip-del {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 5px;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid var(--border-subtle);
+		border-top-right-radius: 4px;
+		border-bottom-right-radius: 4px;
+		color: var(--text-subtle);
+		cursor: pointer;
+		transition: all 0.12s;
+	}
+	.preset-chip-del:hover {
+		background: rgba(220, 80, 60, 0.25);
+		border-color: rgba(220, 80, 60, 0.5);
+		color: var(--text-primary);
 	}
 
 	/* Colormap selector */
