@@ -24,7 +24,7 @@ export class Z80 {
 	l2 = 0;
 
 	// Special registers
-	sp = 0;
+	sp = 0xffff; // real Z80 resets SP to 0xFFFF (matches GPU shader + superzazu reference)
 	pc = 0;
 	ix = 0;
 	iy = 0;
@@ -52,7 +52,7 @@ export class Z80 {
 	reset(): void {
 		this.a = this.f = this.b = this.c = this.d = this.e = this.h = this.l = 0;
 		this.a2 = this.f2 = this.b2 = this.c2 = this.d2 = this.e2 = this.h2 = this.l2 = 0;
-		this.sp = 0;
+		this.sp = 0xffff;
 		this.pc = 0;
 		this.ix = this.iy = 0;
 		this.i = this.r = 0;
@@ -625,8 +625,9 @@ export class Z80 {
 						this.fetch();
 						break; // OUT (n), A - consume byte, NOP
 					case 3:
-						this.a = this.fetch() & 0xff;
-						break; // IN A, (n) - read port byte as immediate, store in A (simplified)
+						this.fetch();
+						this.a = 0;
+						break; // IN A,(n) - no I/O device, reads 0 (matches GPU shader + zff inPort→0)
 					case 4: {
 						// EX (SP), HL
 						const lo = this.readByte(this.sp);
@@ -1037,15 +1038,18 @@ export class Z80 {
 		const result = (this.a - val) & 0xff;
 		this.hl = (this.hl + 1) & 0xffff;
 		this.bc = (this.bc - 1) & 0xffff;
-		const n = (result - ((this.a ^ val ^ result) & Z80.HF ? 1 : 0)) & 0xff;
+		const hf = (this.a ^ val ^ result) & Z80.HF;
+		// Undocumented F3/F5 come from n = A-(HL)-HF only (not the raw result).
+		const n = (result - (hf ? 1 : 0)) & 0xff;
 		this.f =
 			(this.f & Z80.CF) |
-			this.szFlags(result) |
+			(result & Z80.SF) |
+			(result === 0 ? Z80.ZF : 0) |
 			Z80.NF |
-			((this.a ^ val ^ result) & Z80.HF) |
+			hf |
 			(this.bc !== 0 ? Z80.PF : 0) |
 			(n & Z80.F3) |
-			((n & 0x02) !== 0 ? Z80.F5 : 0);
+			((n & 0x02) << 4);
 	}
 
 	// Block compare: CPD
@@ -1054,15 +1058,17 @@ export class Z80 {
 		const result = (this.a - val) & 0xff;
 		this.hl = (this.hl - 1) & 0xffff;
 		this.bc = (this.bc - 1) & 0xffff;
-		const n = (result - ((this.a ^ val ^ result) & Z80.HF ? 1 : 0)) & 0xff;
+		const hf = (this.a ^ val ^ result) & Z80.HF;
+		const n = (result - (hf ? 1 : 0)) & 0xff;
 		this.f =
 			(this.f & Z80.CF) |
-			this.szFlags(result) |
+			(result & Z80.SF) |
+			(result === 0 ? Z80.ZF : 0) |
 			Z80.NF |
-			((this.a ^ val ^ result) & Z80.HF) |
+			hf |
 			(this.bc !== 0 ? Z80.PF : 0) |
 			(n & Z80.F3) |
-			((n & 0x02) !== 0 ? Z80.F5 : 0);
+			((n & 0x02) << 4);
 	}
 
 	// Block compare: CPIR
@@ -1085,8 +1091,8 @@ export class Z80 {
 	private executeDD(): void {
 		const op = this.fetch();
 		if (op === 0xcb) {
-			// DD CB: IX bit operations - skip displacement, exec CB
-			this.fetch(); // displacement (skip)
+			// DD CB: the shader skips the DD prefix and runs CB as a plain CB op
+			// (no displacement byte). Match that so the CPU trace == the GPU sim.
 			this.executeCB();
 		} else if (op === 0xdd || op === 0xfd || op === 0xed) {
 			// Nested prefix - re-dispatch
@@ -1101,7 +1107,7 @@ export class Z80 {
 	private executeFD(): void {
 		const op = this.fetch();
 		if (op === 0xcb) {
-			this.fetch(); // displacement
+			// FD CB: match the shader (skip prefix, plain CB op, no displacement).
 			this.executeCB();
 		} else if (op === 0xdd || op === 0xfd || op === 0xed) {
 			this.executeMain(op);

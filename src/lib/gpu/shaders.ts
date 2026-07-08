@@ -7,15 +7,19 @@ import type { GridType } from '$lib/sim/constants';
 // ============================================================
 
 // Neighbor selection code block for square grid (4 cardinal neighbors)
+// Neighbor selection for square grid: 4 von Neumann neighbors. At an edge the
+// direction is forced INWARD (reflected), matching the zff reference — so edge
+// cells always interact with a valid distinct neighbor instead of pairing with
+// themselves and being skipped. (zff/wasm/main.c prepare_batch.)
 const SQUARE_NEIGHBOR_SELECTION = /* wgsl */ `
     let dir = rand_bounded(4u);
     var nx = x;
     var ny = y;
     switch(dir) {
-        case 0u: { nx = min(x + 1u, w - 1u); }
-        case 1u: { ny = min(y + 1u, h - 1u); }
-        case 2u: { if (x > 0u) { nx = x - 1u; } }
-        case 3u: { if (y > 0u) { ny = y - 1u; } }
+        case 0u: { if (x + 1u < w) { nx = x + 1u; } else { nx = x - 1u; } }  // right, reflect at edge
+        case 1u: { if (y + 1u < h) { ny = y + 1u; } else { ny = y - 1u; } }  // down, reflect at edge
+        case 2u: { if (x > 0u) { nx = x - 1u; } else { nx = x + 1u; } }       // left, reflect at edge
+        case 3u: { if (y > 0u) { ny = y - 1u; } else { ny = y + 1u; } }       // up, reflect at edge
         default: {}
     }
     let j = ny * w + nx;
@@ -131,6 +135,16 @@ var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
 var<private> cpu_iff1: u32;
 var<private> cpu_iff2: u32;
+var<private> cpu_ix: u32;
+var<private> cpu_iy: u32;
+// Index-prefix state for the instruction currently executing:
+//   idx_mode: 0 = HL, 1 = IX, 2 = IY
+//   idx_disp: sign-extended displacement for (IX+d)/(IY+d)
+//   idx_uses_mem: 1 when this instruction dereferences (IX+d)/(IY+d), which
+//     means H/L operands are NOT substituted by IXH/IXL (real Z80 rule).
+var<private> idx_mode: u32;
+var<private> idx_disp: u32;
+var<private> idx_uses_mem: u32;
 
 // Pair memory: one byte per u32 element (max 38 for hex mode, 32 for square)
 var<private> mem: array<u32, 40>;
@@ -206,9 +220,15 @@ fn get_reg(idx: u32) -> u32 {
         case 1u: { return cpu_c; }
         case 2u: { return cpu_d; }
         case 3u: { return cpu_e; }
-        case 4u: { return cpu_h; }
-        case 5u: { return cpu_l; }
-        case 6u: { return mem_read(get_hl()); }
+        case 4u: {
+            if (idx_mode != 0u && idx_uses_mem == 0u) { return (idx_reg16() >> 8u) & 0xffu; } // IXH/IYH
+            return cpu_h;
+        }
+        case 5u: {
+            if (idx_mode != 0u && idx_uses_mem == 0u) { return idx_reg16() & 0xffu; } // IXL/IYL
+            return cpu_l;
+        }
+        case 6u: { return mem_read(idx_addr()); }
         case 7u: { return cpu_a; }
         default: { return 0u; }
     }
@@ -221,9 +241,15 @@ fn set_reg(idx: u32, val: u32) {
         case 1u: { cpu_c = v; }
         case 2u: { cpu_d = v; }
         case 3u: { cpu_e = v; }
-        case 4u: { cpu_h = v; }
-        case 5u: { cpu_l = v; }
-        case 6u: { mem_write(get_hl(), v); }
+        case 4u: {
+            if (idx_mode != 0u && idx_uses_mem == 0u) { set_idx_reg16((idx_reg16() & 0x00ffu) | (v << 8u)); }
+            else { cpu_h = v; }
+        }
+        case 5u: {
+            if (idx_mode != 0u && idx_uses_mem == 0u) { set_idx_reg16((idx_reg16() & 0xff00u) | v); }
+            else { cpu_l = v; }
+        }
+        case 6u: { mem_write(idx_addr(), v); }
         case 7u: { cpu_a = v; }
         default: {}
     }
@@ -233,7 +259,7 @@ fn get_reg16(idx: u32) -> u32 {
     switch(idx) {
         case 0u: { return get_bc(); }
         case 1u: { return get_de(); }
-        case 2u: { return get_hl(); }
+        case 2u: { return idx_reg16(); } // HL / IX / IY
         case 3u: { return cpu_sp; }
         default: { return 0u; }
     }
@@ -244,7 +270,7 @@ fn set_reg16(idx: u32, val: u32) {
     switch(idx) {
         case 0u: { set_bc(v); }
         case 1u: { set_de(v); }
-        case 2u: { set_hl(v); }
+        case 2u: { set_idx_reg16(v); } // HL / IX / IY
         case 3u: { cpu_sp = v; }
         default: {}
     }
@@ -257,6 +283,58 @@ fn get_reg16_af(idx: u32) -> u32 {
 
 fn set_reg16_af(idx: u32, val: u32) {
     if (idx == 3u) { set_af(val); } else { set_reg16(idx, val); }
+}
+
+// === Index register (IX/IY) helpers ===
+// The 16-bit register the current prefix maps HL to (HL itself when no prefix).
+fn idx_reg16() -> u32 {
+    if (idx_mode == 1u) { return cpu_ix; }
+    if (idx_mode == 2u) { return cpu_iy; }
+    return get_hl();
+}
+fn set_idx_reg16(v: u32) {
+    if (idx_mode == 1u) { cpu_ix = v & 0xffffu; }
+    else if (idx_mode == 2u) { cpu_iy = v & 0xffffu; }
+    else { set_hl(v); }
+}
+// Address used for (HL) / (IX+d) / (IY+d).
+fn idx_addr() -> u32 {
+    if (idx_mode != 0u) { return (idx_reg16() + idx_disp) & 0xffffu; }
+    return get_hl();
+}
+// Sign-extend a displacement byte to 16 bits (two's complement).
+fn signext(b: u32) -> u32 {
+    if (b >= 0x80u) { return b | 0xff00u; }
+    return b;
+}
+// Does this main opcode dereference (HL)? (Determines displacement fetch and
+// whether H/L operands are IXH/IXL or real H/L under a DD/FD prefix.)
+fn op_uses_hl_mem(op: u32) -> bool {
+    let x = (op >> 6u) & 3u;
+    let y = (op >> 3u) & 7u;
+    let z = op & 7u;
+    if (x == 1u) { return (y == 6u || z == 6u) && !(y == 6u && z == 6u); } // LD r,(HL)/(HL),r (not HALT)
+    if (x == 2u) { return z == 6u; }                                        // ALU A,(HL)
+    if (x == 0u) {
+        if (z == 4u || z == 5u || z == 6u) { return y == 6u; }              // INC/DEC (HL), LD (HL),n
+        return false;
+    }
+    return false;
+}
+// Write a REAL 8-bit register (no IX/IY substitution) — used by the
+// undocumented DDCB/FDCB register-copy side effect.
+fn set_reg_raw(idx: u32, val: u32) {
+    let v = val & 0xffu;
+    switch(idx) {
+        case 0u: { cpu_b = v; }
+        case 1u: { cpu_c = v; }
+        case 2u: { cpu_d = v; }
+        case 3u: { cpu_e = v; }
+        case 4u: { cpu_h = v; }
+        case 5u: { cpu_l = v; }
+        case 7u: { cpu_a = v; }
+        default: {}
+    }
 }
 
 // === Flag Helpers ===
@@ -364,13 +442,13 @@ fn z80_dec8(val: u32) -> u32 {
 }
 
 fn z80_add_hl(val: u32) {
-    let hl = get_hl();
+    let hl = idx_reg16(); // ADD HL,rp / ADD IX,rp / ADD IY,rp
     let r = hl + val;
     cpu_f = (cpu_f & (SFl | ZF | PF)) |
             select(0u, CF, r > 0xffffu) |
             select(0u, HF, ((hl ^ val ^ r) & 0x1000u) != 0u) |
             ((r >> 8u) & (F3 | F5));
-    set_hl(r & 0xffffu);
+    set_idx_reg16(r & 0xffffu);
 }
 
 // === Rotate/Shift for accumulator ===
@@ -460,6 +538,42 @@ fn z80_exec_cb() {
     }
 }
 
+// DDCB / FDCB: operates on (IX+d)/(IY+d). The displacement (idx_disp) has
+// already been fetched. For rot/shift/RES/SET the result is written to memory
+// AND (undocumented) copied to the real register in the low 3 bits unless it is
+// 6. For BIT, the undocumented F3/F5 come from the high byte of the address.
+fn z80_exec_idxcb(cbop: u32) {
+    let addr = (idx_reg16() + idx_disp) & 0xffffu;
+    let cx = (cbop >> 6u) & 3u;
+    let cy = (cbop >> 3u) & 7u;
+    let cz = cbop & 7u;
+    let val = mem_read(addr);
+    switch(cx) {
+        case 0u: {
+            let r = z80_cb_rot(cy, val);
+            mem_write(addr, r);
+            if (cz != 6u) { set_reg_raw(cz, r); }
+        }
+        case 1u: { // BIT n,(IX+d)
+            cpu_f = (cpu_f & CF) | HF |
+                    select(0u, ZF | PF, (val & (1u << cy)) == 0u) |
+                    select(0u, SFl, cy == 7u && (val & 0x80u) != 0u) |
+                    ((addr >> 8u) & (F3 | F5));
+        }
+        case 2u: {
+            let r = val & ~(1u << cy);
+            mem_write(addr, r);
+            if (cz != 6u) { set_reg_raw(cz, r); }
+        }
+        case 3u: {
+            let r = val | (1u << cy);
+            mem_write(addr, r);
+            if (cz != 6u) { set_reg_raw(cz, r); }
+        }
+        default: {}
+    }
+}
+
 // === Block Transfer (ED prefix) ===
 fn z80_ldi() {
     let val = mem_read(get_hl());
@@ -488,21 +602,26 @@ fn z80_ldd() {
 fn z80_cpi() {
     let val = mem_read(get_hl());
     let r = (cpu_a - val) & 0xffu;
+    let hf = (cpu_a ^ val ^ r) & HF;
+    // Undocumented F3/F5 come from n = A-(HL)-HF (bit 3 -> F3, bit 1 -> F5).
+    let n = (r - select(0u, 1u, hf != 0u)) & 0xffu;
     set_hl((get_hl() + 1u) & 0xffffu);
     set_bc((get_bc() - 1u) & 0xffffu);
-    cpu_f = (cpu_f & CF) | sz_flags(r) | NF |
-            ((cpu_a ^ val ^ r) & HF) |
-            select(0u, PF, get_bc() != 0u);
+    cpu_f = (cpu_f & CF) | (r & SFl) | select(0u, ZF, r == 0u) | NF |
+            hf | select(0u, PF, get_bc() != 0u) |
+            (n & F3) | ((n & 0x02u) << 4u);
 }
 
 fn z80_cpd() {
     let val = mem_read(get_hl());
     let r = (cpu_a - val) & 0xffu;
+    let hf = (cpu_a ^ val ^ r) & HF;
+    let n = (r - select(0u, 1u, hf != 0u)) & 0xffu;
     set_hl((get_hl() - 1u) & 0xffffu);
     set_bc((get_bc() - 1u) & 0xffffu);
-    cpu_f = (cpu_f & CF) | sz_flags(r) | NF |
-            ((cpu_a ^ val ^ r) & HF) |
-            select(0u, PF, get_bc() != 0u);
+    cpu_f = (cpu_f & CF) | (r & SFl) | select(0u, ZF, r == 0u) | NF |
+            hf | select(0u, PF, get_bc() != 0u) |
+            (n & F3) | ((n & 0x02u) << 4u);
 }
 
 // === ED Prefix ===
@@ -528,8 +647,10 @@ fn z80_exec_ed() {
         // LD I,A / LD R,A / LD A,I / LD A,R
         case 0x47u: {} // LD I,A - no I register in our sim
         case 0x4fu: {} // LD R,A
-        case 0x57u: { cpu_f = (cpu_f & CF) | sz_flags(cpu_a); } // LD A,I simplified
-        case 0x5fu: { cpu_f = (cpu_f & CF) | sz_flags(cpu_a); } // LD A,R simplified
+        // LD A,I / LD A,R: I and R are not modelled (treated as 0), so A becomes 0.
+        // Flags: S/Z from the loaded value, PF = IFF2, N/H reset, C preserved.
+        case 0x57u: { cpu_a = 0u; cpu_f = (cpu_f & CF) | sz_flags(0u) | select(0u, PF, cpu_iff2 != 0u); }
+        case 0x5fu: { cpu_a = 0u; cpu_f = (cpu_f & CF) | sz_flags(0u) | select(0u, PF, cpu_iff2 != 0u); }
         // LD (nn), rr
         case 0x43u, 0x53u, 0x63u, 0x73u: {
             let nn = z80_fetch_word();
@@ -629,7 +750,7 @@ fn z80_exec_x0(y: u32, z: u32, p: u32, q: u32) {
                 switch(p) {
                     case 0u: { mem_write(get_bc(), cpu_a); }
                     case 1u: { mem_write(get_de(), cpu_a); }
-                    case 2u: { let nn = z80_fetch_word(); mem_write(nn, cpu_l); mem_write((nn+1u) & 0xffffu, cpu_h); }
+                    case 2u: { let nn = z80_fetch_word(); let hl = idx_reg16(); mem_write(nn, hl & 0xffu); mem_write((nn+1u) & 0xffffu, (hl >> 8u) & 0xffu); }
                     case 3u: { mem_write(z80_fetch_word(), cpu_a); }
                     default: {}
                 }
@@ -637,7 +758,7 @@ fn z80_exec_x0(y: u32, z: u32, p: u32, q: u32) {
                 switch(p) {
                     case 0u: { cpu_a = mem_read(get_bc()); }
                     case 1u: { cpu_a = mem_read(get_de()); }
-                    case 2u: { let nn = z80_fetch_word(); cpu_l = mem_read(nn); cpu_h = mem_read((nn+1u) & 0xffffu); }
+                    case 2u: { let nn = z80_fetch_word(); let lo = mem_read(nn); let hi = mem_read((nn+1u) & 0xffffu); set_idx_reg16((hi << 8u) | lo); }
                     case 3u: { cpu_a = mem_read(z80_fetch_word()); }
                     default: {}
                 }
@@ -671,8 +792,8 @@ fn z80_exec_x3(y: u32, z: u32, p: u32, q: u32) {
                         t = cpu_h; cpu_h = cpu_h2; cpu_h2 = t;
                         t = cpu_l; cpu_l = cpu_l2; cpu_l2 = t;
                     }
-                    case 2u: { cpu_pc = get_hl(); }
-                    case 3u: { cpu_sp = get_hl(); }
+                    case 2u: { cpu_pc = idx_reg16(); } // JP (HL)/(IX)/(IY)
+                    case 3u: { cpu_sp = idx_reg16(); } // LD SP,HL/IX/IY
                     default: {}
                 }
             }
@@ -682,14 +803,15 @@ fn z80_exec_x3(y: u32, z: u32, p: u32, q: u32) {
             switch(y) {
                 case 0u: { cpu_pc = z80_fetch_word(); } // JP nn
                 case 1u: { z80_exec_cb(); }
-                case 2u: { z80_fetch(); } // OUT (n),A - consume, NOP
-                case 3u: { cpu_a = z80_fetch() & 0xffu; } // IN A,(n) simplified
-                case 4u: { // EX (SP),HL
+                case 2u: { z80_fetch(); } // OUT (n),A - no I/O device, discard (matches zff outPort no-op)
+                case 3u: { z80_fetch(); cpu_a = 0u; } // IN A,(n) - no I/O device, reads 0 (matches zff inPort→0)
+                case 4u: { // EX (SP),HL / EX (SP),IX / EX (SP),IY
                     let lo = mem_read(cpu_sp);
                     let hi = mem_read((cpu_sp + 1u) & 0xffffu);
-                    mem_write(cpu_sp, cpu_l);
-                    mem_write((cpu_sp + 1u) & 0xffffu, cpu_h);
-                    cpu_h = hi; cpu_l = lo;
+                    let hl = idx_reg16();
+                    mem_write(cpu_sp, hl & 0xffu);
+                    mem_write((cpu_sp + 1u) & 0xffffu, (hl >> 8u) & 0xffu);
+                    set_idx_reg16((hi << 8u) | lo);
                 }
                 case 5u: { // EX DE,HL
                     let td = cpu_d; let te = cpu_e;
@@ -757,15 +879,43 @@ fn is_opcode_suppressed(op: u32) -> bool {
 
 fn z80_step() {
     if (cpu_halted != 0u) { return; }
+    // Reset per-instruction index-prefix state.
+    idx_mode = 0u;
+    idx_uses_mem = 0u;
+    idx_disp = 0u;
+
     var op = z80_fetch();
-    // Handle DD/FD prefixes at top level to avoid recursion
-    // (WGSL forbids recursive calls). Simplified: skip prefix, treat IX/IY as HL.
-    for (var pfx = 0u; pfx < 4u; pfx++) {
-        if (op != 0xddu && op != 0xfdu) { break; }
-        op = z80_fetch();
+    // A DD/FD prefix selects IX/IY for the following opcode.
+    if (op == 0xddu || op == 0xfdu) {
+        idx_mode = select(2u, 1u, op == 0xddu);
+        let next = z80_fetch();
+        // A prefix immediately followed by another prefix or ED is a wasted M1:
+        // this step consumes just the prefix; back up so the next step restarts
+        // at the following byte (matches real Z80 timing and avoids an
+        // unbounded fetch loop on all-prefix programs).
+        if (next == 0xddu || next == 0xfdu || next == 0xedu) {
+            cpu_pc = (cpu_pc - 1u) & 0xffffu;
+            return;
+        }
+        op = next;
     }
-    // Suppressed opcodes are treated as NOP (already fetched, just skip execution)
+
+    // Suppressed opcodes are treated as NOP (already fetched, just skip execution).
     if (is_opcode_suppressed(op)) { return; }
+
+    if (idx_mode != 0u) {
+        if (op == 0xcbu) {
+            // DDCB/FDCB: displacement precedes the CB opcode.
+            idx_disp = signext(z80_fetch());
+            let cbop = z80_fetch();
+            z80_exec_idxcb(cbop);
+            return;
+        }
+        if (op_uses_hl_mem(op)) {
+            idx_uses_mem = 1u;
+            idx_disp = signext(z80_fetch());
+        }
+    }
     z80_execute(op);
 }
 
@@ -872,9 +1022,10 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
     // Reset CPU state
     cpu_a = 0u; cpu_f = 0u; cpu_b = 0u; cpu_c = 0u;
     cpu_d = 0u; cpu_e = 0u; cpu_h = 0u; cpu_l = 0u;
-    cpu_sp = 0u; cpu_pc = 0u;
+    cpu_sp = 0xffffu; cpu_pc = 0u; // real Z80 resets SP to 0xFFFF (superzazu z80_init); wraps to buffer end via mod-length
     cpu_a2 = 0u; cpu_f2 = 0u; cpu_b2 = 0u; cpu_c2 = 0u;
     cpu_d2 = 0u; cpu_e2 = 0u; cpu_h2 = 0u; cpu_l2 = 0u;
+    cpu_ix = 0u; cpu_iy = 0u;
     cpu_halted = 0u;
     cpu_iff1 = 0u; cpu_iff2 = 0u;
     cpu_writes_a = 0u;
@@ -1516,5 +1667,73 @@ fn apply_bcs(c: vec3f) -> vec3f {
 }
 
 ${fragmentBlock}
+`;
+}
+
+// ============================================================
+// Z80 DIFFERENTIAL TEST SHADER (dev-only)
+// Reuses the EXACT Z80 core sliced from the sim shader (single source of
+// truth), wrapped in a standalone entry point that runs one random program
+// per invocation. Never imported by the app runtime.
+// ============================================================
+export function createZ80TestShader(): string {
+	const sim = createSimShader('square');
+	const startMarker = '// === Z80 CPU State (per invocation) ===';
+	const endMarker = '// === Soup byte access helpers ===';
+	const start = sim.indexOf(startMarker);
+	const end = sim.indexOf(endMarker);
+	if (start < 0 || end < 0 || end <= start) {
+		throw new Error('Z80 core markers not found in sim shader');
+	}
+	const core = sim.slice(start, end);
+	return `
+struct Params {
+	soup_width: u32,
+	soup_height: u32,
+	tape_length: u32,
+	pair_length: u32,
+	pair_count: u32,
+	mutation_count: u32,
+	z80_steps: u32,
+	batch_seed: u32,
+	suppress0: u32, suppress1: u32, suppress2: u32, suppress3: u32,
+	suppress4: u32, suppress5: u32, suppress6: u32, suppress7: u32,
+};
+@group(0) @binding(0) var<uniform> params: Params;
+@group(0) @binding(1) var<storage, read_write> io: array<u32>;
+@group(0) @binding(2) var<storage, read_write> regs: array<u32>;
+
+${core}
+
+@compute @workgroup_size(64)
+fn z80_test(@builtin(global_invocation_id) id: vec3u) {
+	let case_id = id.x;
+	if (case_id >= params.pair_count) { return; }
+	let words_per_pair = params.pair_length / 4u;
+	let base = case_id * words_per_pair;
+	for (var i = 0u; i < words_per_pair; i++) {
+		let word = io[base + i];
+		mem[i*4u] = word & 0xffu;
+		mem[i*4u+1u] = (word >> 8u) & 0xffu;
+		mem[i*4u+2u] = (word >> 16u) & 0xffu;
+		mem[i*4u+3u] = (word >> 24u) & 0xffu;
+	}
+	cpu_a=0u; cpu_f=0u; cpu_b=0u; cpu_c=0u; cpu_d=0u; cpu_e=0u; cpu_h=0u; cpu_l=0u;
+	cpu_sp=0xffffu; cpu_pc=0u;
+	cpu_a2=0u; cpu_f2=0u; cpu_b2=0u; cpu_c2=0u; cpu_d2=0u; cpu_e2=0u; cpu_h2=0u; cpu_l2=0u;
+	cpu_ix=0u; cpu_iy=0u;
+	cpu_halted=0u; cpu_iff1=0u; cpu_iff2=0u; cpu_writes_a=0u; cpu_writes_b=0u;
+	for (var s = 0u; s < params.z80_steps; s++) {
+		if (cpu_halted != 0u) { break; }
+		z80_step();
+	}
+	for (var i = 0u; i < words_per_pair; i++) {
+		io[base + i] = mem[i*4u] | (mem[i*4u+1u] << 8u) | (mem[i*4u+2u] << 16u) | (mem[i*4u+3u] << 24u);
+	}
+	let rbase = case_id * 12u;
+	regs[rbase+0u]=cpu_a; regs[rbase+1u]=cpu_f; regs[rbase+2u]=cpu_b; regs[rbase+3u]=cpu_c;
+	regs[rbase+4u]=cpu_d; regs[rbase+5u]=cpu_e; regs[rbase+6u]=cpu_h; regs[rbase+7u]=cpu_l;
+	regs[rbase+8u]=cpu_sp; regs[rbase+9u]=cpu_pc; regs[rbase+10u]=cpu_writes_a; regs[rbase+11u]=cpu_writes_b;
+}
 `;
 }
