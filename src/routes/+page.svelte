@@ -20,9 +20,8 @@
 		type SettingKey,
 		type SettingValues,
 		type Preset,
-		BUILTIN_PRESETS,
-		loadUserPresets,
-		saveUserPresets,
+		loadPresets,
+		savePresets,
 		makePresetId,
 		valuesEqual
 	} from '$lib/presets';
@@ -1180,9 +1179,12 @@
 		{ key: 'simpleView', mode: 'live', get: () => simpleView, set: (v) => (simpleView = v as boolean) }
 	];
 
-	let presets = $state<Preset[]>([...BUILTIN_PRESETS, ...loadUserPresets()]);
+	let presets = $state<Preset[]>(loadPresets());
 	let newPresetName = $state('');
 	let showPresetSave = $state(false);
+	// When saving would collide with an existing name, hold that preset here to
+	// prompt the user to confirm overwrite (which is how saved presets are edited).
+	let overwriteTarget = $state<Preset | null>(null);
 
 	function captureSettings(): SettingValues {
 		const values: SettingValues = {};
@@ -1226,30 +1228,52 @@
 		else if (disruption === 'reset') handleReset();
 	}
 
-	function saveCurrentAsPreset(name: string) {
+	// Case-insensitive name match so "Classic" and "classic" are the same preset.
+	function findPresetByName(name: string): Preset | undefined {
+		const key = name.trim().toLowerCase();
+		return presets.find((p) => p.name.toLowerCase() === key);
+	}
+
+	function requestSavePreset(name: string) {
 		const trimmed = name.trim();
 		if (!trimmed) return;
-		const existing = presets.find((p) => !p.builtin && p.name === trimmed);
+		const existing = findPresetByName(trimmed);
 		if (existing) {
-			// Overwrite a user preset of the same name.
-			existing.values = captureSettings();
+			// Name taken — confirm overwrite (this is how a saved preset is edited).
+			overwriteTarget = existing;
+		} else {
+			commitSavePreset(trimmed, null);
+		}
+	}
+
+	function commitSavePreset(name: string, existing: Preset | null) {
+		const values = captureSettings();
+		if (existing) {
+			// Overwrite only replaces the saved settings; the existing name is kept
+			// (so re-saving "Classic" as "classic" doesn't silently rename it).
+			existing.values = values;
 			presets = [...presets];
 		} else {
-			const preset: Preset = {
-				id: makePresetId(presets),
-				name: trimmed,
-				values: captureSettings()
-			};
-			presets = [...presets, preset];
+			presets = [...presets, { id: makePresetId(presets), name: name.trim(), values }];
 		}
-		saveUserPresets(presets);
+		savePresets(presets);
 		newPresetName = '';
 		showPresetSave = false;
+		overwriteTarget = null;
+	}
+
+	function confirmOverwrite() {
+		if (overwriteTarget) commitSavePreset(overwriteTarget.name, overwriteTarget);
 	}
 
 	function deletePreset(id: string) {
 		presets = presets.filter((p) => p.id !== id);
-		saveUserPresets(presets);
+		savePresets(presets);
+	}
+
+	// Delete whichever preset currently matches the settings (the highlighted one).
+	function deleteActivePreset() {
+		if (activePresetId) deletePreset(activePresetId);
 	}
 
 	// Sync derived suppressedOpcodes to the GPU engine
@@ -1639,6 +1663,10 @@
 				engine?.resetView(canvasW, canvasH);
 				break;
 			case 'Escape':
+				if (overwriteTarget) {
+					overwriteTarget = null;
+					break;
+				}
 				showHelp = false;
 				showSpeedMenu = false;
 				showSettings = false;
@@ -2305,26 +2333,49 @@
 						simulation without resetting it. Grid or seed changes reset the soup.</span
 					>
 				</span>
-				<button
-					class="preset-save-toggle"
-					class:active={showPresetSave}
-					onclick={() => {
-						showPresetSave = !showPresetSave;
-						if (showPresetSave) newPresetName = '';
-					}}
-					title="Save current settings as a preset"
-				>
-					<svg
-						width="11"
-						height="11"
-						viewBox="0 0 12 12"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.4"
+				<div class="preset-header-actions">
+					{#if activePresetId}
+						<button
+							class="preset-delete-active"
+							onclick={deleteActivePreset}
+							title="Delete selected preset"
+							aria-label="Delete selected preset"
+						>
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 14 14"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.4"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M2.5 3.5h9M5.5 3.5V2.5h3v1M4 3.5l.5 8h5l.5-8M6 5.5v4M8 5.5v4" />
+							</svg>
+						</button>
+					{/if}
+					<button
+						class="preset-save-toggle"
+						class:active={showPresetSave}
+						onclick={() => {
+							showPresetSave = !showPresetSave;
+							if (showPresetSave) newPresetName = '';
+						}}
+						title="Save current settings as a preset"
 					>
-						<path d="M6 2v8M2 6h8" stroke-linecap="round" />
-					</svg>
-				</button>
+						<svg
+							width="11"
+							height="11"
+							viewBox="0 0 12 12"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.4"
+						>
+							<path d="M6 2v8M2 6h8" stroke-linecap="round" />
+						</svg>
+					</button>
+				</div>
 			</div>
 			{#if showPresetSave}
 				<div class="preset-save-row">
@@ -2335,7 +2386,7 @@
 						bind:value={newPresetName}
 						onkeydown={(e) => {
 							if (e.key === 'Enter' && newPresetName.trim()) {
-								saveCurrentAsPreset(newPresetName);
+								requestSavePreset(newPresetName);
 							} else if (e.key === 'Escape') {
 								showPresetSave = false;
 								newPresetName = '';
@@ -2345,51 +2396,37 @@
 					<button
 						class="preset-name-save"
 						disabled={!newPresetName.trim()}
-						onclick={() => saveCurrentAsPreset(newPresetName)}
+						onclick={() => requestSavePreset(newPresetName)}
 						title="Save preset">Save</button
 					>
 				</div>
 			{/if}
 			<div class="preset-chips">
 				{#each presets as preset (preset.id)}
-					<div class="preset-chip-wrap">
-						<button
-							class="preset-chip"
-							class:active={activePresetId === preset.id}
-							class:builtin={preset.builtin}
-							onclick={() => applyPreset(preset)}
-							title={preset.builtin
-								? `Built-in preset: ${preset.name}`
-								: `Apply preset: ${preset.name}`}
-						>
-							{#if activePresetId === preset.id}
-								<svg
-									class="preset-chip-check"
-									width="9"
-									height="9"
-									viewBox="0 0 12 12"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
-								>
-							{/if}
-							{preset.name}
-						</button>
-						{#if !preset.builtin}
-							<button
-								class="preset-chip-del"
-								onclick={() => deletePreset(preset.id)}
-								title="Delete preset: {preset.name}"
-								aria-label="Delete preset {preset.name}"
+					<button
+						class="preset-chip"
+						class:active={activePresetId === preset.id}
+						class:builtin={preset.builtin}
+						onclick={() => applyPreset(preset)}
+						title={preset.builtin
+							? `Built-in preset: ${preset.name}`
+							: `Apply preset: ${preset.name}`}
+					>
+						{#if activePresetId === preset.id}
+							<svg
+								class="preset-chip-check"
+								width="9"
+								height="9"
+								viewBox="0 0 12 12"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
 							>
-								<svg width="7" height="7" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.5">
-									<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
-								</svg>
-							</button>
 						{/if}
-					</div>
+						{preset.name}
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -2958,6 +2995,30 @@
 					><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="8" height="8" rx="1" /></svg></button
 					>
 				</div>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Preset overwrite confirmation -->
+{#if overwriteTarget}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		class="confirm-backdrop"
+		onclick={() => (overwriteTarget = null)}
+		role="presentation"
+	>
+		<div class="confirm-dialog" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
+			<div class="confirm-title">Overwrite preset?</div>
+			<div class="confirm-body">
+				A preset named <strong>{overwriteTarget.name}</strong> already exists. Replace its saved
+				settings with the current configuration?
+			</div>
+			<div class="confirm-actions">
+				<button class="confirm-btn confirm-cancel" onclick={() => (overwriteTarget = null)}
+					>Cancel</button
+				>
+				<button class="confirm-btn confirm-ok" onclick={confirmOverwrite}>Overwrite</button>
 			</div>
 		</div>
 	</div>
@@ -5121,6 +5182,29 @@ graph TD
 	}
 
 	/* Presets */
+	.preset-header-actions {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin-left: auto;
+	}
+	.preset-delete-active {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		padding: 0;
+		background: none;
+		border: none;
+		color: rgb(220, 90, 70);
+		cursor: pointer;
+		opacity: 0.85;
+		transition: opacity 0.12s;
+	}
+	.preset-delete-active:hover {
+		opacity: 1;
+	}
 	.preset-save-toggle {
 		display: flex;
 		align-items: center;
@@ -5128,7 +5212,6 @@ graph TD
 		width: 18px;
 		height: 18px;
 		padding: 0;
-		margin-left: auto;
 		background: none;
 		border: none;
 		border-radius: 4px;
@@ -5196,10 +5279,6 @@ graph TD
 		gap: 4px;
 		margin-top: 6px;
 	}
-	.preset-chip-wrap {
-		display: inline-flex;
-		align-items: stretch;
-	}
 	.preset-chip {
 		display: inline-flex;
 		align-items: center;
@@ -5232,28 +5311,69 @@ graph TD
 	.preset-chip-check {
 		flex-shrink: 0;
 	}
-	.preset-chip-wrap:has(.preset-chip-del) .preset-chip {
-		border-top-right-radius: 0;
-		border-bottom-right-radius: 0;
-		border-right: none;
-	}
-	.preset-chip-del {
-		display: inline-flex;
+
+	/* Preset overwrite confirmation dialog */
+	.confirm-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 60;
+		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0 5px;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid var(--border-subtle);
-		border-top-right-radius: 4px;
-		border-bottom-right-radius: 4px;
-		color: var(--text-subtle);
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(2px);
+	}
+	.confirm-dialog {
+		width: min(320px, calc(100vw - 32px));
+		padding: 16px;
+		background: var(--bg-elevated, var(--bg-panel));
+		border: 1px solid var(--border-muted);
+		border-radius: 10px;
+		box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+	}
+	.confirm-title {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: 8px;
+	}
+	.confirm-body {
+		font-size: 11.5px;
+		line-height: 1.5;
+		color: var(--text-secondary);
+		margin-bottom: 16px;
+	}
+	.confirm-body strong {
+		color: var(--text-primary);
+	}
+	.confirm-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+	.confirm-btn {
+		padding: 5px 14px;
+		font-size: 11px;
+		border-radius: 6px;
 		cursor: pointer;
 		transition: all 0.12s;
 	}
-	.preset-chip-del:hover {
-		background: rgba(220, 80, 60, 0.25);
-		border-color: rgba(220, 80, 60, 0.5);
+	.confirm-cancel {
+		color: var(--text-secondary);
+		background: transparent;
+		border: 1px solid var(--border-muted);
+	}
+	.confirm-cancel:hover {
+		background: var(--bg-hover);
 		color: var(--text-primary);
+	}
+	.confirm-ok {
+		color: #fff;
+		background: rgb(200, 70, 55);
+		border: 1px solid rgb(200, 70, 55);
+	}
+	.confirm-ok:hover {
+		background: rgb(215, 80, 65);
 	}
 
 	/* Colormap selector */
