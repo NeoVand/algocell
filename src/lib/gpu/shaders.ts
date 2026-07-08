@@ -1,6 +1,6 @@
 // All WGSL shaders — factory functions for topology variants
 import type { GridType } from '$lib/sim/constants';
-import { Z80_CORE_WGSL } from 'zilion';
+import { Z80_CORE_WGSL } from '@neovand/zilion';
 
 // ============================================================
 // SIMULATION COMPUTE SHADER
