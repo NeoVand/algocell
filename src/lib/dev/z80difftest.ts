@@ -23,6 +23,7 @@ export interface DiffMismatch {
 	memDiffByte: number; // -1 if memory matched
 	regDiffs: { name: string; gpu: number; cpu: number }[];
 	benign: boolean; // true = only undocumented F3/F5 flag bits differ
+	oracleQuirk: boolean; // true = oracle relied on its DD/FD-NOP quirk (not a Zilion bug)
 	disasm: string[];
 }
 
@@ -33,6 +34,8 @@ export interface DiffReport {
 	real: number; // mismatches that matter (memory or documented register/flag)
 	realMem: number; // subset of `real` where final MEMORY differs (affects the sim)
 	realRegOnly: number; // subset of `real` where only registers differ (sim discards these)
+	realTrue: number; // subset of `real` NOT caused by the oracle's DD/FD-NOP quirk (genuine)
+	oracleQuirk: number; // subset of `real` where the oracle NOPed a DD/FD opcode a real Z80 executes
 	benign: number; // only undocumented flag bits (F3/F5) differ
 	mismatches: DiffMismatch[]; // capped sample
 	durationMs: number;
@@ -290,6 +293,8 @@ export async function runZ80DiffTest(
 	let real = 0;
 	let realMem = 0;
 	let realRegOnly = 0;
+	let realTrue = 0; // real mismatches NOT attributable to the oracle's DD-NOP quirk
+	let oracleQuirk = 0; // real mismatches where the oracle relied on its DD-NOP quirk
 	let benign = 0;
 	const F3F5 = 0x08 | 0x20; // undocumented flag bits
 
@@ -348,6 +353,9 @@ export async function runZ80DiffTest(
 				real++;
 				if (memDiffByte >= 0) realMem++;
 				else realRegOnly++;
+				// Separate genuine divergences from the oracle's DD/FD-NOP quirk.
+				if (o.ddQuirk) oracleQuirk++;
+				else realTrue++;
 			}
 			if (mismatches.length < 40) {
 				mismatches.push({
@@ -356,6 +364,7 @@ export async function runZ80DiffTest(
 					memDiffByte,
 					regDiffs,
 					benign: benignFlag,
+					oracleQuirk: o.ddQuirk,
 					disasm: disassemble(inputs[c])
 						.slice(0, 8)
 						.map((l) => l.mnemonic)
@@ -365,5 +374,5 @@ export async function runZ80DiffTest(
 	}
 
 	device.destroy();
-	return { total: N, steps: STEPS, seed, real, realMem, realRegOnly, benign, mismatches, durationMs: t0 };
+	return { total: N, steps: STEPS, seed, real, realMem, realRegOnly, realTrue, oracleQuirk, benign, mismatches, durationMs: t0 };
 }
