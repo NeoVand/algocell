@@ -1510,29 +1510,29 @@
 		if (z === 3) {
 			if (y === 0) return 'Jump to a specific address (unconditional)';
 			if (y === 1) return 'Prefix for extended bit/rotate instructions';
-			if (y === 2) return 'Send the working value to a hardware port (I/O output)';
-			if (y === 3) return 'Read a byte from a hardware port into the working value (I/O input)';
+			if (y === 2) return 'Output to an I/O port — no device is attached, so this has no effect (a 2-byte no-op that skips the port number)';
+			if (y === 3) return 'Input from an I/O port — no device is attached, so it always reads 0 into the working value (and skips the port-number byte)';
 			if (y === 4)
-				return 'Swap the address pointer with the 2 bytes at the stack pointer — this is the key self-replication instruction: it writes data into a neighbor cell\'s memory';
+				return 'Swap the address pointer with the 2 bytes at the stack pointer. The stack starts at the end of the address space (inside the neighbor cell), so this is a key self-replication instruction — it moves data into the neighbor cell\'s memory';
 			if (y === 5)
 				return 'Swap the address pointer with the DE register pair';
-			if (y === 6) return 'Disable interrupts';
-			return 'Enable interrupts';
+			if (y === 6) return 'Disable interrupts (no interrupts exist here, so this has no effect)';
+			return 'Enable interrupts (no interrupts exist here, so this has no effect)';
 		}
 		if (z === 4) return `Call a subroutine at a specific address if ${CC_DESC[y]}`;
 		if (z === 5) {
 			if (q === 0)
-				return `Write ${RP2_DESC[p]} (2 bytes) to memory at the stack pointer`;
-			if (p === 0) return 'Call a subroutine at a specific address (saves return point)';
-			if (p === 1) return 'Prefix for index register instructions (IX)';
-			if (p === 2) return 'Prefix for extended instructions (block copy, I/O)';
-			return 'Prefix for index register instructions (IY)';
+				return `Push ${RP2_DESC[p]} (2 bytes) onto the stack. The stack starts at the end of the address space (inside the neighbor cell), so pushing writes into the neighbor's memory — a building block of self-replication`;
+			if (p === 0) return 'Call a subroutine at a specific address (pushes the return point onto the stack)';
+			if (p === 1) return 'Index-register (IX) prefix — not implemented here, so it is skipped and the next instruction runs on the address pointer (HL)';
+			if (p === 2) return 'Prefix for extended instructions (block copy, 16-bit memory moves)';
+			return 'Index-register (IY) prefix — not implemented here, so it is skipped and the next instruction runs on the address pointer (HL)';
 		}
 		if (z === 6) {
 			return ALUDESC[y].replace('{0}', 'a byte from the code');
 		}
 		// z === 7
-		return `Call a built-in routine at address ${(y * 8).toString(16).toUpperCase().padStart(2, '0')}h (fast subroutine call)`;
+		return `Save the return position on the stack and jump to the fixed low address ${(y * 8).toString(16).toUpperCase().padStart(2, '0')}h within this buffer (a compact call)`;
 	}
 
 	// Freq tile tooltip state

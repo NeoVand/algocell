@@ -14,14 +14,9 @@ function getNeighborIndex(
 	const x = cellIndex % width;
 	const y = Math.floor(cellIndex / width);
 
-	if (gridType === 'hex') {
-		// Pick the right neighbor for hex (same row, x+1)
-		const nx = Math.min(x + 1, width - 1);
-		return y * width + nx;
-	}
-
-	// Square: right neighbor
-	const nx = Math.min(x + 1, width - 1);
+	// Right neighbor, reflected inward at the right edge (matches the shader's
+	// reflecting boundary so the CPU trace pairs with a real distinct neighbor).
+	const nx = x + 1 < width ? x + 1 : x - 1;
 	return y * width + nx;
 }
 
