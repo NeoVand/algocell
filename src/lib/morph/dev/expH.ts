@@ -10,7 +10,7 @@
 //   npx tsx src/lib/morph/dev/expH.ts
 //   ITERS=… PARAMS_OUT=… HVIZ=… npx tsx …/expH.ts
 
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 
 const W = 11, H = 11, N = W * H;
 const C = 16, FEAT = 4, PERC = FEAT * C, HD = 64;
@@ -234,7 +234,262 @@ function report(par: Float64Array): void {
 	console.log(`  accuracy ${acc}/${CASES.length} cases`);
 }
 
+// ===========================================================================
+// STABILIZE stage — make the adder long-horizon-stable + self-repairing +
+// seed-growable (the E3 recipe: grow + persist + damage, dual initial-condition),
+// so it runs indefinitely and heals damage in the live demo.
+// ===========================================================================
+
+const T_GROW = 30, T_HOLD = 40, T_REPAIR = 24; // long hold window => genuine long-horizon stability
+const DMG_AT = T_GROW + T_HOLD, T_TOTAL = DMG_AT + T_REPAIR, REPAIR_TAIL = 6;
+const DMG_SIZE = Number(process.env.DMG_SIZE ?? 3);
+const SEED_CELL = iy * W + (W >> 1);
+
+type IC = 'full' | 'seed';
+function seedGridIC(inputs: number[], ic: IC): Float64Array {
+	const s = new Float64Array(N * C);
+	if (ic === 'full') {
+		for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++)
+			for (let c = 1; c < C; c++) s[(y * W + x) * C + c] = 1;
+	} else {
+		for (let c = 1; c < C; c++) s[SEED_CELL * C + c] = 1;
+	}
+	clampInputs(s, inputs);
+	return s;
+}
+function damageMask(cx: number, cy: number, size: number): Uint8Array {
+	const mask = new Uint8Array(N).fill(1);
+	const h = size >> 1;
+	for (let y = cy - h; y <= cy - h + size - 1; y++)
+		for (let x = cx - h; x <= cx - h + size - 1; x++)
+			if (x >= 0 && x < W && y >= 0 && y < H) mask[y * W + x] = 0;
+	return mask;
+}
+function candidatePatches(): { cx: number; cy: number }[] {
+	const list: { cx: number; cy: number }[] = [];
+	for (let cx = IN_COL + 1; cx <= OUT_COL; cx++) for (let cy = iy - 2; cy <= iy + 2; cy++) list.push({ cx, cy });
+	return list;
+}
+
+interface Sched { w: Float64Array; nSteps: number; damageAt: number; }
+function schedule(mode: 'persist' | 'repair'): Sched {
+	const w = new Float64Array(T_TOTAL + 1);
+	const hs = T_GROW, he = DMG_AT - 1, hn = he - hs + 1;
+	for (let s = hs; s <= he; s++) w[s] = 0.5 / hn;
+	if (mode === 'persist') {
+		const ts = DMG_AT, te = T_TOTAL, tn = te - ts + 1;
+		for (let s = ts; s <= te; s++) w[s] = 0.5 / tn;
+		return { w, nSteps: T_TOTAL, damageAt: -1 };
+	}
+	const rs = T_TOTAL - REPAIR_TAIL + 1, re = T_TOTAL, rn = re - rs + 1;
+	for (let s = rs; s <= re; s++) w[s] += 0.5 / rn;
+	return { w, nSteps: T_TOTAL, damageAt: DMG_AT };
+}
+
+function forwardS(par: Float64Array, inputs: number[], sched: Sched, mask: Uint8Array | null, ic: IC): Float64Array[] {
+	const s0 = seedGridIC(inputs, ic);
+	const states: Float64Array[] = [s0];
+	let s = s0;
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let t = 0; t < sched.nSteps; t++) {
+		const ns = new Float64Array(N * C);
+		for (let y = 1; y < H - 1; y++)
+			for (let x = 1; x < W - 1; x++) {
+				const i = y * W + x;
+				perceive(s, i, perc);
+				for (let hh = 0; hh < HD; hh++) {
+					let a = par[B1O + hh]; const base = W1O + hh * PERC;
+					for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
+					h[hh] = a > 0 ? a : 0;
+				}
+				for (let c = 0; c < C; c++) {
+					let dl = par[B2O + c]; const base = W2O + c * HD;
+					for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh];
+					ns[i * C + c] = Math.tanh(s[i * C + c] + dl);
+				}
+			}
+		if (mask && t + 1 === sched.damageAt)
+			for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) ns[i * C + c] = 0;
+		clampInputs(ns, inputs);
+		states.push(ns);
+		s = ns;
+	}
+	return states;
+}
+
+/** Multi-output loss + gradient over a schedule (persist/repair) and one IC. */
+function lossAndGradS(par: Float64Array, sched: Sched, mask: Uint8Array | null, ic: IC): { L: number; grad: Float64Array; outs: number[][] } {
+	const grad = new Float64Array(P);
+	let L = 0; const outs: number[][] = [];
+	const norm = CASES.length * outCells.length;
+	const perc = new Float64Array(PERC), pre1 = new Float64Array(HD), hbuf = new Float64Array(HD), gh = new Float64Array(HD), gperc = new Float64Array(PERC);
+	for (const cse of CASES) {
+		const states = forwardS(par, cse.in, sched, mask, ic);
+		outs.push(outCells.map((cell) => states[sched.nSteps][cell * C + 0]));
+		let gs = new Float64Array(N * C);
+		for (let t = sched.nSteps - 1; t >= 0; t--) {
+			const step = t + 1;
+			if (sched.w[step] > 0)
+				for (let k = 0; k < outCells.length; k++) {
+					const diff = states[step][outCells[k] * C + 0] - cse.out[k];
+					L += (sched.w[step] * diff * diff) / norm;
+					gs[outCells[k] * C + 0] += (2 * sched.w[step] * diff) / norm;
+				}
+			for (const ic2 of inputCells) gs[ic2 * C + 0] = 0;
+			if (mask && step === sched.damageAt)
+				for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) gs[i * C + c] = 0;
+			const s = states[t], sp = states[step];
+			const gsPrev = new Float64Array(N * C);
+			for (let y = 1; y < H - 1; y++)
+				for (let x = 1; x < W - 1; x++) {
+					const i = y * W + x;
+					perceive(s, i, perc);
+					for (let hh = 0; hh < HD; hh++) {
+						let a = par[B1O + hh]; const base = W1O + hh * PERC;
+						for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
+						pre1[hh] = a; hbuf[hh] = a > 0 ? a : 0;
+					}
+					gh.fill(0);
+					for (let c = 0; c < C; c++) {
+						const spv = sp[i * C + c];
+						const gp = gs[i * C + c] * (1 - spv * spv);
+						gsPrev[i * C + c] += gp;
+						grad[B2O + c] += gp;
+						const base = W2O + c * HD;
+						for (let hh = 0; hh < HD; hh++) { grad[base + hh] += gp * hbuf[hh]; gh[hh] += par[base + hh] * gp; }
+					}
+					gperc.fill(0);
+					for (let hh = 0; hh < HD; hh++) {
+						let g = gh[hh]; if (pre1[hh] <= 0) g = 0;
+						grad[B1O + hh] += g;
+						const base = W1O + hh * PERC;
+						for (let k = 0; k < PERC; k++) { grad[base + k] += g * perc[k]; gperc[k] += par[base + k] * g; }
+					}
+					const r = i + 1, l = i - 1, u = i - W, d = i + W;
+					for (let ch = 0; ch < C; ch++) {
+						const bb = ch * FEAT, gId = gperc[bb], gGx = gperc[bb + 1], gGy = gperc[bb + 2], gLap = gperc[bb + 3];
+						gsPrev[i * C + ch] += gId - 4 * gLap;
+						gsPrev[r * C + ch] += 0.5 * gGx + gLap;
+						gsPrev[l * C + ch] += -0.5 * gGx + gLap;
+						gsPrev[d * C + ch] += 0.5 * gGy + gLap;
+						gsPrev[u * C + ch] += -0.5 * gGy + gLap;
+					}
+				}
+			gs = gsPrev;
+		}
+	}
+	return { L, grad, outs };
+}
+
+function gradientCheckS(): boolean {
+	const rng = mulberry32(5);
+	const par = new Float64Array(P).map(() => (rng() - 0.5) * 0.1);
+	for (let j = W2O; j < P; j++) par[j] = 0;
+	const sched = schedule('repair');
+	const mask = damageMask(Math.round((IN_COL + OUT_COL) / 2), iy, DMG_SIZE);
+	const { grad } = lossAndGradS(par, sched, mask, 'full');
+	const eps = 1e-4; let maxRel = 0;
+	for (const j of [12, 800, B1O + 4, W2O + 9, B2O + 2]) {
+		const pp = par.slice(); pp[j] += eps;
+		const pm = par.slice(); pm[j] -= eps;
+		const fd = (lossAndGradS(pp, sched, mask, 'full').L - lossAndGradS(pm, sched, mask, 'full').L) / (2 * eps);
+		maxRel = Math.max(maxRel, Math.abs(grad[j] - fd) / (Math.abs(fd) + 1e-8));
+	}
+	console.log(`  stabilize gradient check: max rel err ${maxRel.toExponential(2)} -> ${maxRel < 0.02 ? 'PASS' : 'FAIL'}`);
+	return maxRel < 0.02;
+}
+
+/** Dual-IC training (seed 0.75 + full 0.25), warm-started, gentle cosine lr. */
+function trainStabilize(iters: number, init: Float64Array, dmg: boolean, seed = 7): { par: Float64Array; L: number } {
+	let par = init.slice();
+	const lrHi = 0.003, lrLo = 0.0006;
+	const patches = candidatePatches();
+	const m = new Float64Array(P), v = new Float64Array(P), b1 = 0.9, b2 = 0.999;
+	let bestLoss = Infinity, bestPar = par.slice();
+	const schedP = schedule('persist'), schedR = schedule('repair');
+	for (let it = 1; it <= iters; it++) {
+		const cos = 0.5 * (1 + Math.cos(Math.PI * (it / iters)));
+		const lr = Math.min(1, it / 20) * (lrLo + (lrHi - lrLo) * cos);
+		let mask: Uint8Array | null = null;
+		if (dmg) { const rp = mulberry32(seed * 1000 + it)(); const pc = patches[Math.floor(rp * patches.length)]; mask = damageMask(pc.cx, pc.cy, DMG_SIZE); }
+		const sched = dmg ? schedR : schedP;
+		// Full-IC only: the adder's compute rule has no seed-growing ability, so a
+		// dual-IC objective collapses it to the constant-0.5 baseline. Grow-from-seed
+		// is a separate (harder) follow-up.
+		const rFull = lossAndGradS(par, sched, mask, 'full');
+		const grad = rFull.grad;
+		const L = rFull.L;
+		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);
+		const clip = gn > 1 ? 1 / gn : 1;
+		if (L < bestLoss) { bestLoss = L; bestPar = par.slice(); }
+		const c1 = 1 - Math.pow(b1, it), c2 = 1 - Math.pow(b2, it);
+		for (let j = 0; j < P; j++) {
+			const g = grad[j] * clip + 2e-5 * par[j];
+			m[j] = b1 * m[j] + (1 - b1) * g;
+			v[j] = b2 * v[j] + (1 - b2) * g * g;
+			par[j] -= (lr * (m[j] / c1)) / (Math.sqrt(v[j] / c2) + 1e-8);
+		}
+		if (it % 200 === 0 || it === 1) console.log(`      iter ${String(it).padStart(4)}  loss ${L.toFixed(5)}  best ${bestLoss.toFixed(5)}`);
+	}
+	return { par: bestPar, L: bestLoss };
+}
+
+function reportStable(label: string, par: Float64Array, ic: IC): void {
+	const held = lossAndGradS(par, schedule('persist'), null, ic).outs;
+	const mask = damageMask(Math.round((IN_COL + OUT_COL) / 2), iy, DMG_SIZE);
+	const healed = lossAndGradS(par, schedule('repair'), mask, ic).outs;
+	const accH = CASES.filter((c, i) => c.out.every((t, k) => Math.abs(held[i][k] - t) < 0.3)).length;
+	const accR = CASES.filter((c, i) => c.out.every((t, k) => Math.abs(healed[i][k] - t) < 0.3)).length;
+	console.log(`  ${label} (${ic} IC): held ${accH}/8, +damage healed ${accR}/8`);
+}
+
+/** Long-horizon drift check: run far past training and confirm accuracy holds. */
+function driftCheck(par: Float64Array): void {
+	console.log('  long-horizon drift (full IC, accuracy at step N):');
+	const iterCells = outCells;
+	for (const steps of [50, 150, 400]) {
+		let acc = 0;
+		for (const cse of CASES) {
+			let s = seedGridIC(cse.in, 'full');
+			for (let t = 0; t < steps; t++) s = step(par, s, cse.in);
+			const o = iterCells.map((cell) => s[cell * C + 0]);
+			if (cse.out.every((t, k) => Math.abs(o[k] - t) < 0.3)) acc++;
+		}
+		console.log(`    @${steps}: ${acc}/8`);
+	}
+}
+/** One plain CA step (no schedule) for the drift check. */
+function step(par: Float64Array, s: Float64Array, inputs: number[]): Float64Array {
+	const ns = new Float64Array(N * C);
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+		const i = y * W + x;
+		perceive(s, i, perc);
+		for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; h[hh] = a > 0 ? a : 0; }
+		for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const base = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); }
+	}
+	clampInputs(ns, inputs);
+	return ns;
+}
+
+function stabilizeMain(): void {
+	if (!process.env.PARAMS_IN) { console.error('stabilize needs PARAMS_IN (the compute params)'); process.exit(1); }
+	const par0 = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN, 'utf8')) as number[]);
+	console.log(`STABILIZE 1-bit adder: timeline grow ${T_GROW}+hold ${T_HOLD}+repair ${T_REPAIR}=${T_TOTAL}, damage ${DMG_SIZE}x${DMG_SIZE}`);
+	if (!gradientCheckS()) { console.error('FAIL: stabilize gradient wrong'); process.exit(1); }
+	const iters = Number(process.env.ITERS ?? 700);
+	console.log('  [A] persist (full-IC, long hold, warm from compute)');
+	const parA = trainStabilize(iters, par0, false).par;
+	reportStable('after persist', parA, 'full');
+	console.log('  [B] + damage (self-repair)');
+	const parB = trainStabilize(Math.round(iters * 1.5), parA, true).par;
+	reportStable('after repair', parB, 'full');
+	driftCheck(parB);
+	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  params saved to ${process.env.PARAMS_OUT}`); }
+}
+
 function main() {
+	if (process.env.MODE === 'stabilize') { stabilizeMain(); return; }
 	console.log(`developmental arithmetic (1-bit full adder): ${W}x${H}, C=${C}, HD=${HD}, ${P} params, T=${T}`);
 	if (!gradientCheck()) { console.error('FAIL: gradient wrong'); process.exit(1); }
 	const iters = Number(process.env.ITERS ?? 900);

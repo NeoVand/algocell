@@ -82,9 +82,9 @@ export const EXPERIMENTS: Experiment[] = [
 		ic: 'seed', seedCell: e_iy * EDIM.SW + (EDIM.SW >> 1), paramsUrl: 'e3_seed.json', tGrow: 24, stable: true
 	},
 	{
-		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority). Arithmetic, grown by gradient.',
+		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority) that holds its answer and self-repairs. Arithmetic, grown by gradient.',
 		cfg: ADIM, inputCells: ADD_IN, outputCells: ADD_OUT, outputLabels: ['sum', 'carry'], cases: ADD_CASES,
-		ic: 'full', paramsUrl: 'adder_compute.json', tGrow: 30, stable: false // compute-stage rule; not yet long-horizon-stable
+		ic: 'full', paramsUrl: 'adder_stable.json', tGrow: 30, stable: true // long-horizon-stable + self-repairing
 	}
 ];
 

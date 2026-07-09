@@ -4,23 +4,24 @@
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
-	import adder from '$lib/devcomp/params/adder_compute.json';
+	import adderStable from '$lib/devcomp/params/adder_stable.json';
 
 	interface Row { label: string; cpu: string; gpu: string; maxDiff: number; ok: boolean; }
 	let rows = $state<Row[]>([]);
 	let status = $state('running…');
 
-	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_compute.json': adder };
+	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_stable.json': adderStable };
 	const DMG_AT = 32;
 	// Each experiment is read where its rule is meant to be read: unstable rules at
-	// tGrow, stable ones at 50 (with damage to exercise self-repair).
+	// tGrow, stable ones later (with damage to exercise self-repair).
 	const CONFIGS = [
 		{ id: 'e1_gate', steps: 24, damage: false },
 		{ id: 'e2_repair', steps: 50, damage: false },
 		{ id: 'e2_repair', steps: 50, damage: true },
 		{ id: 'e3_seed', steps: 50, damage: false },
 		{ id: 'e3_seed', steps: 50, damage: true },
-		{ id: 'adder', steps: 30, damage: false }
+		{ id: 'adder', steps: 60, damage: false },
+		{ id: 'adder', steps: 60, damage: true }
 	];
 
 	async function validate() {

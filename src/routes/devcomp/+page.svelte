@@ -5,11 +5,12 @@
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
-	import adder from '$lib/devcomp/params/adder_compute.json';
+	import adderStable from '$lib/devcomp/params/adder_stable.json';
 
-	// Params by file. e2_repair + e3_seed share the stable E3 rule; e1 + adder are
-	// compute-only (capped at tGrow so they don't drift). See rule.ts `stable`.
-	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_compute.json': adder };
+	// Params by file. e2_repair + e3_seed share the stable E3 rule; the adder uses
+	// its long-horizon-stable + self-repairing rule. e1 is compute-only (capped at
+	// tGrow so it doesn't drift). See rule.ts `stable`.
+	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_stable.json': adderStable };
 
 	let canvas: HTMLCanvasElement;
 	let engine: FieldCAEngine | null = null;

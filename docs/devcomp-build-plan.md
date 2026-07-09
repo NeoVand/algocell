@@ -60,13 +60,20 @@ Param layout `[W1(HD×PERC), b1(HD), W2(C×HD), b2(C)]`. Frozen params committed
   backprop gradient-checked exact. *The paradigm scales to arithmetic.*
   **(b) DONE — kernel generalized + adder live in the demo.** `rule.ts` is now
   config-driven (`RuleConfig`, `makeConfig`, `EDIM`/`ADIM`); `shader.ts`/`engine.ts`
-  take a cfg; `/devcomp/validate` passes **28/28** (E-series + adder, max|CPU−GPU|
-  =3.2e-5); the adder is a 4th tab on `/devcomp` (multi-output sum+carry readout),
-  capped at tGrow since the compute rule isn't yet long-horizon-stable.
-  Remaining for S6: (a) long-horizon-stability + input-reactivity training (extend
-  persistence window + input transitions mid-rollout) + damage + grow-from-seed,
-  so the adder runs indefinitely + self-repairs live; (c) 2-bit adder as stretch
-  (fallback ladder: mux → half-adder).
+  take a cfg; the adder is a 4th tab on `/devcomp` (multi-output sum+carry readout).
+  **(a) DONE — stable + self-repairing adder.** `expH.ts MODE=stabilize` (full-IC
+  persist with a long 40-step hold window + damage, warm from the compute params):
+  **held 8/8, +damage healed 8/8, long-horizon drift @50/@150/@400 all 8/8.**
+  Params `adder_stable.json`; the adder tab now runs indefinitely (`stable: true`)
+  and heals the damage brush live (verified: (1,1,0)→sum 0, carry 1 at step 994,
+  correct through damage). `/devcomp/validate` passes **36/36** (incl. adder
+  self-repair on GPU), max|CPU−GPU|=3.2e-5. Note: dropped the dual-IC/seed here —
+  it collapsed the adder to the 0.25 constant baseline (the compute rule has no
+  seed-growing to warm-start from); full-IC + a long hold window gave genuine
+  long-horizon stability. Remaining for S6: (a2) grow-from-seed adder (separate,
+  harder — needs its own seed-IC curriculum); input-reactivity training (input
+  transitions mid-rollout) for live input toggles without re-seed; (c) 2-bit adder
+  stretch (fallback ladder: mux → half-adder).
 - **S7 — in-browser forward-gradient trainer** (watch it learn) + JS reverse-mode
   Web Worker baseline. ⏳
 - **S8 — ablations + multi-seed statistics** (isotropic-perception / no-hidden /
