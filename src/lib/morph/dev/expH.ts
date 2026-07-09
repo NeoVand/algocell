@@ -488,8 +488,192 @@ function stabilizeMain(): void {
 	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  params saved to ${process.env.PARAMS_OUT}`); }
 }
 
+// ===========================================================================
+// REACTIVE stage — track LIVE input changes: hold the prior input's answer,
+// switch the input mid-rollout, re-settle to the new answer. So toggling an
+// input in the demo updates the running field (no re-seed). Retains stability +
+// self-repair by scoring a hold window in each phase and training with damage.
+// ===========================================================================
+
+const R_T1 = 30, R_T2 = 30, R_TAIL = 8, R_TOTAL = R_T1 + R_T2, R_DMG_AT = R_T1 + 8;
+
+function caseOut(inputs: number[]): number[] {
+	return CASES.find((c) => c.in.every((v, i) => v === inputs[i]))!.out;
+}
+
+function forwardReact(par: Float64Array, priorIn: number[], targetIn: number[], mask: Uint8Array | null): Float64Array[] {
+	const s0 = seedGridIC(priorIn, 'full');
+	const states: Float64Array[] = [s0];
+	let s = s0;
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let t = 0; t < R_TOTAL; t++) {
+		const inputs = t < R_T1 ? priorIn : targetIn;
+		const ns = new Float64Array(N * C);
+		for (let y = 1; y < H - 1; y++)
+			for (let x = 1; x < W - 1; x++) {
+				const i = y * W + x;
+				perceive(s, i, perc);
+				for (let hh = 0; hh < HD; hh++) {
+					let a = par[B1O + hh]; const base = W1O + hh * PERC;
+					for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
+					h[hh] = a > 0 ? a : 0;
+				}
+				for (let c = 0; c < C; c++) {
+					let dl = par[B2O + c]; const base = W2O + c * HD;
+					for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh];
+					ns[i * C + c] = Math.tanh(s[i * C + c] + dl);
+				}
+			}
+		if (mask && t + 1 === R_DMG_AT) for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) ns[i * C + c] = 0;
+		clampInputs(ns, inputs);
+		states.push(ns);
+		s = ns;
+	}
+	return states;
+}
+
+/** Loss + gradient over all 8 target cases, each with a random prior input.
+ *  Scores the prior-hold window (phase 1) and the target-hold window (phase 2). */
+function lossReactive(par: Float64Array, priors: number[][], masks: (Uint8Array | null)[]): { L: number; grad: Float64Array; acc: number } {
+	const grad = new Float64Array(P);
+	let L = 0, acc = 0;
+	const norm = CASES.length * outCells.length * R_TAIL;
+	const p1s = R_T1 - R_TAIL + 1, p2s = R_TOTAL - R_TAIL + 1;
+	const perc = new Float64Array(PERC), pre1 = new Float64Array(HD), hbuf = new Float64Array(HD), gh = new Float64Array(HD), gperc = new Float64Array(PERC);
+	CASES.forEach((target, ci) => {
+		const prior = priors[ci], mask = masks[ci];
+		const priorOut = caseOut(prior);
+		const states = forwardReact(par, prior, target.in, mask);
+		const fin = outCells.map((c) => states[R_TOTAL][c * C + 0]);
+		if (target.out.every((t, k) => Math.abs(fin[k] - t) < 0.3)) acc++;
+		let gs = new Float64Array(N * C);
+		for (let t = R_TOTAL - 1; t >= 0; t--) {
+			const step = t + 1;
+			if (step >= p1s && step <= R_T1)
+				for (let k = 0; k < outCells.length; k++) { const diff = states[step][outCells[k] * C + 0] - priorOut[k]; L += (diff * diff) / norm; gs[outCells[k] * C + 0] += (2 * diff) / norm; }
+			if (step >= p2s)
+				for (let k = 0; k < outCells.length; k++) { const diff = states[step][outCells[k] * C + 0] - target.out[k]; L += (diff * diff) / norm; gs[outCells[k] * C + 0] += (2 * diff) / norm; }
+			for (const ic of inputCells) gs[ic * C + 0] = 0; // clamped inputs: no grad through the override
+			if (mask && step === R_DMG_AT) for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) gs[i * C + c] = 0;
+			const s = states[t], sp = states[step];
+			const gsPrev = new Float64Array(N * C);
+			for (let y = 1; y < H - 1; y++)
+				for (let x = 1; x < W - 1; x++) {
+					const i = y * W + x;
+					perceive(s, i, perc);
+					for (let hh = 0; hh < HD; hh++) {
+						let a = par[B1O + hh]; const base = W1O + hh * PERC;
+						for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
+						pre1[hh] = a; hbuf[hh] = a > 0 ? a : 0;
+					}
+					gh.fill(0);
+					for (let c = 0; c < C; c++) {
+						const spv = sp[i * C + c];
+						const gp = gs[i * C + c] * (1 - spv * spv);
+						gsPrev[i * C + c] += gp;
+						grad[B2O + c] += gp;
+						const base = W2O + c * HD;
+						for (let hh = 0; hh < HD; hh++) { grad[base + hh] += gp * hbuf[hh]; gh[hh] += par[base + hh] * gp; }
+					}
+					gperc.fill(0);
+					for (let hh = 0; hh < HD; hh++) {
+						let g = gh[hh]; if (pre1[hh] <= 0) g = 0;
+						grad[B1O + hh] += g;
+						const base = W1O + hh * PERC;
+						for (let k = 0; k < PERC; k++) { grad[base + k] += g * perc[k]; gperc[k] += par[base + k] * g; }
+					}
+					const r = i + 1, l = i - 1, u = i - W, d = i + W;
+					for (let ch = 0; ch < C; ch++) {
+						const bb = ch * FEAT, gId = gperc[bb], gGx = gperc[bb + 1], gGy = gperc[bb + 2], gLap = gperc[bb + 3];
+						gsPrev[i * C + ch] += gId - 4 * gLap;
+						gsPrev[r * C + ch] += 0.5 * gGx + gLap;
+						gsPrev[l * C + ch] += -0.5 * gGx + gLap;
+						gsPrev[d * C + ch] += 0.5 * gGy + gLap;
+						gsPrev[u * C + ch] += -0.5 * gGy + gLap;
+					}
+				}
+			gs = gsPrev;
+		}
+	});
+	return { L, grad, acc };
+}
+
+function gradientCheckR(): boolean {
+	const rng = mulberry32(9);
+	const par = new Float64Array(P).map(() => (rng() - 0.5) * 0.1);
+	for (let j = W2O; j < P; j++) par[j] = 0;
+	const priors = CASES.map((_, i) => CASES[(i + 3) % CASES.length].in);
+	const masks = CASES.map(() => null);
+	const { grad } = lossReactive(par, priors, masks);
+	const eps = 1e-4; let maxRel = 0;
+	for (const j of [7, 700, B1O + 5, W2O + 3, B2O + 1]) {
+		const pp = par.slice(); pp[j] += eps;
+		const pm = par.slice(); pm[j] -= eps;
+		const fd = (lossReactive(pp, priors, masks).L - lossReactive(pm, priors, masks).L) / (2 * eps);
+		maxRel = Math.max(maxRel, Math.abs(grad[j] - fd) / (Math.abs(fd) + 1e-8));
+	}
+	console.log(`  reactive gradient check: max rel err ${maxRel.toExponential(2)} -> ${maxRel < 0.02 ? 'PASS' : 'FAIL'}`);
+	return maxRel < 0.02;
+}
+
+function trainReactive(iters: number, init: Float64Array, dmg: boolean, seed = 7): { par: Float64Array; L: number } {
+	let par = init.slice();
+	const lrHi = 0.002, lrLo = 0.0004;
+	const patches = candidatePatches();
+	const m = new Float64Array(P), v = new Float64Array(P), b1 = 0.9, b2 = 0.999;
+	let bestLoss = Infinity, bestPar = par.slice();
+	for (let it = 1; it <= iters; it++) {
+		const cos = 0.5 * (1 + Math.cos(Math.PI * (it / iters)));
+		const lr = Math.min(1, it / 20) * (lrLo + (lrHi - lrLo) * cos);
+		const rng = mulberry32(seed * 1000 + it);
+		const priors = CASES.map(() => CASES[Math.floor(rng() * CASES.length)].in);
+		const masks = CASES.map(() => { if (!dmg) return null; const pc = patches[Math.floor(rng() * patches.length)]; return damageMask(pc.cx, pc.cy, DMG_SIZE); });
+		const { L, grad } = lossReactive(par, priors, masks);
+		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);
+		const clip = gn > 1 ? 1 / gn : 1;
+		if (L < bestLoss) { bestLoss = L; bestPar = par.slice(); }
+		const c1 = 1 - Math.pow(b1, it), c2 = 1 - Math.pow(b2, it);
+		for (let j = 0; j < P; j++) {
+			const g = grad[j] * clip + 2e-5 * par[j];
+			m[j] = b1 * m[j] + (1 - b1) * g;
+			v[j] = b2 * v[j] + (1 - b2) * g * g;
+			par[j] -= (lr * (m[j] / c1)) / (Math.sqrt(v[j] / c2) + 1e-8);
+		}
+		if (it % 200 === 0 || it === 1) console.log(`      iter ${String(it).padStart(4)}  loss ${L.toFixed(5)}  best ${bestLoss.toFixed(5)}`);
+	}
+	return { par: bestPar, L: bestLoss };
+}
+
+/** Reactivity report: for ALL prior→target pairs, does the output track the new input? */
+function reactivityReport(par: Float64Array): void {
+	let ok = 0, total = 0;
+	for (const prior of CASES) for (const target of CASES) {
+		const st = forwardReact(par, prior.in, target.in, null);
+		const fin = outCells.map((c) => st[R_TOTAL][c * C + 0]);
+		total++; if (target.out.every((t, k) => Math.abs(fin[k] - t) < 0.3)) ok++;
+	}
+	console.log(`  reactivity: ${ok}/${total} prior→target transitions land on the new answer`);
+}
+
+function reactiveMain(): void {
+	if (!process.env.PARAMS_IN) { console.error('reactive needs PARAMS_IN (the stable params)'); process.exit(1); }
+	const par0 = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN, 'utf8')) as number[]);
+	console.log(`REACTIVE 1-bit adder: hold ${R_T1} + switch + hold ${R_T2}, tail ${R_TAIL}, damage @${R_DMG_AT}`);
+	if (!gradientCheckR()) { console.error('FAIL: reactive gradient wrong'); process.exit(1); }
+	const iters = Number(process.env.ITERS ?? 700);
+	console.log('  [A] reactive (learn input transitions, warm from stable)');
+	const parA = trainReactive(iters, par0, false).par;
+	reactivityReport(parA);
+	console.log('  [B] reactive + damage (retain self-repair)');
+	const parB = trainReactive(Math.round(iters * 1.2), parA, true).par;
+	reactivityReport(parB);
+	driftCheck(parB);
+	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  params saved to ${process.env.PARAMS_OUT}`); }
+}
+
 function main() {
 	if (process.env.MODE === 'stabilize') { stabilizeMain(); return; }
+	if (process.env.MODE === 'reactive') { reactiveMain(); return; }
 	console.log(`developmental arithmetic (1-bit full adder): ${W}x${H}, C=${C}, HD=${HD}, ${P} params, T=${T}`);
 	if (!gradientCheck()) { console.error('FAIL: gradient wrong'); process.exit(1); }
 	const iters = Number(process.env.ITERS ?? 900);

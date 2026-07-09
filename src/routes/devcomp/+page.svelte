@@ -23,11 +23,14 @@
 	let stepCount = $state(0);
 	let output = $state<number[]>([0]);
 	let msg = $state('starting the GPU…');
+	let tool = $state<'inspect' | 'damage'>('inspect');
+	let selectedCell = $state<number | null>(null);
+	let selVals = $state<number[]>([]);
+	let lastState: Float32Array | null = null;
 
 	const exp = $derived(experimentById(expId)!);
 	const maxSteps = $derived(exp.stable ? Infinity : exp.tGrow);
 	const expected = $derived(exp.cases.find((c) => c.in.every((v, i) => v === inputs[i]))?.out ?? []);
-	const correct = $derived(expected.length > 0 && expected.every((t, k) => Math.abs((output[k] ?? 0) - t) < 0.3));
 
 	async function ensureEngine(cfg: RuleConfig) {
 		if (engine && engine.cfg === cfg) return;
@@ -61,6 +64,7 @@
 	async function selectExp(id: string) {
 		expId = id;
 		inputs = new Array(exp.inputCells.length).fill(0);
+		selectedCell = null;
 		await load();
 		playing = true;
 	}
@@ -70,22 +74,36 @@
 	async function reset() { await load(); playing = true; }
 	function doStep() { if (engine && ready && stepCount < maxSteps) { engine.step(false); stepCount++; } }
 
-	// Damage brush — destroy a 3×3 patch under the pointer; the rule regrows it.
 	let painting = false;
+	function cellAt(e: PointerEvent): number {
+		const cfg = exp.cfg, rect = canvas.getBoundingClientRect();
+		const x = Math.max(0, Math.min(cfg.SW - 1, Math.floor(((e.clientX - rect.left) / rect.width) * cfg.SW)));
+		const y = Math.max(0, Math.min(cfg.SH - 1, Math.floor(((e.clientY - rect.top) / rect.height) * cfg.SH)));
+		return y * cfg.SW + x;
+	}
+	function updateSel() {
+		if (selectedCell !== null && lastState) selVals = Array.from({ length: exp.cfg.C }, (_, c) => lastState![selectedCell! * exp.cfg.C + c]);
+	}
+	// Damage brush — destroy a 3×3 patch under the pointer; the rule regrows it.
+	// Does NOT auto-play, so you can damage while paused and step through the heal.
 	function paintDamage(e: PointerEvent) {
 		if (!engine || !ready) return;
-		const cfg = exp.cfg, rect = canvas.getBoundingClientRect();
-		const cx = Math.floor(((e.clientX - rect.left) / rect.width) * cfg.SW);
-		const cy = Math.floor(((e.clientY - rect.top) / rect.height) * cfg.SH);
+		const cfg = exp.cfg, c0 = cellAt(e), cx = c0 % cfg.SW, cy = (c0 / cfg.SW) | 0;
 		for (let dy = -1; dy <= 1; dy++)
 			for (let dx = -1; dx <= 1; dx++) {
 				const x = cx + dx, y = cy + dy;
 				if (x >= 1 && x < cfg.SW - 1 && y >= 1 && y < cfg.SH - 1) engine.damageCell(y * cfg.SW + x);
 			}
-		playing = true;
 	}
-	function pointerDown(e: PointerEvent) { painting = true; try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic */ } paintDamage(e); }
-	function pointerMove(e: PointerEvent) { if (painting) paintDamage(e); }
+	function pointerDown(e: PointerEvent) {
+		try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic */ }
+		if (tool === 'damage') { painting = true; paintDamage(e); }
+		else { selectedCell = cellAt(e); updateSel(); }
+	}
+	function pointerMove(e: PointerEvent) {
+		if (painting) paintDamage(e);
+		else if (tool === 'inspect' && e.buttons) { selectedCell = cellAt(e); updateSel(); }
+	}
 	function pointerUp() { painting = false; }
 
 	function color(v: number): string {
@@ -119,6 +137,11 @@
 			ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 3;
 			ctx.strokeRect(cxp * cp + 3, cyp * cp + 3, cp - 7, cp - 7);
 		}
+		if (selectedCell !== null) {
+			const sx = selectedCell % cfg.SW, sy = (selectedCell / cfg.SW) | 0;
+			ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3;
+			ctx.strokeRect(sx * cp + 1, sy * cp + 1, cp - 3, cp - 3);
+		}
 	}
 
 	onMount(() => {
@@ -133,6 +156,8 @@
 					const st = await engine.readState();
 					draw(st);
 					output = readOutputs(exp.cfg, st, exp);
+					lastState = st;
+					if (selectedCell !== null) selVals = Array.from({ length: exp.cfg.C }, (_, c) => st[selectedCell! * exp.cfg.C + c]);
 				}
 				raf = requestAnimationFrame(loop);
 			};
@@ -167,7 +192,15 @@
 		></canvas>
 		<div class="side">
 			<p class="blurb">{exp.blurb}</p>
-			<p class="hint">✎ Drag on the grid to damage it — watch it regrow and keep computing.</p>
+			<div class="tool">
+				<button class="tbtn" class:sel={tool === 'inspect'} onclick={() => (tool = 'inspect')}>🔍 Inspect</button>
+				<button class="tbtn" class:sel={tool === 'damage'} onclick={() => (tool = 'damage')}>✎ Damage</button>
+			</div>
+			<p class="hint">
+				{tool === 'damage'
+					? 'Drag to destroy cells — it regrows. Pause + Step to watch the heal frame by frame.'
+					: 'Click a cell to inspect the field (values) stored in it.'}
+			</p>
 
 			<div class="inputs">
 				{#each inputs as bit, k (k)}
@@ -196,6 +229,27 @@
 				<button onclick={reset}>Reset</button>
 			</div>
 			<p class="meta">step {stepCount}{exp.stable ? '' : ` / ${exp.tGrow}`} · ○ input · □ output{exp.ic === 'seed' ? ' · 🌱 seed' : ''}</p>
+
+			{#if selectedCell !== null}
+				{@const sx = selectedCell % exp.cfg.SW}
+				{@const sy = (selectedCell / exp.cfg.SW) | 0}
+				<div class="inspector">
+					<div class="ihead">
+						<span>cell ({sx}, {sy}) — field · {exp.cfg.C} channels{exp.inputCells.includes(selectedCell) ? ' · input' : ''}{exp.outputCells.includes(selectedCell) ? ' · output' : ''}{selectedCell === exp.seedCell && exp.ic === 'seed' ? ' · seed' : ''}</span>
+						<button class="xbtn" onclick={() => (selectedCell = null)} aria-label="close">✕</button>
+					</div>
+					<div class="chans">
+						{#each selVals as v, c (c)}
+							{@const cv = Math.max(-1, Math.min(1, v))}
+							<div class="chan">
+								<span class="cname">{c === 0 ? 'sig' : 'h' + c}</span>
+								<span class="cbar"><span class="cfill" style="left:{cv >= 0 ? 50 : 50 + cv * 50}%; width:{Math.abs(cv) * 50}%; background:{cv >= 0 ? '#ff8a3d' : '#2b6cff'}"></span></span>
+								<span class="cval">{v.toFixed(2)}</span>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
 			{#if msg}<p class="msg">{msg}</p>{/if}
 		</div>
 	</div>
@@ -220,7 +274,22 @@
 	canvas { border-radius: 12px; background: #05070a; image-rendering: pixelated; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); cursor: crosshair; touch-action: none; }
 	.side { flex: 1; min-width: 240px; max-width: 380px; display: flex; flex-direction: column; gap: 14px; }
 	.blurb { margin: 0; color: #9aa7b4; font-size: 14px; line-height: 1.5; }
-	.hint { margin: 0; color: #7dd3c8; font-size: 13px; }
+	.hint { margin: 0; color: #7dd3c8; font-size: 13px; min-height: 2.6em; }
+	.tool { display: flex; gap: 8px; }
+	.tbtn { background: rgba(255, 255, 255, 0.03); color: #9aa7b4; border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+	.tbtn.sel { background: color-mix(in srgb, #2dd4bf 16%, transparent); border-color: #2dd4bf; color: #e6edf3; }
+	.inspector { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px; }
+	.ihead { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; color: #9aa7b4; margin-bottom: 8px; }
+	.xbtn { background: none; border: none; color: #6b7785; cursor: pointer; font-size: 13px; padding: 0 2px; }
+	.xbtn:hover { color: #e6edf3; }
+	.chans { display: flex; flex-direction: column; gap: 3px; }
+	.chan { display: grid; grid-template-columns: 26px 1fr 40px; align-items: center; gap: 8px; font-size: 11px; color: #9aa7b4; font-variant-numeric: tabular-nums; }
+	.cname { color: #6b7785; }
+	.cbar { position: relative; height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+	.cbar::before { content: ''; position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1px; background: rgba(255, 255, 255, 0.15); }
+	.cfill { position: absolute; top: 0; bottom: 0; border-radius: 2px; }
+	.cval { text-align: right; color: #cbd5e1; }
 	.inputs { display: flex; gap: 10px; flex-wrap: wrap; }
 	.chip { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #9aa7b4;
 		border-radius: 9px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums; }
