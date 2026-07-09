@@ -1,0 +1,75 @@
+// WGSL compute kernel for the developmental-computation field CA.
+// One invocation per interior cell: perceive → MLP(ReLU) → tanh(state+dl).
+// Constants are baked from `rule.ts` so the GPU rule is identical to the
+// reference `forward()`. Damage and input-clamp are folded into the single
+// pass, in the reference order (damage zeros the cell, then input clamp wins).
+
+import { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O } from './rule';
+
+export function fieldShaderWGSL(): string {
+	return /* wgsl */ `
+const SW : i32 = ${SW};
+const SH : i32 = ${SH};
+const C  : i32 = ${C};
+const HD : i32 = ${HD};
+const PERC : i32 = ${PERC};
+const W1O : u32 = ${W1O}u;
+const B1O : u32 = ${B1O}u;
+const W2O : u32 = ${W2O}u;
+const B2O : u32 = ${B2O}u;
+
+@group(0) @binding(0) var<storage, read>        stateIn   : array<f32>;
+@group(0) @binding(1) var<storage, read_write>  stateOut  : array<f32>;
+@group(0) @binding(2) var<storage, read>        params    : array<f32>;
+@group(0) @binding(3) var<storage, read>        isInput   : array<u32>;   // per-cell: 1 if input
+@group(0) @binding(4) var<storage, read>        inputVal  : array<f32>;   // per-cell: clamped ch0
+@group(0) @binding(5) var<storage, read>        damageKeep: array<u32>;   // per-cell: 1 keep, 0 destroy
+@group(0) @binding(6) var<uniform>              ctrl      : vec4<u32>;     // x = applyDamage flag
+
+@compute @workgroup_size(8, 8)
+fn step(@builtin(global_invocation_id) gid : vec3<u32>) {
+  let x = i32(gid.x);
+  let y = i32(gid.y);
+  if (x < 1 || x >= SW - 1 || y < 1 || y >= SH - 1) { return; } // interior only; border stays 0
+  let i  = y * SW + x;
+  let r  = i + 1;
+  let l  = i - 1;
+  let up = i - SW;
+  let dn = i + SW;
+
+  var perc : array<f32, ${PERC}>;
+  for (var ch = 0; ch < C; ch = ch + 1) {
+    let sc   = stateIn[u32(i  * C + ch)];
+    let sr   = stateIn[u32(r  * C + ch)];
+    let sl   = stateIn[u32(l  * C + ch)];
+    let su   = stateIn[u32(up * C + ch)];
+    let sd   = stateIn[u32(dn * C + ch)];
+    let b = ch * 4;
+    perc[b]     = sc;
+    perc[b + 1] = (sr - sl) * 0.5;
+    perc[b + 2] = (sd - su) * 0.5;
+    perc[b + 3] = sr + sl + su + sd - 4.0 * sc;
+  }
+
+  var h : array<f32, ${HD}>;
+  for (var u = 0; u < HD; u = u + 1) {
+    var a = params[B1O + u32(u)];
+    let base = W1O + u32(u * PERC);
+    for (var k = 0; k < PERC; k = k + 1) { a = a + params[base + u32(k)] * perc[k]; }
+    h[u] = max(a, 0.0);
+  }
+
+  let dmg = (ctrl.x == 1u) && (damageKeep[u32(i)] == 0u);
+  let inp = isInput[u32(i)] == 1u;
+  for (var c = 0; c < C; c = c + 1) {
+    var dl = params[B2O + u32(c)];
+    let base = W2O + u32(c * HD);
+    for (var u = 0; u < HD; u = u + 1) { dl = dl + params[base + u32(u)] * h[u]; }
+    var v = tanh(stateIn[u32(i * C + c)] + dl);
+    if (dmg) { v = 0.0; }              // damage zeros the cell...
+    if (inp && c == 0) { v = inputVal[u32(i)]; }  // ...then input clamp wins (matches reference)
+    stateOut[u32(i * C + c)] = v;
+  }
+}
+`;
+}

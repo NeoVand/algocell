@@ -353,6 +353,7 @@ function gateCurriculum(iters: number): void {
 		);
 		console.log(`  (constant-output baseline loss = 0.250; XOR must beat it by using both inputs)`);
 		if (process.env.GATE_VIZ) dumpGateViz(par, finalTask, process.env.GATE_VIZ);
+		if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(par))); console.log(`  params saved to ${process.env.PARAMS_OUT}`); }
 	}
 }
 
