@@ -338,7 +338,8 @@ fields, weight analysis, loss curves). Memory: `autodiff-on-zilion.md`, `morphog
 
 **DONE so far:** Exp A (dual-number AD on a real Z80), B (gradient through a developmental rollout),
 C (grew the F evolution couldn't), D (color 🦎 emoji at 64×64, best loss 0.0028), **E0 WIRE**,
-**E1 GATE**, and **E2 SELF-REPAIR** — see below. The app is now a hub (`/` landing → `/soup`,
+**E1 GATE**, **E2 SELF-REPAIR**, and **E3 GROW-FROM-SEED** — see below. One rule now grows a logic gate
+from a single seed cell, computes XOR, and self-repairs. The app is now a hub (`/` landing → `/soup`,
 morphogenesis, research card).
 
 - **E0 WIRE — DONE (`src/lib/morph/dev/expE.ts`).** One CA rule transports a 1-bit signal from an input
@@ -382,14 +383,25 @@ morphogenesis, research card).
   - Gradient-checked (multi-readout + damage path, rel err 9.6e-6). Viz: `FVIZ=path.json` →
     `dev/gen_repair_html.mjs` renders the animated damage-and-regrow (compute → hold → 💥 → heal). Sent to
     the user. Trained params saved via `PARAMS_OUT` (for the Zilion port / a live in-app demo).
+- **E3 GROW-FROM-SEED — DONE (`src/lib/morph/dev/expG.ts`) — the complete machine.** E1/E2 start from a
+  fully-alive substrate; here the medium starts **empty except a single seed cell** at the centre. **One
+  rule** now grows the whole computational structure from that seed → computes XOR → and, when a patch is
+  destroyed, regrows and still computes. From a seed: **grown/held [0.004, 0.994, 0.995, −0.001] ✓**,
+  **+damage healed [0.010, 0.996, 0.995, 0.033] ✓** (want 0 1 1 0); the *same* rule still handles the full
+  substrate (cross-check ✓). Key insights:
+  - **Growth is extreme repair** — growing the structure from one cell is the limiting case of regenerating
+    a hole. So we **warm-start from the E2 rule** (which already partially grows from a seed: it gets
+    [0.055, 0.778, 0.097, 0.180] — asymmetric, one input under-wired) and fine-tune.
+  - **Dual-IC objective** — each step accumulates gradient over *both* the seed IC (weight 0.75, the focus)
+    and the full IC (0.25, so it doesn't forget E1/E2). One rule ends up covering both regimes.
+  - Same forward/backward core as E2 with an initial-condition flag; the keep-best snapshot (fixed earlier)
+    caught a mid-training spike so the final rule is the best seen. Viz `dev/gen_seed_html.mjs`
+    (seed → grow → compute → 💥 → heal). Params saved via `PARAMS_OUT`. Sent to the user.
 
 **NEXT:**
-1. **Grow-from-seed for the gate.** The substrate is still pre-seeded "all cells alive." Next: grow the
-   computational structure from a single seed cell (as in C/D) *and then* compute + self-repair — the full
-   "grown, functional, self-healing machine" in one rollout.
-2. **A bigger circuit** — a 1-bit adder (2 outputs) or a 2-bit function, to show the paradigm scales past a
-   single gate. Same recipe (curriculum → persist → damage).
-3. **Regeneration on Exp D** (damage the lizard, watch it heal) — the visual companion figure.
+1. **A bigger circuit** — a 1-bit adder (2 outputs) or a 2-bit function, to show the paradigm scales past a
+   single gate. Same recipe (curriculum → persist → damage → grow-from-seed).
+2. **Regeneration on Exp D** (damage the lizard, watch it heal) — the visual companion figure.
 4. **Forward-gradient at scale** — run it on C/D/E; quantify K and variance reduction (antithetic, local
    losses). *Decides how "in-substrate" the results can be — the systems backbone.*
 5. **Start the Z80/WGSL fixed-point dual field kernel** (roadmap §4.1–4.2); the saved E2 params give a
