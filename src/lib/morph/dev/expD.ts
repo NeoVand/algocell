@@ -21,7 +21,7 @@ const C = 16; // 0..3 = RGBA (visible), 4..15 = hidden
 const FEAT = 4; // identity, gx, gy, laplacian
 const PERC = FEAT * C; // 64
 const HD = 80; // MLP hidden units
-const T = 40;
+const T = 28;
 
 // flat parameter layout: [W1 (HD*PERC), b1 (HD), W2 (C*HD), b2 (C)]
 const W1O = 0;
@@ -214,27 +214,34 @@ function train(iters: number): { par: Float64Array; lossCurve: number[] } {
 	const target = lizardTarget();
 	const m = new Float64Array(P), v = new Float64Array(P);
 	const b1 = 0.9, b2 = 0.999;
+	const wd = 2e-5; // mild weight decay keeps weights bounded
 	const lossCurve: number[] = [];
+	let bestLoss = Infinity;
+	let bestPar = par.slice();
 	for (let it = 1; it <= iters; it++) {
-		const lr = it > iters * 0.5 ? (it > iters * 0.8 ? 0.002 : 0.005) : 0.01;
+		const warm = Math.min(1, it / 40); // warmup avoids an early catastrophic step
+		const base = it > iters * 0.7 ? 0.0015 : it > iters * 0.4 ? 0.003 : 0.005;
+		const lr = warm * base;
 		const states = forward(par, seed);
 		const { L, gsT } = computeLoss(states[T], target);
 		const grad = backward(states, par, gsT);
-		// global-norm gradient clipping — stops the overshoot that saturates tanh
 		let gn = 0;
 		for (let j = 0; j < P; j++) gn += grad[j] * grad[j];
 		gn = Math.sqrt(gn);
-		if (gn > 1.0) for (let j = 0; j < P; j++) grad[j] *= 1.0 / gn;
+		const clip = gn > 0.5 ? 0.5 / gn : 1; // tighter global-norm clip
+		if (L < bestLoss) { bestLoss = L; bestPar = par.slice(); } // snapshot the par that scored L, BEFORE the step
 		const c1 = 1 - Math.pow(b1, it), c2 = 1 - Math.pow(b2, it);
 		for (let j = 0; j < P; j++) {
-			m[j] = b1 * m[j] + (1 - b1) * grad[j];
-			v[j] = b2 * v[j] + (1 - b2) * grad[j] * grad[j];
+			const g = grad[j] * clip + wd * par[j];
+			m[j] = b1 * m[j] + (1 - b1) * g;
+			v[j] = b2 * v[j] + (1 - b2) * g * g;
 			par[j] -= (lr * (m[j] / c1)) / (Math.sqrt(v[j] / c2) + 1e-8);
 		}
 		if (it % 25 === 0 || it === 1) lossCurve.push(L);
-		if (it % 100 === 0 || it === 1) console.log(`  iter ${String(it).padStart(4)}   loss ${L.toFixed(6)}`);
+		if (it % 100 === 0 || it === 1) console.log(`  iter ${String(it).padStart(4)}   loss ${L.toFixed(6)}  (best ${bestLoss.toFixed(6)})`);
 	}
-	return { par, lossCurve };
+	console.log(`best loss ${bestLoss.toFixed(6)}`);
+	return { par: bestPar, lossCurve };
 }
 
 const rgb = (s: Float64Array, i: number): [number, number, number] => [
