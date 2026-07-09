@@ -91,10 +91,28 @@ Param layout `[W1(HD×PERC), b1(HD), W2(C×HD), b2(C)]`. Frozen params committed
   on 11×11, **routing accuracy 100%**, converges in ~100 iters. **Grid-size
   invariant** (same params, never trained on these sizes): 13×13 **100%**, 17×17
   **100%** (with more steps for the longer distances). Params `wire_invariant.json`.
-  This validates the whole direction. NEXT: movable XOR (2 symmetric inputs + 1
-  output), then movable adder (3 inputs / 2 outputs — needs an OUT_ID marker to
-  distinguish sum vs carry), then + persist + damage, then a DRAGGABLE-PORT demo
-  (add marker channels to the WGSL kernel; drag a port → field rewires live).
+  This validates the whole direction. **DRAGGABLE-PORT DEMO — DONE (movable wire):**
+  WGSL kernel gained marker support (`config.markers`, isOutput buffer); rule.ts
+  `IDIM` (17×17 markers), `seedMarkers`, `movable_wire`/`movable_xor` experiments;
+  `/devcomp` has a "Move ports" tool — drag input (○)/output (□) ports and the
+  kernel re-stamps markers live so the running field re-routes. Verified: movable
+  wire on 17×17, input 0→−0.004, 1→1.000, ports drag freely.
+
+  **MOVABLE XOR — hard open problem (characterized, not solved).** Position-
+  invariant *computation* is much harder than routing. Findings across 6 attempts:
+  the constant-0.5 output is a strong attractor; warm-from-wire hurts (the wire
+  routes by *flooding* ch0, which two inputs can't share). The recipe that finally
+  trained a MARKER XOR at a FIXED ADJACENT placement: zero-init last layer + a
+  cosine-decayed lr (the stability fix) → **100%, loss 0**. But it does NOT
+  generalize: the instant the placement curriculum spreads the ports apart, accuracy
+  cliffs to 0% (collapse). So the rule can XOR when the output is adjacent to both
+  inputs (local, no routing) but cannot ROUTE two distinct signals to a distant
+  output and combine them, position-invariantly. NEXT (untried): a 3-phase
+  curriculum that decouples distance from position — (1) fixed adjacent (works),
+  (2) fixed inputs + output distance-ramp (E1-style, which trained fixed XOR to
+  d=5), (3) then randomize position — warm-starting + keep-best per stage. Also
+  consider distinct per-input markers, or an explicit two-channel signal encoding
+  so both bits reach the output cleanly.
 - **S7 — in-browser forward-gradient trainer** (watch it learn) + JS reverse-mode
   Web Worker baseline. ⏳
 - **S8 — ablations + multi-seed statistics** (isotropic-perception / no-hidden /

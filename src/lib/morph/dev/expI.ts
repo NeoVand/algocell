@@ -214,18 +214,37 @@ function train(iters: number, init?: Float64Array): Float64Array {
 		const rng0 = mulberry32(7);
 		par = new Float64Array(P);
 		for (let j = 0; j < P; j++) par[j] = (rng0() - 0.5) * 0.1;
-		for (let j = W2O; j < P; j++) par[j] *= 0.4;
+		// ZERO=1 → near-identity rule (last layer 0): builds routing+combine gradually,
+		// avoids the constant-0.5 collapse (as the compute experiments do).
+		if (process.env.ZERO === '1') for (let j = W2O; j < P; j++) par[j] = 0;
+		else for (let j = W2O; j < P; j++) par[j] *= 0.4;
 	}
 	const FULL = GW + GH; // full-grid Manhattan span
 	const warm = init !== undefined;
+	const curr = Number(process.env.CURR ?? 0.5); // curriculum: fraction of training over which ports spread to full
+	const phase1 = Number(process.env.PHASE1 ?? 0); // fraction of training at a single FIXED placement first (master XOR, then generalize)
+	const lrPeak = Number(process.env.LR ?? (warm ? 0.002 : 0.006));
+	const iyc = GH >> 1, ic = GW >> 1;
+	// phase-1 canonical placement: ports ADJACENT (output next to the inputs, like
+	// E1's d=1) so XOR is learnable from scratch before we spread the ports out.
+	const canonical = (): Place => ({ gw: GW, gh: GH, ins: N_IN === 2 ? [(iyc - 1) * GW + (ic - 1), (iyc + 1) * GW + (ic - 1)] : [iyc * GW + (ic - 1)], out: iyc * GW + ic });
 	const m = new Float64Array(P), v = new Float64Array(P), b1 = 0.9, b2 = 0.999;
 	let bestLoss = Infinity, bestPar = par.slice();
 	for (let it = 1; it <= iters; it++) {
-		const lr = Math.min(1, it / 40) * (warm ? 0.002 : 0.006) * (it > iters * 0.6 ? 0.4 : 1);
-		// placement-distance curriculum: ports start clustered, spread to full grid by 50%.
-		const maxDist = Math.min(FULL, Math.round(3 + (it / (iters * 0.5)) * FULL));
-		const rng = mulberry32(1000 + it);
-		const places = Array.from({ length: BATCH }, () => randPlace(rng, GW, GH, maxDist));
+		const frac = it / iters;
+		// cosine-decay lr to a low floor: find the solution, then settle into its basin
+		// instead of bouncing out (the stability fix used across all the other rules).
+		const cos = 0.5 * (1 + Math.cos(Math.PI * frac));
+		const lr = Math.min(1, it / 40) * lrPeak * (0.1 + 0.9 * cos);
+		let places: Place[];
+		if (frac < phase1) places = Array.from({ length: BATCH }, canonical); // fixed placement — learn XOR first
+		else {
+			// then spread to random placements (distance curriculum over the remaining fraction)
+			const p2 = Math.max(1e-6, (frac - phase1) / Math.max(1e-6, curr - phase1));
+			const maxDist = Math.min(FULL, Math.round(2 + p2 * FULL));
+			const rng = mulberry32(1000 + it);
+			places = Array.from({ length: BATCH }, () => randPlace(rng, GW, GH, maxDist));
+		}
 		const { L, grad, acc } = lossAndGrad(par, places);
 		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);
 		const clip = gn > 1 ? 1 / gn : 1;
