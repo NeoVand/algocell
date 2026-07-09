@@ -21,6 +21,11 @@ export class GPUEngine {
 	private context!: GPUCanvasContext;
 	private format!: GPUTextureFormat;
 
+	/** The engine's WebGPU device, for sharing with sibling tools (e.g. the morphogenesis mode's Zilion instance). WebGPU resources cannot cross devices, so reuse this rather than requesting a second device. */
+	get gpuDevice(): GPUDevice {
+		return this.device;
+	}
+
 	// Storage buffers
 	private soupBuffer!: GPUBuffer;
 	private pairsBuffer!: GPUBuffer;
