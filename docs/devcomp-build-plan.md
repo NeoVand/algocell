@@ -52,9 +52,17 @@ Param layout `[W1(HD×PERC), b1(HD), W2(C×HD), b2(C)]`. Frozen params committed
   live output readout.
 - **S4 — damage brush + self-repair + grow-from-seed in the demo.** ⏳
 - **S5 — tiling/scale spectacle** (N×N independent machines, ≥30fps). ⏳
-- **S6 — new experiment: adder.** ⏳ 1-bit full adder first (3-in/2-out, 8 cases;
-  more likely to converge), then 2-bit adder as stretch; fallback ladder
-  mux → half-adder. New `expH.ts`, curriculum = distance → persist → damage → seed.
+- **S6 — new experiment: adder.** 🟡 **Compute stage DONE.** `expH.ts` — 1-bit
+  FULL ADDER (11×11, C=16, HD=64, 5200 params): 3 inputs → 2 outputs
+  (`sum = a⊕b⊕cin` 3-input parity, `carry = majority`), **8/8 cases correct,
+  loss 0.0000** across a 6-cell transport distance (distance curriculum, 8/8 at
+  every stage). Params: `src/lib/devcomp/params/adder_compute.json`. Multi-output
+  backprop gradient-checked exact. *The paradigm scales to arithmetic.*
+  Remaining for S6: (a) long-horizon-stability + input-reactivity training (extend
+  persistence window + input transitions mid-rollout) + damage + grow-from-seed;
+  (b) generalize the WGSL kernel/rule to arbitrary grid/channel dims (currently
+  hardcoded 9×9/C12/HD48) so the adder loads into the live demo; (c) 2-bit adder
+  as stretch (fallback ladder: mux → half-adder).
 - **S7 — in-browser forward-gradient trainer** (watch it learn) + JS reverse-mode
   Web Worker baseline. ⏳
 - **S8 — ablations + multi-seed statistics** (isotropic-perception / no-hidden /
