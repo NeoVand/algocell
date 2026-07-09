@@ -81,10 +81,20 @@ Param layout `[W1(HD×PERC), b1(HD), W2(C×HD), b2(C)]`. Frozen params committed
   Inspector overhaul shipped too (Inspect/Damage toggle, click a cell to see its
   field channels, damage respects pause + step-through). `/devcomp/validate` 36/36.
   Remaining for S6: (a2) grow-from-seed adder (separate seed-IC curriculum);
-  (c) 2-bit adder stretch (fallback ladder: mux → half-adder). BIG NEXT IDEA —
-  positional invariance: marker channels (IN_MARK/OUT_MARK) + randomized terminal
-  placement so one rule grows the right circuit wherever you drop the terminals
-  (routing-to-arbitrary-output is the risky part; may need a learned output beacon).
+  (c) 2-bit adder stretch (fallback ladder: mux → half-adder).
+- **S6d — POSITIONAL INVARIANCE — crux DE-RISKED (`expI.ts`).** One grid-agnostic
+  rule (C=16: ch0 signal, ch1 IN_MARK, ch2 OUT_MARK, ch3.. hidden; HD=96; 7792
+  params) that routes a bit to a **randomly-placed** output — a MOVABLE WIRE. The
+  terminals announce themselves via marker channels (re-stamped each step; the rule
+  reads markers, never absolute positions) and it learns to route (emit beacons from
+  the markers, follow them — "waves find each other"). Trained on random placements
+  on 11×11, **routing accuracy 100%**, converges in ~100 iters. **Grid-size
+  invariant** (same params, never trained on these sizes): 13×13 **100%**, 17×17
+  **100%** (with more steps for the longer distances). Params `wire_invariant.json`.
+  This validates the whole direction. NEXT: movable XOR (2 symmetric inputs + 1
+  output), then movable adder (3 inputs / 2 outputs — needs an OUT_ID marker to
+  distinguish sum vs carry), then + persist + damage, then a DRAGGABLE-PORT demo
+  (add marker channels to the WGSL kernel; drag a port → field rewires live).
 - **S7 — in-browser forward-gradient trainer** (watch it learn) + JS reverse-mode
   Web Worker baseline. ⏳
 - **S8 — ablations + multi-seed statistics** (isotropic-perception / no-hidden /
