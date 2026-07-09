@@ -14,6 +14,8 @@
 //
 //   npx tsx src/lib/morph/dev/expB.ts
 
+import { writeFileSync } from 'node:fs';
+
 // ---- fixed-point dual numbers (Q-format, signed; mirrors the Z80 arithmetic) --
 // Q16.16 fixed-point: enough fractional bits that the gradient survives the
 // developmental rollout cleanly. On the Z80 this is 32-bit fixed-point — a
@@ -179,8 +181,20 @@ function gradientCheck(): boolean {
 	return ok;
 }
 
+/** Roll out and capture the field at every `everyN` steps (for visualization). */
+function rolloutFrames(theta: number[], seed: number[], everyN: number): number[][] {
+	const p: D[] = theta.map((val) => ({ v: Math.round(val * SCALE), d: 0 }));
+	let f: D[] = seed.map((v) => ({ v: Math.round(v * SCALE), d: 0 }));
+	const frames: number[][] = [fieldValues(f)];
+	for (let t = 0; t < T; t++) {
+		f = step(f, p);
+		if ((t + 1) % everyN === 0) frames.push(fieldValues(f));
+	}
+	return frames;
+}
+
 // ---- (B1) grow a target by gradient descent -------------------------------
-function grow(name: string, seed: number[], target: number[], iters: number): number {
+function grow(name: string, seed: number[], target: number[], iters: number): { L: number; theta: number[] } {
 	let theta = [0.02, 0.05, 0.05, 0.05, 0.05, 0.01];
 	let L = lossOnly(theta, seed, target);
 	const L0 = L;
@@ -206,7 +220,7 @@ function grow(name: string, seed: number[], target: number[], iters: number): nu
 	console.log('target:\n' + render(target));
 	console.log('grown (gradient descent through development):\n' + render(finalField));
 	console.log('weights:', theta.map((v) => v.toFixed(3)).join(', '), '\n');
-	return L;
+	return { L, theta };
 }
 
 function main() {
@@ -216,12 +230,32 @@ function main() {
 		process.exit(1);
 	}
 	console.log('=== B1: grow targets by gradient descent through development ===\n');
-	const discL = grow('disc', asymSeed(), discTarget(3.5), 120);
-	const rampL = grow('horizontal ramp (ASYMMETRIC — impossible for an isotropic rule)', asymSeed(), rampTarget(), 200);
+	const disc = grow('disc', asymSeed(), discTarget(3.5), 120);
+	const ramp = grow('horizontal ramp (ASYMMETRIC — impossible for an isotropic rule)', asymSeed(), rampTarget(), 200);
 
 	console.log('SUMMARY: gradient-based morphogenesis reduced loss on both targets.');
-	console.log(`disc ${discL.toFixed(5)} | ramp ${rampL.toFixed(5)}`);
+	console.log(`disc ${disc.L.toFixed(5)} | ramp ${ramp.L.toFixed(5)}`);
 	console.log('The gradient came from differentiating the DEVELOPMENTAL ROLLOUT — not from evolution.');
+
+	// Dump visualization data (development frames + target/grown) if asked.
+	const out = process.env.EXPB_VIZ;
+	if (out) {
+		const data = {
+			W, H, T,
+			disc: {
+				target: discTarget(3.5),
+				frames: rolloutFrames(disc.theta, asymSeed(), 2),
+				weights: disc.theta
+			},
+			ramp: {
+				target: rampTarget(),
+				frames: rolloutFrames(ramp.theta, asymSeed(), 2),
+				weights: ramp.theta
+			}
+		};
+		writeFileSync(out, JSON.stringify(data));
+		console.log(`\nwrote viz data -> ${out}`);
+	}
 }
 
 main();
