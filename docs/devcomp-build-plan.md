@@ -99,3 +99,27 @@ browser artifact; related-work positioning + a non-developmental baseline.
 at S2; read a thresholded/held output if needed); the 2-bit adder may not
 converge monolithically (full-adder-first + fallback ladder is the insurance);
 Track-2 `memBytes` occupancy for full-MLP-in-lane (accept low occupancy; offline).
+
+## Finding (S4): long-horizon attractor stability
+
+The demo runs the rule indefinitely, which exposed a training-horizon artifact:
+**E2 (self-repair) is only *metastable*** — its "1" outputs decay to 0 past
+~150 steps (`[0,1]`: 0.997@50 → 0.091@200 → −0.04@600), because persistence was
+enforced only over a short window (hold 8 steps + a 5-step repair tail). **E3
+(grow-from-seed) IS genuinely stable** — holds to 600+ steps in *both* the seed
+and full initial conditions, and after mid-run damage it heals in ~20 steps and
+**stays** healed. E3's richer dual-IC + multi-stage training produced a true
+attractor. So E3 is the *universal* rule (compute + hold + self-repair, any IC),
+and the live demo runs E3 for the self-repair and grow tabs (E1 gate stays
+capped at tGrow). **Also note:** these rules are *developmental*, not reactive —
+changing an input on a settled field does not migrate it to the new answer, so
+the demo re-seeds on input change. Both point to the same next step:
+
+**Train for long-horizon stability AND input-reactivity.** Enforce persistence
+over a much longer window (100s of steps, or a stationarity penalty), and add
+**input transitions** mid-rollout (change the input, require the output to
+re-settle) — the same trick that gave self-repair, applied to inputs. This makes
+every rule a genuinely stable, reactive circuit, strengthens the "stable
+attractor" claim for the paper, and lets the demo respond to live input toggles
+without re-seeding. Fold into S6 (train the adder reactive + long-stable from the
+start) and backfill E1/E2.

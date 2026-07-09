@@ -114,6 +114,13 @@ export class FieldCAEngine {
 		return this.cur === 0 ? this.stateA : this.stateB;
 	}
 
+	private zeroCell = new Float32Array(C);
+	/** Destroy a cell in the LIVE field (zero all channels) — the interactive
+	 *  damage brush. The rule regrows it on subsequent steps. */
+	damageCell(cell: number): void {
+		this.device.queue.writeBuffer(this.currentBuffer(), cell * C * 4, this.zeroCell);
+	}
+
 	/** Read the latest field back to the CPU as a Float32Array (length N*C). */
 	async readState(): Promise<Float32Array> {
 		const enc = this.device.createCommandEncoder();

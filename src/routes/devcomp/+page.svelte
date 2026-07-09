@@ -6,10 +6,14 @@
 	} from '$lib/devcomp/rule';
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
-	import e2 from '$lib/devcomp/params/e2_repair.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
 
-	const PARAMS: Record<string, number[]> = { e1_gate: e1, e2_repair: e2, e3_seed: e3 };
+	// The E3 rule is the universal, long-term-stable rule: it computes XOR, holds
+	// the answer indefinitely, and self-repairs — in BOTH the full and seed initial
+	// conditions. The dedicated E2 self-repair stage is only *metastable* (its "1"
+	// outputs decay to 0 past ~150 steps), so the demo's live-running self-repair
+	// and grow tabs use E3. (e2_repair.json is kept as the training-stage artifact.)
+	const PARAMS: Record<string, number[]> = { e1_gate: e1, e2_repair: e3, e3_seed: e3 };
 	const CELL = 40;
 
 	let canvas: HTMLCanvasElement;
@@ -45,9 +49,31 @@
 	}
 
 	function selectExp(id: string) { expId = id; load(); playing = true; }
-	function toggleInput(k: number) { inputs = inputs.map((v, i) => (i === k ? v ^ 1 : v)); applyInputs(); }
+	// These are developmental rules: they grow a machine that computes the answer
+	// for the input present during growth. Changing the input therefore re-seeds
+	// and regrows (you watch it recompute) rather than mutating a settled field.
+	function toggleInput(k: number) { inputs = inputs.map((v, i) => (i === k ? v ^ 1 : v)); load(); playing = true; }
 	function reset() { load(); playing = true; }
 	function doStep() { if (engine && stepCount < maxSteps) { engine.step(false); stepCount++; } }
+
+	// Interactive damage brush — destroy a 3×3 patch under the pointer; the running
+	// rule regrows it. Most striking on self-repair / grow-from-seed (they persist).
+	let painting = false;
+	function paintDamage(e: PointerEvent) {
+		if (!engine) return;
+		const rect = canvas.getBoundingClientRect();
+		const cx = Math.floor(((e.clientX - rect.left) / rect.width) * SW);
+		const cy = Math.floor(((e.clientY - rect.top) / rect.height) * SH);
+		for (let dy = -1; dy <= 1; dy++)
+			for (let dx = -1; dx <= 1; dx++) {
+				const x = cx + dx, y = cy + dy;
+				if (x >= 1 && x < SW - 1 && y >= 1 && y < SH - 1) engine.damageCell(y * SW + x);
+			}
+		playing = true; // so it steps and heals
+	}
+	function pointerDown(e: PointerEvent) { painting = true; try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } paintDamage(e); }
+	function pointerMove(e: PointerEvent) { if (painting) paintDamage(e); }
+	function pointerUp() { painting = false; }
 
 	function color(v: number): string {
 		const t = Math.max(-1, Math.min(1, v));
@@ -120,9 +146,16 @@
 	</div>
 
 	<div class="stage">
-		<canvas bind:this={canvas}></canvas>
+		<canvas
+			bind:this={canvas}
+			onpointerdown={pointerDown}
+			onpointermove={pointerMove}
+			onpointerup={pointerUp}
+			onpointerleave={pointerUp}
+		></canvas>
 		<div class="side">
 			<p class="blurb">{exp.blurb}</p>
+			<p class="hint">✎ Drag on the grid to damage it — watch it regrow and keep computing.</p>
 
 			<div class="inputs">
 				{#each inputs as bit, k (k)}
@@ -165,7 +198,8 @@
 		border-radius: 999px; padding: 7px 16px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 	.tab.active { background: color-mix(in srgb, #2dd4bf 16%, transparent); border-color: #2dd4bf; color: #e6edf3; }
 	.stage { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
-	canvas { border-radius: 12px; background: #05070a; image-rendering: pixelated; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); }
+	canvas { border-radius: 12px; background: #05070a; image-rendering: pixelated; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); cursor: crosshair; touch-action: none; }
+	.hint { margin: 0; color: #7dd3c8; font-size: 13px; }
 	.side { flex: 1; min-width: 240px; max-width: 380px; display: flex; flex-direction: column; gap: 16px; }
 	.blurb { margin: 0; color: #9aa7b4; font-size: 14px; line-height: 1.5; }
 	.inputs { display: flex; gap: 10px; }
