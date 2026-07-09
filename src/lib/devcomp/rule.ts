@@ -1,8 +1,9 @@
-// Shared spec for developmental computation (E1/E2/E3 and beyond).
+// Shared spec for developmental computation (E1/E2/E3, the adder, and beyond).
 //
-// Single source of truth for the CA rule: constants, parameter layout, the
-// reference `forward()` stepper (identical to the trainer in
-// `src/lib/morph/dev/expF.ts`), and per-experiment I/O layouts. The trainer
+// Single source of truth for the CA rule: dimensions/parameter layout (a
+// RuleConfig, so different experiments can use different grid/channel sizes),
+// the reference `forward()` stepper (identical to the trainers in
+// `src/lib/morph/dev/exp{F,G,H}.ts`), and per-experiment I/O layouts. The trainer
 // (Node), the WGSL kernel (GPU), and the demo UI all agree with THIS file.
 //
 // The rule (per interior cell, per step):
@@ -11,14 +12,24 @@
 //   state'   = tanh(state + dl)      ← residual is INSIDE the tanh
 // Inputs are clamped (channel 0) every step; border cells stay 0 forever.
 
-export const SW = 9, SH = 9, N = SW * SH;
-export const C = 12, FEAT = 4, PERC = FEAT * C, HD = 48;
-// Parameter block layout: [ W1(HD×PERC), b1(HD), W2(C×HD), b2(C) ]
-export const W1O = 0;
-export const B1O = W1O + HD * PERC;
-export const W2O = B1O + HD;
-export const B2O = W2O + C * HD;
-export const P = B2O + C; // 2940
+export interface RuleConfig {
+	SW: number; SH: number; N: number; C: number; FEAT: number; PERC: number; HD: number;
+	W1O: number; B1O: number; W2O: number; B2O: number; P: number;
+}
+
+/** Build a config from grid + channel + hidden sizes. Param block layout is
+ *  [ W1(HD×PERC), b1(HD), W2(C×HD), b2(C) ]. */
+export function makeConfig(SW: number, SH: number, C: number, HD: number): RuleConfig {
+	const FEAT = 4, PERC = FEAT * C, N = SW * SH;
+	const W1O = 0, B1O = W1O + HD * PERC, W2O = B1O + HD, B2O = W2O + C * HD, P = B2O + C;
+	return { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P };
+}
+
+export const EDIM = makeConfig(9, 9, 12, 48); // E-series: gate / self-repair / grow (P=2940)
+export const ADIM = makeConfig(11, 11, 16, 64); // 1-bit full adder (P=5200)
+
+// Back-compat exports (E-series dims). New code should read dims from an experiment's cfg.
+export const { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P } = EDIM;
 
 export type IC = 'full' | 'seed';
 
@@ -26,41 +37,54 @@ export interface Experiment {
 	id: string;
 	name: string;
 	blurb: string;
+	cfg: RuleConfig;
 	inputCells: number[]; // cells whose channel-0 is clamped to the input bit
 	outputCells: number[]; // cells whose channel-0 is read as an output bit
+	outputLabels?: string[]; // optional per-output labels (e.g. ['sum','carry'])
 	cases: { in: number[]; out: number[] }[]; // truth table
 	ic: IC; // initial condition: full substrate, or a single seed cell
 	seedCell?: number; // for ic === 'seed'
-	paramsUrl: string; // JSON number[] of length P
+	paramsUrl: string; // JSON number[] of length cfg.P
 	tGrow: number; // steps until the answer has settled (for a readout)
+	stable: boolean; // true if the rule is a long-horizon attractor (run indefinitely); else cap at tGrow
 }
 
-const iy = SH >> 1, IN_COL = 2, OUT_COL = SW - 2;
-const IN_TOP = (iy - 1) * SW + IN_COL, IN_BOT = (iy + 1) * SW + IN_COL;
-const OUT = iy * SW + OUT_COL;
+// --- E-series I/O (9×9) ---
+const e_iy = EDIM.SH >> 1, e_inCol = 2, e_outCol = EDIM.SW - 2;
+const IN_TOP = (e_iy - 1) * EDIM.SW + e_inCol, IN_BOT = (e_iy + 1) * EDIM.SW + e_inCol;
+const E_OUT = e_iy * EDIM.SW + e_outCol;
 const XOR_CASES = [
-	{ in: [0, 0], out: [0] },
-	{ in: [0, 1], out: [1] },
-	{ in: [1, 0], out: [1] },
-	{ in: [1, 1], out: [0] }
+	{ in: [0, 0], out: [0] }, { in: [0, 1], out: [1] }, { in: [1, 0], out: [1] }, { in: [1, 1], out: [0] }
 ];
 
-/** The trained experiments. Param URLs resolve against the app's base path. */
+// --- Adder I/O (11×11): 3 inputs (adjacent rows), 2 outputs (sum, carry) ---
+const a_iy = ADIM.SH >> 1, a_inCol = 2, a_outCol = ADIM.SW - 3;
+const ADD_IN = [(a_iy - 1) * ADIM.SW + a_inCol, a_iy * ADIM.SW + a_inCol, (a_iy + 1) * ADIM.SW + a_inCol];
+const ADD_OUT = [(a_iy - 1) * ADIM.SW + a_outCol, (a_iy + 1) * ADIM.SW + a_outCol];
+const ADD_CASES: { in: number[]; out: number[] }[] = [];
+for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) for (let cin = 0; cin < 2; cin++)
+	ADD_CASES.push({ in: [a, b, cin], out: [a ^ b ^ cin, a + b + cin >= 2 ? 1 : 0] });
+
 export const EXPERIMENTS: Experiment[] = [
 	{
 		id: 'e1_gate', name: 'XOR gate', blurb: 'Two inputs, one output: computes their XOR at a cell 5 away.',
-		inputCells: [IN_TOP, IN_BOT], outputCells: [OUT], cases: XOR_CASES,
-		ic: 'full', paramsUrl: 'e1_gate.json', tGrow: 24
+		cfg: EDIM, inputCells: [IN_TOP, IN_BOT], outputCells: [E_OUT], cases: XOR_CASES,
+		ic: 'full', paramsUrl: 'e1_gate.json', tGrow: 24, stable: false
 	},
 	{
 		id: 'e2_repair', name: 'Self-repair', blurb: 'Destroy a patch mid-computation — it regrows and still computes XOR.',
-		inputCells: [IN_TOP, IN_BOT], outputCells: [OUT], cases: XOR_CASES,
-		ic: 'full', paramsUrl: 'e2_repair.json', tGrow: 24
+		cfg: EDIM, inputCells: [IN_TOP, IN_BOT], outputCells: [E_OUT], cases: XOR_CASES,
+		ic: 'full', paramsUrl: 'e3_seed.json', tGrow: 24, stable: true // uses the stable E3 rule
 	},
 	{
 		id: 'e3_seed', name: 'Grow from seed', blurb: 'Grow the whole computer from a single seed cell, then compute + heal.',
-		inputCells: [IN_TOP, IN_BOT], outputCells: [OUT], cases: XOR_CASES,
-		ic: 'seed', seedCell: iy * SW + (SW >> 1), paramsUrl: 'e3_seed.json', tGrow: 24
+		cfg: EDIM, inputCells: [IN_TOP, IN_BOT], outputCells: [E_OUT], cases: XOR_CASES,
+		ic: 'seed', seedCell: e_iy * EDIM.SW + (EDIM.SW >> 1), paramsUrl: 'e3_seed.json', tGrow: 24, stable: true
+	},
+	{
+		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority). Arithmetic, grown by gradient.',
+		cfg: ADIM, inputCells: ADD_IN, outputCells: ADD_OUT, outputLabels: ['sum', 'carry'], cases: ADD_CASES,
+		ic: 'full', paramsUrl: 'adder_compute.json', tGrow: 30, stable: false // compute-stage rule; not yet long-horizon-stable
 	}
 ];
 
@@ -68,32 +92,30 @@ export function experimentById(id: string): Experiment | undefined {
 	return EXPERIMENTS.find((e) => e.id === id);
 }
 
-/** Parse a params JSON payload (number[]) into a typed array; validate length. */
-export function loadParams(arr: number[]): Float64Array {
-	if (arr.length !== P) throw new Error(`params length ${arr.length} !== ${P}`);
+export function loadParams(cfg: RuleConfig, arr: number[]): Float64Array {
+	if (arr.length !== cfg.P) throw new Error(`params length ${arr.length} !== ${cfg.P}`);
 	return Float64Array.from(arr);
 }
 
-/** Initial substrate for an experiment + input assignment. */
-export function seedGrid(exp: Experiment, inputs: number[]): Float64Array {
-	const s = new Float64Array(N * C);
+export function clampInputs(cfg: RuleConfig, f: Float64Array, exp: Experiment, inputs: number[]): void {
+	for (let k = 0; k < exp.inputCells.length; k++) f[exp.inputCells[k] * cfg.C + 0] = inputs[k];
+}
+
+export function seedGrid(cfg: RuleConfig, exp: Experiment, inputs: number[]): Float64Array {
+	const s = new Float64Array(cfg.N * cfg.C);
 	if (exp.ic === 'full') {
-		for (let y = 1; y < SH - 1; y++) for (let x = 1; x < SW - 1; x++)
-			for (let c = 1; c < C; c++) s[(y * SW + x) * C + c] = 1;
+		for (let y = 1; y < cfg.SH - 1; y++) for (let x = 1; x < cfg.SW - 1; x++)
+			for (let c = 1; c < cfg.C; c++) s[(y * cfg.SW + x) * cfg.C + c] = 1;
 	} else {
-		const sc = exp.seedCell ?? iy * SW + (SW >> 1);
-		for (let c = 1; c < C; c++) s[sc * C + c] = 1;
+		const sc = exp.seedCell ?? (cfg.SH >> 1) * cfg.SW + (cfg.SW >> 1);
+		for (let c = 1; c < cfg.C; c++) s[sc * cfg.C + c] = 1;
 	}
-	clampInputs(s, exp, inputs);
+	clampInputs(cfg, s, exp, inputs);
 	return s;
 }
 
-export function clampInputs(f: Float64Array, exp: Experiment, inputs: number[]): void {
-	for (let k = 0; k < exp.inputCells.length; k++) f[exp.inputCells[k] * C + 0] = inputs[k];
-}
-
-/** Perception features for cell i into `out` (length PERC). */
-export function perceive(s: Float64Array, i: number, out: Float64Array): void {
+export function perceive(cfg: RuleConfig, s: Float64Array, i: number, out: Float64Array): void {
+	const { SW, C, FEAT } = cfg;
 	const r = i + 1, l = i - 1, u = i - SW, d = i + SW;
 	for (let ch = 0; ch < C; ch++) {
 		const b = ch * FEAT, self = s[i * C + ch];
@@ -105,14 +127,14 @@ export function perceive(s: Float64Array, i: number, out: Float64Array): void {
 	}
 }
 
-/** One CA step (pure): returns the next state. Optionally destroys `damage` cells. */
-export function step(par: Float64Array, s: Float64Array, exp: Experiment, inputs: number[], damage?: Uint8Array): Float64Array {
+export function step(cfg: RuleConfig, par: Float64Array, s: Float64Array, exp: Experiment, inputs: number[], damage?: Uint8Array): Float64Array {
+	const { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O, N } = cfg;
 	const ns = new Float64Array(N * C);
 	const perc = new Float64Array(PERC), h = new Float64Array(HD);
 	for (let y = 1; y < SH - 1; y++)
 		for (let x = 1; x < SW - 1; x++) {
 			const i = y * SW + x;
-			perceive(s, i, perc);
+			perceive(cfg, s, i, perc);
 			for (let hh = 0; hh < HD; hh++) {
 				let a = par[B1O + hh]; const base = W1O + hh * PERC;
 				for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
@@ -125,33 +147,30 @@ export function step(par: Float64Array, s: Float64Array, exp: Experiment, inputs
 			}
 		}
 	if (damage) for (let i = 0; i < N; i++) if (damage[i] === 0) for (let c = 0; c < C; c++) ns[i * C + c] = 0;
-	clampInputs(ns, exp, inputs);
+	clampInputs(cfg, ns, exp, inputs);
 	return ns;
 }
 
 export interface RolloutOpts { steps: number; damage?: { at: number; mask: Uint8Array }; }
 
-/** Full developmental rollout. Returns states[0..steps]. */
-export function forward(par: Float64Array, exp: Experiment, inputs: number[], opts: RolloutOpts): Float64Array[] {
-	const states: Float64Array[] = [seedGrid(exp, inputs)];
+export function forward(cfg: RuleConfig, par: Float64Array, exp: Experiment, inputs: number[], opts: RolloutOpts): Float64Array[] {
+	const states: Float64Array[] = [seedGrid(cfg, exp, inputs)];
 	for (let t = 0; t < opts.steps; t++) {
 		const dmg = opts.damage && opts.damage.at === t + 1 ? opts.damage.mask : undefined;
-		states.push(step(par, states[t], exp, inputs, dmg));
+		states.push(step(cfg, par, states[t], exp, inputs, dmg));
 	}
 	return states;
 }
 
-/** Read the output bits (channel 0 of each output cell) from a state. */
-export function readOutputs(s: Float64Array, exp: Experiment): number[] {
-	return exp.outputCells.map((cell) => s[cell * C + 0]);
+export function readOutputs(cfg: RuleConfig, s: Float64Array, exp: Experiment): number[] {
+	return exp.outputCells.map((cell) => s[cell * cfg.C + 0]);
 }
 
-/** A square keep-mask (1 = keep, 0 = destroy) centred at (cx,cy). */
-export function damageMask(cx: number, cy: number, size: number): Uint8Array {
-	const mask = new Uint8Array(N).fill(1);
+export function damageMask(cfg: RuleConfig, cx: number, cy: number, size: number): Uint8Array {
+	const mask = new Uint8Array(cfg.N).fill(1);
 	const h = size >> 1;
 	for (let y = cy - h; y <= cy - h + size - 1; y++)
 		for (let x = cx - h; x <= cx - h + size - 1; x++)
-			if (x >= 0 && x < SW && y >= 0 && y < SH) mask[y * SW + x] = 0;
+			if (x >= 0 && x < cfg.SW && y >= 0 && y < cfg.SH) mask[y * cfg.SW + x] = 0;
 	return mask;
 }

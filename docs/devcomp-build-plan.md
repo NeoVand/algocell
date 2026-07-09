@@ -58,11 +58,15 @@ Param layout `[W1(HD×PERC), b1(HD), W2(C×HD), b2(C)]`. Frozen params committed
   loss 0.0000** across a 6-cell transport distance (distance curriculum, 8/8 at
   every stage). Params: `src/lib/devcomp/params/adder_compute.json`. Multi-output
   backprop gradient-checked exact. *The paradigm scales to arithmetic.*
+  **(b) DONE — kernel generalized + adder live in the demo.** `rule.ts` is now
+  config-driven (`RuleConfig`, `makeConfig`, `EDIM`/`ADIM`); `shader.ts`/`engine.ts`
+  take a cfg; `/devcomp/validate` passes **28/28** (E-series + adder, max|CPU−GPU|
+  =3.2e-5); the adder is a 4th tab on `/devcomp` (multi-output sum+carry readout),
+  capped at tGrow since the compute rule isn't yet long-horizon-stable.
   Remaining for S6: (a) long-horizon-stability + input-reactivity training (extend
-  persistence window + input transitions mid-rollout) + damage + grow-from-seed;
-  (b) generalize the WGSL kernel/rule to arbitrary grid/channel dims (currently
-  hardcoded 9×9/C12/HD48) so the adder loads into the live demo; (c) 2-bit adder
-  as stretch (fallback ladder: mux → half-adder).
+  persistence window + input transitions mid-rollout) + damage + grow-from-seed,
+  so the adder runs indefinitely + self-repairs live; (c) 2-bit adder as stretch
+  (fallback ladder: mux → half-adder).
 - **S7 — in-browser forward-gradient trainer** (watch it learn) + JS reverse-mode
   Web Worker baseline. ⏳
 - **S8 — ablations + multi-seed statistics** (isotropic-perception / no-hidden /

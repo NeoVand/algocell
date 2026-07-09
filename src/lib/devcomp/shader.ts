@@ -1,12 +1,14 @@
 // WGSL compute kernel for the developmental-computation field CA.
 // One invocation per interior cell: perceive → MLP(ReLU) → tanh(state+dl).
-// Constants are baked from `rule.ts` so the GPU rule is identical to the
-// reference `forward()`. Damage and input-clamp are folded into the single
-// pass, in the reference order (damage zeros the cell, then input clamp wins).
+// Dimensions are baked from a RuleConfig so the GPU rule is identical to the
+// reference `forward()` for any grid/channel size. Damage and input-clamp are
+// folded into the single pass, in the reference order (damage zeros the cell,
+// then input clamp wins).
 
-import { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O } from './rule';
+import type { RuleConfig } from './rule';
 
-export function fieldShaderWGSL(): string {
+export function fieldShaderWGSL(cfg: RuleConfig): string {
+	const { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O } = cfg;
 	return /* wgsl */ `
 const SW : i32 = ${SW};
 const SH : i32 = ${SH};

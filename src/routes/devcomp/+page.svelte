@@ -1,77 +1,89 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import {
-		EXPERIMENTS, experimentById, loadParams, seedGrid, readOutputs, N, C, SW, SH
-	} from '$lib/devcomp/rule';
+	import { EXPERIMENTS, experimentById, loadParams, seedGrid, readOutputs, type RuleConfig } from '$lib/devcomp/rule';
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
+	import adder from '$lib/devcomp/params/adder_compute.json';
 
-	// The E3 rule is the universal, long-term-stable rule: it computes XOR, holds
-	// the answer indefinitely, and self-repairs — in BOTH the full and seed initial
-	// conditions. The dedicated E2 self-repair stage is only *metastable* (its "1"
-	// outputs decay to 0 past ~150 steps), so the demo's live-running self-repair
-	// and grow tabs use E3. (e2_repair.json is kept as the training-stage artifact.)
-	const PARAMS: Record<string, number[]> = { e1_gate: e1, e2_repair: e3, e3_seed: e3 };
-	const CELL = 40;
+	// Params by file. e2_repair + e3_seed share the stable E3 rule; e1 + adder are
+	// compute-only (capped at tGrow so they don't drift). See rule.ts `stable`.
+	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_compute.json': adder };
 
 	let canvas: HTMLCanvasElement;
 	let engine: FieldCAEngine | null = null;
+	let ready = false;
+	let cellPx = 40;
 
-	let expId = $state('e3_seed');
-	let inputs = $state([0, 0]);
+	let expId = $state('adder');
+	let inputs = $state<number[]>([0, 0, 0]);
 	let playing = $state(true);
 	let stepCount = $state(0);
 	let output = $state<number[]>([0]);
 	let msg = $state('starting the GPU…');
 
 	const exp = $derived(experimentById(expId)!);
-	const persistent = $derived(expId !== 'e1_gate');
-	const maxSteps = $derived(persistent ? Infinity : exp.tGrow);
+	const maxSteps = $derived(exp.stable ? Infinity : exp.tGrow);
 	const expected = $derived(exp.cases.find((c) => c.in.every((v, i) => v === inputs[i]))?.out ?? []);
-	const correct = $derived(expected.every((t, k) => Math.abs((output[k] ?? 0) - t) < 0.3));
+	const correct = $derived(expected.length > 0 && expected.every((t, k) => Math.abs((output[k] ?? 0) - t) < 0.3));
+
+	async function ensureEngine(cfg: RuleConfig) {
+		if (engine && engine.cfg === cfg) return;
+		engine?.destroy();
+		engine = await FieldCAEngine.create(cfg);
+	}
 
 	function applyInputs() {
 		if (!engine) return;
-		const isIn = new Uint32Array(N), val = new Float32Array(N);
+		const cfg = exp.cfg;
+		const isIn = new Uint32Array(cfg.N), val = new Float32Array(cfg.N);
 		exp.inputCells.forEach((cell, k) => { isIn[cell] = 1; val[cell] = inputs[k]; });
 		engine.setInputs(isIn, val);
 	}
 
-	function load() {
+	async function load() {
+		ready = false;
+		const cfg = exp.cfg;
+		await ensureEngine(cfg);
 		if (!engine) return;
-		engine.setParams(new Float32Array(loadParams(PARAMS[expId])));
+		cellPx = Math.max(24, Math.floor(400 / cfg.SW));
+		canvas.width = cfg.SW * cellPx; canvas.height = cfg.SH * cellPx;
+		engine.setParams(new Float32Array(loadParams(cfg, PARAM_FILES[exp.paramsUrl])));
 		applyInputs();
-		engine.setDamageKeep(new Uint32Array(N).fill(1));
-		engine.seed(new Float32Array(seedGrid(exp, inputs)));
+		engine.setDamageKeep(new Uint32Array(cfg.N).fill(1));
+		engine.seed(new Float32Array(seedGrid(cfg, exp, inputs)));
 		stepCount = 0;
+		ready = true;
 	}
 
-	function selectExp(id: string) { expId = id; load(); playing = true; }
-	// These are developmental rules: they grow a machine that computes the answer
-	// for the input present during growth. Changing the input therefore re-seeds
-	// and regrows (you watch it recompute) rather than mutating a settled field.
-	function toggleInput(k: number) { inputs = inputs.map((v, i) => (i === k ? v ^ 1 : v)); load(); playing = true; }
-	function reset() { load(); playing = true; }
-	function doStep() { if (engine && stepCount < maxSteps) { engine.step(false); stepCount++; } }
+	async function selectExp(id: string) {
+		expId = id;
+		inputs = new Array(exp.inputCells.length).fill(0);
+		await load();
+		playing = true;
+	}
+	// Developmental rules compute the answer for the input present during growth,
+	// so changing an input re-seeds and regrows (you watch it recompute).
+	async function toggleInput(k: number) { inputs = inputs.map((v, i) => (i === k ? v ^ 1 : v)); await load(); playing = true; }
+	async function reset() { await load(); playing = true; }
+	function doStep() { if (engine && ready && stepCount < maxSteps) { engine.step(false); stepCount++; } }
 
-	// Interactive damage brush — destroy a 3×3 patch under the pointer; the running
-	// rule regrows it. Most striking on self-repair / grow-from-seed (they persist).
+	// Damage brush — destroy a 3×3 patch under the pointer; the rule regrows it.
 	let painting = false;
 	function paintDamage(e: PointerEvent) {
-		if (!engine) return;
-		const rect = canvas.getBoundingClientRect();
-		const cx = Math.floor(((e.clientX - rect.left) / rect.width) * SW);
-		const cy = Math.floor(((e.clientY - rect.top) / rect.height) * SH);
+		if (!engine || !ready) return;
+		const cfg = exp.cfg, rect = canvas.getBoundingClientRect();
+		const cx = Math.floor(((e.clientX - rect.left) / rect.width) * cfg.SW);
+		const cy = Math.floor(((e.clientY - rect.top) / rect.height) * cfg.SH);
 		for (let dy = -1; dy <= 1; dy++)
 			for (let dx = -1; dx <= 1; dx++) {
 				const x = cx + dx, y = cy + dy;
-				if (x >= 1 && x < SW - 1 && y >= 1 && y < SH - 1) engine.damageCell(y * SW + x);
+				if (x >= 1 && x < cfg.SW - 1 && y >= 1 && y < cfg.SH - 1) engine.damageCell(y * cfg.SW + x);
 			}
-		playing = true; // so it steps and heals
+		playing = true;
 	}
-	function pointerDown(e: PointerEvent) { painting = true; try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } paintDamage(e); }
+	function pointerDown(e: PointerEvent) { painting = true; try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic */ } paintDamage(e); }
 	function pointerMove(e: PointerEvent) { if (painting) paintDamage(e); }
 	function pointerUp() { painting = false; }
 
@@ -85,43 +97,42 @@
 	function draw(st: Float32Array) {
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
-		for (let y = 0; y < SH; y++)
-			for (let x = 0; x < SW; x++) {
-				ctx.fillStyle = color(st[(y * SW + x) * C + 0]);
-				ctx.fillRect(x * CELL, y * CELL, CELL - 1, CELL - 1);
+		const cfg = exp.cfg, cp = cellPx;
+		for (let y = 0; y < cfg.SH; y++)
+			for (let x = 0; x < cfg.SW; x++) {
+				ctx.fillStyle = color(st[(y * cfg.SW + x) * cfg.C + 0]);
+				ctx.fillRect(x * cp, y * cp, cp - 1, cp - 1);
 			}
-		const seedCell = exp.seedCell;
-		if (seedCell !== undefined) {
-			const sx = seedCell % SW, sy = (seedCell / SW) | 0;
+		if (exp.seedCell !== undefined && exp.ic === 'seed') {
+			const sx = exp.seedCell % cfg.SW, sy = (exp.seedCell / cfg.SW) | 0;
 			ctx.fillStyle = '#34d399';
-			ctx.beginPath(); ctx.arc(sx * CELL + CELL / 2, sy * CELL + CELL / 2, 4, 0, 7); ctx.fill();
+			ctx.beginPath(); ctx.arc(sx * cp + cp / 2, sy * cp + cp / 2, 4, 0, 7); ctx.fill();
 		}
 		for (const cell of exp.inputCells) {
-			const cxp = cell % SW, cyp = (cell / SW) | 0;
+			const cxp = cell % cfg.SW, cyp = (cell / cfg.SW) | 0;
 			ctx.strokeStyle = '#e6edf3'; ctx.lineWidth = 2;
-			ctx.beginPath(); ctx.arc(cxp * CELL + CELL / 2, cyp * CELL + CELL / 2, CELL / 2 - 6, 0, 7); ctx.stroke();
+			ctx.beginPath(); ctx.arc(cxp * cp + cp / 2, cyp * cp + cp / 2, cp / 2 - 5, 0, 7); ctx.stroke();
 		}
 		for (const cell of exp.outputCells) {
-			const cxp = cell % SW, cyp = (cell / SW) | 0;
+			const cxp = cell % cfg.SW, cyp = (cell / cfg.SW) | 0;
 			ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 3;
-			ctx.strokeRect(cxp * CELL + 3, cyp * CELL + 3, CELL - 7, CELL - 7);
+			ctx.strokeRect(cxp * cp + 3, cyp * cp + 3, cp - 7, cp - 7);
 		}
 	}
 
 	onMount(() => {
 		let raf = 0, disposed = false;
 		(async () => {
-			try { engine = await FieldCAEngine.create(); }
-			catch (e) { msg = 'WebGPU unavailable: ' + (e as Error).message; return; }
-			canvas.width = SW * CELL; canvas.height = SH * CELL;
-			load();
+			try { await load(); } catch (e) { msg = 'WebGPU unavailable: ' + (e as Error).message; return; }
 			msg = '';
 			const loop = async () => {
-				if (disposed || !engine) return;
-				if (playing && stepCount < maxSteps) { engine.step(false); stepCount++; }
-				const st = await engine.readState();
-				draw(st);
-				output = readOutputs(st, exp);
+				if (disposed) return;
+				if (ready && engine) {
+					if (playing && stepCount < maxSteps) { engine.step(false); stepCount++; }
+					const st = await engine.readState();
+					draw(st);
+					output = readOutputs(exp.cfg, st, exp);
+				}
 				raf = requestAnimationFrame(loop);
 			};
 			loop();
@@ -136,7 +147,7 @@
 	<header>
 		<a class="back" href={resolve('/')}>← Algocell</a>
 		<h1>A computer, grown and running on your GPU</h1>
-		<p class="sub">One learned cellular-automaton rule, executed live in a WebGPU compute shader. Pick an experiment, flip the inputs, watch it compute.</p>
+		<p class="sub">One learned cellular-automaton rule per experiment, executed live in a WebGPU compute shader. Pick an experiment, flip the inputs, watch it compute — and drag on the grid to damage it.</p>
 	</header>
 
 	<div class="tabs">
@@ -160,15 +171,22 @@
 			<div class="inputs">
 				{#each inputs as bit, k (k)}
 					<button class="chip" class:on={bit === 1} onclick={() => toggleInput(k)}>
-						in {String.fromCharCode(65 + k)} = {bit}
+						{exp.inputCells.length <= 2 ? 'in ' + String.fromCharCode(65 + k) : ['a', 'b', 'cin'][k] ?? 'in' + k} = {bit}
 					</button>
 				{/each}
 			</div>
 
-			<div class="readout">
-				<span class="lbl">output</span>
-				<span class="val" class:ok={correct} class:bad={!correct}>{(output[0] ?? 0).toFixed(3)}</span>
-				<span class="want">want {expected.join(',')} {correct ? '✓' : ''}</span>
+			<div class="outputs">
+				{#each exp.outputCells as _cell, k (k)}
+					{@const val = output[k] ?? 0}
+					{@const tgt = expected[k]}
+					{@const ok = tgt !== undefined && Math.abs(val - tgt) < 0.3}
+					<div class="readout">
+						<span class="lbl">{exp.outputLabels?.[k] ?? 'output'}</span>
+						<span class="val" class:ok class:bad={!ok}>{val.toFixed(3)}</span>
+						<span class="want">want {tgt ?? '?'} {ok ? '✓' : ''}</span>
+					</div>
+				{/each}
 			</div>
 
 			<div class="controls">
@@ -176,7 +194,7 @@
 				<button onclick={doStep}>Step</button>
 				<button onclick={reset}>Reset</button>
 			</div>
-			<p class="meta">step {stepCount}{persistent ? '' : ` / ${exp.tGrow}`} · ○ input · □ output{exp.seedCell !== undefined ? ' · 🌱 seed' : ''}</p>
+			<p class="meta">step {stepCount}{exp.stable ? '' : ` / ${exp.tGrow}`} · ○ input · □ output{exp.ic === 'seed' ? ' · 🌱 seed' : ''}</p>
 			{#if msg}<p class="msg">{msg}</p>{/if}
 		</div>
 	</div>
@@ -192,23 +210,24 @@
 	.back:hover { color: #e6edf3; }
 	h1 { margin: 10px 0 4px; font-size: clamp(22px, 4vw, 32px); letter-spacing: -0.02em;
 		background: linear-gradient(120deg, #e6edf3, #7dd3c8); -webkit-background-clip: text; background-clip: text; color: transparent; }
-	.sub { margin: 0 0 20px; color: #9aa7b4; max-width: 64ch; }
+	.sub { margin: 0 0 20px; color: #9aa7b4; max-width: 66ch; }
 	.tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
 	.tab { background: rgba(255, 255, 255, 0.03); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.08);
 		border-radius: 999px; padding: 7px 16px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 	.tab.active { background: color-mix(in srgb, #2dd4bf 16%, transparent); border-color: #2dd4bf; color: #e6edf3; }
 	.stage { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
 	canvas { border-radius: 12px; background: #05070a; image-rendering: pixelated; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); cursor: crosshair; touch-action: none; }
-	.hint { margin: 0; color: #7dd3c8; font-size: 13px; }
-	.side { flex: 1; min-width: 240px; max-width: 380px; display: flex; flex-direction: column; gap: 16px; }
+	.side { flex: 1; min-width: 240px; max-width: 380px; display: flex; flex-direction: column; gap: 14px; }
 	.blurb { margin: 0; color: #9aa7b4; font-size: 14px; line-height: 1.5; }
-	.inputs { display: flex; gap: 10px; }
+	.hint { margin: 0; color: #7dd3c8; font-size: 13px; }
+	.inputs { display: flex; gap: 10px; flex-wrap: wrap; }
 	.chip { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #9aa7b4;
 		border-radius: 9px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums; }
 	.chip.on { background: color-mix(in srgb, #ff8a3d 20%, transparent); border-color: #ff8a3d; color: #fff; }
+	.outputs { display: flex; flex-direction: column; gap: 6px; }
 	.readout { display: flex; align-items: baseline; gap: 10px; }
-	.readout .lbl { color: #6b7785; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
-	.readout .val { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+	.readout .lbl { color: #6b7785; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; min-width: 46px; }
+	.readout .val { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 	.readout .val.ok { color: #34d399; } .readout .val.bad { color: #f87171; }
 	.readout .want { color: #9aa7b4; font-size: 13px; }
 	.controls { display: flex; gap: 10px; }
