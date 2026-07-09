@@ -30,13 +30,12 @@
 			accent: '#10b981'
 		},
 		{
-			title: 'Gradient Morphogenesis',
-			blurb: 'Machines grown by differentiating through development: a logic gate that computes — and, when damaged, regrows and still computes. Programs that learn by gradient, not just evolution.',
-			href: 'https://github.com/NeoVand/algocell/blob/feat/morphogenesis-ca/docs/gradient-morphogenesis.md',
-			external: true,
+			title: 'Developmental Computation',
+			blurb: 'A logic gate grown from a single seed cell — it computes, and when you damage it, regrows and still computes. Learned by gradient through development, running live on your GPU.',
+			href: resolve('/devcomp'),
 			glyph: '∇',
 			accent: '#2dd4bf',
-			status: 'research'
+			status: 'live'
 		}
 	];
 </script>
