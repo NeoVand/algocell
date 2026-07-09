@@ -337,8 +337,9 @@ fields, weight analysis, loss curves). Memory: `autodiff-on-zilion.md`, `morphog
 ## 8. Immediate next steps (resume here)
 
 **DONE so far:** Exp A (dual-number AD on a real Z80), B (gradient through a developmental rollout),
-C (grew the F evolution couldn't), D (color 🦎 emoji at 64×64, best loss 0.0028), **E0 WIRE** and
-**E1 GATE** — see below. The app is now a hub (`/` landing → `/soup`, morphogenesis, research card).
+C (grew the F evolution couldn't), D (color 🦎 emoji at 64×64, best loss 0.0028), **E0 WIRE**,
+**E1 GATE**, and **E2 SELF-REPAIR** — see below. The app is now a hub (`/` landing → `/soup`,
+morphogenesis, research card).
 
 - **E0 WIRE — DONE (`src/lib/morph/dev/expE.ts`).** One CA rule transports a 1-bit signal from an input
   cell to an output cell `d` cells away, correct for both input values. Long-range transport is a
@@ -357,20 +358,41 @@ C (grew the F evolution couldn't), D (color 🦎 emoji at 64×64, best loss 0.00
     lr (0.01). This re-saturates the transport instead of destabilizing it.
   - XOR reduces to *sum then bump*: `f(a+b)` with `f(0)=0,f(1)=1,f(2)=0 = relu(x)−2·relu(x−1)` — trivially
     representable; the whole difficulty was optimization/credit-assignment, which the curriculum handles.
-  - Viz: `TASK=gate GATE_VIZ=path.json` dumps development frames → `scratchpad/gen_gate_html.mjs` renders
+  - Viz: `TASK=gate GATE_VIZ=path.json` dumps development frames → `dev/gen_gate_html.mjs` renders
     the animated 4-case HTML + the invented hidden channels. Sent to the user.
 
-**NEXT (the paper's headline — self-repair):**
-1. **Grow-from-seed for the gate.** Right now the substrate is pre-seeded "all cells alive." Next: grow the
-   computational structure from a single seed cell (as in C/D), *then* have it compute — so the machine is
-   both grown and functional.
-2. **Self-repair — the money shot (§6.6/§6.7).** Add **persistence** (score the output at T *and* T+k so the
-   pattern must be a stable attractor, not a one-shot) + **per-cell damage during training** (zero out a
-   patch mid-rollout). Then the demo: damage the running gate and show it **regrows and still computes XOR.**
-   This is the differentiator from NCA (images only) and classic A-life (no gradients).
-3. **Regeneration on Exp D** too (damage the lizard, watch it heal) — the visual companion figure.
+- **E2 SELF-REPAIR — DONE (`src/lib/morph/dev/expF.ts`) — the paper's headline.** The grown XOR gate,
+  when a patch of its own structure is destroyed *mid-computation*, **regrows and still computes XOR.**
+  After a central 3×3 patch is zeroed at step 32 of 50: **healed outputs [−0.007, 0.997, 0.997, 0.005]**
+  (want 0 1 1 0), repair loss **0.0000**. Two ideas, each a warm-started fine-tune with the E1 gentle lr:
+  - **Persistence** — score the output over a *window* of steps, not a single readout, so the answer must
+    be a **stable attractor**, not a one-shot spike. (The clean E1 gate is correct at exactly T_GROW but
+    *drifts* to [−0.60, −0.34, −0.77, −0.68] by step 50 — persistence training fixes that: it then holds
+    [−0.009, 0.984, 0.992, 0.002].)
+  - **Damage during training** — zero a random square patch mid-rollout and require recovery in the tail.
+    Backprop flows through the damage as a 0/1 mask (gradient killed inside the hole, same mechanism as the
+    input-clamp). Inputs stay clamped through damage (external boundary), so the undamaged cells + inputs
+    re-drive the field back to the attractor — self-healing, not re-initialization.
+  - **Robustness (`SWEEP=1`, trained on 3×3 only):** heals **100%** of all 2×2 and 3×3 damage positions,
+    **88%** of 4×4, **67%** of 5×5 (a 5×5 destroys most of a 9×9 interior). Graceful degradation, and it
+    generalizes to patch sizes it never saw in training.
+  - **Why it matters:** a machine — grown by gradient descent through development — that is *both functional
+    and self-repairing*. This is the clean differentiator from NCA (images, no computation) and classic
+    A-life (no gradients). §6.6/§6.7.
+  - Gradient-checked (multi-readout + damage path, rel err 9.6e-6). Viz: `FVIZ=path.json` →
+    `dev/gen_repair_html.mjs` renders the animated damage-and-regrow (compute → hold → 💥 → heal). Sent to
+    the user. Trained params saved via `PARAMS_OUT` (for the Zilion port / a live in-app demo).
+
+**NEXT:**
+1. **Grow-from-seed for the gate.** The substrate is still pre-seeded "all cells alive." Next: grow the
+   computational structure from a single seed cell (as in C/D) *and then* compute + self-repair — the full
+   "grown, functional, self-healing machine" in one rollout.
+2. **A bigger circuit** — a 1-bit adder (2 outputs) or a 2-bit function, to show the paradigm scales past a
+   single gate. Same recipe (curriculum → persist → damage).
+3. **Regeneration on Exp D** (damage the lizard, watch it heal) — the visual companion figure.
 4. **Forward-gradient at scale** — run it on C/D/E; quantify K and variance reduction (antithetic, local
    losses). *Decides how "in-substrate" the results can be — the systems backbone.*
-5. **Start the Z80/WGSL fixed-point dual field kernel** (roadmap §4.1–4.2).
+5. **Start the Z80/WGSL fixed-point dual field kernel** (roadmap §4.1–4.2); the saved E2 params give a
+   concrete rule to port and demo live in the app.
 6. Keep everything on `feat/morphogenesis-ca`; commit per experiment. (User approved pushing to the branch.)
 ```

@@ -31,7 +31,7 @@
 		},
 		{
 			title: 'Gradient Morphogenesis',
-			blurb: 'Growing patterns — and, soon, self-repairing machines — by differentiating through development. Programs that learn by gradient, not just evolution.',
+			blurb: 'Machines grown by differentiating through development: a logic gate that computes — and, when damaged, regrows and still computes. Programs that learn by gradient, not just evolution.',
 			href: 'https://github.com/NeoVand/algocell/blob/feat/morphogenesis-ca/docs/gradient-morphogenesis.md',
 			external: true,
 			glyph: '∇',
