@@ -336,21 +336,41 @@ fields, weight analysis, loss curves). Memory: `autodiff-on-zilion.md`, `morphog
 
 ## 8. Immediate next steps (resume here)
 
-1. **Finish Exp D at 64×64.** NOTE: the first 64×64 run **diverged** (tanh saturation at scale) — fixed
-   by **zero-initializing the last MLP layer** (initial rule = no-op) + **global-norm gradient
-   clipping**; retraining healthily (loss decreasing). Generate the analysis HTML (dev strip + 12
-   morphogen fields + feature-energy bars + loss curve) and review the lizard. Expect
-   recognizable-but-soft at 64×64 without the NCA pool/alive-mask.
-2. **DEMO #1 — developmental computation (the paper's headline; §6.6/§6.7).** Grow a *functional*
-   structure — start tiny: a signal **wire** (input on the left edge propagates to the right), then a
-   **1-bit adder** — from a seed, by gradient descent through development; then **damage it and show it
-   regrows and still computes.** This is the differentiator from NCA (images only) and classic A-life
-   (no gradients). Aim the next experiment here.
-3. **Regeneration** — add persistence (score at T and T+k) + per-cell damage during training to Exp D
-   and the circuit; the self-repair figure.
-4. **Forward-gradient at scale** — run it on Exp C/D; quantify K and variance reduction (antithetic,
-   local losses). *This decides how "in-substrate" the results can be — the systems backbone.*
+**DONE so far:** Exp A (dual-number AD on a real Z80), B (gradient through a developmental rollout),
+C (grew the F evolution couldn't), D (color 🦎 emoji at 64×64, best loss 0.0028), **E0 WIRE** and
+**E1 GATE** — see below. The app is now a hub (`/` landing → `/soup`, morphogenesis, research card).
+
+- **E0 WIRE — DONE (`src/lib/morph/dev/expE.ts`).** One CA rule transports a 1-bit signal from an input
+  cell to an output cell `d` cells away, correct for both input values. Long-range transport is a
+  vanishing-gradient problem from scratch → solved with a **distance curriculum** (learn `d=1`,
+  warm-start, extend one cell at a time). Reaches `d=6`.
+- **E1 GATE (XOR) — DONE.** *Actual computation, not just transport:* two input cells, output = their
+  **XOR** at a cell 5 away, one rule correct on all 4 cases: **[0,0]→0.000, [0,1]→0.981, [1,0]→0.994,
+  [1,1]→0.000, loss 0.0001** (vs 0.25 constant-output baseline). It can't memorize an answer — the same
+  rule must handle every case, so it builds a computation. Recipe that made it robust:
+  - **Distance curriculum** (output moves one cell right per stage, inputs fixed so the warm-started rule
+    transfers) + **6 random restarts on stage 1 only** (XOR-from-scratch has a strong constant-0.5
+    minimum; restarts escape it, then warm-start carries it outward).
+  - **Warm-start-aware lr** (the key fix): a warm stage is *refinement*, not exploration — a hot lr kicks
+    the good incoming solution out of its basin (loss bounces back to the 0.25 baseline). Warm stages use
+    a gentler peak (0.003) with **cosine decay to a low floor** (6e-4); from-scratch stage 1 keeps the hot
+    lr (0.01). This re-saturates the transport instead of destabilizing it.
+  - XOR reduces to *sum then bump*: `f(a+b)` with `f(0)=0,f(1)=1,f(2)=0 = relu(x)−2·relu(x−1)` — trivially
+    representable; the whole difficulty was optimization/credit-assignment, which the curriculum handles.
+  - Viz: `TASK=gate GATE_VIZ=path.json` dumps development frames → `scratchpad/gen_gate_html.mjs` renders
+    the animated 4-case HTML + the invented hidden channels. Sent to the user.
+
+**NEXT (the paper's headline — self-repair):**
+1. **Grow-from-seed for the gate.** Right now the substrate is pre-seeded "all cells alive." Next: grow the
+   computational structure from a single seed cell (as in C/D), *then* have it compute — so the machine is
+   both grown and functional.
+2. **Self-repair — the money shot (§6.6/§6.7).** Add **persistence** (score the output at T *and* T+k so the
+   pattern must be a stable attractor, not a one-shot) + **per-cell damage during training** (zero out a
+   patch mid-rollout). Then the demo: damage the running gate and show it **regrows and still computes XOR.**
+   This is the differentiator from NCA (images only) and classic A-life (no gradients).
+3. **Regeneration on Exp D** too (damage the lizard, watch it heal) — the visual companion figure.
+4. **Forward-gradient at scale** — run it on C/D/E; quantify K and variance reduction (antithetic, local
+   losses). *Decides how "in-substrate" the results can be — the systems backbone.*
 5. **Start the Z80/WGSL fixed-point dual field kernel** (roadmap §4.1–4.2).
-6. Keep everything on `feat/morphogenesis-ca`; commit per experiment. (User approved pushing to the
-   branch.)
+6. Keep everything on `feat/morphogenesis-ca`; commit per experiment. (User approved pushing to the branch.)
 ```

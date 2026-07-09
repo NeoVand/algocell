@@ -14,6 +14,9 @@
 //
 //   npx tsx src/lib/morph/dev/expE.ts            # runs WIRE then GATE
 //   TASK=wire|gate  ITERS=… npx tsx …/expE.ts
+//   TASK=gate GATE_VIZ=path.json …               # also dump development frames
+
+import { writeFileSync } from 'node:fs';
 
 const SW = 9, SH = 9, N = SW * SH;
 const C = 12; // channel 0 = signal (clamped at input, read at output); 1..11 = hidden structure
@@ -204,22 +207,30 @@ function gradientCheck(task: Task): boolean {
 	return maxRel < 0.02;
 }
 
-function train(task: Task, iters: number, init?: Float64Array): { par: Float64Array; L: number; outs: number[] } {
+function train(task: Task, iters: number, init?: Float64Array, seed = 7): { par: Float64Array; L: number; outs: number[] } {
 	let par: Float64Array;
 	if (init) {
 		par = init.slice(); // warm-start (curriculum)
 	} else {
-		const rng = mulberry32(7);
+		const rng = mulberry32(seed);
 		par = new Float64Array(P);
 		// full nonzero init (incl. last layer) so the CA has initial dynamics.
 		for (let j = 0; j < P; j++) par[j] = (rng() - 0.5) * 0.12;
 		for (let j = W2O; j < P; j++) par[j] *= 0.5;
 	}
+	// A warm-started stage is REFINEMENT, not exploration: a high lr kicks the
+	// good incoming solution out of its basin (loss bounces back to baseline). So
+	// warm stages get a gentler peak and a cosine decay to a low floor that lets
+	// the transport re-saturate and settle. From-scratch stages keep the hot lr.
+	const warm = init !== undefined;
+	const lrHi = warm ? 0.003 : 0.01;
+	const lrLo = warm ? 0.0006 : 0.004;
 	const m = new Float64Array(P), v = new Float64Array(P), b1 = 0.9, b2 = 0.999;
 	let bestLoss = Infinity, bestPar = par.slice();
 	let last = { L: 0, outs: [] as number[] };
 	for (let it = 1; it <= iters; it++) {
-		const lr = (Math.min(1, it / 30)) * (it > iters * 0.7 ? 0.004 : 0.01);
+		const cos = 0.5 * (1 + Math.cos(Math.PI * (it / iters))); // 1 → 0 over the run
+		const lr = Math.min(1, it / 20) * (lrLo + (lrHi - lrLo) * cos);
 		const { L, grad, outs } = lossAndGrad(par, task);
 		last = { L, outs };
 		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);
@@ -236,6 +247,23 @@ function train(task: Task, iters: number, init?: Float64Array): { par: Float64Ar
 	}
 	const final = lossAndGrad(bestPar, task);
 	return { par: bestPar, L: final.L, outs: final.outs };
+}
+
+/** Train several random restarts, keep the best. XOR-from-scratch has a strong
+ *  constant-0.5 local minimum; restarts + curriculum are how we escape it. */
+function trainBest(
+	task: Task,
+	iters: number,
+	restarts: number,
+	init?: Float64Array
+): { par: Float64Array; L: number; outs: number[] } {
+	let best: { par: Float64Array; L: number; outs: number[] } | null = null;
+	for (let s = 0; s < restarts; s++) {
+		const r = train(task, iters, init, 7 + s * 101);
+		if (!best || r.L < best.L) best = r;
+		if (restarts > 1) console.log(`      restart ${s}: loss ${r.L.toFixed(5)}`);
+	}
+	return best!;
 }
 
 function runTask(task: Task, iters: number): void {
@@ -276,12 +304,84 @@ function wireCurriculum(iters: number): void {
 	}
 }
 
+const GATE_IC = 2; // input column; output moves right from here across the curriculum
+
+/** XOR gate whose output cell is `dist` columns to the right of the input column.
+ *  Inputs stay fixed (rows iy±1, col GATE_IC) so a warm-started rule transfers. */
+function gateAt(dist: number): Task {
+	return {
+		name: `gate d=${dist}`,
+		inputCells: [(iy - 1) * SW + GATE_IC, (iy + 1) * SW + GATE_IC],
+		outputCell: iy * SW + (GATE_IC + dist),
+		cases: [
+			{ in: [0, 0], tgt: 0 },
+			{ in: [0, 1], tgt: 1 },
+			{ in: [1, 0], tgt: 1 },
+			{ in: [1, 1], tgt: 0 }
+		]
+	};
+}
+
+/** Distance curriculum for XOR. Stage 1 (output adjacent to the inputs) is the
+ *  hard part — the rule must discover the nonlinear combination locally — so it
+ *  gets several restarts; later stages just extend the transport by one cell. */
+function gateCurriculum(iters: number): void {
+	console.log(`\n=== GATE (XOR, distance curriculum) ===`);
+	console.log(`  (XOR = long-range transport + a nonlinear combine; both are hard from scratch)`);
+	let par: Float64Array | undefined;
+	const maxDist = SW - 2 - GATE_IC; // output column stays interior (<= SW-2)
+	for (let dist = 1; dist <= maxDist; dist++) {
+		const task = gateAt(dist);
+		// Stage 1 discovers XOR and converges fast (~200 iters), so cap it and spend
+		// the budget on the transport stages, which need to re-saturate after each hop.
+		const restarts = dist === 1 ? 6 : 1; // only the first stage explores; rest warm-start
+		const stageIters = dist === 1 ? Math.min(iters, 300) : iters;
+		const r = trainBest(task, stageIters, restarts, par);
+		par = r.par;
+		const correct = task.cases.every((c, k) => Math.abs(r.outs[k] - c.tgt) < 0.2);
+		const outs = r.outs.map((o) => o.toFixed(2)).join(' ');
+		console.log(
+			`  d=${dist}: loss ${r.L.toFixed(4)}  outs[${outs}]  ${correct ? '✓ XOR solved' : '(not yet)'}`
+		);
+	}
+	if (par) {
+		const finalTask = gateAt(maxDist);
+		const f = lossAndGrad(par, finalTask);
+		console.log(`\n  FINAL XOR (output at col ${GATE_IC + maxDist}):`);
+		finalTask.cases.forEach((c, k) =>
+			console.log(`    [${c.in.join(',')}] -> ${f.outs[k].toFixed(3)}   (want ${c.tgt})`)
+		);
+		console.log(`  (constant-output baseline loss = 0.250; XOR must beat it by using both inputs)`);
+		if (process.env.GATE_VIZ) dumpGateViz(par, finalTask, process.env.GATE_VIZ);
+	}
+}
+
+/** Dump development frames for each XOR case: the signal channel over all T+1
+ *  steps (watch the two inputs flow in and combine) plus a few hidden channels
+ *  at the final step (the internal wiring the rule invented). */
+function dumpGateViz(par: Float64Array, task: Task, path: string): void {
+	const hiddenChannels = [1, 2, 3];
+	const cases = task.cases.map((cse) => {
+		const states = forward(par, task, cse.in);
+		const frames = states.map((s) => Array.from({ length: N }, (_, i) => s[i * C + 0]));
+		const hidden = hiddenChannels.map((ch) =>
+			Array.from({ length: N }, (_, i) => states[T][i * C + ch])
+		);
+		return { in: cse.in, tgt: cse.tgt, out: states[T][task.outputCell * C + 0], frames, hidden };
+	});
+	writeFileSync(
+		path,
+		JSON.stringify({ SW, SH, C, T, inputCells: task.inputCells, outputCell: task.outputCell, hiddenChannels, cases })
+	);
+	console.log(`  viz dumped to ${path}`);
+}
+
 function main() {
 	console.log(`developmental computation: ${SW}x${SH}, C=${C}, ${P} params, ${T} steps`);
 	const which = process.env.TASK;
 	const iters = Number(process.env.ITERS ?? 500);
 	if (!which || which === 'wire') wireCurriculum(iters);
-	if (which === 'gate') runTask(gateTask, Number(process.env.ITERS ?? 2000));
+	if (which === 'gate') gateCurriculum(Number(process.env.ITERS ?? 800));
 }
 
 main();
