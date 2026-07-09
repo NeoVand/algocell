@@ -7,7 +7,7 @@
 // (`makeCpuScorer`), the browser scores on the GPU (`MorphEngine.grow`) — and
 // the two are byte-identical (proven in M0), so results transfer.
 
-import { type MorphParams, runCA } from './ca';
+import { type MorphParams, runCA, runCAv2 } from './ca';
 import { mulberry32 } from './genomes';
 
 /** Grows a batch of genomes to their final grids. May be sync (CPU) or async (GPU). */
@@ -33,6 +33,8 @@ export interface EvolveConfig {
 	/** 'binary' = alive/dead match (ignores color); 'exact' = state must match. */
 	mode?: FitnessMode;
 	seed?: number;
+	/** Warm-start genomes seeded into the initial population before random fill. */
+	seedGenomes?: Uint8Array[];
 }
 
 export interface GenStats {
@@ -66,6 +68,11 @@ export function makeCpuScorer(p: MorphParams, seed: Uint8Array): ScoreFn {
 	return (genomes) => genomes.map((g) => runCA(seed, g, p));
 }
 
+/** A scorer backed by the v2 (SUM×DIR16) reference CA. */
+export function makeCpuScorerV2(p: MorphParams, seed: Uint8Array): ScoreFn {
+	return (genomes) => genomes.map((g) => runCAv2(seed, g, p));
+}
+
 export class Evolver {
 	readonly config: Required<EvolveConfig>;
 	private score: ScoreFn;
@@ -82,11 +89,12 @@ export class Evolver {
 			fgWeight: 3,
 			mode: 'binary',
 			seed: 1,
+			seedGenomes: [],
 			...config
 		};
 		this.score = score;
 		this.rng = mulberry32(this.config.seed);
-		this.population = this.randomPopulation();
+		this.population = this.initialPopulation();
 	}
 
 	private randInt(n: number): number {
@@ -99,8 +107,18 @@ export class Evolver {
 		return g;
 	}
 
-	private randomPopulation(): Uint8Array[] {
-		return Array.from({ length: this.config.popSize }, () => this.randomGenome());
+	/** Initial population: warm-start genomes first (truncated/padded to popSize), then random fill. */
+	private initialPopulation(): Uint8Array[] {
+		const pop: Uint8Array[] = [];
+		for (const g of this.config.seedGenomes) {
+			if (pop.length >= this.config.popSize) break;
+			if (g.length !== this.config.genomeLength) {
+				throw new Error(`seed genome length ${g.length} != ${this.config.genomeLength}`);
+			}
+			pop.push(g.slice());
+		}
+		while (pop.length < this.config.popSize) pop.push(this.randomGenome());
+		return pop;
 	}
 
 	/** Run one generation; returns its statistics (and updates `this.best`). */

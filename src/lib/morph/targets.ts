@@ -126,3 +126,42 @@ export function makeFrenchFlag(p: MorphParams, states: [number, number, number] 
 		}
 	return g;
 }
+
+// --- arbitrary bitmap targets (asymmetric — the substrate-v2 proving ground) --
+//
+// Define any small shape as rows of characters, centered in the grid. A digit
+// '1'..'9' sets that state (for multi-color); any other non-'.'/' ' char sets
+// `state`; '.' or ' ' is background. These are the shapes that an isotropic rule
+// CANNOT grow (a letter 'F' has no symmetry at all), so they are the acid test
+// that directional perception actually works.
+
+export function fromBitmap(p: MorphParams, rows: string[], state = 1): Uint8Array {
+	const g = blank(p);
+	const h = rows.length;
+	const w = Math.max(...rows.map((r) => r.length));
+	const ox = (p.W - w) >> 1;
+	const oy = (p.H - h) >> 1;
+	for (let r = 0; r < h; r++)
+		for (let c = 0; c < rows[r].length; c++) {
+			const ch = rows[r][c];
+			let s = 0;
+			if (ch >= '1' && ch <= '9') s = ch.charCodeAt(0) - 48;
+			else if (ch !== '.' && ch !== ' ') s = state;
+			if (s > 0) {
+				const x = ox + c;
+				const y = oy + r;
+				if (isInterior(p, x, y)) g[y * p.W + x] = s;
+			}
+		}
+	return g;
+}
+
+/** Letter 'F' — no symmetry at all: the canonical asymmetry test. */
+export function letterF(p: MorphParams, state = 1): Uint8Array {
+	return fromBitmap(p, ['#####', '#....', '####.', '#....', '#....', '#....'], state);
+}
+
+/** A rightward arrow — clear left/right asymmetry. */
+export function arrow(p: MorphParams, state = 1): Uint8Array {
+	return fromBitmap(p, ['..#...', '..##..', '######', '..##..', '..#...'], state);
+}

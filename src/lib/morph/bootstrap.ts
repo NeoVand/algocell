@@ -147,3 +147,162 @@ export function bootstrapSymbols(p: MorphParams, map: MemoryMap): Record<string,
 export function assembleBootstrap(p: MorphParams, map: MemoryMap): Uint8Array {
 	return assemble(bootstrapSource(p, map), bootstrapSymbols(p, map));
 }
+
+// ---------------------------------------------------------------------------
+// SUBSTRATE V2 — SUM×DIR16 bootstrap (directional perception).
+//
+// Same T/Y/X scaffolding + LDIR + HALT as v1; only the inner cell body changes.
+// Per neighbor, the same byte already loaded for the sum is tested for aliveness
+// and OR'd into a 4-bit `dir` code (up=8, right=4, down=2, left=1). The genome
+// index is tbase*16 + dir, where tbase = self*K + sum is v1's index. tbase*16 is
+// built with ADD HL,HL x4 (no shift/rotate opcode exists in z80asm), and dir is
+// merged into the zeroed low nibble. Register roles: HL=front ptr, DE=back ptr,
+// B=dir, C=sum, A=scratch; self is re-read from (HL) at index time. No stack.
+// ---------------------------------------------------------------------------
+
+export function bootstrapSourceV2(p: MorphParams, map: MemoryMap): string[] {
+	return `
+		LD A, T
+		LD (TCOUNT), A
+	t_loop:
+		LD HL, FRONT_FIRST
+		LD DE, BACK_FIRST
+		LD A, HMINUS2
+		LD (YCOUNT), A
+	y_loop:
+		LD A, WMINUS2
+		LD (XCOUNT), A
+	x_loop:
+		LD B,0                  ; dir = 0
+		DEC HL                  ; p-1 (left)
+		LD A,(HL)
+		LD C,A                  ; sum = left
+		OR A
+		JR Z, sk_l
+		INC B                   ; dir |= 1 (left)
+	sk_l:
+		INC HL
+		INC HL                  ; p+1 (right)
+		LD A,(HL)
+		ADD A,C
+		LD C,A                  ; sum += right
+		LD A,(HL)               ; reload right (ADD clobbered A)
+		OR A
+		JR Z, sk_r
+		LD A,B
+		ADD A,4                 ; dir |= 4 (right)
+		LD B,A
+	sk_r:
+		DEC HL                  ; p
+		LD A,L                  ; HL = p - W (up)
+		SUB W
+		LD L,A
+		LD A,H
+		SBC A,0
+		LD H,A
+		LD A,(HL)
+		ADD A,C
+		LD C,A                  ; sum += up
+		LD A,(HL)
+		OR A
+		JR Z, sk_u
+		LD A,B
+		ADD A,8                 ; dir |= 8 (up)
+		LD B,A
+	sk_u:
+		LD A,L                  ; HL = p (restore +W)
+		ADD A,W
+		LD L,A
+		LD A,H
+		ADC A,0
+		LD H,A
+		LD A,L                  ; HL = p + W (down)
+		ADD A,W
+		LD L,A
+		LD A,H
+		ADC A,0
+		LD H,A
+		LD A,(HL)
+		ADD A,C
+		LD C,A                  ; sum += down (C = full neighbor sum)
+		LD A,(HL)
+		OR A
+		JR Z, sk_d
+		LD A,B
+		ADD A,2                 ; dir |= 2 (down)
+		LD B,A
+	sk_d:
+		LD A,L                  ; HL = p (restore -W)
+		SUB W
+		LD L,A
+		LD A,H
+		SBC A,0
+		LD H,A
+		; --- index = (self*K + sum)*16 + dir ---
+		LD (PSAVE), HL          ; save front pointer
+		LD A,C
+		LD (SUMSAVE), A         ; stash sum
+		LD A,B
+		LD (DIRSAVE), A         ; stash dir
+		LD A,(HL)               ; re-read self (HL = p)
+		LD H,0
+		LD L,A                  ; HL = self
+		LD BC, SELFBASE
+		ADD HL, BC              ; HL = SELFBASE + self
+		LD A,(HL)               ; A = self*K
+		LD HL, SUMSAVE
+		ADD A,(HL)              ; A = self*K + sum = tbase (0..S*K-1)
+		LD H,0
+		LD L,A                  ; HL = tbase
+		ADD HL, HL              ; *2
+		ADD HL, HL              ; *4
+		ADD HL, HL              ; *8
+		ADD HL, HL              ; *16 (low nibble of L now 0)
+		LD A,(DIRSAVE)
+		OR L                    ; merge dir into low nibble
+		LD L,A                  ; HL = tbase*16 + dir = index
+		LD BC, GENOME
+		ADD HL, BC              ; HL = GENOME + index
+		LD A,(HL)               ; A = next state
+		LD HL, (PSAVE)          ; restore front pointer
+		LD (DE), A              ; write next -> back buffer
+		INC HL
+		INC DE
+		LD A,(XCOUNT)
+		DEC A
+		LD (XCOUNT),A
+		JP NZ, x_loop
+		INC HL
+		INC HL
+		INC DE
+		INC DE
+		LD A,(YCOUNT)
+		DEC A
+		LD (YCOUNT),A
+		JP NZ, y_loop
+		LD HL, BACK
+		LD DE, FRONT
+		LD BC, WH
+		LDIR
+		LD A,(TCOUNT)
+		DEC A
+		LD (TCOUNT),A
+		JP NZ, t_loop
+		HALT
+	`
+		.split('\n')
+		.map((l) => l.trim());
+}
+
+export function bootstrapSymbolsV2(p: MorphParams, map: MemoryMap): Record<string, number> {
+	if (map.DIRSAVE === undefined) throw new Error('v2 memory map is missing DIRSAVE');
+	return {
+		...bootstrapSymbols(p, map),
+		DIRSAVE: map.DIRSAVE
+	};
+}
+
+/** Assemble the v2 SUM×DIR16 bootstrap. */
+export function assembleBootstrapV2(p: MorphParams, map: MemoryMap): Uint8Array {
+	return assemble(bootstrapSourceV2(p, map), bootstrapSymbolsV2(p, map));
+}
