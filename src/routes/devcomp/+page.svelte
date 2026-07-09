@@ -5,12 +5,12 @@
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
-	import adderStable from '$lib/devcomp/params/adder_stable.json';
+	import adderReactive from '$lib/devcomp/params/adder_reactive.json';
 
 	// Params by file. e2_repair + e3_seed share the stable E3 rule; the adder uses
-	// its long-horizon-stable + self-repairing rule. e1 is compute-only (capped at
-	// tGrow so it doesn't drift). See rule.ts `stable`.
-	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_stable.json': adderStable };
+	// its stable + self-repairing + input-reactive rule. e1 is compute-only (capped
+	// at tGrow so it doesn't drift). See rule.ts `stable`/`reactive`.
+	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_reactive.json': adderReactive };
 
 	let canvas: HTMLCanvasElement;
 	let engine: FieldCAEngine | null = null;
@@ -68,9 +68,14 @@
 		await load();
 		playing = true;
 	}
-	// Developmental rules compute the answer for the input present during growth,
-	// so changing an input re-seeds and regrows (you watch it recompute).
-	async function toggleInput(k: number) { inputs = inputs.map((v, i) => (i === k ? v ^ 1 : v)); await load(); playing = true; }
+	// Reactive rules re-settle to the new answer on the running field (just re-clamp
+	// the inputs). Non-reactive/developmental rules compute for the input present
+	// during growth, so they re-seed and regrow instead.
+	async function toggleInput(k: number) {
+		inputs = inputs.map((v, i) => (i === k ? v ^ 1 : v));
+		if (exp.reactive) { applyInputs(); } else { await load(); }
+		playing = true;
+	}
 	async function reset() { await load(); playing = true; }
 	function doStep() { if (engine && ready && stepCount < maxSteps) { engine.step(false); stepCount++; } }
 

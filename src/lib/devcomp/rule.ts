@@ -47,6 +47,7 @@ export interface Experiment {
 	paramsUrl: string; // JSON number[] of length cfg.P
 	tGrow: number; // steps until the answer has settled (for a readout)
 	stable: boolean; // true if the rule is a long-horizon attractor (run indefinitely); else cap at tGrow
+	reactive?: boolean; // true if it re-settles on live input changes (toggle re-clamps, no re-seed)
 }
 
 // --- E-series I/O (9×9) ---
@@ -82,9 +83,9 @@ export const EXPERIMENTS: Experiment[] = [
 		ic: 'seed', seedCell: e_iy * EDIM.SW + (EDIM.SW >> 1), paramsUrl: 'e3_seed.json', tGrow: 24, stable: true
 	},
 	{
-		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority) that holds its answer and self-repairs. Arithmetic, grown by gradient.',
+		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority) that holds its answer, tracks live input changes, and self-repairs. Arithmetic, grown by gradient.',
 		cfg: ADIM, inputCells: ADD_IN, outputCells: ADD_OUT, outputLabels: ['sum', 'carry'], cases: ADD_CASES,
-		ic: 'full', paramsUrl: 'adder_stable.json', tGrow: 30, stable: true // long-horizon-stable + self-repairing
+		ic: 'full', paramsUrl: 'adder_reactive.json', tGrow: 30, stable: true, reactive: true // stable + self-repairing + input-reactive
 	}
 ];
 

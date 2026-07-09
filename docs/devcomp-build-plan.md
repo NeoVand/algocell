@@ -70,10 +70,21 @@ Param layout `[W1(HD×PERC), b1(HD), W2(C×HD), b2(C)]`. Frozen params committed
   self-repair on GPU), max|CPU−GPU|=3.2e-5. Note: dropped the dual-IC/seed here —
   it collapsed the adder to the 0.25 constant baseline (the compute rule has no
   seed-growing to warm-start from); full-IC + a long hold window gave genuine
-  long-horizon stability. Remaining for S6: (a2) grow-from-seed adder (separate,
-  harder — needs its own seed-IC curriculum); input-reactivity training (input
-  transitions mid-rollout) for live input toggles without re-seed; (c) 2-bit adder
-  stretch (fallback ladder: mux → half-adder).
+  long-horizon stability.
+  **(a3) DONE — input-reactive adder.** `expH.ts MODE=reactive` (rollout holds the
+  prior input's answer, switches input mid-run, must re-settle to the new answer;
+  + a damage stage to retain self-repair). **64/64 prior→target transitions land on
+  the new answer** (was 24/64), drift @50/@150/@400 still 8/8. Params
+  `adder_reactive.json`; Experiment gains a `reactive` flag; the demo re-clamps
+  (not re-seeds) inputs for reactive experiments, so toggling an input re-settles
+  the *running* field live (verified: step count keeps climbing, output tracks).
+  Inspector overhaul shipped too (Inspect/Damage toggle, click a cell to see its
+  field channels, damage respects pause + step-through). `/devcomp/validate` 36/36.
+  Remaining for S6: (a2) grow-from-seed adder (separate seed-IC curriculum);
+  (c) 2-bit adder stretch (fallback ladder: mux → half-adder). BIG NEXT IDEA —
+  positional invariance: marker channels (IN_MARK/OUT_MARK) + randomized terminal
+  placement so one rule grows the right circuit wherever you drop the terminals
+  (routing-to-arbitrary-output is the risky part; may need a learned output beacon).
 - **S7 — in-browser forward-gradient trainer** (watch it learn) + JS reverse-mode
   Web Worker baseline. ⏳
 - **S8 — ablations + multi-seed statistics** (isotropic-perception / no-hidden /

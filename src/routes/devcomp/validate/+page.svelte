@@ -4,13 +4,13 @@
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
-	import adderStable from '$lib/devcomp/params/adder_stable.json';
+	import adderReactive from '$lib/devcomp/params/adder_reactive.json';
 
 	interface Row { label: string; cpu: string; gpu: string; maxDiff: number; ok: boolean; }
 	let rows = $state<Row[]>([]);
 	let status = $state('running…');
 
-	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_stable.json': adderStable };
+	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_reactive.json': adderReactive };
 	const DMG_AT = 32;
 	// Each experiment is read where its rule is meant to be read: unstable rules at
 	// tGrow, stable ones later (with damage to exercise self-repair).
