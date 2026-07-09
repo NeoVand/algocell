@@ -15,18 +15,23 @@
 export interface RuleConfig {
 	SW: number; SH: number; N: number; C: number; FEAT: number; PERC: number; HD: number;
 	W1O: number; B1O: number; W2O: number; B2O: number; P: number;
+	markers: boolean; // if true: ch1 = IN_MARK, ch2 = OUT_MARK — a position-invariant rule with movable ports
 }
 
 /** Build a config from grid + channel + hidden sizes. Param block layout is
- *  [ W1(HD×PERC), b1(HD), W2(C×HD), b2(C) ]. */
-export function makeConfig(SW: number, SH: number, C: number, HD: number): RuleConfig {
+ *  [ W1(HD×PERC), b1(HD), W2(C×HD), b2(C) ]. `markers` enables the movable-port rule. */
+export function makeConfig(SW: number, SH: number, C: number, HD: number, markers = false): RuleConfig {
 	const FEAT = 4, PERC = FEAT * C, N = SW * SH;
 	const W1O = 0, B1O = W1O + HD * PERC, W2O = B1O + HD, B2O = W2O + C * HD, P = B2O + C;
-	return { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P };
+	return { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P, markers };
 }
+
+// Marker channel indices (for markers configs).
+export const IN_MARK = 1, OUT_MARK = 2;
 
 export const EDIM = makeConfig(9, 9, 12, 48); // E-series: gate / self-repair / grow (P=2940)
 export const ADIM = makeConfig(11, 11, 16, 64); // 1-bit full adder (P=5200)
+export const IDIM = makeConfig(17, 17, 16, 96, true); // movable XOR — position-invariant, draggable ports (P=7792)
 
 // Back-compat exports (E-series dims). New code should read dims from an experiment's cfg.
 export const { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P } = EDIM;
@@ -48,6 +53,7 @@ export interface Experiment {
 	tGrow: number; // steps until the answer has settled (for a readout)
 	stable: boolean; // true if the rule is a long-horizon attractor (run indefinitely); else cap at tGrow
 	reactive?: boolean; // true if it re-settles on live input changes (toggle re-clamps, no re-seed)
+	movable?: boolean; // true if ports are draggable (a markers/position-invariant rule)
 }
 
 // --- E-series I/O (9×9) ---
@@ -86,8 +92,22 @@ export const EXPERIMENTS: Experiment[] = [
 		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority) that holds its answer, tracks live input changes, and self-repairs. Arithmetic, grown by gradient.',
 		cfg: ADIM, inputCells: ADD_IN, outputCells: ADD_OUT, outputLabels: ['sum', 'carry'], cases: ADD_CASES,
 		ic: 'full', paramsUrl: 'adder_reactive.json', tGrow: 30, stable: true, reactive: true // stable + self-repairing + input-reactive
+	},
+	{
+		id: 'movable_wire', name: 'Movable wire', blurb: 'One rule, no fixed layout: drag the input (○) or output (□) port anywhere and the plane rewires to route the bit. Works on any grid size.',
+		cfg: IDIM, inputCells: [movCell(IDIM, IDIM.SH >> 1, 4)], outputCells: [movCell(IDIM, IDIM.SH >> 1, IDIM.SW - 5)],
+		cases: [{ in: [0], out: [0] }, { in: [1], out: [1] }],
+		ic: 'full', paramsUrl: 'wire_invariant.json', tGrow: 40, stable: true, movable: true
+	},
+	{
+		id: 'movable_xor', name: 'Movable XOR', blurb: 'Position-invariant computation: drag the two inputs (○) or the output (□) anywhere and the plane rewires to compute their XOR. Watch the waves from the ports find each other.',
+		cfg: IDIM, inputCells: [movCell(IDIM, (IDIM.SH >> 1) - 2, 4), movCell(IDIM, (IDIM.SH >> 1) + 2, 4)], outputCells: [movCell(IDIM, IDIM.SH >> 1, IDIM.SW - 5)],
+		cases: XOR_CASES,
+		ic: 'full', paramsUrl: 'xor_invariant.json', tGrow: 44, stable: true, movable: true
 	}
 ];
+
+function movCell(cfg: RuleConfig, row: number, col: number): number { return row * cfg.SW + col; }
 
 export function experimentById(id: string): Experiment | undefined {
 	return EXPERIMENTS.find((e) => e.id === id);
@@ -100,6 +120,22 @@ export function loadParams(cfg: RuleConfig, arr: number[]): Float64Array {
 
 export function clampInputs(cfg: RuleConfig, f: Float64Array, exp: Experiment, inputs: number[]): void {
 	for (let k = 0; k < exp.inputCells.length; k++) f[exp.inputCells[k] * cfg.C + 0] = inputs[k];
+}
+
+/** Stamp markers + input bits at the given port positions (for movable rules). */
+export function stampMarkers(cfg: RuleConfig, f: Float64Array, inPorts: number[], outPorts: number[], bits: number[]): void {
+	for (let i = 0; i < cfg.N; i++) { f[i * cfg.C + IN_MARK] = 0; f[i * cfg.C + OUT_MARK] = 0; }
+	inPorts.forEach((p, k) => { f[p * cfg.C + IN_MARK] = 1; f[p * cfg.C + 0] = bits[k]; });
+	for (const p of outPorts) f[p * cfg.C + OUT_MARK] = 1;
+}
+
+/** Uniform-alive interior + stamped markers — the initial state for a movable rule. */
+export function seedMarkers(cfg: RuleConfig, inPorts: number[], outPorts: number[], bits: number[]): Float64Array {
+	const s = new Float64Array(cfg.N * cfg.C);
+	for (let y = 1; y < cfg.SH - 1; y++) for (let x = 1; x < cfg.SW - 1; x++)
+		for (let c = 3; c < cfg.C; c++) s[(y * cfg.SW + x) * cfg.C + c] = 1;
+	stampMarkers(cfg, s, inPorts, outPorts, bits);
+	return s;
 }
 
 export function seedGrid(cfg: RuleConfig, exp: Experiment, inputs: number[]): Float64Array {

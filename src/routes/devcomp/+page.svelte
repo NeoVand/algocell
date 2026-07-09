@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { EXPERIMENTS, experimentById, loadParams, seedGrid, readOutputs, type RuleConfig } from '$lib/devcomp/rule';
+	import { EXPERIMENTS, experimentById, loadParams, seedGrid, seedMarkers, readOutputs, type RuleConfig } from '$lib/devcomp/rule';
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
 	import adderReactive from '$lib/devcomp/params/adder_reactive.json';
+	import wireInvariant from '$lib/devcomp/params/wire_invariant.json';
 
-	// Params by file. e2_repair + e3_seed share the stable E3 rule; the adder uses
-	// its stable + self-repairing + input-reactive rule. e1 is compute-only (capped
-	// at tGrow so it doesn't drift). See rule.ts `stable`/`reactive`.
-	const PARAM_FILES: Record<string, number[]> = { 'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_reactive.json': adderReactive };
+	// Params by file. Movable experiments use position-invariant marker rules.
+	const PARAM_FILES: Record<string, number[]> = {
+		'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_reactive.json': adderReactive,
+		'wire_invariant.json': wireInvariant
+	};
+	// Only show experiments whose params are bundled.
+	const SHOWN = EXPERIMENTS.filter((e) => PARAM_FILES[e.paramsUrl] !== undefined);
 
 	let canvas: HTMLCanvasElement;
 	let engine: FieldCAEngine | null = null;
@@ -23,10 +27,14 @@
 	let stepCount = $state(0);
 	let output = $state<number[]>([0]);
 	let msg = $state('starting the GPU…');
-	let tool = $state<'inspect' | 'damage'>('inspect');
+	let tool = $state<'inspect' | 'damage' | 'move'>('inspect');
 	let selectedCell = $state<number | null>(null);
 	let selVals = $state<number[]>([]);
 	let lastState: Float32Array | null = null;
+	// movable-rule port positions (draggable)
+	let inPorts = $state<number[]>([]);
+	let outPort = $state<number>(0);
+	let grabbed = -1; // index into [inPorts…, outPort] being dragged; -1 = none
 
 	const exp = $derived(experimentById(expId)!);
 	const maxSteps = $derived(exp.stable ? Infinity : exp.tGrow);
@@ -42,8 +50,14 @@
 		if (!engine) return;
 		const cfg = exp.cfg;
 		const isIn = new Uint32Array(cfg.N), val = new Float32Array(cfg.N);
-		exp.inputCells.forEach((cell, k) => { isIn[cell] = 1; val[cell] = inputs[k]; });
+		const ins = exp.movable ? inPorts : exp.inputCells;
+		ins.forEach((cell, k) => { isIn[cell] = 1; val[cell] = inputs[k]; });
 		engine.setInputs(isIn, val);
+		if (cfg.markers) {
+			const isOut = new Uint32Array(cfg.N);
+			(exp.movable ? [outPort] : exp.outputCells).forEach((cell) => (isOut[cell] = 1));
+			engine.setOutputs(isOut);
+		}
 	}
 
 	async function load() {
@@ -56,15 +70,19 @@
 		engine.setParams(new Float32Array(loadParams(cfg, PARAM_FILES[exp.paramsUrl])));
 		applyInputs();
 		engine.setDamageKeep(new Uint32Array(cfg.N).fill(1));
-		engine.seed(new Float32Array(seedGrid(cfg, exp, inputs)));
+		if (exp.movable) engine.seed(new Float32Array(seedMarkers(cfg, inPorts, [outPort], inputs)));
+		else engine.seed(new Float32Array(seedGrid(cfg, exp, inputs)));
 		stepCount = 0;
 		ready = true;
 	}
 
 	async function selectExp(id: string) {
 		expId = id;
-		inputs = new Array(exp.inputCells.length).fill(0);
+		const e = experimentById(id)!;
+		inputs = new Array(e.inputCells.length).fill(0);
 		selectedCell = null;
+		if (e.movable) { inPorts = [...e.inputCells]; outPort = e.outputCells[0]; tool = 'move'; }
+		else if (tool === 'move') tool = 'inspect';
 		await load();
 		playing = true;
 	}
@@ -100,16 +118,38 @@
 				if (x >= 1 && x < cfg.SW - 1 && y >= 1 && y < cfg.SH - 1) engine.damageCell(y * cfg.SW + x);
 			}
 	}
+	// Move ports — grab the nearest port and drag it; the kernel re-stamps markers
+	// each step from the port buffers, so the running field re-routes live.
+	function grabPort(e: PointerEvent) {
+		const cfg = exp.cfg, c = cellAt(e), cx = c % cfg.SW, cy = (c / cfg.SW) | 0;
+		const ports = [...inPorts, outPort];
+		let best = -1, bestD = 4;
+		ports.forEach((p, idx) => { const d = Math.abs((p % cfg.SW) - cx) + Math.abs(((p / cfg.SW) | 0) - cy); if (d < bestD) { bestD = d; best = idx; } });
+		grabbed = best;
+		if (grabbed >= 0) movePort(e);
+	}
+	function movePort(e: PointerEvent) {
+		if (grabbed < 0 || !engine) return;
+		const cfg = exp.cfg, c = cellAt(e);
+		const x = Math.max(1, Math.min(cfg.SW - 2, c % cfg.SW)), y = Math.max(1, Math.min(cfg.SH - 2, (c / cfg.SW) | 0));
+		const cell = y * cfg.SW + x;
+		if ([...inPorts, outPort].some((p, idx) => idx !== grabbed && p === cell)) return; // don't stack ports
+		if (grabbed < inPorts.length) inPorts = inPorts.map((p, i) => (i === grabbed ? cell : p));
+		else outPort = cell;
+		applyInputs(); // re-stamp markers → the running field re-routes live
+	}
 	function pointerDown(e: PointerEvent) {
 		try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic */ }
 		if (tool === 'damage') { painting = true; paintDamage(e); }
+		else if (tool === 'move') grabPort(e);
 		else { selectedCell = cellAt(e); updateSel(); }
 	}
 	function pointerMove(e: PointerEvent) {
 		if (painting) paintDamage(e);
+		else if (grabbed >= 0) movePort(e);
 		else if (tool === 'inspect' && e.buttons) { selectedCell = cellAt(e); updateSel(); }
 	}
-	function pointerUp() { painting = false; }
+	function pointerUp() { painting = false; grabbed = -1; }
 
 	function color(v: number): string {
 		const t = Math.max(-1, Math.min(1, v));
@@ -132,15 +172,17 @@
 			ctx.fillStyle = '#34d399';
 			ctx.beginPath(); ctx.arc(sx * cp + cp / 2, sy * cp + cp / 2, 4, 0, 7); ctx.fill();
 		}
-		for (const cell of exp.inputCells) {
+		const inCells = exp.movable ? inPorts : exp.inputCells;
+		const outCells = exp.movable ? [outPort] : exp.outputCells;
+		for (const cell of inCells) {
 			const cxp = cell % cfg.SW, cyp = (cell / cfg.SW) | 0;
 			ctx.strokeStyle = '#e6edf3'; ctx.lineWidth = 2;
-			ctx.beginPath(); ctx.arc(cxp * cp + cp / 2, cyp * cp + cp / 2, cp / 2 - 5, 0, 7); ctx.stroke();
+			ctx.beginPath(); ctx.arc(cxp * cp + cp / 2, cyp * cp + cp / 2, cp / 2 - 4, 0, 7); ctx.stroke();
 		}
-		for (const cell of exp.outputCells) {
+		for (const cell of outCells) {
 			const cxp = cell % cfg.SW, cyp = (cell / cfg.SW) | 0;
 			ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 3;
-			ctx.strokeRect(cxp * cp + 3, cyp * cp + 3, cp - 7, cp - 7);
+			ctx.strokeRect(cxp * cp + 2, cyp * cp + 2, cp - 5, cp - 5);
 		}
 		if (selectedCell !== null) {
 			const sx = selectedCell % cfg.SW, sy = (selectedCell / cfg.SW) | 0;
@@ -160,7 +202,7 @@
 					if (playing && stepCount < maxSteps) { engine.step(false); stepCount++; }
 					const st = await engine.readState();
 					draw(st);
-					output = readOutputs(exp.cfg, st, exp);
+					output = exp.movable ? [st[outPort * exp.cfg.C + 0]] : readOutputs(exp.cfg, st, exp);
 					lastState = st;
 					if (selectedCell !== null) selVals = Array.from({ length: exp.cfg.C }, (_, c) => st[selectedCell! * exp.cfg.C + c]);
 				}
@@ -182,7 +224,7 @@
 	</header>
 
 	<div class="tabs">
-		{#each EXPERIMENTS as e (e.id)}
+		{#each SHOWN as e (e.id)}
 			<button class="tab" class:active={expId === e.id} onclick={() => selectExp(e.id)}>{e.name}</button>
 		{/each}
 	</div>
@@ -198,13 +240,16 @@
 		<div class="side">
 			<p class="blurb">{exp.blurb}</p>
 			<div class="tool">
+				{#if exp.movable}<button class="tbtn" class:sel={tool === 'move'} onclick={() => (tool = 'move')}>✥ Move ports</button>{/if}
 				<button class="tbtn" class:sel={tool === 'inspect'} onclick={() => (tool = 'inspect')}>🔍 Inspect</button>
 				<button class="tbtn" class:sel={tool === 'damage'} onclick={() => (tool = 'damage')}>✎ Damage</button>
 			</div>
 			<p class="hint">
-				{tool === 'damage'
-					? 'Drag to destroy cells — it regrows. Pause + Step to watch the heal frame by frame.'
-					: 'Click a cell to inspect the field (values) stored in it.'}
+				{tool === 'move'
+					? 'Drag the input (○) or output (□) ports anywhere — the plane rewires to route it. Works on any grid size.'
+					: tool === 'damage'
+						? 'Drag to destroy cells — it regrows. Pause + Step to watch the heal frame by frame.'
+						: 'Click a cell to inspect the field (values) stored in it.'}
 			</p>
 
 			<div class="inputs">

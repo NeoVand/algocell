@@ -16,6 +16,7 @@ export class FieldCAEngine {
 	private isInput: GPUBuffer;
 	private inputVal: GPUBuffer;
 	private damageKeep: GPUBuffer;
+	private isOutput?: GPUBuffer; // markers configs only (OUT_MARK)
 	private ctrl: GPUBuffer;
 	private pipeline: GPUComputePipeline;
 	private bindAB: GPUBindGroup;
@@ -39,25 +40,26 @@ export class FieldCAEngine {
 		this.isInput = mk(cfg.N * 4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
 		this.inputVal = mk(cfg.N * 4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
 		this.damageKeep = mk(cfg.N * 4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+		if (cfg.markers) this.isOutput = mk(cfg.N * 4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
 		this.ctrl = mk(16, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
 		this.readbackBuf = mk(this.stateBytes, GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST);
 
 		const module = d.createShaderModule({ code: fieldShaderWGSL(cfg) });
 		this.pipeline = d.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'step' } });
 		const layout = this.pipeline.getBindGroupLayout(0);
-		const bind = (inBuf: GPUBuffer, outBuf: GPUBuffer): GPUBindGroup =>
-			d.createBindGroup({
-				layout,
-				entries: [
-					{ binding: 0, resource: { buffer: inBuf } },
-					{ binding: 1, resource: { buffer: outBuf } },
-					{ binding: 2, resource: { buffer: this.params } },
-					{ binding: 3, resource: { buffer: this.isInput } },
-					{ binding: 4, resource: { buffer: this.inputVal } },
-					{ binding: 5, resource: { buffer: this.damageKeep } },
-					{ binding: 6, resource: { buffer: this.ctrl } }
-				]
-			});
+		const bind = (inBuf: GPUBuffer, outBuf: GPUBuffer): GPUBindGroup => {
+			const entries: GPUBindGroupEntry[] = [
+				{ binding: 0, resource: { buffer: inBuf } },
+				{ binding: 1, resource: { buffer: outBuf } },
+				{ binding: 2, resource: { buffer: this.params } },
+				{ binding: 3, resource: { buffer: this.isInput } },
+				{ binding: 4, resource: { buffer: this.inputVal } },
+				{ binding: 5, resource: { buffer: this.damageKeep } },
+				{ binding: 6, resource: { buffer: this.ctrl } }
+			];
+			if (this.isOutput) entries.push({ binding: 7, resource: { buffer: this.isOutput } });
+			return d.createBindGroup({ layout, entries });
+		};
 		this.bindAB = bind(this.stateA, this.stateB);
 		this.bindBA = bind(this.stateB, this.stateA);
 	}
@@ -86,6 +88,8 @@ export class FieldCAEngine {
 		this.device.queue.writeBuffer(this.inputVal, 0, inputVal);
 	}
 	setDamageKeep(keep: Uint32Array): void { this.device.queue.writeBuffer(this.damageKeep, 0, keep); }
+	/** Per-cell OUT_MARK (1 at output ports). Only meaningful for markers configs. */
+	setOutputs(isOutput: Uint32Array): void { if (this.isOutput) this.device.queue.writeBuffer(this.isOutput, 0, isOutput); }
 
 	seed(state: Float32Array): void {
 		this.device.queue.writeBuffer(this.stateA, 0, state);
@@ -124,5 +128,6 @@ export class FieldCAEngine {
 
 	destroy(): void {
 		for (const b of [this.stateA, this.stateB, this.params, this.isInput, this.inputVal, this.damageKeep, this.ctrl, this.readbackBuf]) b.destroy();
+		this.isOutput?.destroy();
 	}
 }

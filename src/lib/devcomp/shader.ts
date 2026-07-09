@@ -8,7 +8,13 @@
 import type { RuleConfig } from './rule';
 
 export function fieldShaderWGSL(cfg: RuleConfig): string {
-	const { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O } = cfg;
+	const { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O, markers } = cfg;
+	const markerBinding = markers ? '@group(0) @binding(7) var<storage, read> isOutput : array<u32>;' : '';
+	const markerDecl = markers ? 'let outp = isOutput[u32(i)] == 1u;' : '';
+	// markers: ch1 = IN_MARK (1 at inputs), ch2 = OUT_MARK (1 at outputs), everywhere else 0.
+	const markerClamp = markers
+		? 'if (c == 1) { v = select(0.0, 1.0, inp); }\n    if (c == 2) { v = select(0.0, 1.0, outp); }'
+		: '';
 	return /* wgsl */ `
 const SW : i32 = ${SW};
 const SH : i32 = ${SH};
@@ -27,6 +33,7 @@ const B2O : u32 = ${B2O}u;
 @group(0) @binding(4) var<storage, read>        inputVal  : array<f32>;   // per-cell: clamped ch0
 @group(0) @binding(5) var<storage, read>        damageKeep: array<u32>;   // per-cell: 1 keep, 0 destroy
 @group(0) @binding(6) var<uniform>              ctrl      : vec4<u32>;     // x = applyDamage flag
+${markerBinding}
 
 @compute @workgroup_size(8, 8)
 fn step(@builtin(global_invocation_id) gid : vec3<u32>) {
@@ -63,12 +70,14 @@ fn step(@builtin(global_invocation_id) gid : vec3<u32>) {
 
   let dmg = (ctrl.x == 1u) && (damageKeep[u32(i)] == 0u);
   let inp = isInput[u32(i)] == 1u;
+  ${markerDecl}
   for (var c = 0; c < C; c = c + 1) {
     var dl = params[B2O + u32(c)];
     let base = W2O + u32(c * HD);
     for (var u = 0; u < HD; u = u + 1) { dl = dl + params[base + u32(u)] * h[u]; }
     var v = tanh(stateIn[u32(i * C + c)] + dl);
     if (dmg) { v = 0.0; }              // damage zeros the cell...
+    ${markerClamp}
     if (inp && c == 0) { v = inputVal[u32(i)]; }  // ...then input clamp wins (matches reference)
     stateOut[u32(i * C + c)] = v;
   }
