@@ -207,18 +207,24 @@ function train(iters: number): { par: Float64Array; lossCurve: number[] } {
 	const rng = mulberry32(5);
 	// small init; W2 (last layer) especially small so the initial rule is gentle
 	const par = new Float64Array(P);
-	for (let j = 0; j < P; j++) par[j] = (rng() - 0.5) * 0.1;
-	for (let j = W2O; j < B2O; j++) par[j] *= 0.3;
+	for (let j = 0; j < W2O; j++) par[j] = (rng() - 0.5) * 0.1; // W1, b1 small random
+	// W2, b2 stay ZERO — the initial rule is a no-op, so it can't saturate the
+	// tanh before any signal exists; gradients build it up gently (NCA-standard).
 	const seed = centerSeed();
 	const target = lizardTarget();
 	const m = new Float64Array(P), v = new Float64Array(P);
 	const b1 = 0.9, b2 = 0.999;
 	const lossCurve: number[] = [];
 	for (let it = 1; it <= iters; it++) {
-		const lr = it > iters * 0.5 ? (it > iters * 0.8 ? 0.003 : 0.008) : 0.015;
+		const lr = it > iters * 0.5 ? (it > iters * 0.8 ? 0.002 : 0.005) : 0.01;
 		const states = forward(par, seed);
 		const { L, gsT } = computeLoss(states[T], target);
 		const grad = backward(states, par, gsT);
+		// global-norm gradient clipping — stops the overshoot that saturates tanh
+		let gn = 0;
+		for (let j = 0; j < P; j++) gn += grad[j] * grad[j];
+		gn = Math.sqrt(gn);
+		if (gn > 1.0) for (let j = 0; j < P; j++) grad[j] *= 1.0 / gn;
 		const c1 = 1 - Math.pow(b1, it), c2 = 1 - Math.pow(b2, it);
 		for (let j = 0; j < P; j++) {
 			m[j] = b1 * m[j] + (1 - b1) * grad[j];

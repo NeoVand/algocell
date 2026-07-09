@@ -239,7 +239,78 @@ the evolution-vs-gradient comparison on the F; the forward-gradient trajectory.
 
 ---
 
-## 6. Repro / file map
+## 6. Significance, positioning, and the dream
+
+### 6.1 Is this a big deal? (honest calibration)
+As *literally demonstrated so far*, **not yet a landmark** — and we should be clear-eyed about that:
+dual-number AD is textbook; running it on a Z80 (Exp A) is a systems curio; growing an emoji by
+**backprop** through an NCA (Exp D) largely **reproduces Growing-NCA** (Mordvintsev 2020). The letter-F
+via *forward-mode* (Exp C) is the most genuinely novel single result, but small. So today this is a
+strong **proof-of-concept**. It becomes a real contribution the moment we land a result **nobody has**
+— and those are within reach (§6.5).
+
+### 6.2 Where we sit vs. other A-life
+Two mostly-separate lineages, and we occupy the gap between them:
+- **Program-soup A-life** — Tierra (Ray 1991), Avida, Computational Life / BFF (Agüera y Arcas 2024):
+  Turing-complete cells, self-replication, open-ended evolution — **but no gradients.**
+- **Gradient morphogenesis** — Growing NCA, Lenia / Flow-Lenia, differentiable self-organization:
+  gradient-trained self-organizing rules — **but the "cells" are fixed neural nets, trained by backprop
+  on a GPU.**
+- **Us: gradients on a soup of Turing-complete computers** — the intersection almost nobody occupies.
+
+### 6.3 Core advantages (proven vs. potential — labelled honestly)
+1. **Cells are computers, not conv kernels** — the rule can be an actual program (loops, memory,
+   addressing, self-modification). *[potential — our rule is still an MLP; unexploited]*
+2. **Learning without backprop** — forward-mode / forward-gradient + population works where backprop
+   can't (discrete rules, no autodiff, non-differentiable dynamics). *[proven in miniature: Exp A]*
+3. **One medium for evolution AND gradient** — self-replicators evolving *and* programs descending, in
+   the same soup. *[the killer unification — not yet demonstrated]*
+4. **Biologically plausible / neuromorphic** — local, forward-only, no weight-transport problem.
+   *[conceptual]*
+5. **A trainable testbed for developmental biology** — Levin bioelectric goal-fields, Wolpert positional
+   information; our hidden channels literally **invent morphogen fields** (Exp D). *[shown]*
+
+### 6.4 What we expect the paradigm to do that others can't
+- **Grow *functional* structures, not just pictures** — morphogenesis of *computation* (a grown circuit,
+  wire, adder) on Turing cells. NCA does images; this does machines.
+- **Learn on substrates with no gradient** — discrete programs optimized by population directional
+  derivatives.
+- **Blend Darwinian + Lamarckian** — evolution proposes, gradient refines, in one medium.
+- **Regeneration grounded in a re-writable goal** — homeostasis toward a *setpoint you can rewrite*
+  (Levin's two-headed planaria, in silico), not a trained reflex.
+
+### 6.5 Long-term implication
+A **second axis of learning machines**: not one big differentiable function trained by backprop, but
+**populations of tiny programs that learn (forward gradients) and evolve**. Even if it never beats
+backprop on a benchmark, it can own a niche backprop cannot touch — **learning + evolution + self-repair
++ computation in one asynchronous medium** — and a path to learning on hardware where backprop is
+infeasible (neuromorphic/edge/biological), toward the "billions of tiny learning programs" vision.
+
+### 6.6 Dream demos (ranked by novelty × field-excitement)
+1. **Developmental computation** 🥇 — grow a working **circuit** (a 1-bit adder, a signal wire) from a
+   seed; then **damage it and it regrows and still computes.** Novel, exploits the Turing cells (NCA
+   can't), and "it grew a self-healing computer" is a headline. **The one to chase.**
+2. **Evolution × gradient soup** — self-replicators that also get gradient nudges toward a task; the
+   hybrid beats either alone. Genuinely new for A-life.
+3. **Digital planarian** — cut-and-regrow with a *switchable* setpoint (grow two heads by rewriting the
+   goal). Echoes Levin; the basal-cognition community would love it.
+4. **A zillion Z80s learning live, in the browser** — millions of tiny computers gradient-learning to
+   grow/repair a pattern in real time on a GPU. Spectacle of scale; the Zilion story made visceral.
+5. **Programs that learn to learn** — self-modifying rules discovered by gradient (a learned optimizer
+   as an evolvable program).
+
+### 6.7 The thesis to aim the paper at
+> **Developmental computation: growing self-repairing machines by gradient descent through development,
+> on a population of tiny computers.**
+
+It combines the three things only this substrate gives — **Turing-complete cells + gradients +
+self-repair** — has an irresistible demo (#1), and cleanly differentiates from both NCA (images only)
+and classic A-life (no gradients). The forward-gradient / in-substrate work (§2.3, §4) is the *systems*
+backbone that makes the "on tiny computers" claim real.
+
+---
+
+## 7. Repro / file map
 
 ```
 src/lib/morph/
@@ -263,13 +334,23 @@ fields, weight analysis, loss curves). Memory: `autodiff-on-zilion.md`, `morphog
 
 ---
 
-## 7. Immediate next steps (resume here)
+## 8. Immediate next steps (resume here)
 
-1. **Finish Exp D at 64×64** (background training running; ~12 min). Generate the analysis HTML (dev
-   strip + 12 morphogen fields + feature-energy bars + loss curve) and review the lizard.
-2. **Regeneration** — add persistence + damage to Exp D; the self-repair demo.
-3. **Forward-gradient at scale** — run it on Exp C/D; quantify K and variance reduction. *This decides
-   how "in-substrate" the emoji result can be.*
-4. **Start the Z80/WGSL fixed-point dual field kernel** (roadmap §4.1–4.2).
-5. Keep everything on `feat/morphogenesis-ca`; commit per experiment; do not push without the user.
+1. **Finish Exp D at 64×64.** NOTE: the first 64×64 run **diverged** (tanh saturation at scale) — fixed
+   by **zero-initializing the last MLP layer** (initial rule = no-op) + **global-norm gradient
+   clipping**; retraining healthily (loss decreasing). Generate the analysis HTML (dev strip + 12
+   morphogen fields + feature-energy bars + loss curve) and review the lizard. Expect
+   recognizable-but-soft at 64×64 without the NCA pool/alive-mask.
+2. **DEMO #1 — developmental computation (the paper's headline; §6.6/§6.7).** Grow a *functional*
+   structure — start tiny: a signal **wire** (input on the left edge propagates to the right), then a
+   **1-bit adder** — from a seed, by gradient descent through development; then **damage it and show it
+   regrows and still computes.** This is the differentiator from NCA (images only) and classic A-life
+   (no gradients). Aim the next experiment here.
+3. **Regeneration** — add persistence (score at T and T+k) + per-cell damage during training to Exp D
+   and the circuit; the self-repair figure.
+4. **Forward-gradient at scale** — run it on Exp C/D; quantify K and variance reduction (antithetic,
+   local losses). *This decides how "in-substrate" the results can be — the systems backbone.*
+5. **Start the Z80/WGSL fixed-point dual field kernel** (roadmap §4.1–4.2).
+6. Keep everything on `feat/morphogenesis-ca`; commit per experiment. (User approved pushing to the
+   branch.)
 ```
