@@ -25,9 +25,12 @@ Honest scoping (what a single trained rule does *not* do, stated up front so the
 - **Different capabilities are, today, different trained rules.** The gate (E1), the self-repairing
   grow-from-seed rule (E3), the 1-bit adder, and the movable wire/XOR are *separate* parameter sets, not
   one rule that does everything. "One rule grows a whole computer" is an aspiration, not yet a result.
-- **The computation demonstrated is shallow.** The largest computation is a 1-bit full adder, which is a
-  single wide gate (parity + majority in parallel) with **no produced-then-consumed internal signal**.
-  There is no compositional depth yet (see §7, P0 — this is the biggest lever).
+- **Compositional depth: now shown once (n=1).** A **2-bit ripple-carry adder** trains as one rule
+  (16/16, carry internalized — `adder2.ts`, `params/adder2_2bit.json`), giving the produced-then-
+  consumed internal carry the 1-bit adder lacked. But it is a **single seed**, the carry is
+  **distributed** (single-cell interventions are only partial; a full carry-cell lesion gives a clean
+  sum0-survives / sum1-cout-degrade dissociation), and it is not yet composed further. Multi-seed is
+  the top remaining rigor item (§7, P0-2).
 - **Position-invariant *computation* is only partial.** Movable *routing* (a wire) generalizes to unseen
   grid sizes (100% @ 11/13/17); movable *XOR* is ~68% at 17×17 (essentially unsolved at scale).
 - **The Z80 "gradient" is a primitive, not the training gradient** — see §4. It is a single-cell,
@@ -75,6 +78,7 @@ fixed-point/Z80 `z80/`).
 | E2 | **Self-repair**: damage → regrow → still XOR | heals ~20 steps, stays healed | n=1 | `params/e3_seed.json` |
 | E3 | **Grow from a seed** → compute → heal | attractor to 600+ steps | n=1 | `params/e3_seed.json`, `morph/dev/expG.ts` |
 | S6 | **1-bit full adder** (compute+stable+repair+reactive) | compute 8/8 cases; reactive 64/64 transitions; drift 8/8 @50/150/400 | **n=1** (all one model) | `params/adder_*.json`, `morph/dev/expH.ts` |
+| S6 | **2-bit ripple-carry adder** (internal carry — compositional depth) | 16/16 cases, carry internalized; carry-cell lesion → sum0 16/16, sum1/cout 10/16 (dissociation); carry distributed | **n=1** | `params/adder2_2bit.json`, `morph/dev/adder2.ts` |
 | S6d | **Movable wire** (position-invariant routing) | 100% @11, 100% @13, 100% @17 (unseen sizes) | n=1; placement-count not tabulated | `params/wire_invariant.json`, `morph/dev/expI.ts` |
 | S6d | **Movable XOR** (position-invariant *computation*) | 100% @11, 95% @13, **68% @17** | n=1; denominator not tabulated | `params/xor_invariant.json` |
 | — | Reactive movable XOR | ~58% (near floor; unsolved) | n=1 | — |
@@ -151,11 +155,13 @@ directional-perception mechanism claim (iso=100% here) and gives no error bars b
 
 ## 6. Gap analysis — are we paper-ready? (No — strong workshop paper today)
 
-1. **Compositional depth (the biggest gap).** The largest computation is a 1-bit adder = one wide gate,
-   no produced-then-consumed internal signal. Below the nearest prior art (Differentiable Logic CA,
-   Neural GPU) without composition. **§7-P0.**
-2. **Statistical rigor beyond the gate.** Only E1 has multi-seed stats. Adder, movable XOR/wire, E2/E3
-   are each n=1. **§7-P0.**
+1. **Compositional depth — first result in hand (n=1).** The **2-bit ripple-carry adder** now trains as
+   one rule with a produced-then-consumed internal carry (16/16; carry-cell lesion cleanly dissociates
+   carry-independent sum0 from carry-dependent sum1/cout). This directly answers the review's biggest
+   lever — but it is a single seed and the carry is distributed. Remaining: multi-seed + push depth
+   further (a composed 3-bit/ripple chain, or a multiplier). **§7-P0-2.**
+2. **Statistical rigor beyond the gate (now the biggest gap).** Only E1 has multi-seed stats. The 1-bit
+   and 2-bit adders, movable XOR/wire, E2/E3 are each n=1. **§7-P0-2.**
 3. **No non-developmental baseline.** Nothing shows development buys anything vs a global MLP or a
    hand-coded CA. **§7-P0.**
 4. **The Z80 anchor is overclaimed and must be made load-bearing.** Value path is solid; the "gradient"
@@ -176,17 +182,16 @@ directional-perception mechanism claim (iso=100% here) and gives no error bars b
 ## 7. Prioritized roadmap
 
 **P0 — the experiments that gate publication.**
-1. **Compositional depth: a 2-bit ripple-carry adder as ONE developmental rule.** Grid ~15×15, HD~96,
-   T~50–70. **Expose-then-internalize carry curriculum:** train FA0 and FA1 separately; compose with
-   carry0 scored+clamped as an *exposed* port; then decay the injection so the field must *produce and
-   consume* carry0 internally. Require ≥6/8 seeds. **Causal probe:** show a corridor cell tracks the true
-   carry0 across all 16 cases, and a mid-rollout lesion of the carry corridor breaks *only* the carry-
-   dependent cases. This is the single biggest lever — it converts "grows a computer" from breadth to
-   depth and clears prior art. Fallback: modular tiling of the frozen 1-bit adder linked by the movable
-   wire.
-2. **Multi-seed everything, to the S8 bar.** Re-run `expH.ts` (adder) and `expI.ts` (movable) over ≥8–16
-   seeds with Wilson CIs; per-position/size **heal heatmaps** for E2/E3; explicit placement-count
-   denominators for movable percentages.
+1. **Compositional depth — DONE (n=1), extend it.** The 2-bit ripple-carry adder trains as one rule with
+   an internalized carry (`adder2.ts`: expose-then-internalize curriculum → 16/16; region-lesion causal
+   dissociation). Next: (a) **multi-seed** (P0-2), (b) push depth — a 3-bit ripple chain or a 2-bit
+   multiplier — to show the depth generalizes, and (c) tighten the causal story (the carry is
+   distributed; an interchange intervention on the carry *region* or an information-flow measure would
+   make it airtight).
+2. **Multi-seed everything, to the S8 bar.** Re-run `adder2.ts`, `expH.ts` (1-bit adder), and `expI.ts`
+   (movable) over ≥8–16 seeds with Wilson CIs; per-position/size **heal heatmaps** for E2/E3; explicit
+   placement-count denominators for movable percentages. This is now the single biggest rigor lever, and
+   it is gated on the enabling engineering (P1-7: GPU-trainer N-in/M-out) to be affordable.
 3. **Non-developmental baseline battery.** (A) A global MLP on the same truth tables → a table of
    {compute, self-repair, position-invariance, grid-transfer, ISA-execution} where only the developmental
    rule wins the last four. (B) Damage-in-training vs not → heal ≈0 without the damage stage (self-repair

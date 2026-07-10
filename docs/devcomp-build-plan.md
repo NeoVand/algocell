@@ -205,6 +205,23 @@ batch so the position-invariant signal averages out of placement noise, and (b)
 a curriculum that HOLDS adjacent (varied but close) for ~20% to bootstrap the
 combine, THEN spreads. Large batch is why the GPU trainer matters.
 
+## Finding (S6-2bit): compositional depth — a 2-bit ripple-carry adder (`adder2.ts`)
+
+One developmental rule computes 2-bit addition (16 cases, cin=0; outputs sum1, sum0,
+cout) with a PRODUCED-THEN-CONSUMED internal carry (carry0=a0∧b0 from FA0 feeds FA1) —
+the compositional depth the 1-bit adder (parity+majority in parallel) lacks.
+13×13, C=16, HD=96 (7792 params), T=46. **Single seed: 16/16, loss 2e-5, carry
+internalized** (teacher-force clamp released); the carry cell reads out carry0 exactly
+(1.00 for the 4 carry0=1 cases, ~0 else). Curriculum: EXPOSE (teacher-force carry0 +
+distance curriculum → 16/16 at every stage to col 10) → INTERNALIZE (release clamp,
+supervise the carry cell as aux output, warm-start → 16/16). Params
+`params/adder2_2bit.json`.
+**Causal probe:** region-lesion r=0 (zero the carry cell every step) → carry-independent
+sum0 stays 16/16 while carry-dependent sum1/cout degrade to 10/16 (clean dissociation).
+Single-channel pin and single-cell interchange are only partial → the carry is
+DISTRIBUTED/robust (honest NCA finding), not a localized wire. **Caveat: n=1**;
+multi-seed (≥6/8, the rigor bar) needs the GPU-trainer N-in/M-out extension.
+
 ## Finding (S8): ablations + multi-seed stats on the XOR gate (`s8.ts` / `s8_run.ts`)
 
 8 seeds/condition, XOR gate 9×9 distance-curriculum to d=5 (`docs/s8_results.json`):
