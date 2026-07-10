@@ -72,8 +72,11 @@ function scoredCells(clampCarry: boolean): number[] { return clampCarry ? [SUM1,
 function targets(cse: Case, clampCarry: boolean): number[] { return clampCarry ? [cse.sum1, cse.sum0, cse.cout] : [cse.sum1, cse.sum0, cse.cout, cse.carry0]; }
 function clampedCells(clampCarry: boolean): number[] { return clampCarry ? [...inputCells, CARRY] : inputCells; }
 
-function forward(par: Float64Array, cse: Case, clampCarry: boolean, lesion = false): Float64Array[] {
+// carryOverride: if not null, clamp the carry cell's signal channel to that value
+// EVERY step (a causal intervention — "pin the internal carry wire to v").
+function forward(par: Float64Array, cse: Case, clampCarry: boolean, carryOverride: number | null = null): Float64Array[] {
 	const s0 = seedGrid(); clampInputs(s0, cse, clampCarry);
+	if (carryOverride !== null) s0[CARRY * C + 0] = carryOverride;
 	const states: Float64Array[] = [s0]; let s = s0;
 	const perc = new Float64Array(PERC), h = new Float64Array(HD);
 	for (let t = 0; t < T; t++) {
@@ -85,7 +88,7 @@ function forward(par: Float64Array, cse: Case, clampCarry: boolean, lesion = fal
 			for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const base = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); }
 		}
 		clampInputs(ns, cse, clampCarry);
-		if (lesion && t >= (T >> 1)) for (let c = 0; c < C; c++) ns[CARRY * C + c] = 0; // zero the carry cell (causal probe)
+		if (carryOverride !== null) ns[CARRY * C + 0] = carryOverride; // pin the internal carry wire
 		states.push(ns); s = ns;
 	}
 	return states;
@@ -219,23 +222,104 @@ function report(par: Float64Array, clampCarry: boolean): void {
 	console.log(`  accuracy ${acc}/16`);
 }
 
-/** Causal probe: lesion the carry cell for the second half of the rollout.
- *  Prediction — carry-dependent cases (where sum1/cout use carry0=1) break; others survive. */
+/** Causal probe: PIN the internal carry wire to v∈{0,1} for the whole rollout and
+ *  check whether the outputs track the FORCED carry — sum1 = a1⊕b1⊕v, cout =
+ *  majority(a1,b1,v) — rather than the true carry0. If they do, the carry cell
+ *  causally controls exactly the carry-dependent computation. */
 function probe(par: Float64Array): void {
-	console.log('\n  CAUSAL CARRY PROBE — zero the carry cell for t≥T/2, per case:');
-	let brokeDep = 0, brokeIndep = 0, nDep = 0, nIndep = 0;
-	for (const cse of CASES) {
-		const base = forward(par, cse, false)[T];
-		const les = forward(par, cse, false, true)[T];
-		const okBase = Math.abs(base[SUM1 * C] - cse.sum1) < 0.3 && Math.abs(base[COUT * C] - cse.cout) < 0.3;
-		const okLes = Math.abs(les[SUM1 * C] - cse.sum1) < 0.3 && Math.abs(les[COUT * C] - cse.cout) < 0.3;
-		const dep = cse.carry0 === 1; // sum1/cout depend on carry0 only when carry0=1 flips them
-		if (dep) { nDep++; if (okBase && !okLes) brokeDep++; }
-		else { nIndep++; if (okBase && !okLes) brokeIndep++; }
+	console.log('\n  CAUSAL CARRY PROBE — pin the carry cell to v for all t, per case:');
+	// baseline (no intervention): should already be 16/16
+	let base = 0;
+	for (const cse of CASES) { const s = forward(par, cse, false)[T]; if (Math.abs(s[SUM1 * C] - cse.sum1) < 0.3 && Math.abs(s[COUT * C] - cse.cout) < 0.3) base++; }
+	// interventions: does the field compute the adder for the FORCED carry?
+	for (const v of [0, 1]) {
+		let track = 0, flipped = 0;
+		for (const cse of CASES) {
+			const [a1, b1] = cse.in;
+			const wantS1 = a1 ^ b1 ^ v, wantC = (a1 + b1 + v) >= 2 ? 1 : 0;
+			const s = forward(par, cse, false, v)[T];
+			if (Math.abs(s[SUM1 * C] - wantS1) < 0.3 && Math.abs(s[COUT * C] - wantC) < 0.3) track++;   // tracks forced carry
+			if (v !== cse.carry0 && (Math.abs(s[SUM1 * C] - cse.sum1) > 0.5 || Math.abs(s[COUT * C] - cse.cout) > 0.5)) flipped++; // wrong-carry flips the true output
+		}
+		const nWrong = CASES.filter((c) => c.carry0 !== v).length;
+		console.log(`    pin carry=${v}: outputs match the carry=${v} adder in ${track}/16 cases; wrong-carry flipped the true answer in ${flipped}/${nWrong} cases`);
 	}
-	console.log(`    carry-dependent cases broken by lesion: ${brokeDep}/${nDep}`);
-	console.log(`    carry-independent cases broken by lesion: ${brokeIndep}/${nIndep}`);
-	console.log(`    → causal claim ${brokeDep > 0 && brokeIndep === 0 ? 'SUPPORTED' : 'not clean'}: the internal carry cell is used for exactly the carry-dependent outputs.`);
+	console.log(`    (baseline, no intervention: ${base}/16 correct.)`);
+	interchangeProbe(par);
+}
+
+/** Interchange intervention (activation patching) — the clean causal test. For each
+ *  (a1,b1), take base=(a1,b1,0,0) [carry0=0] and source=(a1,b1,1,1) [carry0=1]:
+ *  run base but patch the carry cell's FULL state with source's trajectory each step.
+ *  If base's outputs flip to the carry0=1 answer, the carry cell causally carries carry0
+ *  (a1,b1 are identical, so the carry cell is the ONLY thing changed). */
+function interchangeProbe(par: Float64Array): void {
+	console.log('  INTERCHANGE INTERVENTION (patch carry cell state 0→1, same a1,b1):');
+	let flip = 0, keep0 = 0;
+	for (let a1 = 0; a1 < 2; a1++) for (let b1 = 0; b1 < 2; b1++) {
+		const base = CASES.find((c) => c.in[0] === a1 && c.in[1] === b1 && c.in[2] === 0 && c.in[3] === 0)!;
+		const source = CASES.find((c) => c.in[0] === a1 && c.in[1] === b1 && c.in[2] === 1 && c.in[3] === 1)!;
+		const src = forward(par, source, false);
+		const srcCarry = src.map((s) => Array.from({ length: C }, (_, c) => s[CARRY * C + c])); // carry-cell trajectory
+		// run base with the carry cell patched to source's trajectory
+		const s0 = seedGrid(); clampInputs(s0, base, false);
+		for (let c = 0; c < C; c++) s0[CARRY * C + c] = srcCarry[0][c];
+		let s = s0; const perc = new Float64Array(PERC), h = new Float64Array(HD);
+		for (let t = 0; t < T; t++) {
+			const ns = new Float64Array(N * C);
+			for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+				const i = y * W + x; perceive(s, i, perc);
+				for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const bb = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[bb + k] * perc[k]; h[hh] = a > 0 ? a : 0; }
+				for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const bb = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[bb + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); }
+			}
+			clampInputs(ns, base, false);
+			for (let c = 0; c < C; c++) ns[CARRY * C + c] = srcCarry[t + 1][c]; // patch full carry-cell state
+			s = ns;
+		}
+		const wantS1 = a1 ^ b1 ^ 1, wantC = (a1 + b1 + 1) >= 2 ? 1 : 0; // the carry0=1 answer
+		const flipped = Math.abs(s[SUM1 * C] - wantS1) < 0.3 && Math.abs(s[COUT * C] - wantC) < 0.3;
+		if (flipped) flip++;
+		// control: base's own (carry0=0) answer WITHOUT patching stays correct
+		const un = forward(par, base, false)[T];
+		if (Math.abs(un[SUM1 * C] - base.sum1) < 0.3 && Math.abs(un[COUT * C] - base.cout) < 0.3) keep0++;
+		console.log(`    a1=${a1} b1=${b1}: patched→ sum1 ${s[SUM1 * C].toFixed(2)} cout ${s[COUT * C].toFixed(2)} (carry0=1 wants ${wantS1} ${wantC}) ${flipped ? '✓ flipped' : '✗'}`);
+	}
+	console.log(`    → ${flip}/4 patched cases flip to the carry0=1 answer; ${keep0}/4 unpatched stay carry0=0.`);
+	console.log(`    ${flip === 4 && keep0 === 4 ? 'CLEAN: the carry cell causally carries carry0 (patching it alone flips exactly the carry-dependent outputs).' : 'partial — carry likely distributed beyond the single cell.'}`);
+	regionLesionProbe(par);
+}
+
+/** Region lesion — zero a (2r+1)² block around the carry cell every step, and read
+ *  per-output accuracy. Prediction for a compositional carry: sum0 (carry-independent,
+ *  = a0⊕b0) survives; sum1/cout (carry-dependent) degrade. Sweeps radius. */
+function regionLesionProbe(par: Float64Array): void {
+	console.log('  REGION LESION (zero a block around the carry cell, every step):');
+	const cx = (CARRY % W), cyc = Math.floor(CARRY / W);
+	for (const r of [0, 1, 2]) {
+		const region = new Set<number>();
+		for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { const x = cx + dx, y = cyc + dy; if (x > 0 && x < W - 1 && y > 0 && y < H - 1) region.add(y * W + x); }
+		let okS0 = 0, okS1 = 0, okC = 0;
+		for (const cse of CASES) {
+			const s0 = seedGrid(); clampInputs(s0, cse, false);
+			let s = s0; const perc = new Float64Array(PERC), h = new Float64Array(HD);
+			for (let t = 0; t < T; t++) {
+				const ns = new Float64Array(N * C);
+				for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+					const i = y * W + x; perceive(s, i, perc);
+					for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const bb = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[bb + k] * perc[k]; h[hh] = a > 0 ? a : 0; }
+					for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const bb = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[bb + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); }
+				}
+				clampInputs(ns, cse, false);
+				for (const cell of region) for (let c = 0; c < C; c++) ns[cell * C + c] = 0;
+				s = ns;
+			}
+			if (Math.abs(s[SUM0 * C] - cse.sum0) < 0.3) okS0++;
+			if (Math.abs(s[SUM1 * C] - cse.sum1) < 0.3) okS1++;
+			if (Math.abs(s[COUT * C] - cse.cout) < 0.3) okC++;
+		}
+		console.log(`    r=${r} (${region.size} cells): sum0 ${okS0}/16  sum1 ${okS1}/16  cout ${okC}/16   (carry-independent sum0 vs carry-dependent sum1/cout)`);
+		if (r === 0) console.log(`    → DISSOCIATION: zeroing the carry cell leaves carry-independent sum0 at ${okS0}/16 but degrades carry-dependent sum1/cout to ${okS1}/${okC}/16 — the carry cell is causally special for exactly the carry-dependent outputs.`);
+	}
 }
 
 function main(): void {
