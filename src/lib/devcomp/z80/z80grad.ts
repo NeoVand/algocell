@@ -736,5 +736,8 @@ for (const th of THETAS) {
 }
 console.log(`\nworst |err| = ${worst.toExponential(2)}  (Q8.8 resolution ${(1 / 256).toExponential(2)})`);
 if (worst > 2 / 256) { console.error('\nFAIL: the in-substrate gradient did not match.'); process.exit(1); }
-console.log('\nPASS: a real Z80 carried the trained rule\'s own training gradient — forward-mode AD,');
-console.log('exact to fixed-point resolution. Programs AND gradients, on real silicon. (S9 anchor closed.)');
+console.log('\nPASS: a real Z80 (z80-emulator v2.3.0) carried a forward-mode tangent d(out)/dθ of the');
+console.log('single-step cell map, matching finite differences to Q8.8 resolution. This is the PRIMITIVE');
+console.log('for an in-substrate gradient (a single-cell JVP for a few weights) — NOT yet the full BPTT');
+console.log('training gradient ∂L/∂θ over the T-step rollout. Rebuild at Q16.16 + propagate through the');
+console.log('rollout to reach gradient-grade (Phase 1.5 shows the fixed-point tangent is clean at Q16.16).');

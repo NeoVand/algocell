@@ -1,37 +1,49 @@
 # Developmental Computation — Technical Report & Handoff
 
-**Purpose.** Hand this research off to a stronger collaborator. It states the thesis, inventories
-every result with numbers and file pointers, gives an honest gap analysis toward a Nature Machine
-Intelligence–grade paper, and a prioritized roadmap. Read §6 (gaps) and §7 (roadmap) first if you
-are deciding what to do next.
+**Purpose.** Hand this research off to a stronger collaborator. It states the thesis (scoped to what is
+actually shown), inventories every result with numbers, seeds, and file pointers, gives an honest gap
+analysis toward a Nature Machine Intelligence–grade paper, and a prioritized roadmap. **Read §6 (gaps),
+§7 (roadmap), and §9 (an adversarial multi-agent review of this very report) first if you are deciding
+what to do next.** This report has already been through one round of adversarial review; §9 records the
+verdict and the overclaims that were corrected.
 
-Branch: `feat/morphogenesis-ca`. Code roots: `src/lib/devcomp/` (the paper's rule + demo + GPU
-trainer + Z80 proof), `src/lib/morph/` (the older Exp A–I lineage + the real-Z80 tooling). Companion
-docs: [`devcomp-build-plan.md`](devcomp-build-plan.md) (execution log with per-stage findings),
-[`gradient-morphogenesis.md`](gradient-morphogenesis.md) (Exp A–D method history),
-[`gpu-trainer-design.md`](gpu-trainer-design.md).
+Branch: `feat/morphogenesis-ca`. Code roots: `src/lib/devcomp/` (the paper's rule + demo + GPU trainer
++ Z80 proof), `src/lib/morph/` (the older Exp A–I lineage + the real-Z80 tooling). Companion docs:
+[`devcomp-build-plan.md`](devcomp-build-plan.md), [`gradient-morphogenesis.md`](gradient-morphogenesis.md),
+[`gpu-trainer-design.md`](gpu-trainer-design.md), [`s8_results.json`](s8_results.json).
 
 ---
 
-## 1. Thesis
+## 1. Thesis (scoped)
 
-**One local rule, learned by gradient descent through development, grows a functional, self-repairing,
-position-invariant digital computer — and that computer is literally a program in a real ISA whose
-exact training gradient the substrate itself carries.**
+**A single local rule — a per-cell MLP, trained by gradient descent through a developmental rollout —
+can grow small, self-repairing digital circuits on a cellular automaton; and such a rule, quantized to
+integer fixed-point, executes as an ordinary program in a real Z80 instruction set, with the same
+fixed-point datapath carrying a matching forward-mode gradient.**
 
-Positioning (what makes this novel):
-- **vs Neural CA (Growing NCA and descendants):** they grow *images/patterns*; here the CA grows a
-  *computer* — a rule whose I/O is placed arbitrarily and that keeps *computing* under damage,
-  asynchrony, and live input changes.
-- **vs classic Artificial Life:** those evolve discrete rules by black-box search (no gradient); here
-  the rule is trained by exact gradient through the developmental rollout (BPTT), and *beat evolution
-  on evolution's own hardest target* — see Exp C (the letter "F" that MAP-Elites could not make).
-- **vs learned-CA-on-a-fixed-grid work:** those have no growth, no repair, and are not a program in a
-  real instruction set. Here the same rule grows from a seed, heals, and **runs on a real Z80**, with
-  its training gradient computable *in the same substrate* (forward-mode AD / dual numbers).
+Honest scoping (what a single trained rule does *not* do, stated up front so the reader trusts the rest):
+- **Different capabilities are, today, different trained rules.** The gate (E1), the self-repairing
+  grow-from-seed rule (E3), the 1-bit adder, and the movable wire/XOR are *separate* parameter sets, not
+  one rule that does everything. "One rule grows a whole computer" is an aspiration, not yet a result.
+- **The computation demonstrated is shallow.** The largest computation is a 1-bit full adder, which is a
+  single wide gate (parity + majority in parallel) with **no produced-then-consumed internal signal**.
+  There is no compositional depth yet (see §7, P0 — this is the biggest lever).
+- **Position-invariant *computation* is only partial.** Movable *routing* (a wire) generalizes to unseen
+  grid sizes (100% @ 11/13/17); movable *XOR* is ~68% at 17×17 (essentially unsolved at scale).
+- **The Z80 "gradient" is a primitive, not the training gradient** — see §4. It is a single-cell,
+  single-step forward-mode tangent, not ∂L/∂θ via BPTT.
 
-The one-sentence differentiator, now proven for the actual trained rule (§4): *programs and gradients
-on real silicon.*
+What is genuinely, defensibly novel (all four §9 reviewers agree): the trained *local rule* (not a toy)
+quantized to integer fixed-point (i) executes as machine code on a real Z80 ISA and (ii) the same
+datapath carries a matching forward-mode tangent, cross-validated bit-for-bit across the f64 reference,
+the WGSL GPU kernel, and the Z80, and against finite differences. **"A learned rule and its gradient
+co-resident in one real integer instruction set" is a bridge no Growing-NCA or learned-CA paper has.**
+
+Positioning (must be argued explicitly, not asserted — see §6.5): the nearest prior art is **not** just
+Growing NCA (images). "A local CA rule that computes" is already occupied by **Self-classifying MNIST
+CA** (2020), **Differentiable Logic CA** (2024), and the **Neural GPU** (2016, length-generalizing
+binary arithmetic). The contribution must be pinned against these — realistically on the *ISA-execution*
+and *in-substrate-gradient* axes, plus growth+repair+position-invariance combined.
 
 ---
 
@@ -41,206 +53,211 @@ Per interior cell, per step:
 ```
 perceive = [identity, gx=(right−left)/2, gy=(down−up)/2, laplacian]  per channel   (FEAT=4)
 dl       = W2 · relu(W1 · perceive + b1) + b2
-state'   = tanh(state + dl)          # residual INSIDE the tanh
+state'   = tanh(state + dl)          # residual INSIDE the tanh — a per-step nonlinearity
 ```
-- Inputs are clamped into a signal channel every step; border cells stay 0; damage zeros a cell's
-  channels then the input clamp re-applies. Param layout `[W1(HD×PERC), b1, W2(C×HD), b2]`.
-- **Config-driven** (`RuleConfig`, `makeConfig`): one code path serves any grid/channel/hidden size.
-- **Position invariance** uses marker channels (`IN_MARK`=ch1, `OUT_MARK`=ch2, re-stamped each step);
-  the rule reads markers, never absolute coordinates → ports are draggable, grid-size agnostic.
-- **Movable XOR needs separated signal channels** (input k → its own channel; ch0 = readout). A single
-  shared channel blends the two bit-waves into one geometry-dependent scalar → XOR becomes unlearnable.
-  This was *representational, not capacity* (bigger models did not help).
-- **Persistence (hold-window) loss** makes the answer a genuine attractor (score the last `whold`
-  states), fixing metastable drift.
-- **Reactivity**: a mid-rollout input flip with a two-window loss trains the field to re-settle to the
-  new answer without re-seeding.
-- **Async / NCA robustness** (`fireRate<1`): each cell updates with probability `fireRate` per step
-  (hash mask, bit-identical CPU↔WGSL); desynchronizes the CA and damps the period-3 synchronous limit
-  cycle (poles near ±120° on the unit circle) into genuine fixed points.
-
-Three implementations agree bit-for-bit and are cross-validated: the f64 reference (`rule.ts`), the
-WGSL GPU kernel (`shader.ts`/`engine.ts`, headless-validated at `/devcomp/validate`), and the fixed-
-point/Z80 datapath (`z80/`).
+Inputs are clamped into a signal channel every step; border cells stay 0; damage zeros a cell then the
+input clamp re-applies. Config-driven (`RuleConfig`) so one code path serves any grid/channel/hidden
+size. Position invariance uses re-stamped marker channels (rule reads markers, not coordinates).
+Movable XOR needs **separated signal channels** (each input its own channel; a shared channel blends
+the bit-waves → unlearnable — representational, not capacity). Persistence (hold-window loss) makes the
+answer an attractor; reactivity (mid-rollout input flip) trains re-settling; async updates (`fireRate<1`,
+hash mask bit-identical CPU↔WGSL) damp the period-3 synchronous limit cycle. Three implementations agree
+bit-for-bit and are cross-validated (f64 `rule.ts`; WGSL `shader.ts`/`engine.ts` at `/devcomp/validate`;
+fixed-point/Z80 `z80/`).
 
 ---
 
-## 3. Results inventory (what is proven)
+## 3. Results inventory (with seed counts — n=1 means a single trained model)
 
-| # | Result | Numbers | Where |
-|---|--------|---------|-------|
-| E1 | XOR **gate** on 9×9, output 5 cells away | loss ~0, 4/4 cases | `params/e1_gate.json`, `morph/dev/expE.ts` |
-| E2 | **Self-repair**: damage mid-compute, regrow, still XOR | heals in ~20 steps, stays healed | `params/e3_seed.json` (E3 rule is the stable universal one) |
-| E3 | **Grow from a single seed** → compute → heal | genuine long-horizon attractor (600+ steps) | `params/e3_seed.json`, `morph/dev/expG.ts` |
-| S6 | **1-bit full adder** (3 in → sum,carry); compute + stable + self-repair + **reactive** | compute 8/8 loss 0.0000; reactive 64/64 prior→new transitions; drift 8/8 @50/150/400 | `params/adder_{compute,stable,reactive}.json`, `morph/dev/expH.ts` |
-| S6d | **Movable wire** (position-invariant routing, draggable ports) | 100% @ 11×11, **100% @ 13×13 and 17×17** (same params, never trained there) | `params/wire_invariant.json`, `morph/dev/expI.ts` |
-| S6d | **Movable XOR** (position-invariant *computation*) | 100% @11, 95% @13, 68% @17; held long-horizon | `params/xor_invariant.json` |
-| — | **Reactive movable XOR** (live input change at distance) | ~58% (partial; migration-at-distance unsolved) | — |
-| S7 | **In-browser GPU trainer** (batch-packed WGSL reverse-mode BPTT, Adam, keep-best) | gradient matches f64 reference to **3e-5** over all 7792 params; ≈**65× CPU** throughput | `devcomp/{trainShader,gpuTrainer}.ts`, `/devcomp/traingpu` |
-| — | **Async NCA updates** (fireRate) | validated CPU+GPU+demo (GRAD PASS, fireRate 0.5); damps period-3 ring | `rule.ts`, `morph/dev/spectral.ts` |
-| **S9** | **Z80-substrate proof** (this session — §4) | value + gradient on a real Z80 | `devcomp/z80/` |
+| # | Result | Numbers | Seeds | Where |
+|---|--------|---------|-------|-------|
+| E1 | XOR **gate**, output 5 cells away | 4/4 cases; **8/8 seeds solve** (S8) | **n=8** | `params/e1_gate.json`, `morph/dev/expE.ts`, `s8.ts` |
+| E2 | **Self-repair**: damage → regrow → still XOR | heals ~20 steps, stays healed | n=1 | `params/e3_seed.json` |
+| E3 | **Grow from a seed** → compute → heal | attractor to 600+ steps | n=1 | `params/e3_seed.json`, `morph/dev/expG.ts` |
+| S6 | **1-bit full adder** (compute+stable+repair+reactive) | compute 8/8 cases; reactive 64/64 transitions; drift 8/8 @50/150/400 | **n=1** (all one model) | `params/adder_*.json`, `morph/dev/expH.ts` |
+| S6d | **Movable wire** (position-invariant routing) | 100% @11, 100% @13, 100% @17 (unseen sizes) | n=1; placement-count not tabulated | `params/wire_invariant.json`, `morph/dev/expI.ts` |
+| S6d | **Movable XOR** (position-invariant *computation*) | 100% @11, 95% @13, **68% @17** | n=1; denominator not tabulated | `params/xor_invariant.json` |
+| — | Reactive movable XOR | ~58% (near floor; unsolved) | n=1 | — |
+| S7 | **In-browser GPU trainer** (WGSL reverse-mode BPTT) | gradient vs f64 ref **3e-5**; ≈**65× CPU** | — | `devcomp/{trainShader,gpuTrainer}.ts`, `/devcomp/traingpu` |
+| — | **Async NCA updates** (fireRate) | validated CPU+GPU+demo | — | `rule.ts`, `morph/dev/spectral.ts` |
+| **S9** | **Z80-substrate proof** (§4) | value bit-exact; gradient = single-cell JVP | — | `devcomp/z80/` |
 
-Live demo (`/devcomp`): grow / compute / brush-damage / heal / drag-ports / async, interactive on
-WebGPU, running frozen params. Faithfulness table at `/devcomp/validate`.
+**Caveat that governs this whole table:** only the E1 gate (row 1) has multi-seed statistics. Every
+other headline is a single trained model — treat as existence proofs, not measured success rates, until
+§7-P0 is done. The GPU trainer (65×) makes multi-seed re-runs affordable.
 
-Lineage (older, real-Z80 substrate primitives; `src/lib/morph/`): **Exp A** — forward-mode AD (dual
-numbers) runs exactly on a real Z80 (tangent of θ² is 2θ; descent solves θ²=t). **Exp B** — that
-gradient trained a single-channel developmental rule. **Exp C** — directional perception grew the
-asymmetric letter "F" evolution couldn't. **Exp D** — scaled to a color emoji (🦎).
+Lineage (older, real-Z80 primitives; `src/lib/morph/`): Exp A (dual-number AD runs on a real Z80: tangent
+of θ² is 2θ), Exp B (that gradient trained a 1-channel rule), Exp C (directional perception grew an
+asymmetric letter "F" — **note: single anecdote, no matched baseline; do not headline as "beat evolution"**),
+Exp D (color emoji 🦎).
 
 ---
 
-## 4. This session's contribution — the Z80-substrate proof (S9), in detail
+## 4. The Z80-substrate proof (S9) — precise claims
 
-**Claim closed:** the trained developmental rule executes as a real Z80 program, and that same program
-hands back its exact training gradient. This is the paper's novelty anchor, proven for the *actual*
-trained rule (not a toy), on the real Z80 core Zilion is conformance-tested against, run offline in
-the "grid→lane" design (one lane holds the whole field + weights and sweeps cells — Zilion v0.1.2 has
-no cross-lane comms, so this is an offline provenance proof, **not** the live GPU demo; do not oversell
-it as running on the Zilion GPU core).
+**Setup.** A **bit-faithful** signed fixed-point emulation of the rule (`z80/fixed.ts`) fixes the
+precision; that exact datapath is then implemented in Z80 assembly and validated on
+**`z80-emulator` v2.3.0** (Léon Kesteloot's TypeScript Z80, via `morph/dev/z80run.ts::runOnRealZ80`).
+*This is a conformance-tested software emulator of the Z80 ISA, not physical silicon; and it is a
+different emulator from `superzazu` — superzazu was the reference the WGSL/Zilion GPU core was
+conformance-tested against, a separate result.* The design is "grid→lane": one lane holds the field +
+weights (Zilion v0.1.2 has no cross-lane comms, so this is an **offline provenance proof**, not the live
+GPU demo).
 
-Method: build a **bit-faithful** signed fixed-point emulation of the rule first (no assembly), decide
-the precision, then implement that exact datapath in Z80 assembly and validate every layer on the real
-emulator. Files in [`src/lib/devcomp/z80/`](../src/lib/devcomp/z80/):
+| Phase | File | What runs | Result | Precise scope |
+|------|------|-----------|--------|---------------|
+| 1 | `quantize.ts` | rule in bit-faithful fixed-point | XOR truth table correct at **Q8.8** | value |
+| 1.5 | `gradfixed.ts` | forward-mode dual tangent d(out)/dθ | matches f64; **Q16.16 clean 1.5e-5**, Q8.8 4e-3 | *single-step cell map*, TS |
+| 2 | `z80mac.ts` | signed Q8.8 MAC | bit-exact vs ref, 300 vectors + all 48 W1 rows | one dot product |
+| 2b | `z80cell.ts` | one full cell update | **bit-exact, 144 real cell updates**; 2e-2 vs f64 | one cell, one step, on the emulator |
+| 2c | `z80cell.ts` | whole gate: 0.05/0.98/0.99/0.04 ✓ | XOR truth table correct | **each cell update runs on the emulator; the grid sweep + 24-step rollout are orchestrated in TypeScript** (memoized) |
+| 3 | `z80grad.ts` | dual-number cell → d(out)/dθ | matches finite-diff to **Q8.8 (4.3e-3)** | **single cell, single step, 6 hand-picked weights, one input case** |
 
-| Phase | File | What runs | Result |
-|------|------|-----------|--------|
-| 1 | `quantize.ts` | rule in bit-faithful fixed-point | correct XOR truth table at **Q8.8** (0 saturations); ~exact by Q8.16 |
-| 1.5 | `gradfixed.ts` | forward-mode dual gradient in fixed-point | matches f64 gradient; **Q16.16 clean (1.5e-5)**, Q8.8 coarse (4e-3) |
-| 2 | `z80mac.ts` | signed Q8.8 MAC (16×16→32 + 32-bit accumulate) | bit-exact vs reference on 300 random vectors + **all 48 real W1 rows** |
-| 2b | `z80cell.ts` | one full cell update (perceive→MLP→tanh) | **bit-exact over 144 real cell updates**; 2e-2 vs f64 |
-| 2c | `z80cell.ts` | whole gate: cell swept over grid × 24 steps | **XOR truth table computed entirely on the Z80**: 0.05 / 0.98 / 0.99 / 0.04 |
-| 3 | `z80grad.ts` | dual-number cell → d(out)/dθ | matches f64 finite-diff to **Q8.8 quantum (4.3e-3)**; bit-identical to the TS dual |
+**What Phase 3 is and is not.** It is a forward-mode tangent (JVP) of the *single-step cell map* for a
+handful of weights, run in fixed point on the Z80, matching finite differences at Q8.8. It is **not** the
+BPTT training gradient ∂L/∂θ that actually trains the rule (that is over T=24 steps × ~49 cells × 4
+cases; see `s8.ts`/`expH.ts`). "Exact training gradient" and "programs+gradients on real silicon" were
+**overclaims** (flagged in §9, corrected here). The honest headline: *a single cell's forward-mode
+tangent runs in-substrate and matches finite differences in fixed point.* To reach the real thing:
+propagate the dual tangent through the full rollout and combine with ∂L/∂output, rebuilt at Q16.16
+(Phase 1.5 shows the fixed-point tangent is clean there).
 
-Supporting: `fixed.ts` (signed Q(W.F) fixed-point + dual ops, wide MAC accumulation, tanh + derivative
-LUTs). Assembler [`morph/z80asm.ts`](../src/lib/morph/z80asm.ts) gained the CB-prefixed shift/rotate
-group (SRA/RR for the signed `>>1` in perceive) and a **strict JR/DJNZ range check** (an out-of-range
-relative branch now fails assembly rather than silently wrapping — the bug that first broke perceive).
-Backward-compatible: Exp A and the m0 CA differential suite still pass (diff=0).
-
-Caveats to carry forward honestly: (a) offline grid→lane, not the live GPU core; (b) Q8.8 carries the
-gradient only coarsely — a *precision-grade* gradient table should rebuild the datapath in Q16.16
-(proven faithful in Phase 1.5); (c) proven for the E1 gate — the adder / movable rules would need the
-same treatment (mechanically identical, just more weights/tape).
-
+**What is solid and novel:** the *value* path — the actual trained rule quantized and executed cell-by-
+cell on a real Z80 ISA, bit-exact, producing the correct XOR truth table — plus the demonstrated
+*mechanism* that the same integer datapath can carry a forward-mode tangent. Assembler additions:
+CB-prefixed SRA/RR + a strict JR/DJNZ range check; backward-compatible (Exp A + m0 CA suite pass, diff=0).
 Reproduce: `npx tsx src/lib/devcomp/z80/{quantize,gradfixed,z80mac,z80cell,z80grad}.ts`.
 
 ---
 
-## 5. S8 — ablations & multi-seed statistics (the rigor pass)
+## 5. S8 — ablations & multi-seed statistics (the rigor template)
 
-Harness: [`morph/dev/s8.ts`](../src/lib/morph/dev/s8.ts) (parameterized gate trainer with ablation
-knobs) + [`morph/dev/s8_run.ts`](../src/lib/morph/dev/s8_run.ts) (concurrency orchestrator). Task: the
-XOR gate on 9×9 trained through a distance curriculum to a displaced output (d=5), scored as "all 4
-cases within 0.2 of target." Conditions: `baseline` (full perception, HD=48, ReLU), `iso` (isotropic
-perception = identity+laplacian only), `id` (identity-only = **no neighbour information**), `norelu`
-(linear hidden layer), and a capacity sweep HD ∈ {4,8,16,32,48,96}. 8 seeds each.
+8 seeds/condition, XOR gate 9×9, distance curriculum to d=5, success = all 4 cases within 0.2 of target.
+Full grid in [`s8_results.json`](s8_results.json) (942 s wall). `s8.ts` / `s8_run.ts`.
 
-Results (8 seeds/condition; success = XOR solved at the displaced output d=5; full grid in
-[`docs/s8_results.json`](s8_results.json), 942 s wall):
+| condition | success (n=8) | mean loss ± std | reading |
+|-----------|---------------|-----------------|---------|
+| **baseline** (full percep, HD48, ReLU) | **8/8** | **1.0e-5 ± 8.0e-6** | reproducible — the error bar (note: *not* "0.0000"; the spread is ~1e-5) |
+| **id** (identity-only, no neighbour info) | **0/8** | **0.2500 ± 6e-17** | necessity control: 0.25 is *exactly* the constant-output MSE → without spatial coupling it cannot beat "ignore the input". (Somewhat tautological: id-perception structurally disconnects the displaced output; it confirms the harness + that coupling is required, not a mechanism.) |
+| **norelu** (linear hidden layer) | 2/8 | 0.092 ± 0.10 | hidden ReLU matters — but the per-step `tanh` remains, so this is "remove one of two nonlinearities", not "linear". 2/8 still solve. |
+| **iso** (isotropic: id+laplacian) | 8/8 | ≤2e-4 | directional perception **redundant** on this fixed symmetric gate → this ablation belongs on the *movable* task (§7-P1) |
+| HD=4 / 8 / 16 / 32 / 96 | 5/8 / 8/8 / 8/8 / 8/8 / 8/8 | — | capacity helps, but 5/8-vs-8/8 (HD4 vs HD8) is **not** statistically separated (Fisher p≈0.2); no CIs. "Threshold ≈8" is a point-estimate reading of n=8. |
 
-| condition | success | mean loss ± std | mean solved-dist /5 | reading |
-|-----------|---------|-----------------|----------------------|---------|
-| **baseline** (full percep, HD48, ReLU) | **8/8 (100%)** | 0.0000 ± 0.0000 | 5.00 | trains reproducibly — the headline has an error bar |
-| **id** (identity-only, no neighbour info) | **0/8 (0%)** | **0.2500 ± 0.0000** | 0.00 | clean necessity: 0.25 is *exactly* the constant-output baseline → without spatial coupling it cannot beat "ignore the input" |
-| **norelu** (linear hidden layer) | **2/8 (25%)** | 0.0923 ± 0.1007 | 2.38 | the hidden nonlinearity matters — success collapses, variance explodes |
-| **iso** (isotropic percep: id+laplacian) | 8/8 (100%) | 0.0000 | 5.00 | directional perception *not* needed at this fixed symmetric placement (→ test on the movable task) |
-| HD=4 | 5/8 (63%) | 0.0482 ± 0.0851 | 3.75 | capacity threshold: HD=4 under-capacity, unreliable |
-| HD=8 | 8/8 (100%) | 0.0001 | 5.00 | ... saturates by HD=8 |
-| HD=16 / 32 / 96 | 8/8 (100%) | ≤0.0002 | 5.00 | no benefit beyond HD≈8 |
-
-**What this establishes (honestly):** (1) the gate is a *reproducible* result, not a lucky seed
-(8/8); (2) a **clean necessity ablation** — spatial coupling (neighbour perception) is required, and
-its absence lands exactly on the provable constant-baseline loss; (3) the hidden **nonlinearity is
-important** (100%→25%); (4) a real **capacity curve** with a threshold at HD≈8. **What it does not yet
-establish:** these ran on the *fixed, symmetric* gate, where directional perception is redundant
-(`iso` = 100%). The sharp directional-perception ablation belongs on the *movable / position-invariant*
-task; and there is still no non-developmental baseline. Both are P0 in §7.
+**Honest summary:** S8 makes the *gate* a rigorous result (reproducibility + a necessity control + a
+capacity trend) and is the template every other headline must be held to. It does **not** support the
+directional-perception mechanism claim (iso=100% here) and gives no error bars beyond n=8.
 
 ---
 
-## 6. Honest gap analysis — are we paper-ready? (short answer: not yet)
+## 6. Gap analysis — are we paper-ready? (No — strong workshop paper today)
 
-We have a compelling **principle** and a genuinely novel **anchor** (Z80 substrate + in-substrate
-gradient). What a top venue would push on, and where we are weak:
-
-1. **Scale / composition of computation.** The headline computation is a 1-bit adder. That proves
-   "scales to arithmetic" but not "composes into non-trivial circuits." A reviewer will ask for a
-   2-bit adder or a multi-gate composed circuit. **This is the biggest scientific gap.**
-2. **Statistical rigor.** Most other headline numbers are still single runs, but S8 (this session) now
-   gives the *gate* real rigor: 8/8 reproducibility, a clean necessity ablation (`id` lands exactly on
-   the constant baseline), a nonlinearity ablation (100%→25%), and an HD capacity curve (threshold
-   ≈8). Still needed: the same treatment on the **movable / position-invariant** task (where directional
-   perception should bite — it's redundant on the fixed symmetric gate), per-position/size **heal
-   heatmaps** for self-repair, and multi-seed stats for the **adder** and **movable XOR**.
-3. **Baselines.** No non-developmental control (e.g., a single global MLP, or a hand-coded CA) to show
-   the developmental route buys something. No comparison to a learned-CA-on-fixed-grid baseline.
-4. **Position invariance is partial.** Movable XOR is 68% at 17×17 and reactive-at-distance caps ~58%.
-   Either push these up or scope the claim carefully.
-5. **Framing / related work.** Not written. The novelty is real but must be positioned precisely
-   against Growing-NCA, differentiable-CA, and neural-program-synthesis literatures.
-6. **The substrate proof is offline and Q8.8.** Strong as provenance; to headline it, add the Q16.16
-   gradient table and (optionally) a Zilion-GPU-core run of the grid→lane sweep.
-
-**Assessment:** the story is *"a new paradigm — developmental computation — with a unique bridge to
-real hardware."* It is a strong workshop/short-paper today; for NMI it needs (1) composition and (2)
-rigor most of all. None of the gaps look blocked — they are execution.
+1. **Compositional depth (the biggest gap).** The largest computation is a 1-bit adder = one wide gate,
+   no produced-then-consumed internal signal. Below the nearest prior art (Differentiable Logic CA,
+   Neural GPU) without composition. **§7-P0.**
+2. **Statistical rigor beyond the gate.** Only E1 has multi-seed stats. Adder, movable XOR/wire, E2/E3
+   are each n=1. **§7-P0.**
+3. **No non-developmental baseline.** Nothing shows development buys anything vs a global MLP or a
+   hand-coded CA. **§7-P0.**
+4. **The Z80 anchor is overclaimed and must be made load-bearing.** Value path is solid; the "gradient"
+   is a single-cell JVP, not ∂L/∂θ; "real silicon" is an emulator. Corrected in §1/§4. To headline it,
+   either carry the full-rollout gradient at Q16.16 or show the ISA result is scientifically load-bearing
+   (e.g., an argument/experiment that the fixed-point/ISA constraint matters), not decorative.
+5. **Related-work positioning is missing and the novelty is asserted against strawmen.** Must cite and
+   contrast Self-classifying MNIST CA, Differentiable Logic CA, Neural GPU, deep-thinking/algorithm-
+   synthesis nets. **§7-P0.**
+6. **Partial position-invariant computation** (68% @17) and **near-floor reactive movable XOR** (58%) —
+   push up or scope the claim to routing.
+7. **Underplayed real finding:** the position/scale-invariance *boundary* (routing generalizes to unseen
+   sizes; placed multi-input computation does not; the fix is channel separation, not capacity) is a
+   genuine scientific result currently buried under the Z80 narrative — promote it.
 
 ---
 
-## 7. Prioritized roadmap for continuation
+## 7. Prioritized roadmap
 
-**P0 — close the science gaps that gate publication.**
-1. **Composition / scale.** Train a **2-bit adder** (or half-adder → full-adder → ripple carry) as one
-   developmental rule; failing that, a small composed multi-gate circuit. The GPU trainer (65×) makes
-   this affordable. This is the single highest-value experiment.
-2. **Rigor, done right.** Extend S8 to the **movable** task (where the ablations should bite): multi-
-   seed success curves with error bars, HD sweep, isotropic-vs-directional, damage-in-training vs not,
-   per-position heal heatmaps. Add a **non-developmental baseline**.
+**P0 — the experiments that gate publication.**
+1. **Compositional depth: a 2-bit ripple-carry adder as ONE developmental rule.** Grid ~15×15, HD~96,
+   T~50–70. **Expose-then-internalize carry curriculum:** train FA0 and FA1 separately; compose with
+   carry0 scored+clamped as an *exposed* port; then decay the injection so the field must *produce and
+   consume* carry0 internally. Require ≥6/8 seeds. **Causal probe:** show a corridor cell tracks the true
+   carry0 across all 16 cases, and a mid-rollout lesion of the carry corridor breaks *only* the carry-
+   dependent cases. This is the single biggest lever — it converts "grows a computer" from breadth to
+   depth and clears prior art. Fallback: modular tiling of the frozen 1-bit adder linked by the movable
+   wire.
+2. **Multi-seed everything, to the S8 bar.** Re-run `expH.ts` (adder) and `expI.ts` (movable) over ≥8–16
+   seeds with Wilson CIs; per-position/size **heal heatmaps** for E2/E3; explicit placement-count
+   denominators for movable percentages.
+3. **Non-developmental baseline battery.** (A) A global MLP on the same truth tables → a table of
+   {compute, self-repair, position-invariance, grid-transfer, ISA-execution} where only the developmental
+   rule wins the last four. (B) Damage-in-training vs not → heal ≈0 without the damage stage (self-repair
+   is *causally earned*).
+4. **Related-work contrast table** (one row per prior system, columns = the capability axes) to pin the
+   uniquely-ours cell (realistically: executes on a real ISA + carries an in-substrate gradient).
 
-**P1 — strengthen the anchor and the artifact.**
-3. **Q16.16 gradient-grade Z80 table** (rebuild `z80/` datapath at Q16.16; Phase 1.5 shows it's clean)
-   → the paper's output-match + gradient table across all gate/adder cases.
-4. **Hero figure** rendered from the in-substrate run: grow → compute → damage → heal → drag-ports →
-   async, one rule.
-5. Push **reactive movable XOR** past 58% (longer migration window, lower LR, keep-best) *or* scope the
-   reactivity claim to the fixed adder (which is 64/64).
+**P1 — strengthen the anchor & mechanism.**
+5. **Movable-WIRE directional-perception ablation** (full/iso/id × relu, 8 seeds, at 11×11 + held-out
+   13/17): the clean necessity cliff S8 couldn't give (predict iso/id collapse, full succeeds).
+6. **Fix the gradient claim in fact, not just wording:** full-rollout tangent at Q16.16 → an in-substrate
+   value+gradient table for the gate *and* adder; or restate precisely as the single-step JVP it is.
+7. **Extend the GPU trainer to N-in/M-out** (widen port encoding, extend seed/score kernels; validate vs
+   the finite-diff-checked CPU reference) so the 2-bit adder and a movable adder are affordable to run
+   multi-seed.
+8. Promote the **invariance-boundary** finding to a headline with error bars.
 
-**P2 — packaging.**
-6. Write the paper skeleton + related-work positioning (this disciplines which experiments are load-
-   bearing). 7. Optional: Zilion-GPU-core run of the grid→lane sweep (offline, low occupancy — a figure,
-   not the demo).
+**P2 — packaging.** Standardize the success threshold across experiments (gate 0.2 vs adder/movable 0.3)
+and report sensitivity; hero figure from the in-substrate run; paper skeleton + framing.
 
 ---
 
 ## 8. Codebase map & how to run
 
-**Paper rule + demo + trainer** — `src/lib/devcomp/`:
-- `rule.ts` — the spec, configs, forward/backward reference (f64), experiments, I/O layouts.
-- `shader.ts` / `engine.ts` — WGSL kernel + WebGPU engine (demo forward).
-- `trainShader.ts` / `gpuTrainer.ts` — in-browser reverse-mode BPTT trainer.
-- `params/*.json` — frozen trained params (2940–7792 floats each).
-- `z80/` — the substrate proof (this session): `fixed.ts`, `quantize.ts`, `gradfixed.ts`, `z80mac.ts`,
-  `z80cell.ts`, `z80grad.ts`.
+`src/lib/devcomp/`: `rule.ts` (spec + f64 reference), `shader.ts`/`engine.ts` (WGSL + WebGPU),
+`trainShader.ts`/`gpuTrainer.ts` (in-browser BPTT trainer), `params/*.json` (frozen params),
+`z80/` (substrate proof: `fixed,quantize,gradfixed,z80mac,z80cell,z80grad`).
+Routes (`npm run dev`): `/devcomp` (demo), `/devcomp/validate` (CPU↔GPU faithfulness), `/devcomp/traingpu`.
+`src/lib/morph/dev/`: `expE`(gate) `expF`(repair) `expG`(grow) `expH`(adder) `expI`(movable) `s8`/`s8_run`
+(rigor). Real-Z80 tooling: `morph/z80asm.ts`, `morph/dev/z80run.ts` (`runOnRealZ80`, uses `z80-emulator`
+v2.3.0), `morph/dev/m0.ts` (CA differential test). Zilion GPU core: `@neovand/zilion` (external).
 
-**Routes** (`npm run dev`, then): `/devcomp` (demo), `/devcomp/validate` (CPU↔GPU faithfulness),
-`/devcomp/traingpu` (in-browser trainer + gradient validation).
-
-**Trainers / experiments** — `src/lib/morph/dev/`: `expE` (gate), `expF` (self-repair), `expG`
-(grow-from-seed), `expH` (adder), `expI` (movable wire/XOR), `s8`/`s8_run` (rigor). Real-Z80 tooling:
-`morph/z80asm.ts` (assembler), `morph/dev/z80run.ts` (`runOnRealZ80`), `morph/dev/m0.ts` (CA
-differential test). Zilion core: `@neovand/zilion` (external package).
-
-**Run examples:**
 ```
-npx tsx src/lib/morph/dev/expE.ts                 # train the gate (curriculum)
-TASK=gate ITERS=800 npx tsx src/lib/morph/dev/expE.ts
-npx tsx src/lib/devcomp/z80/z80cell.ts            # XOR gate on a real Z80
-npx tsx src/lib/devcomp/z80/z80grad.ts            # training gradient on a real Z80
-npx tsx src/lib/morph/dev/s8_run.ts               # ablation × multi-seed grid → docs/s8_results.json
+npx tsx src/lib/morph/dev/expE.ts               # train the gate
+npx tsx src/lib/devcomp/z80/z80cell.ts          # XOR gate value path on a real Z80
+npx tsx src/lib/devcomp/z80/z80grad.ts          # single-cell forward-mode tangent on a real Z80
+npx tsx src/lib/morph/dev/s8_run.ts             # ablation × multi-seed grid → docs/s8_results.json
 ```
 
-**Validation discipline (do not regress):** the GPU gradient must match the finite-diff-checked f64
-reference (`lossAndGradMarkers`) to ~3e-5; the Z80 datapath must match the bit-faithful fixed reference
-exactly; the shared async fire-mask must be bit-identical CPU↔WGSL; never validate the emulator against
-AI-written code — it is conformance-tested against a real reference (superzazu) and the m0 suite.
+Validation discipline (do not regress): GPU gradient ↔ finite-diff-checked f64 ref to ~3e-5; Z80 datapath
+↔ bit-faithful fixed reference exactly; async fire-mask bit-identical CPU↔WGSL; never validate the
+emulator against AI-written code (`z80-emulator` is conformance-tested; the m0 suite guards the CA).
+
+---
+
+## 9. External review — verdict & corrections applied
+
+This report was reviewed by four independent adversarial critics (rigor, novelty/positioning, factual
+correctness, experiment-design) plus a synthesis pass (`docs` workflow, 2026-07-10). **Consensus verdict:
+strong workshop / short-paper today, not NMI-ready.** The single biggest lever is **compositional depth
+(the 2-bit adder, §7-P0-1)**; reframing alone leaves the computation contribution below the baselines and
+the Z80 anchor at risk of reading as a gimmick.
+
+**Two things all four judged genuinely strong:** (1) the S8 gate ablation as NMI-grade rigor and the
+template for the rest; (2) the *value*-path Z80 result — the actual trained rule executing as real-ISA
+machine code — plus the demonstrated mechanism that the same integer datapath can carry a forward-mode
+tangent ("a learned rule and its gradient in one real ISA" — a bridge no prior CA paper has).
+
+**Overclaims the review caught, now corrected in this report and in the code output:**
+- "the substrate carries its own **exact training gradient**" → it carries a single-cell, single-step
+  forward-mode tangent for 6 weights at Q8.8 (4.3e-3), not ∂L/∂θ via BPTT. (§1, §4, and `z80grad.ts`
+  output corrected.)
+- "programs + gradients on **real silicon**" → a conformance-tested emulator (`z80-emulator` v2.3.0);
+  each cell runs on it, the grid sweep + rollout are TypeScript-orchestrated. (§4.)
+- "grows a **computer**, not an image" as the novelty → false dichotomy; Self-classifying MNIST CA,
+  Differentiable Logic CA, Neural GPU already compute with local rules and must be cited. (§1, §6.5.)
+- "**beat evolution** on the letter F" → single anecdote, no matched baseline; removed from headlines. (§3.)
+- "one rule grows+computes+repairs+**position-invariant**" / "scales to arithmetic" → separate rules; the
+  adder has no compositional depth; position-invariant *computation* is ~68%. (§1.)
+- single-seed headlines presented beside the 8-seed gate → every non-gate headline now tagged **n=1**. (§3, §5.)
+
+The corrections make the honest core stand on its own: one rigorously-measured result (the gate), one
+genuinely novel bridge (rule + tangent in a real ISA), and a clear, honest map of exactly what to build
+next (§7) to make it a paper.
