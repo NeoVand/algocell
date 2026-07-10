@@ -97,8 +97,9 @@ export class FieldCAEngine {
 		this.cur = 0;
 	}
 
+	private seedCounter = 0;
 	step(applyDamage = false): void {
-		this.device.queue.writeBuffer(this.ctrl, 0, new Uint32Array([applyDamage ? 1 : 0, 0, 0, 0]));
+		this.device.queue.writeBuffer(this.ctrl, 0, new Uint32Array([applyDamage ? 1 : 0, this.seedCounter++, 0, 0]));
 		const enc = this.device.createCommandEncoder();
 		const pass = enc.beginComputePass();
 		pass.setPipeline(this.pipeline);

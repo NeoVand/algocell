@@ -16,14 +16,28 @@ export interface RuleConfig {
 	SW: number; SH: number; N: number; C: number; FEAT: number; PERC: number; HD: number;
 	W1O: number; B1O: number; W2O: number; B2O: number; P: number;
 	markers: boolean; // if true: ch1 = IN_MARK, ch2 = OUT_MARK — a position-invariant rule with movable ports
+	fireRate: number; // NCA-style STOCHASTIC updates: prob a cell updates each step (1 = synchronous).
+	// <1 desynchronizes the CA → damps the period-3 limit cycle (the pole near ±120°) so attractors
+	// are genuine fixed points, not blinkers. Non-firing cells keep their state; markers/inputs still clamp.
 }
 
 /** Build a config from grid + channel + hidden sizes. Param block layout is
  *  [ W1(HD×PERC), b1(HD), W2(C×HD), b2(C) ]. `markers` enables the movable-port rule. */
-export function makeConfig(SW: number, SH: number, C: number, HD: number, markers = false): RuleConfig {
+export function makeConfig(SW: number, SH: number, C: number, HD: number, markers = false, fireRate = 1): RuleConfig {
 	const FEAT = 4, PERC = FEAT * C, N = SW * SH;
 	const W1O = 0, B1O = W1O + HD * PERC, W2O = B1O + HD, B2O = W2O + C * HD, P = B2O + C;
-	return { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P, markers };
+	return { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P, markers, fireRate };
+}
+
+/** Per-cell stochastic-update mask. MUST be bit-identical to the WGSL `fires()` so the GPU
+ *  trainer validates against this CPU reference. Returns true if cell fires (updates) this step. */
+export function cellFires(cell: number, step: number, seed: number, fireRate: number): boolean {
+	if (fireRate >= 1) return true;
+	let x = (Math.imul(cell, 0x9e3779b1) ^ Math.imul(step + 1, 0x85ebca77) ^ Math.imul(seed + 1, 0xc2b2ae3d)) >>> 0;
+	x = Math.imul(x ^ (x >>> 16), 0x7feb352d) >>> 0;
+	x = Math.imul(x ^ (x >>> 15), 0x846ca68b) >>> 0;
+	x = (x ^ (x >>> 16)) >>> 0;
+	return x < fireRate * 4294967296;
 }
 
 // Marker channel indices (for markers configs).
@@ -31,7 +45,9 @@ export const IN_MARK = 1, OUT_MARK = 2;
 
 export const EDIM = makeConfig(9, 9, 12, 48); // E-series: gate / self-repair / grow (P=2940)
 export const ADIM = makeConfig(11, 11, 16, 64); // 1-bit full adder (P=5200)
-export const IDIM = makeConfig(17, 17, 16, 96, true); // movable XOR — position-invariant, draggable ports (P=7792)
+export const IDIM = makeConfig(17, 17, 16, 96, true); // movable wire — position-invariant, draggable ports (P=7792)
+export const XDIM = makeConfig(17, 17, 20, 128, true); // movable XOR — more capacity for routing 2 signals + combine (P≈12948)
+export const RDIM = makeConfig(17, 17, 16, 96, true, 0.5); // reactive movable XOR — STOCHASTIC updates (fireRate 0.5) damp the ring (P=7792)
 
 // Back-compat exports (E-series dims). New code should read dims from an experiment's cfg.
 export const { SW, SH, N, C, FEAT, PERC, HD, W1O, B1O, W2O, B2O, P } = EDIM;
@@ -54,6 +70,15 @@ export interface Experiment {
 	stable: boolean; // true if the rule is a long-horizon attractor (run indefinitely); else cap at tGrow
 	reactive?: boolean; // true if it re-settles on live input changes (toggle re-clamps, no re-seed)
 	movable?: boolean; // true if ports are draggable (a markers/position-invariant rule)
+	sigChannels?: number[]; // per-input injection channel (default: all ch0). XOR uses distinct
+	// channels [3,4] so the two input bits stay separable and can be routed + XOR'd at the output;
+	// ch0 stays the readout. A single shared channel blends the two waves → XOR unlearnable.
+}
+
+/** The channel each input's bit is clamped into. Defaults to ch0 for every input (wire/adder/
+ *  E-series). Movable XOR overrides with distinct channels so the two bits stay decodable. */
+export function inputChannels(exp: Experiment): number[] {
+	return exp.sigChannels ?? exp.inputCells.map(() => 0);
 }
 
 // --- E-series I/O (9×9) ---
@@ -103,7 +128,7 @@ export const EXPERIMENTS: Experiment[] = [
 		id: 'movable_xor', name: 'Movable XOR', blurb: 'Position-invariant computation: drag the two inputs (○) or the output (□) anywhere and the plane rewires to compute their XOR. Watch the waves from the ports find each other.',
 		cfg: IDIM, inputCells: [movCell(IDIM, (IDIM.SH >> 1) - 2, 4), movCell(IDIM, (IDIM.SH >> 1) + 2, 4)], outputCells: [movCell(IDIM, IDIM.SH >> 1, IDIM.SW - 5)],
 		cases: XOR_CASES,
-		ic: 'full', paramsUrl: 'xor_invariant.json', tGrow: 44, stable: true, movable: true
+		ic: 'full', paramsUrl: 'xor_invariant.json', tGrow: 50, stable: true, movable: true, sigChannels: [3, 4]
 	}
 ];
 
@@ -122,19 +147,24 @@ export function clampInputs(cfg: RuleConfig, f: Float64Array, exp: Experiment, i
 	for (let k = 0; k < exp.inputCells.length; k++) f[exp.inputCells[k] * cfg.C + 0] = inputs[k];
 }
 
-/** Stamp markers + input bits at the given port positions (for movable rules). */
-export function stampMarkers(cfg: RuleConfig, f: Float64Array, inPorts: number[], outPorts: number[], bits: number[]): void {
+/** Stamp markers + input bits at the given port positions (for movable rules). `inCh[k]`
+ *  is input k's injection channel (default ch0 — the wire's shared signal/readout channel). */
+export function stampMarkers(cfg: RuleConfig, f: Float64Array, inPorts: number[], outPorts: number[], bits: number[], inCh?: number[]): void {
+	const chans = inCh ?? inPorts.map(() => 0);
 	for (let i = 0; i < cfg.N; i++) { f[i * cfg.C + IN_MARK] = 0; f[i * cfg.C + OUT_MARK] = 0; }
-	inPorts.forEach((p, k) => { f[p * cfg.C + IN_MARK] = 1; f[p * cfg.C + 0] = bits[k]; });
+	inPorts.forEach((p, k) => { f[p * cfg.C + IN_MARK] = 1; f[p * cfg.C + chans[k]] = bits[k]; });
 	for (const p of outPorts) f[p * cfg.C + OUT_MARK] = 1;
 }
 
-/** Uniform-alive interior + stamped markers — the initial state for a movable rule. */
-export function seedMarkers(cfg: RuleConfig, inPorts: number[], outPorts: number[], bits: number[]): Float64Array {
+/** Uniform-alive interior + stamped markers — the initial state for a movable rule. Alive
+ *  (hidden) channels start ABOVE the signal channels so the injected bits aren't pre-filled. */
+export function seedMarkers(cfg: RuleConfig, inPorts: number[], outPorts: number[], bits: number[], inCh?: number[]): Float64Array {
+	const chans = inCh ?? inPorts.map(() => 0);
+	const aliveFrom = chans.some((c) => c > 0) ? Math.max(...chans) + 1 : 3;
 	const s = new Float64Array(cfg.N * cfg.C);
 	for (let y = 1; y < cfg.SH - 1; y++) for (let x = 1; x < cfg.SW - 1; x++)
-		for (let c = 3; c < cfg.C; c++) s[(y * cfg.SW + x) * cfg.C + c] = 1;
-	stampMarkers(cfg, s, inPorts, outPorts, bits);
+		for (let c = aliveFrom; c < cfg.C; c++) s[(y * cfg.SW + x) * cfg.C + c] = 1;
+	stampMarkers(cfg, s, inPorts, outPorts, bits, chans);
 	return s;
 }
 
@@ -188,7 +218,7 @@ export function step(cfg: RuleConfig, par: Float64Array, s: Float64Array, exp: E
 	return ns;
 }
 
-export interface RolloutOpts { steps: number; damage?: { at: number; mask: Uint8Array }; }
+export interface RolloutOpts { steps: number; damage?: { at: number; mask: Uint8Array }; switchAt?: number; bits2?: number[]; seed?: number; }
 
 export function forward(cfg: RuleConfig, par: Float64Array, exp: Experiment, inputs: number[], opts: RolloutOpts): Float64Array[] {
 	const states: Float64Array[] = [seedGrid(cfg, exp, inputs)];
@@ -201,6 +231,134 @@ export function forward(cfg: RuleConfig, par: Float64Array, exp: Experiment, inp
 
 export function readOutputs(cfg: RuleConfig, s: Float64Array, exp: Experiment): number[] {
 	return exp.outputCells.map((cell) => s[cell * cfg.C + 0]);
+}
+
+/** One step of a MOVABLE (markers) rule: apply the rule everywhere, optionally damage,
+ *  then RE-STAMP markers + inputs at the (possibly relocated) ports — exactly what the
+ *  trainer and the WGSL kernel do. Ports are given explicitly (not read from the
+ *  experiment) so it works at any placement, on any grid size. */
+export function stepMarkers(cfg: RuleConfig, par: Float64Array, s: Float64Array, inPorts: number[], outPorts: number[], bits: number[], inCh: number[], damage?: Uint8Array, step = 0, seed = 0): Float64Array {
+	const { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O, N, fireRate } = cfg;
+	const ns = new Float64Array(N * C);
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let y = 1; y < SH - 1; y++)
+		for (let x = 1; x < SW - 1; x++) {
+			const i = y * SW + x;
+			if (!cellFires(i, step, seed, fireRate)) { for (let c = 0; c < C; c++) ns[i * C + c] = s[i * C + c]; continue; } // async: keep state
+			perceive(cfg, s, i, perc);
+			for (let hh = 0; hh < HD; hh++) {
+				let a = par[B1O + hh]; const base = W1O + hh * PERC;
+				for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
+				h[hh] = a > 0 ? a : 0;
+			}
+			for (let c = 0; c < C; c++) {
+				let dl = par[B2O + c]; const base = W2O + c * HD;
+				for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh];
+				ns[i * C + c] = Math.tanh(s[i * C + c] + dl);
+			}
+		}
+	if (damage) for (let i = 0; i < N; i++) if (damage[i] === 0) for (let c = 0; c < C; c++) ns[i * C + c] = 0;
+	stampMarkers(cfg, ns, inPorts, outPorts, bits, inCh); // damage first, then clamp wins (matches the kernel)
+	return ns;
+}
+
+/** Reference rollout for a movable rule (CPU ground truth for the WGSL kernel). If
+ *  `opts.switchAt`/`opts.bits2` are set, the injected input switches to `bits2` from that
+ *  state onward (mid-rollout input change → trains/tests a REACTIVE rule). */
+export function forwardMarkers(cfg: RuleConfig, par: Float64Array, inPorts: number[], outPorts: number[], bits: number[], inCh: number[], opts: RolloutOpts): Float64Array[] {
+	const sw = opts.switchAt ?? Infinity, b2 = opts.bits2 ?? bits, seed = opts.seed ?? 0;
+	const states: Float64Array[] = [seedMarkers(cfg, inPorts, outPorts, bits, inCh)];
+	for (let t = 0; t < opts.steps; t++) {
+		const stepBits = t + 1 >= sw ? b2 : bits; // state t+1 carries the post-switch input
+		const dmg = opts.damage && opts.damage.at === t + 1 ? opts.damage.mask : undefined;
+		states.push(stepMarkers(cfg, par, states[t], inPorts, outPorts, stepBits, inCh, dmg, t, seed));
+	}
+	return states;
+}
+
+export interface MovSample {
+	inPorts: number[]; outPort: number; bits: number[]; inCh: number[]; target: number;
+	// optional REACTIVE transition: input switches to bits2 at state `tSwitch`, output must
+	// re-settle to target2. Absent → non-reactive (single input, single answer).
+	tSwitch?: number; bits2?: number[]; target2?: number;
+}
+
+/** Loss + gradient for a batch of movable samples — the CPU ground truth for the GPU trainer
+ *  (identical BPTT to expI.ts, marker/input-channel clamped). norm = batch size (mean over
+ *  samples). `whold` averages the output MSE over the LAST `whold` states (a persistence /
+ *  long-horizon-stability objective: hold the answer, don't drift) — whold=1 is single-readout.
+ *  Reuses forwardMarkers for the rollout. f64 throughout. */
+export function lossAndGradMarkers(cfg: RuleConfig, par: Float64Array, samples: MovSample[], steps: number, whold = 1, seed = 0): { L: number; grad: Float64Array } {
+	const { SW, SH, C, HD, PERC, FEAT, W1O, B1O, W2O, B2O, P, N, fireRate } = cfg;
+	const grad = new Float64Array(P);
+	let L = 0;
+	const norm = samples.length * whold;
+	const perc = new Float64Array(PERC), pre1 = new Float64Array(HD), hbuf = new Float64Array(HD), gh = new Float64Array(HD), gperc = new Float64Array(PERC);
+	for (const s of samples) {
+		const sw = s.tSwitch ?? 0; // 0 = non-reactive (single input); >0 = flip to bits2 at state sw
+		const b2 = s.bits2 ?? s.bits, tgt2 = s.target2 ?? s.target;
+		// window A holds the pre-switch answer (target); window B holds the post-switch answer (tgt2).
+		const inWindowA = (t: number) => sw > 0 && t >= sw - whold && t < sw;
+		const inWindowB = (t: number) => t >= steps - whold + 1 && t < steps;
+		const states = forwardMarkers(cfg, par, s.inPorts, [s.outPort], s.bits, s.inCh, { steps, switchAt: sw > 0 ? sw : undefined, bits2: b2, seed });
+		const oc = s.outPort * C + 0;
+		const dT = states[steps][oc] - tgt2; // final state = post-switch answer
+		L += (dT * dT) / norm;
+		let gs = new Float64Array(N * C);
+		gs[oc] = (2 * dT) / norm; // seed at final state (last window-B step)
+		for (let t = steps - 1; t >= 0; t--) {
+			for (let i = 0; i < N; i++) { gs[i * C + IN_MARK] = 0; gs[i * C + OUT_MARK] = 0; }
+			for (let k = 0; k < s.inPorts.length; k++) gs[s.inPorts[k] * C + s.inCh[k]] = 0;
+			const st = states[t], sp = states[t + 1];
+			const gsPrev = new Float64Array(N * C);
+			for (let y = 1; y < SH - 1; y++)
+				for (let x = 1; x < SW - 1; x++) {
+					const i = y * SW + x;
+					// async: a non-firing cell was identity (ns=s) → gradient passes straight through, no param grad
+					if (!cellFires(i, t, seed, fireRate)) { for (let c = 0; c < C; c++) gsPrev[i * C + c] += gs[i * C + c]; continue; }
+					perceive(cfg, st, i, perc);
+					for (let hh = 0; hh < HD; hh++) {
+						let a = par[B1O + hh]; const base = W1O + hh * PERC;
+						for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k];
+						pre1[hh] = a; hbuf[hh] = a > 0 ? a : 0;
+					}
+					gh.fill(0);
+					for (let c = 0; c < C; c++) {
+						const spv = sp[i * C + c];
+						const gp = gs[i * C + c] * (1 - spv * spv);
+						gsPrev[i * C + c] += gp;
+						grad[B2O + c] += gp;
+						const base = W2O + c * HD;
+						for (let hh = 0; hh < HD; hh++) { grad[base + hh] += gp * hbuf[hh]; gh[hh] += par[base + hh] * gp; }
+					}
+					gperc.fill(0);
+					for (let hh = 0; hh < HD; hh++) {
+						let g = gh[hh]; if (pre1[hh] <= 0) g = 0;
+						grad[B1O + hh] += g;
+						const base = W1O + hh * PERC;
+						for (let k = 0; k < PERC; k++) { grad[base + k] += g * perc[k]; gperc[k] += par[base + k] * g; }
+					}
+					const r = i + 1, l = i - 1, u = i - SW, d = i + SW;
+					for (let ch = 0; ch < C; ch++) {
+						const bb = ch * FEAT, gId = gperc[bb], gGx = gperc[bb + 1], gGy = gperc[bb + 2], gLap = gperc[bb + 3];
+						gsPrev[i * C + ch] += gId - 4 * gLap;
+						gsPrev[r * C + ch] += 0.5 * gGx + gLap;
+						gsPrev[l * C + ch] += -0.5 * gGx + gLap;
+						gsPrev[d * C + ch] += 0.5 * gGy + gLap;
+						gsPrev[u * C + ch] += -0.5 * gGy + gLap;
+					}
+				}
+			// persistence + reactivity: state[t]'s output is scored when t is in a hold window →
+			// add the direct loss-gradient at the output cell (window A → target, window B → tgt2).
+			if (inWindowA(t) || inWindowB(t)) {
+				const dt = states[t][oc] - (t < sw ? s.target : tgt2);
+				L += (dt * dt) / norm;
+				gsPrev[oc] += (2 * dt) / norm;
+			}
+			gs = gsPrev;
+		}
+	}
+	return { L, grad };
 }
 
 export function damageMask(cfg: RuleConfig, cx: number, cy: number, size: number): Uint8Array {

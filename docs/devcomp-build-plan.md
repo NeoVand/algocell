@@ -181,3 +181,39 @@ every rule a genuinely stable, reactive circuit, strengthens the "stable
 attractor" claim for the paper, and lets the demo respond to live input toggles
 without re-seeding. Fold into S6 (train the adder reactive + long-stable from the
 start) and backfill E1/E2.
+
+## Finding (S6d): movable XOR needs SEPARATED signal channels, not more capacity
+
+Position-invariant XOR (drag 2 inputs + 1 output anywhere, plane rewires to
+compute a⊕b) resisted ~half a dozen attempts. The wire (1 signal) trained to
+100% position-invariance; XOR kept collapsing. **Root cause was representational,
+not capacity:** both inputs were injected into the SAME channel (ch0), so the two
+bit-waves blended into one geometry-dependent scalar the output couldn't un-mix.
+Bigger models (C=24/HD=128) did NOT help — confirming it wasn't capacity.
+
+**Fix:** give each input its OWN signal channel (input 0→ch3, input 1→ch4, ch0 =
+readout). Now XOR = "two independently-routable wires + a local XOR readout."
+Second fix: `ZERO=readout` init (zero ONLY the readout row so the signal channels
+propagate from step 1) — broke a 50% weak-signal plateau. With both, the FIXED
+adjacent XOR trains to 100% (loss 7e-5).
+
+**Bootstrap vs generalize:** a single FIXED placement bootstraps easily but its
+solution is placement-specific and catastrophically forgets when ports spread
+(the "cliff"). Training on VARIED placements from iter 1 (per user direction)
+does NOT bootstrap with a small batch (collapses to 0.5) — it needs (a) a LARGE
+batch so the position-invariant signal averages out of placement noise, and (b)
+a curriculum that HOLDS adjacent (varied but close) for ~20% to bootstrap the
+combine, THEN spreads. Large batch is why the GPU trainer matters.
+
+## Finding (S7-GPU): batch-packed WGSL reverse-mode trainer (in-browser)
+
+Built a full GPU trainer (`trainShader.ts` + `gpuTrainer.ts`): batch-packs B
+samples (placement×case) into one grid, forward stores the trajectory on GPU,
+backward = per-cell VJP + param-grad **matmul reduction** (no f32 atomics) +
+neighbour-gather for the state gradient, Adam + gradient-clipping + keep-best,
+params resident on GPU. **Validated** at `/devcomp/traingpu`: GPU gradient vs the
+finite-diff-checked CPU reference (`lossAndGradMarkers`) = **maxRel 3e-5 over all
+7792 params**; loss match 5e-8. Throughput ≈ **65× the CPU per-sample rate** (B=64:
+289 samples/s vs CPU ~4.4). Gradient clipping (the CPU had it; GPU lacked it) is
+what stops the spread-phase collapse. This trainer is the workhorse for S8 (multi-
+seed stats), the 2-bit adder, and powers the "train in the browser" story (S7).

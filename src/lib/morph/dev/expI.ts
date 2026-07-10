@@ -17,7 +17,7 @@ import { writeFileSync, readFileSync } from 'node:fs';
 
 // Rule is grid-INDEPENDENT: channels + MLP only. ch0 = signal, ch1 = IN_MARK,
 // ch2 = OUT_MARK, ch3.. = hidden (beacons/structure the rule invents).
-const C = 16, FEAT = 4, PERC = FEAT * C, HD = 96;
+const C = Number(process.env.C ?? 16), FEAT = 4, PERC = FEAT * C, HD = Number(process.env.HD ?? 96);
 const W1O = 0, B1O = HD * PERC, W2O = B1O + HD, B2O = W2O + C * HD, P = B2O + C;
 const IN_MARK = 1, OUT_MARK = 2;
 
@@ -27,6 +27,17 @@ const CASES: number[][] = TASK === 'xor'
 	? [[0, 0], [0, 1], [1, 0], [1, 1]]
 	: [[0], [1]];
 const target = (bits: number[]): number => (TASK === 'xor' ? bits[0] ^ bits[1] : bits[0]);
+
+// Signal-channel layout. ch0 is the READOUT (what the output cell computes into, and
+// what we score). For XOR each input's bit lives in its OWN channel SIG+k, kept
+// SEPARATE from the readout — the two bits must stay individually decodable so the
+// output can compute a⊕b. A single shared channel (as the wire uses) blends the two
+// waves into one scalar whose value depends on port geometry → XOR unlearnable under
+// positional freedom, no matter the capacity. Wire keeps the classic shared-ch0 copy
+// (input floods ch0, output threshold-reads ch0). inCh(k) = injection channel for input k.
+const SIG = 3;
+const inCh = (k: number): number => (TASK === 'xor' ? SIG + k : 0);
+const ALIVE0 = TASK === 'xor' ? SIG + N_IN : 3; // hidden 'alive' channels start after the signal channels
 
 const GW = 11, GH = 11; // training grid (rule works on any size)
 const T = Number(process.env.T ?? (TASK === 'xor' ? 36 : 32)); // developmental steps
@@ -46,14 +57,14 @@ interface Place { gw: number; gh: number; ins: number[]; out: number; }
 /** Re-assert markers + inputs every step (fixed boundary conditions the rule reads). */
 function stamp(f: Float64Array, N: number, ins: number[], bits: number[], out: number): void {
 	for (let i = 0; i < N; i++) { f[i * C + IN_MARK] = 0; f[i * C + OUT_MARK] = 0; }
-	for (let k = 0; k < ins.length; k++) { f[ins[k] * C + IN_MARK] = 1; f[ins[k] * C + 0] = bits[k]; }
+	for (let k = 0; k < ins.length; k++) { f[ins[k] * C + IN_MARK] = 1; f[ins[k] * C + inCh(k)] = bits[k]; }
 	f[out * C + OUT_MARK] = 1;
 }
 
 function seed(gw: number, gh: number, ins: number[], bits: number[], out: number): Float64Array {
 	const N = gw * gh, s = new Float64Array(N * C);
 	for (let y = 1; y < gh - 1; y++) for (let x = 1; x < gw - 1; x++)
-		for (let c = 3; c < C; c++) s[(y * gw + x) * C + c] = 1; // uniform alive interior (position-invariant)
+		for (let c = ALIVE0; c < C; c++) s[(y * gw + x) * C + c] = 1; // uniform alive interior (position-invariant); signal channels start at 0
 	stamp(s, N, ins, bits, out);
 	return s;
 }
@@ -121,7 +132,7 @@ function lossAndGrad(par: Float64Array, places: Place[]): { L: number; grad: Flo
 			let gs = gsT;
 			for (let t = T - 1; t >= 0; t--) {
 				for (let i = 0; i < N; i++) { gs[i * C + IN_MARK] = 0; gs[i * C + OUT_MARK] = 0; } // markers clamped everywhere
-				for (const inc of ins) gs[inc * C + 0] = 0; // input ch0 clamped
+				for (let k = 0; k < ins.length; k++) gs[ins[k] * C + inCh(k)] = 0; // each input's injected signal channel clamped
 				const s = states[t], sp = states[t + 1];
 				const gsPrev = new Float64Array(N * C);
 				for (let y = 1; y < ghh - 1; y++)
@@ -214,10 +225,18 @@ function train(iters: number, init?: Float64Array): Float64Array {
 		const rng0 = mulberry32(7);
 		par = new Float64Array(P);
 		for (let j = 0; j < P; j++) par[j] = (rng0() - 0.5) * 0.1;
-		// ZERO=1 → near-identity rule (last layer 0): builds routing+combine gradually,
-		// avoids the constant-0.5 collapse (as the compute experiments do).
-		if (process.env.ZERO === '1') for (let j = W2O; j < P; j++) par[j] = 0;
-		else for (let j = W2O; j < P; j++) par[j] *= 0.4;
+		// Last-layer init. ZERO=1 → whole last layer 0 (near-identity: the readout AND the
+		// signal channels start frozen — fine for the wire, but for XOR the signal channels
+		// ch3/ch4 can't PROPAGATE at init, so the output never sees them and training stalls
+		// at 50% weak-signal). ZERO=readout (or 'r') → zero ONLY the readout row (ch0): the
+		// output stays stable at 0 (no constant-0.5 collapse — the thing ZERO guards against),
+		// while signal/hidden channels keep small random weights so waves route from step 1.
+		const Z = process.env.ZERO;
+		if (Z === '1') for (let j = W2O; j < P; j++) par[j] = 0;
+		else {
+			for (let j = W2O; j < P; j++) par[j] *= 0.4; // all last-layer weights small
+			if (Z === 'readout' || Z === 'r') { for (let hh = 0; hh < HD; hh++) par[W2O + 0 * HD + hh] = 0; par[B2O + 0] = 0; }
+		}
 	}
 	const FULL = GW + GH; // full-grid Manhattan span
 	const warm = init !== undefined;
@@ -243,7 +262,16 @@ function train(iters: number, init?: Float64Array): Float64Array {
 			const p2 = Math.max(1e-6, (frac - phase1) / Math.max(1e-6, curr - phase1));
 			const maxDist = Math.min(FULL, Math.round(2 + p2 * FULL));
 			const rng = mulberry32(1000 + it);
-			places = Array.from({ length: BATCH }, () => randPlace(rng, GW, GH, maxDist));
+			// If we DID bootstrap on a fixed placement (phase1>0), anchor a few canonical
+			// placements into each spread-phase batch so that solution isn't catastrophically
+			// forgotten the instant ports vary. With PHASE1=0 (train varied from the start —
+			// no fixed solution to forget), there are NO anchors: every sample is a different
+			// placement from iter 1, so the rule must be position-invariant by construction.
+			const anchors = phase1 > 0 ? (frac < 0.65 ? 3 : frac < 0.8 ? 2 : frac < 0.95 ? 1 : 0) : 0;
+			places = [
+				...Array.from({ length: anchors }, canonical),
+				...Array.from({ length: BATCH - anchors }, () => randPlace(rng, GW, GH, maxDist))
+			];
 		}
 		const { L, grad, acc } = lossAndGrad(par, places);
 		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);

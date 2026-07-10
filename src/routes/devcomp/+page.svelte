@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { EXPERIMENTS, experimentById, loadParams, seedGrid, seedMarkers, readOutputs, type RuleConfig } from '$lib/devcomp/rule';
+	import { EXPERIMENTS, experimentById, loadParams, seedGrid, seedMarkers, readOutputs, inputChannels, type RuleConfig } from '$lib/devcomp/rule';
 	import { FieldCAEngine } from '$lib/devcomp/engine';
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
 	import adderReactive from '$lib/devcomp/params/adder_reactive.json';
 	import wireInvariant from '$lib/devcomp/params/wire_invariant.json';
+	import xorInvariant from '$lib/devcomp/params/xor_invariant.json';
 
 	// Params by file. Movable experiments use position-invariant marker rules.
 	const PARAM_FILES: Record<string, number[]> = {
 		'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_reactive.json': adderReactive,
-		'wire_invariant.json': wireInvariant
+		'wire_invariant.json': wireInvariant, 'xor_invariant.json': xorInvariant
 	};
 	// Only show experiments whose params are bundled.
 	const SHOWN = EXPERIMENTS.filter((e) => PARAM_FILES[e.paramsUrl] !== undefined);
@@ -25,6 +26,7 @@
 	let inputs = $state<number[]>([0, 0, 0]);
 	let playing = $state(true);
 	let stepCount = $state(0);
+	let stepsPerSec = $state(60); // playback speed; lower to watch transitions frame by frame
 	let output = $state<number[]>([0]);
 	let msg = $state('starting the GPU…');
 	let tool = $state<'inspect' | 'damage' | 'move'>('inspect');
@@ -51,7 +53,8 @@
 		const cfg = exp.cfg;
 		const isIn = new Uint32Array(cfg.N), val = new Float32Array(cfg.N);
 		const ins = exp.movable ? inPorts : exp.inputCells;
-		ins.forEach((cell, k) => { isIn[cell] = 1; val[cell] = inputs[k]; });
+		const inCh = inputChannels(exp); // encode channel+1 so the shader clamps into the right channel
+		ins.forEach((cell, k) => { isIn[cell] = inCh[k] + 1; val[cell] = inputs[k]; });
 		engine.setInputs(isIn, val);
 		if (cfg.markers) {
 			const isOut = new Uint32Array(cfg.N);
@@ -70,7 +73,7 @@
 		engine.setParams(new Float32Array(loadParams(cfg, PARAM_FILES[exp.paramsUrl])));
 		applyInputs();
 		engine.setDamageKeep(new Uint32Array(cfg.N).fill(1));
-		if (exp.movable) engine.seed(new Float32Array(seedMarkers(cfg, inPorts, [outPort], inputs)));
+		if (exp.movable) engine.seed(new Float32Array(seedMarkers(cfg, inPorts, [outPort], inputs, inputChannels(exp))));
 		else engine.seed(new Float32Array(seedGrid(cfg, exp, inputs)));
 		stepCount = 0;
 		ready = true;
@@ -95,7 +98,16 @@
 		playing = true;
 	}
 	async function reset() { await load(); playing = true; }
-	function doStep() { if (engine && ready && stepCount < maxSteps) { engine.step(false); stepCount++; } }
+	// Read the field back and refresh everything the UI shows (canvas, output readout, inspector).
+	async function refresh() {
+		if (!engine || !ready) return;
+		const st = await engine.readState();
+		draw(st);
+		output = exp.movable ? [st[outPort * exp.cfg.C + 0]] : readOutputs(exp.cfg, st, exp);
+		lastState = st;
+		if (selectedCell !== null) selVals = Array.from({ length: exp.cfg.C }, (_, c) => st[selectedCell! * exp.cfg.C + c]);
+	}
+	async function doStep() { if (engine && ready && stepCount < maxSteps) { engine.step(false); stepCount++; await refresh(); } }
 
 	let painting = false;
 	function cellAt(e: PointerEvent): number {
@@ -196,15 +208,15 @@
 		(async () => {
 			try { await load(); } catch (e) { msg = 'WebGPU unavailable: ' + (e as Error).message; return; }
 			msg = '';
-			const loop = async () => {
+			let lastStep = 0;
+			const loop = async (ts = 0) => {
 				if (disposed) return;
 				if (ready && engine) {
-					if (playing && stepCount < maxSteps) { engine.step(false); stepCount++; }
-					const st = await engine.readState();
-					draw(st);
-					output = exp.movable ? [st[outPort * exp.cfg.C + 0]] : readOutputs(exp.cfg, st, exp);
-					lastState = st;
-					if (selectedCell !== null) selVals = Array.from({ length: exp.cfg.C }, (_, c) => st[selectedCell! * exp.cfg.C + c]);
+					// step at the chosen rate (throttled by wall-clock) while rendering every frame
+					if (playing && stepCount < maxSteps && ts - lastStep >= 1000 / stepsPerSec) {
+						engine.step(false); stepCount++; lastStep = ts;
+					}
+					await refresh();
 				}
 				raf = requestAnimationFrame(loop);
 			};
@@ -277,6 +289,10 @@
 				<button onclick={() => (playing = !playing)}>{playing ? '❚❚ Pause' : '▶ Play'}</button>
 				<button onclick={doStep}>Step</button>
 				<button onclick={reset}>Reset</button>
+				<label class="speed" title="Playback speed (steps per second)">
+					🐢<input type="range" min="1" max="60" step="1" bind:value={stepsPerSec} />🐇
+					<span>{stepsPerSec}/s</span>
+				</label>
 			</div>
 			<p class="meta">step {stepCount}{exp.stable ? '' : ` / ${exp.tGrow}`} · ○ input · □ output{exp.ic === 'seed' ? ' · 🌱 seed' : ''}</p>
 
@@ -350,7 +366,10 @@
 	.readout .val { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 	.readout .val.ok { color: #34d399; } .readout .val.bad { color: #f87171; }
 	.readout .want { color: #9aa7b4; font-size: 13px; }
-	.controls { display: flex; gap: 10px; }
+	.controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+	.speed { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #9fb3c8; margin-left: 4px; }
+	.speed input { accent-color: #34d399; cursor: pointer; }
+	.speed span { min-width: 34px; font-variant-numeric: tabular-nums; }
 	.controls button { background: #14324a; color: #cdeee7; border: 1px solid #23566f; border-radius: 9px;
 		padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
 	.controls button:hover { background: #1a415f; }
