@@ -205,6 +205,16 @@ batch so the position-invariant signal averages out of placement noise, and (b)
 a curriculum that HOLDS adjacent (varied but close) for ~20% to bootstrap the
 combine, THEN spreads. Large batch is why the GPU trainer matters.
 
+## Finding (S8): ablations + multi-seed stats on the XOR gate (`s8.ts` / `s8_run.ts`)
+
+8 seeds/condition, XOR gate 9×9 distance-curriculum to d=5 (`docs/s8_results.json`):
+**baseline 8/8 (100%)** — reproducible. **id (identity-only, no neighbour info) 0/8, loss 0.2500** =
+exactly the constant-output baseline → spatial coupling is *necessary* (clean ablation). **norelu
+(linear hidden) 2/8 (25%), 0.092±0.10** → the hidden nonlinearity matters. **HD sweep**: HD=4 63% →
+HD≥8 100% (capacity threshold ≈8). **iso (isotropic) 8/8 (100%)** → directional perception is redundant
+on the *fixed symmetric* gate; that ablation belongs on the movable task. Remaining rigor: movable-task
+ablations, self-repair heal heatmaps, adder/movable multi-seed stats, a non-developmental baseline.
+
 ## Finding (S9-Phase1): the trained rule quantizes — value AND gradient survive fixed-point
 
 Before writing a line of Z80 assembly, a **bit-faithful** fixed-point emulation
