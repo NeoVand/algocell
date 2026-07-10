@@ -16,6 +16,8 @@ const REG8: Record<string, number> = { B: 0, C: 1, D: 2, E: 3, H: 4, L: 5, A: 7 
 const REG16: Record<string, number> = { BC: 0, DE: 1, HL: 2, SP: 3 };
 const CC: Record<string, number> = { NZ: 0, Z: 1, NC: 2, C: 3, PO: 4, PE: 5, P: 6, M: 7 };
 const JR_CC: Record<string, number> = { NZ: 0x20, Z: 0x28, NC: 0x30, C: 0x38 };
+// CB-prefixed shifts/rotates: opcode = 0xCB, base + reg (reg codes as REG8; (HL)=6).
+const CB_BASE: Record<string, number> = { RLC: 0x00, RRC: 0x08, RL: 0x10, RR: 0x18, SLA: 0x20, SRA: 0x28, SLL: 0x30, SRL: 0x38 };
 
 interface Insn {
 	label?: string;
@@ -43,7 +45,7 @@ function u16(n: number): [number, number] {
 }
 
 /** Encode one instruction to bytes. `resolve` maps a value-operand to a number. */
-function encode(mnem: string, ops: string[], addr: number, resolve: (op: string) => number): number[] {
+function encode(mnem: string, ops: string[], addr: number, resolve: (op: string) => number, strict = false): number[] {
 	const M = mnem.toUpperCase();
 
 	switch (M) {
@@ -62,6 +64,19 @@ function encode(mnem: string, ops: string[], addr: number, resolve: (op: string)
 		case 'RET':
 			if (ops.length === 0) return [0xc9];
 			return [0xc0 | (CC[ops[0].toUpperCase()] << 3)];
+		case 'RLC':
+		case 'RRC':
+		case 'RL':
+		case 'RR':
+		case 'SLA':
+		case 'SRA':
+		case 'SLL':
+		case 'SRL': {
+			const t = ops[0].toUpperCase();
+			const r = t === '(HL)' ? 6 : reg8(t);
+			if (r === null) throw new Error(`${M} bad operand: ${ops[0]}`);
+			return [0xcb, CB_BASE[M] + r];
+		}
 		case 'DB':
 			return ops.map((o) => resolve(o) & 0xff);
 		case 'LD':
@@ -89,9 +104,9 @@ function encode(mnem: string, ops: string[], addr: number, resolve: (op: string)
 		case 'JP':
 			return encodeJP(ops, resolve);
 		case 'JR':
-			return encodeJR(ops, resolve, addr);
+			return encodeJR(ops, resolve, addr, strict);
 		case 'DJNZ':
-			return [0x10, (resolve(ops[0]) - (addr + 2)) & 0xff];
+			return [0x10, rel8(resolve(ops[0]), addr, 'DJNZ', strict)];
 		case 'CALL':
 			return encodeCALL(ops, resolve);
 		default:
@@ -200,13 +215,21 @@ function encodeJP(ops: string[], R: (op: string) => number): number[] {
 	return [0xc3, ...u16(R(ops[0]))];
 }
 
-function encodeJR(ops: string[], R: (op: string) => number, addr: number): number[] {
+/** 8-bit relative displacement for JR/DJNZ, with a loud range check (an
+ *  out-of-range branch must fail assembly, not silently wrap — use JP instead). */
+function rel8(target: number, addr: number, mnem: string, strict: boolean): number {
+	const d = target - (addr + 2);
+	if (strict && (d < -128 || d > 127)) throw new Error(`${mnem} target out of range (${d} bytes; use JP for >127).`);
+	return d & 0xff;
+}
+
+function encodeJR(ops: string[], R: (op: string) => number, addr: number, strict: boolean): number[] {
 	if (ops.length === 2) {
 		const op = JR_CC[ops[0].toUpperCase()];
 		if (op === undefined) throw new Error(`JR bad condition: ${ops[0]}`);
-		return [op, (R(ops[1]) - (addr + 2)) & 0xff];
+		return [op, rel8(R(ops[1]), addr, 'JR', strict)];
 	}
-	return [0x18, (R(ops[0]) - (addr + 2)) & 0xff];
+	return [0x18, rel8(R(ops[0]), addr, 'JR', strict)];
 }
 
 function encodeCALL(ops: string[], R: (op: string) => number): number[] {
@@ -288,7 +311,7 @@ export function assemble(lines: string[], symbols: SymbolMap = {}): Uint8Array {
 	for (let i = 0; i < insns.length; i++) {
 		const ins = insns[i];
 		if (!ins.mnem) continue;
-		const bytes = encode(ins.mnem, ins.ops, addr, resolve);
+		const bytes = encode(ins.mnem, ins.ops, addr, resolve, true);
 		if (bytes.length !== sizes[i]) {
 			throw new Error(`size mismatch on "${ins.mnem} ${ins.ops.join(',')}": ${sizes[i]} vs ${bytes.length}`);
 		}

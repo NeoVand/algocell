@@ -205,6 +205,73 @@ batch so the position-invariant signal averages out of placement noise, and (b)
 a curriculum that HOLDS adjacent (varied but close) for ~20% to bootstrap the
 combine, THEN spreads. Large batch is why the GPU trainer matters.
 
+## Finding (S9-Phase1): the trained rule quantizes — value AND gradient survive fixed-point
+
+Before writing a line of Z80 assembly, a **bit-faithful** fixed-point emulation
+of the rule (`src/lib/devcomp/z80/fixed.ts` — signed Q(W.F) integers, wide MAC
+accumulation, tanh table — exactly the Z80 datapath) answers the load-bearing
+quantization question the substrate proof rests on:
+
+- **Value** (`quantize.ts`): the E1 gate computes correct XOR in fixed-point at
+  *every* tested precision, incl. **Q8.8** (16-bit, one register pair — expA's
+  format): truth table PASS, **0 saturations**, max|Δout vs f64| 8.9e-2. Q8.16+
+  is near-exact (1.2e-3). Even a 64-entry tanh table holds. Magnitude budget:
+  max|pre-activation| 10.25 → needs 5 integer bits; Q8.8 has 8. Headroom.
+- **Gradient** (`gradfixed.ts`): a forward-mode DUAL tangent d(out)/dθ carried
+  through the fixed-point cell update matches the f64 analytic gradient to ~Q
+  resolution — Q8.8 4.3e-3 (coarse but alive), **Q16.16 1.5e-5** (clean), Q8.24
+  4e-8. This is exactly the dual arithmetic Exp A proved on the Z80, now for the
+  rule's real datapath.
+
+**Verdict:** the paradigm ports. Q8.8 suffices for the *value* proof; Q16.16 is
+the gradient-grade format (matches expB). Phase 2 = the datapath on a real Z80
+(output-match vs this fixed reference); Phase 3 = the dual tangent on the Z80 vs
+finite-diff. This de-risks the whole of S9.
+
+## Finding (S9-Phase2): the trained rule RUNS as a real Z80 program — XOR in-substrate
+
+The E1 gate's rule is now an actual Z80 program (`src/lib/devcomp/z80/`), built
+bottom-up and validated on a real Z80 (`z80-emulator` via `runOnRealZ80`, the same
+core Zilion is conformance-tested against):
+
+- **Signed fixed-point MAC** (`z80mac.ts`): Σ w·x + bias in Q8.8 — signed 16×16→32
+  multiply (sign-magnitude around expA's `mul8`) + 32-bit accumulate + >>8. Matches
+  the bit-faithful reference on **300 random signed vectors AND all 48 real W1 rows**,
+  0 mismatches.
+- **Full cell update** (`z80cell.ts`): perceive → relu(W1·perc+b1) → W2·h+b2 →
+  tanh(state+dl), all Q8.8, weights in tape, tanh a 8192-entry LUT. **Bit-exact vs
+  the fixed reference over 144 real cell updates** (worst Δ 0), 2e-2 vs f64.
+- **The whole gate**: sweeping that cell over every interior cell for T=24 steps (one
+  lane holds the field + weights — the grid→lane design) computes the **correct XOR
+  truth table** on the Z80: [0,0]→0.05, [0,1]→0.98, [1,0]→0.99, [1,1]→0.04. *The
+  learned computer is literally a program in a real ISA.*
+
+Assembler (`morph/z80asm.ts`) gained the CB-prefixed shift/rotate group (SRA/RR for
+the signed >>1 in perceive) + a strict JR/DJNZ range check (an out-of-range branch
+now fails assembly instead of silently wrapping — the bug that first broke perceive).
+Backward-compatible: Exp A and the m0 CA differential suite still pass (diff=0).
+
+## Finding (S9-Phase3): the trained rule's GRADIENT runs on the Z80 — anchor closed
+
+`z80grad.ts` extends the cell to DUAL numbers (value v + tangent v̇=d(value)/dθ):
+`dualdot` wide-accumulates the value Σ wv·xv AND the product-rule tangent
+Σ(wv·xd + wd·xv); ReLU gates both; tanh maps the value through the LUT and the
+tangent through a (1−tanh²) derivative LUT. Seed one weight's tangent = 1 (field
+tangents are 0 — the seed is constant in θ), run the cell on the real Z80, read
+d(out)/dθ. **Matches f64 finite-diff to Q8.8 resolution (worst 4.3e-3 ≈ the 3.9e-3
+quantum), and is bit-identical to the TS fixed-point dual reference.** This is the
+Exp-A test (tangent vs finite-diff) now for the *whole trained MLP rule*, on real
+silicon. Q8.8 carries the gradient coarsely; the same construction in Q16.16 gives
+~1.5e-5 (Phase 1.5) for a precision-grade gradient table — a format choice, the
+mechanism is proven either way.
+
+**S9 core is DONE:** the learned computer is literally a program in a real ISA AND
+that program hands back its exact training gradient — *programs + gradients on real
+silicon*, the differentiator vs Neural-CA / learned-CA-on-grid work. Remaining is
+packaging: the paper figure (grow→compute→heal frames rendered from the in-substrate
+run) + the output-match/gradient table across all cases; optionally re-running the
+grid→lane sweep on the Zilion GPU core (offline, low occupancy — do not oversell).
+
 ## Finding (S7-GPU): batch-packed WGSL reverse-mode trainer (in-browser)
 
 Built a full GPU trainer (`trainShader.ts` + `gpuTrainer.ts`): batch-packs B
