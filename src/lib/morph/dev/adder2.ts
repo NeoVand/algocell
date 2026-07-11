@@ -322,6 +322,246 @@ function regionLesionProbe(par: Float64Array): void {
 	}
 }
 
+// ===========================================================================
+// STABILIZE + SELF-REPAIR + REACTIVE — make the 2-bit adder an ongoing attractor
+// that holds its answer indefinitely, heals damage, and re-settles on live input
+// changes. Warm-started from the internalized compute rule. The internal carry is
+// kept alive by a light auxiliary score on the carry cell so it persists too.
+// ===========================================================================
+
+// scored cells over hold windows: the 3 real outputs + the internal carry (aux).
+function scoredCellsHold(): { cell: number; tgt: (c: Case) => number; w: number }[] {
+	return [
+		{ cell: SUM1, tgt: (c) => c.sum1, w: 1 }, { cell: SUM0, tgt: (c) => c.sum0, w: 1 },
+		{ cell: COUT, tgt: (c) => c.cout, w: 1 }, { cell: CARRY, tgt: (c) => c.carry0, w: Number(process.env.WCARRY ?? 0.5) }
+	];
+}
+function damageMask(cx: number, cy: number, size: number): Uint8Array {
+	const mask = new Uint8Array(N).fill(1); const h = size >> 1;
+	for (let y = cy - h; y <= cy - h + size - 1; y++) for (let x = cx - h; x <= cx - h + size - 1; x++)
+		if (x >= 0 && x < W && y >= 0 && y < H) mask[y * W + x] = 0;
+	return mask;
+}
+function candidatePatches(): { cx: number; cy: number }[] {
+	const list: { cx: number; cy: number }[] = [];
+	for (let cx = IN_COL + 1; cx <= OUT_COL; cx++) for (let cy = 2; cy <= H - 3; cy++) list.push({ cx, cy });
+	return list;
+}
+// timeline: grow → hold → (damage) → re-hold. Weights sum to 1 across scored steps.
+const S_GROW = Number(process.env.SGROW ?? 40), S_HOLD = Number(process.env.SHOLD ?? 26), S_REPAIR = Number(process.env.SREPAIR ?? 22);
+const S_DMG_AT = S_GROW + S_HOLD, S_TOTAL = S_DMG_AT + S_REPAIR, S_TAIL = 8;
+interface Sched { w: Float64Array; nSteps: number; dmgAt: number; }
+function schedule(mode: 'persist' | 'repair'): Sched {
+	const w = new Float64Array(S_TOTAL + 1);
+	const hn = S_DMG_AT - 1 - S_GROW + 1; for (let s = S_GROW; s <= S_DMG_AT - 1; s++) w[s] = 0.5 / hn;
+	if (mode === 'persist') { const tn = S_TOTAL - S_DMG_AT + 1; for (let s = S_DMG_AT; s <= S_TOTAL; s++) w[s] = 0.5 / tn; return { w, nSteps: S_TOTAL, dmgAt: -1 }; }
+	const rn = S_TAIL; for (let s = S_TOTAL - S_TAIL + 1; s <= S_TOTAL; s++) w[s] += 0.5 / rn;
+	return { w, nSteps: S_TOTAL, dmgAt: S_DMG_AT };
+}
+
+function forwardHold(par: Float64Array, cse: Case, sched: Sched, mask: Uint8Array | null): Float64Array[] {
+	const s0 = seedGrid(); clampInputs(s0, cse, false);
+	const states: Float64Array[] = [s0]; let s = s0;
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let t = 0; t < sched.nSteps; t++) {
+		const ns = new Float64Array(N * C);
+		for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+			const i = y * W + x; perceive(s, i, perc);
+			for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; h[hh] = a > 0 ? a : 0; }
+			for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const base = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); }
+		}
+		if (mask && t + 1 === sched.dmgAt) for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) ns[i * C + c] = 0;
+		clampInputs(ns, cse, false);
+		states.push(ns); s = ns;
+	}
+	return states;
+}
+
+// backward shared with the reactive path: given per-step output-gradient seeds, backprop to grad.
+function backpropHold(par: Float64Array, states: Float64Array[], nSteps: number, dmgAt: number, mask: Uint8Array | null,
+	seedAt: (t: number, gs: Float64Array) => void, grad: Float64Array): void {
+	const perc = new Float64Array(PERC), pre1 = new Float64Array(HD), hbuf = new Float64Array(HD), gh = new Float64Array(HD), gperc = new Float64Array(PERC);
+	let gs = new Float64Array(N * C);
+	for (let t = nSteps - 1; t >= 0; t--) {
+		seedAt(t + 1, gs);                                   // add output-loss gradient at state t+1
+		for (const p of inputCells) gs[p * C + 0] = 0;       // clamped inputs: no grad through override
+		if (mask && t + 1 === dmgAt) for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) gs[i * C + c] = 0;
+		const st = states[t], sp = states[t + 1];
+		const gsPrev = new Float64Array(N * C);
+		for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+			const i = y * W + x; perceive(st, i, perc);
+			for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; pre1[hh] = a; hbuf[hh] = a > 0 ? a : 0; }
+			gh.fill(0);
+			for (let c = 0; c < C; c++) {
+				const spv = sp[i * C + c]; const gp = gs[i * C + c] * (1 - spv * spv);
+				gsPrev[i * C + c] += gp; grad[B2O + c] += gp; const base = W2O + c * HD;
+				for (let hh = 0; hh < HD; hh++) { grad[base + hh] += gp * hbuf[hh]; gh[hh] += par[base + hh] * gp; }
+			}
+			gperc.fill(0);
+			for (let hh = 0; hh < HD; hh++) { let g = gh[hh]; if (pre1[hh] <= 0) g = 0; grad[B1O + hh] += g; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) { grad[base + k] += g * perc[k]; gperc[k] += par[base + k] * g; } }
+			const r = i + 1, l = i - 1, u = i - W, d = i + W;
+			for (let ch = 0; ch < C; ch++) {
+				const bb = ch * FEAT, gId = gperc[bb], gGx = gperc[bb + 1], gGy = gperc[bb + 2], gLap = gperc[bb + 3];
+				gsPrev[i * C + ch] += gId - 4 * gLap;
+				gsPrev[r * C + ch] += 0.5 * gGx + gLap; gsPrev[l * C + ch] += -0.5 * gGx + gLap;
+				gsPrev[d * C + ch] += 0.5 * gGy + gLap; gsPrev[u * C + ch] += -0.5 * gGy + gLap;
+			}
+		}
+		gs = gsPrev;
+	}
+}
+
+function lossHold(par: Float64Array, sched: Sched, mask: Uint8Array | null): { L: number; grad: Float64Array } {
+	const grad = new Float64Array(P); let L = 0;
+	const scored = scoredCellsHold();
+	const norm = CASES.length * scored.reduce((a, s) => a + s.w, 0);
+	for (const cse of CASES) {
+		const states = forwardHold(par, cse, sched, mask);
+		backpropHold(par, states, sched.nSteps, sched.dmgAt, mask, (step, gs) => {
+			if (sched.w[step] <= 0) return;
+			for (const sc of scored) { const oc = sc.cell * C + 0; const diff = states[step][oc] - sc.tgt(cse); L += (sched.w[step] * sc.w * diff * diff) / norm; gs[oc] += (2 * sched.w[step] * sc.w * diff) / norm; }
+		}, grad);
+	}
+	return { L, grad };
+}
+
+function adamTrain(iters: number, init: Float64Array, lossFn: (par: Float64Array, it: number) => { L: number; grad: Float64Array }, lrHi = 0.003, lrLo = 0.0006): { par: Float64Array; L: number } {
+	let par = init.slice();
+	const m = new Float64Array(P), v = new Float64Array(P), b1 = 0.9, b2 = 0.999;
+	let bestLoss = Infinity, bestPar = par.slice();
+	for (let it = 1; it <= iters; it++) {
+		const cos = 0.5 * (1 + Math.cos(Math.PI * (it / iters)));
+		const lr = Math.min(1, it / 20) * (lrLo + (lrHi - lrLo) * cos);
+		const { L, grad } = lossFn(par, it);
+		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);
+		const clip = gn > 1 ? 1 / gn : 1;
+		if (L < bestLoss) { bestLoss = L; bestPar = par.slice(); }
+		const c1 = 1 - Math.pow(b1, it), c2 = 1 - Math.pow(b2, it);
+		for (let j = 0; j < P; j++) { const g = grad[j] * clip + 2e-5 * par[j]; m[j] = b1 * m[j] + (1 - b1) * g; v[j] = b2 * v[j] + (1 - b2) * g * g; par[j] -= (lr * (m[j] / c1)) / (Math.sqrt(v[j] / c2) + 1e-8); }
+		if (it % 50 === 0 || it === 1) console.log(`      iter ${String(it).padStart(4)}  loss ${L.toFixed(5)}  best ${bestLoss.toFixed(5)}`);
+	}
+	return { par: bestPar, L: bestLoss };
+}
+
+function accHold(par: Float64Array, mask: Uint8Array | null): number {
+	const sched = mask ? schedule('repair') : schedule('persist');
+	let acc = 0;
+	for (const cse of CASES) {
+		const sT = forwardHold(par, cse, sched, mask)[sched.nSteps];
+		if (Math.abs(sT[SUM1 * C] - cse.sum1) < 0.3 && Math.abs(sT[SUM0 * C] - cse.sum0) < 0.3 && Math.abs(sT[COUT * C] - cse.cout) < 0.3) acc++;
+	}
+	return acc;
+}
+/** long-horizon hold from a plain rollout (no schedule). */
+function driftCheck(par: Float64Array): void {
+	for (const steps of [50, 150, 400]) {
+		let acc = 0;
+		for (const cse of CASES) {
+			let s = seedGrid(); clampInputs(s, cse, false);
+			const perc = new Float64Array(PERC), h = new Float64Array(HD);
+			for (let t = 0; t < steps; t++) {
+				const ns = new Float64Array(N * C);
+				for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y * W + x; perceive(s, i, perc); for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; h[hh] = a > 0 ? a : 0; } for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const base = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); } }
+				clampInputs(ns, cse, false); s = ns;
+			}
+			if (Math.abs(s[SUM1 * C] - cse.sum1) < 0.3 && Math.abs(s[SUM0 * C] - cse.sum0) < 0.3 && Math.abs(s[COUT * C] - cse.cout) < 0.3) acc++;
+		}
+		console.log(`    long-horizon @${steps}: ${acc}/16`);
+	}
+}
+
+function gradientCheckHold(): boolean {
+	const rng = mulberry32(5); const par = new Float64Array(P).map(() => (rng() - 0.5) * 0.1);
+	for (let j = W2O; j < P; j++) par[j] = 0; // near-identity → unsaturated → clean finite diff
+	const sched = schedule('repair'); const mask = damageMask(6, 6, 3);
+	const { grad } = lossHold(par, sched, mask);
+	const eps = 1e-4; let maxRel = 0;
+	for (const j of [12, 2500, B1O + 4, W2O + 9, B2O + 2]) {
+		const pp = par.slice(); pp[j] += eps; const pm = par.slice(); pm[j] -= eps;
+		const fd = (lossHold(pp, sched, mask).L - lossHold(pm, sched, mask).L) / (2 * eps);
+		maxRel = Math.max(maxRel, Math.abs(grad[j] - fd) / (Math.abs(fd) + 1e-8));
+	}
+	console.log(`  hold gradient check: max rel err ${maxRel.toExponential(2)} -> ${maxRel < 0.02 ? 'PASS' : 'FAIL'}`);
+	return maxRel < 0.02;
+}
+
+function stabilizeMain(): void {
+	if (!process.env.PARAMS_IN) { console.error('stabilize needs PARAMS_IN (compute params)'); process.exit(1); }
+	if (!gradientCheckHold()) { console.error('FAIL: hold gradient wrong'); process.exit(1); }
+	const par0 = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN, 'utf8')) as number[]);
+	console.log(`STABILIZE 2-bit adder: grow ${S_GROW}+hold ${S_HOLD}+repair ${S_REPAIR}=${S_TOTAL}`);
+	const iters = Number(process.env.ITERS ?? 500);
+	const patches = candidatePatches(), schedP = schedule('persist'), schedR = schedule('repair');
+	console.log('  [A] persist (hold window, warm from compute)');
+	const parA = adamTrain(iters, par0, (par) => lossHold(par, schedP, null)).par;
+	console.log(`    held ${accHold(parA, null)}/16`);
+	console.log('  [B] + damage (self-repair)');
+	const parB = adamTrain(Math.round(iters * 1.4), parA, (par, it) => {
+		const pc = patches[Math.floor(mulberry32((it * 2654435761) >>> 0)() * patches.length)];
+		return lossHold(par, schedR, damageMask(pc.cx, pc.cy, 3));
+	}).par;
+	const midMask = damageMask(Math.round((IN_COL + OUT_COL) / 2), iy, 3);
+	console.log(`    held ${accHold(parB, null)}/16, +damage ${accHold(parB, midMask)}/16`);
+	driftCheck(parB);
+	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  saved ${process.env.PARAMS_OUT}`); }
+}
+
+// ---- REACTIVE: hold prior answer, flip an input mid-rollout, re-settle to the new answer ----
+const R_T1 = Number(process.env.RT1 ?? 44), R_T2 = Number(process.env.RT2 ?? 40), R_TAIL = 10, R_TOTAL = R_T1 + R_T2, R_DMG_AT = R_T1 + 8;
+function caseOf(inp: number[]): Case { return CASES.find((c) => c.in.every((v, i) => v === inp[i]))!; }
+function forwardReact(par: Float64Array, prior: Case, target: Case, mask: Uint8Array | null): Float64Array[] {
+	const s0 = seedGrid(); clampInputs(s0, prior, false);
+	const states: Float64Array[] = [s0]; let s = s0;
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let t = 0; t < R_TOTAL; t++) {
+		const cse = t < R_T1 ? prior : target;
+		const ns = new Float64Array(N * C);
+		for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y * W + x; perceive(s, i, perc); for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; h[hh] = a > 0 ? a : 0; } for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const base = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); } }
+		if (mask && t + 1 === R_DMG_AT) for (let i = 0; i < N; i++) if (mask[i] === 0) for (let c = 0; c < C; c++) ns[i * C + c] = 0;
+		clampInputs(ns, cse, false); states.push(ns); s = ns;
+	}
+	return states;
+}
+function lossReact(par: Float64Array, priors: Case[], masks: (Uint8Array | null)[]): { L: number; grad: Float64Array; acc: number } {
+	const grad = new Float64Array(P); let L = 0, acc = 0;
+	const scored = scoredCellsHold(); const norm = CASES.length * scored.reduce((a, s) => a + s.w, 0) * R_TAIL;
+	const p1s = R_T1 - R_TAIL + 1, p2s = R_TOTAL - R_TAIL + 1;
+	CASES.forEach((target, ci) => {
+		const prior = priors[ci], mask = masks[ci];
+		const states = forwardReact(par, prior, target, mask);
+		const fin = states[R_TOTAL];
+		if (Math.abs(fin[SUM1 * C] - target.sum1) < 0.3 && Math.abs(fin[SUM0 * C] - target.sum0) < 0.3 && Math.abs(fin[COUT * C] - target.cout) < 0.3) acc++;
+		backpropReact(par, states, mask, (step, gs) => {
+			const cse = step <= R_T1 ? prior : target;
+			const inWinA = step >= p1s && step <= R_T1, inWinB = step >= p2s;
+			if (!inWinA && !inWinB) return;
+			for (const sc of scored) { const oc = sc.cell * C + 0; const diff = states[step][oc] - sc.tgt(cse); L += (sc.w * diff * diff) / norm; gs[oc] += (2 * sc.w * diff) / norm; }
+		}, grad);
+	});
+	return { L, grad, acc };
+}
+function backpropReact(par: Float64Array, states: Float64Array[], mask: Uint8Array | null, seedAt: (t: number, gs: Float64Array) => void, grad: Float64Array): void {
+	backpropHold(par, states, R_TOTAL, R_DMG_AT, mask, seedAt, grad);
+}
+function reactReport(par: Float64Array): void {
+	let ok = 0, tot = 0;
+	for (const prior of CASES) for (const target of CASES) { const st = forwardReact(par, prior, target, null)[R_TOTAL]; tot++; if (Math.abs(st[SUM1 * C] - target.sum1) < 0.3 && Math.abs(st[SUM0 * C] - target.sum0) < 0.3 && Math.abs(st[COUT * C] - target.cout) < 0.3) ok++; }
+	console.log(`  reactivity: ${ok}/${tot} prior→target transitions land on the new answer`);
+}
+function reactiveMain(): void {
+	if (!process.env.PARAMS_IN) { console.error('reactive needs PARAMS_IN (stable params)'); process.exit(1); }
+	const par0 = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN, 'utf8')) as number[]);
+	console.log(`REACTIVE 2-bit adder: hold ${R_T1} + switch + hold ${R_T2}, tail ${R_TAIL}, damage @${R_DMG_AT}`);
+	const iters = Number(process.env.ITERS ?? 500), patches = candidatePatches();
+	console.log('  [A] reactive (learn input transitions, warm from stable)');
+	const parA = adamTrain(iters, par0, (par, it) => { const rng = mulberry32((it * 40503) >>> 0); const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]); return lossReact(par, priors, CASES.map(() => null)); }, 0.002, 0.0004).par;
+	reactReport(parA);
+	console.log('  [B] reactive + damage (retain self-repair)');
+	const parB = adamTrain(Math.round(iters * 1.2), parA, (par, it) => { const rng = mulberry32((it * 22699) >>> 0); const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]); const masks = CASES.map(() => { const pc = patches[Math.floor(rng() * patches.length)]; return damageMask(pc.cx, pc.cy, 3); }); return lossReact(par, priors, masks); }, 0.002, 0.0004).par;
+	reactReport(parB); driftCheck(parB);
+	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  saved ${process.env.PARAMS_OUT}`); }
+}
+
 function main(): void {
 	const mode = process.env.MODE ?? 'expose';
 	console.log(`2-bit ripple-carry adder: ${W}x${H}, C=${C}, HD=${HD}, ${P} params, T=${T}, 16 cases`);
@@ -342,6 +582,7 @@ function main(): void {
 	} else if (mode === 'probe') {
 		const par = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN!, 'utf8')) as number[]);
 		report(par, false); probe(par);
-	}
+	} else if (mode === 'stabilize') { stabilizeMain(); }
+	else if (mode === 'reactive') { reactiveMain(); }
 }
 main();
