@@ -216,8 +216,12 @@ in-browser** (`/devcomp/valfixed`): non-marker GPU grad vs `lossAndGradFixed` = 
 1-bit adder to 8/8** via a distance curriculum in ~37s (needed the CPU recipe's gentler
 warm-stage lr). Marker path unchanged (GRAD PASS 3/3). **Headless WebGPU is NOT available
 in this env** (Dawn `@kmamal/gpu` hangs on device init), so the trainer is browser-only
-here: multi-seed is now feasible in-browser (~37s/seed → ~5 min for 8 seeds) but not
-yet scriptable/headless — that needs a working headless WebGPU or a browser-driving loop.
+here: multi-seed is now feasible in-browser (~30s/seed) — **done via a browser-driving
+loop** (the preview tools), no headless GPU needed. **First multi-seed number**
+(`/devcomp/multiseed`): the 1-bit adder from scratch, single run/seed (no restarts),
+**6/8 = 75%** solved (Wilson95 [41%, 93%]) — the two misses are a 7/8 near-miss and a
+3/8 stuck-in-basin, which is why the CPU recipe uses stage-1 restarts. This is the
+S8-bar rigor extended to a headline beyond the gate.
 
 ## Finding (S6-2bit): compositional depth — a 2-bit ripple-carry adder (`adder2.ts`)
 
