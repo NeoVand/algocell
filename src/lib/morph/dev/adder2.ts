@@ -425,20 +425,26 @@ function lossHold(par: Float64Array, sched: Sched, mask: Uint8Array | null): { L
 	return { L, grad };
 }
 
-function adamTrain(iters: number, init: Float64Array, lossFn: (par: Float64Array, it: number) => { L: number; grad: Float64Array }, lrHi = 0.003, lrLo = 0.0006): { par: Float64Array; L: number } {
+// evalBest (optional): keep the params that MAXIMISE this score (evaluated every 30 iters),
+// instead of minimising loss. Used for reactivity, where low loss ≠ a rule that both holds
+// and migrates — and it guarantees we never save worse than the warm-start (init is scored too).
+function adamTrain(iters: number, init: Float64Array, lossFn: (par: Float64Array, it: number) => { L: number; grad: Float64Array }, lrHi = 0.003, lrLo = 0.0006, evalBest?: (par: Float64Array) => number): { par: Float64Array; L: number } {
 	let par = init.slice();
 	const m = new Float64Array(P), v = new Float64Array(P), b1 = 0.9, b2 = 0.999;
 	let bestLoss = Infinity, bestPar = par.slice();
+	let bestScore = evalBest ? evalBest(init) : -Infinity;
+	if (evalBest) console.log(`      init score ${bestScore.toFixed(3)}`);
 	for (let it = 1; it <= iters; it++) {
 		const cos = 0.5 * (1 + Math.cos(Math.PI * (it / iters)));
 		const lr = Math.min(1, it / 20) * (lrLo + (lrHi - lrLo) * cos);
 		const { L, grad } = lossFn(par, it);
 		let gn = 0; for (let j = 0; j < P; j++) gn += grad[j] * grad[j]; gn = Math.sqrt(gn);
 		const clip = gn > 1 ? 1 / gn : 1;
-		if (L < bestLoss) { bestLoss = L; bestPar = par.slice(); }
+		if (!evalBest && L < bestLoss) { bestLoss = L; bestPar = par.slice(); }
 		const c1 = 1 - Math.pow(b1, it), c2 = 1 - Math.pow(b2, it);
 		for (let j = 0; j < P; j++) { const g = grad[j] * clip + 2e-5 * par[j]; m[j] = b1 * m[j] + (1 - b1) * g; v[j] = b2 * v[j] + (1 - b2) * g * g; par[j] -= (lr * (m[j] / c1)) / (Math.sqrt(v[j] / c2) + 1e-8); }
-		if (it % 50 === 0 || it === 1) console.log(`      iter ${String(it).padStart(4)}  loss ${L.toFixed(5)}  best ${bestLoss.toFixed(5)}`);
+		if (evalBest && (it % 30 === 0)) { const sc = evalBest(par); if (sc > bestScore) { bestScore = sc; bestPar = par.slice(); } console.log(`      iter ${String(it).padStart(4)}  loss ${L.toFixed(4)}  score ${sc.toFixed(3)}  best ${bestScore.toFixed(3)}`); }
+		else if (it % 50 === 0 || it === 1) console.log(`      iter ${String(it).padStart(4)}  loss ${L.toFixed(5)}  best ${(evalBest ? bestScore : bestLoss).toFixed(5)}`);
 	}
 	return { par: bestPar, L: bestLoss };
 }
@@ -507,8 +513,15 @@ function stabilizeMain(): void {
 }
 
 // ---- REACTIVE: hold prior answer, flip an input mid-rollout, re-settle to the new answer ----
-const R_T1 = Number(process.env.RT1 ?? 44), R_T2 = Number(process.env.RT2 ?? 40), R_TAIL = 10, R_TOTAL = R_T1 + R_T2, R_DMG_AT = R_T1 + 8;
+// Long post-switch window (R_T2): the internal carry must re-propagate FA0→FA1 after a flip,
+// which takes many steps — a short window is why the first attempt got 0/256.
+const R_T1 = Number(process.env.RT1 ?? 40), R_T2 = Number(process.env.RT2 ?? 85), R_TAIL = Number(process.env.RTAIL ?? 16), R_TOTAL = R_T1 + R_T2, R_DMG_AT = R_T1 + 8;
 function caseOf(inp: number[]): Case { return CASES.find((c) => c.in.every((v, i) => v === inp[i]))!; }
+function correct(st: Float64Array, c: Case): boolean { return Math.abs(st[SUM1 * C] - c.sum1) < 0.3 && Math.abs(st[SUM0 * C] - c.sum0) < 0.3 && Math.abs(st[COUT * C] - c.cout) < 0.3; }
+// keep-best evals (cheap subsets): reactivity over sampled transitions + hold accuracy.
+const EVAL_PAIRS: [number, number][] = []; { const rng = mulberry32(4242); for (let i = 0; i < 24; i++) EVAL_PAIRS.push([Math.floor(rng() * 16), Math.floor(rng() * 16)]); }
+function reactAccSample(par: Float64Array): number { let ok = 0; for (const [pi, ti] of EVAL_PAIRS) if (correct(forwardReact(par, CASES[pi], CASES[ti], null)[R_TOTAL], CASES[ti])) ok++; return ok / EVAL_PAIRS.length; }
+function holdAccQuick(par: Float64Array): number { const sched = schedule('persist'); let ok = 0; for (const c of CASES) if (correct(forwardHold(par, c, sched, null)[sched.nSteps], c)) ok++; return ok / 16; }
 function forwardReact(par: Float64Array, prior: Case, target: Case, mask: Uint8Array | null): Float64Array[] {
 	const s0 = seedGrid(); clampInputs(s0, prior, false);
 	const states: Float64Array[] = [s0]; let s = s0;
@@ -553,12 +566,15 @@ function reactiveMain(): void {
 	const par0 = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN, 'utf8')) as number[]);
 	console.log(`REACTIVE 2-bit adder: hold ${R_T1} + switch + hold ${R_T2}, tail ${R_TAIL}, damage @${R_DMG_AT}`);
 	const iters = Number(process.env.ITERS ?? 500), patches = candidatePatches();
-	console.log('  [A] reactive (learn input transitions, warm from stable)');
-	const parA = adamTrain(iters, par0, (par, it) => { const rng = mulberry32((it * 40503) >>> 0); const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]); return lossReact(par, priors, CASES.map(() => null)); }, 0.002, 0.0004).par;
-	reactReport(parA);
+	// keep-best: maximise migration but only among rules that still HOLD (≥70%); else keep the
+	// best-holding rule → the retry can never end up worse than the stable warm-start.
+	const evalBest = (par: Float64Array) => { const h = holdAccQuick(par); return h >= 0.7 ? reactAccSample(par) + h : h - 2; };
+	console.log('  [A] reactive (learn input transitions, warm from stable, gentle lr)');
+	const parA = adamTrain(iters, par0, (par, it) => { const rng = mulberry32((it * 40503) >>> 0); const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]); return lossReact(par, priors, CASES.map(() => null)); }, 0.0012, 0.0003, evalBest).par;
+	reactReport(parA); console.log(`    hold ${(holdAccQuick(parA) * 16).toFixed(0)}/16`);
 	console.log('  [B] reactive + damage (retain self-repair)');
-	const parB = adamTrain(Math.round(iters * 1.2), parA, (par, it) => { const rng = mulberry32((it * 22699) >>> 0); const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]); const masks = CASES.map(() => { const pc = patches[Math.floor(rng() * patches.length)]; return damageMask(pc.cx, pc.cy, 3); }); return lossReact(par, priors, masks); }, 0.002, 0.0004).par;
-	reactReport(parB); driftCheck(parB);
+	const parB = adamTrain(Math.round(iters * 1.2), parA, (par, it) => { const rng = mulberry32((it * 22699) >>> 0); const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]); const masks = CASES.map(() => { const pc = patches[Math.floor(rng() * patches.length)]; return damageMask(pc.cx, pc.cy, 3); }); return lossReact(par, priors, masks); }, 0.0012, 0.0003, evalBest).par;
+	reactReport(parB); console.log(`    hold ${(holdAccQuick(parB) * 16).toFixed(0)}/16`); driftCheck(parB);
 	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  saved ${process.env.PARAMS_OUT}`); }
 }
 
