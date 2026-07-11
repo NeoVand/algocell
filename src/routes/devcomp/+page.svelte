@@ -6,14 +6,14 @@
 	import e1 from '$lib/devcomp/params/e1_gate.json';
 	import e3 from '$lib/devcomp/params/e3_seed.json';
 	import adderReactive from '$lib/devcomp/params/adder_reactive.json';
-	import adder2 from '$lib/devcomp/params/adder2_2bit.json';
+	import adder2stable from '$lib/devcomp/params/adder2_stable.json';
 	import wireInvariant from '$lib/devcomp/params/wire_invariant.json';
 	import xorInvariant from '$lib/devcomp/params/xor_invariant.json';
 
 	// Params by file. Movable experiments use position-invariant marker rules.
 	const PARAM_FILES: Record<string, number[]> = {
 		'e1_gate.json': e1, 'e3_seed.json': e3, 'adder_reactive.json': adderReactive,
-		'adder2_2bit.json': adder2,
+		'adder2_stable.json': adder2stable,
 		'wire_invariant.json': wireInvariant, 'xor_invariant.json': xorInvariant
 	};
 	// Only show experiments whose params are bundled.

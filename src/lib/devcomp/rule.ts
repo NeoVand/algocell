@@ -132,9 +132,9 @@ export const EXPERIMENTS: Experiment[] = [
 		ic: 'full', paramsUrl: 'adder_reactive.json', tGrow: 30, stable: true, reactive: true // stable + self-repairing + input-reactive
 	},
 	{
-		id: 'adder2', name: '2-bit adder', blurb: 'Two 2-bit numbers a=(a₁a₀), b=(b₁b₀), added by one rule. carry₀ = a₀∧b₀ is produced in the lower half and consumed in the upper half (sum₁ = a₁⊕b₁⊕carry₀, cout = majority) — a produced-then-consumed internal signal, the compositional depth a single gate lacks.',
+		id: 'adder2', name: '2-bit adder', blurb: 'Two 2-bit numbers a=(a₁a₀), b=(b₁b₀), added by one rule. carry₀ = a₀∧b₀ is produced in the lower half and consumed in the upper half (sum₁ = a₁⊕b₁⊕carry₀, cout = majority) — a produced-then-consumed internal signal, the compositional depth a single gate lacks. Holds its answer indefinitely and heals damage.',
 		cfg: A2DIM, inputCells: ADD2_IN, inputLabels: ['a1', 'b1', 'a0', 'b0'], outputCells: ADD2_OUT, outputLabels: ['sum1', 'sum0', 'cout'], cases: ADD2_CASES,
-		ic: 'full', paramsUrl: 'adder2_2bit.json', tGrow: 46, stable: false
+		ic: 'full', paramsUrl: 'adder2_stable.json', tGrow: 46, stable: true
 	},
 	{
 		id: 'movable_wire', name: 'Movable wire', blurb: 'One rule, no fixed layout: drag the input (○) or output (□) port anywhere and the plane rewires to route the bit. Works on any grid size.',
