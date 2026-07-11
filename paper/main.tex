@@ -1,0 +1,53 @@
+% Developmental Computation — arXiv preprint (reformat to Nature sn-jnl for NMI later).
+% Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}   % Times-like; swap for template font later
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{authblk}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{siunitx}
+
+\renewcommand{\abstractname}{}     % Nature-style: no "Abstract" heading
+\newcommand{\todo}[1]{{\color{red}\textbf{[TODO: #1]}}}
+\newcommand{\note}[1]{{\color{blue!60!black}\textit{#1}}}
+
+\title{\textbf{Developmental computation: growing self-repairing digital circuits\\
+with a single learned local rule}}
+
+\author[1]{Author One}
+\author[1]{Author Two}
+\affil[1]{Affiliation \note{(fill in)}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\input{sections/intro}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/methods}
+
+\section*{Data and code availability}
+Code, frozen parameters, and an interactive, in-browser trainable artifact are available at
+\note{[repo URL]}. \note{[artifact URL]}
+
+\section*{Acknowledgements}
+\note{[fill in]}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}
