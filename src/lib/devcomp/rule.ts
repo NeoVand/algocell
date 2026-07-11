@@ -45,6 +45,7 @@ export const IN_MARK = 1, OUT_MARK = 2;
 
 export const EDIM = makeConfig(9, 9, 12, 48); // E-series: gate / self-repair / grow (P=2940)
 export const ADIM = makeConfig(11, 11, 16, 64); // 1-bit full adder (P=5200)
+export const A2DIM = makeConfig(13, 13, 16, 96); // 2-bit ripple-carry adder (P=7792)
 export const IDIM = makeConfig(17, 17, 16, 96, true); // movable wire — position-invariant, draggable ports (P=7792)
 export const XDIM = makeConfig(17, 17, 20, 128, true); // movable XOR — more capacity for routing 2 signals + combine (P≈12948)
 export const RDIM = makeConfig(17, 17, 16, 96, true, 0.5); // reactive movable XOR — STOCHASTIC updates (fireRate 0.5) damp the ring (P=7792)
@@ -62,6 +63,7 @@ export interface Experiment {
 	inputCells: number[]; // cells whose channel-0 is clamped to the input bit
 	outputCells: number[]; // cells whose channel-0 is read as an output bit
 	outputLabels?: string[]; // optional per-output labels (e.g. ['sum','carry'])
+	inputLabels?: string[]; // optional per-input labels (e.g. ['a1','b1','a0','b0'])
 	cases: { in: number[]; out: number[] }[]; // truth table
 	ic: IC; // initial condition: full substrate, or a single seed cell
 	seedCell?: number; // for ic === 'seed'
@@ -97,6 +99,17 @@ const ADD_CASES: { in: number[]; out: number[] }[] = [];
 for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) for (let cin = 0; cin < 2; cin++)
 	ADD_CASES.push({ in: [a, b, cin], out: [a ^ b ^ cin, a + b + cin >= 2 ? 1 : 0] });
 
+// --- 2-bit ripple-carry adder I/O (13×13): 4 inputs (a1,b1,a0,b0) → 3 outputs (sum1,sum0,cout).
+// carry0 = a0∧b0 is produced in the lower half (FA0) and consumed in the upper half (FA1). ---
+const a2_inCol = 2, a2_outCol = A2DIM.SW - 3, a2W = A2DIM.SW;
+const ADD2_IN = [3 * a2W + a2_inCol, 4 * a2W + a2_inCol, 8 * a2W + a2_inCol, 9 * a2W + a2_inCol]; // a1,b1,a0,b0
+const ADD2_OUT = [3 * a2W + a2_outCol, 8 * a2W + a2_outCol, 4 * a2W + a2_outCol]; // sum1, sum0, cout
+const ADD2_CASES: { in: number[]; out: number[] }[] = [];
+for (let a1 = 0; a1 < 2; a1++) for (let b1 = 0; b1 < 2; b1++) for (let a0 = 0; a0 < 2; a0++) for (let b0 = 0; b0 < 2; b0++) {
+	const carry0 = a0 & b0, sum0 = a0 ^ b0, sum1 = a1 ^ b1 ^ carry0, cout = a1 + b1 + carry0 >= 2 ? 1 : 0;
+	ADD2_CASES.push({ in: [a1, b1, a0, b0], out: [sum1, sum0, cout] });
+}
+
 export const EXPERIMENTS: Experiment[] = [
 	{
 		id: 'e1_gate', name: 'XOR gate', blurb: 'Two inputs, one output: computes their XOR at a cell 5 away.',
@@ -117,6 +130,11 @@ export const EXPERIMENTS: Experiment[] = [
 		id: 'adder', name: '1-bit adder', blurb: 'Three inputs → two outputs: a full adder (sum = a⊕b⊕cin, carry = majority) that holds its answer, tracks live input changes, and self-repairs. Arithmetic, grown by gradient.',
 		cfg: ADIM, inputCells: ADD_IN, outputCells: ADD_OUT, outputLabels: ['sum', 'carry'], cases: ADD_CASES,
 		ic: 'full', paramsUrl: 'adder_reactive.json', tGrow: 30, stable: true, reactive: true // stable + self-repairing + input-reactive
+	},
+	{
+		id: 'adder2', name: '2-bit adder', blurb: 'Two 2-bit numbers a=(a₁a₀), b=(b₁b₀), added by one rule. carry₀ = a₀∧b₀ is produced in the lower half and consumed in the upper half (sum₁ = a₁⊕b₁⊕carry₀, cout = majority) — a produced-then-consumed internal signal, the compositional depth a single gate lacks.',
+		cfg: A2DIM, inputCells: ADD2_IN, inputLabels: ['a1', 'b1', 'a0', 'b0'], outputCells: ADD2_OUT, outputLabels: ['sum1', 'sum0', 'cout'], cases: ADD2_CASES,
+		ic: 'full', paramsUrl: 'adder2_2bit.json', tGrow: 46, stable: false
 	},
 	{
 		id: 'movable_wire', name: 'Movable wire', blurb: 'One rule, no fixed layout: drag the input (○) or output (□) port anywhere and the plane rewires to route the bit. Works on any grid size.',
