@@ -578,6 +578,30 @@ function reactiveMain(): void {
 	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(parB))); console.log(`  saved ${process.env.PARAMS_OUT}`); }
 }
 
+// JOINT: hold + self-repair + reactivity trained TOGETHER from the start (no staging),
+// warm from the COMPUTE rule (has the internal carry, but is not yet a rigid attractor).
+// Hypothesis: the sequential stabilize→reactive staging built a rigid attractor that
+// fights migration; training all objectives jointly should find a soft attractor instead.
+function jointMain(): void {
+	if (!process.env.PARAMS_IN) { console.error('joint needs PARAMS_IN (compute params)'); process.exit(1); }
+	const par0 = Float64Array.from(JSON.parse(readFileSync(process.env.PARAMS_IN, 'utf8')) as number[]);
+	console.log(`JOINT 2-bit adder: hold+repair+reactive from iter 1 (no staging). hold ${R_T1}+switch+hold ${R_T2}, tail ${R_TAIL}, damage@${R_DMG_AT}`);
+	const iters = Number(process.env.ITERS ?? 700), patches = candidatePatches();
+	const midMask = damageMask(Math.round((IN_COL + OUT_COL) / 2), iy, 3);
+	// keep-best values ALL three: reactivity + hold + repair, once the rule holds at all (≥0.5).
+	const evalBest = (par: Float64Array) => { const h = holdAccQuick(par); if (h < 0.5) return h - 3; return reactAccSample(par) + h + accHold(par, midMask) / 16; };
+	const par = adamTrain(iters, par0, (par, it) => {
+		const rng = mulberry32((it * 2246822519) >>> 0);
+		const priors = CASES.map(() => CASES[Math.floor(rng() * 16)]);                        // random prior → any transition
+		const masks = CASES.map((_, ci) => (ci % 2 === 0 ? (() => { const pc = patches[Math.floor(rng() * patches.length)]; return damageMask(pc.cx, pc.cy, 3); })() : null)); // half damaged (repair), half clean (reactive)
+		return lossReact(par, priors, masks);
+	}, 0.0018, 0.0004, evalBest).par;
+	reactReport(par);
+	console.log(`  hold ${(holdAccQuick(par) * 16).toFixed(0)}/16, +damage ${accHold(par, midMask)}/16`);
+	driftCheck(par);
+	if (process.env.PARAMS_OUT) { writeFileSync(process.env.PARAMS_OUT, JSON.stringify(Array.from(par))); console.log(`  saved ${process.env.PARAMS_OUT}`); }
+}
+
 function main(): void {
 	const mode = process.env.MODE ?? 'expose';
 	console.log(`2-bit ripple-carry adder: ${W}x${H}, C=${C}, HD=${HD}, ${P} params, T=${T}, 16 cases`);
@@ -600,5 +624,6 @@ function main(): void {
 		report(par, false); probe(par);
 	} else if (mode === 'stabilize') { stabilizeMain(); }
 	else if (mode === 'reactive') { reactiveMain(); }
+	else if (mode === 'joint') { jointMain(); }
 }
 main();
