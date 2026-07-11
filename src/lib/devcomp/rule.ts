@@ -361,6 +361,98 @@ export function lossAndGradMarkers(cfg: RuleConfig, par: Float64Array, samples: 
 	return { L, grad };
 }
 
+// --- Fixed-layout, non-marker, multi-input/multi-output rule (gate / adder) -------------
+// CPU ground truth for the GPU trainer's NON-marker path. Mirrors it exactly: seed the
+// interior (channels aliveFrom..C-1 = 1), clamp N inputs into their channels each step,
+// score M outputs' channel 0 over the last `whold` states. No markers, synchronous (fireRate=1),
+// non-reactive. Loss normalization = samples.length * whold (matches WGSL NORMF), summed over
+// output cells (no division by #outputs) — so it validates the GPU gradient to ~f32 precision.
+export interface FixedSample { inPorts: number[]; inCh: number[]; bits: number[]; outPorts: number[]; targets: number[]; }
+
+export function seedFixed(cfg: RuleConfig, aliveFrom: number, s: FixedSample): Float64Array {
+	const { N, C, SW, SH } = cfg;
+	const st = new Float64Array(N * C);
+	for (let y = 1; y < SH - 1; y++) for (let x = 1; x < SW - 1; x++) for (let c = aliveFrom; c < C; c++) st[(y * SW + x) * C + c] = 1;
+	s.inPorts.forEach((p, k) => { st[p * C + s.inCh[k]] = s.bits[k]; });
+	return st;
+}
+
+function stepFixed(cfg: RuleConfig, par: Float64Array, s: Float64Array, sample: FixedSample): Float64Array {
+	const { SW, SH, C, HD, PERC, W1O, B1O, W2O, B2O, N } = cfg;
+	const ns = new Float64Array(N * C);
+	const perc = new Float64Array(PERC), h = new Float64Array(HD);
+	for (let y = 1; y < SH - 1; y++) for (let x = 1; x < SW - 1; x++) {
+		const i = y * SW + x;
+		perceive(cfg, s, i, perc);
+		for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; h[hh] = a > 0 ? a : 0; }
+		for (let c = 0; c < C; c++) { let dl = par[B2O + c]; const base = W2O + c * HD; for (let hh = 0; hh < HD; hh++) dl += par[base + hh] * h[hh]; ns[i * C + c] = Math.tanh(s[i * C + c] + dl); }
+	}
+	sample.inPorts.forEach((p, k) => { ns[p * C + sample.inCh[k]] = sample.bits[k]; });
+	return ns;
+}
+
+export function lossAndGradFixed(cfg: RuleConfig, par: Float64Array, samples: FixedSample[], steps: number, aliveFrom: number, whold = 1): { L: number; grad: Float64Array } {
+	const { SW, SH, C, HD, PERC, FEAT, W1O, B1O, W2O, B2O, P, N } = cfg;
+	const grad = new Float64Array(P);
+	let L = 0;
+	const norm = samples.length * whold;
+	const perc = new Float64Array(PERC), pre1 = new Float64Array(HD), hbuf = new Float64Array(HD), gh = new Float64Array(HD), gperc = new Float64Array(PERC);
+	for (const s of samples) {
+		const states: Float64Array[] = [seedFixed(cfg, aliveFrom, s)];
+		for (let t = 0; t < steps; t++) states.push(stepFixed(cfg, par, states[t], s));
+		let gs = new Float64Array(N * C);
+		for (let k = 0; k < s.outPorts.length; k++) {
+			const oc = s.outPorts[k] * C + 0;
+			const d = states[steps][oc] - s.targets[k];
+			L += (d * d) / norm;
+			gs[oc] += (2 * d) / norm;
+		}
+		for (let t = steps - 1; t >= 0; t--) {
+			for (let k = 0; k < s.inPorts.length; k++) gs[s.inPorts[k] * C + s.inCh[k]] = 0;
+			const st = states[t], sp = states[t + 1];
+			const gsPrev = new Float64Array(N * C);
+			for (let y = 1; y < SH - 1; y++) for (let x = 1; x < SW - 1; x++) {
+				const i = y * SW + x;
+				perceive(cfg, st, i, perc);
+				for (let hh = 0; hh < HD; hh++) { let a = par[B1O + hh]; const base = W1O + hh * PERC; for (let k = 0; k < PERC; k++) a += par[base + k] * perc[k]; pre1[hh] = a; hbuf[hh] = a > 0 ? a : 0; }
+				gh.fill(0);
+				for (let c = 0; c < C; c++) {
+					const spv = sp[i * C + c];
+					const gp = gs[i * C + c] * (1 - spv * spv);
+					gsPrev[i * C + c] += gp; grad[B2O + c] += gp;
+					const base = W2O + c * HD;
+					for (let hh = 0; hh < HD; hh++) { grad[base + hh] += gp * hbuf[hh]; gh[hh] += par[base + hh] * gp; }
+				}
+				gperc.fill(0);
+				for (let hh = 0; hh < HD; hh++) {
+					let g = gh[hh]; if (pre1[hh] <= 0) g = 0;
+					grad[B1O + hh] += g;
+					const base = W1O + hh * PERC;
+					for (let k = 0; k < PERC; k++) { grad[base + k] += g * perc[k]; gperc[k] += par[base + k] * g; }
+				}
+				const r = i + 1, l = i - 1, u = i - SW, d = i + SW;
+				for (let ch = 0; ch < C; ch++) {
+					const bb = ch * FEAT, gId = gperc[bb], gGx = gperc[bb + 1], gGy = gperc[bb + 2], gLap = gperc[bb + 3];
+					gsPrev[i * C + ch] += gId - 4 * gLap;
+					gsPrev[r * C + ch] += 0.5 * gGx + gLap; gsPrev[l * C + ch] += -0.5 * gGx + gLap;
+					gsPrev[d * C + ch] += 0.5 * gGy + gLap; gsPrev[u * C + ch] += -0.5 * gGy + gLap;
+				}
+			}
+			// persistence window (whold>1): also score states[t]'s outputs
+			if (whold > 1 && t >= steps - whold + 1 && t < steps) {
+				for (let k = 0; k < s.outPorts.length; k++) {
+					const oc = s.outPorts[k] * C + 0;
+					const d = states[t][oc] - s.targets[k];
+					L += (d * d) / norm;
+					gsPrev[oc] += (2 * d) / norm;
+				}
+			}
+			gs = gsPrev;
+		}
+	}
+	return { L, grad };
+}
+
 export function damageMask(cfg: RuleConfig, cx: number, cy: number, size: number): Uint8Array {
 	const mask = new Uint8Array(cfg.N).fill(1);
 	const h = size >> 1;

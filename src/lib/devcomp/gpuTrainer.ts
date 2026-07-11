@@ -7,7 +7,14 @@
 import type { RuleConfig } from './rule';
 import { trainShaderWGSL, type TrainDims } from './trainShader';
 
-export interface Sample { inPorts: number[]; outPort: number; bits: number[]; inCh: number[]; target: number; bits2?: number[]; target2?: number; }
+// A training sample: N input ports (each a bit into channel inCh[k]) and M output ports
+// (each scored to a target). Single-output marker rules pass outPort/target; fixed multi-IO
+// rules (gate/adder) pass outPorts/targets. Reactive: bits2/target(s)2 are the post-switch values.
+export interface Sample {
+	inPorts: number[]; inCh: number[]; bits: number[]; bits2?: number[];
+	outPort?: number; target?: number; target2?: number;      // single-output form
+	outPorts?: number[]; targets?: number[]; targets2?: number[]; // multi-output form
+}
 
 const KERNELS = ['fwd', 'seedGrad', 'bwd1', 'bwdGather', 'injectOut', 'gradW1', 'gradW2', 'gradBias', 'zeroGrad', 'gradNormSq', 'adam'] as const;
 type Kernel = (typeof KERNELS)[number];
@@ -98,31 +105,35 @@ export class GPUTrainer {
 	 *  per-sample bits2/target2 default to bits/target (non-reactive) when absent. */
 	setBatch(samples: Sample[], tSwitch = 0): void {
 		if (samples.length !== this.B) throw new Error(`batch ${samples.length} !== ${this.B}`);
-		const { N, C } = this.cfg;
+		const { N, C, markers } = this.cfg;
 		const portsU = new Uint32Array(2 * this.BN), portsF = new Float32Array(4 * this.BN);
 		const traj0 = new Float32Array(this.BN * C);
 		for (let b = 0; b < this.B; b++) {
 			const s = samples[b];
-			const bits2 = s.bits2 ?? s.bits, tgt2 = s.target2 ?? s.target;
-			// uniform-alive interior (channels aliveFrom..C-1), signal channels start at 0
+			const bits2 = s.bits2 ?? s.bits;
+			const outPorts = s.outPorts ?? [s.outPort!];
+			const targets = s.targets ?? [s.target!];
+			const targets2 = s.targets2 ?? (s.target2 != null ? [s.target2] : targets);
+			// uniform-alive interior (channels aliveFrom..C-1); signal/readout channels start at 0
 			for (let y = 1; y < this.cfg.SH - 1; y++) for (let x = 1; x < this.cfg.SW - 1; x++) {
 				const cell = b * N + (y * this.cfg.SW + x);
 				for (let c = this.aliveFrom; c < C; c++) traj0[cell * C + c] = 1;
 			}
-			// stamp markers + the PRE-switch input into the seed (IN_MARK=1, OUT_MARK=2)
 			s.inPorts.forEach((p, k) => {
 				const cell = b * N + p;
 				portsU[cell] = s.inCh[k] + 1;             // channel+1 encoding
 				portsF[cell] = s.bits[k];                 // inVal0
 				portsF[this.BN + cell] = bits2[k];        // inVal1 (post-switch)
-				traj0[cell * C + 1] = 1;                  // IN_MARK
-				traj0[cell * C + s.inCh[k]] = s.bits[k];
+				if (markers) traj0[cell * C + 1] = 1;     // IN_MARK (markers rules only)
+				traj0[cell * C + s.inCh[k]] = s.bits[k];  // inject the bit into its channel
 			});
-			const oc = b * N + s.outPort;
-			portsU[this.BN + oc] = 1;                    // isOutput
-			portsF[2 * this.BN + oc] = s.target;          // tgt0 (pre-switch answer)
-			portsF[3 * this.BN + oc] = tgt2;              // tgt1 (post-switch answer)
-			traj0[oc * C + 2] = 1;                       // OUT_MARK
+			outPorts.forEach((op, k) => {
+				const oc = b * N + op;
+				portsU[this.BN + oc] = 1;                 // isOutput
+				portsF[2 * this.BN + oc] = targets[k];    // tgt0 (pre-switch answer)
+				portsF[3 * this.BN + oc] = targets2[k];   // tgt1 (post-switch answer)
+				if (markers) traj0[oc * C + 2] = 1;       // OUT_MARK (markers rules only)
+			});
 		}
 		this.curTSwitch = tSwitch;
 		this.device.queue.writeBuffer(this.buf.portsU, 0, portsU);
@@ -207,11 +218,18 @@ export class GPUTrainer {
 		return this.readFloats('optim', 0, this.cfg.P);
 	}
 
-	/** Read the final-state output-cell readouts for each sample (for loss/accuracy logging). */
+	/** Read the FIRST output-cell readout for each sample (single-output convenience). */
 	async readFinalOutputs(samples: Sample[]): Promise<number[]> {
 		const { N, C } = this.cfg;
 		const final = await this.readFloats('traj', this.T * this.BN * C, this.BN * C);
-		return samples.map((s, b) => final[(b * N + s.outPort) * C + 0]);
+		return samples.map((s, b) => final[(b * N + (s.outPorts?.[0] ?? s.outPort!)) * C + 0]);
+	}
+
+	/** Read ALL output-cell readouts for each sample (multi-output eval). */
+	async readFinalOutputsMulti(samples: Sample[]): Promise<number[][]> {
+		const { N, C } = this.cfg;
+		const final = await this.readFloats('traj', this.T * this.BN * C, this.BN * C);
+		return samples.map((s, b) => (s.outPorts ?? [s.outPort!]).map((op) => final[(b * N + op) * C + 0]));
 	}
 
 	async readParams(): Promise<Float32Array> { return this.readFloats('params', 0, this.cfg.P); }

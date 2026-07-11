@@ -25,6 +25,14 @@ export function trainShaderWGSL(cfg: RuleConfig, dims: TrainDims): string {
 	const OFF_GP = 0, OFF_GPRE1 = C, OFF_HACT = C + HD, OFF_PERC = C + 2 * HD, OFF_GPERC = C + 2 * HD + PERC;
 	const SCR = C + 2 * HD + 2 * PERC;
 	const IN_MARK = 1, OUT_MARK = 2;
+	// Marker rules (movable ports) stamp ch1=IN_MARK, ch2=OUT_MARK each step and carry no
+	// gradient through them. Non-marker rules (fixed-layout gate/adder) use ch1.. as ordinary
+	// hidden channels, so those lines must be OMITTED — else they corrupt hidden state/grad.
+	const mk = cfg.markers;
+	const stampFwd = mk
+		? `if (c == ${IN_MARK}) { v = select(0.0, 1.0, inp); }\n    if (c == ${OUT_MARK}) { v = select(0.0, 1.0, outp); }`
+		: '';
+	const zeroMarkGrad = mk ? `if (c == ${IN_MARK} || c == ${OUT_MARK}) { gsv = 0.0; }` : '';
 	return /* wgsl */ `
 const SW : i32 = ${SW};
 const SH : i32 = ${SH};
@@ -135,8 +143,7 @@ fn fwd(@builtin(global_invocation_id) gid : vec3<u32>) {
       for (var u = 0; u < HD; u = u + 1) { dl = dl + params[base + u32(u)] * h[u]; }
       v = tanh(v + dl);
     }
-    if (c == ${IN_MARK}) { v = select(0.0, 1.0, inp); }
-    if (c == ${OUT_MARK}) { v = select(0.0, 1.0, outp); }
+    ${stampFwd}
     if (inp && c == i32(inCode) - 1) {
       let useV1 = (t + 1u) >= ctrl.tsw;          // state t+1 carries post-switch input (tsw=0 → always v1==v0)
       v = select(portsF[sIdx], portsF[INV1 + sIdx], useV1);
@@ -202,7 +209,7 @@ fn bwd1(@builtin(global_invocation_id) gid : vec3<u32>) {
     // non-firing cell was identity (ns=s) → clamped grad passes straight through; no MLP → clear scratch
     for (var c = 0; c < C; c = c + 1) {
       var gsv = select(gsB[gBase + u32(c)], gsA[gBase + u32(c)], dir == 0u);
-      if (c == ${IN_MARK} || c == ${OUT_MARK}) { gsv = 0.0; }
+      ${zeroMarkGrad}
       if (inp && c == i32(inCode) - 1) { gsv = 0.0; }
       if (dir == 0u) { gsB[gBase + u32(c)] = gsv; } else { gsA[gBase + u32(c)] = gsv; }
       scratch[scrBase + u32(OFF_GP + c)] = 0.0;
@@ -229,7 +236,7 @@ fn bwd1(@builtin(global_invocation_id) gid : vec3<u32>) {
   for (var u = 0; u < HD; u = u + 1) { gh[u] = 0.0; }
   for (var c = 0; c < C; c = c + 1) {
     var gsv = select(gsB[gBase + u32(c)], gsA[gBase + u32(c)], dir == 0u);
-    if (c == ${IN_MARK} || c == ${OUT_MARK}) { gsv = 0.0; }
+    ${zeroMarkGrad}
     if (inp && c == i32(inCode) - 1) { gsv = 0.0; }
     let sp = traj[outBase + gBase + u32(c)];
     let gp = gsv * (1.0 - sp * sp);
