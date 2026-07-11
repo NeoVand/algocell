@@ -204,9 +204,13 @@ directional-perception mechanism claim (iso=100% here) and gives no error bars b
    13/17): the clean necessity cliff S8 couldn't give (predict iso/id collapse, full succeeds).
 6. **Fix the gradient claim in fact, not just wording:** full-rollout tangent at Q16.16 → an in-substrate
    value+gradient table for the gate *and* adder; or restate precisely as the single-step JVP it is.
-7. **Extend the GPU trainer to N-in/M-out** (widen port encoding, extend seed/score kernels; validate vs
-   the finite-diff-checked CPU reference) so the 2-bit adder and a movable adder are affordable to run
-   multi-seed.
+7. **Extend the GPU trainer to N-in/M-out — DONE.** The trainer now trains fixed multi-IO non-marker
+   rules (`trainShader.ts` gates markers; `gpuTrainer.ts` multi-output `Sample`; `rule.ts`
+   `lossAndGradFixed` CPU ref; validated at `/devcomp/valfixed` to maxRel 1.97e-6; GPU trains the 1-bit
+   adder to 8/8 in ~37s). **Caveat: headless WebGPU is unavailable in this environment** (Dawn hangs on
+   device init), so the trainer is browser-only here — multi-seed is now *feasible* (~37s/seed → ~5 min
+   for 8 seeds in-browser) but not yet *scripted*. To fully unblock scripted multi-seed: get a working
+   headless WebGPU (a different Dawn/Vulkan setup) OR drive the browser in a loop via the preview tools.
 8. Promote the **invariance-boundary** finding to a headline with error bars.
 
 **P2 — packaging.** Standardize the success threshold across experiments (gate 0.2 vs adder/movable 0.3)

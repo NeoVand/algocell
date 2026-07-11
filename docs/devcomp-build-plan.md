@@ -205,6 +205,20 @@ batch so the position-invariant signal averages out of placement noise, and (b)
 a curriculum that HOLDS adjacent (varied but close) for ~20% to bootstrap the
 combine, THEN spreads. Large batch is why the GPU trainer matters.
 
+## Finding (P1-7): GPU trainer generalized to N-in/M-out (fixed multi-IO)
+
+The WGSL BPTT trainer now trains non-marker fixed-layout rules (gate/adder), not just
+the 2-in/1-out movable rule. The kernel's marker stamping/gradient-zeroing is gated on
+`cfg.markers`; `gpuTrainer.ts` Sample gains `outPorts[]`/`targets[]` + a non-marker
+`setBatch`; `rule.ts` adds `lossAndGradFixed` as the CPU ground truth. **Validated
+in-browser** (`/devcomp/valfixed`): non-marker GPU grad vs `lossAndGradFixed` = maxRel
+**1.97e-6** (tighter than the marker path's 3e-5); end-to-end the GPU **trains the
+1-bit adder to 8/8** via a distance curriculum in ~37s (needed the CPU recipe's gentler
+warm-stage lr). Marker path unchanged (GRAD PASS 3/3). **Headless WebGPU is NOT available
+in this env** (Dawn `@kmamal/gpu` hangs on device init), so the trainer is browser-only
+here: multi-seed is now feasible in-browser (~37s/seed → ~5 min for 8 seeds) but not
+yet scriptable/headless — that needs a working headless WebGPU or a browser-driving loop.
+
 ## Finding (S6-2bit): compositional depth — a 2-bit ripple-carry adder (`adder2.ts`)
 
 One developmental rule computes 2-bit addition (16 cases, cin=0; outputs sum1, sum0,
