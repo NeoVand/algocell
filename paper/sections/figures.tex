@@ -1,0 +1,45 @@
+% Figure placeholders — replace \fbox{...} with \includegraphics once art/plots exist.
+% Full spec + which are author-made (conceptual) vs generated (data): see paper/figures.md.
+\newcommand{\figph}[2]{\fbox{\parbox[c][#1][c]{0.92\linewidth}{\centering\ttfamily\footnotesize #2}}}
+
+\begin{figure}[p]\centering
+\figph{7cm}{FIG 1 (conceptual, author-made) --- HERO. a: the local rule (perceive $\to$ MLP $\to$ tanh), shared by every cell. b: filmstrip seed$\to$grow$\to$compute$\to$damage$\to$heal. c: the same rule runs as real Z80 code.}
+\caption{\textbf{Developmental computation.} A single local rule (\textbf{a}), shared by every cell and seeing only its four neighbours, is trained by gradient descent through a developmental rollout to grow a small digital circuit that computes, is destroyed and heals, and keeps computing (\textbf{b}). The same learned rule, quantised to fixed-point integers, executes as an ordinary program on a real CPU instruction set and carries its own forward-mode gradient in the same substrate (\textbf{c}).}
+\label{fig:hero}
+\end{figure}
+
+\begin{figure}[p]\centering
+\figph{7cm}{FIG 2 (conceptual, author-made) --- METHOD. a: perceive stencil [id,$\partial_x$,$\partial_y$,$\nabla^2$]. b: per-cell update as a compute graph (residual-in-tanh). c: BPTT through development. d: the curricula.}
+\caption{\textbf{Training.} Each cell perceives four fixed features per channel (\textbf{a}), maps them through a small MLP, and updates its state residually inside a $\tanh$ (\textbf{b}). The rule is trained by backpropagation through $T$ developmental steps, with the loss on the output cell(s) and the gradient shared across all cells and steps (\textbf{c}). Curricula (\textbf{d}) bootstrap long-range routing, persistence, input-reactivity, and produced-then-consumed internal signals.}
+\label{fig:method}
+\end{figure}
+
+\begin{figure}[p]\centering
+\figph{6cm}{FIG 3 (data) --- COMPOSITION. a: XOR gate + truth table. b: 1-bit adder. c: 2-bit adder, internal carry + causal-lesion dissociation. d: multi-seed success bars w/ CIs.}
+\caption{\textbf{From a gate to arithmetic.} One rule grows an XOR gate (\textbf{a}) and a 1-bit full adder (\textbf{b}). A 2-bit ripple-carry adder (\textbf{c}) requires a produced-then-consumed internal carry: the carry region tracks the true carry$_0$ across all 16 cases, and lesioning it degrades exactly the carry-dependent outputs (sum$_1$, cout) while leaving carry-independent sum$_0$ intact. Success rates over random seeds with 95\% confidence intervals (\textbf{d}).}
+\label{fig:compose}
+\end{figure}
+
+\begin{figure}[p]\centering
+\figph{6cm}{FIG 4 (data) --- ROBUSTNESS. a: self-repair filmstrip + heal heatmap. b: async spectral (period-3 damped). c: long-horizon accuracy. d: live reactivity.}
+\caption{\textbf{Robust under damage and asynchrony.} The grown computer regenerates after damage across positions and sizes (\textbf{a}). Stochastic (asynchronous) updates damp the synchronous period-3 limit cycle into a fixed point (\textbf{b}), giving long-horizon stability (\textbf{c}). The adder tracks live input changes, re-settling without re-seeding (\textbf{d}).}
+\label{fig:robust}
+\end{figure}
+
+\begin{figure}[p]\centering
+\figph{6cm}{FIG 5 (data) --- INVARIANCE. a: movable ports re-route. b: grid-size generalisation. c: channel-separation ablation. d: wire multi-seed bars.}
+\caption{\textbf{Position- and scale-invariant computation.} Dragging the ports re-routes the field under fixed parameters (\textbf{a}); the same parameters generalise to unseen grid sizes (\textbf{b}). Position-invariant computation requires separated signal channels---a shared channel collapses to the constant-output baseline (\textbf{c})---and routing is reproducible across seeds (\textbf{d}).}
+\label{fig:invariance}
+\end{figure}
+
+\begin{figure}[p]\centering
+\figph{6cm}{FIG 6 (data; panel a semi-conceptual) --- SUBSTRATE. a: rule$\to$fixed-point$\to$Z80 datapath. b: bit-exact Z80 vs f32. c: in-substrate forward-mode gradient vs finite-diff. d: honest-scope box.}
+\caption{\textbf{The learned computer is a real program.} Quantised to integers, the rule's datapath (\textbf{a}) executes on a real Z80 ISA bit-exactly, computing the correct truth table entirely in the substrate (\textbf{b}); the same integer datapath carries a matching forward-mode gradient (\textbf{c}). Scope: an offline provenance proof on an emulator, with a single-cell, single-step in-substrate tangent (\textbf{d}).}
+\label{fig:substrate}
+\end{figure}
+
+\begin{figure}[p]\centering
+\figph{6cm}{FIG 7 (data) --- ABLATIONS. a: ablation bars (perception/nonlinearity/capacity/damage). b: multi-seed success curves w/ CIs. c: non-developmental baseline capability matrix.}
+\caption{\textbf{What matters, measured.} Directional perception and a hidden nonlinearity are necessary and capacity saturates early (\textbf{a}); every headline reproduces across seeds with confidence intervals (\textbf{b}). A non-developmental control computes the same functions but lacks self-repair, position/scale invariance, and ISA-realisation (\textbf{c}), isolating what development buys.}
+\label{fig:ablation}
+\end{figure}
