@@ -79,8 +79,8 @@ fixed-point/Z80 `z80/`).
 | E3 | **Grow from a seed** → compute → heal | attractor to 600+ steps | n=1 | `params/e3_seed.json`, `morph/dev/expG.ts` |
 | S6 | **1-bit full adder** (compute+stable+repair+reactive) | compute 8/8 cases; reactive 64/64; drift 8/8 @50/150/400 (one model); **multi-seed: 6/8 (75%) single-run from scratch, Wilson95 [41%,93%]** | reactive/repair **n=1**; compute **n=8** | `params/adder_*.json`, `expH.ts`, `/devcomp/multiseed` |
 | S6 | **2-bit ripple-carry adder** (internal carry — compositional depth) | 16/16 cases, carry internalized; carry-cell lesion → sum0 16/16, sum1/cout 10/16 (dissociation); carry distributed | **n=1** | `params/adder2_2bit.json`, `morph/dev/adder2.ts` |
-| S6d | **Movable wire** (position-invariant routing) | 100% @11, 100% @13, 100% @17 (unseen sizes) | n=1; placement-count not tabulated | `params/wire_invariant.json`, `morph/dev/expI.ts` |
-| S6d | **Movable XOR** (position-invariant *computation*) | 100% @11, 95% @13, **68% @17** | n=1; denominator not tabulated | `params/xor_invariant.json` |
+| S6d | **Movable wire** (position-invariant routing) | held params 100% @11/13/17; **multi-seed (GPU, from scratch): 9/10 seeds ≥90% routing acc, mean 98±4%, Wilson95 [60%,98%]** over random placements @17×17 | **n=10** | `params/wire_invariant.json`, `expI.ts`, `/devcomp/movseed` |
+| S6d | **Movable XOR** (position-invariant *computation*) | 100% @11, 95% @13, **68% @17** | n=1; a quick 700-iter GPU multi-seed did NOT bootstrap (seed 0 → 0%) — position-invariant XOR is the hard "crux" and needs the full (longer) recipe for a fair multi-seed number | `params/xor_invariant.json` |
 | — | Reactive movable XOR | ~58% (near floor; unsolved) | n=1 | — |
 | S7 | **In-browser GPU trainer** (WGSL reverse-mode BPTT) | gradient vs f64 ref **3e-5**; ≈**65× CPU** | — | `devcomp/{trainShader,gpuTrainer}.ts`, `/devcomp/traingpu` |
 | — | **Async NCA updates** (fireRate) | validated CPU+GPU+demo | — | `rule.ts`, `morph/dev/spectral.ts` |

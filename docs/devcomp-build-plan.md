@@ -205,6 +205,18 @@ batch so the position-invariant signal averages out of placement noise, and (b)
 a curriculum that HOLDS adjacent (varied but close) for ~20% to bootstrap the
 combine, THEN spreads. Large batch is why the GPU trainer matters.
 
+## Finding (multi-seed): movable-wire reproducibility (GPU, browser-driven, `/devcomp/movseed`)
+
+Movable WIRE (position-invariant routing), 10 seeds, from scratch, distance-ramp, on the
+GPU driven through the preview tools: per-seed routing acc [97,97,88,100,100,100,97,100,100,
+100]% → **9/10 ≥90%, mean 98±4%, Wilson95 [60%,98%]** over random placements @17×17. Clean
+error bars on the position-invariance headline. **Movable XOR** multi-seed: a quick 700-iter
+recipe did NOT bootstrap (seed 0 → 0%) — position-invariant *computation* is the hard crux and
+needs the full (longer, careful) recipe the shipped `xor_invariant.json` used; a fair XOR
+multi-seed number is a follow-up (bump iters to ~1500+, keep-best). Note: browser-driving a
+~15-min run through the 30s-capped eval channel is polling-heavy — a headless WebGPU would make
+this a one-shot script.
+
 ## Finding (P1-7): GPU trainer generalized to N-in/M-out (fixed multi-IO)
 
 The WGSL BPTT trainer now trains non-marker fixed-layout rules (gate/adder), not just
