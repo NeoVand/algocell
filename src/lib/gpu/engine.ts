@@ -599,7 +599,20 @@ export class GPUEngine {
 	}
 
 	// Read byte counts from GPU (async)
+	// Serialised like the other readbacks: a second caller while a map is
+	// pending gets the last counts instead of a mapAsync OperationError.
+	private _statsMapPending = false;
 	async readStats(): Promise<Uint32Array> {
+		if (this._statsMapPending) return this.byteCounts;
+		this._statsMapPending = true;
+		try {
+			return await this.readStatsNow();
+		} finally {
+			this._statsMapPending = false;
+		}
+	}
+
+	private async readStatsNow(): Promise<Uint32Array> {
 		const encoder = this.device.createCommandEncoder();
 
 		// Clear byte counts
