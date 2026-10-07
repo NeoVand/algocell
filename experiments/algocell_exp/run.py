@@ -18,7 +18,7 @@ import time
 import numpy as np
 
 from .isa import count
-from .metrics import exemplars, high_order_entropy, motif_share, quasispecies_share, species_stats
+from .metrics import census, exemplars, high_order_entropy, motif_share, quasispecies_share, species_stats
 from .soup import Soup, adapter_summary
 
 THRESHOLDS = (0.02, 0.10, 0.50)  # on exact-hash top species share
@@ -43,7 +43,10 @@ def run(
     label: str = "",
     out=None,
     quiet: bool = False,
+    on_snapshot=None,
 ) -> dict:
+    """on_snapshot(name, soup_uint8_2d) is called with 'emergence' (first tq_10
+    crossing) and 'final' so callers can persist soup snapshots."""
     soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress)
     cond = {
         "label": label,
@@ -87,7 +90,8 @@ def run(
         top_idx = int(np.argmax(hashes == np.uint32(sp["top_hash"])))
         qs = quasispecies_share(soup_arr, soup_arr[top_idx])
         ms = motif_share(soup_arr, soup_arr[top_idx])
-        rec = {"kind": "sample", "step": step, **sp, **qs, **ms, **hoe, "exemplars": ex, "elapsed_s": round(time.perf_counter() - t0, 2)}
+        cs = census(soup_arr)
+        rec = {"kind": "sample", "step": step, **sp, **qs, **ms, **hoe, **cs, "exemplars": ex, "elapsed_s": round(time.perf_counter() - t0, 2)}
         emit(rec)
         samples += 1
         if not quiet:
@@ -106,6 +110,8 @@ def run(
             key = f"tq_{int(t*100):02d}"
             if emergence[key] < 0 and qs["q_share"] >= t:
                 emergence[key] = step
+                if key == "tq_10" and on_snapshot:
+                    on_snapshot("emergence", soup_arr)
         if stop_share is not None and stop_at is None and qs["q_share"] >= stop_share:
             stop_at = step + stop_after * sample_every
         if stop_at is not None and step >= stop_at:
@@ -114,6 +120,8 @@ def run(
     sp = species_stats(final_hashes)
     soup_arr = soup.read_soup()
     top_idx = int(np.argmax(final_hashes == np.uint32(sp["top_hash"])))
+    if on_snapshot:
+        on_snapshot("final", soup_arr)
     summary = {
         "kind": "summary",
         **cond,
@@ -126,6 +134,7 @@ def run(
             **quasispecies_share(soup_arr, soup_arr[top_idx]),
             **motif_share(soup_arr, soup_arr[top_idx]),
             **high_order_entropy(soup_arr),
+            **census(soup_arr),
             "exemplars": exemplars(soup_arr, final_hashes, sp["top3_hashes"]),
         },
         "wall_s": round(time.perf_counter() - t0, 2),

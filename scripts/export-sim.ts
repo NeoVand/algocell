@@ -5,7 +5,7 @@
 // z80-opcodes.ts or the zilion dependency.
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { createSimShader } from '../src/lib/gpu/shaders';
+import { createSimShader, createZ80TestShader } from '../src/lib/gpu/shaders';
 import { SQUARE_TAPE_LENGTHS } from '../src/lib/sim/constants';
 import {
 	PAGE_TABLES,
@@ -26,6 +26,8 @@ const zilionVersion = JSON.parse(
 const shaders: Record<string, string> = { hex: createSimShader('hex') };
 for (const L of SQUARE_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);
 for (const [k, v] of Object.entries(shaders)) writeFileSync(`${out}sim_${k}.wgsl`, v);
+// Single-pair executor (the differential-test shader): used by the replication assay.
+writeFileSync(`${out}z80_test.wgsl`, createZ80TestShader());
 
 // Golden vectors so the Python port of the pattern grammar can be checked.
 const goldenPatterns = [

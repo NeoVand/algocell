@@ -153,6 +153,30 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07, Stage A stopped after 5 of 630 runs (none read) and relaunched
+  with two additions per sample: a **byte-pattern census** (fraction of cells
+  containing ED-page block-copy pairs, ≥2 PUSH bytes, EX (SP),HL, RST 38,
+  LD (HL),x, CB-page (HL) ops, ≥8 zero bytes; top five 4-grams) and **soup
+  snapshots** (brotli-compressed, at the first `tq_10` crossing and at the
+  end) for post hoc analysis. Motivation from the three pilot runs: after the
+  Load–Push takeover the population became a diverse LDIR-based cloud with no
+  single dominant genotype (unique tapes 19k → 7k, HOE → 5 bits/byte), which
+  per-genotype measures cannot describe.
+- 2026-10-07, Stage A launched (no results read yet): added a **replication
+  assay** as an interpretation outcome, computed post hoc from the dominant
+  tapes stored at every sample. The tape is executed as program A against N
+  random neighbours (and as B) for the condition's step budget and suppression
+  set, and the score is the best shift-aligned fraction of its own bytes that
+  it writes into the neighbour. Motivation: the pilot's no-copy soup is
+  dominated by the RST return-address smear `ff 41 00 41 …`, which spreads a
+  byte pattern without copying the code that produces it; occupancy alone
+  cannot tell a smear from a replicator. The assay also runs the offspring it
+  produced against fresh neighbours (**gen2 score**, heritability): on known
+  tapes the Load–Push replicator scores 0.81 / gen2 0.58, the RST smear 0.61 /
+  gen2 0.08, and the stack-free LDIR replicator from the pilot 0.98 / gen2 0.99
+  under its own ablation. A replicator is one with gen2 ≥ 0.3 (fixed here,
+  before any sweep is read). The primary outcome stays `tq_10`; the assay is
+  reported next to it and used to label each emergence as self-copying or not.
 - 2026-10-07, before any sweep: quasispecies radius changed from a fixed 4 to
   ⌈L/4⌉ and the motif repeat count from 4 to max(2, ⌈L/4⌉), after the
   tape-length axis was added (a fixed radius 4 covers an entire 4-byte tape).

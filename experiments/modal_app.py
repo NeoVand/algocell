@@ -26,7 +26,7 @@ image = (
 )
 runs_volume = modal.Volume.from_name("algocell-atlas-runs", create_if_missing=True)
 
-GPU = "H200"
+GPU = "L40S"  # fastest per step in the latency-bound regime (modal run modal_app.py::gpus), and cheaper than H200
 
 
 @app.function(image=image, gpu=GPU, timeout=60 * 60 * 6, volumes={"/runs": runs_volume})
@@ -38,11 +38,20 @@ def run_condition(cond: dict, batch: str = "adhoc") -> dict:
 
     import json
 
-    buf = io.StringIO()
-    summary = run(**cond, out=buf, quiet=True)
+    import brotli
+    import numpy as np
+
     d = f"/runs/{batch}"
     os.makedirs(d, exist_ok=True)
     stem = run_stem(cond)
+
+    def snapshot(name: str, soup: "np.ndarray") -> None:
+        # raw uint8 (cells × L), brotli-compressed; np.frombuffer(brotli.decompress(...), uint8).reshape(cells, L)
+        with open(f"{d}/{stem}.soup_{name}.u8.br", "wb") as f:
+            f.write(brotli.compress(np.ascontiguousarray(soup).tobytes(), quality=9))
+
+    buf = io.StringIO()
+    summary = run(**cond, out=buf, quiet=True, on_snapshot=snapshot)
     with open(f"{d}/{stem}.jsonl", "w") as f:
         f.write(buf.getvalue())
     with open(f"{d}/{stem}.summary.json", "w") as f:
@@ -66,7 +75,7 @@ def _run_one_to_file(args: tuple) -> dict:
     summary = run(**cond, out=buf, quiet=True)
     with open(path, "w") as f:
         f.write(buf.getvalue())
-    return summary
+    return summary  # (run_batch path: no snapshots; the sweeps use run_condition)
 
 
 @app.function(image=image, gpu=GPU, timeout=60 * 60 * 12, volumes={"/runs": runs_volume})

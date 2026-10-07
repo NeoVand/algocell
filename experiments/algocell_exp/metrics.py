@@ -68,6 +68,43 @@ def motif_share(soup: np.ndarray, top_tape: np.ndarray, min_repeats: int | None 
     return {"motif": f"{int(lo):02x} {int(hi):02x}", "motif_share": float((hits >= min_repeats).mean())}
 
 
+# Raw byte-pattern census (population level, mechanism-agnostic). These count
+# byte values wherever they sit, so operands inflate them slightly; the
+# replication assay on exemplars gives the executed truth. Cheap enough to run
+# at every sample.
+_BLOCK_COPY_2ND = np.array([0xA0, 0xA8, 0xB0, 0xB8], dtype=np.uint8)  # LDI LDD LDIR LDDR after ED
+_PUSH = np.array([0xC5, 0xD5, 0xE5, 0xF5], dtype=np.uint8)
+_LD_HL_W = np.array([0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77, 0x36], dtype=np.uint8)  # LD (HL),r / LD (HL),n
+
+
+def census(soup: np.ndarray) -> dict:
+    n = soup.shape[0]
+    a, b = soup[:, :-1], soup[:, 1:]
+    ldir_pair = (a == 0xED) & np.isin(b, _BLOCK_COPY_2ND)
+    push_cnt = np.isin(soup, _PUSH).sum(axis=1)
+    out = {
+        "c_blockcopy": float(ldir_pair.any(axis=1).mean()),       # cells containing ED A0/A8/B0/B8
+        "c_push2": float((push_cnt >= 2).mean()),                 # cells with >= 2 PUSH bytes
+        "c_ex_sp": float((soup == 0xE3).any(axis=1).mean()),      # EX (SP),HL
+        "c_rst": float((soup == 0xFF).any(axis=1).mean()),        # RST 38 (the smear maker)
+        "c_ld_hl_w": float(np.isin(soup, _LD_HL_W).any(axis=1).mean()),
+        "c_zero8": float(((soup == 0).sum(axis=1) >= min(8, soup.shape[1])).mean()),  # NOP-flooded cells
+        "c_cb_hl": float(((a == 0xCB) & ((b & 7) == 6)).any(axis=1).mean()),  # CB-page ops on (HL)
+    }
+    # most common 4-grams across the soup (sliding windows), as hex
+    if soup.shape[1] >= 4:
+        w = (soup[:, :-3].astype(np.uint32) | (soup[:, 1:-2].astype(np.uint32) << 8)
+             | (soup[:, 2:-1].astype(np.uint32) << 16) | (soup[:, 3:].astype(np.uint32) << 24)).reshape(-1)
+        vals, cnts = np.unique(w, return_counts=True)
+        top = np.argsort(-cnts)[:5]
+        total = w.size
+        out["top_4grams"] = [
+            {"gram": " ".join(f"{(int(v) >> (8 * i)) & 0xFF:02x}" for i in range(4)), "share": float(c / total)}
+            for v, c in zip(vals[top], cnts[top])
+        ]
+    return out
+
+
 def byte_entropy(counts: np.ndarray) -> float:
     c = counts[counts > 0].astype(np.float64)
     p = c / c.sum()

@@ -1,0 +1,153 @@
+"""Replication assay: does a tape copy itself when executed against random neighbours?
+
+The dominant tape T is run as program A with N random neighbours as B (and as
+program B with random A), for a given step budget and suppression set, using
+the single-pair executor shader (the same core + host bits as the simulation).
+Score = mean over neighbours of the best shift-aligned fraction of T's bytes
+present in the neighbour's tape afterwards, minus the same quantity before
+(so a tape that merely resembles random noise scores ~0). A faithful copier
+scores near 1; a byte-pattern smear scores low because it does not reproduce
+the instruction that writes it.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+import wgpu
+
+from .isa import masks as make_masks
+from .isa import resolve
+from .soup import SHADER_DIR, get_device
+
+_PIPE: dict = {}
+
+
+def _pipeline():
+    if not _PIPE:
+        dev = get_device()
+        module = dev.create_shader_module(code=(SHADER_DIR / "z80_test.wgsl").read_text())
+        storage = {"type": wgpu.BufferBindingType.storage}
+        layout = dev.create_bind_group_layout(
+            entries=[
+                {"binding": 0, "visibility": wgpu.ShaderStage.COMPUTE, "buffer": {"type": wgpu.BufferBindingType.uniform}},
+                {"binding": 1, "visibility": wgpu.ShaderStage.COMPUTE, "buffer": storage},
+                {"binding": 2, "visibility": wgpu.ShaderStage.COMPUTE, "buffer": storage},
+            ]
+        )
+        pl = dev.create_pipeline_layout(bind_group_layouts=[layout])
+        _PIPE["pipe"] = dev.create_compute_pipeline(layout=pl, compute={"module": module, "entry_point": "z80_test"})
+        _PIPE["layout"] = layout
+    return _PIPE["pipe"], _PIPE["layout"]
+
+
+def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=()) -> np.ndarray:
+    """Run many (A,B) pairs independently. pairs: (N, 2L) uint8 → final memories (N, 2L)."""
+    N = pairs.shape[0]
+    L = tape_length
+    assert pairs.shape[1] == 2 * L
+    dev = get_device()
+    pipe, layout = _pipeline()
+    wpc = (L + 3) // 4
+    words = np.zeros((N, 2 * wpc * 4), dtype=np.uint8)
+    words[:, : 4 * wpc][:, :L] = pairs[:, :L]
+    words[:, 4 * wpc : 4 * wpc + L] = pairs[:, L:]
+    io_data = np.ascontiguousarray(words).view(np.uint32)
+    params = np.zeros(32, dtype=np.uint32)
+    params[2], params[3], params[4], params[6] = L, 2 * L, N, z80_steps
+    params[8:] = make_masks(resolve(list(suppress)))
+    B = wgpu.BufferUsage
+    io_buf = dev.create_buffer(size=io_data.nbytes, usage=B.STORAGE | B.COPY_SRC | B.COPY_DST)
+    dev.queue.write_buffer(io_buf, 0, io_data)
+    regs_buf = dev.create_buffer(size=N * 12 * 4, usage=B.STORAGE | B.COPY_SRC)
+    p_buf = dev.create_buffer(size=128, usage=B.UNIFORM | B.COPY_DST)
+    dev.queue.write_buffer(p_buf, 0, params)
+    bg = dev.create_bind_group(
+        layout=layout,
+        entries=[
+            {"binding": 0, "resource": {"buffer": p_buf, "offset": 0, "size": 128}},
+            {"binding": 1, "resource": {"buffer": io_buf, "offset": 0, "size": io_buf.size}},
+            {"binding": 2, "resource": {"buffer": regs_buf, "offset": 0, "size": regs_buf.size}},
+        ],
+    )
+    enc = dev.create_command_encoder()
+    p = enc.begin_compute_pass()
+    p.set_pipeline(pipe)
+    p.set_bind_group(0, bg)
+    p.dispatch_workgroups(-(-N // 64))
+    p.end()
+    dev.queue.submit([enc.finish()])
+    out = np.frombuffer(dev.queue.read_buffer(io_buf), dtype=np.uint8).reshape(N, 2 * wpc * 4)
+    res = np.empty((N, 2 * L), dtype=np.uint8)
+    res[:, :L] = out[:, :L]
+    res[:, L:] = out[:, 4 * wpc : 4 * wpc + L]
+    for b in (io_buf, regs_buf, p_buf):
+        b.destroy()
+    return res
+
+
+def _best_shift_match(target: np.ndarray, tape: np.ndarray) -> np.ndarray:
+    """For each row of `target` (N, L): max over cyclic shifts of fraction of bytes equal to `tape`."""
+    L = tape.size
+    best = np.zeros(target.shape[0])
+    for s in range(L):
+        best = np.maximum(best, (target == np.roll(tape, s)[None, :]).mean(axis=1))
+    return best
+
+
+def assay(tape: bytes | np.ndarray, z80_steps: int = 128, suppress=(), n: int = 64, seed: int = 0) -> dict:
+    """Replication score of a tape under a given budget and suppression set."""
+    T = np.frombuffer(bytes(tape), dtype=np.uint8) if not isinstance(tape, np.ndarray) else tape.astype(np.uint8)
+    L = T.size
+    rng = np.random.default_rng(seed)
+    R = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+    # T as A, random B
+    pairs_a = np.concatenate([np.repeat(T[None, :], n, axis=0), R], axis=1)
+    # random A, T as B
+    pairs_b = np.concatenate([R, np.repeat(T[None, :], n, axis=0)], axis=1)
+    res_a = execute_pairs(pairs_a, L, z80_steps, suppress)
+    res_b = execute_pairs(pairs_b, L, z80_steps, suppress)
+    before = _best_shift_match(R, T).mean()
+    sim_b = _best_shift_match(res_a[:, L:], T)          # T (as A) wrote itself into B?
+    into_b = sim_b.mean()
+    into_a = _best_shift_match(res_b[:, :L], T).mean()   # T (as B) wrote itself into A?
+    self_kept_a = float((res_a[:, :L] == T[None, :]).mean())  # T survives its own execution as A
+    # Heritability: do the offspring (the B tapes T produced) themselves copy
+    # T-like material into fresh random neighbours? A byte-pattern smear can
+    # score well in one generation (it writes its periodic payload) but its
+    # offspring lack the instruction that produced it, so generation 2 collapses.
+    offspring = res_a[:, L:]
+    R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+    res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress)
+    gen2 = _best_shift_match(res_g2[:, L:], T).mean() - _best_shift_match(R2, T).mean()
+    return {
+        "copy_into_neighbor_as_A": float(into_b - before),
+        "copy_into_neighbor_as_B": float(into_a - before),
+        "baseline_similarity": float(before),
+        "self_preserved_as_A": self_kept_a,
+        "offspring_within_q": float((sim_b >= 0.75).mean()),  # share of neighbours that became ≥75%-copies
+        "gen2_score": float(gen2),
+        "score": float(max(into_b, into_a) - before),
+    }
+
+
+if __name__ == "__main__":
+    import sys
+
+    cases = {
+        "load-push 01 c5": bytes.fromhex("01c5" * 8),
+        "ex-sp 21 e3": bytes.fromhex("21e3" * 8),
+        "ldir period-4 c4 5e ed b0": bytes.fromhex("c45eedb0" * 4),
+        "ldir canonical 1e 20 ed b0": bytes.fromhex("1e20edb0") + bytes(12),
+        "rst smear ff 41 00 41": bytes.fromhex("ff" + "4100" * 7 + "41"),
+        "zeros": bytes(16),
+        "random": bytes([37, 201, 14, 99, 180, 7, 66, 250, 121, 3, 90, 44, 210, 155, 18, 77]),
+    }
+    steps = int(sys.argv[1]) if len(sys.argv) > 1 else 128
+    for name, t in cases.items():
+        r = assay(t, z80_steps=steps)
+        print(f"{name:28s} score {r['score']:.2f} gen2 {r['gen2_score']:.2f} copies≥75% {r['offspring_within_q']:.2f} | asA {r['copy_into_neighbor_as_A']:.2f} asB {r['copy_into_neighbor_as_B']:.2f} self {r['self_preserved_as_A']:.2f}")
+    print("-- stack-writes suppressed (PUSH/EX/CALL/RST removed): load-push should fail, LDIR should still copy")
+    sup = ["family:stack", "family:ex", "family:call-ret", "family:rst"]
+    for name in ("load-push 01 c5", "ldir period-4 c4 5e ed b0"):
+        r = assay(cases[name], z80_steps=steps, suppress=sup)
+        print(f"{name:28s} score {r['score']:.2f} gen2 {r['gen2_score']:.2f}")
