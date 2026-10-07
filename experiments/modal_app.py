@@ -160,6 +160,8 @@ def main(conds: str = "", batch: str = "adhoc", bench_steps: int = 3000, force_b
         if isinstance(r, Exception):
             failures.append(repr(r)[:500])
             print("FAILED:", failures[-1])
+            with open(out, "w") as f:
+                json.dump({"results": results, "failures": failures, "provenance": provenance}, f, indent=1)
             continue
         results.append(r)
         print(r["label"], "L", r["tape_length"], "seed", r["seed"], "steps", r["steps_run"], "/", r["horizon"], "tq_10", r["tq_10"], f"{r['wall_s']}s", r["adapter"])
