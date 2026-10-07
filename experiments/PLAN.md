@@ -95,6 +95,25 @@ L = 16 cells are shared with Stage A (not re-run).
 the 3-factor crossing L × steps × mutation for whichever ablation shows a
 non-trivial mechanism change.
 
+*Proposed after reading Stage A (2026-10-07; to be fixed once Stage B is read):*
+
+- **C1 — slow or impossible?** `no-copy`, `rmw-only` and `all-ld` at
+  (128, k=4) and (32, k=2) for 1,000,000 steps, 10 seeds, no early stop,
+  8 random tapes stored per sample. Tests whether the 0/90 and 0/90 nulls and
+  the rare `all-ld` emergence are horizon effects (and tests the user's
+  remembered no-copy regime at 3× the horizon).
+- **C2 — succession without censoring.** `none`, `block-copy`, `ld-mem` at
+  128 and 512 steps, all three mutation rates, 10 seeds, no early stop, to
+  measure stack → LDIR invasion statistics free of the stopping rule.
+- **C3 — finer ablations.** Split `stack-writes` into PUSH-only, EX (SP),HL-only
+  and CALL/RST-only; split `all-ld` into immediates-only (ld8-imm + ld16-imm)
+  and register/memory loads only; add `cb-page` (all CB) and `ed-loads`. 10
+  seeds at (128, k=4) and (32, k=2). Asks which specific instructions carry
+  the early replicators and which load the load-free designs route around.
+- **C4 — functional fraction over time.** With random tapes per sample, the
+  heritable fraction of the population can be tracked through the succession
+  (Load–Push debris vs LDIR cloud).
+
 Compute: one run ≈ 300,000 × 0.35 ms ≈ 105 s on an H200 for L = 16 (longer
 for large L); Stage A ≈ 18 GPU-hours, Stage B ≈ 30–60 GPU-hours. Runs that hit
 the stopping rule finish much earlier.
