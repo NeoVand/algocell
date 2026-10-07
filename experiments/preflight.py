@@ -123,7 +123,9 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             problems.append(f"{run_stem(c)}: suppression does not resolve: {e}")
         L = c.get("tape") or 16
-        for f in (f"sim_square_L{L}.wgsl", f"z80_test_L{L}.wgsl"):
+        P = c.get("mem_length") or 2 * L
+        suffix = "" if P == 2 * L else f"_P{P}"
+        for f in (f"sim_square_L{L}{suffix}.wgsl", f"z80_test_L{L}{suffix}.wgsl"):
             if not (SHADER_DIR / f).exists():
                 problems.append(f"missing exported shader {f}")
         if (c.get("stop_share", 0.5) or 0) > 0 and c.get("random_tapes"):

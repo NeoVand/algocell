@@ -77,6 +77,7 @@ class Soup:
         ring: int = 32,
         device: wgpu.GPUDevice | None = None,
         mutations_per_step: int | None = None,
+        mem_length: int | None = None,
     ) -> None:
         assert grid in ("square", "hex")
         assert 1 <= pair_count <= MAX_PAIRS
@@ -84,10 +85,16 @@ class Soup:
         self.width, self.height, self.grid = width, height, grid
         if grid == "hex":
             self.tape_length = 19
+            self.mem_length = 38
             self.shader_file = SHADER_DIR / "sim_hex.wgsl"
         else:
             self.tape_length = tape_length or 16
-            self.shader_file = SHADER_DIR / f"sim_square_L{self.tape_length}.wgsl"
+            # Ring length P >= 2L (compile-time constant of the exported shader); default 2L.
+            self.mem_length = int(mem_length) if mem_length else 2 * self.tape_length
+            if self.mem_length < 2 * self.tape_length:
+                raise ValueError(f"mem_length {self.mem_length} < 2 * tape_length {self.tape_length}")
+            suffix = "" if self.mem_length == 2 * self.tape_length else f"_P{self.mem_length}"
+            self.shader_file = SHADER_DIR / f"sim_square_L{self.tape_length}{suffix}.wgsl"
             if not self.shader_file.exists():
                 raise ValueError(f"no exported shader for tape length {self.tape_length} (run `npm run export:sim`)")
         self.pair_length = self.tape_length * 2

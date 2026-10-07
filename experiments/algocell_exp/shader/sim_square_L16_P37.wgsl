@@ -1,30 +1,65 @@
 
-struct Params {
-	soup_width: u32,
-	soup_height: u32,
-	tape_length: u32,
-	pair_length: u32,
-	pair_count: u32,
-	mutation_count: u32,
-	z80_steps: u32,
-	batch_seed: u32,
-	suppress: array<vec4<u32>, 6>,
-};
-@group(0) @binding(0) var<uniform> params: Params;
-@group(0) @binding(1) var<storage, read_write> pair_data: array<u32>; // one word-padded A+B pair per case
-@group(0) @binding(2) var<storage, read_write> regs: array<u32>;
 
-// Same host bits (memory model, pair layout, suppression hook) as the sim,
-// so this tests the exact shipping Z80 core from the zilion package.
-const MEM_LENGTH: u32 = 128u;
+// === Bindings ===
+struct Params {
+    soup_width: u32,
+    soup_height: u32,
+    tape_length: u32,
+    pair_length: u32,
+    pair_count: u32,
+    mutation_count: u32,
+    z80_steps: u32,
+    batch_seed: u32,
+    // Instruction suppression: three 256-bit sets, one per opcode page
+    // (0 = base, 1 = CB, 2 = ED), two vec4<u32> each. Bit (op & 31) of
+    // u32 word (op >> 5). Packed on the host by suppressionMasks().
+    suppress: array<vec4<u32>, 6>,
+}
+
+@group(0) @binding(0) var<storage, read_write> soup: array<u32>;
+@group(0) @binding(1) var<storage, read_write> pairs: array<u32>;       // [cell_i, cell_j] per pair
+@group(0) @binding(2) var<storage, read_write> pair_data: array<u32>;   // 8 u32s (32 bytes) per pair
+@group(0) @binding(3) var<storage, read_write> write_counts: array<u32>; // 2 per pair (tape A, tape B)
+@group(0) @binding(4) var<storage, read_write> rng_states: array<u32>;
+@group(0) @binding(5) var<uniform> params: Params;
+@group(0) @binding(6) var<storage, read_write> pair_active: array<u32>;
+@group(0) @binding(7) var<storage, read_write> byte_counts: array<atomic<u32>>;
+@group(0) @binding(8) var<storage, read_write> collision_mask: array<atomic<u32>>;
+@group(0) @binding(9) var<storage, read_write> cell_hashes: array<u32>;
+
+// === PRNG (PCG-based) ===
+fn pcg(state: ptr<private, u32>) -> u32 {
+    let s = *state;
+    *state = s * 747796405u + 2891336453u;
+    let word = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;
+    return (word >> 22u) ^ word;
+}
+
+var<private> rng: u32;
+
+fn rand() -> u32 {
+    return pcg(&rng);
+}
+
+fn rand_bounded(bound: u32) -> u32 {
+    return rand() % bound;
+}
+
+// === Z80 memory + suppression (host bits for the shared zilion Z80 core) ===
+// The Z80 instruction logic lives in the zilion package (single source of
+// truth). Algocell provides its own memory model (wrapping mod pair_length,
+// with A/B write counting) and an opcode-suppression hook.
+const MEM_LENGTH: u32 = 37u;
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
-var<private> mem: array<u32, 128>;
-fn mem_read(addr: u32) -> u32 { return mem[addr % MEM_LENGTH]; }
+var<private> mem: array<u32, 37>;
+fn mem_read(addr: u32) -> u32 {
+    return mem[addr % MEM_LENGTH];
+}
 fn mem_write(addr: u32, val: u32) {
-	let a = addr % MEM_LENGTH;
-	mem[a] = val & 0xffu;
-	if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
+    let a = addr % MEM_LENGTH;
+    mem[a] = val & 0xffu;
+    if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
 
 fn on_fetch_opcode(prefix: u32, op: u32) -> bool {
@@ -931,24 +966,224 @@ fn z80_step() {
 }
 
 
+// === Soup byte access helpers ===
+fn read_soup_byte(cell: u32, byte_idx: u32) -> u32 {
+    let wpc = (params.tape_length + 3u) / 4u;
+    let word_idx = cell * wpc + (byte_idx >> 2u);
+    let shift = (byte_idx & 3u) * 8u;
+    return (soup[word_idx] >> shift) & 0xffu;
+}
+
+fn write_soup_byte(cell: u32, byte_idx: u32, val: u32) {
+    let word_idx = cell * ((params.tape_length + 3u) / 4u) + (byte_idx >> 2u);
+    let shift = (byte_idx & 3u) * 8u;
+    let mask = ~(0xffu << shift);
+    soup[word_idx] = (soup[word_idx] & mask) | ((val & 0xffu) << shift);
+}
+
+// ============================================================
+// COMPUTE ENTRY POINTS
+// ============================================================
+
+// --- Clear collision mask ---
+@compute @workgroup_size(256)
+fn clear_collision(@builtin(global_invocation_id) id: vec3u) {
+    let idx = id.x;
+    if (idx >= params.soup_width * params.soup_height) { return; }
+    atomicStore(&collision_mask[idx], 0u);
+}
+
+// --- Prepare batch: generate pairs, claim cells, copy data ---
 @compute @workgroup_size(64)
-fn z80_test(@builtin(global_invocation_id) id: vec3u) {
-	let case_id = id.x;
-	if (case_id >= params.pair_count) { return; }
-	let base = case_id * ((params.tape_length + 3u) / 4u) * 2u;
-	load_pair_mem(base);
-	cpu_a=0u; cpu_f=0u; cpu_b=0u; cpu_c=0u; cpu_d=0u; cpu_e=0u; cpu_h=0u; cpu_l=0u;
-	cpu_sp=sp_init(); cpu_pc=0u;
-	cpu_a2=0u; cpu_f2=0u; cpu_b2=0u; cpu_c2=0u; cpu_d2=0u; cpu_e2=0u; cpu_h2=0u; cpu_l2=0u;
-	cpu_ix=0u; cpu_iy=0u;
-	cpu_halted=0u; cpu_iff1=0u; cpu_iff2=0u; cpu_writes_a=0u; cpu_writes_b=0u;
-	for (var s = 0u; s < params.z80_steps; s++) {
-		if (cpu_halted != 0u) { break; }
-		z80_step();
-	}
-	store_pair_mem(base);
-	let rbase = case_id * 12u;
-	regs[rbase+0u]=cpu_a; regs[rbase+1u]=cpu_f; regs[rbase+2u]=cpu_b; regs[rbase+3u]=cpu_c;
-	regs[rbase+4u]=cpu_d; regs[rbase+5u]=cpu_e; regs[rbase+6u]=cpu_h; regs[rbase+7u]=cpu_l;
-	regs[rbase+8u]=cpu_sp; regs[rbase+9u]=cpu_pc; regs[rbase+10u]=cpu_writes_a; regs[rbase+11u]=cpu_writes_b;
+fn prepare_batch(@builtin(global_invocation_id) id: vec3u) {
+    let pair_id = id.x;
+    if (pair_id >= params.pair_count) { return; }
+
+    // Seed RNG from batch_seed + pair_id
+    rng = params.batch_seed * 1099087573u + pair_id * 2654435761u + 1u;
+    rand(); // warm up
+
+    let w = params.soup_width;
+    let h = params.soup_height;
+    let x = rand_bounded(w);
+    let y = rand_bounded(h);
+    let i = y * w + x;
+
+    // --- Topology-specific neighbor selection ---
+
+    let dir = rand_bounded(4u);
+    var nx = x;
+    var ny = y;
+    switch(dir) {
+        case 0u: { if (x + 1u < w) { nx = x + 1u; } else { nx = x - 1u; } }  // right, reflect at edge
+        case 1u: { if (y + 1u < h) { ny = y + 1u; } else { ny = y - 1u; } }  // down, reflect at edge
+        case 2u: { if (x > 0u) { nx = x - 1u; } else { nx = x + 1u; } }       // left, reflect at edge
+        case 3u: { if (y > 0u) { ny = y - 1u; } else { ny = y + 1u; } }       // up, reflect at edge
+        default: {}
+    }
+    let j = ny * w + nx;
+
+
+    // Collision detection with atomics
+    var is_active = 0u;
+    if (i != j) {
+        let claim_i = atomicCompareExchangeWeak(&collision_mask[i], 0u, 1u);
+        if (claim_i.exchanged) {
+            let claim_j = atomicCompareExchangeWeak(&collision_mask[j], 0u, 1u);
+            if (claim_j.exchanged) {
+                is_active = 1u;
+            } else {
+                atomicStore(&collision_mask[i], 0u); // release i
+            }
+        }
+    }
+
+    pair_active[pair_id] = is_active;
+    pairs[pair_id * 2u] = i;
+    pairs[pair_id * 2u + 1u] = j;
+
+    if (is_active != 0u) {
+        // Copy tape data into pair_data
+        let words_per_cell = (params.tape_length + 3u) / 4u;
+        let words_per_pair = words_per_cell * 2u;
+        let base = pair_id * words_per_pair;
+        for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+            pair_data[base + w_idx] = soup[i * words_per_cell + w_idx];
+        }
+        for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+            pair_data[base + words_per_cell + w_idx] = soup[j * words_per_cell + w_idx];
+        }
+    }
+
+    write_counts[pair_id * 2u] = 0u;
+    write_counts[pair_id * 2u + 1u] = 0u;
+}
+
+// --- Z80 Execute: run Z80 on each pair ---
+@compute @workgroup_size(64)
+fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
+    let pair_id = id.x;
+    if (pair_id >= params.pair_count) { return; }
+    if (pair_active[pair_id] == 0u) { return; }
+
+    // Load pair memory: A at mem[0..tape_length), B at mem[tape_length..pair_length).
+    let base = pair_id * ((params.tape_length + 3u) / 4u) * 2u;
+    load_pair_mem(base);
+
+    // Reset CPU state
+    cpu_a = 0u; cpu_f = 0u; cpu_b = 0u; cpu_c = 0u;
+    cpu_d = 0u; cpu_e = 0u; cpu_h = 0u; cpu_l = 0u;
+    cpu_sp = sp_init(); cpu_pc = 0u; // stack grows down from the end of B (0xFFFF for 16-byte tapes; see sp_init)
+    cpu_a2 = 0u; cpu_f2 = 0u; cpu_b2 = 0u; cpu_c2 = 0u;
+    cpu_d2 = 0u; cpu_e2 = 0u; cpu_h2 = 0u; cpu_l2 = 0u;
+    cpu_ix = 0u; cpu_iy = 0u;
+    cpu_halted = 0u;
+    cpu_iff1 = 0u; cpu_iff2 = 0u;
+    cpu_writes_a = 0u;
+    cpu_writes_b = 0u;
+
+    // Run Z80 steps
+    for (var step = 0u; step < params.z80_steps; step++) {
+        if (cpu_halted != 0u) { break; }
+        z80_step();
+    }
+
+    // Save pair memory back (padding bytes are written as zero)
+    store_pair_mem(base);
+
+    write_counts[pair_id * 2u] = cpu_writes_a;
+    write_counts[pair_id * 2u + 1u] = cpu_writes_b;
+}
+
+// --- Absorb: write results back to soup ---
+@compute @workgroup_size(64)
+fn absorb_results(@builtin(global_invocation_id) id: vec3u) {
+    let pair_id = id.x;
+    if (pair_id >= params.pair_count) { return; }
+    if (pair_active[pair_id] == 0u) { return; }
+
+    let i = pairs[pair_id * 2u];
+    let j = pairs[pair_id * 2u + 1u];
+    let words_per_cell = (params.tape_length + 3u) / 4u;
+    let words_per_pair = words_per_cell * 2u;
+    let base = pair_id * words_per_pair;
+
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        soup[i * words_per_cell + w_idx] = pair_data[base + w_idx];
+    }
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        soup[j * words_per_cell + w_idx] = pair_data[base + words_per_cell + w_idx];
+    }
+}
+
+// --- Mutate: apply random mutations to soup ---
+@compute @workgroup_size(64)
+fn mutate_soup(@builtin(global_invocation_id) id: vec3u) {
+    let mut_id = id.x;
+    if (mut_id >= params.mutation_count) { return; }
+
+    rng = params.batch_seed * 3266489917u + mut_id * 668265263u + 7u;
+    rand(); // warm up
+
+    let total_bytes = params.soup_width * params.soup_height * params.tape_length;
+    let pos = rand_bounded(total_bytes);
+    let val = rand() & 0xffu;
+
+    // Map flat byte position to word-aligned soup buffer
+    let cell = pos / params.tape_length;
+    let byte_in_cell = pos % params.tape_length;
+    let wpc = (params.tape_length + 3u) / 4u;
+    let word_idx = cell * wpc + (byte_in_cell >> 2u);
+    let shift = (byte_in_cell & 3u) * 8u;
+    let mask = ~(0xffu << shift);
+    soup[word_idx] = (soup[word_idx] & mask) | (val << shift);
+}
+
+// --- Count bytes for statistics ---
+@compute @workgroup_size(256)
+fn count_bytes(@builtin(global_invocation_id) id: vec3u) {
+    let idx = id.x;
+    let total_words = params.soup_width * params.soup_height * ((params.tape_length + 3u) / 4u);
+    if (idx >= total_words) { return; }
+
+    // Skip the padding bytes of a cell's last word (hex tapes are 19 bytes in 5 words).
+    let wpc = (params.tape_length + 3u) / 4u;
+    let valid = min(4u, params.tape_length - (idx % wpc) * 4u);
+    let word = soup[idx];
+    for (var b = 0u; b < valid; b++) {
+        atomicAdd(&byte_counts[(word >> (b * 8u)) & 0xffu], 1u);
+    }
+}
+
+// --- Clear byte counts ---
+@compute @workgroup_size(256)
+fn clear_byte_counts(@builtin(global_invocation_id) id: vec3u) {
+    if (id.x < 256u) {
+        atomicStore(&byte_counts[id.x], 0u);
+    }
+}
+
+// --- Hash cells (FNV-1a per cell for species tracking) ---
+@compute @workgroup_size(256)
+fn hash_cells(@builtin(global_invocation_id) id: vec3u) {
+    let cell_idx = id.x;
+    let cell_count = params.soup_width * params.soup_height;
+    if (cell_idx >= cell_count) { return; }
+
+    let words_per_cell = (params.tape_length + 3u) / 4u;
+    let base = cell_idx * words_per_cell;
+
+    // FNV-1a hash
+    var hash = 2166136261u;
+    for (var w = 0u; w < words_per_cell; w++) {
+        let word = soup[base + w];
+        let bytes_remaining = params.tape_length - w * 4u;
+        let byte_count = min(4u, bytes_remaining);
+        for (var b = 0u; b < byte_count; b++) {
+            let byte_val = (word >> (b * 8u)) & 0xffu;
+            hash = hash ^ byte_val;
+            hash = hash * 16777619u;
+        }
+    }
+    cell_hashes[cell_idx] = hash;
 }

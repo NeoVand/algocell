@@ -80,15 +80,22 @@ fn on_fetch_opcode(prefix: u32, op: u32) -> bool {
 // divides 65536, i.e. for 16-byte tapes). Mirrors spInit() in constants.ts.
 const SP_INIT_WGSL = /* wgsl */ `
 fn sp_init() -> u32 {
+    // Largest 16-bit value that aliases the last byte of B under the ring modulus
+    // (MEM_LENGTH = pair_length unless the ring is padded), so padding never moves the stack.
     let want = params.pair_length - 1u;
-    return 0xffffu - ((0xffffu - want) % params.pair_length);
+    return 0xffffu - ((0xffffu - want) % MEM_LENGTH);
 }
 `;
 
 // Pair memory layout. pair_data holds each cell word-padded (words_per_cell
 // u32 per cell: 4 for 16-byte tapes, 5 for 19-byte hex tapes). The Z80 sees
 // A's tape_length bytes at mem[0..tape_length) immediately followed by B's at
-// mem[tape_length..pair_length) — no padding byte inside the address space.
+// mem[tape_length..pair_length). Addresses wrap modulo MEM_LENGTH (a compile-time
+// constant, 2·L by default); when MEM_LENGTH > pair_length the bytes
+// [pair_length, MEM_LENGTH) are zero padding that is reset on every interaction
+// and never written back — a ring of chosen length for the gcd experiments
+// (shift-copies converge to period gcd(offset, MEM_LENGTH)). SP still aliases
+// the last byte of B, so the stack family is unaffected by padding.
 const PAIR_MEM_WGSL = /* wgsl */ `
 fn load_pair_mem(base: u32) {
     let wpc = (params.tape_length + 3u) / 4u;
@@ -97,6 +104,9 @@ fn load_pair_mem(base: u32) {
         let sh = (b & 3u) * 8u;
         mem[b] = (pair_data[base + w] >> sh) & 0xffu;
         mem[params.tape_length + b] = (pair_data[base + wpc + w] >> sh) & 0xffu;
+    }
+    for (var b = params.pair_length; b < MEM_LENGTH; b++) {
+        mem[b] = 0u;
     }
 }
 fn store_pair_mem(base: u32) {
@@ -117,10 +127,15 @@ fn store_pair_mem(base: u32) {
 }
 `;
 
-export function createSimShader(gridType: GridType, tapeLength: number = getTapeLength(gridType)): string {
+export function createSimShader(
+	gridType: GridType,
+	tapeLength: number = getTapeLength(gridType),
+	memLength: number = 2 * tapeLength
+): string {
 	const neighborBlock = gridType === 'hex' ? HEX_NEIGHBOR_SELECTION : SQUARE_NEIGHBOR_SELECTION;
-	// Private pair memory: both word-padded tapes (the Z80 only addresses pair_length of it).
-	const memWords = Math.ceil(tapeLength / 4) * 2 * 4;
+	if (memLength < 2 * tapeLength) throw new Error(`memLength ${memLength} < 2 × tapeLength ${tapeLength}`);
+	// Private pair memory: both word-padded tapes plus any ring padding (the Z80 addresses MEM_LENGTH of it).
+	const memWords = Math.max(Math.ceil(tapeLength / 4) * 2 * 4, memLength);
 
 	return /* wgsl */ `
 
@@ -173,14 +188,15 @@ fn rand_bounded(bound: u32) -> u32 {
 // The Z80 instruction logic lives in the zilion package (single source of
 // truth). Algocell provides its own memory model (wrapping mod pair_length,
 // with A/B write counting) and an opcode-suppression hook.
+const MEM_LENGTH: u32 = ${memLength}u;
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
 var<private> mem: array<u32, ${memWords}>;
 fn mem_read(addr: u32) -> u32 {
-    return mem[addr % params.pair_length];
+    return mem[addr % MEM_LENGTH];
 }
 fn mem_write(addr: u32, val: u32) {
-    let a = addr % params.pair_length;
+    let a = addr % MEM_LENGTH;
     mem[a] = val & 0xffu;
     if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
@@ -936,10 +952,11 @@ ${fragmentBlock}
 // truth), wrapped in a standalone entry point that runs one random program
 // per invocation. Never imported by the app runtime.
 // ============================================================
-export function createZ80TestShader(tapeLength: number = 16): string {
-	// Private pair memory sized for the tape (both word-padded tapes); never
-	// smaller than the 40 bytes the 32/38-byte differential tests use.
-	const memWords = Math.max(40, Math.ceil(tapeLength / 4) * 2 * 4);
+export function createZ80TestShader(tapeLength: number = 16, memLength: number = 2 * tapeLength): string {
+	if (memLength < 2 * tapeLength) throw new Error(`memLength ${memLength} < 2 × tapeLength ${tapeLength}`);
+	// Private pair memory sized for the tape (both word-padded tapes, plus ring padding);
+	// never smaller than the 40 bytes the 32/38-byte differential tests use.
+	const memWords = Math.max(40, Math.ceil(tapeLength / 4) * 2 * 4, memLength);
 	return `
 struct Params {
 	soup_width: u32,
@@ -958,12 +975,13 @@ struct Params {
 
 // Same host bits (memory model, pair layout, suppression hook) as the sim,
 // so this tests the exact shipping Z80 core from the zilion package.
+const MEM_LENGTH: u32 = ${memLength}u;
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
 var<private> mem: array<u32, ${memWords}>;
-fn mem_read(addr: u32) -> u32 { return mem[addr % params.pair_length]; }
+fn mem_read(addr: u32) -> u32 { return mem[addr % MEM_LENGTH]; }
 fn mem_write(addr: u32, val: u32) {
-	let a = addr % params.pair_length;
+	let a = addr % MEM_LENGTH;
 	mem[a] = val & 0xffu;
 	if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }

@@ -238,6 +238,25 @@ preflighted locally (`preflight.py`: tests, condition integrity, no foreign runs
 volume directory, a dry run of every distinct parameter signature through the exact Modal
 code path) and smoke-tested on Modal (2 short runs + 1 invalid condition) before launch.
 
+**Stage F — ring arithmetic (specified 2026-10-07, before any run; instrument built and
+tested the same day).** The pair memory can now be padded to P ≥ 2L bytes: addresses wrap
+modulo P, the padding is zero and never written back, and SP aliases the last byte of B
+under the ring modulus so the stack family is untouched (verified: `LD BC,nn ; PUSH BC`
+scores gen2 0.51–0.65 on P ∈ {32, 33, 34, 35, 37}; the offset-4 shift-copier is heritable on
+P = 32 only). `make_conds.stage_f()` → `conds/stageF.json`: `none` and `stack-write-only` at
+128 steps, k = 4, seeds 101–110, L = 16 with P ∈ {33 = 3·11, 34 = 2·17, 35 = 5·7, 37 prime}
+and L = 36 with P ∈ {73 prime, 74 = 2·37, 75 = 3·5², 79 prime}; the P = 2L rows are Stage E's
+@nominal runs (160 runs, ≈ $12).
+Predictions. **F1 (divisor law):** the period of every tiled first replicator under
+`stack-write-only` divides P (not L): periods {3, 11} at P = 33, {2, 17} at P = 34, {5, 7} at
+P = 35; {2, 37} at P = 74; {3, 5, 15, 25} at P = 75. **F2 (prime ring):** at P = 37 and P = 73/79
+no tiled LDIR replicator appears; emergence under `stack-write-only` falls to the BC-limited
+exact-copier route (`LD DE,L ; LD BC,L ; LDIR`-type designs, three register set-ups instead of
+one) and is therefore at least 10× slower by KM median than at P = 2L, or absent within 300k
+steps. **F3 (control):** under the full ISA the Load–Push family emerges with the same KM
+median (within one 50-step sample) at every P. If F1 fails, the gcd mechanism verified in the
+executor does not govern the population dynamics and the "ring arithmetic" claim is dropped.
+
 ## Outcomes (all recorded per sample, nothing chosen after the fact)
 
 - `t_02`, `t_10`, `t_50`: first step at which the most common 16-byte tape holds
@@ -295,6 +314,11 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (ring-length instrument): `createSimShader`/`createZ80TestShader` take a
+  `memLength` (compile-time `MEM_LENGTH`, default 2L → identical behaviour and identical
+  executor scores to before); the stack-pointer reset now aliases the end of B under the
+  ring modulus (with the default ring this is the same value as before). Exported ring
+  variants and Stage F conditions (160 runs) added; not launched.
 - 2026-10-07 (second pre-launch review, before any C/D/E run; REVIEW.md §8):
   **superseded Stage D runs archived** (seeds 1–12 + 8 orphans → `runs/stageD_v1_seeds1-20`,
   removed from the volume; every analysis script now selects only summaries whose stem

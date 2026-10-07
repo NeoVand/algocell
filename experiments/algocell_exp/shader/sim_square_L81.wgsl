@@ -49,14 +49,15 @@ fn rand_bounded(bound: u32) -> u32 {
 // The Z80 instruction logic lives in the zilion package (single source of
 // truth). Algocell provides its own memory model (wrapping mod pair_length,
 // with A/B write counting) and an opcode-suppression hook.
+const MEM_LENGTH: u32 = 162u;
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
 var<private> mem: array<u32, 168>;
 fn mem_read(addr: u32) -> u32 {
-    return mem[addr % params.pair_length];
+    return mem[addr % MEM_LENGTH];
 }
 fn mem_write(addr: u32, val: u32) {
-    let a = addr % params.pair_length;
+    let a = addr % MEM_LENGTH;
     mem[a] = val & 0xffu;
     if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
@@ -71,8 +72,10 @@ fn on_fetch_opcode(prefix: u32, op: u32) -> bool {
 
 
 fn sp_init() -> u32 {
+    // Largest 16-bit value that aliases the last byte of B under the ring modulus
+    // (MEM_LENGTH = pair_length unless the ring is padded), so padding never moves the stack.
     let want = params.pair_length - 1u;
-    return 0xffffu - ((0xffffu - want) % params.pair_length);
+    return 0xffffu - ((0xffffu - want) % MEM_LENGTH);
 }
 
 
@@ -83,6 +86,9 @@ fn load_pair_mem(base: u32) {
         let sh = (b & 3u) * 8u;
         mem[b] = (pair_data[base + w] >> sh) & 0xffu;
         mem[params.tape_length + b] = (pair_data[base + wpc + w] >> sh) & 0xffu;
+    }
+    for (var b = params.pair_length; b < MEM_LENGTH; b++) {
+        mem[b] = 0u;
     }
 }
 fn store_pair_mem(base: u32) {

@@ -174,7 +174,23 @@ def stage_e() -> list[dict]:
     return out
 
 
-STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e}
+RINGS = {16: (33, 34, 35, 37), 36: (73, 74, 75, 79)}   # 33 = 3·11, 34 = 2·17, 35 = 5·7, 37 prime; 73 prime, 74 = 2·37, 75 = 3·5², 79 prime
+
+
+def stage_f() -> list[dict]:
+    """PLAN.md Stage F — ring arithmetic: pad the pair memory to P bytes (addresses wrap mod P; SP
+    still aliases the end of B). A shift-copy converges to period gcd(offset, P), so the periods of the
+    emergent LDIR replicators must track the divisors of P, and a prime P admits none (only
+    BC-limited exact copiers and the stack family). The P = 2L rows are Stage E's @nominal runs."""
+    out = []
+    for a in ("none", "stack-write-only"):
+        for L, rings in RINGS.items():
+            for P in rings:
+                out += [_c(f"{a}@ring{P}", L, 128, 4, s, mem_length=P) for s in SEEDS_C]
+    return out
+
+
+STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f}
 
 
 if __name__ == "__main__":

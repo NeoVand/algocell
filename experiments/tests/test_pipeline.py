@@ -349,3 +349,37 @@ def test_run_records_census_and_snapshots():
     c = recs[-1]["census"]
     assert c["n"] > 3000 and len(c["pairs"]) == 8 and all(len(p) == 6 for p in c["pairs"])
     assert set(snaps) == {"t300", "t600", "final"} or set(snaps) == {"t300", "t600", "final", "emergence"}
+
+
+# ── Ring length (Stage F instrument): shift-copies converge to period gcd(offset, P); the stack family is unaffected ──
+
+def test_ring_length_changes_which_copiers_work():
+    """Padding the pair memory to P bytes changes the copy geometry (period gcd(offset, P)) and nothing else:
+    the stack family must be unaffected (SP aliases the end of B under the ring modulus; before the fix 0xFFFF
+    aliased address 8 on a 37-byte ring and the stack family collapsed)."""
+    from algocell_exp.assay import assay
+    tiled4 = bytes.fromhex("1e04edb0" * 4)          # LD E,4 ; LDIR : shift-copy with offset 4
+    push = _load_push(16)                           # LD BC,nn ; PUSH BC : writes at SP
+    r32 = assay(tiled4, z80_steps=128, n=32, seed=0)
+    assert r32["faithful"] and r32["copy_offset"] in (4, 0)
+    for P in (33, 35, 37):                          # gcd(4, P) = 1: the shift-copy scrambles, no heritable copies
+        r = assay(tiled4, z80_steps=128, n=32, seed=0, mem_length=P)
+        assert not r["is_replicator"], (P, r)
+    r34 = assay(tiled4, z80_steps=128, n=32, seed=0, mem_length=34)   # gcd(4, 34) = 2: collapses to period 2, offspring sterile
+    assert not r34["is_replicator"] and r34["copy_offset"] == 2, r34
+    base = assay(push, z80_steps=128, n=32, seed=0)["gen2_score"]
+    for P in (33, 34, 35, 37):
+        g = assay(push, z80_steps=128, n=32, seed=0, mem_length=P)["gen2_score"]
+        assert abs(g - base) < 0.2, (P, g, base)
+
+
+def test_stage_f_conditions():
+    conds = json.load(open(ROOT / "conds" / "stageF.json"))
+    assert len(conds) == 160 and {c["mem_length"] for c in conds} == {33, 34, 35, 37, 73, 74, 75, 79}
+    for c in conds:
+        assert c["mem_length"] > 2 * c["tape"] and c["label"].endswith(f"@ring{c['mem_length']}")
+        assert (SHADER_DIR / f"sim_square_L{c['tape']}_P{c['mem_length']}.wgsl").exists()
+    s = Soup(tape_length=16, seed=1, mem_length=37)
+    assert s.mem_length == 37 and s.shader_file.name == "sim_square_L16_P37.wgsl"
+    s.step(10)
+    assert s.read_soup().shape == (20000, 16)

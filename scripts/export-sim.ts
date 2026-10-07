@@ -26,13 +26,17 @@ const zilionVersion = JSON.parse(
 // Non-square lengths are exported for the headless runner only (the UI tiles cells as √L×√L).
 const HEADLESS_TAPE_LENGTHS = [3, 5, 6, 7, 8, 10, 12, 18, 20, 24, 32, 50] as const;
 const ALL_TAPE_LENGTHS = [...SQUARE_TAPE_LENGTHS, ...HEADLESS_TAPE_LENGTHS];
+// Ring-length variants for the gcd experiments (Stage F): pair memory padded to P bytes.
+const RING_VARIANTS: Array<[number, number]> = [[16, 33], [16, 34], [16, 35], [16, 37], [36, 73], [36, 74], [36, 75], [36, 79]];
 const shaders: Record<string, string> = { hex: createSimShader('hex') };
 for (const L of ALL_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);
+for (const [L, P] of RING_VARIANTS) shaders[`square_L${L}_P${P}`] = createSimShader('square', L, P);
 for (const [k, v] of Object.entries(shaders)) writeFileSync(`${out}sim_${k}.wgsl`, v);
 // Single-pair executor (the differential-test shader): used by the replication
 // assay, one per tape length so the private memory fits the pair.
 writeFileSync(`${out}z80_test.wgsl`, createZ80TestShader());
 for (const L of ALL_TAPE_LENGTHS) writeFileSync(`${out}z80_test_L${L}.wgsl`, createZ80TestShader(L));
+for (const [L, P] of RING_VARIANTS) writeFileSync(`${out}z80_test_L${L}_P${P}.wgsl`, createZ80TestShader(L, P));
 
 // Golden vectors so the Python port of the pattern grammar can be checked.
 const goldenPatterns = [

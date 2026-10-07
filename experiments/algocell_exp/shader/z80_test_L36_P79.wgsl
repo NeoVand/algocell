@@ -16,10 +16,10 @@ struct Params {
 
 // Same host bits (memory model, pair layout, suppression hook) as the sim,
 // so this tests the exact shipping Z80 core from the zilion package.
-const MEM_LENGTH: u32 = 128u;
+const MEM_LENGTH: u32 = 79u;
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
-var<private> mem: array<u32, 128>;
+var<private> mem: array<u32, 79>;
 fn mem_read(addr: u32) -> u32 { return mem[addr % MEM_LENGTH]; }
 fn mem_write(addr: u32, val: u32) {
 	let a = addr % MEM_LENGTH;

@@ -54,6 +54,7 @@ def run(
     snapshot_steps: list[int] | None = None,
     census_pairs: int = 128,
     exemplar_count: int = 3,
+    mem_length: int | None = None,
 ) -> dict:
     """on_snapshot(name, soup_uint8_2d) is called with 'emergence' (first tq_10
     crossing) and 'final' so callers can persist soup snapshots.
@@ -68,11 +69,12 @@ def run(
     Every sample also carries the shader's per-pair write counters summarised
     (`ix_*`). `mutations_per_step` overrides the default pair_count/2^noise_exp (control
     arms). `provenance` is stored verbatim in the condition record."""
-    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step)
+    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step, mem_length=mem_length)
     cond = {
         "label": label,
         "grid": grid,
         "tape_length": soup.tape_length,
+        "mem_length": soup.mem_length,
         "width": width,
         "height": height,
         "cells": soup.cell_count,

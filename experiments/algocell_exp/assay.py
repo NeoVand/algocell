@@ -41,16 +41,19 @@ GEN2_MIN = 0.3        # pre-registered heritability threshold (PLAN, 2026-10-07,
 FAITHFUL_MIN = 0.5    # share of partners that became >= 75% copies (PLAN change log, 2026-10-07)
 
 
-def _pipeline(tape_length: int = 16):
-    """Pipeline for the single-pair executor sized for this tape length (cached per L)."""
-    if tape_length not in _PIPE:
+def _pipeline(tape_length: int = 16, mem_length: int | None = None):
+    """Pipeline for the single-pair executor sized for this tape length and ring length (cached)."""
+    P = int(mem_length) if mem_length else 2 * tape_length
+    key = (tape_length, P)
+    if key not in _PIPE:
         dev = get_device()
-        path = SHADER_DIR / f"z80_test_L{tape_length}.wgsl"
+        suffix = "" if P == 2 * tape_length else f"_P{P}"
+        path = SHADER_DIR / f"z80_test_L{tape_length}{suffix}.wgsl"
         if not path.exists():
-            if tape_length <= 20:
+            if tape_length <= 20 and P == 2 * tape_length:
                 path = SHADER_DIR / "z80_test.wgsl"  # 40-byte memory: fits pairs up to 40 bytes
             else:
-                raise ValueError(f"no exported executor for tape length {tape_length} (run `npm run export:sim`)")
+                raise ValueError(f"no exported executor for tape length {tape_length}, ring {P} (run `npm run export:sim`)")
         module = dev.create_shader_module(code=path.read_text())
         storage = {"type": wgpu.BufferBindingType.storage}
         layout = dev.create_bind_group_layout(
@@ -61,17 +64,17 @@ def _pipeline(tape_length: int = 16):
             ]
         )
         pl = dev.create_pipeline_layout(bind_group_layouts=[layout])
-        _PIPE[tape_length] = (dev.create_compute_pipeline(layout=pl, compute={"module": module, "entry_point": "z80_test"}), layout)
-    return _PIPE[tape_length]
+        _PIPE[key] = (dev.create_compute_pipeline(layout=pl, compute={"module": module, "entry_point": "z80_test"}), layout)
+    return _PIPE[key]
 
 
-def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=()) -> np.ndarray:
+def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=(), mem_length: int | None = None) -> np.ndarray:
     """Run many (A,B) pairs independently. pairs: (N, 2L) uint8 → final memories (N, 2L)."""
     N = pairs.shape[0]
     L = tape_length
     assert pairs.shape[1] == 2 * L
     dev = get_device()
-    pipe, layout = _pipeline(L)
+    pipe, layout = _pipeline(L, mem_length)
     wpc = (L + 3) // 4
     words = np.zeros((N, 2 * wpc * 4), dtype=np.uint8)
     words[:, : 4 * wpc][:, :L] = pairs[:, :L]
@@ -144,6 +147,7 @@ def assay(
     seed: int = 0,
     neighbors: np.ndarray | None = None,
     min_informative: int = 16,
+    mem_length: int | None = None,
 ) -> dict:
     """Replication score of a tape under a given budget and suppression set.
 
@@ -171,8 +175,8 @@ def assay(
     pairs_a = np.concatenate([np.repeat(T[None, :], n, axis=0), R], axis=1)
     # random A, T as B
     pairs_b = np.concatenate([R, np.repeat(T[None, :], n, axis=0)], axis=1)
-    res_a = execute_pairs(pairs_a, L, z80_steps, suppress)
-    res_b = execute_pairs(pairs_b, L, z80_steps, suppress)
+    res_a = execute_pairs(pairs_a, L, z80_steps, suppress, mem_length)
+    res_b = execute_pairs(pairs_b, L, z80_steps, suppress, mem_length)
     before_i = _best_shift_match(R, T)
     sim_b, shift_b = _best_shift(res_a[:, L:], T)       # T (as A) wrote itself into B? at which cyclic offset?
     sim_a = _best_shift_match(res_b[:, :L], T)          # T (as B) wrote itself into A?
@@ -193,7 +197,7 @@ def assay(
         R2 = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
     else:
         R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
-    res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress)
+    res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress, mem_length)
     before2 = _best_shift_match(R2, T)
     after2 = _best_shift_match(res_g2[:, L:], T)
     gen2 = _norm_gain(before2, after2)
@@ -249,7 +253,7 @@ def _norm_gain_rows(before: np.ndarray, after: np.ndarray, groups: int, per: int
     return out
 
 
-def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32, seed: int = 0, neighbors: np.ndarray | None = None) -> list[dict]:
+def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32, seed: int = 0, neighbors: np.ndarray | None = None, mem_length: int | None = None) -> list[dict]:
     """assay() for M tapes at once, as A only (the role that detects every mechanism), with
     gen2 and faithfulness. One GPU dispatch per generation instead of 3 per tape, so a
     random-cell census of a soup (32–64 cells × 32 partners) costs three dispatches.
@@ -265,13 +269,13 @@ def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32
         R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     TT = np.repeat(T, n, axis=0)                      # (M*n, L): tape i repeated n times
     RR = np.tile(R, (M, 1))                           # (M*n, L): the same n partners for every tape
-    res = execute_pairs(np.concatenate([TT, RR], axis=1), L, z80_steps, suppress)
+    res = execute_pairs(np.concatenate([TT, RR], axis=1), L, z80_steps, suppress, mem_length)
     before = _best_shift_match_rows(RR, TT)
     after, shifts = _best_shift_rows(res[:, L:], TT)
     score = _norm_gain_rows(before, after, M, n)
     offspring = res[:, L:]
     RR2 = np.tile(R2, (M, 1))
-    res2 = execute_pairs(np.concatenate([offspring, RR2], axis=1), L, z80_steps, suppress)
+    res2 = execute_pairs(np.concatenate([offspring, RR2], axis=1), L, z80_steps, suppress, mem_length)
     before2 = _best_shift_match_rows(RR2, TT)
     after2 = _best_shift_match_rows(res2[:, L:], TT)
     gen2 = _norm_gain_rows(before2, after2, M, n)
