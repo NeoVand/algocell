@@ -24,7 +24,7 @@ const zilionVersion = JSON.parse(
 ).version as string;
 
 // Non-square lengths are exported for the headless runner only (the UI tiles cells as √L×√L).
-const HEADLESS_TAPE_LENGTHS = [8, 10, 12, 18, 20, 24, 32, 50] as const;
+const HEADLESS_TAPE_LENGTHS = [3, 5, 6, 7, 8, 10, 12, 18, 20, 24, 32, 50] as const;
 const ALL_TAPE_LENGTHS = [...SQUARE_TAPE_LENGTHS, ...HEADLESS_TAPE_LENGTHS];
 const shaders: Record<string, string> = { hex: createSimShader('hex') };
 for (const L of ALL_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);

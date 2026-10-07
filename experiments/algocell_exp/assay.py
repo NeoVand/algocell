@@ -112,11 +112,28 @@ def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=
 
 def _best_shift_match(target: np.ndarray, tape: np.ndarray) -> np.ndarray:
     """For each row of `target` (N, L): max over cyclic shifts of fraction of bytes equal to `tape`."""
+    return _best_shift(target, tape)[0]
+
+
+def _best_shift(target: np.ndarray, tape: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(best similarity, best shift) per row; the shift is the cyclic offset at which the copy sits."""
     L = tape.size
     best = np.zeros(target.shape[0])
+    arg = np.zeros(target.shape[0], dtype=int)
     for s in range(L):
-        best = np.maximum(best, (target == np.roll(tape, s)[None, :]).mean(axis=1))
-    return best
+        sim = (target == np.roll(tape, s)[None, :]).mean(axis=1)
+        better = sim > best
+        best = np.where(better, sim, best)
+        arg = np.where(better, s, arg)
+    return best, arg
+
+
+def _modal_offset(shifts: np.ndarray, copies: np.ndarray) -> int | None:
+    """Most common copy offset among partners that became copies (None if none did)."""
+    if not copies.any():
+        return None
+    vals, cnt = np.unique(shifts[copies], return_counts=True)
+    return int(vals[np.argmax(cnt)])
 
 
 def assay(
@@ -157,7 +174,7 @@ def assay(
     res_a = execute_pairs(pairs_a, L, z80_steps, suppress)
     res_b = execute_pairs(pairs_b, L, z80_steps, suppress)
     before_i = _best_shift_match(R, T)
-    sim_b = _best_shift_match(res_a[:, L:], T)          # T (as A) wrote itself into B?
+    sim_b, shift_b = _best_shift(res_a[:, L:], T)       # T (as A) wrote itself into B? at which cyclic offset?
     sim_a = _best_shift_match(res_b[:, :L], T)          # T (as B) wrote itself into A?
     # Gain normalised by headroom, over partners that were not already copies.
     # In a soup saturated with copies a copier cannot raise its partner's
@@ -181,12 +198,15 @@ def assay(
     after2 = _best_shift_match(res_g2[:, L:], T)
     gen2 = _norm_gain(before2, after2)
     copies = sim_b >= 0.75
+    n_informative2 = int((before2 < 0.75).sum())
     gen2_cond = _norm_gain(before2[copies], after2[copies]) if copies.any() else float("nan")
     return {
         "copy_into_neighbor_as_A": float(into_b),
         "copy_into_neighbor_as_B": float(into_a),
         "baseline_similarity": float(before_i.mean()),
         "n_informative": n_informative,
+        "n_informative2": n_informative2,
+        "copy_offset": _modal_offset(shift_b, copies),   # cyclic offset of the copies (0 = whole-tape exact copy; p = shift-copy of period gcd(p, 2L))
         "self_preserved_as_A": self_kept_a,
         "self_preserved_as_B": self_kept_b,
         "offspring_within_q": float(copies.mean()),  # share of partners that became >= 75% copies (faithfulness)
@@ -200,18 +220,27 @@ def assay(
 
 def _best_shift_match_rows(target: np.ndarray, tapes: np.ndarray) -> np.ndarray:
     """Row-wise version of _best_shift_match: row i of `target` is compared with every cyclic shift of row i of `tapes`."""
+    return _best_shift_rows(target, tapes)[0]
+
+
+def _best_shift_rows(target: np.ndarray, tapes: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     L = tapes.shape[1]
     best = np.zeros(target.shape[0])
+    arg = np.zeros(target.shape[0], dtype=int)
     cols = np.arange(L)
     for s in range(L):
-        best = np.maximum(best, (target == tapes[:, (cols - s) % L]).mean(axis=1))
-    return best
+        sim = (target == tapes[:, (cols - s) % L]).mean(axis=1)
+        better = sim > best
+        best = np.where(better, sim, best)
+        arg = np.where(better, s, arg)
+    return best, arg
 
 
 def _norm_gain_rows(before: np.ndarray, after: np.ndarray, groups: int, per: int, max_before: float = 0.75) -> np.ndarray:
     """_norm_gain for `groups` consecutive blocks of `per` rows (one block per tape): NaN where no partner had headroom."""
     m = before < max_before
-    g = ((after - before) / (1.0 - before)).reshape(groups, per)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        g = ((after - before) / (1.0 - before)).reshape(groups, per)
     m = m.reshape(groups, per)
     out = np.full(groups, np.nan)
     for i in range(groups):
@@ -238,7 +267,7 @@ def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32
     RR = np.tile(R, (M, 1))                           # (M*n, L): the same n partners for every tape
     res = execute_pairs(np.concatenate([TT, RR], axis=1), L, z80_steps, suppress)
     before = _best_shift_match_rows(RR, TT)
-    after = _best_shift_match_rows(res[:, L:], TT)
+    after, shifts = _best_shift_rows(res[:, L:], TT)
     score = _norm_gain_rows(before, after, M, n)
     offspring = res[:, L:]
     RR2 = np.tile(R2, (M, 1))
@@ -247,13 +276,16 @@ def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32
     after2 = _best_shift_match_rows(res2[:, L:], TT)
     gen2 = _norm_gain_rows(before2, after2, M, n)
     copies = (after >= 0.75).reshape(M, n)
+    shifts = shifts.reshape(M, n)
     n_inf = (before < 0.75).reshape(M, n).sum(axis=1)
+    n_inf2 = (before2 < 0.75).reshape(M, n).sum(axis=1)
     out = []
     for i in range(M):
         g2 = float(gen2[i])
         q75 = float(copies[i].mean())
         out.append({
-            "score": float(score[i]), "gen2_score": g2, "offspring_within_q": q75, "n_informative": int(n_inf[i]),
+            "score": float(score[i]), "gen2_score": g2, "offspring_within_q": q75, "n_informative": int(n_inf[i]), "n_informative2": int(n_inf2[i]),
+            "copy_offset": _modal_offset(shifts[i], copies[i]),
             "is_replicator": bool(np.isfinite(g2) and g2 >= GEN2_MIN),
             "faithful": bool(np.isfinite(g2) and g2 >= GEN2_MIN and q75 >= FAITHFUL_MIN),
         })
@@ -267,7 +299,8 @@ def _norm_gain(before: np.ndarray, after: np.ndarray, max_before: float = 0.75) 
     m = before < max_before
     if not m.any():
         return float("nan")
-    return float(((after[m] - before[m]) / (1.0 - before[m])).mean())
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return float(((after[m] - before[m]) / (1.0 - before[m])).mean())
 
 
 if __name__ == "__main__":

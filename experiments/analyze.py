@@ -28,6 +28,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 
+from algocell_exp.batch import select_summaries
 from algocell_exp.isa import mechanisms, parse_patterns, resolve
 import figstyle as fs
 
@@ -69,13 +70,15 @@ def km_median(times: np.ndarray, events: np.ndarray) -> float:
 
 def load(d: str) -> pd.DataFrame:
     rows = []
-    for p in sorted(glob.glob(os.path.join(d, "*.summary.json"))):
+    for p in select_summaries(d):
         s = json.load(open(p))
         patterns = s["suppress"] if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])
         sets = resolve(patterns)
         fe = s.get("first_emergent") or {}
+        prov = s.get("provenance") or {}
         rows.append({
-            "label": s["label"], "tape": s.get("tape_length", 16), "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"],
+            "label": s["label"], "ablation": s["label"].split("@", 1)[0], "arm": s["label"].split("@", 1)[1] if "@" in s["label"] else "nominal",
+            "tape": s.get("tape_length", 16), "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "replicate": prov.get("replicate"),
             "horizon": s["horizon"], "steps_run": s["steps_run"], "stopped_early": s["steps_run"] < s["horizon"],
             "t_02": s["t_02"], "t_10": s["t_10"], "tq_10": s["tq_10"], "tq_50": s["tq_50"],
             "t02_tape": fe.get("tape"),
@@ -103,8 +106,9 @@ def summarize(df: pd.DataFrame) -> pd.DataFrame:
             lo, hi = wilson(ne, int(valid.sum()))
             times = np.where(emerged, t, g["steps_run"]).astype(float)[valid.to_numpy()]
             kmm = km_median(times, emerged.to_numpy()[valid.to_numpy()])
+            censored_early = int((valid & ~emerged & g["stopped_early"]).sum())   # event not seen in a run the early stop cut short (informative for t_faith)
             row.update({
-                f"{ev}_n": ne, f"{ev}_frac": ne / max(int(valid.sum()), 1), f"{ev}_lo": lo, f"{ev}_hi": hi,
+                f"{ev}_n": ne, f"{ev}_frac": ne / max(int(valid.sum()), 1), f"{ev}_lo": lo, f"{ev}_hi": hi, f"{ev}_censored_early": censored_early,
                 f"{ev}_km_median": kmm,                                             # inf = not reached
                 f"{ev}_cond_median": float(t[emerged].median()) if ne else float("nan"),  # among emerged seeds only
                 f"{ev}_min": int(t[emerged].min()) if ne else -1,
@@ -222,6 +226,7 @@ def main() -> None:
     if os.path.exists(assays_path):
         asy = pd.read_csv(assays_path)
         keep = [c for c in asy.columns if c == "file" or c.startswith(("t_rep", "trep_", "t_faith", "tfaith_", "em_", "final_"))]
+        assert not asy.duplicated(["label", "tape_len", "steps", "k", "seed", "replicate"]).any(), "a (label, L, steps, k, seed, replicate) appears twice in assays.csv"
         df = df.merge(asy[keep], on="file", how="left", validate="one_to_one")
         unmatched = df["t_rep"].isna().sum()
         if unmatched:

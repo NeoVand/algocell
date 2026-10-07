@@ -99,12 +99,24 @@ L = 16 cells are shared with Stage A (not re-run).
 **Stage C — long horizons, uncensored succession, finer ablations.** *Outlined before
 A/B; fixed 2026-10-07 after reading them; re-specified the same day after the design
 review (REVIEW.md §4) and before any Stage C result was read. The exact list is
-`make_conds.stage_c()` → `conds/stageC.json` (460 runs).* Common to every C/D/E run:
+`make_conds.stage_c()` → `conds/stageC.json` (490 runs).* Common to every C/D/E run:
 no early stop; sampling every 50 steps until step 5,000 and every 500 thereafter
-(emergence in A/B sat at the 500-step resolution floor); the 256-bin byte histogram,
-the zero-byte fraction and the active-pair count in every sample; 8 uniformly random
-cell tapes per sample; full provenance (shader and ISA hashes, git commit, library
-versions, adapter) in every record. **Seeds 101–110**: Stage A/B used seeds 1–10, and
+(emergence in A/B sat at the 500-step resolution floor) **and at steps 1, 2, 3, 5, 8, 13,
+21, 34** (the zero flood forms within the first ~30 steps: 6.5% zeros after step 1, 31% by
+step 50, so a 50-step grid would record only its plateau); the 256-bin byte histogram, the
+zero-byte fraction and the active-pair count in every sample; the shader's per-pair write
+counters summarised in every sample (silent-interaction fraction, writes into partner and
+self, histogram); **full soup snapshots at 500, 1k, 2k, 3k, 5k, 7.5k, 10k, 15k, 20k, 30k,
+50k, 75k, 100k, 150k, 200k, 300k (and 500k, 750k, 1M)** steps, each with an **interaction
+census** (before/after state of every pair that interacted in that step: copy events A→B
+and B→A at best cyclic shift ≥ 0.75, partial copies, bytes changed, zeros written, copy
+offsets, programs destroyed; aggregates plus 128 raw pairs); 16 uniformly random cell
+tapes and the top-10 exemplars per sample; full provenance (shader and ISA hashes, git
+commit, library versions incl. brotli, adapter) in every record. **Clock:** because the
+fraction of drawn pairs that survive the parallel collision claim depends on GPU
+scheduling (48–56% depending on grid size and load), every cross-arm comparison in time
+is made in **cumulative active interactions per cell** (from the recorded `active_pairs`),
+with raw steps shown alongside. **Seeds 101–110**: Stage A/B used seeds 1–10, and
 a seed fixes the initial soup and the RNG stream, so the cells that generated the
 hypotheses are not re-used.
 
@@ -117,7 +129,9 @@ hypotheses are not re-used.
   `ld-reg` (54), `cb-page` (256), `ed-loads` (8), and — added by the review — the
   write/read split of the Stage A arm: **`stack-write-only`** (PUSH, EX (SP),HL, CALL*,
   RST; 22 opcodes, the ones that write through SP) and **`stack-read-only`** (POP, RET*,
-  EX DE,HL, EXX, EX AF,AF'; 24 opcodes that write nothing). The Stage A/B arm
+  EX DE,HL, EXX, EX AF,AF'; 24 opcodes that write nothing); the Stage A arm
+  **`stack-writes`** itself re-run with the new seeds (a direct replication of H2 under the
+  C instrumentation); and the unablated comparator `none` at (32, k=2), which C2 lacked. The Stage A/B arm
   `stack-writes` (46) is their union and is misnamed: the LDIR zoo uses POP DE and
   EX DE,HL for pointer set-up, so its 20–100× delay confounds write removal with
   pointer-route removal.
@@ -153,10 +167,12 @@ Outcomes and tests, fixed now. Primary: emergence fraction by `t_rep` (heritable
 by `t_faith` (faithful); **D1**: `stack-write-only` > `none`, pooled over the two
 budgets by a one-sided Cochran–Mantel–Haenszel test at α = 0.05; secondaries per budget
 with Holm over the two budgets. **D1b**: `stack-writes` > `none` (direct replication
-of Stage B, one-sided). **D2**: at step 5,000 the zero-byte fraction of `none` soups
-is ≥ 0.20 and of `stack-write-only` soups ≤ 0.05 (both recorded per sample now; note
-Stage B shows the flood is present at the tq_10 crossing at *every* L, 0.24–0.34, so
-D2 is a check of the mechanism's premise, not a discriminating test by itself).
+of Stage B, one-sided). **D2** (restated 2026-10-07 before any Stage D run, after a local seed-1001 run showed
+≈ 0.19 zeros within 500 steps with the 22 writing stack opcodes removed — LD (HL),r,
+LD (nn),rr and block copies of zero registers also write zeros, so the stack *doubles* the
+flood rather than creating it): at step 5,000, zero_frac(`none`) − zero_frac(`stack-write-only`)
+≥ 0.10, both reported against the 1/256 random baseline; exploratory: which non-stack
+writers carry the residual flood (byte histogram, write counters, interaction census).
 **D3**: the fraction of the effect carried by the write side,
 (frac(`stack-write-only`) − frac(`none`)) / (frac(`stack-writes`) − frac(`none`)),
 is ≥ 0.75, and `stack-read-only` is within 0.1 of `none`; `push` versus
@@ -167,7 +183,7 @@ at 128 steps (one-sided Fisher). The k = 6 arm is exploratory. If D1 fails, the 
 B observation is reported as an unreplicated single cell.
 
 **Stage E — size-axis controls.** *Specified 2026-10-07 after the review, before any
-run. `make_conds.stage_e()` → `conds/stageE.json` (950 runs).* Stage B's size axis has
+run. `make_conds.stage_e()` → `conds/stageE.json` (1,230 runs).* Stage B's size axis has
 four confounds that could each produce "flat emergence time above L = 16": the
 per-byte mutation rate falls as 1/L; the number of 4-byte windows per cell and the
 total soup bytes grow with L at fixed 20,000 cells; the Z80 budget per tape byte falls
@@ -177,20 +193,32 @@ variants and run to 300k), so "final" states of different L had different ages.
 Arms, each for `none` and `stack-write-only`, 128 steps, k = 4 nominal, seeds 101–110,
 no early stop, fine early sampling:
 
-- **@nominal** — Stage B's setting without the early stop, at the nine square L and
-  at **L ∈ {8, 10, 12, 18, 20, 24, 32, 50}** (headless only; shaders and executors
-  exported for them), to break the parity alternation and resolve the floor between
-  9 and 16.
+- **@nominal** — Stage B's setting without the early stop, at the nine square L, at
+  **L ∈ {8, 10, 12, 18, 20, 24, 32, 50}** (headless only; shaders and executors exported
+  for them) to break the parity alternation and resolve the floor between 9 and 16, and
+  at **L ∈ {3, 5, 6, 7}** to find where life starts (the 3-byte unit `DEC E ; LDIR`
+  exists). The three control arms below run at the nine square L only.
 - **@mubyte** — per-byte mutation rate held at the L = 16 value: 32·L mutated bytes
   per step instead of 512.
 - **@bytes** — total soup held at 320,000 bytes: cells = 320,000/L (80,000 at L = 4 …
   3,200 at L = 100) with the drawn pairs scaled with the cell count.
 - **@steps8L** — Z80 budget proportional to length: 8·L steps (32 at L = 4 … 800 at
   L = 100).
+- **@musweep** — L = 100, 128 steps, k ∈ {1, 2, 3, 5, 8} (k = 4 is @nominal): the
+  maintained period/information of the replicator versus the per-byte mutation rate, the
+  error-threshold curve.
+- **@budget** — L = 100, k = 4, steps ∈ {32, 64, 256, 1024, 2048} (128 is @nominal):
+  faithfulness and whole-tape copiers versus bytes copyable per encounter; prediction:
+  faithful fraction rises from ≈ 0 at 128 to ≈ 1 at ≥ 512, and whole-tape copiers with
+  cargo appear only at ≥ 512.
 - **E6 — within-seed variance:** 10 repeats of seed 1 in three cells (`none` L = 16,
   `stack-writes` L = 16, `none` L = 9) to measure how much of the between-run
   variance is GPU non-determinism; if it matches the between-seed variance, seeds are
-  exchangeable replicates.
+  exchangeable replicates. At L = 16 the three control arms coincide with @nominal and
+  with the Stage C cells (32·16 = 512 mutations; 320,000/16 = 20,000 cells; 8·16 = 128
+  steps): these 100 physically identical conditions are **declared cross-batch replicates**
+  and enter the variance analysis, never a pooled table (the analysis asserts that each
+  (ablation, L, steps, k, seed, replicate) appears once).
 - **E7 — the 32-step · 1/4 block-copy exception** (Stage A: 0/10 vs 10/10 in one of 63
   cells) with 20 new seeds (1001–1020), `none` and `block-copy`.
 
@@ -204,9 +232,11 @@ L, mutation or budget). Floor: the non-square lengths place the floor between L 
 and L = 16; at L = 12 (3 | 12 and 4 | 24) the 3-byte LDIR unit and the 4-byte stack unit
 both tile, so L = 12 should behave like L = 16 rather than like L = 9.
 
-Costs (L40S list price, measured 0.30 ms/step at 128 steps for L ≤ 36): Stage C ≈ 19
-GPU-h ≈ $38; Stage D ≈ 13 GPU-h ≈ $27; Stage E ≈ 33 GPU-h ≈ $65. Every stage is
-preflighted locally (`preflight.py`) through the exact Modal code path before launch.
+Costs (L40S list price; estimator fitted to the measured per-L rates of Stages A/B plus
+host time per sample) are quoted from the preflight logs in the change log. Every stage is
+preflighted locally (`preflight.py`: tests, condition integrity, no foreign runs in the
+volume directory, a dry run of every distinct parameter signature through the exact Modal
+code path) and smoke-tested on Modal (2 short runs + 1 invalid condition) before launch.
 
 ## Outcomes (all recorded per sample, nothing chosen after the fact)
 
@@ -265,6 +295,29 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (second pre-launch review, before any C/D/E run; REVIEW.md §8):
+  **superseded Stage D runs archived** (seeds 1–12 + 8 orphans → `runs/stageD_v1_seeds1-20`,
+  removed from the volume; every analysis script now selects only summaries whose stem
+  is in the stage's condition file). **Recording:** explicit early samples (1…34), full
+  snapshots on a log schedule with an interaction census, per-sample write counters,
+  16 random tapes, top-10 exemplars, copy offset recorded by the assay (direct test of
+  period = gcd(offset, 2L)). **Conditions:** C3 gains `stack-writes` and `none` at
+  (32, k=2) (490 runs); E gains the L = 100 mutation and budget sweeps and L ∈ {3,5,6,7}
+  (1,230 runs); @bytes grids rounded to the nearest cell count; the L = 16 duplicates
+  declared as replicates. **Outcomes:** D2 restated as a contrast (the flood is not
+  stack-specific); time expressed in cumulative active interactions per cell;
+  `t_faith` censoring by the Stage A/B early stop is reported (4 runs, 3 of them in the
+  stack-writes L = 100 · 128 cell). **Analysis corrections:** tiled-only divisor
+  statistics (an untiled tape's period trivially divides 2L; six faithful whole-tape
+  copiers exist at L = 49–81 and are now a class of their own), Fisher two-sided test
+  with a relative tolerance, tolerant period scanning up to L − 1, zoo units by
+  per-position majority vote. **Infrastructure:** Modal timeout 1 h with one retry,
+  brotli pinned to the local version, tracked/untracked dirtiness recorded separately, a
+  `--smoke` launcher mode, the preflight estimator fitted to measured rates with host time.
+  Preflight (tests + integrity + volume check + dry run of every distinct signature) passed for
+  all three stages; estimates at L40S list price: Stage C 24.7 GPU-h ≈ $48, Stage D 17.8 GPU-h
+  ≈ $35, Stage E 69.6 GPU-h ≈ $136 (the L = 100 budget sweep's 1,024/2,048-step runs and the
+  mutation sweep account for ≈ $40 of E).
 - 2026-10-07 (after the four-part review, before any Stage C/D/E run): **Stages
   C, D and E re-specified** (see the Design section): new seeds for every stage
   (Stage B's seeds generated the hypotheses); fine early sampling (50 steps to
@@ -303,8 +356,9 @@ replication; 2% exact share is noisy because return-address smears reach
   0/10 by 2,500 steps, the other finer ablations 9–10/10 by 500–1,000).
   Stage A and B used `stop_share: 0.5` (a positive value), so their early
   stop behaved as pre-registered.
-- 2026-10-07 (Stage B assays recomputed and read; Stage C finished, not yet
-  read). Three post hoc additions, all reported next to the pre-registered
+- 2026-10-07 (Stage B assays recomputed and read; the first Stage C relaunch was
+  stopped after 5 results and superseded by the re-specified design, so no old-seed
+  Stage C data exist). Three post hoc additions, all reported next to the pre-registered
   measures, none replacing them:
   (a) **Faithfulness.** The no-copy soups at L = 100 contain a trace-level
   (top share 0.2%) `CALL`-chain `cd xx cd xx …` whose CALLs push their own

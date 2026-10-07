@@ -35,6 +35,7 @@ import numpy as np
 import pandas as pd
 
 from algocell_exp.assay import GEN2_MIN, assay, assay_many
+from algocell_exp.batch import select_summaries
 from algocell_exp.isa import mechanisms, parse_patterns, resolve
 from algocell_exp.metrics import tolerant_period
 
@@ -90,6 +91,7 @@ def scan_emergence(samples: list[dict], z80_steps: int, patterns: list[str], set
                     "t_rep": d["step"], "trep_tape": ex["tape"], "trep_rank": rank, "trep_share": round(shares[rank], 4),
                     "trep_score": round(r["score"], 3), "trep_gen2": round(r["gen2_score"], 3), "trep_gen2_cond": round(r["gen2_cond"], 3),
                     "trep_q75": round(r["offspring_within_q"], 3), "trep_faithful": r["faithful"], "trep_self_b": round(r["self_preserved_as_B"], 3),
+                    "trep_offset": r.get("copy_offset"),
                     "trep_mechs": "+".join(mechanisms(hexbytes(ex["tape"]), sets)) or "-", **period_fields("trep", ex["tape"]),
                 })
             if out["t_faith"] < 0 and r["faithful"]:
@@ -113,15 +115,17 @@ def best_of(tapes: list[str], z80_steps: int, patterns: list[str], neighbors=Non
 def main(d: str) -> None:
     rows: list[dict] = []
     cache: dict = {}
-    files = sorted(glob.glob(os.path.join(d, "*.summary.json")))
+    files = select_summaries(d)
     for i, p in enumerate(files):
         s = json.load(open(p))
         stem = p[: -len(".summary.json")]
         L = s.get("tape_length", 16)
         patterns = s["suppress"] if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])
         sets = resolve(patterns)
+        prov = s.get("provenance") or {}
         row: dict = {
-            "label": s["label"], "tape_len": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "file": os.path.basename(p),
+            "label": s["label"], "ablation": s["label"].split("@", 1)[0], "arm": s["label"].split("@", 1)[1] if "@" in s["label"] else "nominal",
+            "tape_len": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "replicate": prov.get("replicate"), "file": os.path.basename(p),
             "horizon": s["horizon"], "steps_run": s["steps_run"], "stopped_early": s["steps_run"] < s["horizon"],
             "tq_10": s["tq_10"], "tq_50": s["tq_50"],
         }
@@ -150,7 +154,7 @@ def main(d: str) -> None:
         row.update({
             "final_tape": t, "final_rank": rank, "final_share": round(fin["top3_shares"][rank], 4) if rank < len(fin.get("top3_shares", [])) else np.nan,
             "final_score": round(r["score"], 3), "final_gen2": round(r["gen2_score"], 3), "final_gen2_cond": round(r["gen2_cond"], 3),
-            "final_q75": round(r["offspring_within_q"], 3), "final_faithful": r["faithful"], "final_replicator": r["is_replicator"],
+            "final_q75": round(r["offspring_within_q"], 3), "final_faithful": r["faithful"], "final_replicator": r["is_replicator"], "final_offset": r.get("copy_offset"),
             "final_self_b": round(r["self_preserved_as_B"], 3), "final_mechs": "+".join(mechanisms(hexbytes(t), sets)) or "-",
             **period_fields("final", t),
         })
@@ -166,7 +170,7 @@ def main(d: str) -> None:
             cells = snap[rng.integers(0, snap.shape[0], size=FUNC_CELLS)]
             rnd = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"])
             ins = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"], neighbors=snap)
-            informative = [x for x in ins if x["n_informative"] >= 8]
+            informative = [x for x in ins if x["n_informative"] >= 8 and x.get("n_informative2", 8) >= 8]
             row.update({
                 "final_func_n": FUNC_CELLS,
                 "final_func_rnd": float(np.mean([x["is_replicator"] for x in rnd])),

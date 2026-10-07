@@ -16,7 +16,7 @@ import os
 import brotli
 import numpy as np
 
-from .run import run
+from .run import run, sample_schedule
 
 
 def run_stem(cond: dict) -> str:
@@ -75,14 +75,7 @@ def check_outputs(cond: dict, out_dir: str) -> list[str]:
         problems.append(f"{stem}: {len(samples)} sample lines vs summary.samples {s['samples']}")
     if cond.get("random_tapes") and any(len(r.get("random_tapes", [])) != cond["random_tapes"] for r in samples):
         problems.append(f"{stem}: random_tapes missing in some samples")
-    early, until, every = cond.get("sample_every_early"), cond.get("early_until", 0), cond.get("sample_every", 250)
-    expect = []
-    t = 0
-    while t < horizon:
-        step = early if (early and t < until) else every
-        step = min(step, horizon - t, (until - t) if (early and t < until) else step)
-        t += step
-        expect.append(t)
+    expect = sample_schedule(horizon, cond.get("sample_every", 250), cond.get("sample_every_early"), cond.get("early_until", 0), cond.get("sample_steps", ()))
     got = [r["step"] for r in samples]
     if s["steps_run"] == horizon and got != expect:
         problems.append(f"{stem}: sample steps {got[:6]}… != expected {expect[:6]}…")
@@ -90,6 +83,15 @@ def check_outputs(cond: dict, out_dir: str) -> list[str]:
         problems.append(f"{stem}: byte_hist/active_pairs missing")
     if not os.path.exists(os.path.join(out_dir, f"{stem}.soup_final.u8.br")):
         problems.append(f"{stem}: no final snapshot")
+    for t in cond.get("snapshot_steps", []) or []:
+        if t <= s["steps_run"]:
+            if not os.path.exists(os.path.join(out_dir, f"{stem}.soup_t{t}.u8.br")):
+                problems.append(f"{stem}: snapshot at step {t} missing")
+            rec = next((r for r in samples if r["step"] == t), None)
+            if rec is None or "census" not in rec:
+                problems.append(f"{stem}: interaction census at step {t} missing")
+    if samples and "ix_active" not in samples[-1]:
+        problems.append(f"{stem}: interaction summary missing")
     if (s["tq_10"] >= 0) != os.path.exists(os.path.join(out_dir, f"{stem}.soup_emergence.u8.br")):
         problems.append(f"{stem}: emergence snapshot presence does not match tq_10")
     if s["tape_length"] != (cond.get("tape") or 16) or s["z80_steps"] != cond.get("z80_steps", 128) or s["noise_exp"] != cond.get("noise_exp", 4):
@@ -99,3 +101,30 @@ def check_outputs(cond: dict, out_dir: str) -> list[str]:
     if cond.get("pairs") is not None and s["pairs"] != cond["pairs"]:
         problems.append(f"{stem}: pairs differ")
     return problems
+
+
+def stems_for(conds_path: str) -> set[str]:
+    with open(conds_path) as f:
+        return {run_stem(c) for c in json.load(f)}
+
+
+def select_summaries(run_dir: str, conds_path: str | None = None) -> list[str]:
+    """Summary files of `run_dir` that belong to the stage's condition file (default
+    conds/<basename(run_dir)>.json when it exists). Files whose stem is not in the file are
+    reported and skipped, so a superseded design left in the same directory can never be
+    pooled into an analysis (review 2026-10-07, blocker)."""
+    files = sorted(glob.glob(os.path.join(run_dir, "*.summary.json")))
+    if conds_path is None:
+        cand = os.path.join(os.path.dirname(os.path.abspath(run_dir.rstrip("/"))), "..", "conds", os.path.basename(run_dir.rstrip("/")) + ".json")
+        cand = os.path.normpath(cand)
+        conds_path = cand if os.path.exists(cand) else None
+    if conds_path is None:
+        return files
+    allowed = stems_for(conds_path)
+    keep, skipped = [], []
+    for p in files:
+        stem = os.path.basename(p)[: -len(".summary.json")]
+        (keep if stem in allowed else skipped).append(p)
+    if skipped:
+        print(f"warning: {len(skipped)} summaries in {run_dir} are not in {os.path.basename(conds_path)} and were skipped (e.g. {os.path.basename(skipped[0])})", file=__import__('sys').stderr)
+    return keep

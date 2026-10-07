@@ -7,9 +7,10 @@ B="$1"
 cd "$(dirname "$0")"
 SRC="runs/$B/analysis"
 [ -d "$SRC" ] || { echo "no $SRC"; exit 1; }
-rm -rf "results/$B"
 mkdir -p "results/$B"
-cp "$SRC"/*.csv "$SRC"/*.png "$SRC"/*.pdf "results/$B/" 2>/dev/null || true
+# remove generated artefacts only; hand-written FINDINGS.md and notes stay
+find "results/$B" -maxdepth 1 -type f \( -name "*.csv" -o -name "*.png" -o -name "*.pdf" -o -name "*.svg" -o -name "ZOO.md" -o -name "NUMBERS.md" \) -delete
+cp "$SRC"/*.csv "$SRC"/*.png "$SRC"/*.pdf "$SRC"/*.svg "results/$B/" 2>/dev/null || true
 [ -f "$SRC/ZOO.md" ] && cp "$SRC/ZOO.md" "results/$B/"
 for sub in "$SRC"/*/; do
   [ -d "$sub" ] || continue

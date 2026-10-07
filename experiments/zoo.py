@@ -60,7 +60,8 @@ def signature(tape_hex: str, label: str = "none") -> str:
         # `LD BC,nn ; PUSH BC` is 4). Disassemble enough repeats to see whole instructions, keep every
         # instruction of one INSTRUCTION period (pointer set-up such as DEC E matters for a tiled design),
         # and take the rotation whose signature sorts first as the canonical phase.
-        unit = tape[:p]
+        arr = np.frombuffer(tape, dtype=np.uint8)
+        unit = bytes(Counter(arr[i::p].tolist()).most_common(1)[0][0] for i in range(p))   # per-position majority vote: one mutated byte does not relabel the design
         reps = max(3, (12 // p) + 2)
         cands = []
         for r in range(p):
@@ -70,7 +71,7 @@ def signature(tape_hex: str, label: str = "none") -> str:
             q = next((q for q in range(1, len(parts)) if all(parts[i] == parts[i + q] for i in range(len(parts) - q))), len(parts))
             cands.append(" ; ".join(parts[:q]) if parts else "(no instructions)")
         core = min(cands, key=lambda c: (len(c), c))
-        return f"[{core}] ×{L / p:g}"
+        return f"[{core}] ×{L // p}" + (f"+{L % p}B" if L % p else "")
     parts = _parts(tape, sets)
     return " ; ".join(_collapse(parts)) if parts else "(no write instructions)"
 

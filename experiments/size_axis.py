@@ -32,7 +32,7 @@ def main():
     ap.add_argument("dirs", nargs="+")
     ap.add_argument("--out", default="runs/stageB/analysis/size_axis")
     ap.add_argument("--k", type=int, default=4)
-    ap.add_argument("--labels", default="none,block-copy,stack-writes,no-copy")
+    ap.add_argument("--labels", default="none,block-copy,stack-writes,no-copy", help="comma-separated labels (use e.g. none@nominal,stack-write-only@nominal for Stage E arms)")
     a = ap.parse_args()
     asy = pd.concat([pd.read_csv(os.path.join(d, "analysis", "assays.csv")) for d in a.dirs], ignore_index=True)
     suc = pd.concat([pd.read_csv(os.path.join(d, "analysis", "succession.csv")) for d in a.dirs if os.path.exists(os.path.join(d, "analysis", "succession.csv"))], ignore_index=True)
@@ -58,14 +58,15 @@ def main():
             "func_rnd_median": float(g["final_func_rnd"].median()) if "final_func_rnd" in g else np.nan,
             "func_rnd_faithful_median": float(g["final_func_rnd_faithful"].median()) if "final_func_rnd_faithful" in g else np.nan,
             "trep_period_median": float(g.loc[g["t_rep"] > 0, "trep_period"].median()) if (g["t_rep"] > 0).any() else np.nan,
-            "trep_period_divides_2L": float(((2 * L) % g.loc[g["t_rep"] > 0, "trep_period"].fillna(1).astype(int) == 0).mean()) if (g["t_rep"] > 0).any() else np.nan,
+            "trep_tiled_frac": float((g.loc[g["t_rep"] > 0, "trep_period"] <= L / 2).mean()) if (g["t_rep"] > 0).any() else np.nan,
+            "trep_period_divides_2L_tiled": float(((2 * L) % g.loc[(g["t_rep"] > 0) & (g["trep_period"] <= L / 2), "trep_period"].astype(int) == 0).mean()) if ((g["t_rep"] > 0) & (g["trep_period"] <= L / 2)).any() else np.nan,
             "final_hoe_median": float(g["final_hoe"].median()),
         })
         rows.append(row)
     tab = pd.DataFrame(rows).sort_values(["label", "steps", "L"])
     tab.to_csv(os.path.join(a.out, "size_cells.csv"), index=False)
     pd.set_option("display.width", 250)
-    print(tab[["label", "L", "steps", "n", "stopped_early", "t_rep_n", "t_rep_km_median", "t_faith_n", "t_faith_km_median", "func_rnd_median", "trep_period_median", "trep_period_divides_2L"]]
+    print(tab[["label", "L", "steps", "n", "stopped_early", "t_rep_n", "t_rep_km_median", "t_faith_n", "t_faith_km_median", "func_rnd_median", "trep_period_median", "trep_tiled_frac", "trep_period_divides_2L_tiled"]]
           .to_string(index=False, float_format=lambda x: "NR" if x == np.inf else f"{x:.2f}"))
 
     fs.setup()
@@ -126,7 +127,7 @@ def main():
     if len(suc):
         suc = suc[(suc["k"] == a.k) & suc["steps"].isin(steps_levels)]
         fams = ["push", "ex_sp", "ldir", "ld_hl", "cb_hl", "rst", "flooded", "none"]
-        show = [l for l in ("none", "stack-writes") if l in set(suc["label"])]
+        show = [l for l in labels if l.split("@")[0] in ("none", "stack-writes", "stack-write-only") and l in set(suc["label"])][:2]
         fig, axes = plt.subplots(len(show), len(steps_levels), figsize=(fs.DOUBLE, 1.9 * len(show) + 0.3), squeeze=False, sharey=True)
         for r, label in enumerate(show):
             for c, steps in enumerate(steps_levels):

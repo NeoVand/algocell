@@ -25,6 +25,8 @@ import sys
 import numpy as np
 import pandas as pd
 
+from algocell_exp.batch import select_summaries
+
 FAMILIES = {"push": "c_push2", "ex_sp": "c_ex_sp", "ldir": "c_blockcopy", "ld_hl": "c_ld_hl_w", "cb_hl": "c_cb_hl", "rst": "c_rst"}
 TAKEOVER = 0.30       # headroom-normalised excess over the random-soup baseline
 FIXED_STEPS = (5_000, 50_000, 300_000)
@@ -107,7 +109,7 @@ def analyze_run(jsonl_path: str, tape_length: int = 16, horizon: int | None = No
 
 def main(d: str) -> None:
     rows = []
-    for p in sorted(glob.glob(os.path.join(d, "*.summary.json"))):
+    for p in select_summaries(d):
         s = json.load(open(p))
         stem = p[: -len(".summary.json")]
         r = analyze_run(stem + ".jsonl", s.get("tape_length", 16), s.get("horizon")) if os.path.exists(stem + ".jsonl") else {}

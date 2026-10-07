@@ -34,32 +34,70 @@ from make_conds import ABLATIONS, ablation_of
 
 L40S_USD_PER_H = 1.95
 OVERHEAD_S = 25.0  # container start + image + volume commit, per run
+# Measured effective ms/step on L40S from the Stage A/B summaries (wall/steps at the 500-step cadence), by L: (128 steps, 512 steps)
+_RATE = {4: (0.333, 1.137), 9: (0.316, 1.034), 16: (0.271, 0.835), 25: (0.225, 0.649), 36: (0.25, 0.70), 49: (0.28, 0.75), 64: (0.31, 0.80), 81: (0.34, 0.654), 100: (0.372, 1.018)}
 
 
 def signature(c: dict) -> tuple:
     return tuple(sorted((k, json.dumps(v, sort_keys=True)) for k, v in c.items() if k not in ("seed", "replicate")))
 
 
+def _rate128(L: int) -> float:
+    ks = sorted(_RATE)
+    if L <= ks[0]:
+        return _RATE[ks[0]][0]
+    if L >= ks[-1]:
+        return _RATE[ks[-1]][0]
+    lo = max(k for k in ks if k <= L)
+    hi = min(k for k in ks if k >= L)
+    if lo == hi:
+        return _RATE[lo][0]
+    t = (L - lo) / (hi - lo)
+    return _RATE[lo][0] * (1 - t) + _RATE[hi][0] * t
+
+
 def step_seconds(c: dict) -> float:
-    """Measured on L40S: 0.30 ms/step at 128 Z80 steps (L ≤ 36), ≈ 0.85 ms at 512; cells and pairs scale the work."""
+    """GPU seconds per simulation step: measured per-L rate at 128 Z80 steps, scaled ∝ steps^0.8 above 128 and
+    steps^0.5 below, times the cell/pair factor, with a dispatch-latency floor (small grids cannot go faster)."""
     steps = c.get("z80_steps", 128)
     L = c.get("tape") or 16
-    base = 0.30e-3 * (steps / 128) ** 0.75 if steps >= 128 else 0.16e-3 * (steps / 32) ** 0.5
-    size = 1.0 + 0.35 * max(0, (L - 36)) / 64           # L = 100 is ~1.35× L = 16 at equal steps
+    base = _rate128(L) * 1e-3 * ((steps / 128) ** 0.8 if steps >= 128 else (steps / 128) ** 0.5)
     cells = (c.get("width", 160) * c.get("height", 125)) / 20000
     pairs = c.get("pairs", 8192) / 8192
-    return base * size * max(cells, pairs)
+    return max(base * max(cells, pairs), 0.12e-3 * (steps / 128) ** 0.5)
+
+
+def sample_seconds(c: dict) -> float:
+    """Host CPU per sample (metrics, census, brotli, readbacks): ≈ 30 ms at L = 16, ≈ 100 ms at L = 100, plus ≈ 0.3 s per snapshot+census."""
+    from algocell_exp.run import sample_schedule
+
+    L = c.get("tape") or 16
+    n = len(sample_schedule(c.get("horizon", 300_000), c.get("sample_every", 500), c.get("sample_every_early"), c.get("early_until", 0), c.get("sample_steps", ())))
+    return n * (0.03 + 0.0007 * L) + 0.3 * len(c.get("snapshot_steps", []) or [])
 
 
 def estimate(conds: list[dict]) -> tuple[float, float]:
-    secs = sum(c.get("horizon", 300_000) * step_seconds(c) + OVERHEAD_S for c in conds)
+    secs = sum(c.get("horizon", 300_000) * step_seconds(c) + sample_seconds(c) + OVERHEAD_S for c in conds)
     return secs / 3600, secs / 3600 * L40S_USD_PER_H
+
+
+def volume_foreign_stems(batch: str, allowed: set[str]) -> list[str]:
+    """Stems already in the volume directory of this batch that are NOT in the condition file."""
+    import re
+    import subprocess
+
+    r = subprocess.run([sys.executable.replace("python", "modal") if False else os.path.join(os.path.dirname(sys.executable), "modal"), "volume", "ls", "algocell-atlas-runs", batch, "--json"], capture_output=True, text=True)
+    if r.returncode != 0:
+        return []  # directory absent
+    stems = set(re.findall(r"([A-Za-z0-9@._-]+)\.summary\.json", r.stdout))
+    return sorted(stems - allowed)
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("conds")
-    ap.add_argument("--horizon", type=int, default=1500, help="local dry-run horizon per representative condition")
+    ap.add_argument("--horizon", type=int, default=1500, help="local dry-run horizon per representative condition (the first representative of a stage runs to 6000 so the 50→500 sampling transition is exercised)")
+    ap.add_argument("--no-volume-check", action="store_true")
     ap.add_argument("--skip-tests", action="store_true")
     ap.add_argument("--full", action="store_true", help="dry-run EVERY condition (not one per signature)")
     a = ap.parse_args()
@@ -94,6 +132,13 @@ def main() -> int:
     for c in conds:
         sigs.setdefault(signature(c), c)
     print(f"   {len(conds)} conditions, {len(sigs)} distinct parameter signatures, {len(set(stems))} unique stems; problems so far: {len(problems)}")
+    if not a.no_volume_check:
+        batch = os.path.splitext(os.path.basename(a.conds))[0].replace("_remaining", "")
+        foreign = volume_foreign_stems(batch, set(stems))
+        if foreign:
+            problems.append(f"volume directory {batch}/ holds {len(foreign)} summaries that are not in the condition file (e.g. {foreign[0]}); archive and remove them first")
+        else:
+            print(f"   volume {batch}/: no foreign summaries")
 
     print(f"3. local dry run of {len(conds) if a.full else len(sigs)} condition(s) at horizon {a.horizon} through the Modal code path …", flush=True)
     todo = conds if a.full else list(sigs.values())
@@ -101,10 +146,11 @@ def main() -> int:
     with tempfile.TemporaryDirectory() as tmp:
         for i, c in enumerate(todo):
             cc = dict(c)
-            cc["horizon"] = min(cc.get("horizon", 300_000), a.horizon)
+            cc["horizon"] = min(cc.get("horizon", 300_000), a.horizon if i else max(a.horizon, 6000))
             if cc.get("early_until"):
                 cc["early_until"] = min(cc["early_until"], cc["horizon"])
             cc["sample_every"] = min(cc.get("sample_every", 500), cc["horizon"])
+            cc["snapshot_steps"] = [t for t in (cc.get("snapshot_steps") or []) if t <= cc["horizon"]]
             try:
                 run_to_dir(cc, tmp, {"preflight": True})
                 problems += check_outputs(cc, tmp)

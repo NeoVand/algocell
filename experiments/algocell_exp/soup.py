@@ -118,9 +118,9 @@ class Soup:
         words_per_pair = self.words_per_cell * 2
         mk = lambda size, extra=0: dev.create_buffer(size=size, usage=B.STORAGE | B.COPY_DST | extra)  # noqa: E731
         self.soup_buf = mk(soup_bytes, B.COPY_SRC)
-        self.pairs_buf = mk(MAX_PAIRS * 2 * 4)
-        self.pair_data_buf = mk(MAX_PAIRS * words_per_pair * 4)
-        self.write_counts_buf = mk(MAX_PAIRS * 2 * 4)
+        self.pairs_buf = mk(MAX_PAIRS * 2 * 4, B.COPY_SRC)
+        self.pair_data_buf = mk(MAX_PAIRS * words_per_pair * 4, B.COPY_SRC)
+        self.write_counts_buf = mk(MAX_PAIRS * 2 * 4, B.COPY_SRC)
         self.rng_states_buf = mk(MAX_PAIRS * 4)
         self.pair_active_buf = mk(MAX_PAIRS * 4, B.COPY_SRC)
         self.byte_counts_buf = mk(256 * 4, B.COPY_SRC)
@@ -270,6 +270,24 @@ class Soup:
         effective interactions per cell."""
         a = np.frombuffer(self.device.queue.read_buffer(self.pair_active_buf), dtype=np.uint32)
         return int(a[: self.pair_count].sum())
+
+    def read_interactions(self) -> dict:
+        """Per-pair data of the LAST executed step, computed by the shader anyway: the two cell indices,
+        the active flag, and the number of byte writes each program made into A and into B
+        (write_counts[pair, 0] = writes landing in A's half, [pair, 1] = in B's half; repeated writes to
+        one address count each time). ≈ 200 KB of readback."""
+        n = self.pair_count
+        q = self.device.queue
+        pairs = np.frombuffer(q.read_buffer(self.pairs_buf), dtype=np.uint32)[: 2 * n].reshape(n, 2).copy()
+        active = np.frombuffer(q.read_buffer(self.pair_active_buf), dtype=np.uint32)[:n].astype(bool)
+        wc = np.frombuffer(q.read_buffer(self.write_counts_buf), dtype=np.uint32)[: 2 * n].reshape(n, 2).copy()
+        return {"pairs": pairs, "active": active, "write_counts": wc}
+
+    def read_pair_memory(self) -> np.ndarray:
+        """(pair_count, 2, L) post-execution, PRE-mutation memories of the last step's pairs (padding stripped)."""
+        wpc = self.words_per_cell
+        raw = np.frombuffer(self.device.queue.read_buffer(self.pair_data_buf), dtype=np.uint8)[: self.pair_count * 2 * wpc * 4]
+        return raw.reshape(self.pair_count, 2, wpc * 4)[:, :, : self.tape_length].copy()
 
     def read_soup(self) -> np.ndarray:
         """(cell_count, tape_length) uint8, padding stripped."""

@@ -54,6 +54,9 @@ HORIZON = 300_000
 SAMPLE_EVERY = 500
 SQUARE_TAPES = (4, 9, 16, 25, 36, 49, 64, 81, 100)
 NONSQUARE_TAPES = (8, 10, 12, 18, 20, 24, 32, 50)   # headless only (no √L×√L display); shaders exported for them too
+TINY_TAPES = (3, 5, 6, 7)                             # where does life start? (the 3-byte unit DEC E ; LDIR exists)
+EARLY_STEPS = (1, 2, 3, 5, 8, 13, 21, 34)             # the zero flood forms within ~30 steps (31% zeros by step 50)
+SNAPSHOTS = (500, 1000, 2000, 3000, 5000, 7500, 10000, 15000, 20000, 30000, 50000, 75000, 100000, 150000, 200000, 300000, 500000, 750000, 1000000)
 CELLS = 20_000
 PAIRS = 8_192
 
@@ -89,7 +92,8 @@ def stage_b() -> list[dict]:
 def _c(label, tape, steps, k, seed, horizon=HORIZON, every=SAMPLE_EVERY, **extra) -> dict:
     """Stage C/D/E condition: no early stop, fine early sampling, random tapes, instrumentation."""
     c = cond(label, tape, steps, k, seed)
-    c.update({"horizon": horizon, "sample_every": every, "sample_every_early": 50, "early_until": 5_000, "stop_share": -1, "random_tapes": 8})
+    c.update({"horizon": horizon, "sample_every": every, "sample_every_early": 50, "early_until": 5_000, "stop_share": -1, "random_tapes": 16,
+              "sample_steps": list(EARLY_STEPS), "snapshot_steps": [t for t in SNAPSHOTS if t <= horizon], "census_pairs": 128, "exemplar_count": 10})
     c.update(extra)
     return c
 
@@ -107,7 +111,8 @@ def stage_c() -> list[dict]:
         for st in (128, 512):
             for k in (2, 4, 6):
                 out += [_c(a, 16, st, k, s) for s in SEEDS_C]
-    for a in ("push-only", "ex-sp-only", "call-rst", "ld-imm", "ld-reg", "cb-page", "ed-loads", "stack-write-only", "stack-read-only"):   # C3
+    out += [_c("none", 16, 32, 2, s) for s in SEEDS_C]                              # the unablated comparator for the C3 (32, k=2) setting
+    for a in ("push-only", "ex-sp-only", "call-rst", "ld-imm", "ld-reg", "cb-page", "ed-loads", "stack-write-only", "stack-read-only", "stack-writes"):   # C3 (+ the Stage A arm with new seeds)
         for st, k in ((128, 4), (32, 2)):
             out += [_c(a, 16, st, k, s) for s in SEEDS_C]
     for a in ("none", "stack-writes"):                                              # C5 — size without censoring
@@ -134,7 +139,7 @@ def grid_for_bytes(L: int, total_bytes: int = CELLS * 16) -> tuple[int, int, int
     """(width, height, pairs) keeping total soup bytes ≈ total_bytes and drawn pairs per cell ≈ PAIRS/CELLS."""
     cells = total_bytes // L
     w = int(round((cells * 1.28) ** 0.5))      # keep the 160:125 aspect
-    h = max(1, cells // w)
+    h = max(1, int(round(cells / w)))
     pairs = int(round(PAIRS * (w * h) / CELLS))
     return w, h, pairs
 
@@ -145,11 +150,18 @@ def stage_e() -> list[dict]:
        @mubyte    per-BYTE mutation rate held at the L = 16 value: mutations/step = 32·L
        @bytes     total soup bytes held at 320,000 (cells = 320,000/L; pairs scaled with cells)
        @steps8L   Z80 budget proportional to L: steps = 8·L (= 128 at L = 16)
-       plus E6 replicate-variance (10 repeats of one seed in 3 cells) and E7 the 32-step/k=2 block-copy exception with new seeds."""
+       @musweep   L = 100, k ∈ {1,2,3,5,8} (k = 4 is @nominal): the error-threshold curve
+       @budget    L = 100, steps ∈ {32,64,256,1024,2048} (128 is @nominal): bytes per encounter
+       plus E6 replicate-variance (10 repeats of one seed in 3 cells) and E7 the 32-step/k=2 block-copy exception with new seeds.
+       At L = 16 the three control arms coincide with @nominal and with Stage C cells: these are declared cross-batch replicates (PLAN)."""
     out = []
     for a in ("none", "stack-write-only"):
-        for L in SQUARE_TAPES + NONSQUARE_TAPES:
+        for L in TINY_TAPES + SQUARE_TAPES + NONSQUARE_TAPES:
             out += [_c(f"{a}@nominal", L, 128, 4, s) for s in SEEDS_C]
+        for k in (1, 2, 3, 5, 8):                                                  # E8 — mutation sweep at L = 100 (error-threshold curve)
+            out += [_c(f"{a}@musweep", 100, 128, k, s) for s in SEEDS_C]
+        for st in (32, 64, 256, 1024, 2048):                                       # E9 — budget sweep at L = 100 (bytes per encounter)
+            out += [_c(f"{a}@budget", 100, st, 4, s) for s in SEEDS_C]
         for L in SQUARE_TAPES:
             out += [_c(f"{a}@mubyte", L, 128, 4, s, mutations_per_step=32 * L) for s in SEEDS_C]
             w, h, pairs = grid_for_bytes(L)

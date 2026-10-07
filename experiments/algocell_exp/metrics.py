@@ -24,6 +24,8 @@ def species_stats(hashes: np.ndarray) -> dict:
         "top_share": float(top),
         "top_hash": int(uniq[order[0]]),
         "top3_hashes": [int(h) for h in uniq[order[:3]]],
+        "top10_hashes": [int(h) for h in uniq[order[:10]]],
+        "top10_shares": [float(c / n) for c in counts[order[:10]]],
         "top3_shares": [float(c / n) for c in counts[order[:3]]],
         "H_species": H,
         "simpson": simpson,
@@ -154,14 +156,15 @@ def exemplars(soup: np.ndarray, hashes: np.ndarray, top_hashes: list[int], suppr
 
 
 def tolerant_period(tape: bytes | np.ndarray, tol: float = 0.9) -> tuple[int, float]:
-    """(period, match) where period is the smallest p <= len/2 for which at least `tol`
-    of the positions satisfy tape[i] == tape[i-p]; falls back to len(tape) (aperiodic) with
-    the best match fraction found. Unlike minimal_period, one defective byte (e.g. a 3-byte
-    end defect on an 81-byte period-2 tape) does not turn a tiled tape into "aperiodic"."""
+    """(period, match) where period is the smallest p < len for which at least `tol` of the
+    positions satisfy tape[i] == tape[i-p]; falls back to len(tape) (aperiodic / whole-tape) with
+    the best match fraction found. A tape is "tiled" when period <= len/2 (callers decide); a
+    period in (len/2, len) is reported as such rather than collapsed to len (review 2026-10-07).
+    Unlike minimal_period, one defective byte does not turn a tiled tape into "aperiodic"."""
     b = np.frombuffer(bytes(tape), dtype=np.uint8) if not isinstance(tape, np.ndarray) else tape
     n = b.size
     best_p, best_m = n, 0.0
-    for p in range(1, n // 2 + 1):
+    for p in range(1, n):
         m = float((b[p:] == b[:-p]).mean())
         if m >= tol:
             return p, m

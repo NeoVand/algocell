@@ -105,3 +105,28 @@ Fractions: Wilson 95%; contrasts: exact Fisher (one-sided only where pre-registe
 
 ## 7. Calibration of the heritability assay (measured 2026-10-07, L = 16, 128 steps)
 200 random tapes: gen2 mean −0.009, sd 0.009, max 0.027; score max 0.083. All-NOP tape: score 0.11, gen2 0.13 (random partners push zeroed registers). Sterile offspring `21 e3 ×8`: 0.22 / 0.05. Parent `LD HL,$E321 ; PUSH HL`: 0.63 / 0.29. RST smear: 0.62 / 0.09. Load–Push `01 c5 ×8`: 0.82 / 0.59. Tiled LDIR copiers: 1.00 / 1.00 at every L from 4 to 100 (the L = 9 unit is `DEC E ; LDIR`). Threshold 0.3 is > 10 sd above the random-tape null and 2.3× the worst null.
+
+## 8. Second pre-launch review (2026-10-07, after the rebuild; three independent code reviews, conditions findings adversarially verified)
+
+| # | Sev | Finding | Fix |
+|---|---|---|---|
+| S1 | BLOCKER | Superseded Stage D runs (seeds 1–12 complete, 8 orphans) remained in the volume and locally; every analysis script globbed the directory, so they would have been pooled into the confirmatory `none` arm | archived to `runs/stageD_v1_seeds1-20`, removed from the volume; `batch.select_summaries` restricts every script to the stage's condition file; preflight fails on foreign stems in the volume directory |
+| S2 | BLOCKER | "period divides 2L" was trivially true for untiled tapes (period L); six faithful whole-tape copiers (L = 49–81, period L, cargo) were mislabelled "aperiodic"; the claim "no whole-tape replicator above 32 bytes" was false | divisor and gcd statistics over tiled tapes only; `copy_offset` recorded by the assay; whole-tape class reported; FINDINGS corrected |
+| S3 | MAJOR | the 50-step early grid misses the zero-flood transient (6.5% zeros after step 1, 31% by step 50) | explicit `sample_steps` 1, 2, 3, 5, 8, 13, 21, 34 in every C–E run |
+| S4 | MAJOR | D2's second clause was already falsified locally (≈ 0.19 zeros without the 22 writing stack opcodes) | D2 restated as a contrast with an effect size; the stack doubles the flood |
+| S5 | MAJOR | `t_faith` informatively censored by the early stop in 4 Stage B runs (3 in the 0/10 cell) | `{ev}_censored_early` in every table; FINDINGS shows "+3c" |
+| S6 | MAJOR | Fisher two-sided p used an absolute 1e-12 tolerance, wrong for pooled tables | relative tolerance; tests at (40,0,0,40) and (80,0,0,80) |
+| S7 | MAJOR | @bytes arm changes the active-pair fraction (55% vs 49%) | time in cumulative active interactions per cell, pre-registered; `active_pairs` recorded per sample |
+| S8 | MAJOR | C3 lacked `none` at (32, k=2) with new seeds; the 46-opcode arm was never re-run at L = 16 | both added (30 runs) |
+| S9 | MAJOR | STATE §3 numbers over-generalised; FINDINGS.md had been deleted by the publish script | FINDINGS rewritten from NUMBERS.md with the corrections; publish keeps hand-written files |
+| S10 | MINOR | 100 physically identical conditions across C and E arms at L = 16 | declared cross-batch replicates; analysis asserts uniqueness |
+| S11 | MINOR | preflight estimator wrong L-dependence, no host time (Stage D under by ≈ 17%) | fitted to measured per-L rates, host time per sample, latency floor |
+| S12 | MINOR | @bytes grid truncation left 0.6–1.2% fewer bytes than specified | rounded to the nearest cell count |
+| S13 | MINOR | tests did not pin seed sets, C1 cadence, arm algebra, generator byte-identity | all pinned (45 tests) |
+| S14 | MINOR | analysis not ready for `@arm` labels and replicates | `ablation`, `arm`, `replicate` columns; uniqueness key includes replicate |
+| S15 | MINOR | preflight never crossed the 50→500 transition nor exercised the Modal failure path | first representative to 6,000 steps; `--smoke` launcher mode (2 short runs + 1 invalid) |
+| S16 | MINOR | wgpu-native version never recorded; brotli version mismatch; 6 h × 3 timeout | `lib_version_info`; brotli 1.2.0 both sides and recorded; 1 h × 2 |
+| S17 | MINOR | NaN gen2 handling in saturated soups; zoo unit from a possibly mutated first period; fractional repeat counts | `n_informative2` filter; majority-vote unit; integer counts |
+| S18 | NOTE | the shader's per-pair write counters were discarded | `Soup.read_interactions()`; per-sample `ix_*` summary |
+
+Measured: the active-pair fraction is 48.6% on the Mac GPU at 8,192 pairs and does not depend on how many steps are submitted together (3,975–3,985 per step), but it does depend on grid size and GPU load, which is why cumulative active interactions are the clock.

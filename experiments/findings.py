@@ -17,6 +17,7 @@ import brotli
 import numpy as np
 import pandas as pd
 
+from algocell_exp.batch import select_summaries
 from analyze import km_median, wilson
 from report import fisher, km_str
 
@@ -25,7 +26,7 @@ def zero_fraction_table(dirs: list[str]) -> pd.DataFrame:
     """Fraction of 0x00 bytes in the final snapshot and in the emergence snapshot (tq_10 crossing), per cell."""
     rows = []
     for d in dirs:
-        for p in sorted(glob.glob(os.path.join(d, "*.summary.json"))):
+        for p in select_summaries(d):
             s = json.load(open(p))
             L = s.get("tape_length", 16)
             stem = p[: -len(".summary.json")]
@@ -84,12 +85,20 @@ def main() -> None:
     # 4. tiling: period of the first-replicator tape; divides L / 2L; HOE by label
     out.append("## 4. Tiling: period of the first heritable replicator tape\n")
     rep = asy[(asy["t_rep"] > 0) & asy["trep_period"].notna()].copy()
-    rep["div_L"] = (rep["tape_len"] % rep["trep_period"].astype(int) == 0)
-    rep["div_2L"] = ((2 * rep["tape_len"]) % rep["trep_period"].astype(int) == 0)
     rep["tiled"] = rep["trep_period"] <= rep["tape_len"] / 2
-    g = rep.groupby(["label", "tape_len", "steps"]).agg(n=("seed", "size"), period_median=("trep_period", "median"), tiled=("tiled", "mean"), divides_L=("div_L", "mean"), divides_2L=("div_2L", "mean"),
+    rep["whole_tape"] = (rep["trep_period"] == rep["tape_len"]) & (rep.get("trep_offset", pd.Series(np.nan, index=rep.index)).fillna(-1) == 0)
+    # divisor statistics over TILED tapes only (an untiled tape's period L divides 2L trivially; review 2026-10-07)
+    tiled = rep[rep["tiled"]].copy()
+    tiled["div_L"] = (tiled["tape_len"] % tiled["trep_period"].astype(int) == 0)
+    tiled["div_2L"] = ((2 * tiled["tape_len"]) % tiled["trep_period"].astype(int) == 0)
+    if "trep_offset" in tiled:
+        off = tiled["trep_offset"].fillna(-1).astype(int)
+        tiled["gcd_law"] = [(o >= 0 and np.gcd(o if o > 0 else 2 * L, 2 * L) == p) for o, L, p in zip(off, tiled["tape_len"], tiled["trep_period"].astype(int))]
+    g = rep.groupby(["label", "tape_len", "steps"]).agg(n=("seed", "size"), period_median=("trep_period", "median"), tiled=("tiled", "mean"), whole_tape=("whole_tape", "sum"),
                                                      periods=("trep_period", lambda x: ", ".join(f"{int(p)}×{c}" for p, c in x.value_counts().sort_index().items())))
-    out.append(g.round(2).to_markdown() + "\n")
+    g2 = tiled.groupby(["label", "tape_len", "steps"]).agg(n_tiled=("seed", "size"), divides_L=("div_L", "mean"), divides_2L=("div_2L", "mean"), **({"gcd_law": ("gcd_law", "mean")} if "gcd_law" in tiled else {}))
+    out.append(g.join(g2, how="left").round(2).to_markdown() + "\n")
+    out.append("`tiled` = period ≤ L/2; `whole_tape` = period L with copy offset 0 (exact whole-tape copier); `divides_*` and `gcd_law` (period == gcd(offset, 2L)) are computed over tiled tapes only.\n")
     out.append("### Final-soup high-order entropy (bits/byte), median over seeds\n")
     out.append(asy.groupby(["label", "tape_len", "steps"])["final_hoe"].median().unstack("steps").round(2).to_markdown() + "\n")
 

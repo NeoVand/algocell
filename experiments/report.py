@@ -30,7 +30,7 @@ def fisher(a: int, b: int, c: int, d: int, alternative: str = "two-sided") -> fl
     lo, hi = max(0, c1 - (n - r1)), min(r1, c1)
     p0 = p(a)
     if alternative == "two-sided":
-        return sum(p(x) for x in range(lo, hi + 1) if p(x) <= p0 + 1e-12)
+        return sum(p(x) for x in range(lo, hi + 1) if p(x) <= p0 * (1 + 1e-9))   # relative tolerance, as scipy/R
     if alternative == "greater":      # arm 1 has MORE events
         return sum(p(x) for x in range(a, hi + 1))
     return sum(p(x) for x in range(lo, a + 1))

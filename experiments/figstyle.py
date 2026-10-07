@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 COLOR = {
     "none": "#000000",
     "block-copy": "#E69F00",
-    "stack-writes": "#56B6E9",
+    "stack-writes": "#56B4E9",
     "ld-mem": "#009E73",
     "all-ld": "#CC79A7",
     "no-copy": "#D55E00",
@@ -65,7 +65,7 @@ def order(labels) -> list[str]:
     return known + sorted(set(labels) - set(known))
 
 
-def save(fig, path_no_ext: str, formats=("pdf", "png")) -> None:
+def save(fig, path_no_ext: str, formats=("pdf", "svg", "png")) -> None:
     os.makedirs(os.path.dirname(path_no_ext) or ".", exist_ok=True)
     for ext in formats:
         fig.savefig(f"{path_no_ext}.{ext}", bbox_inches="tight")
