@@ -12,6 +12,8 @@
 //   ed:B0 / cb:FF / base:3E  →  one exact instruction on a given page
 //   3E / 0x3E          →  one exact base-page opcode
 //   LDIR, LD (HL),n …  →  legacy: every mnemonic containing the substring
+//   -<pattern>         →  subtract: remove that pattern's instructions from the set
+//                         (applied after all additions, e.g. family:writes-mem; -family:incdec-mem)
 //
 // The resolved result is three 256-bit sets (one per page) that map 1:1 onto
 // the GPU core's prefix-aware hook: IX/IY forms of a base opcode follow the
@@ -504,7 +506,10 @@ export function matchPattern(pattern: string): Instruction[] {
 
 export function resolveSuppression(patterns: readonly string[]): SuppressSets {
 	const s = emptySuppression();
-	for (const pat of patterns) for (const ins of matchPattern(pat)) s[ins.page].add(ins.code);
+	const adds = patterns.filter((p) => !p.trim().startsWith('-'));
+	const subs = patterns.filter((p) => p.trim().startsWith('-')).map((p) => p.trim().slice(1));
+	for (const pat of adds) for (const ins of matchPattern(pat)) s[ins.page].add(ins.code);
+	for (const pat of subs) for (const ins of matchPattern(pat)) s[ins.page].delete(ins.code);
 	return s;
 }
 

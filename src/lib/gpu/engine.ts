@@ -7,8 +7,7 @@ import {
 	Z80_STEPS,
 	HEX_HEIGHT_RATIO,
 	DEFAULT_GRID_CONFIG,
-	getTapeLength,
-	getPairLength,
+	tapeLengthOf,
 	type GridConfig,
 	type GridType
 } from '$lib/sim/constants';
@@ -102,10 +101,10 @@ export class GPUEngine {
 		return this.gridConfig.width * this.gridConfig.height;
 	}
 	private get tapeLength(): number {
-		return getTapeLength(this.gridType);
+		return tapeLengthOf(this.gridConfig);
 	}
 	private get pairLength(): number {
-		return getPairLength(this.gridType);
+		return this.tapeLength * 2;
 	}
 	private get wordsPerCell(): number {
 		return Math.ceil(this.tapeLength / 4);
@@ -308,7 +307,7 @@ export class GPUEngine {
 		const dev = this.device;
 
 		// Simulation shader module
-		const simModule = dev.createShaderModule({ code: createSimShader(this.gridType) });
+		const simModule = dev.createShaderModule({ code: createSimShader(this.gridType, this.tapeLength) });
 
 		// Simulation bind group layout
 		const simBindGroupLayout = dev.createBindGroupLayout({
@@ -907,7 +906,8 @@ export class GPUEngine {
 
 	// Render the soup to the canvas
 	render(canvas: HTMLCanvasElement): void {
-		const tileSize = 4;
+		// Square cells tile as √L×√L bytes (hex rendering ignores tile_size).
+		const tileSize = Math.max(1, Math.ceil(Math.sqrt(this.tapeLength)));
 		const renderParams = new ArrayBuffer(64); // 16 fields * 4 bytes
 		const view = new DataView(renderParams);
 		view.setUint32(0, this.soupWidth, true);

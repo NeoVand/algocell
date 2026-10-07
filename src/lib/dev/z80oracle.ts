@@ -13,6 +13,7 @@
 
 import { Z80, type Hal } from 'z80-emulator';
 import type { SuppressSets } from '$lib/z80-opcodes';
+import { spInit } from '$lib/sim/constants';
 
 // z80-emulator has one known deviation from real hardware: it NOPs DD/FD-prefixed
 // opcodes that have no IX/IY form (a real Z80 — and superzazu, the paper's own
@@ -111,7 +112,7 @@ export function runOracle(
 	r.hlPrime = 0;
 	r.ix = 0;
 	r.iy = 0;
-	r.sp = 0xffff;
+	r.sp = spInit(pairLength); // 0xFFFF for 32-byte pairs; aliases to the last byte of B otherwise
 	r.pc = 0;
 	r.memptr = 0;
 	r.i = 0;

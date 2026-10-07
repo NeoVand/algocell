@@ -13,7 +13,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:e2e": "playwright test",
-		"test": "npm run test:e2e"
+		"test": "npm run test:e2e",
+		"export:sim": "tsx scripts/export-sim.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",

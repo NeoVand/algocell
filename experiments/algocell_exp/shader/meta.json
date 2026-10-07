@@ -1,0 +1,26 @@
+{
+  "exportedAt": "2026-10-07T16:42:33.549Z",
+  "zilion": "0.2.0",
+  "shaderSha256_16": {
+    "hex": "3af8d4e7fe2508c6",
+    "square_L4": "67a21518965e6472",
+    "square_L9": "b8fa57da3205eeb4",
+    "square_L16": "d50f6883f3f7d29e",
+    "square_L25": "6c4736a352bccdb2",
+    "square_L36": "acf451a66a616454",
+    "square_L49": "05df0593968114b8",
+    "square_L64": "a831f6aa6afbaade",
+    "square_L81": "617db0a1089cc1e2",
+    "square_L100": "64b2d8efb18b5ab6"
+  },
+  "entryPoints": [
+    "clear_collision",
+    "prepare_batch",
+    "z80_execute_batch",
+    "absorb_results",
+    "mutate_soup",
+    "count_bytes",
+    "clear_byte_counts",
+    "hash_cells"
+  ]
+}

@@ -1,5 +1,5 @@
 // All WGSL shaders — factory functions for topology variants
-import type { GridType } from '$lib/sim/constants';
+import { getTapeLength, type GridType } from '$lib/sim/constants';
 import { Z80_CORE_WGSL } from '@neovand/zilion';
 
 // ============================================================
@@ -74,6 +74,17 @@ fn on_fetch_opcode(prefix: u32, op: u32) -> bool {
 }
 `;
 
+// Initial SP: the largest 16-bit value that aliases to the last byte of the
+// pair, so the stack grows down from the end of the second program for every
+// tape length (equals the real-Z80 reset value 0xFFFF whenever pair_length
+// divides 65536, i.e. for 16-byte tapes). Mirrors spInit() in constants.ts.
+const SP_INIT_WGSL = /* wgsl */ `
+fn sp_init() -> u32 {
+    let want = params.pair_length - 1u;
+    return 0xffffu - ((0xffffu - want) % params.pair_length);
+}
+`;
+
 // Pair memory layout. pair_data holds each cell word-padded (words_per_cell
 // u32 per cell: 4 for 16-byte tapes, 5 for 19-byte hex tapes). The Z80 sees
 // A's tape_length bytes at mem[0..tape_length) immediately followed by B's at
@@ -106,8 +117,10 @@ fn store_pair_mem(base: u32) {
 }
 `;
 
-export function createSimShader(gridType: GridType): string {
+export function createSimShader(gridType: GridType, tapeLength: number = getTapeLength(gridType)): string {
 	const neighborBlock = gridType === 'hex' ? HEX_NEIGHBOR_SELECTION : SQUARE_NEIGHBOR_SELECTION;
+	// Private pair memory: both word-padded tapes (the Z80 only addresses pair_length of it).
+	const memWords = Math.ceil(tapeLength / 4) * 2 * 4;
 
 	return /* wgsl */ `
 
@@ -162,7 +175,7 @@ fn rand_bounded(bound: u32) -> u32 {
 // with A/B write counting) and an opcode-suppression hook.
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
-var<private> mem: array<u32, 40>;
+var<private> mem: array<u32, ${memWords}>;
 fn mem_read(addr: u32) -> u32 {
     return mem[addr % params.pair_length];
 }
@@ -172,6 +185,7 @@ fn mem_write(addr: u32, val: u32) {
     if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
 ${SUPPRESS_HOOK_WGSL}
+${SP_INIT_WGSL}
 ${PAIR_MEM_WGSL}
 
 ${Z80_CORE_WGSL}
@@ -271,7 +285,7 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
     // Reset CPU state
     cpu_a = 0u; cpu_f = 0u; cpu_b = 0u; cpu_c = 0u;
     cpu_d = 0u; cpu_e = 0u; cpu_h = 0u; cpu_l = 0u;
-    cpu_sp = 0xffffu; cpu_pc = 0u; // real Z80 resets SP to 0xFFFF (superzazu z80_init); wraps to buffer end via mod-length
+    cpu_sp = sp_init(); cpu_pc = 0u; // stack grows down from the end of B (0xFFFF for 16-byte tapes; see sp_init)
     cpu_a2 = 0u; cpu_f2 = 0u; cpu_b2 = 0u; cpu_c2 = 0u;
     cpu_d2 = 0u; cpu_e2 = 0u; cpu_h2 = 0u; cpu_l2 = 0u;
     cpu_ix = 0u; cpu_iy = 0u;
@@ -951,6 +965,7 @@ fn mem_write(addr: u32, val: u32) {
 	if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
 ${SUPPRESS_HOOK_WGSL}
+${SP_INIT_WGSL}
 ${PAIR_MEM_WGSL}
 
 ${Z80_CORE_WGSL}
@@ -962,7 +977,7 @@ fn z80_test(@builtin(global_invocation_id) id: vec3u) {
 	let base = case_id * ((params.tape_length + 3u) / 4u) * 2u;
 	load_pair_mem(base);
 	cpu_a=0u; cpu_f=0u; cpu_b=0u; cpu_c=0u; cpu_d=0u; cpu_e=0u; cpu_h=0u; cpu_l=0u;
-	cpu_sp=0xffffu; cpu_pc=0u;
+	cpu_sp=sp_init(); cpu_pc=0u;
 	cpu_a2=0u; cpu_f2=0u; cpu_b2=0u; cpu_c2=0u; cpu_d2=0u; cpu_e2=0u; cpu_h2=0u; cpu_l2=0u;
 	cpu_ix=0u; cpu_iy=0u;
 	cpu_halted=0u; cpu_iff1=0u; cpu_iff2=0u; cpu_writes_a=0u; cpu_writes_b=0u;
