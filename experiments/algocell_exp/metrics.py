@@ -121,6 +121,17 @@ def high_order_entropy(soup: np.ndarray, quality: int = 5) -> dict:
     return {"H0": h0, "brotli_bpb": bpb, "hoe": h0 - bpb}
 
 
+def minimal_period(tape: bytes | np.ndarray) -> int:
+    """Smallest p such that tape[i] == tape[i mod p] for all i (len(tape) if aperiodic).
+    A soup whose dominant tapes have small periods is tiled by a short motif."""
+    b = np.frombuffer(bytes(tape), dtype=np.uint8) if not isinstance(tape, np.ndarray) else tape
+    n = b.size
+    for p in range(1, n):
+        if np.array_equal(b[p:], b[:-p]):
+            return p
+    return n
+
+
 def exemplars(soup: np.ndarray, hashes: np.ndarray, top_hashes: list[int]) -> list[dict]:
     out = []
     for h in top_hashes:

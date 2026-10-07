@@ -936,7 +936,10 @@ ${fragmentBlock}
 // truth), wrapped in a standalone entry point that runs one random program
 // per invocation. Never imported by the app runtime.
 // ============================================================
-export function createZ80TestShader(): string {
+export function createZ80TestShader(tapeLength: number = 16): string {
+	// Private pair memory sized for the tape (both word-padded tapes); never
+	// smaller than the 40 bytes the 32/38-byte differential tests use.
+	const memWords = Math.max(40, Math.ceil(tapeLength / 4) * 2 * 4);
 	return `
 struct Params {
 	soup_width: u32,
@@ -957,7 +960,7 @@ struct Params {
 // so this tests the exact shipping Z80 core from the zilion package.
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
-var<private> mem: array<u32, 40>;
+var<private> mem: array<u32, ${memWords}>;
 fn mem_read(addr: u32) -> u32 { return mem[addr % params.pair_length]; }
 fn mem_write(addr: u32, val: u32) {
 	let a = addr % params.pair_length;

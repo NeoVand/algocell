@@ -19,6 +19,7 @@ import pandas as pd
 
 from algocell_exp.assay import assay
 from algocell_exp.isa import parse_patterns
+from algocell_exp.metrics import minimal_period
 
 
 def load_snapshot(path: str, tape_len: int) -> np.ndarray | None:
@@ -120,6 +121,8 @@ def main(d: str) -> None:
                 "final_score_insitu": round(insitu["score"], 3) if insitu else None,
                 "final_replicator_insitu": (insitu["gen2_score"] >= GEN2_MIN) if insitu else None,
                 "final_rep_fraction": rep_frac,
+                "final_period": minimal_period(bytes.fromhex(s["final"]["exemplars"][0]["tape"].replace(" ", ""))),
+                "t_rep_period": minimal_period(bytes.fromhex(first["tape"].replace(" ", ""))) if first else None,
                 "final_c_blockcopy": s["final"].get("c_blockcopy"), "final_c_push2": s["final"].get("c_push2"), "final_hoe": s["final"]["hoe"],
                 "steps_run": s["steps_run"], "horizon": s["horizon"], "file": os.path.basename(p),
             }

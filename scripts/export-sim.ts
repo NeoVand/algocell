@@ -26,8 +26,10 @@ const zilionVersion = JSON.parse(
 const shaders: Record<string, string> = { hex: createSimShader('hex') };
 for (const L of SQUARE_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);
 for (const [k, v] of Object.entries(shaders)) writeFileSync(`${out}sim_${k}.wgsl`, v);
-// Single-pair executor (the differential-test shader): used by the replication assay.
+// Single-pair executor (the differential-test shader): used by the replication
+// assay, one per tape length so the private memory fits the pair.
 writeFileSync(`${out}z80_test.wgsl`, createZ80TestShader());
+for (const L of SQUARE_TAPE_LENGTHS) writeFileSync(`${out}z80_test_L${L}.wgsl`, createZ80TestShader(L));
 
 // Golden vectors so the Python port of the pattern grammar can be checked.
 const goldenPatterns = [

@@ -22,10 +22,17 @@ from .soup import SHADER_DIR, get_device
 _PIPE: dict = {}
 
 
-def _pipeline():
-    if not _PIPE:
+def _pipeline(tape_length: int = 16):
+    """Pipeline for the single-pair executor sized for this tape length (cached per L)."""
+    if tape_length not in _PIPE:
         dev = get_device()
-        module = dev.create_shader_module(code=(SHADER_DIR / "z80_test.wgsl").read_text())
+        path = SHADER_DIR / f"z80_test_L{tape_length}.wgsl"
+        if not path.exists():
+            if tape_length <= 20:
+                path = SHADER_DIR / "z80_test.wgsl"  # 40-byte memory: fits pairs up to 40 bytes
+            else:
+                raise ValueError(f"no exported executor for tape length {tape_length} (run `npm run export:sim`)")
+        module = dev.create_shader_module(code=path.read_text())
         storage = {"type": wgpu.BufferBindingType.storage}
         layout = dev.create_bind_group_layout(
             entries=[
@@ -35,9 +42,8 @@ def _pipeline():
             ]
         )
         pl = dev.create_pipeline_layout(bind_group_layouts=[layout])
-        _PIPE["pipe"] = dev.create_compute_pipeline(layout=pl, compute={"module": module, "entry_point": "z80_test"})
-        _PIPE["layout"] = layout
-    return _PIPE["pipe"], _PIPE["layout"]
+        _PIPE[tape_length] = (dev.create_compute_pipeline(layout=pl, compute={"module": module, "entry_point": "z80_test"}), layout)
+    return _PIPE[tape_length]
 
 
 def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=()) -> np.ndarray:
@@ -46,7 +52,7 @@ def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=
     L = tape_length
     assert pairs.shape[1] == 2 * L
     dev = get_device()
-    pipe, layout = _pipeline()
+    pipe, layout = _pipeline(L)
     wpc = (L + 3) // 4
     words = np.zeros((N, 2 * wpc * 4), dtype=np.uint8)
     words[:, : 4 * wpc][:, :L] = pairs[:, :L]

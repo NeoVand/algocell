@@ -172,6 +172,17 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-08 (Stage B complete, first table read): **analysis bug, no data
+  affected.** The exported single-pair executor used by the assay had a fixed
+  40-byte private memory (sized for the 32/38-byte differential tests), so
+  every post hoc assay of a pair longer than 40 bytes (L ≥ 25) indexed out of
+  bounds and returned garbage (a known `LD E,49 ; LDIR` copier scored 0.00 at
+  L = 49). The executor is now exported per tape length and the Stage B assays
+  are recomputed; L ≤ 16 results are unchanged. Also: census takeover
+  baselines are now estimated per L from random tapes (≥ 2 PUSH bytes occurs
+  in 46% of random 100-byte tapes), and the minimal period of dominant tapes
+  is recorded, since the first look suggests large organisms get *tiled* by
+  short motifs rather than hosting larger replicators.
 - 2026-10-07 (same reading): the assay's gain is now normalised by headroom,
   (after − before)/(1 − before), averaged over partners whose prior similarity
   to the tape is < 0.75. Reason: the in-situ random-cell assay returned 0/16
