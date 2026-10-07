@@ -48,7 +48,7 @@
 	let pairCount = $state(MAX_BATCH_PAIR_N);
 	let z80Steps = $state(Z80_STEPS);
 	let playing = $state(true);
-	let speed = $state(1);
+	let speed = $state(8); // steps per frame; 8x is the default
 	let gridType = $state<GridType>('square');
 
 	// Compute grid dimensions from viewport aspect ratio
