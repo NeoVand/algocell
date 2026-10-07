@@ -20,7 +20,7 @@ app = modal.App("algocell-atlas")
 image = (
     modal.Image.debian_slim(python_version="3.12")
     .apt_install("libvulkan1", "libx11-6", "libxext6", "libxcb1", "libegl1", "libgles2", "libglvnd0")
-    .pip_install("wgpu>=0.32,<0.40", "numpy>=2", "brotli>=1.1")
+    .pip_install("wgpu==0.32.0", "numpy==2.5.3", "brotli==1.1.0")  # pinned to the versions the local tests run against
     .env({"WGPU_BACKEND_TYPE": "Vulkan"})
     .add_local_dir("algocell_exp", remote_path="/root/algocell_exp")
 )
@@ -29,8 +29,9 @@ runs_volume = modal.Volume.from_name("algocell-atlas-runs", create_if_missing=Tr
 GPU = "L40S"  # fastest per step in the latency-bound regime (modal run modal_app.py::gpus), and cheaper than H200
 
 
-@app.function(image=image, gpu=GPU, timeout=60 * 60 * 6, volumes={"/runs": runs_volume})
+@app.function(image=image, gpu=GPU, timeout=60 * 60 * 6, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=2, initial_delay=10.0))
 def run_condition(cond: dict, batch: str = "adhoc") -> dict:
+    import glob
     import io
     import os
 
@@ -44,6 +45,10 @@ def run_condition(cond: dict, batch: str = "adhoc") -> dict:
     d = f"/runs/{batch}"
     os.makedirs(d, exist_ok=True)
     stem = run_stem(cond)
+    # A run that died mid-flight (or a retry) must not leave a stale emergence snapshot from another
+    # trajectory next to this run's files: GPU races make runs non-deterministic.
+    for stale in glob.glob(f"{d}/{stem}.*"):
+        os.remove(stale)
 
     def snapshot(name: str, soup: "np.ndarray") -> None:
         # raw uint8 (cells × L), brotli-compressed; np.frombuffer(brotli.decompress(...), uint8).reshape(cells, L)
@@ -52,10 +57,13 @@ def run_condition(cond: dict, batch: str = "adhoc") -> dict:
 
     buf = io.StringIO()
     summary = run(**cond, out=buf, quiet=True, on_snapshot=snapshot)
+    # Write the summary last and atomically: a stem has a .summary.json only when its .jsonl is complete.
     with open(f"{d}/{stem}.jsonl", "w") as f:
         f.write(buf.getvalue())
-    with open(f"{d}/{stem}.summary.json", "w") as f:
+    tmp = f"{d}/{stem}.summary.json.tmp"
+    with open(tmp, "w") as f:
         json.dump(summary, f)
+    os.replace(tmp, f"{d}/{stem}.summary.json")
     runs_volume.commit()
     return summary
 
@@ -200,13 +208,21 @@ def main(conds: str = "", batch: str = "adhoc", bench_steps: int = 3000, procs_b
     with open(conds) as f:
         condition_list = json.load(f)
     print(f"fanning out {len(condition_list)} conditions to {GPU} (batch={batch})")
-    results = list(run_condition.map(condition_list, kwargs={"batch": batch}))
-    out = f"runs/{batch}_summaries.json"
     import os
 
     os.makedirs("runs", exist_ok=True)
-    with open(out, "w") as f:
-        json.dump(results, f, indent=1)
-    for r in results:
-        print(r["label"], "seed", r["seed"], "t_02", r["t_02"], "t_10", r["t_10"], "steps", r["steps_run"], f"{r['wall_s']}s", r["adapter"])
-    print("wrote", out)
+    out = f"runs/{batch}_summaries.json"
+    results, failures = [], []
+    # return_exceptions=True: one failed container must not abort the sweep (the default raises in the
+    # client, which disconnects the app and kills every in-flight run). Summaries are flushed as they
+    # arrive so a client crash loses nothing that finished.
+    for r in run_condition.map(condition_list, kwargs={"batch": batch}, return_exceptions=True):
+        if isinstance(r, Exception):
+            failures.append(repr(r)[:500])
+            print("FAILED:", failures[-1])
+            continue
+        results.append(r)
+        print(r["label"], "L", r["tape_length"], "seed", r["seed"], "steps", r["steps_run"], "/", r["horizon"], "tq_10", r["tq_10"], f"{r['wall_s']}s", r["adapter"])
+        with open(out, "w") as f:
+            json.dump({"results": results, "failures": failures}, f, indent=1)
+    print(f"done: {len(results)} ok, {len(failures)} failed; wrote {out}")

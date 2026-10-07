@@ -1,5 +1,22 @@
 """Replication assay: does a tape copy itself when executed against random neighbours?
 
+Measurement semantics (fixed 2026-10-07 after review; see PLAN change log):
+  score      — headroom-normalised gain in best-cyclic-shift similarity of the partner to T
+               after T runs as A (or as B), over partners that were not already copies.
+  gen2_score — the SAME gain for the partners T produced (offspring) when they run as A
+               against fresh partners. It is a two-generation YIELD: offspring T failed to
+               convert are included, so gen2 ≈ P(copy) × P(offspring copies).
+  gen2_cond  — gen2 restricted to offspring that are >= 75% copies: heritability given a
+               copy was made.
+  offspring_within_q — share of partners that became >= 75% copies (faithfulness).
+  A replicator is gen2_score >= 0.3 (pre-registered); it is FAITHFUL when additionally
+  offspring_within_q >= 0.5 (a return-address smear passes the second alone, a drifting
+  CALL chain passes the first alone; neither passes both).
+  self_preserved_as_B — fraction of T's bytes intact after a random partner runs first
+               (vulnerability: small copiers can be overwritten before they act).
+  In-situ partners: `n_informative` partners had prior similarity < 0.75; when a soup is
+  saturated with copies the gains are NaN, never 0 (0 used to mean "sterile").
+
 The dominant tape T is run as program A with N random neighbours as B (and as
 program B with random A), for a given step budget and suppression set, using
 the single-pair executor shader (the same core + host bits as the simulation).
@@ -20,6 +37,8 @@ from .isa import resolve
 from .soup import SHADER_DIR, get_device
 
 _PIPE: dict = {}
+GEN2_MIN = 0.3        # pre-registered heritability threshold (PLAN, 2026-10-07, before any sweep)
+FAITHFUL_MIN = 0.5    # share of partners that became >= 75% copies (PLAN change log, 2026-10-07)
 
 
 def _pipeline(tape_length: int = 16):
@@ -107,6 +126,7 @@ def assay(
     n: int = 64,
     seed: int = 0,
     neighbors: np.ndarray | None = None,
+    min_informative: int = 16,
 ) -> dict:
     """Replication score of a tape under a given budget and suppression set.
 
@@ -119,8 +139,15 @@ def assay(
     L = T.size
     rng = np.random.default_rng(seed)
     if neighbors is not None:
-        idx = rng.integers(0, neighbors.shape[0], size=n)
-        R = np.ascontiguousarray(neighbors[idx]).astype(np.uint8)
+        # Draw until at least `min_informative` partners are not already copies of T (or give up
+        # after 8 rounds): in a soup saturated with copies a copier has no headroom to show.
+        R = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
+        for _ in range(8):
+            if int((_best_shift_match(R, T) < 0.75).sum()) >= min(min_informative, n):
+                break
+            more = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
+            keep = R[_best_shift_match(R, T) < 0.75]
+            R = np.concatenate([keep, more], axis=0)[:n]
     else:
         R = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     # T as A, random B
@@ -138,6 +165,8 @@ def assay(
     into_b = _norm_gain(before_i, sim_b)
     into_a = _norm_gain(before_i, sim_a)
     self_kept_a = float((res_a[:, :L] == T[None, :]).mean())  # T survives its own execution as A
+    self_kept_b = float((res_b[:, L:] == T[None, :]).mean())  # T survives when the partner runs first (vulnerability)
+    n_informative = int((before_i < 0.75).sum())
     # Heritability: do the offspring (the B tapes T produced) themselves copy
     # T-like material into fresh neighbours? A byte-pattern smear can score
     # well in one generation (it writes its periodic payload) but its offspring
@@ -148,24 +177,34 @@ def assay(
     else:
         R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress)
-    gen2 = _norm_gain(_best_shift_match(R2, T), _best_shift_match(res_g2[:, L:], T))
+    before2 = _best_shift_match(R2, T)
+    after2 = _best_shift_match(res_g2[:, L:], T)
+    gen2 = _norm_gain(before2, after2)
+    copies = sim_b >= 0.75
+    gen2_cond = _norm_gain(before2[copies], after2[copies]) if copies.any() else float("nan")
     return {
         "copy_into_neighbor_as_A": float(into_b),
         "copy_into_neighbor_as_B": float(into_a),
         "baseline_similarity": float(before_i.mean()),
+        "n_informative": n_informative,
         "self_preserved_as_A": self_kept_a,
-        "offspring_within_q": float((sim_b >= 0.75).mean()),  # share of neighbours that became ≥75%-copies
+        "self_preserved_as_B": self_kept_b,
+        "offspring_within_q": float(copies.mean()),  # share of partners that became >= 75% copies (faithfulness)
         "gen2_score": float(gen2),
+        "gen2_cond": float(gen2_cond),
         "score": float(max(into_b, into_a)),
+        "is_replicator": bool(gen2 >= GEN2_MIN),
+        "faithful": bool(gen2 >= GEN2_MIN and copies.mean() >= FAITHFUL_MIN),
     }
 
 
 def _norm_gain(before: np.ndarray, after: np.ndarray, max_before: float = 0.75) -> float:
     """Mean of (after - before) / (1 - before) over partners with before < max_before.
-    Returns 0 when every partner was already a copy (no headroom to measure)."""
+    NaN when every partner was already a copy (no headroom to measure; it used to return 0,
+    which read as "sterile" in saturated soups)."""
     m = before < max_before
     if not m.any():
-        return 0.0
+        return float("nan")
     return float(((after[m] - before[m]) / (1.0 - before[m])).mean())
 
 
@@ -175,8 +214,8 @@ if __name__ == "__main__":
     cases = {
         "load-push 01 c5": bytes.fromhex("01c5" * 8),
         "ex-sp 21 e3": bytes.fromhex("21e3" * 8),
-        "ldir period-4 c4 5e ed b0": bytes.fromhex("c45eedb0" * 4),
-        "ldir canonical 1e 20 ed b0": bytes.fromhex("1e20edb0") + bytes(12),
+        "ldir tiled 1e 04 ed b0": bytes.fromhex("1e04edb0" * 4),
+        "ldir whole-tape 1e 10 ed b0": bytes.fromhex("1e10edb0") + bytes(12),  # DE = 16 = B (DE = 32 would alias A)
         "rst smear ff 41 00 41": bytes.fromhex("ff" + "4100" * 7 + "41"),
         "zeros": bytes(16),
         "random": bytes([37, 201, 14, 99, 180, 7, 66, 250, 121, 3, 90, 44, 210, 155, 18, 77]),
@@ -187,6 +226,6 @@ if __name__ == "__main__":
         print(f"{name:28s} score {r['score']:.2f} gen2 {r['gen2_score']:.2f} copies≥75% {r['offspring_within_q']:.2f} | asA {r['copy_into_neighbor_as_A']:.2f} asB {r['copy_into_neighbor_as_B']:.2f} self {r['self_preserved_as_A']:.2f}")
     print("-- stack-writes suppressed (PUSH/EX/CALL/RST removed): load-push should fail, LDIR should still copy")
     sup = ["family:stack", "family:ex", "family:call-ret", "family:rst"]
-    for name in ("load-push 01 c5", "ldir period-4 c4 5e ed b0"):
+    for name in ("load-push 01 c5", "ldir whole-tape 1e 10 ed b0"):
         r = assay(cases[name], z80_steps=steps, suppress=sup)
         print(f"{name:28s} score {r['score']:.2f} gen2 {r['gen2_score']:.2f}")

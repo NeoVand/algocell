@@ -5,6 +5,7 @@ ring of params buffers so Python overhead stays small."""
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import numpy as np
@@ -35,12 +36,15 @@ def pick_adapter() -> wgpu.GPUAdapter:
     """Prefer a real GPU; never silently run on a CPU rasterizer (llvmpipe)."""
     adapters = list(wgpu.gpu.enumerate_adapters_sync())
     rank = {"DiscreteGPU": 0, "IntegratedGPU": 1, "VirtualGPU": 2, "CPU": 3, "Unknown": 4}
-    adapters.sort(key=lambda a: rank.get(str(a.info.get("adapter_type", "Unknown")), 5))
+    # Same physical GPU can be enumerated through several backends (Vulkan, OpenGL/EGL); WGPU_BACKEND_TYPE
+    # is not honoured by enumerate_adapters, so prefer Vulkan/Metal explicitly and never a CPU or unknown adapter.
+    backend_rank = {"Vulkan": 0, "Metal": 0, "D3D12": 1, "OpenGL": 2}
+    adapters.sort(key=lambda a: (rank.get(str(a.info.get("adapter_type", "Unknown")), 5), backend_rank.get(str(a.info.get("backend_type")), 3)))
     if not adapters:
         raise RuntimeError("no WebGPU adapter")
     chosen = adapters[0]
-    if str(chosen.info.get("adapter_type")) == "CPU":
-        raise RuntimeError(f"only a CPU adapter is available: {chosen.info}")
+    if str(chosen.info.get("adapter_type")) in ("CPU", "Unknown"):
+        raise RuntimeError(f"no usable GPU adapter (best was {chosen.info})")
     return chosen
 
 
@@ -72,6 +76,7 @@ class Soup:
         suppress: str | list[str] | None = None,
         ring: int = 32,
         device: wgpu.GPUDevice | None = None,
+        mutations_per_step: int | None = None,
     ) -> None:
         assert grid in ("square", "hex")
         assert 1 <= pair_count <= MAX_PAIRS
@@ -91,6 +96,9 @@ class Soup:
         self.pair_count = pair_count
         self.z80_steps = z80_steps
         self.noise_exp = noise_exp
+        # Default: pair_count / 2^noise_exp byte replacements per step (constant per cell, ∝ 1/L per byte).
+        # The override exists for the per-byte-constant mutation control arm.
+        self.mutations_per_step = mutations_per_step
         self.ring = ring
         self.patterns = parse_patterns(suppress) if isinstance(suppress, str) else list(suppress or [])
         self.sets = resolve(self.patterns)
@@ -104,6 +112,7 @@ class Soup:
         dev = self.device
         B = wgpu.BufferUsage
         wgsl = self.shader_file.read_text()
+        self.shader_sha256_16 = hashlib.sha256(wgsl.encode()).hexdigest()[:16]
         module = dev.create_shader_module(code=wgsl)
         soup_bytes = self.cell_count * self.words_per_cell * 4
         words_per_pair = self.words_per_cell * 2
@@ -113,7 +122,7 @@ class Soup:
         self.pair_data_buf = mk(MAX_PAIRS * words_per_pair * 4)
         self.write_counts_buf = mk(MAX_PAIRS * 2 * 4)
         self.rng_states_buf = mk(MAX_PAIRS * 4)
-        self.pair_active_buf = mk(MAX_PAIRS * 4)
+        self.pair_active_buf = mk(MAX_PAIRS * 4, B.COPY_SRC)
         self.byte_counts_buf = mk(256 * 4, B.COPY_SRC)
         self.collision_buf = mk(self.cell_count * 4)
         self.hash_buf = mk(self.cell_count * 4, B.COPY_SRC)
@@ -182,6 +191,8 @@ class Soup:
 
     @property
     def mutation_count(self) -> int:
+        if self.mutations_per_step is not None:
+            return int(self.mutations_per_step)
         return self.pair_count // (2**self.noise_exp)
 
     def _params(self, batch_seed: int) -> np.ndarray:
@@ -252,6 +263,13 @@ class Soup:
     def read_hashes(self) -> np.ndarray:
         self._dispatch("hash_cells", -(-self.cell_count // 256))
         return np.frombuffer(self.device.queue.read_buffer(self.hash_buf), dtype=np.uint32).copy()
+
+    def read_active_pairs(self) -> int:
+        """Pairs that survived the collision claim in the LAST executed step (the kernel draws
+        pair_count pairs; ≈57% are active on the 160×125 grid). Needed to express time in
+        effective interactions per cell."""
+        a = np.frombuffer(self.device.queue.read_buffer(self.pair_active_buf), dtype=np.uint32)
+        return int(a[: self.pair_count].sum())
 
     def read_soup(self) -> np.ndarray:
         """(cell_count, tape_length) uint8, padding stripped."""

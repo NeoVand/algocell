@@ -146,3 +146,60 @@ def test_minimal_period_is_non_cyclic():
     assert minimal_period(bytes.fromhex("01c5" * 4 + "01")) == 2  # odd length, still period 2
     assert minimal_period(bytes.fromhex("01c5" * 7 + "0000")) == 16  # end defect → aperiodic
     assert minimal_period(bytes(5)) == 1
+
+
+# ── Instrumented run loop (review 2026-10-07): fine early sampling, byte histogram, active pairs, provenance ──
+
+def test_run_loop_schedule_and_fields():
+    import io
+
+    buf = io.StringIO()
+    s = run(tape=16, seed=2, horizon=1000, sample_every=250, sample_every_early=50, early_until=500,
+            stop_share=-1, random_tapes=8, mutations_per_step=None, quiet=True, out=buf,
+            provenance={"git_commit": "test"})
+    lines = [json.loads(l) for l in buf.getvalue().splitlines()]
+    cond = lines[0]
+    samples = [l for l in lines if l["kind"] == "sample"]
+    assert cond["kind"] == "condition" and cond["provenance"]["git_commit"] == "test"
+    assert len(cond["provenance"]["shader_sha256_16"]) == 16 and cond["provenance"]["versions"]["wgpu"]
+    assert [x["step"] for x in samples] == list(range(50, 501, 50)) + [750, 1000]
+    for x in samples:
+        assert sum(x["byte_hist"]) == 20000 * 16
+        assert 0.0 <= x["zero_frac"] <= 1.0 and abs(x["zero_frac"] - x["byte_hist"][0] / (20000 * 16)) < 1e-9
+        assert 3600 < x["active_pairs"] < 4400          # measured on GPU: 3982 ± 35 of 8192 drawn pairs survive the parallel collision claim (48.6%)
+        assert 0.0 <= x["q_shift_share"] <= 1.0 and x["q_shift_n"] == 2000
+        assert len(x["random_tapes"]) == 8
+        for ex in x["exemplars"]:
+            assert "mechanisms" in ex
+    assert s["steps_run"] == 1000 and s["samples"] == len(samples) == 12
+    assert sum(s["final"]["byte_hist"]) == 20000 * 16 and s["final"]["q_shift_n"] == 20000
+
+
+def test_mutation_override_is_recorded_and_applied():
+    s = run(tape=16, seed=2, horizon=100, sample_every=100, stop_share=-1, quiet=True, mutations_per_step=4096)
+    assert s["mutations_per_step"] == 4096 and s["provenance"]["mutations_per_step_override"] == 4096
+    s0 = run(tape=16, seed=2, horizon=100, sample_every=100, stop_share=-1, quiet=True)
+    assert s0["mutations_per_step"] == 512 and s0["provenance"]["mutations_per_step_override"] is None
+
+
+def test_assay_reports_faithfulness_and_vulnerability():
+    r = assay(_ldir(16), z80_steps=128, n=32, seed=0)
+    assert r["is_replicator"] and r["faithful"] and r["gen2_cond"] > 0.9 and r["n_informative"] == 32
+    assert 0.0 <= r["self_preserved_as_B"] <= 1.0
+    smear = assay(bytes.fromhex("ff" + "4100" * 7 + "41"), z80_steps=128, n=64, seed=0)  # RST return-address smear
+    assert not smear["is_replicator"] and not smear["faithful"] and smear["offspring_within_q"] > 0.5
+    # saturated in-situ soup: every partner already a copy -> NaN, never 0
+    T = _ldir(16)
+    sat = np.repeat(np.frombuffer(T, dtype=np.uint8)[None, :], 200, axis=0)
+    r = assay(T, z80_steps=128, n=16, seed=0, neighbors=sat)
+    assert r["n_informative"] == 0 and np.isnan(r["score"]) and np.isnan(r["gen2_score"])
+
+
+def test_tolerant_period_and_shift_occupancy():
+    from algocell_exp.metrics import shift_occupancy, tolerant_period
+    assert tolerant_period(bytes.fromhex("01c5" * 40 + "01"))[0] == 2
+    assert tolerant_period(bytes.fromhex("01c5" * 39 + "000001"))[0] == 2      # end defect tolerated
+    assert tolerant_period(bytes(range(50)))[0] == 50                            # aperiodic
+    T = np.frombuffer(bytes.fromhex("01c5" * 8), dtype=np.uint8)
+    soup = np.concatenate([np.tile(T, (100, 1)), np.tile(np.roll(T, 1), (100, 1)), np.random.default_rng(0).integers(0, 256, (200, 16), dtype=np.uint8)])
+    assert abs(shift_occupancy(soup, T)["q_shift_share"] - 0.5) < 0.01       # both phases count

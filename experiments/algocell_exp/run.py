@@ -18,7 +18,7 @@ import time
 import numpy as np
 
 from .isa import count
-from .metrics import census, exemplars, high_order_entropy, motif_share, quasispecies_share, species_stats
+from .metrics import census, exemplars, high_order_entropy, motif_share, quasispecies_share, shift_occupancy, species_stats
 from .soup import Soup, adapter_summary
 
 THRESHOLDS = (0.02, 0.10, 0.50)  # on exact-hash top species share
@@ -45,10 +45,20 @@ def run(
     quiet: bool = False,
     on_snapshot=None,
     random_tapes: int = 0,
+    mutations_per_step: int | None = None,
+    sample_every_early: int | None = None,
+    early_until: int = 0,
+    provenance: dict | None = None,
 ) -> dict:
     """on_snapshot(name, soup_uint8_2d) is called with 'emergence' (first tq_10
-    crossing) and 'final' so callers can persist soup snapshots."""
-    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress)
+    crossing) and 'final' so callers can persist soup snapshots.
+
+    Sampling: every `sample_every_early` steps until `early_until`, then every
+    `sample_every` (emergence often happens within the first few thousand steps,
+    so a 500-step grid alone puts it at the resolution floor). `mutations_per_step`
+    overrides the default pair_count/2^noise_exp (control arms). `provenance` is
+    stored verbatim in the condition record (git commit, launch time, …)."""
+    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step)
     cond = {
         "label": label,
         "grid": grid,
@@ -60,14 +70,22 @@ def run(
         "pairs": pairs,
         "z80_steps": z80_steps,
         "noise_exp": noise_exp,
-        "mutation_rate": 1 / 2**noise_exp,
+        "mutation_rate": 1 / 2**noise_exp,  # legacy name: mutated bytes per pair slot per step
         "mutations_per_step": soup.mutation_count,
+        "mutation_per_cell_per_step": soup.mutation_count / soup.cell_count,
+        "mutation_per_byte_per_step": soup.mutation_count / (soup.cell_count * soup.tape_length),
         "suppress": soup.patterns,
         "suppressed": count(soup.sets),
         "suppressed_by_page": {k: len(v) for k, v in soup.sets.items()},
         "horizon": horizon,
         "sample_every": sample_every,
+        "sample_every_early": sample_every_early,
+        "early_until": early_until,
+        "stop_share": stop_share,
+        "stop_after": stop_after,
+        "random_tapes": random_tapes,
         "adapter": adapter_summary(),
+        **_provenance(soup, provenance),
     }
     emit = (lambda d: (out.write(json.dumps(d) + "\n"), out.flush())) if out else (lambda d: None)
     emit({"kind": "condition", **cond})
@@ -80,22 +98,34 @@ def run(
     stop_at = None
     samples = 0
     while step < horizon:
-        n = min(sample_every, horizon - step)
+        every = sample_every_early if (sample_every_early and step < early_until) else sample_every
+        n = min(every, horizon - step)
+        if sample_every_early and step < early_until:
+            n = min(n, early_until - step)
         soup.step(n)
         step += n
+        active_pairs = soup.read_active_pairs()
+        byte_hist = soup.read_byte_counts()
         hashes = soup.read_hashes()
         sp = species_stats(hashes)
         soup_arr = soup.read_soup()
         hoe = high_order_entropy(soup_arr)
-        ex = exemplars(soup_arr, hashes, sp["top3_hashes"])
+        ex = exemplars(soup_arr, hashes, sp["top3_hashes"], suppress=soup.sets)
         top_idx = int(np.argmax(hashes == np.uint32(sp["top_hash"])))
         qs = quasispecies_share(soup_arr, soup_arr[top_idx])
+        qs.update(shift_occupancy(soup_arr, soup_arr[top_idx]))
         ms = motif_share(soup_arr, soup_arr[top_idx])
         cs = census(soup_arr)
-        rec = {"kind": "sample", "step": step, **sp, **qs, **ms, **hoe, **cs, "exemplars": ex, "elapsed_s": round(time.perf_counter() - t0, 2)}
+        rec = {
+            "kind": "sample", "step": step, **sp, **qs, **ms, **hoe, **cs, "exemplars": ex,
+            "active_pairs": active_pairs,                      # pairs that interacted in the last step of this interval
+            "zero_frac": float(byte_hist[0] / max(int(byte_hist.sum()), 1)),  # fraction of soup bytes equal to 0x00
+            "byte_hist": byte_hist.astype(int).tolist(),       # 256-bin histogram of all soup bytes (padding excluded)
+            "elapsed_s": round(time.perf_counter() - t0, 2),
+        }
         if random_tapes:
             # uniformly random cells, so diverse replicator clouds can be assayed post hoc
-            ridx = np.random.default_rng(seed * 1_000_003 + step).integers(0, soup_arr.shape[0], size=random_tapes)
+            ridx = np.random.default_rng([seed, step]).integers(0, soup_arr.shape[0], size=random_tapes)
             rec["random_tapes"] = [soup_arr[i].tobytes().hex(" ") for i in ridx]
         emit(rec)
         samples += 1
@@ -122,6 +152,7 @@ def run(
         if stop_at is not None and step >= stop_at:
             break
     final_hashes = soup.read_hashes()
+    final_hist = soup.read_byte_counts()
     sp = species_stats(final_hashes)
     soup_arr = soup.read_soup()
     top_idx = int(np.argmax(final_hashes == np.uint32(sp["top_hash"])))
@@ -137,17 +168,49 @@ def run(
         "final": {
             **sp,
             **quasispecies_share(soup_arr, soup_arr[top_idx]),
+            **shift_occupancy(soup_arr, soup_arr[top_idx], sample=soup_arr.shape[0]),
             **motif_share(soup_arr, soup_arr[top_idx]),
             **high_order_entropy(soup_arr),
             **census(soup_arr),
-            "exemplars": exemplars(soup_arr, final_hashes, sp["top3_hashes"]),
+            "exemplars": exemplars(soup_arr, final_hashes, sp["top3_hashes"], suppress=soup.sets),
+            "zero_frac": float(final_hist[0] / max(int(final_hist.sum()), 1)),
+            "byte_hist": final_hist.astype(int).tolist(),
         },
+        "samples": samples,
         "wall_s": round(time.perf_counter() - t0, 2),
-        # Wall-clock throughput incl. sampling overhead (submit time alone would overstate it ~8x).
+        # Nominal pair slots per second incl. sampling overhead (≈57% of drawn pairs are active; see active_pairs).
         "slots_per_s": round(step * pairs * z80_steps / max(time.perf_counter() - t0, 1e-9)),
     }
     emit(summary)
     return summary
+
+
+def _provenance(soup, extra: dict | None) -> dict:
+    """Everything needed to reproduce a run's software environment, stored in every condition record."""
+    import hashlib
+    import platform
+
+    import brotli  # noqa: F401  (HOE depends on the brotli version)
+    import wgpu
+
+    from .soup import SHADER_DIR, _ADAPTER_INFO
+
+    isa_sha = hashlib.sha256((SHADER_DIR / "isa.json").read_bytes()).hexdigest()[:16]
+    try:
+        from wgpu.backends.wgpu_native import lib_version as wgpu_native_version
+    except Exception:  # noqa: BLE001
+        wgpu_native_version = None
+    prov = {
+        "shader_file": soup.shader_file.name,
+        "shader_sha256_16": soup.shader_sha256_16,
+        "isa_sha256_16": isa_sha,
+        "adapter_info": {k: str(v) for k, v in _ADAPTER_INFO.items()},
+        "versions": {"wgpu": wgpu.__version__, "wgpu_native": wgpu_native_version, "numpy": np.__version__, "python": platform.python_version()},
+        "mutations_per_step_override": soup.mutations_per_step,
+    }
+    if extra:
+        prov.update(extra)
+    return {"provenance": prov}
 
 
 def main(argv=None) -> None:
@@ -168,13 +231,17 @@ def main(argv=None) -> None:
     ap.add_argument("--out", default=None, help="JSONL path (default: stdout)")
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--random-tapes", type=int, default=0, help="store this many random cell tapes per sample")
+    ap.add_argument("--sample-every-early", type=int, default=None, help="finer sampling interval for the first --early-until steps")
+    ap.add_argument("--early-until", type=int, default=0)
+    ap.add_argument("--mutations-per-step", type=int, default=None, help="override pair_count/2^noise_exp (control arms)")
     a = ap.parse_args(argv)
-    out = open(a.out, "a") if a.out else sys.stdout
+    out = open(a.out, "w") if a.out else sys.stdout
     try:
         s = run(
             grid=a.grid, tape=a.tape, width=a.width, height=a.height, seed=a.seed, pairs=a.pairs, z80_steps=a.z80_steps,
             noise_exp=a.noise_exp, suppress=a.suppress, horizon=a.horizon, sample_every=a.sample_every,
             stop_share=None if a.stop_share < 0 else a.stop_share, label=a.label, out=out, quiet=a.quiet, random_tapes=a.random_tapes,
+            sample_every_early=a.sample_every_early, early_until=a.early_until, mutations_per_step=a.mutations_per_step,
         )
     finally:
         if a.out:

@@ -68,10 +68,18 @@ def motif_share(soup: np.ndarray, top_tape: np.ndarray, min_repeats: int | None 
     return {"motif": f"{int(lo):02x} {int(hi):02x}", "motif_share": float((hits >= min_repeats).mean())}
 
 
-# Raw byte-pattern census (population level, mechanism-agnostic). These count
-# byte values wherever they sit, so operands inflate them slightly; the
-# replication assay on exemplars gives the executed truth. Cheap enough to run
-# at every sample.
+# Raw byte-pattern census (population level, mechanism-agnostic). Exact definitions
+# (each is the fraction of CELLS satisfying the condition; bytes are counted wherever
+# they sit, operands included, so the random-tape baseline grows with L and every
+# comparison must use the per-L baseline in succession.py):
+#   c_blockcopy : contains the byte pair ED A0/A8/B0/B8 (LDI/LDD/LDIR/LDDR)
+#   c_push2     : contains >= 2 bytes in {C5, D5, E5, F5} (PUSH BC/DE/HL/AF)
+#   c_ex_sp     : contains E3 (EX (SP),HL)
+#   c_rst       : contains FF (RST 38h, the return-address smear maker); other RSTs not counted
+#   c_ld_hl_w   : contains 70-75/77 (LD (HL),r) or 36 (LD (HL),n)
+#   c_zero8     : contains >= min(8, L) zero bytes anywhere (not necessarily a run)
+#   c_cb_hl     : contains CB xx with (xx & 7) == 6, i.e. any CB-page op on (HL), BIT included
+# The replication assay on exemplars gives the executed truth. Cheap enough to run at every sample.
 _BLOCK_COPY_2ND = np.array([0xA0, 0xA8, 0xB0, 0xB8], dtype=np.uint8)  # LDI LDD LDIR LDDR after ED
 _PUSH = np.array([0xC5, 0xD5, 0xE5, 0xF5], dtype=np.uint8)
 _LD_HL_W = np.array([0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77, 0x36], dtype=np.uint8)  # LD (HL),r / LD (HL),n
@@ -132,10 +140,46 @@ def minimal_period(tape: bytes | np.ndarray) -> int:
     return n
 
 
-def exemplars(soup: np.ndarray, hashes: np.ndarray, top_hashes: list[int]) -> list[dict]:
+def exemplars(soup: np.ndarray, hashes: np.ndarray, top_hashes: list[int], suppress: dict[str, set[int]] | None = None) -> list[dict]:
+    """Top exact genotypes with their write mechanisms. `suppress` (the run's resolved
+    ablation sets) is REQUIRED for a correct label: a suppressed opcode executes as a
+    NOP on the GPU, so e.g. `c5` under the stack ablation is not a stack mechanism.
+    (Review 2026-10-07: labels stored without it were wrong in ~3% of Stage A/B runs.)"""
     out = []
     for h in top_hashes:
         idx = int(np.argmax(hashes == np.uint32(h)))
         tape = soup[idx].tobytes()
-        out.append({"hash": int(h), "tape": tape.hex(" "), "mechanisms": mechanisms(tape)})
+        out.append({"hash": int(h), "tape": tape.hex(" "), "mechanisms": mechanisms(tape, suppress)})
     return out
+
+
+def tolerant_period(tape: bytes | np.ndarray, tol: float = 0.9) -> tuple[int, float]:
+    """(period, match) where period is the smallest p <= len/2 for which at least `tol`
+    of the positions satisfy tape[i] == tape[i-p]; falls back to len(tape) (aperiodic) with
+    the best match fraction found. Unlike minimal_period, one defective byte (e.g. a 3-byte
+    end defect on an 81-byte period-2 tape) does not turn a tiled tape into "aperiodic"."""
+    b = np.frombuffer(bytes(tape), dtype=np.uint8) if not isinstance(tape, np.ndarray) else tape
+    n = b.size
+    best_p, best_m = n, 0.0
+    for p in range(1, n // 2 + 1):
+        m = float((b[p:] == b[:-p]).mean())
+        if m >= tol:
+            return p, m
+        if m > best_m:
+            best_p, best_m = p, m
+    return n, best_m
+
+
+def shift_occupancy(soup: np.ndarray, top_tape: np.ndarray, thresh: float = 0.75, sample: int = 2000, seed: int = 0) -> dict:
+    """Shift-invariant occupancy: fraction of cells whose best cyclic-shift similarity to the
+    dominant tape is >= `thresh` (the replication assay's notion of a copy). Stack
+    replicators write phase-shifted copies, which the Hamming quasispecies share misses
+    (review 2026-10-07: up to 3x under-count). Computed on a fixed random subsample of
+    `sample` cells per call (SE ~1%) to keep the per-sample cost at L = 100 negligible."""
+    n, L = soup.shape
+    idx = np.random.default_rng(seed).integers(0, n, size=min(sample, n)) if n > sample else np.arange(n)
+    sub = soup[idx]
+    best = np.zeros(sub.shape[0])
+    for s in range(L):
+        best = np.maximum(best, (sub == np.roll(top_tape, s)[None, :]).mean(axis=1))
+    return {"q_shift_share": float((best >= thresh).mean()), "q_shift_n": int(sub.shape[0])}

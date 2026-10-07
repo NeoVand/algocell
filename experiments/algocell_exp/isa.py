@@ -125,16 +125,17 @@ MECHANISM_OF_FAMILY = {
 }
 
 
-def disassemble(tape: bytes, wrap: int | None = None, suppress: dict[str, set[int]] | None = None) -> list[dict]:
+def disassemble(tape: bytes, suppress: dict[str, set[int]] | None = None) -> list[dict]:
     """Linear disassembly of a tape from byte 0, following the Z80 decode rules
     (prefix bytes, operand lengths). With `suppress` (per-page sets, as from
     resolve()), a suppressed opcode is rendered the way the GPU core executes
     it: a NOP that consumes only the opcode (and prefix) bytes, so its operand
-    bytes decode as the next instructions. Addresses wrap at `wrap` (default len)."""
+    bytes decode as the next instructions. An operand that runs past the end of
+    the tape is truncated (in the soup those bytes belong to the partner, which
+    is unknown here), so the last instruction may be incomplete."""
     isa = load()
     sup = suppress or {}
     n = len(tape)
-    wrap = wrap or n
     out: list[dict] = []
     pc = 0
 
