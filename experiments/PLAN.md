@@ -314,6 +314,40 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (Stage E read; 1,230/1,230 runs, 0 failures): **E-flat**: emergence is 10/10
+  at every L ≥ 16 in all four arms (one 7/10 cell, @mubyte L = 81); the emergence time's
+  mild growth with L (×8 under @nominal and @bytes, ×20 under @mubyte) vanishes under
+  @steps8L (150 steps at every L) — a budget-per-byte effect, not mutation rate or lottery.
+  **E-steps confirmed** (faithful 3/10 → 10/10 at L = 81 and 1/10 → 9/10 at L = 100 under
+  stack-write-only). **E-tiling confirmed** in 8/8 arms (divides-2L 0.91–1.00). **E-floor not
+  supported**: L = 8 is a pusher cell (10/10 at KM 500) while L = 9, 10, 12 are not (4, 4,
+  6/10); L = 5 and 6 emerge slowly through whole-tape / LDIR copiers; L = 3, 4, 7 never.
+  Post hoc: an isolated-assay sweep shows the pusher's own heritability dips to 0.20–0.32 at
+  L = 9–12 and is 0.53–0.72 at L = 8 and L ≥ 16 — a copy-geometry explanation to be tested
+  with ring variants. **E4**: faithfulness at L = 100 switches on between 128 and 256 steps;
+  no whole-tape first replicators at any budget; at 64 steps 6/10 soups are heritable
+  populations without any clone (top share ≤ 0.07%, 69–100% of random cells heritable) —
+  the `t_rep` event is a clonality criterion and misses them. **E5 confirmed** for the LDIR
+  regime (median period 5 → 32.5 bytes over two decades of mutation rate). **E6**: same-seed
+  repeats diverge (0.25–0.38 dex vs 0.27–0.46 dex across seeds): seeds are exchangeable,
+  single runs are not reproducible. **E7 confirmed** (18/20 vs 0/20, p = 1.7 × 10⁻⁹).
+  Details: results/stageE/FINDINGS.md; generated numbers in stage_e/NUMBERS_E.md.
+- 2026-10-07 (Stage C read; 490/490 runs, 0 failures): **C1a confirmed** (no-copy and
+  rmw-only 0/40 at 1,000,000 steps; 95% upper bound 0.072 per run), **C1b not met** (all-ld
+  2/10, not > 0.3). **C3a**: stack-write-only reproduces the stack-writes suppression (8/10
+  vs 8/10, both 10/10 slower than none, p = 0.002) but the KM ratio is ×2.4, outside the
+  pre-registered ×2 (paired test cannot separate the arms). **C3b confirmed** (read-only
+  5/5 vs none). **C3c half met**: ex-sp-only ×3.5 (yes) but push-only ×992 — removing
+  PUSH/POP alone delays more than removing all 22 stack writers. **C3d confirmed**: ld-imm
+  2/10 heritable, the strongest single-family suppression at 128 steps (the first replicator
+  in every permissive arm is `LD rr,nn ; PUSH rr`, which needs the immediate). **C3e
+  confirmed** (cb-page, ed-loads within paired noise). **C5** met for the first replicator
+  only (period 2 in 9/10 at L = 100; final dominants period 10 in 7/8). At 32 steps · 1/4 no
+  arm differs from none (every p ≥ 0.34). Post hoc: mutation rate selects the family holding
+  the soup at 300k (LDIR at 1/4 and ≤ 128 steps, the EX (SP),HL family at 1/16–1/64);
+  succession increases heritability (gen2 0.59 → 1.00 at L = 16, 0.64 → 0.83 at 36,
+  0.72 → 0.99 at 100) with byte-identical successors in 7–9/10 seeds. C4 not yet computed.
+  Details: results/stageC/FINDINGS.md; generated numbers in stage_c/NUMBERS_C.md.
 - 2026-10-07 (Stage D read; 280/280 runs): **D1 confirmed** (stack-write-only > none,
   CMH one-sided p = 3.9 × 10⁻⁶), **D1b replicated** (p = 1.2 × 10⁻⁵), **D2 confirmed**
   (+0.14 zero fraction at step 5,000; read-only arm 0.00), **D3** first clause confirmed
