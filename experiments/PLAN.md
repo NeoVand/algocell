@@ -95,28 +95,34 @@ L = 16 cells are shared with Stage A (not re-run).
 the 3-factor crossing L × steps × mutation for whichever ablation shows a
 non-trivial mechanism change.
 
-*Proposed after reading Stage A (2026-10-07; to be fixed once Stage B is read):*
+*Fixed 2026-10-08 after reading Stage A and Stage B (succession and census;
+Stage B assays were being recomputed after the executor fix). The exact
+condition list is `make_conds.stage_c()` → `conds/stageC.json` (420 runs). All
+Stage C runs have no early stop and store 8 random cell tapes per sample.*
 
-- **C1 — slow or impossible?** `no-copy`, `rmw-only` and `all-ld` at
-  (128, k=4) and (32, k=2) for 1,000,000 steps, 10 seeds, no early stop,
-  8 random tapes stored per sample. Tests whether the 0/90 and 0/90 nulls and
-  the rare `all-ld` emergence are horizon effects (and tests the user's
-  remembered no-copy regime at 3× the horizon).
+- **C1 — slow or impossible?** `no-copy`, `rmw-only`, `all-ld` at (128, k=4)
+  and (32, k=2), 10 seeds, **1,000,000 steps** (sampled every 1,000). Tests
+  whether the 0/90 nulls and the rare `all-ld` emergence are horizon effects.
 - **C2 — succession without censoring.** `none`, `block-copy`, `ld-mem` at
-  128 and 512 steps, all three mutation rates, 10 seeds, no early stop, to
-  measure stack → LDIR invasion statistics free of the stopping rule.
-- **C3 — finer ablations.** Split `stack-writes` into PUSH-only, EX (SP),HL-only
-  and CALL/RST-only; split `all-ld` into immediates-only (ld8-imm + ld16-imm)
-  and register/memory loads only; add `cb-page` (all CB) and `ed-loads`. 10
-  seeds at (128, k=4) and (32, k=2). Asks which specific instructions carry
-  the early replicators and which load the load-free designs route around.
-- **C4 — functional fraction over time.** With random tapes per sample, the
-  heritable fraction of the population can be tracked through the succession
-  (Load–Push debris vs LDIR cloud).
+  128 and 512 steps × k ∈ {2, 4, 6}, 10 seeds, 300,000 steps.
+- **C3 — finer ablations** at (128, k=4) and (32, k=2), 10 seeds, 300,000
+  steps: `push-only` (PUSH/POP), `ex-sp-only` (EX (SP),HL), `call-rst`,
+  `ld-imm` (immediates), `ld-reg` (register loads + LD SP,HL/I/R), `cb-page`
+  (all CB), `ed-loads` (ED 16-bit memory loads).
+- **C4 — functional fraction over time:** from the random tapes of every C run.
+- **C5 — size without censoring:** `none` and `stack-writes` at L ∈ {36, 100},
+  (128, k=4), 10 seeds, 300,000 steps, to measure whether large organisms stay
+  tiled by short motifs (Stage B first look: PUSH family in 10/10 seeds for
+  every L ≥ 25, final dominant tapes of small period) when the run is not
+  stopped at 50% occupancy.
 
-Compute: one run ≈ 300,000 × 0.35 ms ≈ 105 s on an H200 for L = 16 (longer
-for large L); Stage A ≈ 18 GPU-hours, Stage B ≈ 30–60 GPU-hours. Runs that hit
-the stopping rule finish much earlier.
+Predictions, stated now: C1 — `no-copy` and `rmw-only` remain null at 1M;
+`all-ld` emergence fraction rises above 0.3. C3 — `ex-sp-only` and `push-only`
+each delay emergence less than `stack-writes` did (redundant stack routes);
+`ld-imm` is the load family whose removal costs most (Load–Push needs
+immediates); `cb-page` and `ed-loads` change nothing at L = 16. C5 — dominant
+tapes at L = 100 have period ≤ 8 in most seeds; no whole-tape replicator of
+period > 32 appears.
 
 ## Outcomes (all recorded per sample, nothing chosen after the fact)
 

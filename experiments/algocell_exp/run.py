@@ -44,6 +44,7 @@ def run(
     out=None,
     quiet: bool = False,
     on_snapshot=None,
+    random_tapes: int = 0,
 ) -> dict:
     """on_snapshot(name, soup_uint8_2d) is called with 'emergence' (first tq_10
     crossing) and 'final' so callers can persist soup snapshots."""
@@ -92,6 +93,10 @@ def run(
         ms = motif_share(soup_arr, soup_arr[top_idx])
         cs = census(soup_arr)
         rec = {"kind": "sample", "step": step, **sp, **qs, **ms, **hoe, **cs, "exemplars": ex, "elapsed_s": round(time.perf_counter() - t0, 2)}
+        if random_tapes:
+            # uniformly random cells, so diverse replicator clouds can be assayed post hoc
+            ridx = np.random.default_rng(seed * 1_000_003 + step).integers(0, soup_arr.shape[0], size=random_tapes)
+            rec["random_tapes"] = [soup_arr[i].tobytes().hex(" ") for i in ridx]
         emit(rec)
         samples += 1
         if not quiet:
@@ -162,13 +167,14 @@ def main(argv=None) -> None:
     ap.add_argument("--label", default="")
     ap.add_argument("--out", default=None, help="JSONL path (default: stdout)")
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--random-tapes", type=int, default=0, help="store this many random cell tapes per sample")
     a = ap.parse_args(argv)
     out = open(a.out, "a") if a.out else sys.stdout
     try:
         s = run(
             grid=a.grid, tape=a.tape, width=a.width, height=a.height, seed=a.seed, pairs=a.pairs, z80_steps=a.z80_steps,
             noise_exp=a.noise_exp, suppress=a.suppress, horizon=a.horizon, sample_every=a.sample_every,
-            stop_share=None if a.stop_share < 0 else a.stop_share, label=a.label, out=out, quiet=a.quiet,
+            stop_share=None if a.stop_share < 0 else a.stop_share, label=a.label, out=out, quiet=a.quiet, random_tapes=a.random_tapes,
         )
     finally:
         if a.out:
