@@ -8,7 +8,7 @@ Batches: runs/stageA. Pre-registration and change log: `experiments/PLAN.md`; re
 
 **H2 — removing the stack-writing arm delays emergence > 10× and switches the mechanism (L = 16, 128 steps, 1/16).** stack-writes 9/10, KM median 50,500 vs none 500 (ratio 101×); first-replicator mechanisms under the ablation: block-copy:9. Caveat (review): the arm removes 46 opcodes of which 24 write nothing (POP, RET, EX DE,HL, EXX), so the delay is 'stack+exchange+return removed', not 'stack writes removed'; Stage D separates the two.
 
-**H3 — no-copy leaves no replicator.** Heritable replicators (t_rep): 0 in 90 no-copy runs; rmw-only: 0 in 90. By the pre-registered occupancy event tq_10 the letter of H3 is REFUTED (0 no-copy runs crossed q_share ≥ 10%, all on zero-byte floods, not replicators); the assay outcome was adopted after 19 runs were read (PLAN change log) and is the measure used here.
+**H3 — no-copy leaves no replicator.** Heritable replicators (t_rep): 0 in 90 no-copy runs; rmw-only: 0 in 90. By the pre-registered occupancy event tq_10 as well: 0 crossings. The assay outcome (t_rep) was adopted after 19 runs were read (PLAN change log) and is the measure used here.
 
 **H4 — the step budget is the strongest knob (unablated, L = 16).** KM median t_rep (steps × mutation):
 
@@ -18,9 +18,9 @@ Batches: runs/stageA. Pre-registration and change log: `experiments/PLAN.md`; re
 |   4 | 11,000 |   500 | 1,000 |
 |   6 | 10,000 | 1,000 |   500 |
 
-Seed-paired budget contrast: 1/2^2: 128 steps faster than 32 steps in 10/10 seeds (sign test p = 0.002); 1/2^4: 128 steps faster than 32 steps in 10/10 seeds (sign test p = 0.002); 1/2^6: 128 steps faster than 32 steps in 9/10 seeds (sign test p = 0.021).
+Seed-paired budget contrast: 1/2^2: 128 steps faster than 32 steps in 10, slower in 0, tied in 0 of 10 seeds (sign test p = 0.002); 1/2^4: 128 steps faster than 32 steps in 10, slower in 0, tied in 0 of 10 seeds (sign test p = 0.002); 1/2^6: 128 steps faster than 32 steps in 9, slower in 1, tied in 0 of 10 seeds (sign test p = 0.021).
 
-**H5 — mutation is non-monotone (unablated, L = 16).** Seed-paired contrasts between adjacent mutation rates: 32 steps: 1/2^2 faster than 1/2^4 in 0/10 (p = 0.002); 1/2^4 faster than 1/2^6 in 6/10 (p = 0.75). 128 steps: 1/2^2 faster than 1/2^4 in 1/10 (p = 0.12); 1/2^4 faster than 1/2^6 in 6/10 (p = 0.12). 512 steps: 1/2^2 faster than 1/2^4 in 5/10 (p = 0.062); 1/2^4 faster than 1/2^6 in 2/10 (p = 0.45). The 'too low' side (k ≥ 8) was not run; a minimum cannot be claimed from k ∈ {2, 4, 6}.
+**H5 — mutation is non-monotone (unablated, L = 16).** Seed-paired contrasts between adjacent mutation rates: 32 steps: 1/2^2 faster than 1/2^4 in 0, slower in 10, tied in 0 of 10 seeds (sign test p = 0.002); 1/2^4 faster than 1/2^6 in 6, slower in 4, tied in 0 of 10 seeds (sign test p = 0.75). 128 steps: 1/2^2 faster than 1/2^4 in 1, slower in 6, tied in 3 of 10 seeds (sign test p = 0.12); 1/2^4 faster than 1/2^6 in 6, slower in 1, tied in 3 of 10 seeds (sign test p = 0.12). 512 steps: 1/2^2 faster than 1/2^4 in 5, slower in 0, tied in 5 of 10 seeds (sign test p = 0.062); 1/2^4 faster than 1/2^6 in 2, slower in 5, tied in 3 of 10 seeds (sign test p = 0.45). The 'too low' side (k ≥ 8) was not run; a minimum cannot be claimed from k ∈ {2, 4, 6}.
 
 ## Emergence grids
 

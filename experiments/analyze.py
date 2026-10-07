@@ -137,7 +137,8 @@ def figures(df: pd.DataFrame, table: pd.DataFrame, out: str) -> None:
         sub = table[table["tape"] == tape]
         if len(steps_levels) <= 1 or len(k_levels) <= 1 or sub.empty:
             continue  # a 1×N grid is a bar chart; size_axis.py draws those
-        fig, axes = plt.subplots(len(ev_cols), len(labels), figsize=(fs.DOUBLE, 1.25 * len(ev_cols) + 0.5), squeeze=False)
+        n_uniform = sub["n"].nunique() == 1
+        fig, axes = plt.subplots(len(ev_cols), len(labels), figsize=(max(fs.DOUBLE, 1.1 * len(labels)), 1.35 * len(ev_cols) + 0.6), squeeze=False)
         for r, ev in enumerate(ev_cols):
             for c, label in enumerate(labels):
                 ax = axes[r][c]
@@ -146,10 +147,10 @@ def figures(df: pd.DataFrame, table: pd.DataFrame, out: str) -> None:
                 for _, row in sub[sub["label"] == label].iterrows():
                     i, j = k_levels.index(row["k"]), steps_levels.index(row["steps"])
                     m[i, j] = row[f"{ev}_frac"]
-                    txt[(i, j)] = f"{int(row[f'{ev}_n'])}/{int(row['n'])}"
+                    txt[(i, j)] = f"{int(row[f'{ev}_n'])}" if n_uniform else f"{int(row[f'{ev}_n'])}/{int(row['n'])}"
                 im = ax.imshow(m, vmin=0, vmax=1, cmap="viridis", origin="lower", aspect="auto")
                 for (i, j), s in txt.items():
-                    ax.text(j, i, s, ha="center", va="center", color="w" if m[i, j] < 0.6 else "k", fontsize=6)
+                    ax.text(j, i, s, ha="center", va="center", color="w" if m[i, j] < 0.6 else "k", fontsize=5.5)
                 ax.set_xticks(range(len(steps_levels)), steps_levels if r == len(ev_cols) - 1 else [""] * len(steps_levels))
                 ax.set_yticks(range(len(k_levels)), [f"1/2^{k}" for k in k_levels] if c == 0 else [""] * len(k_levels))
                 if r == 0:
@@ -159,7 +160,7 @@ def figures(df: pd.DataFrame, table: pd.DataFrame, out: str) -> None:
                 if r == len(ev_cols) - 1:
                     ax.set_xlabel("Z80 steps")
         fig.colorbar(im, ax=axes.ravel().tolist(), shrink=0.6, pad=0.01, label="fraction of seeds")
-        fig.suptitle(f"Emergence atlas, L = {tape} bytes (seeds with the event within the horizon)", y=1.02)
+        fig.suptitle(f"Emergence atlas, L = {tape} bytes: seeds with the event within the horizon" + (f" (of n = {int(sub['n'].iloc[0])})" if n_uniform else ""), y=1.02)
         fs.save(fig, os.path.join(out, f"atlas_L{tape}"))
 
     # F2 — Kaplan–Meier small multiples: panel = (steps, k) [and L when several], colour = ablation, event = t_rep when available.

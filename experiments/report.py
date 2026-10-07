@@ -127,15 +127,18 @@ def preregistered(cells: pd.DataFrame, assays: pd.DataFrame) -> list[str]:
     nc_all = cells[cells["label"] == "no-copy"]
     rmw_all = cells[cells["label"] == "rmw-only"]
     if len(nc_all):
+        tq = int(nc_all["tq_10_n"].sum())
+        letter = (f"By the pre-registered occupancy event tq_10 the letter of H3 is REFUTED: {tq} no-copy runs crossed q_share ≥ 10%, all on zero-byte floods, not replicators." if tq
+                  else "By the pre-registered occupancy event tq_10 as well: 0 crossings.")
         out.append(f"**H3 — no-copy leaves no replicator.** Heritable replicators (t_rep): {int(nc_all['t_rep_n'].sum())} in {int(nc_all['n'].sum())} no-copy runs"
                    + (f"; rmw-only: {int(rmw_all['t_rep_n'].sum())} in {int(rmw_all['n'].sum())}" if len(rmw_all) else "")
-                   + f". By the pre-registered occupancy event tq_10 the letter of H3 is REFUTED ({int(nc_all['tq_10_n'].sum())} no-copy runs crossed q_share ≥ 10%, all on zero-byte floods, not replicators); the assay outcome was adopted after 19 runs were read (PLAN change log) and is the measure used here.")
+                   + f". {letter} The assay outcome (t_rep) was adopted after 19 runs were read (PLAN change log) and is the measure used here.")
     none16 = cells[(cells["label"] == "none") & (cells["tape"] == 16)]
     if len(none16) > 3:
         rows = []
         for k in sorted(none16["k"].unique()):
             pos, neg, tie = paired_sign(assays, "none", 16, k, 128, 32)
-            rows.append(f"1/2^{k}: 128 steps faster than 32 steps in {pos}/{pos+neg+tie} seeds (sign test p = {sign_test(pos, neg):.2g})")
+            rows.append(f"1/2^{k}: 128 steps faster than 32 steps in {pos}, slower in {neg}, tied in {tie} of {pos+neg+tie} seeds (sign test p = {sign_test(pos, neg):.2g})")
         piv = none16.pivot_table(index="k", columns="steps", values="t_rep_km_median").map(km_str)
         out.append("**H4 — the step budget is the strongest knob (unablated, L = 16).** KM median t_rep (steps × mutation):\n\n" + piv.to_markdown() + "\n\nSeed-paired budget contrast: " + "; ".join(rows) + ".")
         rows = []
@@ -148,8 +151,8 @@ def preregistered(cells: pd.DataFrame, assays: pd.DataFrame) -> list[str]:
                 if k1 in set(A["k"]) and k2 in set(A["k"]):
                     x, y = t(k1), t(k2)
                     idx = x.index.intersection(y.index)
-                    pos = int((x[idx] < y[idx]).sum()); neg = int((y[idx] < x[idx]).sum())
-                    pairs.append(f"1/2^{k1} faster than 1/2^{k2} in {pos}/{len(idx)} (p = {sign_test(pos, neg):.2g})")
+                    pos = int((x[idx] < y[idx]).sum()); neg = int((y[idx] < x[idx]).sum()); tie = len(idx) - pos - neg
+                    pairs.append(f"1/2^{k1} faster than 1/2^{k2} in {pos}, slower in {neg}, tied in {tie} of {len(idx)} seeds (sign test p = {sign_test(pos, neg):.2g})")
             rows.append(f"{st} steps: " + "; ".join(pairs))
         out.append("**H5 — mutation is non-monotone (unablated, L = 16).** Seed-paired contrasts between adjacent mutation rates: " + ". ".join(rows) + ". The 'too low' side (k ≥ 8) was not run; a minimum cannot be claimed from k ∈ {2, 4, 6}.")
     sizes = cells[(cells["label"] == "none") & (cells["k"] == 4) & (cells["steps"] == 128)].sort_values("tape")

@@ -4,7 +4,7 @@ Batches: runs/stageB. Pre-registration and change log: `experiments/PLAN.md`; re
 
 ## Pre-registered hypotheses
 
-**H3 — no-copy leaves no replicator.** Heritable replicators (t_rep): 0 in 160 no-copy runs. By the pre-registered occupancy event tq_10 the letter of H3 is REFUTED (10 no-copy runs crossed q_share ≥ 10%, all on zero-byte floods, not replicators); the assay outcome was adopted after 19 runs were read (PLAN change log) and is the measure used here.
+**H3 — no-copy leaves no replicator.** Heritable replicators (t_rep): 0 in 160 no-copy runs. By the pre-registered occupancy event tq_10 the letter of H3 is REFUTED: 10 no-copy runs crossed q_share ≥ 10%, all on zero-byte floods, not replicators. The assay outcome (t_rep) was adopted after 19 runs were read (PLAN change log) and is the measure used here.
 
 **H6 — emergence time grows with L; large organisms have more free tape; more mechanism classes at large L (unablated, 128 steps, 1/16).** L=4: 0/10 (NR; faithful 0), L=9: 4/10 (NR; faithful 4), L=25: 10/10 (1,500; faithful 10), L=36: 10/10 (500; faithful 10), L=49: 10/10 (1,500; faithful 10), L=64: 10/10 (1,000; faithful 10), L=81: 10/10 (1,500; faithful 10), L=100: 10/10 (1,500; faithful 8). Time to emergence does not grow with L above 16 at 500-step resolution (first clause not supported); the free-tape and complexity clauses are addressed in the size-axis analysis (tiling), with the confounds listed in REVIEW.md §4 (per-byte mutation ∝ 1/L, steps per byte, parity-driven early stop) still open until the control arms run.
 
