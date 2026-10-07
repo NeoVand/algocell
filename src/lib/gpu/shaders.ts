@@ -56,6 +56,56 @@ const HEX_NEIGHBOR_SELECTION = /* wgsl */ `
     let j = ny * w + nx;
 `;
 
+// ============================================================
+// Host bits shared by the simulation shader and the dev test shader, so the
+// differential harness exercises exactly the code the simulation runs.
+// ============================================================
+
+// Instruction suppression hook for the zilion core. Fires once per executed
+// instruction after prefix resolution (see @neovand/zilion's host contract).
+// IX/IY forms of a base opcode follow the base set; DDCB/FDCB follow the CB set.
+const SUPPRESS_HOOK_WGSL = /* wgsl */ `
+fn on_fetch_opcode(prefix: u32, op: u32) -> bool {
+    var page = 0u;
+    if (prefix == 0xcbu || prefix == 0xddcbu || prefix == 0xfdcbu) { page = 1u; }
+    else if (prefix == 0xedu) { page = 2u; }
+    let word = params.suppress[page * 2u + (op >> 7u)][(op >> 5u) & 3u];
+    return ((word >> (op & 31u)) & 1u) != 0u;
+}
+`;
+
+// Pair memory layout. pair_data holds each cell word-padded (words_per_cell
+// u32 per cell: 4 for 16-byte tapes, 5 for 19-byte hex tapes). The Z80 sees
+// A's tape_length bytes at mem[0..tape_length) immediately followed by B's at
+// mem[tape_length..pair_length) — no padding byte inside the address space.
+const PAIR_MEM_WGSL = /* wgsl */ `
+fn load_pair_mem(base: u32) {
+    let wpc = (params.tape_length + 3u) / 4u;
+    for (var b = 0u; b < params.tape_length; b++) {
+        let w = b >> 2u;
+        let sh = (b & 3u) * 8u;
+        mem[b] = (pair_data[base + w] >> sh) & 0xffu;
+        mem[params.tape_length + b] = (pair_data[base + wpc + w] >> sh) & 0xffu;
+    }
+}
+fn store_pair_mem(base: u32) {
+    let wpc = (params.tape_length + 3u) / 4u;
+    for (var w = 0u; w < wpc; w++) {
+        var wa = 0u;
+        var wb = 0u;
+        for (var k = 0u; k < 4u; k++) {
+            let b = w * 4u + k;
+            if (b < params.tape_length) {
+                wa |= mem[b] << (k * 8u);
+                wb |= mem[params.tape_length + b] << (k * 8u);
+            }
+        }
+        pair_data[base + w] = wa;
+        pair_data[base + wpc + w] = wb;
+    }
+}
+`;
+
 export function createSimShader(gridType: GridType): string {
 	const neighborBlock = gridType === 'hex' ? HEX_NEIGHBOR_SELECTION : SQUARE_NEIGHBOR_SELECTION;
 
@@ -71,16 +121,10 @@ struct Params {
     mutation_count: u32,
     z80_steps: u32,
     batch_seed: u32,
-    // 256-bit opcode suppression bitmask (8 × u32)
-    // If bit N is set, opcode N is treated as NOP
-    suppress0: u32, // opcodes 0x00–0x1F
-    suppress1: u32, // opcodes 0x20–0x3F
-    suppress2: u32, // opcodes 0x40–0x5F
-    suppress3: u32, // opcodes 0x60–0x7F
-    suppress4: u32, // opcodes 0x80–0x9F
-    suppress5: u32, // opcodes 0xA0–0xBF
-    suppress6: u32, // opcodes 0xC0–0xDF
-    suppress7: u32, // opcodes 0xE0–0xFF
+    // Instruction suppression: three 256-bit sets, one per opcode page
+    // (0 = base, 1 = CB, 2 = ED), two vec4<u32> each. Bit (op & 31) of
+    // u32 word (op >> 5). Packed on the host by suppressionMasks().
+    suppress: array<vec4<u32>, 6>,
 }
 
 @group(0) @binding(0) var<storage, read_write> soup: array<u32>;
@@ -127,24 +171,8 @@ fn mem_write(addr: u32, val: u32) {
     mem[a] = val & 0xffu;
     if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
-fn is_opcode_suppressed(op: u32) -> bool {
-    let word_idx = op >> 5u;
-    let bit_idx  = op & 31u;
-    var mask = 0u;
-    switch (word_idx) {
-        case 0u: { mask = params.suppress0; }
-        case 1u: { mask = params.suppress1; }
-        case 2u: { mask = params.suppress2; }
-        case 3u: { mask = params.suppress3; }
-        case 4u: { mask = params.suppress4; }
-        case 5u: { mask = params.suppress5; }
-        case 6u: { mask = params.suppress6; }
-        case 7u: { mask = params.suppress7; }
-        default: {}
-    }
-    return ((mask >> bit_idx) & 1u) != 0u;
-}
-fn on_fetch_opcode(op: u32) -> bool { return is_opcode_suppressed(op); }
+${SUPPRESS_HOOK_WGSL}
+${PAIR_MEM_WGSL}
 
 ${Z80_CORE_WGSL}
 
@@ -236,17 +264,9 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
     if (pair_id >= params.pair_count) { return; }
     if (pair_active[pair_id] == 0u) { return; }
 
-    // Load pair memory into private array
-    let words_per_cell = (params.tape_length + 3u) / 4u;
-    let words_per_pair = words_per_cell * 2u;
-    let base = pair_id * words_per_pair;
-    for (var i = 0u; i < words_per_pair; i++) {
-        let word = pair_data[base + i];
-        mem[i * 4u] = word & 0xffu;
-        mem[i * 4u + 1u] = (word >> 8u) & 0xffu;
-        mem[i * 4u + 2u] = (word >> 16u) & 0xffu;
-        mem[i * 4u + 3u] = (word >> 24u) & 0xffu;
-    }
+    // Load pair memory: A at mem[0..tape_length), B at mem[tape_length..pair_length).
+    let base = pair_id * ((params.tape_length + 3u) / 4u) * 2u;
+    load_pair_mem(base);
 
     // Reset CPU state
     cpu_a = 0u; cpu_f = 0u; cpu_b = 0u; cpu_c = 0u;
@@ -266,13 +286,8 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
         z80_step();
     }
 
-    // Save pair memory back
-    for (var i = 0u; i < words_per_pair; i++) {
-        pair_data[base + i] = mem[i * 4u] |
-                              (mem[i * 4u + 1u] << 8u) |
-                              (mem[i * 4u + 2u] << 16u) |
-                              (mem[i * 4u + 3u] << 24u);
-    }
+    // Save pair memory back (padding bytes are written as zero)
+    store_pair_mem(base);
 
     write_counts[pair_id * 2u] = cpu_writes_a;
     write_counts[pair_id * 2u + 1u] = cpu_writes_b;
@@ -329,11 +344,13 @@ fn count_bytes(@builtin(global_invocation_id) id: vec3u) {
     let total_words = params.soup_width * params.soup_height * ((params.tape_length + 3u) / 4u);
     if (idx >= total_words) { return; }
 
+    // Skip the padding bytes of a cell's last word (hex tapes are 19 bytes in 5 words).
+    let wpc = (params.tape_length + 3u) / 4u;
+    let valid = min(4u, params.tape_length - (idx % wpc) * 4u);
     let word = soup[idx];
-    atomicAdd(&byte_counts[word & 0xffu], 1u);
-    atomicAdd(&byte_counts[(word >> 8u) & 0xffu], 1u);
-    atomicAdd(&byte_counts[(word >> 16u) & 0xffu], 1u);
-    atomicAdd(&byte_counts[(word >> 24u) & 0xffu], 1u);
+    for (var b = 0u; b < valid; b++) {
+        atomicAdd(&byte_counts[(word >> (b * 8u)) & 0xffu], 1u);
+    }
 }
 
 // --- Clear byte counts ---
@@ -916,15 +933,14 @@ struct Params {
 	mutation_count: u32,
 	z80_steps: u32,
 	batch_seed: u32,
-	suppress0: u32, suppress1: u32, suppress2: u32, suppress3: u32,
-	suppress4: u32, suppress5: u32, suppress6: u32, suppress7: u32,
+	suppress: array<vec4<u32>, 6>,
 };
 @group(0) @binding(0) var<uniform> params: Params;
-@group(0) @binding(1) var<storage, read_write> io: array<u32>;
+@group(0) @binding(1) var<storage, read_write> pair_data: array<u32>; // one word-padded A+B pair per case
 @group(0) @binding(2) var<storage, read_write> regs: array<u32>;
 
-// Same host bits (memory model + suppression hook) as the sim, so this tests
-// the exact shipping Z80 core from the zilion package.
+// Same host bits (memory model, pair layout, suppression hook) as the sim,
+// so this tests the exact shipping Z80 core from the zilion package.
 var<private> cpu_writes_a: u32;
 var<private> cpu_writes_b: u32;
 var<private> mem: array<u32, 40>;
@@ -934,24 +950,8 @@ fn mem_write(addr: u32, val: u32) {
 	mem[a] = val & 0xffu;
 	if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
 }
-fn is_opcode_suppressed(op: u32) -> bool {
-	let word_idx = op >> 5u;
-	let bit_idx = op & 31u;
-	var mask = 0u;
-	switch (word_idx) {
-		case 0u: { mask = params.suppress0; }
-		case 1u: { mask = params.suppress1; }
-		case 2u: { mask = params.suppress2; }
-		case 3u: { mask = params.suppress3; }
-		case 4u: { mask = params.suppress4; }
-		case 5u: { mask = params.suppress5; }
-		case 6u: { mask = params.suppress6; }
-		case 7u: { mask = params.suppress7; }
-		default: {}
-	}
-	return ((mask >> bit_idx) & 1u) != 0u;
-}
-fn on_fetch_opcode(op: u32) -> bool { return is_opcode_suppressed(op); }
+${SUPPRESS_HOOK_WGSL}
+${PAIR_MEM_WGSL}
 
 ${Z80_CORE_WGSL}
 
@@ -959,15 +959,8 @@ ${Z80_CORE_WGSL}
 fn z80_test(@builtin(global_invocation_id) id: vec3u) {
 	let case_id = id.x;
 	if (case_id >= params.pair_count) { return; }
-	let words_per_pair = params.pair_length / 4u;
-	let base = case_id * words_per_pair;
-	for (var i = 0u; i < words_per_pair; i++) {
-		let word = io[base + i];
-		mem[i*4u] = word & 0xffu;
-		mem[i*4u+1u] = (word >> 8u) & 0xffu;
-		mem[i*4u+2u] = (word >> 16u) & 0xffu;
-		mem[i*4u+3u] = (word >> 24u) & 0xffu;
-	}
+	let base = case_id * ((params.tape_length + 3u) / 4u) * 2u;
+	load_pair_mem(base);
 	cpu_a=0u; cpu_f=0u; cpu_b=0u; cpu_c=0u; cpu_d=0u; cpu_e=0u; cpu_h=0u; cpu_l=0u;
 	cpu_sp=0xffffu; cpu_pc=0u;
 	cpu_a2=0u; cpu_f2=0u; cpu_b2=0u; cpu_c2=0u; cpu_d2=0u; cpu_e2=0u; cpu_h2=0u; cpu_l2=0u;
@@ -977,9 +970,7 @@ fn z80_test(@builtin(global_invocation_id) id: vec3u) {
 		if (cpu_halted != 0u) { break; }
 		z80_step();
 	}
-	for (var i = 0u; i < words_per_pair; i++) {
-		io[base + i] = mem[i*4u] | (mem[i*4u+1u] << 8u) | (mem[i*4u+2u] << 16u) | (mem[i*4u+3u] << 24u);
-	}
+	store_pair_mem(base);
 	let rbase = case_id * 12u;
 	regs[rbase+0u]=cpu_a; regs[rbase+1u]=cpu_f; regs[rbase+2u]=cpu_b; regs[rbase+3u]=cpu_c;
 	regs[rbase+4u]=cpu_d; regs[rbase+5u]=cpu_e; regs[rbase+6u]=cpu_h; regs[rbase+7u]=cpu_l;

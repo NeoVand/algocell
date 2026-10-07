@@ -1,6 +1,6 @@
 # Algocell
 
-**Artificial life via Z80 machine code.** Watch self-replicating programs emerge from random bytes in a WebGPU-accelerated simulation running over 50 billion operations per second.
+**Artificial life via Z80 machine code.** Watch self-replicating programs emerge from random bytes in a WebGPU-accelerated simulation that runs billions of Z80 instruction slots per second on a laptop GPU, and remove any instruction from the CPU to see which replication strategies evolve without it.
 
 ![Algocell screenshot](static/screenshot.png)
 
@@ -15,7 +15,7 @@ Algocell fills a grid of cells with random bytes. Each cell holds a short tape (
 
 After all pairs are processed, random mutations replace a configurable number of bytes across the grid with new random values. No fitness function, no selection pressure — just execution and mutation.
 
-Because all registers start at zero, many Z80 instructions end up writing zeros, flooding the grid with NOP (0x00). Eventually, by chance, a short sequence like `POP HL` + `EX (SP),HL` forms a self-copying loop that propagates itself into neighboring cells. Once a replicator appears, it spreads exponentially, displacing the NOPs. You can suppress dominant patterns to see if alternative replication strategies evolve.
+Because all registers start at zero, many Z80 instructions end up writing zeros, flooding the grid with NOP (0x00). Eventually, by chance, a short sequence like `POP HL` + `EX (SP),HL` forms a self-copying loop that propagates itself into neighboring cells. Once a replicator appears, it spreads exponentially, displacing the NOPs. You can remove instructions from the CPU — individual opcodes, including prefixed ones like `LDIR`, or whole families such as `family:block-copy` or `family:stack` — to see which alternative replication strategies evolve without them.
 
 ## Features
 
@@ -23,7 +23,7 @@ Because all registers start at zero, many Z80 instructions end up writing zeros,
 - **Square and hexagonal grids** — hex mode produces more organic emergent behavior with 6 neighbors instead of 4
 - **Configurable grid size** — from tiny experiments to large-scale ecosystems
 - **Real-time frequency analysis** — live chart tracking the most common byte values (opcodes) over time
-- **Opcode suppression** — block dominant replicators by treating their instructions as NOPs
+- **Instruction ablation** — remove instructions from the Z80 (exact opcodes on the base, CB and ED pages, or semantic families); the CPU executes them as NOPs. Built-in presets: _No block copy_ and _No-copy_
 - **Simple/Detailed view** — toggle between averaged cell colors and individual byte-level rendering
 - **Appearance controls** — multiple colormaps, brightness/contrast/saturation adjustments, grid line toggle
 - **Cell inspection** — hover any cell to see its full Z80 disassembly and byte layout

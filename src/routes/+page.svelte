@@ -9,6 +9,7 @@
 		type GridConfig
 	} from '$lib/sim/constants';
 	import { disassemble, byteToMnemonic } from '$lib/z80-disasm';
+	import { resolveSuppression, countSuppressed, mnemonicOf, describeSuppression } from '$lib/z80-opcodes';
 	import { getCellData } from '$lib/sim/soup';
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
@@ -47,7 +48,7 @@
 	let pairCount = $state(MAX_BATCH_PAIR_N);
 	let z80Steps = $state(Z80_STEPS);
 	let playing = $state(true);
-	let speed = $state(1);
+	let speed = $state(8); // steps per frame; 8x is the default
 	let gridType = $state<GridType>('square');
 
 	// Compute grid dimensions from viewport aspect ratio
@@ -98,25 +99,11 @@
 	let suppressPatterns: string[] = $state([]);
 	let suppressInput = $state('');
 
-	// Derive the actual set of suppressed opcodes from substring patterns
-	/* eslint-disable svelte/prefer-svelte-reactivity -- derived recreates the Set each time */
-	let suppressedOpcodes = $derived.by(() => {
-		const set = new Set<number>();
-		if (suppressPatterns.length === 0) return set;
-		for (let i = 0; i < 256; i++) {
-			const mnemonic = (byteToMnemonic(i) || '').toUpperCase();
-			const hex = i.toString(16).toUpperCase().padStart(2, '0');
-			for (const pat of suppressPatterns) {
-				const p = pat.toUpperCase();
-				if (mnemonic.includes(p) || hex.includes(p) || ('0X' + hex).includes(p)) {
-					set.add(i);
-					break;
-				}
-			}
-		}
-		return set;
-	});
-	/* eslint-enable svelte/prefer-svelte-reactivity */
+	// Resolve patterns → per-page suppression sets (base / CB / ED), see $lib/z80-opcodes.
+	let suppression = $derived(resolveSuppression(suppressPatterns));
+	// Base-page set: what the frequency tiles (which show base-page bytes) can mark.
+	let suppressedOpcodes = $derived(suppression.base);
+	let suppressedTotal = $derived(countSuppressed(suppression));
 
 	// Frequency chart: track top N bytes normalized over time
 	// Total bytes counted by shader = cells * wordsPerCell * 4 (word-aligned)
@@ -358,6 +345,13 @@
 			}
 			engine = eng;
 			startLoop();
+			if (import.meta.env.DEV) {
+				// Dev-only handle for headless experiments and debugging from the console.
+				(window as unknown as { __algocell?: unknown }).__algocell = {
+					engine: eng,
+					resolveSuppression
+				};
+			}
 		});
 
 		return () => {
@@ -1051,8 +1045,8 @@
 		if (!engine) return;
 		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
 		engine.changeGridConfig(config, canvasW, canvasH);
-		// Re-apply suppress mask after buffer recreation
-		engine.setSuppressedOpcodes(suppressedOpcodes);
+		// Re-apply suppression after buffer recreation
+		engine.setSuppression(suppression);
 		// Reset stats
 		opsPerSec = 0;
 		chartRing.length = 0;
@@ -1094,7 +1088,7 @@
 	function toggleSuppressOpcode(opcode: number) {
 		tileTooltip = null;
 		chartHoveredByte = -1;
-		const mnemonic = byteToMnemonic(opcode) || hexByte(opcode);
+		const mnemonic = mnemonicOf('base', opcode);
 		if (suppressedOpcodes.has(opcode)) {
 			// Find and remove patterns that match this opcode
 			// If the exact mnemonic is a pattern, remove it; otherwise remove patterns that only match this one
@@ -1158,7 +1152,7 @@
 			key: 'suppressPatterns',
 			mode: 'live',
 			get: () => [...suppressPatterns],
-			// suppressedOpcodes (derived) -> $effect pushes the mask to the engine
+			// suppression (derived) -> $effect pushes the masks to the engine
 			set: (v) => (suppressPatterns = [...((v as string[]) ?? [])])
 		},
 		{
@@ -1276,10 +1270,10 @@
 		if (activePresetId) deletePreset(activePresetId);
 	}
 
-	// Sync derived suppressedOpcodes to the GPU engine
+	// Sync the derived suppression sets to the GPU engine
 	$effect(() => {
 		if (!engine) return;
-		engine.setSuppressedOpcodes(suppressedOpcodes);
+		engine.setSuppression(suppression);
 	});
 
 	// Sync simple view mode to GPU engine
@@ -1331,7 +1325,7 @@
 			tiles.push({
 				type: 'suppressed',
 				byte: -1,
-				mnemonic: `⊘ ${suppressedOpcodes.size}`,
+				mnemonic: `⊘ ${suppressedTotal}`,
 				count: suppressedInTop
 			});
 		}
@@ -1993,7 +1987,7 @@
 							</svg>
 						</button>
 					{/each}
-					<span class="freq-suppress-count">⊘ {suppressedOpcodes.size}</span>
+					<span class="freq-suppress-count" title={describeSuppression(suppression)}>⊘ {suppressedTotal}</span>
 				</div>
 			{/if}
 		</div>
@@ -2068,7 +2062,7 @@
 							</svg>
 						</button>
 					{/each}
-					<span class="freq-suppress-count">⊘ {suppressedOpcodes.size}</span>
+					<span class="freq-suppress-count" title={describeSuppression(suppression)}>⊘ {suppressedTotal}</span>
 				</div>
 			{/if}
 		</div>
@@ -2135,7 +2129,7 @@
 							</svg>
 						</button>
 					{/each}
-					<span class="freq-suppress-count">⊘ {suppressedOpcodes.size}</span>
+					<span class="freq-suppress-count" title={describeSuppression(suppression)}>⊘ {suppressedTotal}</span>
 				</div>
 			{/if}
 		</div>
@@ -2799,9 +2793,11 @@
 						}}>?</button
 					>
 					<span class="param-tip"
-						>Type a substring pattern (e.g. LD, POP, EX) and press Enter to disable all matching
-						opcodes. Suppressed instructions are skipped as NOPs. Use to block the dominant
-						self-replicator and see if other strategies emerge.</span
+						>Remove instructions from the CPU. A pattern is a mnemonic substring (LDIR, LD (HL),
+						PUSH), a whole family (family:block-copy, family:stack, family:writes-mem) or one
+						opcode (ed:B0, cb:FF, 3E). Prefixed ED/CB instructions are reachable individually. A
+						suppressed opcode executes as a NOP; its operand bytes run as the next instruction.
+						Use it to take the usual replication machinery away and see what else evolves.</span
 					>
 				</span>
 				{#if suppressPatterns.length > 0}
@@ -2822,7 +2818,7 @@
 				<input
 					class="suppress-input"
 					type="text"
-					placeholder="LD; POP; EX; PUSH; ADD"
+					placeholder="family:block-copy; LDIR; PUSH; ed:B0"
 					bind:value={suppressInput}
 					onkeydown={(e) => {
 						if (e.key === 'Enter' && suppressInput.trim()) {
@@ -2832,20 +2828,10 @@
 					}}
 				/>
 				{#if suppressInput.trim()}
-					{@const preview = (() => {
-						const parts = suppressInput.split(';').map(s => s.trim().toUpperCase()).filter(Boolean);
-						if (parts.length === 0) return 0;
-						let count = 0;
-						for (let i = 0; i < 256; i++) {
-							const m = (byteToMnemonic(i) || '').toUpperCase();
-							const h = i.toString(16).toUpperCase().padStart(2, '0');
-							for (const p of parts) {
-								if (m.includes(p) || h.includes(p) || ('0X' + h).includes(p)) { count++; break; }
-							}
-						}
-						return count;
-					})()}
-					<span class="suppress-preview">↵ to suppress {preview} opcode{preview !== 1 ? 's' : ''}</span>
+					{@const preview = countSuppressed(
+						resolveSuppression(suppressInput.split(';').map((s) => s.trim()).filter(Boolean))
+					)}
+					<span class="suppress-preview">↵ to suppress {preview} instruction{preview !== 1 ? 's' : ''}</span>
 				{/if}
 			</div>
 			{#if suppressPatterns.length > 0}
@@ -2862,7 +2848,7 @@
 							</svg>
 						</button>
 					{/each}
-					<span class="suppress-count">{suppressedOpcodes.size} opcode{suppressedOpcodes.size !== 1 ? 's' : ''}</span>
+					<span class="suppress-count" title={describeSuppression(suppression)}>{suppressedTotal} instruction{suppressedTotal !== 1 ? 's' : ''}</span>
 				</div>
 			{/if}
 		</div>
@@ -3886,17 +3872,27 @@
 						suppress or un-suppress it. Toggle the chart sparkline with <kbd>S</kbd>.
 					</p>
 
-					<h4>Opcode Suppression</h4>
+					<h4>Instruction Suppression (ablation)</h4>
 					<p>
-						Type a substring pattern (e.g. <code>LD</code>, <code>POP</code>, <code>EX</code>)
-						into the Suppress field in Settings and press Enter. All opcodes whose mnemonic contains
-						that substring are disabled &mdash; the Z80 CPU skips them as if they were NOPs.
+						Type a pattern into the Suppress field in Settings and press Enter to remove the
+						matching instructions from the CPU. The Z80 then executes a suppressed opcode as a
+						NOP. Every instruction on the base, <code>CB</code> and <code>ED</code> pages is
+						addressable, so block copies like <code>LDIR</code> can be removed on their own.
 					</p>
 					<ul class="help-list">
 						<li>
-							<strong>Pattern matching</strong> &mdash; <code>LD</code> suppresses all load
-							instructions (~100 opcodes), <code>POP</code> suppresses all pop instructions,
-							<code>E1</code> matches by hex code
+							<strong>Families</strong> &mdash; <code>family:block-copy</code> (LDI/LDD/LDIR/LDDR),
+							<code>family:stack</code> (PUSH/POP), <code>family:ld8-mem</code>,
+							<code>family:call-ret</code>, &hellip; and the pseudo-family
+							<code>family:writes-mem</code> (every instruction that writes memory)
+						</li>
+						<li>
+							<strong>Exact opcodes</strong> &mdash; <code>ed:B0</code> (LDIR), <code>cb:FF</code>
+							(SET 7,A), <code>3E</code> or <code>base:3E</code> (LD A,n)
+						</li>
+						<li>
+							<strong>Mnemonic substrings</strong> &mdash; <code>LDIR</code>, <code>LD (HL)</code>,
+							<code>PUSH</code>; <code>LD</code> matches every load on every page
 						</li>
 						<li>
 							<strong>Click-to-suppress</strong> &mdash; click any tile in the frequency widget
@@ -3908,9 +3904,11 @@
 						</li>
 					</ul>
 					<p>
-						Note: suppression prevents <em>execution</em>, not <em>existence</em>. A suppressed
-						byte value can still appear in memory if other instructions write it or replicators
-						carry it as data.
+						Semantics: a suppressed base-page opcode is a 1-byte NOP, so its operand bytes run as
+						the next instruction (as if the opcode had been removed from the ISA). Suppressed
+						<code>CB</code>/<code>ED</code> instructions are 2-byte NOPs. IX/IY forms follow their
+						base opcode. Suppression prevents <em>execution</em>, not <em>existence</em>: a
+						suppressed byte value can still be written into memory or carried as data.
 					</p>
 				{:else if helpTab === 'z80'}
 					<h4>Registers</h4>
@@ -4131,11 +4129,12 @@ graph TD
 
 					<h4>Suppress Opcodes</h4>
 					<p>
-						Type a substring (e.g. <code>LD</code>, <code>POP</code>, <code>EX</code>) and press
-						Enter to suppress all matching opcodes. The Z80 CPU will skip these instructions as if
-						they were NOPs. Use this to block the dominant self-replicator pattern and observe
-						whether alternative replication strategies evolve. Patterns appear as removable chips
-						showing how many opcodes are affected.
+						Remove instructions from the CPU: a mnemonic substring (<code>LDIR</code>,
+						<code>PUSH</code>), a family (<code>family:block-copy</code>,
+						<code>family:writes-mem</code>) or an exact opcode (<code>ed:B0</code>). The Z80 skips
+						them as NOPs. Use this to take the usual replication machinery away and observe which
+						alternative strategies evolve. Patterns appear as removable chips; the count shows how
+						many instructions are affected across the base, CB and ED pages.
 					</p>
 
 					<h4>Colormap</h4>

@@ -49,8 +49,9 @@ export interface Preset {
 }
 
 // ── Built-in presets ──────────────────────────────────────────────────────
-// Kept intentionally small and honest. "No-copy" is a research starting point,
-// not a claimed magic recipe — users capture their own refined configurations.
+// Kept intentionally small and honest. The suppression presets are rungs of
+// the instruction-ablation ladder, not claimed recipes — users capture their
+// own refined configurations. Patterns use the grammar in $lib/z80-opcodes.
 
 export const BUILTIN_PRESETS: Preset[] = [
 	{
@@ -78,13 +79,36 @@ export const BUILTIN_PRESETS: Preset[] = [
 		}
 	},
 	{
+		id: 'builtin:no-block-copy',
+		name: 'No block copy',
+		builtin: true,
+		values: {
+			// Remove only the Z80's dedicated copy loop (LDI/LDD/LDIR/LDDR). This is
+			// the ablation of Cicala et al. (2026) extended to LDD; everything else
+			// — stack pushes, LD (HL),r loops, 16-bit loads — stays available.
+			suppressPatterns: ['family:block-copy']
+		}
+	},
+	{
 		id: 'builtin:no-copy',
 		name: 'No-copy',
 		builtin: true,
 		values: {
-			// Suppress the Z80 load/copy families. Starting point for exploring the
-			// multi-species regime that emerges when direct byte-copying is blocked.
-			suppressPatterns: ['LD', 'PUSH', 'POP', 'EX']
+			// Every load, stack and exchange family, including the ED-page block
+			// copies and 16-bit loads the old substring preset could not reach.
+			// Memory can then only be written by CALL/RST pushes, INC/DEC (HL),
+			// RLD/RRD, SET/RES (HL) and the CB-page shifts on (HL).
+			suppressPatterns: [
+				'family:ld8',
+				'family:ld8-imm',
+				'family:ld8-mem',
+				'family:ld16-imm',
+				'family:ld16-mem',
+				'family:ld-special',
+				'family:stack',
+				'family:ex',
+				'family:block-copy'
+			]
 		}
 	}
 ];
@@ -92,6 +116,11 @@ export const BUILTIN_PRESETS: Preset[] = [
 // ── Persistence (user presets only; built-ins live in code) ────────────────
 
 const STORAGE_KEY = 'algocell.presets.v1';
+// Ids of built-ins that have ever been seeded into this browser's storage, so a
+// built-in added in a later release is seeded exactly once and a built-in the
+// user deleted stays deleted. Absent key = the original three were seeded.
+const SEEDED_KEY = 'algocell.presets.seeded.v1';
+const LEGACY_SEEDED = ['builtin:classic', 'builtin:hex-organic', 'builtin:no-copy'];
 
 function hasStorage(): boolean {
 	try {
@@ -122,14 +151,54 @@ export function loadPresets(): Preset[] {
 		if (raw === null) {
 			const seeded = [...BUILTIN_PRESETS];
 			savePresets(seeded);
+			markSeeded(BUILTIN_PRESETS.map((p) => p.id));
 			return seeded;
 		}
 		const parsed = JSON.parse(raw);
 		if (!Array.isArray(parsed)) return [...BUILTIN_PRESETS];
-		return parsed.filter(isValidPreset);
+		return seedNewBuiltins(parsed.filter(isValidPreset));
 	} catch {
 		return [...BUILTIN_PRESETS];
 	}
+}
+
+function readSeeded(): Set<string> {
+	try {
+		const raw = localStorage.getItem(SEEDED_KEY);
+		if (raw === null) return new Set(LEGACY_SEEDED);
+		const parsed = JSON.parse(raw);
+		return new Set(
+			Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string') : LEGACY_SEEDED
+		);
+	} catch {
+		return new Set(LEGACY_SEEDED);
+	}
+}
+
+function markSeeded(ids: string[]): void {
+	try {
+		const all = new Set([...readSeeded(), ...ids]);
+		localStorage.setItem(SEEDED_KEY, JSON.stringify([...all]));
+	} catch {
+		// non-fatal
+	}
+}
+
+// Insert built-ins this browser has never seen, right after the last stored
+// built-in (or at the front), and remember that they were seeded.
+function seedNewBuiltins(stored: Preset[]): Preset[] {
+	const seeded = readSeeded();
+	const fresh = BUILTIN_PRESETS.filter(
+		(b) => !seeded.has(b.id) && !stored.some((p) => p.id === b.id)
+	);
+	if (fresh.length === 0) return stored;
+	let at = -1;
+	for (let i = 0; i < stored.length; i++) if (stored[i].id.startsWith('builtin:')) at = i;
+	const result = [...stored];
+	result.splice(at + 1, 0, ...fresh);
+	savePresets(result);
+	markSeeded(fresh.map((p) => p.id));
+	return result;
 }
 
 export function savePresets(presets: Preset[]): void {

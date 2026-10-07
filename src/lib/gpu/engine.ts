@@ -15,6 +15,7 @@ import {
 import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
 import { createSimShader, createRenderShader } from './shaders';
+import { suppressionMasks, emptySuppression, type SuppressSets } from '$lib/z80-opcodes';
 
 export class GPUEngine {
 	private device!: GPUDevice;
@@ -74,18 +75,21 @@ export class GPUEngine {
 	private _z80Steps = Z80_STEPS;
 	private hoverCell = -1;
 	private showAverage = 0;
-	private brightness = 0;   // -1..1
-	private contrast = 1;     // 0..2
-	private saturation = 1;   // 0..2
-	private showGrid = 1;     // 1 = show grid lines, 0 = hide
+	private brightness = 0; // -1..1
+	private contrast = 1; // 0..2
+	private saturation = 1; // 0..2
+	private showGrid = 1; // 1 = show grid lines, 0 = hide
 	private colormap: Uint32Array;
-	private suppressedOpcodes = new Set<number>();
+	// Instruction suppression (three per-page sets, see $lib/z80-opcodes).
+	private suppression: SuppressSets = emptySuppression();
 
 	// Stats (read back from GPU periodically)
 	byteCounts = new Uint32Array(256);
+	// Throughput: instruction slots (pairs × max steps) per second of *completed*
+	// GPU work, measured from onSubmittedWorkDone rather than submit time.
 	opsPerSec = 0;
-	private lastStatsTime = 0;
-	private statsOpsAccum = 0;
+	private rateAccumOps = 0;
+	private rateT0 = 0;
 
 	// Derived dimensions (from gridConfig)
 	private get soupWidth(): number {
@@ -148,27 +152,16 @@ export class GPUEngine {
 		return this.batchIndex;
 	}
 
-	setSuppressedOpcodes(opcodes: Set<number>): void {
-		this.suppressedOpcodes = new Set(opcodes);
-		// Immediately write the suppress mask to the GPU so it takes effect
-		// even before the next simulateStep() call
+	setSuppression(sets: SuppressSets): void {
+		this.suppression = { base: new Set(sets.base), cb: new Set(sets.cb), ed: new Set(sets.ed) };
+		// Immediately write the masks to the GPU so they take effect even
+		// before the next simulateStep() call
 		this.flushSuppressMask();
 	}
 
 	private flushSuppressMask(): void {
-		const mask = this.buildSuppressMask();
-		// Suppress mask starts at offset 32 (8 base u32s × 4 bytes)
-		this.device.queue.writeBuffer(this.paramsBuffer, 32, mask.buffer);
-	}
-
-	private buildSuppressMask(): Uint32Array {
-		const mask = new Uint32Array(8);
-		for (const op of this.suppressedOpcodes) {
-			const wordIdx = op >> 5;
-			const bitIdx = op & 31;
-			mask[wordIdx] |= 1 << bitIdx;
-		}
-		return mask;
+		// Masks start at byte offset 32 (after the 8 scalar params): 24 u32 words.
+		this.device.queue.writeBuffer(this.paramsBuffer, 32, suppressionMasks(this.suppression).buffer);
 	}
 
 	async init(canvas: HTMLCanvasElement): Promise<boolean> {
@@ -247,9 +240,9 @@ export class GPUEngine {
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
-		// Params uniform (8 base + 8 suppress mask = 16 u32s = 64 bytes)
+		// Params uniform (8 scalars + 6 × vec4<u32> suppression masks = 32 u32s = 128 bytes)
 		this.paramsBuffer = dev.createBuffer({
-			size: 64,
+			size: 128,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -433,6 +426,14 @@ export class GPUEngine {
 			if (i + 2 < this.soupSize) soupData[i + 2] = (r >> 16) & 0xff;
 			if (i + 3 < this.soupSize) soupData[i + 3] = (r >> 24) & 0xff;
 		}
+		// Padding bytes (the last word of a 19-byte hex tape) are not part of the
+		// tape: keep them zero so they never show up in statistics.
+		const stride = this.wordsPerCell * 4;
+		if (stride !== this.tapeLength) {
+			for (let c = 0; c < this.cellCount; c++) {
+				for (let b = this.tapeLength; b < stride; b++) soupData[c * stride + b] = 0;
+			}
+		}
 		this.device.queue.writeBuffer(this.soupBuffer, 0, soupData);
 		this.batchIndex = 0;
 	}
@@ -451,11 +452,32 @@ export class GPUEngine {
 		this.cpuRng = new SplitMix64(seed);
 		this.initSoup();
 		this.batchIndex = 0;
-		this.opsPerSec = 0;
-		this.lastStatsTime = 0;
-		this.statsOpsAccum = 0;
+		this.resetRate();
 		this.byteCounts.fill(0);
 		this.flushSuppressMask();
+	}
+
+	private resetRate(): void {
+		this.opsPerSec = 0;
+		this.rateAccumOps = 0;
+		this.rateT0 = 0;
+	}
+
+	// Called when a submitted step has actually finished on the GPU.
+	private onStepDone(ops: number): void {
+		const now = performance.now();
+		if (this.rateT0 === 0) {
+			this.rateT0 = now;
+			return;
+		}
+		this.rateAccumOps += ops;
+		const dt = now - this.rateT0;
+		if (dt >= 500) {
+			const inst = this.rateAccumOps / (dt / 1000);
+			this.opsPerSec = this.opsPerSec === 0 ? inst : this.opsPerSec * 0.7 + inst * 0.3;
+			this.rateAccumOps = 0;
+			this.rateT0 = now;
+		}
 	}
 
 	get config(): GridConfig {
@@ -464,8 +486,8 @@ export class GPUEngine {
 
 	changeGridConfig(config: GridConfig, canvasW?: number, canvasH?: number): void {
 		this.gridConfig = { ...config };
-		// Preserve suppress list across buffer recreation
-		const savedSuppressed = new Set(this.suppressedOpcodes);
+		// Preserve suppression across buffer recreation
+		const savedSuppression = this.suppression;
 		// Destroy old buffers
 		this.destroy();
 		// Recreate everything with new dimensions
@@ -475,12 +497,10 @@ export class GPUEngine {
 		this.uploadColormap();
 		this.resetView(canvasW, canvasH);
 		this.batchIndex = 0;
-		// Restore and flush suppress mask to the new paramsBuffer
-		this.suppressedOpcodes = savedSuppressed;
+		// Restore and flush suppression masks to the new paramsBuffer
+		this.suppression = savedSuppression;
 		this.flushSuppressMask();
-		this.opsPerSec = 0;
-		this.lastStatsTime = 0;
-		this.statsOpsAccum = 0;
+		this.resetRate();
 		this.byteCounts.fill(0);
 	}
 
@@ -507,9 +527,9 @@ export class GPUEngine {
 		const noiseCoef = 1 / Math.pow(2, this._noiseExp);
 		const mutationCount = Math.floor(this._pairCount * noiseCoef);
 
-		// Update params (8 base fields + 8 suppress mask words = 16 u32s)
-		const suppressMask = this.buildSuppressMask();
-		const paramsData = new Uint32Array([
+		// Update params (8 scalars + 24 suppression mask words = 32 u32s)
+		const paramsData = new Uint32Array(32);
+		paramsData.set([
 			this.soupWidth,
 			this.soupHeight,
 			this.tapeLength,
@@ -517,16 +537,9 @@ export class GPUEngine {
 			this._pairCount,
 			mutationCount,
 			this._z80Steps,
-			this.cpuRng.nextU32(), // batch_seed - different each batch
-			suppressMask[0],
-			suppressMask[1],
-			suppressMask[2],
-			suppressMask[3],
-			suppressMask[4],
-			suppressMask[5],
-			suppressMask[6],
-			suppressMask[7]
+			this.cpuRng.nextU32() // batch_seed - different each batch
 		]);
+		paramsData.set(suppressionMasks(this.suppression), 8);
 		this.device.queue.writeBuffer(this.paramsBuffer, 0, paramsData);
 
 		const encoder = this.device.createCommandEncoder();
@@ -579,21 +592,27 @@ export class GPUEngine {
 		this.device.queue.submit([encoder.finish()]);
 		this.batchIndex++;
 
-		// Update ops/sec
-		const now = performance.now();
-		if (this.lastStatsTime > 0) {
-			const dt = (now - this.lastStatsTime) / 1000;
-			if (dt > 0) {
-				const ops = this._pairCount * this._z80Steps;
-				this.statsOpsAccum = this.statsOpsAccum * 0.9 + (ops / dt) * 0.1;
-				this.opsPerSec = this.statsOpsAccum;
-			}
-		}
-		this.lastStatsTime = now;
+		// Throughput is credited when the GPU finishes this step, not when it is
+		// submitted (submitting 8 steps back-to-back takes ~0.1 ms each).
+		const ops = this._pairCount * this._z80Steps;
+		this.device.queue.onSubmittedWorkDone().then(() => this.onStepDone(ops));
 	}
 
 	// Read byte counts from GPU (async)
+	// Serialised like the other readbacks: a second caller while a map is
+	// pending gets the last counts instead of a mapAsync OperationError.
+	private _statsMapPending = false;
 	async readStats(): Promise<Uint32Array> {
+		if (this._statsMapPending) return this.byteCounts;
+		this._statsMapPending = true;
+		try {
+			return await this.readStatsNow();
+		} finally {
+			this._statsMapPending = false;
+		}
+	}
+
+	private async readStatsNow(): Promise<Uint32Array> {
 		const encoder = this.device.createCommandEncoder();
 
 		// Clear byte counts
@@ -665,7 +684,13 @@ export class GPUEngine {
 
 	// Write soup data back to GPU (for checkpoint restore)
 	writeSoupData(data: Uint8Array): void {
-		this.device.queue.writeBuffer(this.soupBuffer, 0, data.buffer, data.byteOffset, data.byteLength);
+		this.device.queue.writeBuffer(
+			this.soupBuffer,
+			0,
+			data.buffer,
+			data.byteOffset,
+			data.byteLength
+		);
 	}
 
 	// Read soup data from GPU for CPU-side trace/disassembly

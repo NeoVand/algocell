@@ -6,10 +6,13 @@
 // GROUND TRUTH: our WebGPU Z80 must match this, not the other way around.
 //
 // Configured to mirror the simulation's per-interaction environment: a
-// `pairLength`-byte buffer that the 16-bit address space wraps onto, all
-// registers zeroed, SP = 0xFFFF, PC = 0 (matching a real Z80 reset).
+// `pairLength`-byte buffer (32 for square cells, 38 for hex) that the 16-bit
+// address space wraps onto, all registers zeroed, SP = 0xFFFF, PC = 0
+// (matching a real Z80 reset), and optionally the same instruction
+// suppression the GPU core applies.
 
 import { Z80, type Hal } from 'z80-emulator';
+import type { SuppressSets } from '$lib/z80-opcodes';
 
 // z80-emulator has one known deviation from real hardware: it NOPs DD/FD-prefixed
 // opcodes that have no IX/IY form (a real Z80 — and superzazu, the paper's own
@@ -44,7 +47,43 @@ export interface OracleResult {
 	pc: number;
 }
 
-export function runOracle(input: Uint8Array, steps: number, pairLength = 32): OracleResult {
+// Suppression on the reference: the GPU core skips a suppressed instruction
+// as a NOP *inside* its fetch (after prefix resolution). We mirror that here by
+// peeking at the bytes at PC before each step and, if the decoded instruction
+// is suppressed, advancing PC (and R) past the opcode without executing it —
+// 1 byte for a base opcode, 2 for CB/ED-page and IX/IY-prefixed opcodes, 4 for
+// DDCB/FDCB. Operand bytes of a base opcode are not skipped (they run next).
+function skipIfSuppressed(
+	mem: Uint8Array,
+	pairLength: number,
+	regs: { pc: number; r: number },
+	s: SuppressSets
+): boolean {
+	const rd = (a: number) => mem[(a & 0xffff) % pairLength];
+	const pc = regs.pc & 0xffff;
+	const skip = (len: number, m1: number) => {
+		regs.pc = (pc + len) & 0xffff;
+		regs.r = (regs.r & 0x80) | ((regs.r + m1) & 0x7f);
+		return true;
+	};
+	const b0 = rd(pc);
+	if (b0 === 0xdd || b0 === 0xfd) {
+		const b1 = rd(pc + 1);
+		if (b1 === 0xdd || b1 === 0xfd || b1 === 0xed) return false; // wasted prefix
+		if (b1 === 0xcb) return s.cb.has(rd(pc + 3)) ? skip(4, 2) : false;
+		return s.base.has(b1) ? skip(2, 2) : false;
+	}
+	if (b0 === 0xcb) return s.cb.has(rd(pc + 1)) ? skip(2, 2) : false;
+	if (b0 === 0xed) return s.ed.has(rd(pc + 1)) ? skip(2, 2) : false;
+	return s.base.has(b0) ? skip(1, 1) : false;
+}
+
+export function runOracle(
+	input: Uint8Array,
+	steps: number,
+	pairLength = 32,
+	suppress?: SuppressSets
+): OracleResult {
 	const mem = new Uint8Array(input); // fresh copy — the program mutates itself
 	const hal: Hal = {
 		tStateCount: 0,
@@ -86,6 +125,7 @@ export function runOracle(input: Uint8Array, steps: number, pairLength = 32): Or
 	ddQuirkFired = false;
 	for (let s = 0; s < steps; s++) {
 		if (r.halted) break;
+		if (suppress && skipIfSuppressed(mem, pairLength, r, suppress)) continue;
 		z80.step();
 	}
 
