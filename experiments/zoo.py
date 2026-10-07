@@ -18,15 +18,21 @@ from collections import Counter, defaultdict
 
 import pandas as pd
 
-from algocell_exp.isa import disassemble
+from algocell_exp.isa import disassemble, resolve
+from make_conds import ABLATIONS
 
 CORE_FAMILIES = {"stack", "ex", "call-ret", "rst", "block-copy", "ld8-mem", "ld16-mem", "incdec-mem", "rotate-mem", "bit-set-mem", "block-io", "ld16-imm", "ld8-imm", "ld-special", "jump", "jump-rel"}
 
 
-def signature(tape_hex: str, suppress: str = "") -> str:
+def signature(tape_hex: str, label: str = "none") -> str:
+    """Design signature under the condition's own suppression set: suppressed
+    instructions execute as NOPs there, so they are dropped from the signature."""
     tape = bytes.fromhex(tape_hex.replace(" ", ""))
+    sets = resolve(ABLATIONS.get(label, []))
     parts = []
-    for ins in disassemble(tape):
+    for ins in disassemble(tape, suppress=sets):
+        if ins["family"] == "suppressed":
+            continue  # a 1-byte NOP in this condition; its operands decoded as instructions above
         if ins["family"] in CORE_FAMILIES or ins["writesMem"]:
             m = ins["mnemonic"]
             # generalise register names so LD B,n and LD E,n cluster together
@@ -54,7 +60,7 @@ def main(d: str) -> None:
         for which, tape, ok in (("first", r.get("t_rep_tape"), r.get("t_rep", -1) > 0), ("final", r.get("tape"), bool(r.get("final_replicator_insitu", False)))):
             if not ok or not isinstance(tape, str):
                 continue
-            rows.append({"label": r["label"], "tape_len": r["tape_len"], "steps": r["steps"], "k": r["k"], "seed": r["seed"], "which": which, "tape": tape, "signature": signature(tape)})
+            rows.append({"label": r["label"], "tape_len": r["tape_len"], "steps": r["steps"], "k": r["k"], "seed": r["seed"], "which": which, "tape": tape, "signature": signature(tape, r["label"])})
     df = pd.DataFrame(rows)
     out = os.path.join(d, "analysis")
     df.to_csv(os.path.join(out, "zoo.csv"), index=False)

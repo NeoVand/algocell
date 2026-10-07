@@ -125,14 +125,22 @@ MECHANISM_OF_FAMILY = {
 }
 
 
-def disassemble(tape: bytes, wrap: int | None = None) -> list[dict]:
+def disassemble(tape: bytes, wrap: int | None = None, suppress: dict[str, set[int]] | None = None) -> list[dict]:
     """Linear disassembly of a tape from byte 0, following the Z80 decode rules
-    (prefix bytes, operand lengths). Addresses wrap at `wrap` (default len)."""
+    (prefix bytes, operand lengths). With `suppress` (per-page sets, as from
+    resolve()), a suppressed opcode is rendered the way the GPU core executes
+    it: a NOP that consumes only the opcode (and prefix) bytes, so its operand
+    bytes decode as the next instructions. Addresses wrap at `wrap` (default len)."""
     isa = load()
+    sup = suppress or {}
     n = len(tape)
     wrap = wrap or n
     out: list[dict] = []
     pc = 0
+
+    def is_sup(page: str, code: int) -> bool:
+        return code in sup.get(page, ())
+
     while pc < n:
         start = pc
         b0 = tape[pc]
@@ -156,16 +164,24 @@ def disassemble(tape: bytes, wrap: int | None = None) -> list[dict]:
                 cbop = tape[pc + 1] if pc + 1 < n else 0
                 pc += 2
                 ins = isa["pages"]["cb"][cbop]
-                out.append({"offset": start, "bytes": list(tape[start:pc]), "mnemonic": ins["mnemonic"].replace("(HL)", f"(I{'X' if prefix=='DD' else 'Y'}+d)"), "family": ins["family"], "writesMem": ins["writesMem"]})
+                mn = ins["mnemonic"].replace("(HL)", f"(I{'X' if prefix=='DD' else 'Y'}+d)")
+                if is_sup("cb", cbop):
+                    out.append({"offset": start, "bytes": list(tape[start:pc]), "mnemonic": f"({mn} suppressed)", "family": "suppressed", "writesMem": False, "page": "cb", "code": cbop})
+                else:
+                    out.append({"offset": start, "bytes": list(tape[start:pc]), "mnemonic": mn, "family": ins["family"], "writesMem": ins["writesMem"], "page": "cb", "code": cbop})
                 continue
             op = b1
             ins = isa["pages"]["base"][op]
+            mn = ins["mnemonic"].replace("(HL)", f"(I{'X' if prefix=='DD' else 'Y'}+d)").replace("HL", "IX" if prefix == "DD" else "IY")
+            if is_sup("base", op):
+                # prefix + opcode consumed, operands fall through
+                out.append({"offset": start, "bytes": list(tape[start:pc]), "mnemonic": f"({mn} suppressed)", "family": "suppressed", "writesMem": False, "page": "base", "code": op})
+                continue
             length = ins["length"]
             if "(HL)" in ins["mnemonic"] and ins["mnemonic"] not in ("JP (HL)",):
                 length += 1  # displacement
             pc = start + 1 + length
-            mn = ins["mnemonic"].replace("(HL)", f"(I{'X' if prefix=='DD' else 'Y'}+d)").replace("HL", "IX" if prefix == "DD" else "IY")
-            out.append({"offset": start, "bytes": list(tape[start:min(pc, n)]), "mnemonic": mn, "family": ins["family"], "writesMem": ins["writesMem"]})
+            out.append({"offset": start, "bytes": list(tape[start:min(pc, n)]), "mnemonic": mn, "family": ins["family"], "writesMem": ins["writesMem"], "page": "base", "code": op})
             continue
         if b0 == 0xCB:
             cbop = tape[pc] if pc < n else 0
@@ -179,18 +195,23 @@ def disassemble(tape: bytes, wrap: int | None = None) -> list[dict]:
             ins = isa["pages"]["ed"][edop]
             page = "ed"
             op = edop
-            pc = start + ins["length"]
+            if not is_sup("ed", edop):
+                pc = start + ins["length"]
         else:
             ins = isa["pages"]["base"][op]
-            pc = start + ins["length"]
-        out.append({"offset": start, "bytes": list(tape[start:min(pc, n)]), "mnemonic": ins["mnemonic"], "family": ins["family"], "writesMem": ins["writesMem"], "page": page, "code": op})
+            if not is_sup("base", op):
+                pc = start + ins["length"]
+        if is_sup(page, op):
+            out.append({"offset": start, "bytes": list(tape[start:min(pc, n)]), "mnemonic": f"({ins['mnemonic']} suppressed)", "family": "suppressed", "writesMem": False, "page": page, "code": op})
+        else:
+            out.append({"offset": start, "bytes": list(tape[start:min(pc, n)]), "mnemonic": ins["mnemonic"], "family": ins["family"], "writesMem": ins["writesMem"], "page": page, "code": op})
     return out
 
 
-def mechanisms(tape: bytes) -> list[str]:
+def mechanisms(tape: bytes, suppress: dict[str, set[int]] | None = None) -> list[str]:
     """Replication-relevant write mechanisms present in a tape (linear decode)."""
     found: set[str] = set()
-    for ins in disassemble(tape):
+    for ins in disassemble(tape, suppress=suppress):
         if ins["writesMem"]:
             found.add(MECHANISM_OF_FAMILY.get(ins["family"], ins["family"]))
     return sorted(found)
