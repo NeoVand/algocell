@@ -45,8 +45,8 @@
 		"z80-emulator": "^2.3.0"
 	},
 	"dependencies": {
+		"@neovand/zilion": "^0.2.0",
 		"katex": "^0.16.45",
-		"mermaid": "^11.13.0",
-		"@neovand/zilion": "^0.2.0"
+		"mermaid": "^11.13.0"
 	}
 }
