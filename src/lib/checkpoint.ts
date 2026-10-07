@@ -9,6 +9,11 @@ export interface CheckpointMetadata {
 	gridWidth: number;
 	gridHeight: number;
 	gridType: 'square' | 'hex';
+	/**
+	 * Bytes per cell (19 on hex grids). Absent in files written before the
+	 * organism size became selectable; those square-grid files are 16-byte cells.
+	 */
+	tapeLength?: number;
 	seed: number;
 	noiseExp: number;
 	z80Steps: number;

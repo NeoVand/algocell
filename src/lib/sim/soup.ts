@@ -1,7 +1,14 @@
 // CPU-side soup utilities for trace visualization and disassembly
 // The main simulation runs on GPU; this handles hover/inspect on CPU
 
-import { Z80_STEPS, getTapeLength, getPairLength, type GridType } from './constants';
+import {
+	Z80_STEPS,
+	TAPE_LENGTH,
+	HEX_TAPE_LENGTH,
+	getTapeLength,
+	getPairLength,
+	type GridType
+} from './constants';
 import { Z80 } from './z80';
 
 // Get a neighbor index for CPU-side trace (picks first neighbor: right for square, appropriate for hex)
@@ -73,12 +80,18 @@ export function traceCell(
 	return traceImage;
 }
 
+/**
+ * Extract one cell's tape from a word-aligned soup readback.
+ * `tapeLength` is the square-grid organism size (bytes per cell); hex grids
+ * are always 19 bytes and ignore it.
+ */
 export function getCellData(
 	soupData: Uint8Array,
 	cellIndex: number,
-	gridType: GridType = 'square'
+	gridType: GridType = 'square',
+	tapeLength: number = TAPE_LENGTH
 ): Uint8Array {
-	const tapeLength = getTapeLength(gridType);
+	if (gridType === 'hex') tapeLength = HEX_TAPE_LENGTH;
 	const wordsPerCell = Math.ceil(tapeLength / 4);
 	const byteOffset = cellIndex * wordsPerCell * 4;
 	// Return only the valid tapeLength bytes (skip padding bytes in the last word)

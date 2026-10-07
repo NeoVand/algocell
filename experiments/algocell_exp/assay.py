@@ -94,12 +94,29 @@ def _best_shift_match(target: np.ndarray, tape: np.ndarray) -> np.ndarray:
     return best
 
 
-def assay(tape: bytes | np.ndarray, z80_steps: int = 128, suppress=(), n: int = 64, seed: int = 0) -> dict:
-    """Replication score of a tape under a given budget and suppression set."""
+def assay(
+    tape: bytes | np.ndarray,
+    z80_steps: int = 128,
+    suppress=(),
+    n: int = 64,
+    seed: int = 0,
+    neighbors: np.ndarray | None = None,
+) -> dict:
+    """Replication score of a tape under a given budget and suppression set.
+
+    `neighbors` (M, L) uint8 — if given, partners are drawn from it instead of
+    uniform random bytes ("in situ" assay against the actual soup). Members of
+    a replicator cloud can depend on their partners' bytes (e.g. POP DE reads
+    the pointer from the neighbour's tail), so the random-neighbour score is a
+    lower bound and the in-situ score is the ecological truth."""
     T = np.frombuffer(bytes(tape), dtype=np.uint8) if not isinstance(tape, np.ndarray) else tape.astype(np.uint8)
     L = T.size
     rng = np.random.default_rng(seed)
-    R = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+    if neighbors is not None:
+        idx = rng.integers(0, neighbors.shape[0], size=n)
+        R = np.ascontiguousarray(neighbors[idx]).astype(np.uint8)
+    else:
+        R = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     # T as A, random B
     pairs_a = np.concatenate([np.repeat(T[None, :], n, axis=0), R], axis=1)
     # random A, T as B
@@ -116,7 +133,10 @@ def assay(tape: bytes | np.ndarray, z80_steps: int = 128, suppress=(), n: int = 
     # score well in one generation (it writes its periodic payload) but its
     # offspring lack the instruction that produced it, so generation 2 collapses.
     offspring = res_a[:, L:]
-    R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+    if neighbors is not None:
+        R2 = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
+    else:
+        R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress)
     gen2 = _best_shift_match(res_g2[:, L:], T).mean() - _best_shift_match(R2, T).mean()
     return {

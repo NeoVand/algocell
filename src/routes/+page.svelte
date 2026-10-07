@@ -5,6 +5,9 @@
 		DEFAULT_NOISE_EXP,
 		MAX_BATCH_PAIR_N,
 		Z80_STEPS,
+		TAPE_LENGTH,
+		HEX_TAPE_LENGTH,
+		SQUARE_TAPE_LENGTHS,
 		type GridType,
 		type GridConfig
 	} from '$lib/sim/constants';
@@ -87,6 +90,32 @@
 	let gridHeight = $state(200);
 	let gridInitialized = false;
 
+	// Organism size: bytes of Z80 code per square-grid cell (a square number, so
+	// cells tile as √L×√L). The slider shows the value live while dragging and
+	// rebuilds the soup on release (like the grid-type toggle, unlike W×H which
+	// wait for Apply). Hex is always 19 bytes and ignores it.
+	const TAPE_SIZES: readonly number[] = SQUARE_TAPE_LENGTHS;
+	let tapeLength = $state(TAPE_LENGTH);
+	let tapeSide = $derived(Math.round(Math.sqrt(tapeLength)));
+	// Tape length the engine is actually running with — soup readbacks are laid
+	// out in this, not in the value shown mid-drag.
+	let appliedTapeLength = $state(TAPE_LENGTH);
+	// Effective bytes per cell on the running grid.
+	let cellBytes = $derived(gridType === 'hex' ? HEX_TAPE_LENGTH : appliedTapeLength);
+	// True only mid-drag: the slider shows a size the engine is not running yet.
+	let tapePending = $derived(gridType === 'square' && tapeLength !== appliedTapeLength);
+
+	function isSquareTapeLength(v: unknown): v is number {
+		return typeof v === 'number' && TAPE_SIZES.includes(v);
+	}
+
+	// Grid config for the engine. Hex is fixed at 19 bytes, so it carries no tapeLength.
+	function currentGridConfig(): GridConfig {
+		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType };
+		if (gridType === 'square') config.tapeLength = tapeLength;
+		return config;
+	}
+
 	// Stats
 	let opsPerSec = $state(0);
 	let showHelp = $state(false);
@@ -107,9 +136,7 @@
 
 	// Frequency chart: track top N bytes normalized over time
 	// Total bytes counted by shader = cells * wordsPerCell * 4 (word-aligned)
-	let TOTAL_BYTES = $derived(
-		gridWidth * gridHeight * Math.ceil((gridType === 'hex' ? 19 : 16) / 4) * 4
-	);
+	let TOTAL_BYTES = $derived(gridWidth * gridHeight * Math.ceil(cellBytes / 4) * 4);
 	const MAX_TRACKED = 10;
 	const MAX_HISTORY = 300;
 
@@ -272,11 +299,16 @@
 	let genomeCells = $derived(
 		cellData && disasmLines.length > 0 ? buildGenomeGrid(cellData, disasmLines) : []
 	);
+	// Columns of the square genome tooltip: √L for the L bytes actually read back.
+	let genomeSide = $derived(Math.max(1, Math.round(Math.sqrt(genomeCells.length))));
 
 	function computeTooltipStyle(mx: number, my: number): string {
 		const isHex = gridType === 'hex';
-		const tooltipW = isHex ? 280 : 196;
-		const tooltipH = isHex ? 260 : 196;
+		// Square tooltip: √L×√L tiles of 46px with 2px gaps inside 4px padding (see .tip-grid).
+		const side = Math.ceil(Math.sqrt(cellBytes));
+		const squareSize = side * 46 + (side - 1) * 2 + 8;
+		const tooltipW = isHex ? 280 : squareSize;
+		const tooltipH = isHex ? 260 : squareSize;
 		const vw = window.innerWidth;
 		const vh = window.innerHeight;
 		const gap = 12;
@@ -326,11 +358,7 @@
 		}
 
 		const initialSeed = untrack(() => seed);
-		const initialConfig: GridConfig = untrack(() => ({
-			width: gridWidth,
-			height: gridHeight,
-			gridType: gridType
-		}));
+		const initialConfig: GridConfig = untrack(() => currentGridConfig());
 		// Set canvas pixel dimensions before init so resetView gets correct aspect
 		const dpr = window.devicePixelRatio || 1;
 		canvas.width = canvasW = Math.round(canvas.clientWidth * dpr);
@@ -500,7 +528,10 @@
 				.slice(0, MAX_SPECIES_TRACKED)
 				.map(([hash, count]) => {
 					const cellIdx = exemplarIdx.get(hash) ?? 0;
-					const exemplar = soupData.length > 0 ? getCellData(soupData, cellIdx, gridType) : null;
+					const exemplar =
+						soupData.length > 0
+							? getCellData(soupData, cellIdx, gridType, appliedTapeLength)
+							: null;
 					const { color, textColor } = speciesAvgColor(exemplar);
 					const exemplarCells = exemplar
 						? buildGenomeGrid(exemplar, disassemble(exemplar))
@@ -712,7 +743,7 @@
 		pendingCellRefresh = -1;
 		engine.readSoupData().then((soupData) => {
 			if (soupData.length === 0 || hoveredCell !== cell) return;
-			const data = getCellData(soupData, cell, gridType);
+			const data = getCellData(soupData, cell, gridType, appliedTapeLength);
 			cellData = data;
 			disasmLines = disassemble(data);
 		});
@@ -930,6 +961,7 @@
 			gridWidth,
 			gridHeight,
 			gridType,
+			tapeLength: cellBytes,
 			seed,
 			noiseExp,
 			z80Steps: engine.z80Steps,
@@ -955,16 +987,29 @@
 
 		const { metadata, soupData } = result;
 
-		// Apply grid config if different
+		// Organism size of the file: hex is fixed at 19 and keeps the staged square
+		// size; square files written before the size was selectable are 16 bytes.
+		const loadedTapeLength =
+			metadata.gridType === 'hex'
+				? tapeLength
+				: isSquareTapeLength(metadata.tapeLength)
+					? metadata.tapeLength
+					: TAPE_LENGTH;
+
+		// Apply grid config if different from what the engine is running
 		if (
 			metadata.gridWidth !== gridWidth ||
 			metadata.gridHeight !== gridHeight ||
-			metadata.gridType !== gridType
+			metadata.gridType !== gridType ||
+			(metadata.gridType === 'square' && loadedTapeLength !== appliedTapeLength)
 		) {
 			gridType = metadata.gridType;
 			gridWidth = metadata.gridWidth;
 			gridHeight = metadata.gridHeight;
+			tapeLength = loadedTapeLength;
 			applyGridConfig();
+		} else {
+			tapeLength = loadedTapeLength;
 		}
 
 		// Restore params
@@ -1043,8 +1088,8 @@
 
 	function applyGridConfig() {
 		if (!engine) return;
-		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
-		engine.changeGridConfig(config, canvasW, canvasH);
+		engine.changeGridConfig(currentGridConfig(), canvasW, canvasH);
+		appliedTapeLength = tapeLength;
 		// Re-apply suppression after buffer recreation
 		engine.setSuppression(suppression);
 		// Reset stats
@@ -1120,6 +1165,12 @@
 		{ key: 'gridType', mode: 'grid', get: () => gridType, set: (v) => (gridType = v as GridType) },
 		{ key: 'gridWidth', mode: 'grid', get: () => gridWidth, set: (v) => (gridWidth = v as number) },
 		{ key: 'gridHeight', mode: 'grid', get: () => gridHeight, set: (v) => (gridHeight = v as number) },
+		{
+			key: 'tapeLength',
+			mode: 'grid',
+			get: () => tapeLength,
+			set: (v) => (tapeLength = isSquareTapeLength(v) ? v : TAPE_LENGTH)
+		},
 		{ key: 'seed', mode: 'reset', get: () => seed, set: (v) => (seed = v as number) },
 		{
 			key: 'noiseExp',
@@ -2140,6 +2191,7 @@
 {#if speciesModal}
 	{@const sp = speciesModal}
 	{@const cells = sp.exemplarCells}
+	{@const exemplarSide = Math.max(1, Math.round(Math.sqrt(cells.length)))}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div class="species-modal-backdrop" onclick={() => { speciesModal = null; speciesModalTip = null; }} role="presentation">
 		<div class="species-modal" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
@@ -2177,7 +2229,7 @@
 							{/each}
 						</div>
 					{:else}
-						<div class="tip-grid species-modal-grid" onmouseleave={() => { speciesModalTip = null; }}>
+						<div class="tip-grid species-modal-grid" style:--tip-cols={exemplarSide} onmouseleave={() => { speciesModalTip = null; }}>
 							{#each cells as cell, i (i)}
 								<div
 									class="tip-cell"
@@ -2512,6 +2564,77 @@
 						<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
 					</svg>
 				</button>
+			</div>
+			<!-- Organism size: live label while dragging, rebuilds on release -->
+			<div class="param-head organism-head">
+				<label class="param-label" for="tape-input"
+					><svg
+						width="12"
+						height="12"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="var(--accent)"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><rect x="3" y="3" width="18" height="18" rx="2" /><path
+							d="M9 3v18M15 3v18M3 9h18M3 15h18"
+						/></svg
+					> Organism size</label
+				>
+				<span class="param-info-wrap" class:show-tip={openTip === 'tape'}>
+					<button
+						class="param-info"
+						onmouseenter={() => {
+							openTip = 'tape';
+						}}
+						onmouseleave={() => {
+							openTip = null;
+						}}
+						onclick={() => {
+							openTip = openTip === 'tape' ? null : 'tape';
+						}}>?</button
+					>
+					<span class="param-tip"
+						>Bytes of Z80 code per cell. Cells tile as &radic;L&times;&radic;L. Releasing the slider
+						rebuilds the soup at the new size. Mutation count per step does not depend on size, so
+						per-cell mutation pressure is constant and per-byte pressure falls with size.</span
+					>
+				</span>
+				<span class="param-val" class:pending={tapePending}>
+					{#if gridType === 'hex'}
+						19 B (hex)
+					{:else}
+						{tapeSide}&times;{tapeSide} &middot; {tapeLength} B
+					{/if}
+				</span>
+			</div>
+			<div class="slider-track-wrap">
+				<input
+					id="tape-input"
+					type="range"
+					class="slider"
+					value={TAPE_SIZES.indexOf(tapeLength)}
+					min="0"
+					max={TAPE_SIZES.length - 1}
+					step="1"
+					disabled={gridType === 'hex'}
+					oninput={(e) => {
+						// Live label while dragging; the engine is untouched until release.
+						const idx = parseInt((e.target as HTMLInputElement).value);
+						if (!isNaN(idx) && idx >= 0 && idx < TAPE_SIZES.length) {
+							tapeLength = TAPE_SIZES[idx];
+						}
+					}}
+					onchange={() => {
+						// Fires on release (per keypress for keyboard users): rebuild at the
+						// new size through the same path as the grid-type toggle and W×H Apply.
+						if (tapePending) applyGridConfig();
+					}}
+				/>
+				{#if tapePending}
+					<span class="organism-hint">release to rebuild</span>
+				{/if}
 			</div>
 		</div>
 
@@ -3031,9 +3154,9 @@
 			</div>
 		</div>
 	{:else}
-		<!-- Square grid tooltip -->
+		<!-- Square grid tooltip: √L×√L tiles -->
 		<div class="genome-tip" style={tooltipStyle}>
-			<div class="tip-grid">
+			<div class="tip-grid" style:--tip-cols={genomeSide}>
 				{#each genomeCells as cell, i (i)}
 					<div
 						class="tip-cell"
@@ -3295,13 +3418,15 @@
 					<p>
 						A grid of cells (default 200&times;200) is filled with random bytes. Each cell holds
 						a short <strong>tape</strong> &mdash; a sequence of bytes treated as Z80 machine
-						code. The tape layout depends on the grid topology:
+						code. The tape layout depends on the grid topology. On square grids the
+						<strong>organism size</strong> is selectable in Parameters (4 to 100 bytes, any square
+						number; default 16):
 					</p>
 
 					<!-- Tape layout visuals -->
 					<div class="tape-layouts">
 						<div class="tape-layout-item">
-							<div class="tape-layout-label">Square &mdash; 16 bytes (4&times;4)</div>
+							<div class="tape-layout-label">Square &mdash; 16 bytes (4&times;4) by default</div>
 							<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" class="tape-svg">
 								{#each Array(16) as _, i}
 									{@const col = i % 4}
@@ -3844,8 +3969,9 @@
 					<h4>Cell Tooltips</h4>
 					<p>
 						Hover any cell to see its bytes disassembled as Z80 instructions. Square mode shows a
-						4&times;4 grid of 16 bytes; hex mode shows a 3-4-5-4-3 hexagonal cluster of 19 bytes
-						matching the cell's honeycomb shape.
+						&radic;L&times;&radic;L grid of the cell's L bytes (4&times;4 for the default 16); hex
+						mode shows a 3-4-5-4-3 hexagonal cluster of 19 bytes matching the cell's honeycomb
+						shape.
 					</p>
 					<ul class="help-list">
 						<li>
@@ -4088,8 +4214,9 @@ graph TD
 					<h4>Grid Type</h4>
 					<p>
 						Switch between <strong>Square</strong> and <strong>Hex</strong> topologies. Square cells hold
-						16 bytes (4&times;4) with 4 neighbors. Hex cells hold 19 bytes (3-4-5-4-3 honeycomb) with
-						6 neighbors. Changing resets the simulation.
+						16 bytes (4&times;4) by default &mdash; see Organism Size &mdash; with 4 neighbors. Hex
+						cells hold 19 bytes (3-4-5-4-3 honeycomb) with 6 neighbors. Changing resets the
+						simulation.
 					</p>
 
 					<h4>Grid Size (W &times; H)</h4>
@@ -4097,6 +4224,15 @@ graph TD
 						Width and height of the grid in cells. Default is 200&times;200. Larger grids give more
 						space for diverse species to evolve, but use more GPU memory and compute. Changing
 						resets the simulation.
+					</p>
+
+					<h4>Organism Size</h4>
+					<p>
+						Bytes of Z80 code per cell on the square grid: 4, 9, 16, 25, 36, 49, 64, 81 or 100
+						(square numbers, so cells tile as &radic;L&times;&radic;L). Default is 16. Hex grids
+						are fixed at 19 bytes. Changing it rebuilds the soup. The mutation count per step does
+						not depend on size, so per-cell mutation pressure is constant and per-byte pressure
+						falls with size.
 					</p>
 
 					<h4>Seed</h4>
@@ -4148,7 +4284,7 @@ graph TD
 						The <strong>Species</strong> tab identifies distinct cell types by hashing each cell's full byte content (FNV-1a).
 						Cells with identical bytes share a hash and are counted as one species. The top 10 are shown as colored tiles
 						whose color matches the cell's average appearance on the grid. Click any species tile to inspect its genome
-						(the 4x4 byte grid with Z80 disassembly). Hover over individual bytes in the modal to see what each instruction does.
+						(the byte grid with Z80 disassembly). Hover over individual bytes in the modal to see what each instruction does.
 					</p>
 
 					<h4>Diversity Metrics</h4>
@@ -5046,6 +5182,32 @@ graph TD
 		color: var(--text-subtle);
 		font-size: 12px;
 	}
+	.organism-head {
+		margin-top: 8px;
+	}
+	/* "ORGANISM SIZE ? 10×10 · 100 B" is the panel's longest head row: keep it on one line */
+	.organism-head .param-label,
+	.organism-head .param-val {
+		white-space: nowrap;
+	}
+	.organism-head .param-val {
+		font-size: 10px;
+	}
+	/* Mid-drag: the label shows a size the engine is not running yet */
+	.organism-head .param-val.pending {
+		color: var(--text-muted);
+	}
+	.organism-hint {
+		position: absolute;
+		left: 0;
+		top: 100%;
+		font-size: 9px;
+		line-height: 1;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--text-subtle);
+		pointer-events: none;
+	}
 
 	/* Custom slider */
 	.slider-track-wrap {
@@ -5091,6 +5253,17 @@ graph TD
 		background: rgba(255, 255, 255, 0.12);
 		border-radius: 2px;
 		border: none;
+	}
+	.slider:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+	.slider:disabled::-webkit-slider-thumb {
+		cursor: not-allowed;
+		transform: none;
+	}
+	.slider:disabled::-moz-range-thumb {
+		cursor: not-allowed;
 	}
 
 	/* Suppress opcodes */
@@ -5565,7 +5738,8 @@ graph TD
 	}
 	.tip-grid {
 		display: grid;
-		grid-template-columns: repeat(4, 46px);
+		/* --tip-cols is √L of the cell's byte count, set inline by the tooltip/modal */
+		grid-template-columns: repeat(var(--tip-cols, 4), 46px);
 		gap: 2px;
 	}
 	.tip-cell {

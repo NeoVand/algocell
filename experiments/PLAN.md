@@ -153,6 +153,34 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (Stage A running; 31 runs read): added an **in-situ** variant of
+  the assay for the final state — partners are drawn from the stored soup
+  snapshot instead of uniform random bytes. Reason: members of the LDIR cloud
+  take their pointers from the partner's bytes (`POP DE … LDIR`), so against
+  random partners they score low although 96–99% of cells carry the block-copy
+  pair. Random-partner scores are a lower bound (reported as before); the
+  in-situ score is used for the final-state replicator label.
+- 2026-10-07 (Stage A running; the first 19 of 630 runs read, all from the
+  `none` / 32-step cells): the pre-registered occupancy detector `tq_10` has
+  **both failure modes** in the data. False negatives: at mutation 1/4, 0/10
+  runs reached 10% quasispecies occupancy, yet every final dominant tape is a
+  heritable LDIR replicator (assay gen2 0.97–0.99) living in a diverse cloud
+  with a free first byte, so no Hamming ball around one genotype ever fills.
+  False positives: at 1/16, 2 of 8 `tq_10` crossings are non-heritable smears
+  (`00 41 00 41`, `00 04 00 04`; gen2 0.08). We therefore ADD an assay-based
+  emergence time **`t_rep`**: the first sample at which any of the stored top-3
+  exemplars has gen2 ≥ 0.3 and exact share ≥ 0.5% (so one random cell does not
+  count), computed post hoc from the JSONL with the run's own budget and
+  suppression set. `tq_10` stays reported as pre-registered; conclusions about
+  emergence use `t_rep`, and every table shows both. The horizon, grid and
+  conditions are unchanged.
+- 2026-10-07 (Stage A running, no results read): the assay is applied to the
+  **top-3 exemplars** at emergence, keeping the best heritability. Reason, from
+  the browser probe data: the most common exact genotype in a run can be the
+  *sterile offspring* of a copier — `LD HL,$E321 ; PUSH HL` (`21 e3 21 e5`)
+  writes `21 e3 21 e3 …` into its neighbour, so the inert `21 e3 ×8` tape
+  outnumbers the copier that makes it (assay: offspring gen2 0.08, parent 0.27,
+  parent copying confirmed byte-for-byte against a blank neighbour).
 - 2026-10-07, Stage A stopped after 5 of 630 runs (none read) and relaunched
   with two additions per sample: a **byte-pattern census** (fraction of cells
   containing ED-page block-copy pairs, ≥2 PUSH bytes, EX (SP),HL, RST 38,

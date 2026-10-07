@@ -23,6 +23,7 @@ export const SETTING_KEYS = [
 	'gridType',
 	'gridWidth',
 	'gridHeight',
+	'tapeLength',
 	'seed',
 	'noiseExp',
 	'pairCount',
@@ -60,6 +61,8 @@ export const BUILTIN_PRESETS: Preset[] = [
 		builtin: true,
 		values: {
 			gridType: 'square',
+			// Pin the default organism size so Classic restores 4×4 cells.
+			tapeLength: 16,
 			seed: 6,
 			noiseExp: 4,
 			z80Steps: 128,
@@ -186,18 +189,35 @@ function markSeeded(ids: string[]): void {
 
 // Insert built-ins this browser has never seen, right after the last stored
 // built-in (or at the front), and remember that they were seeded.
+//
+// Also backfill settings a stored built-in lacks but its current definition
+// carries (a key added in a later release, e.g. Classic pinning tapeLength: 16).
+// Only missing keys are filled, so values the user edited are left alone, and a
+// pre-release copy keeps the meaning it had when only that value existed.
 function seedNewBuiltins(stored: Preset[]): Preset[] {
 	const seeded = readSeeded();
+	let changed = false;
+	const result = stored.map((p) => {
+		const builtin = BUILTIN_PRESETS.find((b) => b.id === p.id);
+		if (!builtin) return p;
+		const missing = (Object.keys(builtin.values) as SettingKey[]).filter((k) => !(k in p.values));
+		if (missing.length === 0) return p;
+		changed = true;
+		const values: SettingValues = { ...p.values };
+		for (const k of missing) values[k] = builtin.values[k];
+		return { ...p, values };
+	});
 	const fresh = BUILTIN_PRESETS.filter(
-		(b) => !seeded.has(b.id) && !stored.some((p) => p.id === b.id)
+		(b) => !seeded.has(b.id) && !result.some((p) => p.id === b.id)
 	);
-	if (fresh.length === 0) return stored;
-	let at = -1;
-	for (let i = 0; i < stored.length; i++) if (stored[i].id.startsWith('builtin:')) at = i;
-	const result = [...stored];
-	result.splice(at + 1, 0, ...fresh);
-	savePresets(result);
-	markSeeded(fresh.map((p) => p.id));
+	if (fresh.length > 0) {
+		let at = -1;
+		for (let i = 0; i < result.length; i++) if (result[i].id.startsWith('builtin:')) at = i;
+		result.splice(at + 1, 0, ...fresh);
+		markSeeded(fresh.map((p) => p.id));
+		changed = true;
+	}
+	if (changed) savePresets(result);
 	return result;
 }
 
