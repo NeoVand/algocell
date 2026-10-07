@@ -16,7 +16,7 @@ from .isa import resolve, parse_patterns
 from .prng import SplitMix64
 
 SHADER_DIR = Path(__file__).parent / "shader"
-MAX_PAIRS = 8192
+MAX_PAIRS = 32768   # buffer capacity; the drawn pair count per step is params.pair_count (8192 by default)
 ENTRY_POINTS = (
     "clear_collision",
     "prepare_batch",

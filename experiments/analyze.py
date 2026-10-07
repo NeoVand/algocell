@@ -1,13 +1,19 @@
-"""Aggregate a batch of run summaries into the pre-registered tables and figures.
+"""Aggregate a batch of run summaries (+ assays.csv, succession.csv when present) into the
+per-cell tables and the standard figures.
 
-    python analyze.py runs/stageA            # directory of *.summary.json (+ .jsonl)
-    python analyze.py runs/stageA --out figs/stageA
+    python analyze.py runs/stageA
+    python analyze.py runs/stageB --out runs/stageB/analysis
 
-Produces, per (label, tape, steps, k) cell: n seeds, fraction reaching tq_10 within
-the horizon with a Wilson 95% interval, median tq_10 among emerged runs, the
-mechanism-class distribution of the first emergent replicator, and the horizon.
-Censored runs are counted as censored, never imputed. Figures: emergence
-fraction grids and Kaplan–Meier curves per ablation.
+Per (label, tape, steps, k) cell: n, seeds reaching the pre-registered occupancy event
+(tq_10) with a Wilson 95% interval, seeds with a heritable replicator (t_rep) and with a
+faithful one (t_faith), Kaplan–Meier median time to each event (censored at steps_run; "NR"
+when the survival curve never crosses 0.5), the conditional median among emerged seeds
+(labelled as such), mechanism classes of the first replicator tapes under the condition's
+suppression set, and how many runs were stopped early.
+
+Review 2026-10-07: medians were conditional on emergence and unlabelled; mechanism labels
+ignored suppression and were anchored to the first 2% exact-share crossing; the KM figures
+had 32 curves per axes; two "size axis" figures showed different measures. All replaced.
 """
 
 from __future__ import annotations
@@ -17,10 +23,15 @@ import glob
 import json
 import math
 import os
-from collections import Counter, defaultdict
+from collections import Counter
 
 import numpy as np
 import pandas as pd
+
+from algocell_exp.isa import mechanisms, parse_patterns, resolve
+import figstyle as fs
+
+EVENTS = {"tq_10": ("tq_10", "q_share ≥ 10% (pre-registered)"), "t_rep": ("t_rep", "heritable replicator (assay, gen2 ≥ 0.3)"), "t_faith": ("t_faith", "faithful replicator (assay)")}
 
 
 def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
@@ -33,99 +44,166 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     return (max(0.0, c - h), min(1.0, c + h))
 
 
+def km_curve(times: np.ndarray, events: np.ndarray):
+    """Kaplan–Meier survival of 'event not yet happened'. Ties: events before censorings
+    (the censored run was still at risk when the event occurred)."""
+    order = np.lexsort((~events.astype(bool), times))   # by time, events (True) first
+    t, e = times[order], events[order].astype(bool)
+    at_risk = len(t)
+    S = 1.0
+    xs, ys = [], []
+    for i in range(len(t)):
+        if e[i]:
+            S *= 1 - 1 / at_risk
+            xs.append(float(t[i]))
+            ys.append(S)
+        at_risk -= 1
+    return np.array(xs), np.array(ys)
+
+
+def km_median(times: np.ndarray, events: np.ndarray) -> float:
+    xs, ys = km_curve(times, events)
+    below = np.where(ys <= 0.5)[0]
+    return float(xs[below[0]]) if len(below) else float("inf")
+
+
 def load(d: str) -> pd.DataFrame:
     rows = []
     for p in sorted(glob.glob(os.path.join(d, "*.summary.json"))):
         s = json.load(open(p))
+        patterns = s["suppress"] if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])
+        sets = resolve(patterns)
         fe = s.get("first_emergent") or {}
-        rows.append(
-            {
-                "label": s["label"],
-                "tape": s.get("tape_length", 16),
-                "steps": s["z80_steps"],
-                "k": s["noise_exp"],
-                "seed": s["seed"],
-                "horizon": s["horizon"],
-                "steps_run": s["steps_run"],
-                "t_02": s["t_02"],
-                "t_10": s["t_10"],
-                "tq_10": s["tq_10"],
-                "tq_50": s["tq_50"],
-                "emerged": s["tq_10"] > 0,
-                "first_tape": fe.get("tape"),
-                "first_mech": "+".join(fe.get("mechanisms", [])) or ("-" if fe else None),
-                "final_top_share": s["final"]["top_share"],
-                "final_q_share": s["final"].get("q_share", s["final"].get("q4_share")),
-                "final_H": s["final"]["H_species"],
-                "final_hoe": s["final"]["hoe"],
-                "final_tape": s["final"]["exemplars"][0]["tape"],
-                "final_mech": "+".join(s["final"]["exemplars"][0]["mechanisms"]) or "-",
-                "wall_s": s["wall_s"],
-                "file": os.path.basename(p),
-            }
-        )
+        rows.append({
+            "label": s["label"], "tape": s.get("tape_length", 16), "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"],
+            "horizon": s["horizon"], "steps_run": s["steps_run"], "stopped_early": s["steps_run"] < s["horizon"],
+            "t_02": s["t_02"], "t_10": s["t_10"], "tq_10": s["tq_10"], "tq_50": s["tq_50"],
+            "t02_tape": fe.get("tape"),
+            "t02_mech": "+".join(mechanisms(bytes.fromhex(fe["tape"].replace(" ", "")), sets)) or "-" if fe.get("tape") else None,
+            "final_top_share": s["final"]["top_share"], "final_q_share": s["final"].get("q_share"), "final_H": s["final"]["H_species"],
+            "final_hoe": s["final"]["hoe"], "final_tape_top1": s["final"]["exemplars"][0]["tape"],
+            "wall_s": s["wall_s"], "file": os.path.basename(p),
+        })
     return pd.DataFrame(rows)
-
-
-def km(times: np.ndarray, events: np.ndarray, horizon: int):
-    """Kaplan–Meier survival of 'not yet emerged' (times = tq_10 or horizon if censored)."""
-    order = np.argsort(times)
-    t, e = times[order], events[order]
-    n = len(t)
-    at_risk = n
-    S = 1.0
-    xs, ys = [0], [1.0]
-    for i in range(n):
-        if e[i]:
-            S *= 1 - 1 / at_risk
-            xs.append(t[i])
-            ys.append(S)
-        at_risk -= 1
-    xs.append(horizon)
-    ys.append(S)
-    return np.array(xs), np.array(ys)
 
 
 def summarize(df: pd.DataFrame) -> pd.DataFrame:
     out = []
-    has_rep = "emerged_rep" in df
     for (label, tape, steps, k), g in df.groupby(["label", "tape", "steps", "k"]):
         n = len(g)
-        ne = int(g["emerged"].sum())
-        lo, hi = wilson(ne, n)
-        em = g[g["emerged"]]
-        mech = Counter(em["first_mech"].fillna("-"))
-        row = {
-            "label": label,
-            "tape": tape,
-            "steps": steps,
-            "k": k,
-            "n": n,
-            "emerged": ne,
-            "frac": ne / n,
-            "ci_lo": lo,
-            "ci_hi": hi,
-            "median_tq10": float(em["tq_10"].median()) if ne else float("nan"),
-            "min_tq10": int(em["tq_10"].min()) if ne else -1,
-            "mechanisms": ", ".join(f"{m}:{c}" for m, c in mech.most_common()),
-            "horizon": int(g["horizon"].max()),
-            "censored_steps_run": int(g[~g["emerged"]]["steps_run"].min()) if ne < n else -1,
-        }
-        if has_rep:
-            nr = int(g["emerged_rep"].sum())
-            rlo, rhi = wilson(nr, n)
-            er = g[g["emerged_rep"]]
-            row.update(
-                {
-                    "rep_emerged": nr,
-                    "rep_frac": nr / n,
-                    "rep_ci_lo": rlo,
-                    "rep_ci_hi": rhi,
-                    "median_trep": float(er["t_rep"].median()) if nr else float("nan"),
-                }
-            )
+        row = {"label": label, "tape": tape, "steps": steps, "k": k, "n": n, "horizon": int(g["horizon"].max()),
+               "stopped_early": int(g["stopped_early"].sum()), "steps_run_min": int(g["steps_run"].min())}
+        for ev in ("tq_10", "t_rep", "t_faith"):
+            if ev not in g:
+                continue
+            t = g[ev].astype(float)
+            valid = t.notna()
+            emerged = valid & (t > 0)
+            ne = int(emerged.sum())
+            lo, hi = wilson(ne, int(valid.sum()))
+            times = np.where(emerged, t, g["steps_run"]).astype(float)[valid.to_numpy()]
+            kmm = km_median(times, emerged.to_numpy()[valid.to_numpy()])
+            row.update({
+                f"{ev}_n": ne, f"{ev}_frac": ne / max(int(valid.sum()), 1), f"{ev}_lo": lo, f"{ev}_hi": hi,
+                f"{ev}_km_median": kmm,                                             # inf = not reached
+                f"{ev}_cond_median": float(t[emerged].median()) if ne else float("nan"),  # among emerged seeds only
+                f"{ev}_min": int(t[emerged].min()) if ne else -1,
+            })
+        if "trep_mechs" in g:
+            mech = Counter(g.loc[g["t_rep"] > 0, "trep_mechs"].fillna("-"))
+            row["trep_mechanisms"] = ", ".join(f"{m}:{c}" for m, c in mech.most_common())
+        mech02 = Counter(g.loc[g["t_02"] > 0, "t02_mech"].dropna())
+        row["t02_mechanisms"] = ", ".join(f"{m}:{c}" for m, c in mech02.most_common())
         out.append(row)
-    return pd.DataFrame(out).sort_values(["label", "tape", "steps", "k"])
+    return pd.DataFrame(out).sort_values(["tape", "label", "steps", "k"])
+
+
+def fmt_km(x: float) -> str:
+    return "NR" if not np.isfinite(x) else f"{x:.0f}"
+
+
+def figures(df: pd.DataFrame, table: pd.DataFrame, out: str) -> None:
+    import matplotlib.pyplot as plt
+
+    fs.setup()
+    labels = fs.order(df["label"].unique())
+    tapes = sorted(df["tape"].unique())
+    steps_levels = sorted(df["steps"].unique())
+    k_levels = sorted(df["k"].unique())
+    ev_cols = [ev for ev in ("tq_10", "t_rep", "t_faith") if f"{ev}_n" in table]
+
+    # F1 — emergence atlas: one row per measure, one panel per ablation, cells = steps × k with "k/n" text.
+    for tape in tapes:
+        sub = table[table["tape"] == tape]
+        if len(steps_levels) <= 1 or len(k_levels) <= 1 or sub.empty:
+            continue  # a 1×N grid is a bar chart; size_axis.py draws those
+        fig, axes = plt.subplots(len(ev_cols), len(labels), figsize=(fs.DOUBLE, 1.25 * len(ev_cols) + 0.5), squeeze=False)
+        for r, ev in enumerate(ev_cols):
+            for c, label in enumerate(labels):
+                ax = axes[r][c]
+                m = np.full((len(k_levels), len(steps_levels)), np.nan)
+                txt = {}
+                for _, row in sub[sub["label"] == label].iterrows():
+                    i, j = k_levels.index(row["k"]), steps_levels.index(row["steps"])
+                    m[i, j] = row[f"{ev}_frac"]
+                    txt[(i, j)] = f"{int(row[f'{ev}_n'])}/{int(row['n'])}"
+                im = ax.imshow(m, vmin=0, vmax=1, cmap="viridis", origin="lower", aspect="auto")
+                for (i, j), s in txt.items():
+                    ax.text(j, i, s, ha="center", va="center", color="w" if m[i, j] < 0.6 else "k", fontsize=6)
+                ax.set_xticks(range(len(steps_levels)), steps_levels if r == len(ev_cols) - 1 else [""] * len(steps_levels))
+                ax.set_yticks(range(len(k_levels)), [f"1/2^{k}" for k in k_levels] if c == 0 else [""] * len(k_levels))
+                if r == 0:
+                    ax.set_title(label, color=fs.color(label))
+                if c == 0:
+                    ax.set_ylabel(EVENTS[ev][1].split(" (")[0], fontsize=7)
+                if r == len(ev_cols) - 1:
+                    ax.set_xlabel("Z80 steps")
+        fig.colorbar(im, ax=axes.ravel().tolist(), shrink=0.6, pad=0.01, label="fraction of seeds")
+        fig.suptitle(f"Emergence atlas, L = {tape} bytes (seeds with the event within the horizon)", y=1.02)
+        fs.save(fig, os.path.join(out, f"atlas_L{tape}"))
+
+    # F2 — Kaplan–Meier small multiples: panel = (steps, k) [and L when several], colour = ablation, event = t_rep when available.
+    ev = "t_rep" if "t_rep" in df else "tq_10"
+    for tape in tapes:
+        g0 = df[df["tape"] == tape]
+        cells = [(s, k) for s in steps_levels for k in k_levels if not g0[(g0["steps"] == s) & (g0["k"] == k)].empty]
+        if not cells:
+            continue
+        ncol = min(3, len(cells))
+        nrow = math.ceil(len(cells) / ncol)
+        fig, axes = plt.subplots(nrow, ncol, figsize=(fs.DOUBLE if ncol > 1 else fs.SINGLE, 1.9 * nrow + 0.4), squeeze=False, sharex=True, sharey=True)
+        for ax, (s, k) in zip(axes.ravel(), cells):
+            g1 = g0[(g0["steps"] == s) & (g0["k"] == k)]
+            for label in labels:
+                g = g1[g1["label"] == label]
+                if g.empty:
+                    continue
+                t = g[ev].astype(float)
+                emerged = (t > 0).to_numpy()
+                times = np.where(emerged, t, g["steps_run"]).astype(float)
+                xs, ys = km_curve(times, emerged)
+                x0 = float(min(times.min(), 500))
+                xs_plot = np.concatenate([[x0], xs, [float(times.max())]])
+                ys_plot = np.concatenate([[1.0], ys, [ys[-1] if len(ys) else 1.0]])
+                ax.step(xs_plot, ys_plot, where="post", color=fs.color(label), label=label)
+                cens = times[~emerged]
+                if len(cens):
+                    # censor ticks at the survival level reached by then
+                    lev = [ys[xs <= c][-1] if (xs <= c).any() else 1.0 for c in cens]
+                    ax.plot(cens, lev, "|", color=fs.color(label), markersize=4, alpha=0.8)
+            ax.set_xscale("log")
+            ax.set_ylim(-0.02, 1.02)
+            ax.set_title(f"{s} steps · mutation 1/2^{k}")
+        for ax in axes.ravel()[len(cells):]:
+            ax.axis("off")
+        for ax in axes[-1]:
+            ax.set_xlabel("simulation steps")
+        for ax in axes[:, 0]:
+            ax.set_ylabel("P(no replicator yet)")
+        handles, lab = axes.ravel()[0].get_legend_handles_labels()
+        fig.legend(handles, lab, loc="upper left", bbox_to_anchor=(1.0, 0.95), frameon=False, title=f"ablation · event: {EVENTS[ev][1]}")
+        fig.suptitle(f"Time to first replicator, L = {tape} bytes (Kaplan–Meier; ticks = censored at the run's last step)", y=1.02)
+        fs.save(fig, os.path.join(out, f"km_L{tape}"))
 
 
 def main() -> None:
@@ -139,100 +217,27 @@ def main() -> None:
         return
     out = a.out or os.path.join(a.dir, "analysis")
     os.makedirs(out, exist_ok=True)
-    # Assay-based emergence (t_rep) from assay_batch.py, if it has been run.
     assays_path = os.path.join(out, "assays.csv")
     if os.path.exists(assays_path):
-        asy = pd.read_csv(assays_path)[["file", "t_rep", "t_rep_tape", "t_rep_gen2", "final_gen2_insitu", "final_replicator_insitu"]]
-        df = df.merge(asy, on="file", how="left")
-        df["emerged_rep"] = df["t_rep"] > 0
-    else:
-        df["t_rep"] = -1
-        df["emerged_rep"] = False
+        asy = pd.read_csv(assays_path)
+        keep = [c for c in asy.columns if c == "file" or c.startswith(("t_rep", "trep_", "t_faith", "tfaith_", "em_", "final_"))]
+        df = df.merge(asy[keep], on="file", how="left", validate="one_to_one")
+        unmatched = df["t_rep"].isna().sum()
+        if unmatched:
+            print(f"warning: {unmatched} runs have no assay row (t_rep NaN, excluded from assay-based fractions)")
     df.to_csv(os.path.join(out, "runs.csv"), index=False)
     table = summarize(df)
     table.to_csv(os.path.join(out, "cells.csv"), index=False)
-    pd.set_option("display.width", 200)
+    pd.set_option("display.width", 250)
     pd.set_option("display.max_rows", 500)
-    print(table.to_string(index=False, float_format=lambda x: f"{x:.2f}"))
-
-    # Figures
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    labels = list(dict.fromkeys(df["label"]))
-    tapes = sorted(df["tape"].unique())
-    # 1) emergence-fraction heatmaps: one panel per label (steps × k), per tape,
-    #    for the pre-registered occupancy measure (tq_10) and the assay measure (t_rep)
-    measures = [("frac", "q_share ≥ 10% (pre-registered)", "emergence")]
-    if "rep_frac" in table:
-        measures.append(("rep_frac", "heritable replicator (assay gen2 ≥ 0.3)", "emergence_rep"))
-    for tape in tapes:
-      for col, title, fname in measures:
-        sub = table[table["tape"] == tape]
-        if sub.empty:
-            continue
-        steps_levels = sorted(sub["steps"].unique())
-        k_levels = sorted(sub["k"].unique())
-        if len(steps_levels) * len(k_levels) <= 1:
-            continue
-        fig, axes = plt.subplots(1, len(labels), figsize=(2.6 * len(labels), 2.8), squeeze=False)
-        for ax, label in zip(axes[0], labels):
-            m = np.full((len(k_levels), len(steps_levels)), np.nan)
-            for _, r in sub[sub["label"] == label].iterrows():
-                m[k_levels.index(r["k"]), steps_levels.index(r["steps"])] = r[col]
-            im = ax.imshow(m, vmin=0, vmax=1, cmap="viridis", origin="lower")
-            ax.set_xticks(range(len(steps_levels)), steps_levels)
-            if ax is axes[0][0]:
-                ax.set_yticks(range(len(k_levels)), [f"1/2^{k}" for k in k_levels])
-                ax.set_ylabel("mutation")
-            else:
-                ax.set_yticks(range(len(k_levels)), [""] * len(k_levels))
-            ax.set_xlabel("z80 steps")
-            ax.set_title(label, fontsize=9)
-            for i in range(len(k_levels)):
-                for j in range(len(steps_levels)):
-                    if not np.isnan(m[i, j]):
-                        ax.text(j, i, f"{m[i, j]:.1f}", ha="center", va="center", color="w" if m[i, j] < 0.6 else "k", fontsize=8)
-        fig.suptitle(f"fraction of seeds with a replicator within horizon — {title} — L={tape}")
-        fig.colorbar(im, ax=axes[0].tolist(), shrink=0.8)
-        fig.savefig(os.path.join(out, f"{fname}_L{tape}.png"), dpi=130, bbox_inches="tight")
-        plt.close(fig)
-    # 2) KM curves per label at the default (steps=128, k=4) for each tape, and per tape
-    for (steps, k), g0 in df.groupby(["steps", "k"]):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        for label in labels:
-            for tape in tapes:
-                g = g0[(g0["label"] == label) & (g0["tape"] == tape)]
-                if g.empty:
-                    continue
-                ev = g["emerged_rep"] if "emerged_rep" in g and g["t_rep"].notna().any() else g["emerged"]
-                tt = g["t_rep"] if "emerged_rep" in g and g["t_rep"].notna().any() else g["tq_10"]
-                times = np.where(ev, tt, g["steps_run"]).astype(float)
-                xs, ys = km(times, ev.to_numpy().astype(bool), int(g["horizon"].max()))
-                ax.step(xs, ys, where="post", label=f"{label}" + (f" L{tape}" if len(tapes) > 1 else ""))
-        ax.set_xscale("log")
-        ax.set_xlabel("simulation steps")
-        ax.set_ylabel("P(no replicator yet)")
-        ax.set_title(f"Kaplan–Meier (assay-based t_rep where available), steps={steps}, mutation 1/2^{k}")
-        ax.legend(fontsize=7, ncol=2)
-        fig.savefig(os.path.join(out, f"km_st{steps}_k{k}.png"), dpi=130, bbox_inches="tight")
-        plt.close(fig)
-    # 3) size axis: median tq_10 vs L per label/steps when several tapes exist
-    if len(tapes) > 1:
-        fig, ax = plt.subplots(figsize=(6, 4))
-        for label in labels:
-            for steps in sorted(df["steps"].unique()):
-                sub = table[(table["label"] == label) & (table["steps"] == steps)].sort_values("tape")
-                if sub.empty:
-                    continue
-                ax.plot(sub["tape"], sub["frac"], marker="o", label=f"{label} st{steps}")
-        ax.set_xlabel("tape length L (bytes)")
-        ax.set_ylabel("fraction emerged")
-        ax.legend(fontsize=7, ncol=2)
-        fig.savefig(os.path.join(out, "size_axis.png"), dpi=130, bbox_inches="tight")
-        plt.close(fig)
+    show = ["label", "tape", "steps", "k", "n", "stopped_early", "tq_10_n", "tq_10_km_median"]
+    for ev in ("t_rep", "t_faith"):
+        if f"{ev}_n" in table:
+            show += [f"{ev}_n", f"{ev}_km_median", f"{ev}_cond_median"]
+    if "trep_mechanisms" in table:
+        show.append("trep_mechanisms")
+    print(table[show].to_string(index=False, float_format=lambda x: "NR" if x == float("inf") else f"{x:.0f}"))
+    figures(df, table, out)
     print("wrote", out)
 
 

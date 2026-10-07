@@ -1,0 +1,35 @@
+[
+{
+"label": "none",
+"tape": 16,
+"z80_steps": 128,
+"noise_exp": 4,
+"seed": 1,
+"suppress": "",
+"horizon": 30000,
+"sample_every": 500,
+"stop_share": 0.5
+},
+{
+"label": "stack-writes",
+"tape": 16,
+"z80_steps": 128,
+"noise_exp": 4,
+"seed": 1,
+"suppress": "family:stack;family:ex;family:call-ret;family:rst",
+"horizon": 30000,
+"sample_every": 500,
+"stop_share": 0.5
+},
+{
+"label": "no-copy",
+"tape": 16,
+"z80_steps": 128,
+"noise_exp": 4,
+"seed": 1,
+"suppress": "family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy",
+"horizon": 30000,
+"sample_every": 500,
+"stop_share": 0.5
+}
+]

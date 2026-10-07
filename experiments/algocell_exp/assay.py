@@ -198,6 +198,68 @@ def assay(
     }
 
 
+def _best_shift_match_rows(target: np.ndarray, tapes: np.ndarray) -> np.ndarray:
+    """Row-wise version of _best_shift_match: row i of `target` is compared with every cyclic shift of row i of `tapes`."""
+    L = tapes.shape[1]
+    best = np.zeros(target.shape[0])
+    cols = np.arange(L)
+    for s in range(L):
+        best = np.maximum(best, (target == tapes[:, (cols - s) % L]).mean(axis=1))
+    return best
+
+
+def _norm_gain_rows(before: np.ndarray, after: np.ndarray, groups: int, per: int, max_before: float = 0.75) -> np.ndarray:
+    """_norm_gain for `groups` consecutive blocks of `per` rows (one block per tape): NaN where no partner had headroom."""
+    m = before < max_before
+    g = ((after - before) / (1.0 - before)).reshape(groups, per)
+    m = m.reshape(groups, per)
+    out = np.full(groups, np.nan)
+    for i in range(groups):
+        if m[i].any():
+            out[i] = g[i][m[i]].mean()
+    return out
+
+
+def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32, seed: int = 0, neighbors: np.ndarray | None = None) -> list[dict]:
+    """assay() for M tapes at once, as A only (the role that detects every mechanism), with
+    gen2 and faithfulness. One GPU dispatch per generation instead of 3 per tape, so a
+    random-cell census of a soup (32–64 cells × 32 partners) costs three dispatches.
+    Partners are drawn once and shared by all tapes (seeded), like assay(seed=…)."""
+    T = np.ascontiguousarray(tapes).astype(np.uint8)
+    M, L = T.shape
+    rng = np.random.default_rng(seed)
+    if neighbors is not None:
+        R = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
+        R2 = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
+    else:
+        R = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+        R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+    TT = np.repeat(T, n, axis=0)                      # (M*n, L): tape i repeated n times
+    RR = np.tile(R, (M, 1))                           # (M*n, L): the same n partners for every tape
+    res = execute_pairs(np.concatenate([TT, RR], axis=1), L, z80_steps, suppress)
+    before = _best_shift_match_rows(RR, TT)
+    after = _best_shift_match_rows(res[:, L:], TT)
+    score = _norm_gain_rows(before, after, M, n)
+    offspring = res[:, L:]
+    RR2 = np.tile(R2, (M, 1))
+    res2 = execute_pairs(np.concatenate([offspring, RR2], axis=1), L, z80_steps, suppress)
+    before2 = _best_shift_match_rows(RR2, TT)
+    after2 = _best_shift_match_rows(res2[:, L:], TT)
+    gen2 = _norm_gain_rows(before2, after2, M, n)
+    copies = (after >= 0.75).reshape(M, n)
+    n_inf = (before < 0.75).reshape(M, n).sum(axis=1)
+    out = []
+    for i in range(M):
+        g2 = float(gen2[i])
+        q75 = float(copies[i].mean())
+        out.append({
+            "score": float(score[i]), "gen2_score": g2, "offspring_within_q": q75, "n_informative": int(n_inf[i]),
+            "is_replicator": bool(np.isfinite(g2) and g2 >= GEN2_MIN),
+            "faithful": bool(np.isfinite(g2) and g2 >= GEN2_MIN and q75 >= FAITHFUL_MIN),
+        })
+    return out
+
+
 def _norm_gain(before: np.ndarray, after: np.ndarray, max_before: float = 0.75) -> float:
     """Mean of (after - before) / (1 - before) over partners with before < max_before.
     NaN when every partner was already a copy (no headroom to measure; it used to return 0,

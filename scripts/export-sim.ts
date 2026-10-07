@@ -23,13 +23,16 @@ const zilionVersion = JSON.parse(
 	readFileSync(new URL('../node_modules/@neovand/zilion/package.json', import.meta.url), 'utf8')
 ).version as string;
 
+// Non-square lengths are exported for the headless runner only (the UI tiles cells as √L×√L).
+const HEADLESS_TAPE_LENGTHS = [8, 10, 12, 18, 20, 24, 32, 50] as const;
+const ALL_TAPE_LENGTHS = [...SQUARE_TAPE_LENGTHS, ...HEADLESS_TAPE_LENGTHS];
 const shaders: Record<string, string> = { hex: createSimShader('hex') };
-for (const L of SQUARE_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);
+for (const L of ALL_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);
 for (const [k, v] of Object.entries(shaders)) writeFileSync(`${out}sim_${k}.wgsl`, v);
 // Single-pair executor (the differential-test shader): used by the replication
 // assay, one per tape length so the private memory fits the pair.
 writeFileSync(`${out}z80_test.wgsl`, createZ80TestShader());
-for (const L of SQUARE_TAPE_LENGTHS) writeFileSync(`${out}z80_test_L${L}.wgsl`, createZ80TestShader(L));
+for (const L of ALL_TAPE_LENGTHS) writeFileSync(`${out}z80_test_L${L}.wgsl`, createZ80TestShader(L));
 
 // Golden vectors so the Python port of the pattern grammar can be checked.
 const goldenPatterns = [

@@ -1,9 +1,26 @@
-"""Post hoc replication assay for a batch: for every run, assay the dominant tape
-at the first tq_10 crossing (or the final dominant tape if censored) under that
-run's own step budget and suppression set. Appends `assay` to a copy of the
-summary and writes runs/<batch>/analysis/assays.csv.
+"""Post hoc replication assays for a batch of runs → analysis/assays.csv.
 
-    python assay_batch.py runs/stageA
+    python assay_batch.py runs/stageA            # needs the local GPU; ~1–3 h for 600 runs
+
+Column blocks (review 2026-10-07: the old file mixed emergence-time and final-state
+quantities under one name; every column now says which tape and which partners):
+
+  identity      label, tape_len, steps, k, seed, file, horizon, steps_run, stopped_early, missing_jsonl
+  pre-reg       tq_10, tq_50                      (quasispecies occupancy, from the run)
+  t_rep block   t_rep + trep_*                    first sample at which a top-3 exact exemplar with share
+                                                   >= 0.5% is HERITABLE (gen2 >= 0.3) against 64 random partners
+  t_faith       t_faith + tfaith_tape             first sample at which such an exemplar is FAITHFUL
+                                                   (gen2 >= 0.3 and >= 50% of partners became >= 75% copies)
+  em block      em_*                              best-gen2 exemplar of the top-3 at the tq_10 sample (random partners)
+  final block   final_*                           best-gen2 exemplar of the final top-3 (random partners), and the
+                                                   SAME tape assayed in situ (partners drawn from the final soup)
+  final_insitu_best_*                              best in-situ gen2 over the final top-3 (legacy comparability)
+  func block    final_func_*                      32 uniformly random final cells assayed as A against random
+                                                   partners (rnd) and against the soup (insitu); fractions heritable
+  soup block    final_c_*, final_hoe, final_H0, final_zero_frac, final_q_share, final_q_shift_share
+
+Periods are the tolerant period (>= 90% of positions match) of the tape in question, with the
+match fraction next to it. Mechanisms are labelled under the run's own suppression set.
 """
 
 from __future__ import annotations
@@ -17,122 +34,170 @@ import brotli
 import numpy as np
 import pandas as pd
 
-from algocell_exp.assay import assay
-from algocell_exp.isa import parse_patterns
-from algocell_exp.metrics import minimal_period
+from algocell_exp.assay import GEN2_MIN, assay, assay_many
+from algocell_exp.isa import mechanisms, parse_patterns, resolve
+from algocell_exp.metrics import tolerant_period
+
+SHARE_MIN = 0.005     # pre-registered: an exemplar must hold >= 0.5% of cells to count (one random cell does not)
+FUNC_CELLS = 32       # random cells per final soup for the functional fraction
+FUNC_PARTNERS = 32
 
 
-def load_snapshot(path: str, tape_len: int) -> np.ndarray | None:
+def read_jsonl(path: str) -> tuple[list[dict], bool]:
+    """All parseable records; the flag says whether a line was unparseable (truncated write)."""
+    recs, bad = [], False
+    with open(path) as f:
+        for line in f:
+            try:
+                recs.append(json.loads(line))
+            except json.JSONDecodeError:
+                bad = True
+    return recs, bad
+
+
+def load_snapshot(path: str, L: int) -> np.ndarray | None:
     if not os.path.exists(path):
         return None
     raw = np.frombuffer(brotli.decompress(open(path, "rb").read()), dtype=np.uint8)
-    return raw.reshape(-1, tape_len)
+    return raw.reshape(-1, L)
 
 
-def exemplars_at(jsonl_path: str, step: int) -> list[str]:
-    """Top-3 exemplar tapes (hex) at a given sample step."""
-    with open(jsonl_path) as f:
-        for line in f:
-            d = json.loads(line)
-            if d.get("kind") == "sample" and d["step"] == step:
-                return [e["tape"] for e in d["exemplars"]]
-    return []
+def hexbytes(tape_hex: str) -> bytes:
+    return bytes.fromhex(tape_hex.replace(" ", ""))
 
 
-GEN2_MIN = 0.3
-SHARE_MIN = 0.005
+def period_fields(prefix: str, tape_hex: str | None) -> dict:
+    if not tape_hex:
+        return {f"{prefix}_period": np.nan, f"{prefix}_period_match": np.nan}
+    p, m = tolerant_period(hexbytes(tape_hex))
+    return {f"{prefix}_period": p, f"{prefix}_period_match": round(m, 3)}
 
 
-def t_rep(jsonl_path: str, z80_steps: int, sup: list[str], cache: dict) -> tuple[int, dict | None]:
-    """First sample step at which a top-3 exemplar is a heritable replicator
-    (gen2 >= GEN2_MIN) with exact share >= SHARE_MIN. Assays are cached by
-    (tape, steps, suppression) so recurring floods/smears cost nothing."""
-    key_sup = ";".join(sup)
-    with open(jsonl_path) as f:
-        for line in f:
-            d = json.loads(line)
-            if d.get("kind") != "sample":
+def scan_emergence(samples: list[dict], z80_steps: int, patterns: list[str], sets: dict, cache: dict) -> dict:
+    """First heritable and first faithful top-3 exemplar (share >= SHARE_MIN), scanning samples in time order."""
+    out = {"t_rep": -1, "t_faith": -1}
+    for d in samples:
+        shares = d.get("top3_shares") or []
+        for rank, ex in enumerate(d.get("exemplars") or []):
+            if rank >= len(shares) or shares[rank] < SHARE_MIN:
                 continue
-            for rank, (ex, share) in enumerate(zip(d["exemplars"], d["top3_shares"])):
-                if share < SHARE_MIN:
-                    continue
-                key = (ex["tape"], z80_steps, key_sup)
-                if key not in cache:
-                    cache[key] = assay(bytes.fromhex(ex["tape"].replace(" ", "")), z80_steps=z80_steps, suppress=sup, n=64)
-                r = cache[key]
-                if r["gen2_score"] >= GEN2_MIN:
-                    return d["step"], {"tape": ex["tape"], "rank": rank, "share": share, **{k: round(v, 3) for k, v in r.items()}}
-    return -1, None
+            key = (ex["tape"], z80_steps, tuple(patterns))
+            if key not in cache:
+                cache[key] = assay(hexbytes(ex["tape"]), z80_steps=z80_steps, suppress=patterns, n=64)
+            r = cache[key]
+            if out["t_rep"] < 0 and r["is_replicator"]:
+                out.update({
+                    "t_rep": d["step"], "trep_tape": ex["tape"], "trep_rank": rank, "trep_share": round(shares[rank], 4),
+                    "trep_score": round(r["score"], 3), "trep_gen2": round(r["gen2_score"], 3), "trep_gen2_cond": round(r["gen2_cond"], 3),
+                    "trep_q75": round(r["offspring_within_q"], 3), "trep_faithful": r["faithful"], "trep_self_b": round(r["self_preserved_as_B"], 3),
+                    "trep_mechs": "+".join(mechanisms(hexbytes(ex["tape"]), sets)) or "-", **period_fields("trep", ex["tape"]),
+                })
+            if out["t_faith"] < 0 and r["faithful"]:
+                out.update({"t_faith": d["step"], "tfaith_tape": ex["tape"]})
+            if out["t_rep"] >= 0 and out["t_faith"] >= 0:
+                return out
+    return out
+
+
+def best_of(tapes: list[str], z80_steps: int, patterns: list[str], neighbors=None, n: int = 64, seed: int = 0) -> tuple[int, dict, str]:
+    best = None
+    for rank, t in enumerate(tapes):
+        r = assay(hexbytes(t), z80_steps=z80_steps, suppress=patterns, n=n, seed=seed, neighbors=neighbors)
+        g = r["gen2_score"] if np.isfinite(r["gen2_score"]) else -np.inf
+        if best is None or g > best[3]:
+            best = (rank, r, t, g)
+    rank, r, t, _ = best
+    return rank, r, t
 
 
 def main(d: str) -> None:
-    rows = []
+    rows: list[dict] = []
     cache: dict = {}
-    for p in sorted(glob.glob(os.path.join(d, "*.summary.json"))):
+    files = sorted(glob.glob(os.path.join(d, "*.summary.json")))
+    for i, p in enumerate(files):
         s = json.load(open(p))
         stem = p[: -len(".summary.json")]
-        # The most common exact genotype can be the sterile offspring of a copier
-        # (e.g. `21 e3 x8` written by `LD HL,$E321 ; PUSH HL`), so assay the top-3
-        # exemplars and keep the best heritability score among them.
-        where = "final"
-        tapes: list[str] = []
-        if s["tq_10"] > 0 and os.path.exists(stem + ".jsonl"):
-            tapes = exemplars_at(stem + ".jsonl", s["tq_10"])
-            where = "emergence"
-        if not tapes:
-            tapes = [e["tape"] for e in s["final"]["exemplars"]]
-        sup = parse_patterns(";".join(s["suppress"])) if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])
-        best = None
-        for rank, tape_hex in enumerate(tapes[:3]):
-            r = assay(bytes.fromhex(tape_hex.replace(" ", "")), z80_steps=s["z80_steps"], suppress=sup)
-            if best is None or r["gen2_score"] > best[1]["gen2_score"]:
-                best = (rank, r, tape_hex)
-        rank, r, tape_hex = best
-        # In-situ assay of the final top-3 against the final soup snapshot (ecological truth).
         L = s.get("tape_length", 16)
+        patterns = s["suppress"] if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])
+        sets = resolve(patterns)
+        row: dict = {
+            "label": s["label"], "tape_len": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "file": os.path.basename(p),
+            "horizon": s["horizon"], "steps_run": s["steps_run"], "stopped_early": s["steps_run"] < s["horizon"],
+            "tq_10": s["tq_10"], "tq_50": s["tq_50"],
+        }
+        # ── emergence scan over the trajectory ──
+        samples: list[dict] = []
+        row["missing_jsonl"] = not os.path.exists(stem + ".jsonl")
+        if not row["missing_jsonl"]:
+            recs, bad = read_jsonl(stem + ".jsonl")
+            samples = [r for r in recs if r.get("kind") == "sample"]
+            row["truncated_jsonl"] = bad
+        if samples:
+            row.update(scan_emergence(samples, s["z80_steps"], patterns, sets, cache))
+        else:
+            row.update({"t_rep": np.nan, "t_faith": np.nan})
+        # ── exemplar at the tq_10 sample (pre-registered emergence event) ──
+        if s["tq_10"] > 0 and samples:
+            at = next((r for r in samples if r["step"] == s["tq_10"]), None)
+            if at is not None:
+                rank, r, t = best_of([e["tape"] for e in at["exemplars"]][:3], s["z80_steps"], patterns)
+                row.update({"em_tape": t, "em_rank": rank, "em_score": round(r["score"], 3), "em_gen2": round(r["gen2_score"], 3),
+                            "em_q75": round(r["offspring_within_q"], 3), "em_faithful": r["faithful"]})
+        # ── final state ──
+        fin = s["final"]
+        final_tapes = [e["tape"] for e in fin["exemplars"]][:3]
+        rank, r, t = best_of(final_tapes, s["z80_steps"], patterns)
+        row.update({
+            "final_tape": t, "final_rank": rank, "final_share": round(fin["top3_shares"][rank], 4) if rank < len(fin.get("top3_shares", [])) else np.nan,
+            "final_score": round(r["score"], 3), "final_gen2": round(r["gen2_score"], 3), "final_gen2_cond": round(r["gen2_cond"], 3),
+            "final_q75": round(r["offspring_within_q"], 3), "final_faithful": r["faithful"], "final_replicator": r["is_replicator"],
+            "final_self_b": round(r["self_preserved_as_B"], 3), "final_mechs": "+".join(mechanisms(hexbytes(t), sets)) or "-",
+            **period_fields("final", t),
+        })
         snap = load_snapshot(stem + ".soup_final.u8.br", L)
-        insitu = None
         if snap is not None:
-            for tape_hex2 in [e["tape"] for e in s["final"]["exemplars"]][:3]:
-                r2 = assay(bytes.fromhex(tape_hex2.replace(" ", "")), z80_steps=s["z80_steps"], suppress=sup, neighbors=snap)
-                if insitu is None or r2["gen2_score"] > insitu["gen2_score"]:
-                    insitu = r2
-        # Random-cell in-situ assay of the final soup: fraction of 16 random cells
-        # that are heritable replicators against their own population. Catches
-        # diverse clouds whose members never reach the top-3 exemplars.
-        rep_frac = None
-        if snap is not None:
+            ri = assay(hexbytes(t), z80_steps=s["z80_steps"], suppress=patterns, neighbors=snap, seed=s["seed"])
+            row.update({"final_insitu_score": round(ri["score"], 3), "final_insitu_gen2": round(ri["gen2_score"], 3),
+                        "final_insitu_n_inf": ri["n_informative"], "final_insitu_replicator": ri["is_replicator"]})
+            rank_b, rb, tb = best_of(final_tapes, s["z80_steps"], patterns, neighbors=snap, seed=s["seed"])
+            row.update({"final_insitu_best_gen2": round(rb["gen2_score"], 3), "final_insitu_best_tape": tb})
+            # random-cell functional fraction (both partner types), vectorised
             rng = np.random.default_rng(s["seed"])
-            idx = rng.integers(0, snap.shape[0], size=16)
-            hits = 0
-            for i in idx:
-                rr = assay(snap[i].tobytes(), z80_steps=s["z80_steps"], suppress=sup, n=32, neighbors=snap)
-                hits += rr["gen2_score"] >= GEN2_MIN
-            rep_frac = hits / 16
-        trep, first = (t_rep(stem + ".jsonl", s["z80_steps"], sup, cache) if os.path.exists(stem + ".jsonl") else (-1, None))
-        rows.append(
-            {
-                "label": s["label"], "tape_len": s.get("tape_length", 16), "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"],
-                "tq_10": s["tq_10"], "t_rep": trep, "t_rep_tape": first["tape"] if first else None, "t_rep_gen2": first["gen2_score"] if first else None,
-                "where": where, "exemplar_rank": rank, "tape": tape_hex, "score": round(r["score"], 3), "gen2": round(r["gen2_score"], 3),
-                "copies75": round(r["offspring_within_q"], 3), "self": round(r["self_preserved_as_A"], 3),
-                "is_replicator": r["gen2_score"] >= GEN2_MIN,
-                "final_gen2_insitu": round(insitu["gen2_score"], 3) if insitu else None,
-                "final_score_insitu": round(insitu["score"], 3) if insitu else None,
-                "final_replicator_insitu": (insitu["gen2_score"] >= GEN2_MIN) if insitu else None,
-                "final_rep_fraction": rep_frac,
-                "final_period": minimal_period(bytes.fromhex(s["final"]["exemplars"][0]["tape"].replace(" ", ""))),
-                "t_rep_period": minimal_period(bytes.fromhex(first["tape"].replace(" ", ""))) if first else None,
-                "final_c_blockcopy": s["final"].get("c_blockcopy"), "final_c_push2": s["final"].get("c_push2"), "final_hoe": s["final"]["hoe"],
-                "steps_run": s["steps_run"], "horizon": s["horizon"], "file": os.path.basename(p),
-            }
-        )
-        print(f"{s['label']:13s} L{s.get('tape_length',16):<3} st{s['z80_steps']:<3} k{s['noise_exp']} s{s['seed']:<2} tq10 {s['tq_10']:>7} t_rep {trep:>7} {(first['tape'][:23] if first else '-'):23s} | final gen2 rnd {r['gen2_score']:.2f} insitu {(insitu['gen2_score'] if insitu else float('nan')):.2f} repfrac {(rep_frac if rep_frac is not None else float('nan')):.2f} {tape_hex[:23]}", file=sys.stderr)
+            cells = snap[rng.integers(0, snap.shape[0], size=FUNC_CELLS)]
+            rnd = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"])
+            ins = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"], neighbors=snap)
+            informative = [x for x in ins if x["n_informative"] >= 8]
+            row.update({
+                "final_func_n": FUNC_CELLS,
+                "final_func_rnd": float(np.mean([x["is_replicator"] for x in rnd])),
+                "final_func_rnd_faithful": float(np.mean([x["faithful"] for x in rnd])),
+                "final_func_insitu": float(np.mean([x["is_replicator"] for x in informative])) if informative else np.nan,
+                "final_func_insitu_n": len(informative),
+            })
+        row.update({
+            "final_c_blockcopy": fin.get("c_blockcopy"), "final_c_push2": fin.get("c_push2"), "final_c_zero8": fin.get("c_zero8"),
+            "final_hoe": fin.get("hoe"), "final_H0": fin.get("H0"), "final_zero_frac": fin.get("zero_frac", np.nan),
+            "final_q_share": fin.get("q_share"), "final_q_shift_share": fin.get("q_shift_share", np.nan),
+        })
+        rows.append(row)
+        print(f"[{i+1}/{len(files)}] {s['label']:14s} L{L:<3} st{s['z80_steps']:<3} k{s['noise_exp']} s{s['seed']:<4} tq10 {s['tq_10']:>7} t_rep {row.get('t_rep', -1)!s:>7} t_faith {row.get('t_faith', -1)!s:>7} | final gen2 {row['final_gen2']:.2f} faithful {row['final_faithful']!s:5} func_rnd {row.get('final_func_rnd', float('nan')):.2f} insitu {row.get('final_func_insitu', float('nan')):.2f}", file=sys.stderr)
     df = pd.DataFrame(rows)
     out = os.path.join(d, "analysis")
     os.makedirs(out, exist_ok=True)
     df.to_csv(os.path.join(out, "assays.csv"), index=False)
-    print(df.groupby(["label", "tape_len", "steps", "k"]).agg(n=("seed", "size"), tq10_emerged=("tq_10", lambda x: int((x > 0).sum())), t_rep_emerged=("t_rep", lambda x: int((x > 0).sum())), t_rep_median=("t_rep", lambda x: float(x[x > 0].median()) if (x > 0).any() else float("nan")), final_rep_rnd=("is_replicator", "sum"), final_rep_insitu=("final_replicator_insitu", lambda x: int(x.fillna(False).astype(bool).sum())), final_rep_frac=("final_rep_fraction", "median"), final_blockcopy=("final_c_blockcopy", "median"), final_push2=("final_c_push2", "median")).to_string())
+    cell = df.groupby(["label", "tape_len", "steps", "k"]).agg(
+        n=("seed", "size"),
+        tq10=("tq_10", lambda x: int((x > 0).sum())),
+        t_rep=("t_rep", lambda x: int((x > 0).sum())),
+        t_faith=("t_faith", lambda x: int((x > 0).sum())),
+        final_rep=("final_replicator", "sum"),
+        final_faith=("final_faithful", "sum"),
+        func_rnd=("final_func_rnd", "median"),
+        func_insitu=("final_func_insitu", "median"),
+        stopped=("stopped_early", "sum"),
+    )
+    pd.set_option("display.width", 200)
+    print(cell.to_string())
 
 
 if __name__ == "__main__":

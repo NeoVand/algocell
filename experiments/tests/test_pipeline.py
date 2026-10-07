@@ -85,7 +85,7 @@ def test_random_and_constant_tapes_do_not_score(L):
 
 
 def test_executor_exists_for_every_tape_length():
-    for L in TAPES:
+    for L in ALL_TAPES:
         assert (SHADER_DIR / f"z80_test_L{L}.wgsl").exists(), L
         assert (SHADER_DIR / f"sim_square_L{L}.wgsl").exists(), L
 
@@ -110,33 +110,66 @@ def test_params_layout_matches_shader_struct():
 
 # ── Condition files: counts, uniqueness, resolvable suppression, pre-registered horizons ──
 
+ALL_TAPES = TAPES + (8, 10, 12, 18, 20, 24, 32, 50)
+
+
 @pytest.mark.parametrize("stage,count,horizons,stop", [
     ("stageA", 630, {300_000}, {0.5}),
     ("stageB", 640, {300_000}, {0.5}),
-    ("stageC", 420, {300_000, 1_000_000}, {-1}),
-    ("stageD", 160, {300_000}, {-1}),
+    ("stageC", 460, {300_000, 1_000_000}, {-1}),
+    ("stageD", 280, {300_000}, {-1}),
+    ("stageE", 950, {300_000}, {-1}),
 ])
 def test_condition_files(stage, count, horizons, stop):
+    from algocell_exp.batch import run_stem
+    from make_conds import ABLATIONS, ablation_of
+
     conds = json.load(open(ROOT / "conds" / f"{stage}.json"))
     assert len(conds) == count
-    keys = [(c["label"], c["tape"], c["z80_steps"], c["noise_exp"], c["seed"]) for c in conds]
-    assert len(set(keys)) == len(keys), "duplicate conditions"
+    stems = [run_stem(c) for c in conds]
+    assert len(set(stems)) == len(stems), "duplicate stems"
     assert {c["horizon"] for c in conds} == horizons
     assert {c["stop_share"] for c in conds} == stop
     for c in conds:
         resolve(parse_patterns(c["suppress"]))  # must not raise
-        assert c["tape"] in TAPES
+        assert c["tape"] in ALL_TAPES
+        assert ablation_of(c["label"]) in ABLATIONS
+        assert c["suppress"] == ";".join(ABLATIONS[ablation_of(c["label"])])
         if stop == {-1}:
-            assert c["random_tapes"] == 8
+            assert c["random_tapes"] == 8 and c["sample_every_early"] == 50 and c["early_until"] == 5000
+            assert c["seed"] >= 101 or c.get("replicate") is not None, "C/D/E must not reuse Stage A/B seeds 1-10 (except the within-seed variance arm)"
 
 
 def test_stage_d_matches_plan():
     conds = json.load(open(ROOT / "conds" / "stageD.json"))
-    assert {c["label"] for c in conds} == {"none", "stack-writes", "push-only", "call-rst"}
+    assert {c["label"] for c in conds} == {"none", "stack-writes", "stack-write-only", "stack-read-only", "push", "call-rst-write"}
     assert {c["tape"] for c in conds} == {9}
-    assert {c["z80_steps"] for c in conds} == {128, 512}
-    assert {c["noise_exp"] for c in conds} == {4}
-    assert {c["seed"] for c in conds} == set(range(1, 21))
+    assert {c["seed"] for c in conds} == set(range(1001, 1021))
+    main = [c for c in conds if c["z80_steps"] in (128, 512) and c["noise_exp"] == 4]
+    assert len(main) == 6 * 2 * 20
+    assert len([c for c in conds if c["z80_steps"] == 32]) == 20 and len([c for c in conds if c["noise_exp"] == 6]) == 20
+    from algocell_exp.isa import count
+    sizes = {lab: count(resolve(parse_patterns(next(c["suppress"] for c in conds if c["label"] == lab)))) for lab in ("stack-writes", "stack-write-only", "stack-read-only", "push", "call-rst-write")}
+    assert sizes == {"stack-writes": 46, "stack-write-only": 22, "stack-read-only": 24, "push": 4, "call-rst-write": 17}
+
+
+def test_stage_e_control_arms():
+    conds = json.load(open(ROOT / "conds" / "stageE.json"))
+    by = {}
+    for c in conds:
+        by.setdefault(c["label"].split("@")[1] if "@" in c["label"] else "", []).append(c)
+    for c in by["mubyte"]:
+        assert c["mutations_per_step"] == 32 * c["tape"]            # per-byte rate pinned to the L = 16 value
+    for c in by["bytes"]:
+        cells = c["width"] * c["height"]
+        assert abs(cells * c["tape"] - 320_000) / 320_000 < 0.02      # constant total soup bytes
+        assert abs(c["pairs"] / cells - 8192 / 20000) < 0.01           # constant drawn pairs per cell
+        assert c["pairs"] <= 32768
+    for c in by["steps8L"]:
+        assert c["z80_steps"] == 8 * c["tape"]
+    assert {c["tape"] for c in by["nominal"]} == set(ALL_TAPES)
+    assert len(by["var"]) == 30 and {c["replicate"] for c in by["var"]} == set(range(1, 11))
+    assert {c["seed"] for c in by["x32k2"]} == set(range(1001, 1021)) and {c["z80_steps"] for c in by["x32k2"]} == {32}
 
 
 # ── Metrics ──
@@ -203,3 +236,39 @@ def test_tolerant_period_and_shift_occupancy():
     T = np.frombuffer(bytes.fromhex("01c5" * 8), dtype=np.uint8)
     soup = np.concatenate([np.tile(T, (100, 1)), np.tile(np.roll(T, 1), (100, 1)), np.random.default_rng(0).integers(0, 256, (200, 16), dtype=np.uint8)])
     assert abs(shift_occupancy(soup, T)["q_shift_share"] - 0.5) < 0.01       # both phases count
+
+
+def test_assay_many_matches_single_assay_classification():
+    from algocell_exp.assay import assay_many
+    rng = np.random.default_rng(5)
+    tapes = np.stack([np.frombuffer(_ldir(16), dtype=np.uint8), np.frombuffer(_load_push(16), dtype=np.uint8),
+                      np.zeros(16, dtype=np.uint8), rng.integers(0, 256, 16, dtype=np.uint8)])
+    many = assay_many(tapes, z80_steps=128, n=32, seed=0)
+    single = [assay(t.tobytes(), z80_steps=128, n=32, seed=0) for t in tapes]
+    for m, s in zip(many, single):
+        assert m["is_replicator"] == s["is_replicator"] and m["faithful"] == s["faithful"], (m, s)
+        assert abs(m["gen2_score"] - s["gen2_score"]) < 0.25  # different partner draws, same verdicts
+    assert [m["faithful"] for m in many] == [True, True, False, False]
+
+
+# ── Statistics helpers (review 2026-10-07: KM tie order, medians, exact tests) ──
+
+def test_km_and_exact_tests():
+    from analyze import km_curve, km_median
+    from report import fisher, sign_test
+    # 10 seeds: events at 500 (x6), one at 2000, three censored at 300000
+    t = np.array([500] * 6 + [2000] + [300000] * 3, dtype=float)
+    e = np.array([True] * 7 + [False] * 3)
+    xs, ys = km_curve(t, e)
+    assert xs.tolist()[:1] == [500.0] and abs(ys[5] - 0.4) < 1e-9        # S(500) = 1 - 6/10
+    assert abs(ys[6] - 0.4 * (1 - 1 / 4)) < 1e-9                          # S(2000): 4 at risk, 1 event
+    assert km_median(t, e) == 500.0
+    assert km_median(np.array([300000.0] * 10), np.zeros(10, bool)) == float("inf")   # NR
+    # tie: a censoring at the same time as an event must still be at risk for that event
+    t2 = np.array([1000.0, 1000.0]); e2 = np.array([True, False])
+    assert abs(km_curve(t2, e2)[1][0] - 0.5) < 1e-9
+    # Fisher: 1/10 vs 10/10 two-sided and one-sided (L = 9, 512 steps contrast)
+    assert abs(fisher(10, 0, 1, 9) - 0.000119) < 2e-5
+    assert abs(fisher(10, 0, 1, 9, "greater") - 0.0000595) < 1e-5
+    assert abs(fisher(9, 1, 4, 6) - 0.0573) < 1e-3
+    assert abs(sign_test(10, 0) - 2 / 1024) < 1e-9 and sign_test(5, 5) == 1.0

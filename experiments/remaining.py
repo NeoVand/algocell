@@ -11,8 +11,7 @@ import os
 import sys
 
 
-def stem(c: dict) -> str:
-    return f"{c['label']}_L{c.get('tape') or 16}_st{c['z80_steps']}_k{c['noise_exp']}_s{c['seed']}"
+from algocell_exp.batch import run_stem as stem  # noqa: E402  (one definition of the stem for launcher, resume and analysis)
 
 
 def main(stage: str) -> None:

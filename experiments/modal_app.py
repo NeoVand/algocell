@@ -30,46 +30,20 @@ GPU = "L40S"  # fastest per step in the latency-bound regime (modal run modal_ap
 
 
 @app.function(image=image, gpu=GPU, timeout=60 * 60 * 6, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=2, initial_delay=10.0))
-def run_condition(cond: dict, batch: str = "adhoc") -> dict:
-    import glob
-    import io
-    import os
+def run_condition(cond: dict, batch: str = "adhoc", provenance: dict | None = None) -> dict:
+    """One condition → /runs/<batch>/{stem}.* on the volume. The file-writing path is
+    algocell_exp.batch.run_to_dir, the same function preflight.py runs locally."""
+    from algocell_exp.batch import run_to_dir
 
-    from algocell_exp.run import run
-
-    import json
-
-    import brotli
-    import numpy as np
-
-    d = f"/runs/{batch}"
-    os.makedirs(d, exist_ok=True)
-    stem = run_stem(cond)
-    # A run that died mid-flight (or a retry) must not leave a stale emergence snapshot from another
-    # trajectory next to this run's files: GPU races make runs non-deterministic.
-    for stale in glob.glob(f"{d}/{stem}.*"):
-        os.remove(stale)
-
-    def snapshot(name: str, soup: "np.ndarray") -> None:
-        # raw uint8 (cells × L), brotli-compressed; np.frombuffer(brotli.decompress(...), uint8).reshape(cells, L)
-        with open(f"{d}/{stem}.soup_{name}.u8.br", "wb") as f:
-            f.write(brotli.compress(np.ascontiguousarray(soup).tobytes(), quality=9))
-
-    buf = io.StringIO()
-    summary = run(**cond, out=buf, quiet=True, on_snapshot=snapshot)
-    # Write the summary last and atomically: a stem has a .summary.json only when its .jsonl is complete.
-    with open(f"{d}/{stem}.jsonl", "w") as f:
-        f.write(buf.getvalue())
-    tmp = f"{d}/{stem}.summary.json.tmp"
-    with open(tmp, "w") as f:
-        json.dump(summary, f)
-    os.replace(tmp, f"{d}/{stem}.summary.json")
+    summary = run_to_dir(cond, f"/runs/{batch}", provenance)
     runs_volume.commit()
     return summary
 
 
 def run_stem(cond: dict) -> str:
-    return f"{cond.get('label', 'run')}_L{cond.get('tape') or 16}_st{cond.get('z80_steps', 128)}_k{cond.get('noise_exp', 4)}_s{cond.get('seed', 0)}"
+    from algocell_exp.batch import run_stem as _stem
+
+    return _stem(cond)
 
 
 def _run_one_to_file(args: tuple) -> dict:
@@ -196,7 +170,7 @@ def gpus(bench_steps: int = 3000, gpu_list: str = "L4,A10G,L40S,H100,H200") -> N
 
 
 @app.local_entrypoint()
-def main(conds: str = "", batch: str = "adhoc", bench_steps: int = 3000, procs_bench: bool = False) -> None:
+def main(conds: str = "", batch: str = "adhoc", bench_steps: int = 3000, procs_bench: bool = False, force_batch: bool = False) -> None:
     import json
 
     if procs_bench:
@@ -207,16 +181,33 @@ def main(conds: str = "", batch: str = "adhoc", bench_steps: int = 3000, procs_b
         return
     with open(conds) as f:
         condition_list = json.load(f)
-    print(f"fanning out {len(condition_list)} conditions to {GPU} (batch={batch})")
+    import hashlib
     import os
+    import subprocess
+    import time
 
+    # The batch name must match the condition file (a typo would overwrite another stage's files).
+    expected = os.path.splitext(os.path.basename(conds))[0].replace("_remaining", "")
+    if batch != expected and not force_batch:
+        raise SystemExit(f"--batch {batch!r} does not match the condition file {conds!r} (expected {expected!r}); pass --force-batch to override")
+    try:
+        git = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+        dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", "."], capture_output=True, text=True).stdout.strip())
+    except Exception:  # noqa: BLE001
+        git, dirty = None, None
+    provenance = {
+        "git_commit": git, "git_dirty_experiments": dirty, "conds_file": os.path.basename(conds),
+        "conds_sha256_16": hashlib.sha256(open(conds, "rb").read()).hexdigest()[:16],
+        "launched_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "batch": batch, "gpu": GPU,
+    }
+    print(f"fanning out {len(condition_list)} conditions to {GPU} (batch={batch}, commit={git}{' DIRTY' if dirty else ''})")
     os.makedirs("runs", exist_ok=True)
     out = f"runs/{batch}_summaries.json"
     results, failures = [], []
     # return_exceptions=True: one failed container must not abort the sweep (the default raises in the
     # client, which disconnects the app and kills every in-flight run). Summaries are flushed as they
     # arrive so a client crash loses nothing that finished.
-    for r in run_condition.map(condition_list, kwargs={"batch": batch}, return_exceptions=True):
+    for r in run_condition.map(condition_list, kwargs={"batch": batch, "provenance": provenance}, return_exceptions=True):
         if isinstance(r, Exception):
             failures.append(repr(r)[:500])
             print("FAILED:", failures[-1])
@@ -224,5 +215,5 @@ def main(conds: str = "", batch: str = "adhoc", bench_steps: int = 3000, procs_b
         results.append(r)
         print(r["label"], "L", r["tape_length"], "seed", r["seed"], "steps", r["steps_run"], "/", r["horizon"], "tq_10", r["tq_10"], f"{r['wall_s']}s", r["adapter"])
         with open(out, "w") as f:
-            json.dump({"results": results, "failures": failures}, f, indent=1)
+            json.dump({"results": results, "failures": failures, "provenance": provenance}, f, indent=1)
     print(f"done: {len(results)} ok, {len(failures)} failed; wrote {out}")
