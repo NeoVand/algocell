@@ -96,6 +96,18 @@ def main(d: str) -> None:
                 r2 = assay(bytes.fromhex(tape_hex2.replace(" ", "")), z80_steps=s["z80_steps"], suppress=sup, neighbors=snap)
                 if insitu is None or r2["gen2_score"] > insitu["gen2_score"]:
                     insitu = r2
+        # Random-cell in-situ assay of the final soup: fraction of 16 random cells
+        # that are heritable replicators against their own population. Catches
+        # diverse clouds whose members never reach the top-3 exemplars.
+        rep_frac = None
+        if snap is not None:
+            rng = np.random.default_rng(s["seed"])
+            idx = rng.integers(0, snap.shape[0], size=16)
+            hits = 0
+            for i in idx:
+                rr = assay(snap[i].tobytes(), z80_steps=s["z80_steps"], suppress=sup, n=32, neighbors=snap)
+                hits += rr["gen2_score"] >= GEN2_MIN
+            rep_frac = hits / 16
         trep, first = (t_rep(stem + ".jsonl", s["z80_steps"], sup, cache) if os.path.exists(stem + ".jsonl") else (-1, None))
         rows.append(
             {
@@ -107,16 +119,17 @@ def main(d: str) -> None:
                 "final_gen2_insitu": round(insitu["gen2_score"], 3) if insitu else None,
                 "final_score_insitu": round(insitu["score"], 3) if insitu else None,
                 "final_replicator_insitu": (insitu["gen2_score"] >= GEN2_MIN) if insitu else None,
+                "final_rep_fraction": rep_frac,
                 "final_c_blockcopy": s["final"].get("c_blockcopy"), "final_c_push2": s["final"].get("c_push2"), "final_hoe": s["final"]["hoe"],
                 "steps_run": s["steps_run"], "horizon": s["horizon"], "file": os.path.basename(p),
             }
         )
-        print(f"{s['label']:13s} L{s.get('tape_length',16):<3} st{s['z80_steps']:<3} k{s['noise_exp']} s{s['seed']:<2} tq10 {s['tq_10']:>7} t_rep {trep:>7} {(first['tape'][:23] if first else '-'):23s} | final gen2 rnd {r['gen2_score']:.2f} insitu {(insitu['gen2_score'] if insitu else float('nan')):.2f} {tape_hex[:23]}", file=sys.stderr)
+        print(f"{s['label']:13s} L{s.get('tape_length',16):<3} st{s['z80_steps']:<3} k{s['noise_exp']} s{s['seed']:<2} tq10 {s['tq_10']:>7} t_rep {trep:>7} {(first['tape'][:23] if first else '-'):23s} | final gen2 rnd {r['gen2_score']:.2f} insitu {(insitu['gen2_score'] if insitu else float('nan')):.2f} repfrac {(rep_frac if rep_frac is not None else float('nan')):.2f} {tape_hex[:23]}", file=sys.stderr)
     df = pd.DataFrame(rows)
     out = os.path.join(d, "analysis")
     os.makedirs(out, exist_ok=True)
     df.to_csv(os.path.join(out, "assays.csv"), index=False)
-    print(df.groupby(["label", "tape_len", "steps", "k"]).agg(n=("seed", "size"), tq10_emerged=("tq_10", lambda x: int((x > 0).sum())), t_rep_emerged=("t_rep", lambda x: int((x > 0).sum())), t_rep_median=("t_rep", lambda x: float(x[x > 0].median()) if (x > 0).any() else float("nan")), final_rep_rnd=("is_replicator", "sum"), final_rep_insitu=("final_replicator_insitu", lambda x: int(x.fillna(False).astype(bool).sum())), final_blockcopy=("final_c_blockcopy", "median"), final_push2=("final_c_push2", "median")).to_string())
+    print(df.groupby(["label", "tape_len", "steps", "k"]).agg(n=("seed", "size"), tq10_emerged=("tq_10", lambda x: int((x > 0).sum())), t_rep_emerged=("t_rep", lambda x: int((x > 0).sum())), t_rep_median=("t_rep", lambda x: float(x[x > 0].median()) if (x > 0).any() else float("nan")), final_rep_rnd=("is_replicator", "sum"), final_rep_insitu=("final_replicator_insitu", lambda x: int(x.fillna(False).astype(bool).sum())), final_rep_frac=("final_rep_fraction", "median"), final_blockcopy=("final_c_blockcopy", "median"), final_push2=("final_c_push2", "median")).to_string())
 
 
 if __name__ == "__main__":

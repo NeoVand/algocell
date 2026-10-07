@@ -123,31 +123,44 @@ def assay(
     pairs_b = np.concatenate([R, np.repeat(T[None, :], n, axis=0)], axis=1)
     res_a = execute_pairs(pairs_a, L, z80_steps, suppress)
     res_b = execute_pairs(pairs_b, L, z80_steps, suppress)
-    before = _best_shift_match(R, T).mean()
+    before_i = _best_shift_match(R, T)
     sim_b = _best_shift_match(res_a[:, L:], T)          # T (as A) wrote itself into B?
-    into_b = sim_b.mean()
-    into_a = _best_shift_match(res_b[:, :L], T).mean()   # T (as B) wrote itself into A?
+    sim_a = _best_shift_match(res_b[:, :L], T)          # T (as B) wrote itself into A?
+    # Gain normalised by headroom, over partners that were not already copies.
+    # In a soup saturated with copies a copier cannot raise its partner's
+    # similarity, so a raw (after - before) would call it sterile.
+    into_b = _norm_gain(before_i, sim_b)
+    into_a = _norm_gain(before_i, sim_a)
     self_kept_a = float((res_a[:, :L] == T[None, :]).mean())  # T survives its own execution as A
     # Heritability: do the offspring (the B tapes T produced) themselves copy
-    # T-like material into fresh random neighbours? A byte-pattern smear can
-    # score well in one generation (it writes its periodic payload) but its
-    # offspring lack the instruction that produced it, so generation 2 collapses.
+    # T-like material into fresh neighbours? A byte-pattern smear can score
+    # well in one generation (it writes its periodic payload) but its offspring
+    # lack the instruction that produced it, so generation 2 collapses.
     offspring = res_a[:, L:]
     if neighbors is not None:
         R2 = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
     else:
         R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress)
-    gen2 = _best_shift_match(res_g2[:, L:], T).mean() - _best_shift_match(R2, T).mean()
+    gen2 = _norm_gain(_best_shift_match(R2, T), _best_shift_match(res_g2[:, L:], T))
     return {
-        "copy_into_neighbor_as_A": float(into_b - before),
-        "copy_into_neighbor_as_B": float(into_a - before),
-        "baseline_similarity": float(before),
+        "copy_into_neighbor_as_A": float(into_b),
+        "copy_into_neighbor_as_B": float(into_a),
+        "baseline_similarity": float(before_i.mean()),
         "self_preserved_as_A": self_kept_a,
         "offspring_within_q": float((sim_b >= 0.75).mean()),  # share of neighbours that became ≥75%-copies
         "gen2_score": float(gen2),
-        "score": float(max(into_b, into_a) - before),
+        "score": float(max(into_b, into_a)),
     }
+
+
+def _norm_gain(before: np.ndarray, after: np.ndarray, max_before: float = 0.75) -> float:
+    """Mean of (after - before) / (1 - before) over partners with before < max_before.
+    Returns 0 when every partner was already a copy (no headroom to measure)."""
+    m = before < max_before
+    if not m.any():
+        return 0.0
+    return float(((after[m] - before[m]) / (1.0 - before[m])).mean())
 
 
 if __name__ == "__main__":

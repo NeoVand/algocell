@@ -153,6 +153,28 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (same reading): the assay's gain is now normalised by headroom,
+  (after − before)/(1 − before), averaged over partners whose prior similarity
+  to the tape is < 0.75. Reason: the in-situ random-cell assay returned 0/16
+  heritable cells in soups where 60% of cells carry the Load–Push pair,
+  because a copier cannot raise the similarity of a partner that is already a
+  copy. Random-partner scores are essentially unchanged (prior similarity
+  ≈ 0.06). Threshold stays gen2 ≥ 0.3.
+- 2026-10-07 (Stage A 211/630 read, interrupted by the Modal outage): two
+  blind spots found, both logged for the analysis and for Stage C:
+  (a) `t_rep` is built from the top-3 exact exemplars, so a maximally diverse
+  replicator cloud (every member unique; no genotype ≥ 0.5%) is never assayed
+  — e.g. stack-writes / 32 steps: the census shows LDIR in ≥ 30% excess of
+  cells by step 5k in 10/10 seeds, `t_rep` fires in 4/10. We therefore also
+  report the **census takeover time** per family (first sample with ≥ 30%
+  excess over the random-soup baseline) and validate the end state with a
+  **random-cell in-situ assay** (16 random cells of the final snapshot, each
+  assayed against its own population; fraction heritable). Stage C runs will
+  store 8 random tapes per sample so the assay can be applied over time.
+  (b) The pre-registered early stop (4 samples after 50% quasispecies
+  occupancy) ends runs once a stack family dominates, so later LDIR invasions
+  in those runs are censored; succession statistics use only runs that reached
+  the horizon, and Stage C re-runs the affected cells without the early stop.
 - 2026-10-07 (Stage A running; 31 runs read): added an **in-situ** variant of
   the assay for the final state — partners are drawn from the stored soup
   snapshot instead of uniform random bytes. Reason: members of the LDIR cloud
