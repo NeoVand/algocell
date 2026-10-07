@@ -178,7 +178,36 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
-- 2026-10-08 (Stage B complete, first table read): **analysis bug, no data
+- 2026-10-07 (Stage B assays recomputed and read; Stage C finished, not yet
+  read). Three post hoc additions, all reported next to the pre-registered
+  measures, none replacing them:
+  (a) **Faithfulness.** The no-copy soups at L = 100 contain a trace-level
+  (top share 0.2%) `CALL`-chain `cd xx cd xx …` whose CALLs push their own
+  16-bit return address; the high byte of that address is the CALL opcode
+  itself (PC runs in the unreduced 16-bit space, so after `JP`/`CALL $xxCD`
+  every return address is `$CDyy`). The neighbour is flooded with `cd yy`
+  pairs (50% similar), the offspring do the same (gen2 0.49), but the operand
+  drifts by +4 each generation and the lineage dies by generation 3. It passes
+  the gen2 ≥ 0.3 heritability rule, so that rule alone is not enough: every
+  table now also reports `offspring_within_q` (share of partners that became
+  ≥ 75% copies) and a replicator is called **faithful** when it is ≥ 0.5.
+  Nothing in Stages A/B changes except this one case, which is labelled
+  "heritable, not faithful"; no-copy stays 0/160 by `t_rep`.
+  (b) **Tiling.** Dominant tapes' minimal period relative to L (does the
+  period divide L; is it ≤ L/2), and the high-order entropy of the final soup
+  per family, to test H6's "free tape" clause directly.
+  (c) **A reverse ablation at L = 9**, found in the data and NOT
+  pre-registered: removing the stack-writing families makes replication
+  *more* likely (9/10 and 10/10 vs 4/10 and 1/10; Fisher p = 0.057 at 128
+  steps, 0.0001 at 512). Unablated L = 9 soups are a zero flood (34% of all
+  bytes are `00`, byte entropy 6.0 bits vs 7.4 without stack writes), written
+  by PUSH of still-zero registers and by CALL/RST return addresses; the
+  replicator that does emerge is the period-3 `DEC E ; LDIR` tiling 9 bytes
+  exactly. This is one cell of the design with n = 10 per arm and is logged
+  as a hypothesis for a confirmatory run (Stage D proposal: L = 9 ×
+  {none, stack-writes, push-only, call-rst} × {128, 512} × 20 seeds), not as
+  a result.
+- 2026-10-07 (Stage B complete, first table read): **analysis bug, no data
   affected.** The exported single-pair executor used by the assay had a fixed
   40-byte private memory (sized for the 32/38-byte differential tests), so
   every post hoc assay of a pair longer than 40 bytes (L ≥ 25) indexed out of
