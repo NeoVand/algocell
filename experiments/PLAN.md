@@ -95,7 +95,7 @@ L = 16 cells are shared with Stage A (not re-run).
 the 3-factor crossing L × steps × mutation for whichever ablation shows a
 non-trivial mechanism change.
 
-*Fixed 2026-10-08 after reading Stage A and Stage B (succession and census;
+*Fixed 2026-10-07 after reading Stage A and Stage B (succession and census;
 Stage B assays were being recomputed after the executor fix). The exact
 condition list is `make_conds.stage_c()` → `conds/stageC.json` (420 runs). All
 Stage C runs have no early stop and store 8 random cell tapes per sample.*
@@ -123,6 +123,23 @@ each delay emergence less than `stack-writes` did (redundant stack routes);
 immediates); `cb-page` and `ed-loads` change nothing at L = 16. C5 — dominant
 tapes at L = 100 have period ≤ 8 in most seeds; no whole-tape replicator of
 period > 32 appears.
+
+**Stage D (confirmatory, fixed 2026-10-07 after reading Stage B, before any
+Stage C result):** Stage B found, in one cell and post hoc, that removing the
+stack-writing families at L = 9 makes replication *more* likely (see change
+log). Stage D tests that as a stated hypothesis with new seeds:
+`none`, `stack-writes`, `push-only`, `call-rst` at L = 9, (128, k=4) and
+(512, k=4), **20 seeds each** (seeds 1–20, all new runs; Stage B's L = 9 runs
+are not reused), 300,000 steps, no early stop, 8 random tapes per sample
+(`make_conds.stage_d()` → `conds/stageD.json`, 160 runs).
+Predictions: (D1) `stack-writes` has a higher emergence fraction than `none`
+at both budgets (one-sided Fisher, α = 0.05, n = 20 per arm). (D2) the
+unablated soups are zero floods (≥ 25% of bytes `00`) and the ablated ones
+are not. (D3) `push-only` (PUSH/POP removed, CALL/RST kept) recovers most of
+the effect, i.e. the flood is mainly `PUSH rr` of still-zero registers;
+`call-rst` alone recovers less. (D4) every L = 9 replicator is LDIR-based
+with period 3 or 9. If D1 fails the Stage B observation is reported as a
+non-replicated single cell.
 
 ## Outcomes (all recorded per sample, nothing chosen after the fact)
 
@@ -178,6 +195,18 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (Stage C relaunched): **runner bug, Stage C aborted and
+  re-run; no Stage A/B data affected.** Stage C conditions carry
+  `stop_share: -1` to disable the early stop, but `run()` only treated `None`
+  as "never" (the CLI converted −1, the Modal path did not), so every Stage C
+  run stopped 4 samples in, at 2,500–5,000 steps (0.15 GPU-h, ≈ $0.30
+  wasted). Fixed so any non-positive share means never stop, verified
+  locally, and the 420 runs relaunched unchanged. The aborted batch is kept
+  in `runs/stageC_aborted/` and is not used for any conclusion; its 2,500-step
+  snapshots agree with Stage A's early dynamics (`ld-imm` and `push-only`
+  0/10 by 2,500 steps, the other finer ablations 9–10/10 by 500–1,000).
+  Stage A and B used `stop_share: 0.5` (a positive value), so their early
+  stop behaved as pre-registered.
 - 2026-10-07 (Stage B assays recomputed and read; Stage C finished, not yet
   read). Three post hoc additions, all reported next to the pre-registered
   measures, none replacing them:

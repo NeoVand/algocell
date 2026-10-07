@@ -87,9 +87,19 @@ def stage_c() -> list[dict]:
     return out
 
 
+def stage_d() -> list[dict]:
+    """See PLAN.md Stage D: confirmatory run for the L = 9 reverse ablation found post hoc in Stage B.
+    20 seeds per arm, no early stop, 8 random tapes per sample."""
+    out = []
+    for a in ("none", "stack-writes", "push-only", "call-rst"):
+        for st in (128, 512):
+            out += [_c(a, 9, st, 4, s, 300_000, 500) for s in range(1, 21)]
+    return out
+
+
 if __name__ == "__main__":
     os.makedirs("conds", exist_ok=True)
-    for name, conds in (("stageA", stage_a()), ("stageB", stage_b()), ("stageC", stage_c())):
+    for name, conds in (("stageA", stage_a()), ("stageB", stage_b()), ("stageC", stage_c()), ("stageD", stage_d())):
         with open(f"conds/{name}.json", "w") as f:
             json.dump(conds, f, indent=0)
         print(name, len(conds), "conditions")

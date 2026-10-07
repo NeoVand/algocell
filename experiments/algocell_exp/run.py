@@ -117,7 +117,7 @@ def run(
                 emergence[key] = step
                 if key == "tq_10" and on_snapshot:
                     on_snapshot("emergence", soup_arr)
-        if stop_share is not None and stop_at is None and qs["q_share"] >= stop_share:
+        if stop_share is not None and stop_share > 0 and stop_at is None and qs["q_share"] >= stop_share:
             stop_at = step + stop_after * sample_every
         if stop_at is not None and step >= stop_at:
             break
