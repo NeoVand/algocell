@@ -1,0 +1,288 @@
+label,tape_len,steps,k,seed,which,tape,signature
+call-rst-write,9,128,4,1003,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1003,final,cf f4 42 5e d2 ed b0 27 9a,"LD r,(HL) ; JP NC,nn"
+call-rst-write,9,128,4,1004,first,ab 5e ab 07 fa ed b0 e3 00,"LD r,(HL) ; JP M,nn ; EX (SP),rr"
+call-rst-write,9,128,4,1004,final,3f cc 3d 5e c3 ed b0 de 6e,"LD r,(HL) ; JP nn"
+call-rst-write,9,128,4,1005,first,16 06 ed b0 f8 05 16 06 ed,"LD r,n ; LDIR ; RET M ; LD r,n"
+call-rst-write,9,128,4,1005,final,e7 be 7c 11 d4 1e c3 ed b0,"LD rr,nn ; JP nn"
+call-rst-write,9,128,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1007,final,99 9d 51 5e ca ed b0 09 f6,"LD r,(HL) ; JP Z,nn"
+call-rst-write,9,128,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1008,final,63 87 5b 5e c3 ed b0 b8 fb,"LD r,(HL) ; JP nn"
+call-rst-write,9,128,4,1009,first,63 ae d2 a4 56 5f ed b0 f3,"JP NC,nn ; LDIR"
+call-rst-write,9,128,4,1009,final,99 51 a4 5e c3 ed b0 69 8f,"LD r,(HL) ; JP nn"
+call-rst-write,9,128,4,1010,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1010,final,99 5e c7 67 ca ed b0 d3 96,"LD r,(HL) ; JP Z,nn"
+call-rst-write,9,128,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1012,final,09 94 4f 5e c3 ed b0 e7 13,"LD r,(HL) ; JP nn"
+call-rst-write,9,128,4,1013,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1013,final,99 9c c0 5e d2 ed b0 54 91,"RET NZ ; LD r,(HL) ; JP NC,nn"
+call-rst-write,9,128,4,1015,first,87 5e 3b 08 d2 ed b0 21 c2,"LD r,(HL) ; EX rr,rr' ; JP NC,nn ; LD rr,nn"
+call-rst-write,9,128,4,1015,final,cf c1 f3 5e d2 ed b0 2b 9e,"POP rr ; LD r,(HL) ; JP NC,nn"
+call-rst-write,9,128,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1017,final,ab b9 2f 5e d2 ed b0 61 45,"LD r,(HL) ; JP NC,nn"
+call-rst-write,9,128,4,1018,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+call-rst-write,9,128,4,1018,final,63 5e 8d ae c3 ed b0 08 6a,"LD r,(HL) ; JP nn ; EX rr,rr'"
+call-rst-write,9,512,4,1002,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1002,final,cf 09 5a 5e c3 ed b0 e0 d4,"LD r,(HL) ; JP nn ; RET PO"
+call-rst-write,9,512,4,1003,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1003,final,51 fc d4 5e c2 ed b0 f7 b3,"LD r,(HL) ; JP NZ,nn"
+call-rst-write,9,512,4,1004,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1004,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1005,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1005,final,3f 61 4d 5e c3 ed b0 8f 90,"LD r,(HL) ; JP nn"
+call-rst-write,9,512,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1006,final,06 f0 1d 56 c3 ed b0 65 c7,"LD r,n ; LD r,(HL) ; JP nn"
+call-rst-write,9,512,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1007,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1008,final,51 c3 a7 5e ed b0 7d d4 40,JP nn ; LDIR
+call-rst-write,9,512,4,1009,first,51 c3 aa 43 a0 f0 5e ed b0,"JP nn ; RET P ; LD r,(HL) ; LDIR"
+call-rst-write,9,512,4,1009,final,cf 52 5e 18 f2 44 e9 ed b0,"LD r,(HL) ; JR d ; JP (HL) ; LDIR"
+call-rst-write,9,512,4,1010,first,99 5e d2 fe 95 a3 40 ed b0,"LD r,(HL) ; JP NC,nn ; LDIR"
+call-rst-write,9,512,4,1010,final,ab 64 55 5e ca ed b0 98 04,"LD r,(HL) ; JP Z,nn"
+call-rst-write,9,512,4,1011,first,3f 89 5e c3 0b ed b0 80 00,"LD r,(HL) ; JP nn"
+call-rst-write,9,512,4,1011,final,ab f9 5e 5e c3 ed b0 0f c4,"LD SP,HL ; LD r,(HL)×2 ; JP nn"
+call-rst-write,9,512,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1017,final,51 5e 18 f2 d2 02 ed b0 88,"LD r,(HL) ; JR d ; JP NC,nn"
+call-rst-write,9,512,4,1018,first,41 11 8f 07 c3 ed b0 b7 82,"LD rr,nn ; JP nn"
+call-rst-write,9,512,4,1018,final,1e 00 1e 3f f2 ed b0 2f 00,"LD r,n×2 ; JP P,nn"
+call-rst-write,9,512,4,1019,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1019,final,87 83 3b 5e d2 ed b0 91 1e,"LD r,(HL) ; JP NC,nn ; LD r,n"
+call-rst-write,9,512,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+call-rst-write,9,512,4,1020,final,87 8d 9a 5e e2 ed b0 9b ad,"LD r,(HL) ; JP PO,nn"
+none,9,128,4,1002,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,4,1002,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,4,1006,final,f3 60 0d 5e e2 ed b0 e6 38,"LD r,(HL) ; JP PO,nn"
+none,9,128,4,1010,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,4,1010,final,51 59 85 5e c3 ed b0 77 30,"LD r,(HL) ; JP nn ; LD (HL),r ; JR NC,d"
+none,9,128,4,1011,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+none,9,128,4,1011,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,4,1013,first,fe 8d 1e e1 c2 29 29 ed b0,"LD r,n ; JP NZ,nn ; LDIR"
+none,9,128,4,1013,final,00 3b 1e 2d c3 ed b0 92 03,"LD r,n ; JP nn"
+none,9,128,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,4,1020,final,de 8a 1d 56 c3 ed b0 71 ef,"LD r,(HL) ; JP nn ; LD (HL),r ; RST 28"
+none,9,128,6,1002,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+none,9,128,6,1002,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,6,1004,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,6,1004,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,6,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,128,6,1012,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,32,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,32,4,1007,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,32,4,1011,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,32,4,1011,final,51 7f 13 5e c3 ed b0 f7 88,"LD r,(HL) ; JP nn ; RST 30"
+none,9,32,4,1013,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+none,9,32,4,1013,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,32,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,32,4,1017,final,99 8b a1 5e ca ed b0 50 61,"LD r,(HL) ; JP Z,nn"
+none,9,512,4,1002,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,512,4,1002,final,06 d2 1d 56 d2 ed b0 ae d9,"LD r,n ; LD r,(HL) ; JP NC,nn ; EXX"
+none,9,512,4,1006,first,c3 11 83 49 40 ed b0 d8 8c,JP nn ; LDIR ; RET C
+none,9,512,4,1006,final,bd 4b 61 5e ca ed b0 c3 5a,"LD r,(HL) ; JP Z,nn ; JP nn"
+none,9,512,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,512,4,1008,final,1e 2d 1e ab c3 ed b0 3f a6,"LD r,n×2 ; JP nn"
+none,9,512,4,1016,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,512,4,1016,final,3f 5e c3 76 ed b0 db 25 82,"LD r,(HL) ; JP nn"
+none,9,512,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+none,9,512,4,1020,final,9a d1 28 ed b0 ea 94 59 26,"POP rr ; JR Z,d ; JP PE,nn ; LD r,n"
+push,9,128,4,1001,first,1e 87 d3 eb d2 d3 df ed b0,"LD r,n ; JP NC,nn ; LDIR"
+push,9,128,4,1001,final,fd 8b 1e 3f 55 eb 10 ed b0,"LD r,n ; EX rr,rr ; DJNZ d"
+push,9,128,4,1003,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1003,final,bd 08 84 5e c3 ed b0 5b 76,"EX rr,rr' ; LD r,(HL) ; JP nn"
+push,9,128,4,1006,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+push,9,128,4,1006,final,00 14 ab 11 6a 1e c3 ed b0,"LD rr,nn ; JP nn"
+push,9,128,4,1009,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1009,final,5a 48 1e bd f2 ed b0 7a 3d,"LD r,n ; JP P,nn"
+push,9,128,4,1010,final,87 c3 71 5e ed b0 42 8b 54,JP nn ; LDIR
+push,9,128,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1012,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1013,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1013,final,d1 d1 d3 33 d2 ed b0 34 53,"POP rr×2 ; JP NC,nn ; INC (HL)"
+push,9,128,4,1015,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+push,9,128,4,1015,final,f3 5e 18 f2 0e 68 ed b0 3a,"LD r,(HL) ; JR d ; LD r,n ; LDIR ; LD r,(nn)"
+push,9,128,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1017,final,eb b9 1e ab d2 ed b0 1e 36,"EX rr,rr ; LD r,n ; JP NC,nn ; LD r,n"
+push,9,128,4,1018,first,3f 5e 95 d2 1e b7 ed b0 78,"LD r,(HL) ; JP NC,nn ; LDIR"
+push,9,128,4,1018,final,99 5e 18 f2 79 d6 ed b0 4b,"LD r,(HL) ; JR d"
+push,9,128,4,1019,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1019,final,ab 50 5e aa ca ed b0 98 6c,"LD r,(HL) ; JP Z,nn"
+push,9,128,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,128,4,1020,final,ab c5 40 5e ca ed b0 6a 06,"LD r,(HL) ; JP Z,nn ; LD r,n"
+push,9,512,4,1002,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1002,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1004,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1004,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1006,final,06 c1 56 1d e2 ed b0 e6 b8,"LD r,n ; LD r,(HL) ; JP PO,nn"
+push,9,512,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1007,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1008,final,ab a2 5e 6a c3 ed b0 58 a2,"LD r,(HL) ; JP nn"
+push,9,512,4,1014,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1014,final,de 06 56 1d c3 ed b0 0f 3d,"LD r,(HL) ; JP nn"
+push,9,512,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1017,final,a8 b3 1e 99 f2 ed b0 65 7c,"LD r,n ; JP P,nn"
+push,9,512,4,1018,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1018,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1019,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+push,9,512,4,1019,final,1e 3f c2 2e ed b0 1d 14 0e,"LD r,n ; JP NZ,nn ; LD r,n"
+stack-read-only,9,128,4,1001,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1001,final,87 b3 fb 5e c3 ed b0 9e d0,"LD r,(HL) ; JP nn"
+stack-read-only,9,128,4,1002,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1002,final,f3 4f ab 5e c3 ed b0 5d 05,"LD r,(HL) ; JP nn"
+stack-read-only,9,128,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1006,final,bd 1e 5f 5e d2 ed b0 b4 23,"LD r,n ; LD r,(HL) ; JP NC,nn"
+stack-read-only,9,128,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1007,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1008,final,57 3f 56 1d e2 ed b0 c1 a5,"LD r,(HL) ; JP PO,nn"
+stack-read-only,9,128,4,1009,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1009,final,7d 8b 1e 75 c3 ed b0 a2 b7,"LD r,n ; JP nn"
+stack-read-only,9,128,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1012,final,00 95 74 11 ce 1e c3 ed b0,"LD (HL),r ; LD rr,nn ; JP nn"
+stack-read-only,9,128,4,1017,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+stack-read-only,9,128,4,1017,final,ab 5e ca e2 ed b0 51 9f 99,"LD r,(HL) ; JP Z,nn"
+stack-read-only,9,512,4,1001,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1001,final,99 c3 cb 5e ed b0 ae 02 ae,"JP nn ; LDIR ; LD (BC),r"
+stack-read-only,9,512,4,1004,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1004,final,3c b8 1d 56 c3 ed b0 a4 58,"LD r,(HL) ; JP nn"
+stack-read-only,9,512,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1007,final,ab 83 07 5e ca ed b0 78 16,"LD r,(HL) ; JP Z,nn ; LD r,n"
+stack-read-only,9,512,4,1011,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1011,final,99 49 5c 5e f2 ed b0 21 b0,"LD r,(HL) ; JP P,nn ; LD rr,nn"
+stack-read-only,9,512,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1012,final,54 1e 09 bd e2 ed b0 1d 94,"LD r,n ; JP PO,nn"
+stack-read-only,9,512,4,1013,first,06 fb d2 ce 11 5d 57 ed b0,"LD r,n ; JP NC,nn ; LDIR"
+stack-read-only,9,512,4,1013,final,00 0a 1e 87 f2 ed b0 b6 d3,"LD r,(BC) ; LD r,n ; JP P,nn"
+stack-read-only,9,512,4,1015,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1015,final,09 0e 41 5e c3 ed b0 c2 ae,"LD r,n ; LD r,(HL) ; JP nn ; JP NZ,nn"
+stack-read-only,9,512,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1017,final,ab 5e 79 62 ca ed b0 20 a7,"LD r,(HL) ; JP Z,nn ; JR NZ,d"
+stack-read-only,9,512,4,1018,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-read-only,9,512,4,1018,final,f3 3c 97 5e f2 ed b0 98 88,"LD r,(HL) ; JP P,nn"
+stack-read-only,9,512,4,1020,first,11 6d 1d 3e ed b0 c3 ca 00,"LD rr,nn ; LD r,n ; JP nn"
+stack-read-only,9,512,4,1020,final,09 0a 7a 5e f2 ed b0 c2 8b,"LD r,(BC) ; LD r,(HL) ; JP P,nn ; JP NZ,nn"
+stack-write-only,9,128,4,1001,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1001,final,e3 78 1e 75 f2 ed b0 ec 66,"LD r,n ; JP P,nn ; LD r,(HL)"
+stack-write-only,9,128,4,1004,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1004,final,ee 8f bb 11 21 1e c3 ed b0,"LD rr,nn ; JP nn"
+stack-write-only,9,128,4,1005,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1005,final,ab a4 79 5e f2 ed b0 1d 64,"LD r,(HL) ; JP P,nn"
+stack-write-only,9,128,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1006,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1007,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1008,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1010,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1010,final,be 16 d0 f9 16 1e c3 ed b0,"LD r,n ; LD SP,HL ; LD r,n ; JP nn"
+stack-write-only,9,128,4,1011,first,3f 93 5e 56 e2 ed b0 6a 05,"LD r,(HL)×2 ; JP PO,nn"
+stack-write-only,9,128,4,1011,final,ab 8d 50 5e ca ed b0 20 83,"LD r,(HL) ; JP Z,nn ; JR NZ,d"
+stack-write-only,9,128,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1012,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1014,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1014,final,87 44 bb 5e ca ed b0 5e c5,"LD r,(HL) ; JP Z,nn ; LD r,(HL)"
+stack-write-only,9,128,4,1015,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1015,final,99 aa a8 5e d2 ed b0 5f be,"LD r,(HL) ; JP NC,nn"
+stack-write-only,9,128,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,128,4,1017,final,96 86 56 1d e2 ed b0 6f 8e,"LD r,(HL) ; JP PO,nn"
+stack-write-only,9,512,4,1001,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1001,final,00 72 b9 11 ba 1e c3 ed b0,"LD (HL),r ; LD rr,nn ; JP nn"
+stack-write-only,9,512,4,1002,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1002,final,a7 db 46 11 17 1e c3 ed b0,"LD rr,nn ; JP nn"
+stack-write-only,9,512,4,1003,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1003,final,f1 3b 57 86 16 1e c3 ed b0,"POP rr ; LD r,n ; JP nn"
+stack-write-only,9,512,4,1004,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1004,final,ab 49 47 5e ca ed b0 f2 e4,"LD r,(HL) ; JP Z,nn ; JP P,nn"
+stack-write-only,9,512,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1006,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1007,final,99 ab c6 15 16 1e c3 ed b0,"LD r,n ; JP nn"
+stack-write-only,9,512,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1008,final,5d 1e ab b3 c3 ed b0 7b 77,"LD r,n ; JP nn ; LD (HL),r"
+stack-write-only,9,512,4,1009,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1009,final,b1 94 56 1d fa ed b0 78 c4,"LD r,(HL) ; JP M,nn"
+stack-write-only,9,512,4,1010,first,00 11 2a b0 ed b0 ed 11 11,"LD rr,nn ; LDIR ; LD rr,nn"
+stack-write-only,9,512,4,1010,final,87 fc 54 5e ca ed b0 3b 00,"LD r,(HL) ; JP Z,nn"
+stack-write-only,9,512,4,1011,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1011,final,3a f5 6b 3d 16 1e c3 ed b0,"LD r,(nn) ; LD r,n ; JP nn"
+stack-write-only,9,512,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1012,final,45 48 1d 56 c3 ed b0 ed fd,"LD r,(HL) ; JP nn"
+stack-write-only,9,512,4,1013,first,09 cc d2 05 5e 07 ed b0 e9,"JP NC,nn ; LDIR ; JP (HL)"
+stack-write-only,9,512,4,1013,final,87 e5 44 5e ca ed b0 3c 7d,"LD r,(HL) ; JP Z,nn"
+stack-write-only,9,512,4,1014,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1014,final,f3 92 84 5e f2 ed b0 2f ee,"LD r,(HL) ; JP P,nn"
+stack-write-only,9,512,4,1015,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1015,final,06 e8 1b 56 c2 ed b0 17 ea,"LD r,n ; LD r,(HL) ; JP NZ,nn ; JP PE,nn"
+stack-write-only,9,512,4,1016,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1016,final,ab 0d 83 5e ca ed b0 87 b6,"LD r,(HL) ; JP Z,nn"
+stack-write-only,9,512,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1017,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1018,first,8f 11 8f 07 ca ed b0 7a a7,"LD rr,nn ; JP Z,nn"
+stack-write-only,9,512,4,1018,final,87 20 22 5e f2 ed b0 dc 94,"JR NZ,d ; LD r,(HL) ; JP P,nn"
+stack-write-only,9,512,4,1019,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1019,final,3f 65 f5 5e c3 ed b0 ed 19,"LD r,(HL) ; JP nn"
+stack-write-only,9,512,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-write-only,9,512,4,1020,final,ab c4 57 5e ca ed b0 a0 1e,"LD r,(HL) ; JP Z,nn ; LD r,n"
+stack-writes,9,128,4,1001,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1001,final,99 c7 d7 5e ca ed b0 24 ad,"LD r,(HL) ; JP Z,nn"
+stack-writes,9,128,4,1002,final,09 5e fc f8 b3 ed b0 4e e6,"LD r,(HL) ; LDIR ; LD r,(HL)"
+stack-writes,9,128,4,1003,first,b0 1d ed b0 1d ed b0 1d ed,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1003,final,95 93 1e 51 c3 ed b0 2a 91,"LD r,n ; JP nn ; LD rr,(nn)"
+stack-writes,9,128,4,1004,first,56 1b 00 11 1d 4c 20 ed b0,"LD r,(HL) ; LD rr,nn ; JR NZ,d"
+stack-writes,9,128,4,1004,final,5c 37 36 5c 16 1e c3 ed b0,"LD (HL),n ; LD r,n ; JP nn"
+stack-writes,9,128,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1007,final,99 7f 95 5e ca ed b0 99 7f,"LD r,(HL) ; JP Z,nn"
+stack-writes,9,128,4,1008,first,99 5e 81 d4 e2 ed b0 70 90,"LD r,(HL) ; JP PO,nn ; LD (HL),r"
+stack-writes,9,128,4,1008,final,51 51 00 5e c3 ed b0 2c aa,"LD r,(HL) ; JP nn"
+stack-writes,9,128,4,1009,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1009,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1013,first,99 6b 66 c3 5c 3b ed b0 4e,"LD r,(HL) ; JP nn ; LDIR ; LD r,(HL)"
+stack-writes,9,128,4,1013,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1015,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1015,final,17 0e cf 7e 16 1e c3 ed b0,"LD r,n ; LD r,(HL) ; LD r,n ; JP nn"
+stack-writes,9,128,4,1016,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1016,final,de cf 56 1d da ed b0 ab 26,"LD r,(HL) ; JP C,nn ; LD r,n"
+stack-writes,9,128,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1017,final,ab a6 ad 5e ca ed b0 9f 56,"LD r,(HL) ; JP Z,nn ; LD r,(HL)"
+stack-writes,9,128,4,1019,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1019,final,d3 42 1e bd 8f ed b0 79 c5,"LD r,n ; LDIR"
+stack-writes,9,128,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,128,4,1020,final,ab 55 4e 5e ca ed b0 1e ba,"LD r,(HL)×2 ; JP Z,nn ; LD r,n"
+stack-writes,9,512,4,1001,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1001,final,d6 dd 1e cf e2 ed b0 3e cd,"LD r,n ; JP PO,nn ; LD r,n"
+stack-writes,9,512,4,1002,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1002,final,ab e5 bc 5e ca ed b0 fd 2e,"LD r,(HL) ; JP Z,nn ; LD r,n"
+stack-writes,9,512,4,1003,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1003,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1005,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1005,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1006,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1006,final,bd 42 9d 5e ca ed b0 ed d5,"LD r,(HL) ; JP Z,nn"
+stack-writes,9,512,4,1007,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1007,final,bd 17 8d 5e ca ed b0 5e f6,"LD r,(HL) ; JP Z,nn ; LD r,(HL)"
+stack-writes,9,512,4,1008,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1008,final,7b 7c c5 7a 16 1e c3 ed b0,"LD r,n ; JP nn"
+stack-writes,9,512,4,1010,first,bd 4e b1 5e 20 f0 e7 ed b0,"LD r,(HL)×2 ; JR NZ,d ; LDIR"
+stack-writes,9,512,4,1010,final,ab 40 e5 5e ca ed b0 46 b9,"LD r,(HL) ; JP Z,nn ; LD r,(HL)"
+stack-writes,9,512,4,1011,first,11 b7 18 d2 41 1a 6d ed b0,"LD rr,nn ; JP NC,nn ; LDIR"
+stack-writes,9,512,4,1011,final,ab d7 37 5e f2 ed b0 b9 a1,"LD r,(HL) ; JP P,nn"
+stack-writes,9,512,4,1012,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1012,final,45 eb 5d 1d c3 28 56 ed b0,JP nn ; LDIR
+stack-writes,9,512,4,1013,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1013,final,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1014,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1014,final,ab 67 65 5e ca ed b0 69 dc,"LD r,(HL) ; JP Z,nn"
+stack-writes,9,512,4,1015,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1015,final,ab 88 ab 5e ca ed b0 5b 17,"LD r,(HL) ; JP Z,nn"
+stack-writes,9,512,4,1016,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1016,final,ab 40 9b 5e ca ed b0 80 b4,"LD r,(HL) ; JP Z,nn"
+stack-writes,9,512,4,1017,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1017,final,f3 b9 2f 5e c3 ed b0 68 0e,"LD r,(HL) ; JP nn ; LD r,n"
+stack-writes,9,512,4,1018,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1018,final,a2 a1 1e f3 c3 ed b0 7d 8a,"LD r,n ; JP nn"
+stack-writes,9,512,4,1019,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1019,final,e1 49 65 5e f2 ed b0 83 50,"LD r,(HL) ; JP P,nn"
+stack-writes,9,512,4,1020,first,1d ed b0 1d ed b0 1d ed b0,[DEC E ; LDIR] ×3
+stack-writes,9,512,4,1020,final,ab 8c 57 5e ca ed b0 19 fe,"LD r,(HL) ; JP Z,nn"

@@ -314,6 +314,16 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (Stage D read; 280/280 runs): **D1 confirmed** (stack-write-only > none,
+  CMH one-sided p = 3.9 × 10⁻⁶), **D1b replicated** (p = 1.2 × 10⁻⁵), **D2 confirmed**
+  (+0.14 zero fraction at step 5,000; read-only arm 0.00), **D3** first clause confirmed
+  (ratio 1.0–1.08), second clause not met at 512 steps (read-only +0.25, p = 0.095),
+  **D4 confirmed** (periods 3 × 119, 9 × 22, 6 × 1; all LDIR), **D5 not supported** (4/20 vs
+  6/20). Post hoc observation, logged for Stage C/E: removing CALL/RST alone recovers most
+  of the effect (CMH p = 4.5 × 10⁻⁴) while reducing the flood no more than removing PUSH
+  does (p = 0.033), so the suppression is attributed to the return-address writers rather
+  than to the zero load as such; this is a hypothesis for the census analysis, not a result.
+  Details: results/stageD/FINDINGS.md.
 - 2026-10-07 (ring-length instrument): `createSimShader`/`createZ80TestShader` take a
   `memLength` (compile-time `MEM_LENGTH`, default 2L → identical behaviour and identical
   executor scores to before); the stack-pointer reset now aliases the end of B under the
