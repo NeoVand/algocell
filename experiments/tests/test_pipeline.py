@@ -390,6 +390,19 @@ def test_ring_length_changes_which_copiers_work():
         assert abs(g - base) < 0.2, (P, g, base)
 
 
+def test_stage_g_conditions():
+    conds = json.load(open(ROOT / "conds" / "stageG.json"))
+    assert len(conds) == 80
+    assert {c["label"] for c in conds} == {"none@closure", "none@closure1M"}
+    assert {c["seed"] for c in conds} == set(range(2001, 2021))
+    assert all(c["z80_steps"] == 128 and c["noise_exp"] == 4 and c["suppress"] in ("", []) for c in conds)
+    g1 = [c for c in conds if c["label"] == "none@closure"]
+    g2 = [c for c in conds if c["label"] == "none@closure1M"]
+    assert {c["tape"] for c in g1} == {16, 50} and all(c["horizon"] == 300_000 for c in g1)
+    assert {c["tape"] for c in g2} == {20, 64} and all(c["horizon"] == 1_000_000 and c["sample_every"] == 1000 for c in g2)
+    assert all(c["random_tapes"] == 16 and 1_000_000 in c["snapshot_steps"] for c in g2)
+
+
 def test_stage_f_conditions():
     conds = json.load(open(ROOT / "conds" / "stageF.json"))
     assert len(conds) == 210 and {c["mem_length"] for c in conds} == {33, 34, 35, 37, 73, 74, 75, 79, 28, 36, 40, 32}

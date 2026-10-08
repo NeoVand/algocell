@@ -280,6 +280,38 @@ P = 34 the isolated tiled units `04 5e ed b0` and `1d ed b0` are heritable (gen2
 although 4 ∤ 34 and 3 ∤ 34; F1 (emergent periods divide P) stands as written and this probe
 is the first thing to check if it fails. Cost: ≈ 1.3 GPU-h ≈ $3 on top of F's ≈ $12.
 
+**Stage G — closure, confirmatory (pre-registered 2026-10-08, before any G run; 80 runs,
+`make_conds.stage_g()` → `conds/stageG.json`).** The post hoc analysis `closure.py` over 233
+`none` worlds of Stages B, C and E (128 steps, 1/16) found: the first heritable replicator is
+straight-line code (control-flow instruction in 18/256) that copies into 54–82% of random
+partners and damages itself in up to 37% (phase 1: up to 89%) of encounters; the faithful
+dominant at 300k carries a control-flow instruction in 105/233 worlds (paired: 92 gained, 3
+lost, McNemar p = 7 × 10⁻²⁴) and every such successor copies into 100% of 256 random partners
+with no self-damage; the population's heritable fraction rises from 0.07–0.14 to 0.78 (C4).
+New seeds **2001–2020**, `none`, 128 steps, 1/16, recording as in C–F (16 random tapes per
+sample for the heritable fraction).
+
+- **G1** — L = 16 and L = 50, 300,000 steps (40 runs). Predictions per L: **(a)** the first
+  heritable replicator contains no control-flow instruction (jump, relative jump, DJNZ,
+  CALL/RET, RST; linear disassembly) in ≥ 18/20 worlds and copies into < 90% of 256 random
+  partners in ≥ 18/20 (executor test, one 128-step encounter); **(b)** at 300k the top
+  exemplar is faithful and contains a control-flow instruction in ≥ 16/20 worlds, and the
+  modal final tape copies into ≥ 95% of 256 random partners with ≤ 5% self-damage; **(c)** the
+  median heritable fraction of 16 random cells is < 0.20 at every sampled step ≤ 5,000 after
+  emergence and > 0.70 at 100,000. **Kill criterion:** fewer than 12/20 control-flow dominants
+  at 300k, or ≥ 6/20 first replicators with control flow, rejects "open first, closed later"
+  as stated for that L.
+- **G2** — L = 20 and L = 64, 1,000,000 steps (40 runs; sampled every 1,000 after 5,000).
+  Stage E: the pusher is still dominant with no control flow at 300k in 8/10 and 10/10 worlds.
+  **Prediction:** ≥ 10/20 worlds per L have a faithful control-flow dominant at 1M that
+  copies ≥ 95% of random partners. **Alternative** (closure needs a geometric coincidence that
+  only some L offer): < 5/20. The prediction is the first; either result is reported.
+
+Analysis: `stage_g.py` (first/final control flow, executor partner tests, C4 heritable
+fractions at 5k/100k/300k/1M), numbers only from generated tables. Cost from the preflight
+log (estimate ≈ 9 GPU-h ≈ $17 at list price; approved in principle at "about $10" — launched if
+the preflight estimate is ≤ $20, otherwise held for the user).
+
 ## Outcomes (all recorded per sample, nothing chosen after the fact)
 
 - `t_02`, `t_10`, `t_50`: first step at which the most common 16-byte tape holds

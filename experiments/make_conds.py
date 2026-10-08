@@ -196,7 +196,23 @@ def stage_f() -> list[dict]:
     return out
 
 
-STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f}
+SEEDS_G = list(range(2001, 2021))
+
+
+def stage_g() -> list[dict]:
+    """PLAN.md Stage G — closure, confirmatory (pre-registered 2026-10-08 after the post hoc closure.py finding).
+    G1: `none` at L = 16 and L = 50, 300k steps, seeds 2001–2020 — the first replicator is straight-line and
+    partner-dependent, the 300k dominant has control flow and is partner-independent, the heritable fraction rises.
+    G2: `none` at L = 20 and L = 64 for 1,000,000 steps (no closure by 300k in Stage E) — does closure arrive later?"""
+    out = []
+    for L in (16, 50):
+        out += [_c("none@closure", L, 128, 4, s) for s in SEEDS_G]
+    for L in (20, 64):
+        out += [_c("none@closure1M", L, 128, 4, s, 1_000_000, 1000) for s in SEEDS_G]
+    return out
+
+
+STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g}
 
 
 if __name__ == "__main__":
