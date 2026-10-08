@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--max-period", type=int, default=8)
     ap.add_argument("--out", default="/Users/neo/repos/algocell/experiments/runs/bff_closed_search")
     ap.add_argument("--nohalt", type=int, default=1)
+    ap.add_argument("--min-copy", type=float, default=0.9)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     units = [u for p in range(1, a.max_period + 1) for u in map("".join, itertools.product(ALPHA, repeat=p)) if "P" in u]
@@ -53,12 +54,20 @@ def main():
         print(f"  {i + len(chunk)}/{len(units)}", flush=True)
     D = pd.DataFrame(rows)
     D.to_csv(os.path.join(a.out, "closed_search.csv"), index=False)
-    closed_rep = D[D["closed"] & (D["min_copy"] >= 0.75)]
-    open_rep = D[~D["closed"] & (D["min_copy"] >= 0.75)]
-    closed_tar = D[D["closed"] & (D["min_copy"] < 0.75)]
+    closed_rep = D[D["closed"] & (D["min_copy"] >= a.min_copy)]
+    open_rep = D[~D["closed"] & (D["min_copy"] >= a.min_copy)]
+    closed_tar = D[D["closed"] & (D["min_copy"] < a.min_copy)]
+    # heredity of closed candidates: their offspring (partner after the all-x encounter) run as A against the random partners
+    if len(closed_rep):
+        from micro.bff import assay
+        g2 = []
+        for u in closed_rep["unit"]:
+            t = np.frombuffer((u * (TAPE // len(u) + 1))[:TAPE].encode(), dtype=np.uint8)
+            g2.append(assay(bff, t, n=32, seed=1)["gen2"])
+        closed_rep = closed_rep.assign(gen2=g2)
     md = [f"# Closed self-replicators in BFF + P, wrap, {'no-halt' if a.nohalt else 'halting'} (generated)\n",
           f"- {len(D):,} periodic tilings (period ≤ {a.max_period}, alphabet `{ALPHA}`, containing P), 3 partners each (all-x, two random), 2^13 steps",
-          f"- closed AND ≥ 75% copy into every partner: **{len(closed_rep)}**; open replicators (≥ 75% copy, pointer enters): {len(open_rep)}; closed non-replicators (immune): {len(closed_tar)}",
+          f"- closed AND ≥ {a.min_copy:.0%} copy into every partner: **{len(closed_rep)}** (of which heritable, gen2 ≥ 0.3: {int((closed_rep['gen2'] >= 0.3).sum()) if len(closed_rep) else 0}); open replicators (≥ {a.min_copy:.0%} copy, pointer enters): {len(open_rep)}; closed non-replicators (immune): {len(closed_tar)}",
           ""]
     if len(closed_rep):
         md.append(closed_rep.sort_values(["period", "min_copy"], ascending=[True, False]).head(30).to_markdown(index=False, floatfmt=".2f") + "\n")
