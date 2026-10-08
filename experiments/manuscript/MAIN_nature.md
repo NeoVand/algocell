@@ -98,7 +98,29 @@ Whether anything of this transfers to chemistry is open. What the system offers 
 
 ## Extended Data
 
-ED Fig. 1 Kaplan–Meier emergence curves by tape length and ablation (Stages B, E). ED Fig. 2 The replicator zoo: first and final tapes per world with disassembly (Stage G). ED Fig. 3 Ring sweep and the falsified ring-arithmetic law (Stage F). ED Fig. 4 Budget threshold and error-threshold curve at L = 100 (Stage E). ED Fig. 5 Detector benchmark: AUC against culture-test truth by length and step. ED Fig. 6 Census dynamics of LDIR assembly with and without stack writers (Stage D). ED Fig. 7 Invasion assays: pusher and LDIR seeded into 1% of cells. ED Fig. 8 Two-byte census and fixed points. ED Fig. 9 BFF structured search and closed-replicator search. ED Fig. 10 Reproducibility: same-seed divergence in the Z80 soup; bitwise identity in BFF across machines; compute. ED Table 1 Final-tape classes and partner tests per L (Stage G). ED Table 2 Ablation sets (opcodes per family).
+**Extended Data Fig. 1 | Emergence by tape length and ablation.** Kaplan–Meier fraction of worlds with a heritable replicator against step for every tape length (4–100) under the four Stage E control arms (nominal; constant mutation per byte; constant mutation per cell; constant budget per byte) and under the stack-writer ablation; 10 worlds per cell, 300,000 steps. Source: `results/stageE/stage_e/size_arms.csv`, `results/stageE/assays.csv`.
+
+**Extended Data Fig. 2 | The replicator zoo.** First heritable replicator and final dominant tape of every Stage G world (80 worlds), as hex and disassembly, grouped by tape length, with copy success and self-damage from the partner test. Source: `results/stageG/ZOO.md`, `results/stageG/stageG/stage_g_runs.csv`.
+
+**Extended Data Fig. 3 | Ring geometry.** Worlds alive and median emergence step for every tested (tape length, ring length) pair of the ring sweep (52 cells) and Stage F; the pre-registered ring-arithmetic law (period divides the ring) against the observed law (period divides the pair length 2L); the stack-pointer/instruction-pointer race that produces the dead zone. Source: `results/ring_sweep/ring_sweep.csv`, `results/stageF/stage_f/rings.csv`, `results/stageF/stage_f/pusher_trace.csv`.
+
+**Extended Data Fig. 4 | Budget and mutation at L = 100.** Heritable and faithful worlds against steps per encounter (32–2,048) under the pusher and LDIR regimes; the sub-clonal regime at 64 steps (heritable fraction of random cells against dominant-tape share); median period of the first replicator and final high-order entropy against per-byte mutation rate (the error-threshold curve). Source: `results/stageE/stage_e/budget_L100.csv`, `mutation_L100.csv`.
+
+**Extended Data Fig. 5 | Life detectors against the culture test.** Area under the ROC curve for each recorded statistic (high-order entropy, non-unique tape fraction, bits per byte, species entropy, interaction-based statistics, dominant-tape share, quasispecies occupancy, motif share) against the heritable fraction of random cells, by tape length and by step; the inversion of high-order entropy under the zero flood. Source: `results/detectors/`.
+
+**Extended Data Fig. 6 | Tar prevents assembly.** Census of LDIR-bearing tapes in the ten most common tapes before emergence at L = 9, with and without stack writers (20 worlds per arm): first entry, episodes, destruction rate and zero bytes written per interaction. Source: `results/stageD/census/`.
+
+**Extended Data Fig. 7 | Invasion assays.** The pusher and the LDIR unit seeded into 1% of cells at 32 and 128 steps per encounter and two mutation rates: occupancy against step, 20 worlds per cell. Source: `results/invasion/invasion.csv`.
+
+**Extended Data Fig. 8 | Every two-byte word.** Culture-test score and gen2 for all 65,536 two-byte words tiled to 16 bytes; the five fixed points against the zero partner; the 246 return-address smears. Source: `results/census2/`.
+
+**Extended Data Fig. 9 | Searches in BFF.** The 16.4-million-program straight-line search under a wrapping pointer (copy fraction and offspring byte diversity of the 130 programs passing the byte-match criterion) and the 1.3-million-tiling closed-replicator search under the benign-tar rule (open replicators by period; no closed heritable tiling). Source: `results/bff_search/`, `results/bff_closed_search/`.
+
+**Extended Data Fig. 10 | Reproducibility and compute.** Spread of emergence times across ten repeats of one seed against ten seeds in the Z80 soup (GPU scheduling nondeterminism); identity of epoch statistics between local Apple-GPU and Modal L40S runs of six BFF seeds over 16,384 epochs; GPU hours and cost per stage. Source: `results/stageE/stage_e/NUMBERS_E.md` (E6), `results/bff/reproducibility_local_vs_modal.csv`, `PLAN.md` change log.
+
+**Extended Data Table 1 | Final-tape classes per tape length (Stage G).** Control-flow and block-repeat content, partner-copy fraction and self-damage of the final dominant, number of worlds per class. Source: `results/stageG/stageG/NUMBERS_G.md`.
+
+**Extended Data Table 2 | Ablation sets.** Opcode families removed in each ablation, with opcode counts and example mnemonics. Source: `make_conds.ABLATIONS`, `src/lib/z80-opcodes.ts`.
 
 ## References (main text; verified entries from LITERATURE.md)
 
