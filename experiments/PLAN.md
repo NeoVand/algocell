@@ -337,6 +337,19 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-08 (post hoc analyses on recorded data, no new GPU spend): **census + nascent scan**
+  (results/stageD/census): under the full ISA at L = 9 an LDIR-bearing tape enters the top-10 in
+  5/20 runs (first at 118,500 steps) while the soup destroys 6.8 programs per 1,000 encounters
+  and its only copy events are sterile smears; without the stack writers 20/20 within 3,400
+  steps, 6.5 flicker episodes, 1.3 destroyed per 1,000 — the suppression prevents assembly
+  rather than killing established copiers. **Invasion assay** (results/invasion): the pusher
+  seeded into 1% of cells at 32 steps is extinct by 20k in 20/20 soups while the LDIR unit
+  makes 20/20 soups 75–100% heritable; the 32-step puzzle is a viability limit. **Detector
+  benchmark** (results/detectors): compression detectors AUC 0.97 against the C4 heritable
+  fraction at L = 16; high-order entropy anti-correlated with life under `none` at L ≥ 25
+  (the flood compresses); occupancy ≤ 0.75 at every step. **Stage D forest figure** added.
+  **Ring sweep** (local, every even P from 2L to 2L + 24 at L = 8, 10, 12, 16; 3 seeds; 20k
+  steps) running to map the pusher regime's (L, P) rule.
 - 2026-10-07 (Stage F read; 210/210 runs, 0 failures): **F1 falsified** — on every padded
   ring the tiled first-replicator periods divide P in 0.00 of cases and keep dividing 2L
   (0.50–1.00); as pre-registered, the gcd-on-the-ring mechanism is dropped and the divisor law
