@@ -219,13 +219,14 @@ def fig4d(ax):
     rows = [
         (xa, 19.9, "Z80", True), (xa, 19.9 - L, "open, then closed · 40 of 40 worlds", False),
         (xa, 19.9 - 2.4 * L, "modified BFF, harmless brackets", True), (xa, 19.9 - 3.4 * L, "open for ever · 12 of 12 worlds", False), (xa, 19.9 - 4.4 * L, "no closed design exists", False),
-        (xb, 18.1, "modified BFF, lethal brackets", True), (xb, 18.1 - L, "open, then extinct · 12 of 12 worlds", False),
+        (xb, 19.9, "modified BFF, lethal brackets", True), (xb, 19.9 - L, "open, then extinct · 12 of 12 worlds", False),
+        (xb, 19.9 - 2.4 * L, "Z80, zero halts", True), (xb, 19.9 - 3.4 * L, "born closed, late · 10 of 10 worlds", False), (xb, 19.9 - 4.4 * L, "the open beginning never happens", False),
         (xa, 5.7, "not run", False),
         (xb, 6.7, "BFF as published", True), (xb, 6.7 - L, "born closed · 28 of 28 life-producing worlds", False),
     ]
     for x, y, text, bold in rows:
         ax.text(x, y, text, ha="left", va="top", fontsize=FS_LABEL, color=INK if (bold or text != "not run") else GREY_TEXT, fontweight="bold" if bold else "normal")
-    ax.text(0, -1.4, "with benign tar and literal writing, closure depends on a jump the organism can copy along with itself", ha="left", va="top", fontsize=FS_LABEL, color=INK)
+    ax.text(0, -1.4, "lethal tar ends the open phase before it begins (Z80) or soon after (BFF); life then starts closed if a closed design exists, and late", ha="left", va="top", fontsize=FS_LABEL, color=INK)
     finish(ax, (-0.5, W + 0.5), (-3.4, H + 0.5))
 
 

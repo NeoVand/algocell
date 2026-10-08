@@ -97,4 +97,5 @@ Dots, with evidence class (A measured on every seed; B measured, post hoc; C hyp
   same night, Stage H: killed. The open phase is as heritable when mixed; closure is later, not sooner; the order of events
   is independent of space. Kin encounters 57% vs 11%, harmless; stranger encounters damaging: the mechanism is real, the
   population consequence is not.)
-- Tar decides what can begin and how the open phase ends: inert versus inhibitory by-products. (A for the machines; C.)
+- Tar decides what can begin and how the open phase ends: inert versus inhibitory by-products. (A for both machines after
+  Stage I: lethal zeros in the Z80 skip the open beginning and life starts closed ninety times later; C for chemistry.)

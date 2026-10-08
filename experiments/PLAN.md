@@ -817,3 +817,9 @@ replication; 2% exact share is noisy because return-address smears reach
   inflow and the well-mixed null; three load-bearing families with the size axis folded in; one instruction decides the
   beginning; closure requires a cycle). Byte listings moved to Extended Data references. Main text ≈ 4,000 words
   (target 3,500): trim after Stage I is integrated. Every number unchanged from the audited tables.
+- 2026-10-08 late night (**Stage I run and scored**): I1 met (zero fraction 0.18 at step 500, 10/10), strong form not
+  triggered (10/10 produce a heritable replicator), I2 not met (0/10 open-then-extinct), **I3 killed** (10/10 closed by
+  300k). Reading: lethal tar skips the open beginning rather than ending it; no pusher ever establishes; life begins
+  closed and late (block-copy replicators with `LDIR`/`LDDR`, 1.00/0.00 from the first appearance, no zero byte, t_rep
+  median 46,250 vs 525). The classification's lethal column gains "born closed, late" (Z80) beside "open, then extinct"
+  (BFF); Fig. 4d and the manuscript updated. `results/stageI/FINDINGS.md`.

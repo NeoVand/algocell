@@ -46,6 +46,7 @@ the audit trail for referees and for us. Paths are relative to `experiments/`.
 | information inflow, BFF first replicators: published < 0.5 bit in 6/9; lit 8.0 bits; wraplit 0.75; wraplitnh 0.04 | 6/9; 7.99; 0.75; 0.037 | `results/biology/individuality/summary.csv` |
 | assembly index of the first replicator equals the minimum for its length and the tar's (79/80 equal); assembly measure fires before t_rep in 71/80 (median lead 19×); detector AUC 0.72 vs HOE 0.75 at L ≥ 25 | 4, 5, 7, 6; 79/80; 71/80; 19×; 0.721/0.749 | `results/biology/assembly/per_world.csv`, `auc.csv`, `NUMBERS_ASSEMBLY.md` |
 | Stage H well-mixed control: open-phase heritability 0.125 vs 0.125; closure median 50,000 vs 30,000, 7/10 vs 20/20; t_rep 125 vs 525; kin encounters 11% vs 57%; damage vs kin 0–2.5%, vs strangers 31–34% | see statement | `results/stageH/NUMBERS_H.md`, `predictions.csv`, `per_world.csv`, `KIN_CENSUS.md` |
+| Stage I lethal tar: no pusher establishes (3 exemplar sightings in 6,980 samples); first heritable tape a block copier in 10/10, 1.00 copied / 0.00 damaged, no zero byte; t_rep median 46,250 (20,000–219,000) vs 525; zero fraction 0.18 at step 500 | see statement | `results/stageI/NUMBERS_I.md`, `predictions.csv`, `per_world.csv`, `stageI/stage_g_runs.csv` |
 
 Figure data sources: Fig. 1c `runs/stageG/none@closure_L16_st128_k4_s2001.jsonl` + `results/stageG/c4/functional.csv`; Fig. 1d `results/stageE/assays.csv`
 (`none@nominal`); Fig. 2a,b,e `results/stageG/stageG/stage_g_runs.csv`; Fig. 2c `results/stageG/c4/functional.csv`; Fig. 3a

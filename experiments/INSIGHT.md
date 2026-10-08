@@ -30,9 +30,7 @@ worlds and in a second, unrelated machine:
    trips every detector that reads structure: compression and assembly both fire on it. Only intervention separates
    the two: lift the thing out, give it fresh surroundings, see whether its copies copy.
 4. **Two properties of a substrate decide the beginning.** Whether it has a literal channel decides whether life begins
-   open (BFF as published has none and is born closed; add one instruction and it begins open). Whether the sterile order
-   halts the open copier's process decides how the open phase ends: in closure if a copyable return exists, for ever if
-   none does, in extinction if the order is lethal.
+   open (BFF as published has none and is born closed; add one instruction and it begins open). Whether the sterile order halts the open copier's process decides how the open phase ends: in closure if a copyable return exists, for ever if none does, in extinction if the order is lethal and arrives after the open replicator (BFF), and, if it is lethal from the start, the open beginning is skipped and life begins closed and late, a ninety-fold delay in the Z80.
 5. **The boundary of the rule is itself a prediction.** When a copier writes at least as much as it reads, it can close
    by saturation, overwriting everything it touches, and needs no return; BFF's literal pusher under a wrapping pointer
    does exactly this (0.04 bits of inflow with its pointer entering the partner in every encounter). Overhead, meaning
@@ -94,7 +92,7 @@ the open-then-closed order and which will not.
 ## 4. Experiments
 
 **Ours, cheap, decisive (pre-registered where launched).** Stage H, well-mixed pairing: does the open phase need kin? (Done: no; the order of events is independent of space.)
-Stage I, lethal zeros: does tar lethality shorten the window in the first machine as in the second? A write-ratio sweep:
+Stage I, lethal zeros: does tar lethality shorten the window in the first machine as in the second? (Done: it removes the open beginning altogether; life begins closed and late, 10 of 10 worlds.) A write-ratio sweep:
 machines whose literal instruction writes one, two or four bytes per cell executed; the theorem predicts the open phase
 disappears at ratio one. A processivity sweep at fixed genome length (budget per encounter), predicting the step at which
 lineages appear. A definition grid over our own thresholds, to show the order of events does not depend on them.
@@ -109,6 +107,5 @@ assembly and compression measures, and report what each detects on known sterile
 ## 5. What would kill it
 
 A substrate with a literal channel whose first replicator is closed; an open first replicator with zero inflow; a well-mixed soup indistinguishable from the lattice at every measure (this happened for the open phase: the spatial
-reading is dead, the order of events stands); a lethal-tar
-machine in which closure arrives as readily as with benign tar; a chemistry in which the first heritable products are
+reading is dead, the order of events stands); a lethal-tar machine in which the open replicator thrives; a chemistry in which the first heritable products are
 complex. Each is a measurement, not an argument.

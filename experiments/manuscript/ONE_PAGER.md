@@ -57,6 +57,7 @@ and looking for propagation, rather than as inspection.
 
 We asked whether the open beginning survives only because neighbours on the grid are its own copies; a well-mixed control
 says no: the open phase is just as heritable among strangers, and what space changes is how reliably independence arrives.
-What happens when the junk kills? Can a chemistry close by copying everything it touches, without a loop, as one of our machines does? Which
+When the junk kills, we found, the open beginning is skipped: no two-byte word ever takes hold, and life arrives
+ninety times later, already closed, as a program with a loop. Can a chemistry close by copying everything it touches, without a loop, as one of our machines does? Which
 beginnings are inevitable: our answer is those with a self-writing channel, harmless by-products and time, and the
 first thing they make is a dependent colony that later learns to stop listening.

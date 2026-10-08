@@ -1,0 +1,6 @@
+label,tape_len,steps,k,step,n,heritable,faithful
+lethal@closure,16,128,4,200,10,0.0,0.0
+lethal@closure,16,128,4,1000,10,0.0,0.0
+lethal@closure,16,128,4,5000,10,0.1625,0.1625
+lethal@closure,16,128,4,50000,10,0.63125,0.58125
+lethal@closure,16,128,4,300000,10,0.91875,0.91875

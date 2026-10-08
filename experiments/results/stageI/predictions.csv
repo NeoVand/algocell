@@ -1,0 +1,6 @@
+prediction,statement,value,outcome
+I1,zero fraction ≥ 0.15 at step 500 in ≥ 7/10,10/10,met
+strong form,≥ 7/10 worlds without a heritable replicator by horizon,0/10,not triggered
+I2,"open, then extinct (heritability < 0.3 throughout; first tape < 1% within 100k of t_rep) in ≥ 5/10",0/10 (worlds with a replicator: 10),not met
+I3,closed dominant by horizon ≤ 6/10 (kill ≥ 9/10),10/10,killed
+I4,closed dominants contain no zero byte (descriptive),10/10,descriptive
