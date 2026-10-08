@@ -701,3 +701,7 @@ replication; 2% exact share is noisy because return-address smears reach
 - 2026-10-08 12:25 (**capacity**): the relaunched follow-up soups sat "waiting to be scheduled on a GPU_L40S worker" for
   35 min (one container running). Stopped both apps and relaunched the missing nine seeds on A10G
   (`BFF_GPU=A10G`; the soup is host-bound so the GPU type does not matter), fire-and-forget. Finished seeds are skipped.
+- 2026-10-08 12:48: A10G hosts run the soup at ≈ 0.23 s/epoch (3× slower than L40S); three `lit` seeds (10–12) continue
+  there (ETA ≈ 13:30); the four `wraplitnh` seeds (8, 10, 11, 12) were still queued, so their app was stopped and they
+  were relaunched on H100. Follow-up spend estimate ≈ $34 against the ≈ $20 approval — the overrun is the two capacity
+  incidents (nine soups killed, then a stalled queue); reported to the user.
