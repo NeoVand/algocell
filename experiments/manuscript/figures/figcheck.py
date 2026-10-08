@@ -56,22 +56,26 @@ def _line_points(line, n_per_seg=12):
 
 
 def _patch_points(patch, n_per_seg=8):
+    """Display-space sample points along a patch outline, with Bezier segments flattened (not their control polygons)."""
     try:
         if isinstance(patch, FancyArrowPatch):
-            verts = patch.get_path().vertices          # FancyArrowPatch.get_path() is already in display coordinates
+            path = patch.get_path()                                   # already in display coordinates
         else:
-            path = patch.get_path()
-            verts = patch.get_transform().transform(path.vertices)
+            path = patch.get_path().transformed(patch.get_transform())
+        polys = path.to_polygons(closed_only=False)
     except Exception:  # noqa: BLE001
         return np.empty((0, 2))
-    verts = verts[np.isfinite(verts).all(axis=1)]
-    if len(verts) < 2:
-        return verts
-    out = [verts[0]]
-    for a, b in zip(verts[:-1], verts[1:]):
-        t = np.linspace(0, 1, n_per_seg + 1)[1:]
-        out.append(a + (b - a) * t[:, None])
-    return np.vstack(out)
+    out = []
+    for poly in polys:
+        poly = np.asarray(poly, dtype=float)
+        poly = poly[np.isfinite(poly).all(axis=1)]
+        if len(poly) == 0:
+            continue
+        out.append(poly[:1])
+        for a, b in zip(poly[:-1], poly[1:]):
+            t = np.linspace(0, 1, n_per_seg + 1)[1:]
+            out.append(a + (b - a) * t[:, None])
+    return np.vstack(out) if out else np.empty((0, 2))
 
 
 def _inside(bb, pts):

@@ -145,7 +145,7 @@ def fig1b(ax):
     ax.text(xa + 0.8, 2.25, "IP enters\npartner", ha="center", va="bottom", fontsize=FS_LABEL, color=TEAL, fontweight="bold", linespacing=1.1)
     xb = xa + 1.6                                                                 # B starts at 8.6
     strip(ax, xb, 0, ["ff", "…", "c5", "01", "c5", "01", "f3"], fills=[GREY_FILL, GREY_FILL, RED_PALE, RED_PALE, RED_MID, RED_MID, GREY_FILL])
-    ax.text(xb + 3.5, -1.25, "B · 16 bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK, fontweight="bold")
+    ax.text(xb + 5.6, 1.5, "B · 16 bytes", ha="center", va="bottom", fontsize=FS_LABEL, color=INK, fontweight="bold")
     bracket(ax, xb + 4.05, xb + 5.95, -0.3, up=False)
     arrow(ax, (3.5, -0.1), (xb + 5.0, -0.5), color=RED, lw=1.1, rad=0.28)
     ax.text(7.0, -2.1, "write c5 01", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
