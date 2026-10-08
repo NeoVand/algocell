@@ -79,7 +79,9 @@ class Soup:
         mutations_per_step: int | None = None,
         mem_length: int | None = None,
     ) -> None:
-        assert grid in ("square", "hex")
+        # "mixed": the square shader with the partner j drawn uniformly from the whole soup instead of one of the four
+        # lattice neighbours (Stage H well-mixed control; shader derived by algocell_exp.gen_mixed_shader, otherwise byte-identical).
+        assert grid in ("square", "hex", "mixed")
         assert 1 <= pair_count <= MAX_PAIRS
         self.device = device or get_device()
         self.width, self.height, self.grid = width, height, grid
@@ -94,8 +96,10 @@ class Soup:
             if self.mem_length < 2 * self.tape_length:
                 raise ValueError(f"mem_length {self.mem_length} < 2 * tape_length {self.tape_length}")
             suffix = "" if self.mem_length == 2 * self.tape_length else f"_P{self.mem_length}"
-            self.shader_file = SHADER_DIR / f"sim_square_L{self.tape_length}{suffix}.wgsl"
+            self.shader_file = SHADER_DIR / f"sim_{grid}_L{self.tape_length}{suffix}.wgsl"
             if not self.shader_file.exists():
+                if grid == "mixed":
+                    raise ValueError(f"no derived well-mixed shader for tape length {self.tape_length} (run `python -m algocell_exp.gen_mixed_shader --tape {self.tape_length}`)")
                 raise ValueError(f"no exported shader for tape length {self.tape_length} (run `npm run export:sim`)")
         self.pair_length = self.tape_length * 2
         self.words_per_cell = (self.tape_length + 3) // 4
@@ -277,6 +281,12 @@ class Soup:
         effective interactions per cell."""
         a = np.frombuffer(self.device.queue.read_buffer(self.pair_active_buf), dtype=np.uint32)
         return int(a[: self.pair_count].sum())
+
+    def read_pairs(self) -> tuple[np.ndarray, np.ndarray]:
+        """The LAST executed step's drawn pairs: (pair_count, 2) uint32 cell indices (i, j) and the bool active flag of
+        each (survived the collision claim; j == i is never active). A view of read_interactions() for topology tests."""
+        inter = self.read_interactions()
+        return inter["pairs"], inter["active"]
 
     def read_interactions(self) -> dict:
         """Per-pair data of the LAST executed step, computed by the shader anyway: the two cell indices,

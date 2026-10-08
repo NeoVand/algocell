@@ -1,6 +1,6 @@
 """Stage G — closure, confirmatory (pre-registered in PLAN.md on 2026-10-08 before the runs).
 
-    python stage_g.py [--dir runs/stageG] [--out runs/stageG/analysis/stageG]
+    python stage_g.py [--dir runs/stageG] [--out runs/stageG/analysis/stageG] [--no-verdicts]
 
 Per world (80 runs, seeds 2001–2020, `none`, 128 steps, 1/16): the first heritable replicator (t_rep tape) and the
 final dominant tape from `analysis/assays.csv`; for each, (i) control-flow instructions by linear disassembly
@@ -10,6 +10,8 @@ LDIR/LDDR are reported separately because they loop in hardware without a jump),
 encounters in which the organism loses ≥ 25% of its bytes. The heritable fraction of 16 random cells per sample
 comes from `c4_functional.py` (`analysis/c4/functional.csv`). Writes stage_g_runs.csv, NUMBERS_G.md, two figures.
 Verdicts are computed against the pre-registered thresholds and printed; nothing is chosen after the fact.
+`--no-verdicts` skips them for a directory that is not Stage G (the thresholds are written for 20 worlds per L; Stage H,
+the well-mixed control, is scored by its own pre-registration in PLAN.md from the same per-world table).
 """
 
 from __future__ import annotations
@@ -35,6 +37,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default="runs/stageG")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--no-verdicts", action="store_true", help="skip the Stage G pre-registered verdicts (thresholds for 20 worlds per L), e.g. for runs/stageH")
     a = ap.parse_args()
     out = a.out or os.path.join(a.dir, "analysis", "stageG")
     os.makedirs(out, exist_ok=True)
@@ -100,6 +103,8 @@ def main():
             md.append("heritable fraction of 16 random cells (median over worlds) by step:\n")
             md.append(med.to_frame("median_heritable").T.round(2).to_markdown() + "\n")
         # verdicts
+        if a.no_verdicts:
+            continue
         if horizon == 300_000:
             early = None
             if C4 is not None:
@@ -124,6 +129,8 @@ def main():
                             f"finals still the open pusher (no control flow, no block-repeat, copied < 0.95): "
                             f"{int((~g['final_has_cf'] & ~g['final_has_block'] & (g['final_copied'] < 0.95)).sum())}/{n}.")
     md.append("## Pre-registered verdicts\n")
+    if a.no_verdicts:
+        verdicts = ["- not evaluated (--no-verdicts): the Stage G thresholds are pre-registered for 20 worlds per L; this directory is scored by its own pre-registration (PLAN.md)."]
     md.extend(verdicts)
     md.append("\n## Final-tape classes per L\n")
     for L, g in R.groupby("L"):

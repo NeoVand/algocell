@@ -321,7 +321,7 @@ def _provenance(soup, extra: dict | None) -> dict:
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--grid", default="square", choices=["square", "hex"])
+    ap.add_argument("--grid", default="square", choices=["square", "hex", "mixed"], help="mixed = square shader with the partner drawn uniformly from the whole soup (Stage H control)")
     ap.add_argument("--tape", type=int, default=None, help="bytes per cell (square grid): 4, 9, 16, 25, 36, 49, 64, 81, 100")
     ap.add_argument("--width", type=int, default=160)
     ap.add_argument("--height", type=int, default=125)

@@ -1,6 +1,7 @@
 """Generate the condition files for every stage (see PLAN.md).
 
-    python make_conds.py            # writes conds/stage{A,B,C,D,E}.json
+    python make_conds.py            # writes conds/stage{A,...,H}.json
+    python make_conds.py stageH     # (re)writes only the named stage files
 
 Labels: `<ablation>` or `<ablation>@<arm>` for control arms that change a setting other than the
 instruction set (`ablation_of(label)` strips the arm). Stems (see algocell_exp.batch.run_stem)
@@ -47,6 +48,9 @@ ABLATIONS = {
         "family:stack", "family:ex", "family:block-copy",
     ],
     "rmw-only": ["family:writes-mem", "-family:incdec-mem", "-family:rotate-mem", "-family:bit-set-mem"],
+    # ── Stage H topology control: NOT an instruction ablation. Nothing is suppressed; the label prefix names the
+    #    pairing (`grid: mixed`, partner drawn uniformly from the whole soup) so that stems, zoo and preflight resolve it. ──
+    "mixed": [],
 }
 STAGE_A_ABLATIONS = ["none", "block-copy", "stack-writes", "ld-mem", "all-ld", "no-copy", "rmw-only"]
 SEEDS = list(range(1, 11))
@@ -212,13 +216,29 @@ def stage_g() -> list[dict]:
     return out
 
 
-STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g}
+SEEDS_H = list(range(3001, 3011))
+
+
+def stage_h() -> list[dict]:
+    """PLAN.md Stage H — well-mixed control of Stage G L = 16 (pre-registered 2026-10-08, before any H run).
+    `grid: mixed`: the partner j is drawn uniformly from the whole soup instead of one of the four lattice neighbours
+    (shader derived from sim_square_L16.wgsl by algocell_exp.gen_mixed_shader; everything else byte-identical). 10 worlds,
+    new seeds 3001–3010, every other field identical to the Stage G L = 16 conditions (`none@closure`: 20,000 cells, 8,192
+    draws, 128 steps, k = 4, 300,000 steps, same sample/snapshot schedule and census). Run locally by stage_h_local.py."""
+    return [_c("mixed@closure", 16, 128, 4, s, grid="mixed") for s in SEEDS_H]
+
+
+STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g, "stageH": stage_h}
 
 
 if __name__ == "__main__":
-    os.makedirs("conds", exist_ok=True)
-    for name, fn in STAGES.items():
-        conds = fn()
-        with open(f"conds/{name}.json", "w") as f:
+    import sys
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    os.makedirs(os.path.join(root, "conds"), exist_ok=True)
+    names = sys.argv[1:] or list(STAGES)   # `python make_conds.py stageH` writes only that file; no argument writes all
+    for name in names:
+        conds = STAGES[name]()
+        with open(os.path.join(root, "conds", f"{name}.json"), "w") as f:
             json.dump(conds, f, indent=0)
         print(name, len(conds), "conditions")

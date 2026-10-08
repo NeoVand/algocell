@@ -127,7 +127,9 @@ def main() -> int:
         L = c.get("tape") or 16
         P = c.get("mem_length") or 2 * L
         suffix = "" if P == 2 * L else f"_P{P}"
-        for f in (f"sim_square_L{L}{suffix}.wgsl", f"z80_test_L{L}{suffix}.wgsl"):
+        grid = c.get("grid", "square")
+        sim = "sim_hex.wgsl" if grid == "hex" else f"sim_{grid}_L{L}{suffix}.wgsl"   # square, or the derived well-mixed shader (Stage H)
+        for f in (sim, f"z80_test_L{L}{suffix}.wgsl"):
             if not (SHADER_DIR / f).exists():
                 problems.append(f"missing exported shader {f}")
         if (c.get("stop_share", 0.5) or 0) > 0 and c.get("random_tapes"):

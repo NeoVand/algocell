@@ -96,6 +96,8 @@ def check_outputs(cond: dict, out_dir: str) -> list[str]:
         problems.append(f"{stem}: emergence snapshot presence does not match tq_10")
     if s["tape_length"] != (cond.get("tape") or 16) or s["z80_steps"] != cond.get("z80_steps", 128) or s["noise_exp"] != cond.get("noise_exp", 4):
         problems.append(f"{stem}: summary parameters differ from the condition")
+    if s.get("grid", "square") != cond.get("grid", "square"):
+        problems.append(f"{stem}: summary grid {s.get('grid')!r} differs from the condition's {cond.get('grid', 'square')!r}")
     if cond.get("mutations_per_step") is not None and s["mutations_per_step"] != cond["mutations_per_step"]:
         problems.append(f"{stem}: mutations_per_step override not applied")
     if cond.get("pairs") is not None and s["pairs"] != cond["pairs"]:
