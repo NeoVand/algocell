@@ -56,7 +56,7 @@ def parse_seeds(s: str) -> list[int]:
 
 
 @app.local_entrypoint()
-def main(seeds: str = "13-24", variants: str = "std,wrap", density: int = 1, n: int = 1 << 17, epochs: int = 16384, batch: str = "bff", smoke: bool = False, literal: bool = False, nohalt: bool = False) -> None:
+def main(seeds: str = "13-24", variants: str = "std,wrap", density: int = 1, n: int = 1 << 17, epochs: int = 16384, batch: str = "bff", smoke: bool = False, literal: bool = False, nohalt: bool = False, fire: bool = True) -> None:
     import json
     import time
 
@@ -66,7 +66,13 @@ def main(seeds: str = "13-24", variants: str = "std,wrap", density: int = 1, n: 
         print("smoke ok:", json.dumps(s), f"{time.time() - t0:.0f}s", flush=True)
         return
     jobs = [(sd, v == "wrap", density, n, epochs, batch, 64, literal, nohalt) for v in variants.split(",") for sd in parse_seeds(seeds)]
-    print(f"fanning out {len(jobs)} soups to {GPU} (batch={batch}, n={n}, epochs={epochs}, density={density})", flush=True)
+    print(f"fanning out {len(jobs)} soups to {GPU} (batch={batch}, n={n}, epochs={epochs}, density={density}, fire={fire})", flush=True)
+    if fire:
+        # Fire-and-forget: with `modal run --detach` the spawned functions keep running after this process exits; the
+        # results are on the volume. (A detached starmap dies with the local client: 9 of 24 follow-up soups were lost that way.)
+        calls = [run_soup.spawn(*j) for j in jobs]
+        print(f"spawned {len(calls)} function calls; poll the volume for summary.json files", flush=True)
+        return
     done = 0
     for s in run_soup.starmap(jobs, order_outputs=False, return_exceptions=True):
         done += 1

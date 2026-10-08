@@ -108,3 +108,9 @@ end).
 5. References (≤ 50 main), formatted; verify every DOI.
 6. arXiv version (same text, figures as SVG→PDF, SI appended) on submission day.
 7. Repository restructuring into a clean paper repo (last).
+
+## 6. Figure polish list (found while regenerating, 2026-10-08 11:20)
+- Nature forbids coloured text: the Stage C forest (`stage_c.py`) colours the ablation tick labels — switch to black labels with coloured markers only; check every stage script for `set_color` on tick labels.
+- Extended Data panels: lowercase bold panel letters via `fs.panel_label`, legends inside the plotting area where possible, consistent L colours (`fs.L_COLOR`) across all figures.
+- Main Fig. 1d and Fig. 2c: L colours must match (`L_COLOR`), legends placed to avoid data.
+- Fig. 5c: Z80 and BFF markers overlap at (0, 1); consider separate panels or a rank plot.

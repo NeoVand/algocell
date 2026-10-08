@@ -692,3 +692,9 @@ replication; 2% exact share is noisy because return-address smears reach
   launch: no closed heritable replicator among 1.3 M periodic P/bracket tilings up to period 10 under no-halt
   (`micro/bff_closed_search.py`). `manuscript/PAPER_PLAN.md` records Nature's official constraints (fetched from the
   formatting and figure guides) and the figure/Extended Data plan; conceptual panels are to be designed with the user.
+- 2026-10-08 11:50 (**incident**): the two follow-up batches were launched with `modal run --detach` driving a `starmap`;
+  the local client processes died (cause not identified) and, since a detached app keeps only the last triggered
+  function alive, 4 `lit` and 5 `wraplitnh` soups were killed mid-run (≈ $6 of GPU time lost; 15 of 24 finished).
+  Fix: `modal_bff.py` now spawns each soup (`Function.spawn`) and exits, so containers survive the client; the missing
+  seeds were relaunched at 11:50 (finished seeds return at once because `run_soup` skips a present `summary.json`).
+  Follow-up spend ≈ $23 against the ≈ $20 approval.
