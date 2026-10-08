@@ -54,18 +54,20 @@ def load_run(d: str) -> dict | None:
     r["E"] = ep
     hoe1 = S[S["HOE"] >= 1.0]
     r["t_hoe1"] = int(hoe1["epoch"].iloc[0]) if len(hoe1) else None
-    # first replicator
-    t_rep, first = None, None
-    for s in samples:
-        q = [t for t in s["top"] if t["share"] >= 0.005 and t["gen2"] >= 0.3]
-        if q:
-            t_rep, first = s["epoch"], q[0]
-            break
-    r["t_rep"] = t_rep
-    if first is not None:
-        r.update({"first_tape": first["tape"], "first_pretty": pretty(first["tape"], amap), "first_loop": first["has_loop"], "first_entered": first["entered"],
-                  "first_copies": first["copies"], "first_gen2": first["gen2"], "first_self_damage": first["self_damage"], "first_share": first["share"],
-                  "first_class": "closed" if (first["entered"] <= 0.05 and first["copies"] >= 0.95) else ("open" if first["entered"] >= 0.5 else "intermediate")})
+    # first replicator. Pre-registered Z80 criterion (t_rep: top-3 class share >= 0.5% and gen2 >= 0.3) is kept and reported,
+    # but BFF replicator populations are quasispecies with tiny exact-class shares (seen in the first live samples, 2026-10-08
+    # 03:42: heritable fraction 0.7-0.97 with top share 0.15%), so the exemplar used for "first replicator" is the top class at
+    # the first sample where it is heritable (t_top), and the population event is t_her (heritable fraction of 32 random tapes >= 0.5).
+    t_rep, t_top, t_her, first = None, None, None, None
+    for s_ in samples:
+        q = [t for t in s_["top"] if t["share"] >= 0.005 and t["gen2"] >= 0.3]
+        if q and t_rep is None:
+            t_rep = s_["epoch"]
+        if t_top is None and s_["top"][0]["gen2"] >= 0.3:
+            t_top, first = s_["epoch"], s_["top"][0]
+        if t_her is None and s_["frac_heritable"] >= 0.5:
+            t_her = s_["epoch"]
+    r["t_rep"], r["t_top"], r["t_her"] = t_rep, t_top, t_her
     t_closed, t_open = None, None
     for s in samples:
         top = s["top"][0]
@@ -79,7 +81,7 @@ def load_run(d: str) -> dict | None:
               "final_copies": last["copies"], "final_gen2": last["gen2"], "final_self_damage": last["self_damage"], "final_share": last["share"],
               "final_HOE": samples[-1]["HOE"], "final_unique_frac": samples[-1]["unique_frac"], "final_heritable": samples[-1]["frac_heritable"],
               "max_heritable": float(S["frac_heritable"].max())})
-    pre = ep[ep["epoch"] < (t_rep if t_rep is not None else ep["epoch"].max() + 1)]
+    pre = ep[ep["epoch"] < (t_top if t_top is not None else ep["epoch"].max() + 1)]
     r["chunk_mean_pre"] = float(pre["chunk_mean"].mean()) if len(pre) else float("nan")
     r["chunk_p90_max_pre"] = float(pre["chunk_p90"].max()) if len(pre) else float("nan")
     r["copy_frac_max_pre"] = float(pre["copy_frac"].max()) if len(pre) else float("nan")
@@ -107,14 +109,16 @@ def main():
     R.to_csv(os.path.join(out, "runs.csv"), index=False)
 
     md = ["# BFF soups — numbers (generated; do not edit)\n",
-          "Events: `t_rep` = first sample with a top-3 class of share ≥ 0.5% and gen2 ≥ 0.3; `t_hoe1` = high-order entropy ≥ 1 bit/byte; "
+          "Events: `t_top` = first sample at which the most common tape class is heritable (gen2 ≥ 0.3; the exemplar used as the first replicator); `t_her` = heritable fraction of 32 random tapes ≥ 0.5; "
+          "`t_rep` = the pre-registered Z80 criterion (top-3 class share ≥ 0.5% and gen2 ≥ 0.3), kept for the record; `t_hoe1` = high-order entropy ≥ 1 bit/byte; "
           "`t_closed` = top class enters the partner ≤ 5% and copies ≥ 95% of random partners; `t_open` = a replicating top-3 class enters the partner ≥ 50%. "
           "Culture tests: 64 random partners, 2^13 steps.\n"]
     for v, g in R.groupby("variant"):
         n = len(g)
-        rep = g[g["t_rep"].notna()]
+        rep = g[g["t_top"].notna()]
         md.append(f"## {v}: {n} runs ({int(g['finished'].sum())} finished; epochs done median {int(g['epochs_done'].median()):,})\n")
-        md.append(f"- transitions: replicator criterion met in {len(rep)}/{n} (median t_rep {rep['t_rep'].median():.0f} epochs); HOE ≥ 1 in {int(g['t_hoe1'].notna().sum())}/{n}; "
+        md.append(f"- transitions: top class heritable (t_top) in {len(rep)}/{n} (median {rep['t_top'].median():.0f} epochs); heritable fraction ≥ 0.5 (t_her) in {int(g['t_her'].notna().sum())}/{n} "
+                  f"(median {g['t_her'].median():.0f}); pre-registered share criterion (t_rep) in {int(g['t_rep'].notna().sum())}/{n}; HOE ≥ 1 in {int(g['t_hoe1'].notna().sum())}/{n} (median {g['t_hoe1'].median():.0f}); "
                   f"closed top class in {int(g['t_closed'].notna().sum())}/{n}; an open replicator ever in the top 3 in {int(g['t_open'].notna().sum())}/{n}")
         if len(rep):
             cls = rep["first_class"].value_counts().to_dict()
@@ -125,19 +129,19 @@ def main():
             md.append(f"- before t_rep: mean chunk transfer {rep['chunk_mean_pre'].median():.2f} bytes/encounter (median over runs), max 90th percentile {rep['chunk_p90_max_pre'].median():.0f}, "
                       f"max copy-event fraction {rep['copy_frac_max_pre'].median():.4f}\n")
             md.append("first replicators (BFF string; `·` = non-instruction byte, `0` = zero):\n")
-            md.append(rep[["seed", "t_rep", "first_class", "first_loop", "first_entered", "first_copies", "first_self_damage", "first_gen2", "first_pretty"]]
+            md.append(rep[["seed", "t_top", "t_her", "t_hoe1", "first_class", "first_loop", "first_entered", "first_copies", "first_self_damage", "first_gen2", "first_pretty"]]
                       .to_markdown(index=False, floatfmt=".2f") + "\n")
             md.append("final top classes:\n")
             md.append(rep[["seed", "final_epoch", "final_loop", "final_entered", "final_copies", "final_self_damage", "final_gen2", "final_share", "final_pretty"]]
                       .to_markdown(index=False, floatfmt=".2f") + "\n")
-        no = g[g["t_rep"].isna()]
+        no = g[g["t_top"].isna()]
         if len(no):
             md.append(f"- runs without a replicator by the criterion: seeds {sorted(no['seed'].tolist())}; their final HOE median {no['final_HOE'].median():.2f}, "
                       f"final heritable fraction median {no['final_heritable'].median():.2f}\n")
     # verdicts
     md.append("## Readings of THEORY.md P1 (computed, pre-stated thresholds)\n")
-    std = R[(R["variant"] == "std") & R["t_rep"].notna()]
-    wrap = R[(R["variant"] == "wrap") & R["t_rep"].notna()]
+    std = R[(R["variant"] == "std") & R["t_top"].notna()]
+    wrap = R[(R["variant"] == "wrap") & R["t_top"].notna()]
     if len(std):
         md.append(f"- (a) standard BFF: first replicators closed {int((std['first_class'] == 'closed').sum())}/{len(std)}, with a loop {int(std['first_loop'].sum())}/{len(std)}, "
                   f"open {int((std['first_class'] == 'open').sum())}/{len(std)} → {'confirmed' if ((std['first_class'] == 'closed') & std['first_loop']).all() else 'NOT as predicted'}")
@@ -149,7 +153,7 @@ def main():
     with open(os.path.join(out, "NUMBERS_BFF.md"), "w") as fh:
         fh.write("\n".join(md))
     print("\n".join(md[:3]))
-    print(R[["run", "epochs_done", "t_rep", "t_hoe1", "t_closed", "t_open", "first_class", "first_loop", "final_loop", "final_entered", "final_copies", "final_heritable"]].to_string(index=False))
+    print(R[["run", "epochs_done", "t_rep", "t_top", "t_her", "t_hoe1", "t_closed", "t_open", "first_class", "first_loop", "final_loop", "final_entered", "final_copies", "final_heritable"]].to_string(index=False))
 
     # figures
     fs.setup()
@@ -178,7 +182,7 @@ def main():
     fig, ax = plt.subplots(figsize=(fs.SINGLE, 2.6))
     rng = np.random.default_rng(0)
     for i, v in enumerate(variants):
-        g = R[(R["variant"] == v) & R["t_rep"].notna()]
+        g = R[(R["variant"] == v) & R["t_top"].notna()]
         for j, (col, mk) in enumerate((("first_entered", "o"), ("final_entered", "s"))):
             x = i * 2.5 + j + rng.uniform(-0.15, 0.15, len(g))
             loop = g["first_loop"] if j == 0 else g["final_loop"]
