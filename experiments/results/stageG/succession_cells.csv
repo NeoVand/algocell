@@ -1,0 +1,5 @@
+label,tape,steps,k,n,stopped_early,last_step_min,final_at_last,family_300k,stack_takeover_n,stack_takeover_med,ldir_takeover_n,ldir_takeover_med,ldir_invasions_complete,ldir_invasions_censored,ldir_invasion_med_steps,stack_plateau_med
+none@closure,16,128,4,20,0,300000,"ex_sp:17, ldir:3","ex_sp:17, ldir:3",20,8500.0,3,43500.0,3,0,1500.0,0.9933294199263569
+none@closure,50,128,4,20,0,300000,push:20,push:20,20,1350.0,0,,0,0,,0.9570343602621424
+none@closure1M,20,128,4,20,0,1000000,"ldir:16, push:3, none:1","ldir:10, push:5, none:5",17,18000.0,16,247500.0,16,0,2000.0,0.27443843594009987
+none@closure1M,64,128,4,20,0,1000000,"push:13, ldir:7","push:17, ldir:3",20,1750.0,7,419000.0,6,0,1000.0,0.921241454003926

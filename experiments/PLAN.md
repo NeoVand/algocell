@@ -641,3 +641,16 @@ replication; 2% exact share is noisy because return-address smears reach
   ⌈L/4⌉ and the motif repeat count from 4 to max(2, ⌈L/4⌉), after the
   tape-length axis was added (a fixed radius 4 covers an entire 4-byte tape).
   For L = 16 nothing changes.
+- 2026-10-08 (**Stage G run and analysed**; 80/80 ok in 8 min wall clock, preflight estimate 5.8 GPU-h ≈ $11 at
+  list price; `stage_g.py`, `results/stageG/FINDINGS.md`): G1 (a) and (b) **met at L = 16 and L = 50** — first
+  replicator without control flow and partner-dependent 40/40; 300k dominant closed (copied 1.00, damaged 0.00)
+  with control flow 40/40, byte-identical across worlds in 17/20 (`RET NZ` closer) and 14/20 (`JR NZ` pusher).
+  G1 (c) met at L = 16, **not met at L = 50** (median heritable fraction 0.59 at 2k, 0.62 at 100k; threshold had
+  been calibrated on L = 16). G2 by the pre-registered syntactic criterion: 6/20 at L = 20 (between) and 3/20 at
+  L = 64 (alternative); by the behavioural partner test 19/20 and 8/20 — the syntactic proxy omitted LDIR/LDDR,
+  which loop in hardware; both counts reported, the pre-registered one decides. 12/20 L = 64 worlds are still
+  pusher-dominated at 1M steps. **BFF (THEORY P1):** harness tests (`tests/test_bff.py`) run before any soup
+  falsified the mechanism claimed for P1(b) — a straight-line copier under a wrapping pointer does not replicate
+  (read and write heads cross and drift) — so THEORY.md was corrected with readings (b1)/(b2) and the run design
+  fixed before launch; 24 local soups (12 standard, 12 wrap; 2¹⁷ programs, 16,384 epochs, mutation 2⁻¹²) and a
+  structured search over 16.4M straight-line programs (`micro/bff_search.py`) started.

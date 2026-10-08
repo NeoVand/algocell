@@ -159,7 +159,7 @@ def main():
         for i, L in enumerate(Ls):
             c = C4[C4["tape_len"] == L].groupby("step")["frac_heritable"]
             med, lo, hi = c.median(), c.quantile(0.25), c.quantile(0.75)
-            col = fs.color(f"L{L}") if hasattr(fs, "color") else None
+            col = ["#000000", "#E69F00", "#0072B2", "#D55E00"][i % 4]
             ax.plot(med.index, med.values, lw=1.1, label=f"L = {L}", color=col)
             ax.fill_between(med.index, lo.values, hi.values, alpha=0.15, color=col, lw=0)
         ax.set_xscale("log")
