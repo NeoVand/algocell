@@ -36,7 +36,7 @@ Every number below is copied from a FINDINGS document or a generated NUMBERS fil
 
 **2.14 Same-seed runs diverge; seeds are exchangeable** — 10 repeats of one seed spread 0.25–0.38 dex against 0.27–0.46 dex across seeds (E6). Confidence **A**. This must be stated in the paper: the simulation is not reproducible run-by-run, and every claim is a population claim.
 
-**2.15 At 32 steps · 1/4 the only route to life is block copy** — `block-copy` 0/20 vs `none` 18/20 (p = 1.7 × 10⁻⁹, E7, new seeds), although the pusher is viable in isolation at that budget (gen2 0.54). Confidence **A** for the effect; the reason the pusher never appears there is open.
+**2.15 At 32 steps · 1/4 the only route to life is block copy, because the pusher is unviable there** — `block-copy` 0/20 vs `none` 18/20 (p = 1.7 × 10⁻⁹, E7, new seeds). The invasion assay (`results/invasion/`) settles why: the pusher handed to 1% of cells at 32 steps never grows and is extinct by 20k steps in 20/20 soups at both mutation rates (soups flood to 0.29–0.33), while the LDIR unit handed to the same soups makes 75–100% of cells heritable by 20k in 20/20 and holds the flood at 0.05. The single-encounter assay against random partners (gen2 0.54) overstates the pusher at this budget. Confidence **A** for the effect, **B** for the maintenance explanation (5 soups per cell, 20k-step horizon).
 
 ## 3. A narrative for the paper
 
