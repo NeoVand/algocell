@@ -175,6 +175,7 @@ def stage_e() -> list[dict]:
 
 
 RINGS = {16: (33, 34, 35, 37), 36: (73, 74, 75, 79)}   # 33 = 3·11, 34 = 2·17, 35 = 5·7, 37 prime; 73 prime, 74 = 2·37, 75 = 3·5², 79 prime
+RINGS_F4 = {12: (28, 36), 10: (28, 40), 8: (32,)}       # F4 dead-zone probes (PLAN.md): pusher gen2 in isolation 0.20 → 0.60/0.58 at L = 12; no rescue at L = 10; impaired at L = 8 · P = 32
 
 
 def stage_f() -> list[dict]:
@@ -187,6 +188,11 @@ def stage_f() -> list[dict]:
         for L, rings in RINGS.items():
             for P in rings:
                 out += [_c(f"{a}@ring{P}", L, 128, 4, s, mem_length=P) for s in SEEDS_C]
+    # F4 (added 2026-10-07 after Stage E, before any F run): is the L = 9–12 dead zone ring arithmetic?
+    # `none` only; the P = 2L rows are Stage E's @nominal runs.
+    for L, rings in RINGS_F4.items():
+        for P in rings:
+            out += [_c(f"none@ring{P}", L, 128, 4, s, mem_length=P) for s in SEEDS_C]
     return out
 
 

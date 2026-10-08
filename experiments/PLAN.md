@@ -257,6 +257,29 @@ steps. **F3 (control):** under the full ISA the Load–Push family emerges with 
 median (within one 50-step sample) at every P. If F1 fails, the gcd mechanism verified in the
 executor does not govern the population dynamics and the "ring arithmetic" claim is dropped.
 
+**F4 — is the L = 9–12 dead zone ring arithmetic? (added 2026-10-07 after Stage E was read
+and before any F run; 50 runs, `none` only, 128 steps, k = 4, seeds 101–110.)** Stage E found
+the pusher regime at L = 8 and L ≥ 16 but not at L = 9–12, and the isolated assay found the
+pusher's own heritability (gen2, 64 random partners, 128 steps) marginal there. An executor
+probe on padded rings (`runs/unit_fitness_vs_ring.csv`, run before this paragraph was written)
+gives, for `01 c5` tiled to L: **L = 12: 0.20 at P = 24, 0.60 at P = 28, 0.45 at 32, 0.58 at 36,
+0.53 at 48**; L = 10: 0.31 at P = 20, 0.28 / 0.36 / 0.29 / 0.37 at P = 24 / 28 / 32 / 40 (no
+rescue); L = 9: 0.32 at 18, 0.44 / 0.33 / 0.36 at 20 / 24 / 32; L = 8: 0.53 at 16, 0.62 at 20,
+0.55 at 24, **0.28 at 32**; L = 16: 0.51–0.61 at every P ∈ {32 … 48}. Cells: `none` at L = 12
+with P ∈ {28, 36}, at L = 10 with P ∈ {28, 40}, and at L = 8 with P = 32 (the P = 2L rows are
+Stage E's @nominal runs). Predictions, population level: **F4a** at L = 12 · P ∈ {28, 36} the
+pusher emerges as at L = 16 — heritable in ≥ 9/10 seeds, KM median < 2,000 steps, modal
+first-replicator period 2 (Stage E at P = 24: 6/10, KM 245,500, all LDIR); **F4b** at L = 10 ·
+P ∈ {28, 40} no rescue — ≤ 6/10 heritable or KM median > 50,000 (Stage E: 4/10, median not
+reached); **F4c** at L = 8 · P = 32 the pusher is impaired — fewer than 10/10 heritable or KM
+median > 2,000 (Stage E at P = 16: 10/10, KM 500). If F4a holds and F4b holds, the dead zone
+is a property of the stack-pointer wrap on the ring and not of the tape length as such; if F4a
+fails, the isolated-assay heritability does not predict population emergence and the
+copy-geometry explanation is dropped. Executor-level note for F1 logged before the run: on
+P = 34 the isolated tiled units `04 5e ed b0` and `1d ed b0` are heritable (gen2 0.62, 0.68)
+although 4 ∤ 34 and 3 ∤ 34; F1 (emergent periods divide P) stands as written and this probe
+is the first thing to check if it fails. Cost: ≈ 1.3 GPU-h ≈ $3 on top of F's ≈ $12.
+
 ## Outcomes (all recorded per sample, nothing chosen after the fact)
 
 - `t_02`, `t_10`, `t_50`: first step at which the most common 16-byte tape holds

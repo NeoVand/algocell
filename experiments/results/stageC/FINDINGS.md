@@ -50,6 +50,24 @@ The modal first tape and the modal faithful final tape of the `none` runs, assay
 
 Both write the whole partner (15.6 vs 15.9, 34.1 vs 35.8, 92.0 vs 98.7 partner bytes changed), so the successor is not a faster copier; it is a **more heritable** one (gen2 0.59 → 1.00, 0.64 → 0.83, 0.72 → 0.99), and at L = 16 and 36 it no longer damages itself during an encounter. The successors are byte-identical across 7–9 of 10 independent seeds: the same 36-byte and 100-byte tapes evolve from different random soups. This is the same succession Stage B saw through the early stop; here it is uncensored.
 
+## C4: the functional fraction over time
+
+From the 16 uniformly random cell tapes recorded in every sample, each assayed against 32 random partners under the run's own suppression set (`c4/functional.csv`, `c4/NUMBERS_C4.md`; mean over the 10 seeds of the fraction of random cells with gen2 ≥ 0.3):
+
+| arm (128 steps, 1/16) | 200 | 1,000 | 5,000 | 50,000 | 300,000 |
+|---|---|---|---|---|---|
+| `none` | 0.00 | 0.14 | 0.07 | 0.78 | 0.88 |
+| `block-copy` | 0.01 | 0.07 | 0.16 | 0.65 | 0.87 |
+| `ld-mem` | 0.00 | 0.08 | 0.16 | 0.78 | 0.84 |
+| `ld-reg` | 0.01 | 0.12 | 0.22 | 0.81 | 0.85 |
+| `call-rst` | 0.01 | 0.08 | 0.14 | 0.75 | 0.92 |
+| `ex-sp-only` | 0.00 | 0.06 | 0.21 | 0.29 | 0.76 |
+| `ld-imm` | 0.00 | 0.00 | 0.00 | 0.00 | 0.27 |
+| `no-copy` | 0 | 0 | 0 | 0 | 0 (0 at 1M) |
+| `all-ld` | 0 | 0 | 0 | 0 | 0.35 (0.36 at 1M) |
+
+The pusher's takeover (t_rep ≈ 200 steps under `none`) leaves the population only 7–14% heritable for thousands of steps: most cells carry pusher-written pattern that does not itself replicate. The functional fraction rises to 0.78 at 50,000 steps, when the EX (SP),HL family has displaced the pusher (C2), and to 0.88 at 300,000. The same shape holds in every arm whose first replicator is the pusher. Under 1/64 mutation the final fraction is higher (0.97 for `none`, 0.96 for `ld-mem`) and under 1/4 lower (0.59 and 0.52 at 128 steps; 0.26 and 0.24 at 512 steps). At 32 steps · 1/4 the fraction is 0 until past 5,000 steps and 0.66–0.78 at 300,000 in every arm that emerged.
+
 ## C5: L = 36 and L = 100 without censoring
 
 `none`@36: 10/10 heritable at KM 350 (period 2 first), all faithful at 300k; final dominants period 2 ×3, 14 ×7. `none`@100: 10/10 at KM 1,200; 9/10 faithful at emergence, 8/10 faithful at 300k; final periods 10 ×7, 9 ×1 (an LDDR-based unit, `b8 16 b6 17 21 41 67 63 ed`), plus one unfaithful period-25 LDIR unit and one unfaithful period-4 unit. `stack-writes`@36: 10/10 heritable (KM 12,000), first periods 4–12 (all divide 72; 7/10 divide 36), final dominants period 4 ×6, 6 ×2, 8 ×2, all faithful. `stack-writes`@100: 10/10 heritable (KM 8,500) but 1/10 faithful; first periods 5, 8, 20 ×4, 25 ×3, 76; 9/9 tiled periods divide 200.

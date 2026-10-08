@@ -375,7 +375,11 @@ def test_ring_length_changes_which_copiers_work():
 
 def test_stage_f_conditions():
     conds = json.load(open(ROOT / "conds" / "stageF.json"))
-    assert len(conds) == 160 and {c["mem_length"] for c in conds} == {33, 34, 35, 37, 73, 74, 75, 79}
+    assert len(conds) == 210 and {c["mem_length"] for c in conds} == {33, 34, 35, 37, 73, 74, 75, 79, 28, 36, 40, 32}
+    f4 = [c for c in conds if c["tape"] in (8, 10, 12)]
+    assert len(f4) == 50 and {c["label"] for c in f4} == {"none@ring28", "none@ring36", "none@ring40", "none@ring32"}
+    assert {(c["tape"], c["mem_length"]) for c in f4} == {(12, 28), (12, 36), (10, 28), (10, 40), (8, 32)}
+    assert all(c["mem_length"] > 2 * c["tape"] for c in conds)
     for c in conds:
         assert c["mem_length"] > 2 * c["tape"] and c["label"].endswith(f"@ring{c['mem_length']}")
         assert (SHADER_DIR / f"sim_square_L{c['tape']}_P{c['mem_length']}.wgsl").exists()

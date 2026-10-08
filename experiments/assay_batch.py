@@ -74,7 +74,7 @@ def period_fields(prefix: str, tape_hex: str | None) -> dict:
     return {f"{prefix}_period": p, f"{prefix}_period_match": round(m, 3)}
 
 
-def scan_emergence(samples: list[dict], z80_steps: int, patterns: list[str], sets: dict, cache: dict) -> dict:
+def scan_emergence(samples: list[dict], z80_steps: int, patterns: list[str], sets: dict, cache: dict, mem_length: int | None = None) -> dict:
     """First heritable and first faithful top-3 exemplar (share >= SHARE_MIN), scanning samples in time order."""
     out = {"t_rep": -1, "t_faith": -1}
     for d in samples:
@@ -82,9 +82,9 @@ def scan_emergence(samples: list[dict], z80_steps: int, patterns: list[str], set
         for rank, ex in enumerate(d.get("exemplars") or []):
             if rank >= len(shares) or shares[rank] < SHARE_MIN:
                 continue
-            key = (ex["tape"], z80_steps, tuple(patterns))
+            key = (ex["tape"], z80_steps, tuple(patterns), mem_length)
             if key not in cache:
-                cache[key] = assay(hexbytes(ex["tape"]), z80_steps=z80_steps, suppress=patterns, n=64)
+                cache[key] = assay(hexbytes(ex["tape"]), z80_steps=z80_steps, suppress=patterns, n=64, mem_length=mem_length)
             r = cache[key]
             if out["t_rep"] < 0 and r["is_replicator"]:
                 out.update({
@@ -101,10 +101,10 @@ def scan_emergence(samples: list[dict], z80_steps: int, patterns: list[str], set
     return out
 
 
-def best_of(tapes: list[str], z80_steps: int, patterns: list[str], neighbors=None, n: int = 64, seed: int = 0) -> tuple[int, dict, str]:
+def best_of(tapes: list[str], z80_steps: int, patterns: list[str], neighbors=None, n: int = 64, seed: int = 0, mem_length: int | None = None) -> tuple[int, dict, str]:
     best = None
     for rank, t in enumerate(tapes):
-        r = assay(hexbytes(t), z80_steps=z80_steps, suppress=patterns, n=n, seed=seed, neighbors=neighbors)
+        r = assay(hexbytes(t), z80_steps=z80_steps, suppress=patterns, n=n, seed=seed, neighbors=neighbors, mem_length=mem_length)
         g = r["gen2_score"] if np.isfinite(r["gen2_score"]) else -np.inf
         if best is None or g > best[3]:
             best = (rank, r, t, g)
@@ -123,9 +123,11 @@ def main(d: str) -> None:
         patterns = s["suppress"] if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])
         sets = resolve(patterns)
         prov = s.get("provenance") or {}
+        # ring length: assay every tape on the run's own ring (Stage F pads the pair memory to P > 2L); None = the default 2L
+        ring = int(s["mem_length"]) if s.get("mem_length") and int(s["mem_length"]) != 2 * L else None
         row: dict = {
             "label": s["label"], "ablation": s["label"].split("@", 1)[0], "arm": s["label"].split("@", 1)[1] if "@" in s["label"] else "nominal",
-            "tape_len": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "replicate": prov.get("replicate"), "file": os.path.basename(p),
+            "tape_len": L, "mem_length": int(s.get("mem_length") or 2 * L), "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "replicate": prov.get("replicate"), "file": os.path.basename(p),
             "horizon": s["horizon"], "steps_run": s["steps_run"], "stopped_early": s["steps_run"] < s["horizon"],
             "tq_10": s["tq_10"], "tq_50": s["tq_50"],
         }
@@ -137,20 +139,20 @@ def main(d: str) -> None:
             samples = [r for r in recs if r.get("kind") == "sample"]
             row["truncated_jsonl"] = bad
         if samples:
-            row.update(scan_emergence(samples, s["z80_steps"], patterns, sets, cache))
+            row.update(scan_emergence(samples, s["z80_steps"], patterns, sets, cache, mem_length=ring))
         else:
             row.update({"t_rep": np.nan, "t_faith": np.nan})
         # ── exemplar at the tq_10 sample (pre-registered emergence event) ──
         if s["tq_10"] > 0 and samples:
             at = next((r for r in samples if r["step"] == s["tq_10"]), None)
             if at is not None:
-                rank, r, t = best_of([e["tape"] for e in at["exemplars"]][:3], s["z80_steps"], patterns)
+                rank, r, t = best_of([e["tape"] for e in at["exemplars"]][:3], s["z80_steps"], patterns, mem_length=ring)
                 row.update({"em_tape": t, "em_rank": rank, "em_score": round(r["score"], 3), "em_gen2": round(r["gen2_score"], 3),
                             "em_q75": round(r["offspring_within_q"], 3), "em_faithful": r["faithful"]})
         # ── final state ──
         fin = s["final"]
         final_tapes = [e["tape"] for e in fin["exemplars"]][:3]
-        rank, r, t = best_of(final_tapes, s["z80_steps"], patterns)
+        rank, r, t = best_of(final_tapes, s["z80_steps"], patterns, mem_length=ring)
         row.update({
             "final_tape": t, "final_rank": rank, "final_share": round(fin["top3_shares"][rank], 4) if rank < len(fin.get("top3_shares", [])) else np.nan,
             "final_score": round(r["score"], 3), "final_gen2": round(r["gen2_score"], 3), "final_gen2_cond": round(r["gen2_cond"], 3),
@@ -160,16 +162,16 @@ def main(d: str) -> None:
         })
         snap = load_snapshot(stem + ".soup_final.u8.br", L)
         if snap is not None:
-            ri = assay(hexbytes(t), z80_steps=s["z80_steps"], suppress=patterns, neighbors=snap, seed=s["seed"])
+            ri = assay(hexbytes(t), z80_steps=s["z80_steps"], suppress=patterns, neighbors=snap, seed=s["seed"], mem_length=ring)
             row.update({"final_insitu_score": round(ri["score"], 3), "final_insitu_gen2": round(ri["gen2_score"], 3),
                         "final_insitu_n_inf": ri["n_informative"], "final_insitu_replicator": ri["is_replicator"]})
-            rank_b, rb, tb = best_of(final_tapes, s["z80_steps"], patterns, neighbors=snap, seed=s["seed"])
+            rank_b, rb, tb = best_of(final_tapes, s["z80_steps"], patterns, neighbors=snap, seed=s["seed"], mem_length=ring)
             row.update({"final_insitu_best_gen2": round(rb["gen2_score"], 3), "final_insitu_best_tape": tb})
             # random-cell functional fraction (both partner types), vectorised
             rng = np.random.default_rng(s["seed"])
             cells = snap[rng.integers(0, snap.shape[0], size=FUNC_CELLS)]
-            rnd = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"])
-            ins = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"], neighbors=snap)
+            rnd = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"], mem_length=ring)
+            ins = assay_many(cells, z80_steps=s["z80_steps"], suppress=patterns, n=FUNC_PARTNERS, seed=s["seed"], neighbors=snap, mem_length=ring)
             informative = [x for x in ins if x["n_informative"] >= 8 and x.get("n_informative2", 8) >= 8]
             row.update({
                 "final_func_n": FUNC_CELLS,
