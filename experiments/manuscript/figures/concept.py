@@ -117,8 +117,9 @@ def fig1a(ax):
     dotted(ax, 0.65, 4.3, 1.45, TEAL)
     ax.text(0.7, 1.62, "IP: execute", ha="left", va="bottom", fontsize=FS_LABEL, color=TEAL, fontweight="bold")
     # stack pointer
-    arrow(ax, (12.5, -0.85), (12.5, -0.08), color=RED, lw=1.1)
-    arrow(ax, (12.2, -0.5), (9.0, -0.5), color=RED, lw=1.1)
+    # one L-shaped path: SP starts under B's last byte and moves left two bytes per push
+    ax.plot([12.5, 12.5], [-0.08, -0.5], color=RED, lw=1.1, solid_capstyle="round", zorder=3)
+    arrow(ax, (12.5, -0.5), (9.0, -0.5), color=RED, lw=1.1)
     ax.text(9.9, -1.0, "SP: push 2 bytes", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
     # ring: under the strip, from the last cell back to the first
     ax.plot([13.4, 13.4, -0.4, -0.4], [-0.4, -2.1, -2.1, -0.4], color=INK, lw=0.8, solid_joinstyle="round", zorder=1)
@@ -139,16 +140,14 @@ def fig1b(ax):
     bracket(ax, 3.05, 3.95, 1.25)
     ax.plot([3.5, 3.5], [1.25, 2.3], color=INK, lw=0.6)
     ax.text(3.5, 2.4, "PUSH BC", ha="center", va="bottom", fontsize=FS_LABEL, color=INK, fontweight="bold")
-    ax.text(3.5, -0.35, "A · 16 bytes", ha="center", va="top", fontsize=FS_LABEL, color=TEAL, fontweight="bold")
     # the pointer runs on into the partner
     arrow(ax, (xa + 0.15, 0.5), (xa + 1.45, 0.5), color=TEAL, lw=1.1)
     ax.text(xa + 0.8, 1.15, "IP enters\npartner", ha="center", va="bottom", fontsize=FS_LABEL, color=TEAL, fontweight="bold", linespacing=1.1)
     xb = xa + 1.6                                                                 # B starts at 8.6
     strip(ax, xb, 0, ["ff", "…", "c5", "01", "c5", "01", "f3"], fills=[GREY_FILL, GREY_FILL, RED_PALE, RED_PALE, RED_MID, RED_MID, GREY_FILL])
-    ax.text(xb + 3.5, -1.55, "B · 16 bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK, fontweight="bold")
     bracket(ax, xb + 4.05, xb + 5.95, -0.3, up=False)
     arrow(ax, (3.5, -0.1), (xb + 5.0, -0.5), color=RED, lw=1.1, rad=0.28)
-    ax.text(6.5, -2.0, "write c5 01", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
+    ax.text(8.6, -2.15, "write c5 01", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
     # side panel: code = operand = written
     xs = 17.6
     for row, (label, items, fill, y) in enumerate((("code", ["01", "c5", "01"], TEAL_FILL, 1.3), ("operand", ["c5", "01"], GREY_FILL, 0.0), ("written", ["c5", "01"], RED_MID, -1.7))):
@@ -191,8 +190,8 @@ def fig2d(ax):
         strip(ax, x0, y0, items, fills=[RED_PALE if i in hl else TEAL_FILL for i in range(4)])
         src = x0 + max(hl) + 0.5
         if title.startswith("LDIR"):
-            a = FancyArrowPatch((src + 0.45, y0 + 1.1), (src - 0.45, y0 + 1.1), connectionstyle="arc3,rad=1.0", arrowstyle="-|>", mutation_scale=6, lw=1.0, color=RED, zorder=4)
-            ax.add_patch(a)
+            # the block copy repeats in place: an arc from the end of the motif back to its start, same style as the jumps
+            arrow(ax, (x0 + 2.95, y0 + 1.1), (x0 + 1.05, y0 + 1.1), color=RED, lw=1.0, rad=0.5, scale=6)
         else:
             arrow(ax, (src, y0 + 1.1), (x0 + 0.5, y0 + 1.1), color=RED, lw=1.0, rad=0.36, scale=6)
         ax.text(x0, y0 - 0.25, caption, ha="left", va="top", fontsize=FS_SMALL, color=INK, linespacing=1.15)

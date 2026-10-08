@@ -207,9 +207,10 @@ def fig2(out):
     T = pd.DataFrame(rows)
     x = np.arange(len(Ls))
     w = 0.26
-    axe.bar(x - w, T["loop"], w, color=fs.CONCEPT["closed"], label="loop instruction")
-    axe.bar(x, T["closed"], w, color="#0072B2", label="copies ≥ 95% of partners")
-    axe.bar(x + w, T["identical"], w, color="#999999", label="byte-identical to the modal tape")
+    # colours not used by panel c's tape lengths: grey, teal (the organism colour of the schematics), light grey
+    axe.bar(x - w, T["loop"], w, color="#6B7280", label="loop instruction")
+    axe.bar(x, T["closed"], w, color=cp.TEAL, label="copies ≥ 95% of partners")
+    axe.bar(x + w, T["identical"], w, color="#B4BAC1", label="byte-identical to the modal tape")
     axe.set_xticks(x, [f"L = {L}" for L in Ls])
     axe.set_ylim(0, 21)
     axe.set_yticks([0, 5, 10, 15, 20])
@@ -350,20 +351,30 @@ def fig4(out):
     label(axa, "a")
     handles, labels = axa.get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.49), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
-    # b: first vs final openness per variant (black labels: Nature forbids coloured text)
+    # b: first vs final openness per variant as a horizontal dot plot: one row pair per variant (first replicator
+    # above, final dominant below), x = fraction of partner-test encounters in which the pointer enters the partner.
+    # Group headers in black (Nature forbids coloured text); circles first, squares final; filled = loop instruction.
     rng = np.random.default_rng(0)
+    ROW, SUB, JIT = 2.6, 0.45, 0.22
+    yticks, ylabels = [], []
     for i, v in enumerate(variants):
         d = runs[(runs["variant"] == v) & runs["t_top"].notna()]
-        for j, which in enumerate(("first", "final")):
-            x = i * 3.4 + j + rng.uniform(-0.28, 0.28, len(d))
+        y0 = -ROW * i
+        for which, dy, mk in (("first", SUB, "o"), ("final", -SUB, "s")):
+            y = y0 + dy + rng.uniform(-JIT, JIT, len(d))
             loop = d[f"{which}_loop"].astype(bool).values
             vals = d[f"{which}_entered"].values
-            axb.scatter(x[~loop], vals[~loop], s=5, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
-            axb.scatter(x[loop], vals[loop], s=5, color=fs.BFF_VARIANT[v], lw=0)
-        axb.text(i * 3.4 + 0.5, 1.07, {"std": "as\npublished", "wrap": "wrapping\npointer", "lit": "literal\npush", "wraplit": "wrap +\nliteral", "wraplitnh": "wrap +\nliteral,\nno halt"}[v], ha="center", va="bottom", fontsize=5, color="black", gid="allow-outside", linespacing=1.1)
-    axb.set_xticks([i * 3.4 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=5, rotation=90)
-    axb.set_ylim(-0.03, 1.03)
-    fs.tidy(axb, None, "encounters whose pointer\nenters the partner")
+            axb.scatter(vals[~loop], y[~loop], s=6, marker=mk, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
+            axb.scatter(vals[loop], y[loop], s=6, marker=mk, color=fs.BFF_VARIANT[v], lw=0)
+            yticks.append(y0 + dy)
+            ylabels.append(which)
+        axb.text(0.0, y0 + SUB + JIT + 0.3, fs.BFF_VARIANT_LABEL[v], ha="left", va="bottom", fontsize=5, fontweight="bold", color="black")
+    axb.set_yticks(yticks, ylabels, fontsize=5)
+    axb.set_ylim(-ROW * (len(variants) - 1) - SUB - JIT - 0.35, SUB + JIT + 0.3 + 0.75)
+    axb.set_xticks([0, 0.5, 1.0], ["0", "0.5", "1"])
+    axb.set_xlim(-0.04, 1.04)
+    axb.tick_params(axis="y", length=2)
+    fs.tidy(axb, "encounters whose pointer\nenters the partner")
     label(axb, "b")
     # c: the all-P class under lethal (wraplit) and benign (wraplitnh) tar: one switch, collapse vs persistence
     for v in ("wraplit", "wraplitnh"):
