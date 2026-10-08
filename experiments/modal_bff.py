@@ -23,7 +23,9 @@ image = (
     .add_local_dir("micro", remote_path="/root/micro")
 )
 runs_volume = modal.Volume.from_name("algocell-atlas-runs", create_if_missing=True)
-GPU = "L40S"
+import os as _os
+
+GPU = _os.environ.get("BFF_GPU", "L40S")  # the BFF soup is host-bound; any Vulkan GPU works (A10G when L40S capacity is short)
 
 
 # A 16,384-epoch soup of 2^17 programs takes ≈ 45–80 min (CPU-bound host loop); 3 h bounds a slow container.

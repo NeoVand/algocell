@@ -698,3 +698,6 @@ replication; 2% exact share is noisy because return-address smears reach
   Fix: `modal_bff.py` now spawns each soup (`Function.spawn`) and exits, so containers survive the client; the missing
   seeds were relaunched at 11:50 (finished seeds return at once because `run_soup` skips a present `summary.json`).
   Follow-up spend ≈ $23 against the ≈ $20 approval.
+- 2026-10-08 12:25 (**capacity**): the relaunched follow-up soups sat "waiting to be scheduled on a GPU_L40S worker" for
+  35 min (one container running). Stopped both apps and relaunched the missing nine seeds on A10G
+  (`BFF_GPU=A10G`; the soup is host-bound so the GPU type does not matter), fire-and-forget. Finished seeds are skipped.
