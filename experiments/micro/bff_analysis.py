@@ -56,11 +56,10 @@ def mannwhitneyu(x, y, alternative: str = "two-sided") -> tuple[float, float]:
     z = (u - mu) / sigma
     if alternative == "two-sided":
         p = erfc(abs(z) / sqrt(2))
-    elif alternative == "less":  # x stochastically smaller than y
-        p = 0.5 * erfc(-z / sqrt(2)) if False else 0.5 * erfc(z / sqrt(2)) if z > 0 else 1 - 0.5 * erfc(-z / sqrt(2))
-        p = 0.5 * erfc(-(-z) / sqrt(2))  # P(Z <= z)
-    else:  # greater
-        p = 0.5 * erfc(z / sqrt(2))  # P(Z >= z)
+    elif alternative == "less":  # x stochastically smaller than y: P(Z <= z)
+        p = 0.5 * erfc(-z / sqrt(2))
+    else:  # greater: P(Z >= z)
+        p = 0.5 * erfc(z / sqrt(2))
     return float(u), float(min(1.0, p))
 
 
