@@ -119,17 +119,16 @@ def fig1a(ax):
     # stack pointer
     arrow(ax, (12.5, -0.85), (12.5, -0.08), color=RED, lw=1.1)
     arrow(ax, (12.2, -0.5), (9.0, -0.5), color=RED, lw=1.1)
-    ax.text(10.0, -0.72, "SP: push 2 bytes", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
+    ax.text(9.9, -1.0, "SP: push 2 bytes", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
     # ring: under the strip, from the last cell back to the first
-    ax.plot([13.4, 13.4, -0.4, -0.4], [-0.4, -1.7, -1.7, -0.4], color=INK, lw=0.8, solid_joinstyle="round", zorder=1)
+    ax.plot([13.4, 13.4, -0.4, -0.4], [-0.4, -2.1, -2.1, -0.4], color=INK, lw=0.8, solid_joinstyle="round", zorder=1)
     arrow(ax, (-0.4, -0.5), (-0.4, 0.3), color=INK, lw=0.8)
-    arrow(ax, (13.4, -0.5), (13.4, 0.3), color=INK, lw=0.8)
-    ax.text(6.5, -1.9, "32-byte ring", ha="center", va="top", fontsize=FS_LABEL, color=INK)
+    ax.text(6.5, -2.3, "32-byte ring", ha="center", va="top", fontsize=FS_LABEL, color=INK)
     # the encounter
     ax.text(16.6, 1.15, "128 instructions", ha="center", va="bottom", fontsize=FS_LABEL, color=INK)
     arrow(ax, (16.6, 1.0), (16.6, 0.25), color=INK, lw=0.8)
     ax.text(16.6, -0.05, "write back A + B", ha="center", va="top", fontsize=FS_LABEL, color=INK)
-    finish(ax, (-0.8, 19.6), (-2.9, 3.2))
+    finish(ax, (-0.8, 19.6), (-3.3, 3.2))
 
 
 # ------------------------------------------------------------------------------------------------------------ Fig. 1b
@@ -138,19 +137,18 @@ def fig1b(ax):
     bracket(ax, 0.05, 2.95, 1.25)
     ax.text(1.5, 1.5, "LD BC,nn", ha="center", va="bottom", fontsize=FS_LABEL, color=INK, fontweight="bold")
     bracket(ax, 3.05, 3.95, 1.25)
-    ax.text(3.9, 1.5, "PUSH BC", ha="left", va="bottom", fontsize=FS_LABEL, color=INK, fontweight="bold")
+    ax.plot([3.5, 3.5], [1.25, 2.3], color=INK, lw=0.6)
+    ax.text(3.5, 2.4, "PUSH BC", ha="center", va="bottom", fontsize=FS_LABEL, color=INK, fontweight="bold")
     ax.text(3.5, -0.35, "A · 16 bytes", ha="center", va="top", fontsize=FS_LABEL, color=TEAL, fontweight="bold")
     # the pointer runs on into the partner
     arrow(ax, (xa + 0.15, 0.5), (xa + 1.45, 0.5), color=TEAL, lw=1.1)
-    ax.text(xa + 0.8, 2.25, "IP enters\npartner", ha="center", va="bottom", fontsize=FS_LABEL, color=TEAL, fontweight="bold", linespacing=1.1)
+    ax.text(xa + 0.8, 1.15, "IP enters\npartner", ha="center", va="bottom", fontsize=FS_LABEL, color=TEAL, fontweight="bold", linespacing=1.1)
     xb = xa + 1.6                                                                 # B starts at 8.6
     strip(ax, xb, 0, ["ff", "…", "c5", "01", "c5", "01", "f3"], fills=[GREY_FILL, GREY_FILL, RED_PALE, RED_PALE, RED_MID, RED_MID, GREY_FILL])
-    ax.text(xb + 5.6, 1.5, "B · 16 bytes", ha="center", va="bottom", fontsize=FS_LABEL, color=INK, fontweight="bold")
+    ax.text(xb + 3.5, -1.55, "B · 16 bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK, fontweight="bold")
     bracket(ax, xb + 4.05, xb + 5.95, -0.3, up=False)
     arrow(ax, (3.5, -0.1), (xb + 5.0, -0.5), color=RED, lw=1.1, rad=0.28)
-    ax.text(7.0, -2.1, "write c5 01", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
-    arrow(ax, (xb + 3.95, -0.35), (xb + 2.6, -0.35), color=INK, lw=0.6, scale=5)
-    ax.text(xb + 3.0, -0.55, "next push", ha="center", va="top", fontsize=FS_SMALL, color=INK)
+    ax.text(6.5, -2.0, "write c5 01", ha="center", va="top", fontsize=FS_LABEL, color=RED, fontweight="bold")
     # side panel: code = operand = written
     xs = 17.6
     for row, (label, items, fill, y) in enumerate((("code", ["01", "c5", "01"], TEAL_FILL, 1.3), ("operand", ["c5", "01"], GREY_FILL, 0.0), ("written", ["c5", "01"], RED_MID, -1.7))):
@@ -193,22 +191,22 @@ def fig2d(ax):
         strip(ax, x0, y0, items, fills=[RED_PALE if i in hl else TEAL_FILL for i in range(4)])
         src = x0 + max(hl) + 0.5
         if title.startswith("LDIR"):
-            a = FancyArrowPatch((src + 0.3, y0 + 1.1), (src - 0.3, y0 + 1.1), connectionstyle="arc3,rad=1.3", arrowstyle="-|>", mutation_scale=6, lw=1.0, color=RED, zorder=4)
+            a = FancyArrowPatch((src + 0.45, y0 + 1.1), (src - 0.45, y0 + 1.1), connectionstyle="arc3,rad=1.0", arrowstyle="-|>", mutation_scale=6, lw=1.0, color=RED, zorder=4)
             ax.add_patch(a)
         else:
             arrow(ax, (src, y0 + 1.1), (x0 + 0.5, y0 + 1.1), color=RED, lw=1.0, rad=0.36, scale=6)
         ax.text(x0, y0 - 0.25, caption, ha="left", va="top", fontsize=FS_SMALL, color=INK, linespacing=1.15)
-    ax.text(16.4, -5.95, f"closed: copies {fcop:.2f} of partners · {fdam:.2f} self-damage", ha="center", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text(16.4, -6.2, "closure is a cycle in control flow, not a wall around the bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK)
+    ax.text(14.6, -5.95, f"closed: copies {fcop:.2f} of partners · {fdam:.2f} self-damage", ha="center", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
+    ax.text(14.6, -6.2, "closure is a cycle in control flow, not a wall around the bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK)
 
 
 # ------------------------------------------------------------------------------------------------------------ Fig. 4d
 def fig4d(ax):
     W = 100.0
     x1, x2 = 25.0, 62.0
-    y_hdr, y_mid, y_bot = 21.0, 10.5, 0.0
+    y_hdr, y_mid, y_bot = 21.0, 9.6, 0.0
     H = 25.5
-    for yy in (y_hdr, y_mid, y_bot):
+    for yy in (H, y_hdr, y_mid, y_bot):
         ax.plot([0, W], [yy, yy], color=GRID, lw=0.7, zorder=1)
     for xx in (x1, x2):
         ax.plot([xx, xx], [y_bot, H], color=GRID, lw=0.7, zorder=1)
@@ -223,8 +221,8 @@ def fig4d(ax):
         (xa, 19.9, "Z80", True), (xa, 19.9 - L, "open, then closed · 40 of 40 worlds", False),
         (xa, 19.9 - 2.4 * L, "modified BFF, harmless brackets", True), (xa, 19.9 - 3.4 * L, "open for ever · 12 of 12 worlds", False), (xa, 19.9 - 4.4 * L, "no closed design exists", False),
         (xb, 18.1, "modified BFF, lethal brackets", True), (xb, 18.1 - L, "open, then extinct · 12 of 12 worlds", False),
-        (xa, 6.4, "not run", False),
-        (xb, 7.3, "BFF as published", True), (xb, 7.3 - L, "born closed · 28 of 28 life-producing worlds", False),
+        (xa, 5.7, "not run", False),
+        (xb, 6.7, "BFF as published", True), (xb, 6.7 - L, "born closed · 28 of 28 life-producing worlds", False),
     ]
     for x, y, text, bold in rows:
         ax.text(x, y, text, ha="left", va="top", fontsize=FS_LABEL, color=INK if (bold or text != "not run") else GREY_TEXT, fontweight="bold" if bold else "normal")
@@ -244,7 +242,7 @@ def fig5a(ax):
     ax.text(11.0, 11.6, "bytes written", ha="center", va="bottom", fontsize=FS_TITLE, color=TEAL, fontweight="bold")
     ax.plot([8.4, 13.6], [11.45, 11.45], color=INK, lw=0.7)
     ax.text(11.0, 11.3, "cells executed", ha="center", va="top", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text(14.9, 11.45, "< 1", ha="left", va="center", fontsize=9, color=INK, fontweight="bold")
+    ax.text(14.9, 11.45, "< 1", ha="left", va="center", fontsize=8, color=INK, fontweight="bold")
     # one pass of the first replicator
     ax.text(0.5, 9.25, "one pass", ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
     arrow(ax, (0.5, 8.95), (10.5, 8.95), color=TEAL, lw=1.1)
@@ -252,14 +250,14 @@ def fig5a(ax):
     ax.text(5.5, 8.0, f"{L} cells executed", ha="center", va="center", fontsize=FS_LABEL, color=INK, zorder=3)
     ax.add_patch(Rectangle((0.5, 5.4), 10.0, 1.4, facecolor="white", edgecolor=INK, lw=0.5, zorder=2))
     ax.add_patch(Rectangle((0.5, 5.4), 10.0 * written / L, 1.4, facecolor=RED_MID, edgecolor="none", zorder=2))
-    ax.text(5.5, 6.1, f"{written} of {L} bytes written", ha="center", va="center", fontsize=FS_LABEL, color=INK, zorder=3)
-    ax.text(5.5, 5.1, "the first replicator", ha="center", va="top", fontsize=FS_LABEL, color=INK)
+    ax.text(5.5, 5.2, f"{written} of {L} bytes written", ha="center", va="top", fontsize=FS_LABEL, color=INK, zorder=3)
+    ax.text(5.5, 4.3, "the first replicator", ha="center", va="top", fontsize=FS_LABEL, color=GREY_TEXT)
     # the fork
     ax.plot([10.5, 12.8], [6.1, 6.1], color=INK, lw=0.8)
     for yt in (9.1, 3.4):
         path = Path([(12.8, 6.1), (15.2, 6.1), (15.2, yt), (17.4, yt)], [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4])
         ax.add_patch(PathPatch(path, fill=False, lw=0.8, edgecolor=INK, zorder=2))
-        arrow(ax, (17.0, yt), (17.6, yt), color=INK, lw=0.8)
+        arrow(ax, (17.0, yt), (17.75, yt), color=INK, lw=0.8)
     # open: leave its cells
     text_runs(ax, 17.8, 10.4, [("open", TEAL, True), (" · leave its cells", INK, True)], fs=FS_TITLE)
     ax.add_patch(FancyBboxPatch((17.8, 8.4), 7.0, 1.4, boxstyle="round,pad=0,rounding_size=0.15", facecolor=TEAL_FILL, edgecolor=INK, lw=0.5, zorder=2))
@@ -270,10 +268,10 @@ def fig5a(ax):
     # closed: revisit a cell
     text_runs(ax, 17.8, 5.35, [("closed", TEAL, True), (" · revisit a cell", INK, True)], fs=FS_TITLE)
     ax.add_patch(FancyBboxPatch((17.8, 2.4), 11.9, 2.0, boxstyle="round,pad=0,rounding_size=0.15", facecolor=TEAL_FILL, edgecolor=INK, lw=0.5, zorder=2))
-    arrow(ax, (18.9, 3.0), (28.3, 3.0), color=TEAL, lw=1.1)
-    arrow(ax, (28.6, 3.35), (18.9, 3.35), color=TEAL, lw=1.1, rad=0.33)
+    arrow(ax, (18.9, 2.85), (28.3, 2.85), color=TEAL, lw=1.1)
+    arrow(ax, (28.6, 3.15), (18.9, 3.15), color=TEAL, lw=1.1, rad=0.2)
     for xx in (18.9, 28.6):
-        ax.plot([xx], [3.0 if xx < 20 else 3.35], marker="o", ms=4, mfc="white", mec=INK, mew=0.8, zorder=5)
+        ax.plot([xx], [2.85 if xx < 20 else 3.15], marker="o", ms=4, mfc="white", mec=INK, mew=0.8, zorder=5)
     ax.text(23.75, 2.15, "organism", ha="center", va="top", fontsize=FS_LABEL, color=INK)
     ax.text(15.0, 0.1, "a complete self-copy must leave its cells or revisit one", ha="center", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
 

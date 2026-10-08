@@ -86,8 +86,8 @@ def km_curve(times, horizon):
 # ----------------------------------------------------------------------------------------------------------------- fig 1
 def fig1(out):
     fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
-    gs = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], width_ratios=[18.6, 24.8], hspace=0.3, wspace=0.15, left=0.03, right=0.99, top=0.98, bottom=0.11)
-    gsd = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], hspace=0.3, wspace=0.42, left=0.045, right=0.99, top=0.98, bottom=0.11)
+    gs = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], width_ratios=[18.6, 24.8], hspace=0.3, wspace=0.15, left=0.055, right=0.99, top=0.98, bottom=0.11)
+    gsd = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], hspace=0.3, wspace=0.42, left=0.065, right=0.99, top=0.98, bottom=0.11)
     axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     axc, axd = fig.add_subplot(gsd[1, 0]), fig.add_subplot(gsd[1, 1])
     cp.fig1a(axa)
@@ -102,9 +102,9 @@ def fig1(out):
         S = S[S["step"] > 0]
         c4 = pd.read_csv(os.path.join(R, "stageG", "c4", "functional.csv"))
         h = c4[(c4["tape_len"] == 16) & (c4["seed"] == 2001)].sort_values("step")
-        axc.plot(S["step"], S["zero"], color=fs.CONCEPT["tar"], lw=0.9, label="zero bytes (tar)")
-        axc.plot(S["step"], S["q"], color="#0072B2", lw=0.9, label="dominant tape, occupancy")
-        axc.plot(h["step"], h["frac_heritable"], color=fs.CONCEPT["closed"], lw=0.9, label="heritable random cells")
+        axc.plot(S["step"], S["zero"], color=fs.CONCEPT["tar"], lw=0.9, label="zero bytes")
+        axc.plot(S["step"], S["q"], color=cp.TEAL, lw=0.9, label="dominant tape, occupancy")
+        axc.plot(h["step"], h["frac_heritable"], color=cp.RED, lw=0.9, marker="o", ms=2.2, label="heritable random cells (sampled)")
         g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
         trep = float(g[(g["L"] == 16) & (g["seed"] == 2001)]["t_rep"].iloc[0])
         axc.axvline(trep, color="#000000", lw=0.5, ls=":")
@@ -132,7 +132,7 @@ def fig1(out):
             axd.step(np.maximum(x, 40), 1 - y, where="post", color=L_COL.get(L, "#444444"), lw=0.9, label=f"L = {L}")
         axd.set_xscale("log")
         axd.set_xlim(40, 3.5e5)
-        axd.set_ylim(0, 1.02)
+        axd.set_ylim(-0.03, 1.03)
         fs.tidy(axd, "step", "worlds with a heritable replicator")
         axd.set_gid("allow-clip")
         axd.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=6, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
@@ -217,7 +217,7 @@ def fig2(out):
     axe.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
     label(axe, "e")
     cp.fig2d(axd)
-    axd.set_anchor("N")
+    axd.set_anchor("NW")
     label(axd, "d")
     save(fig, os.path.join(out, "fig2_cde"))
 
@@ -333,8 +333,9 @@ def fig4(out):
 
     fig = plt.figure(figsize=(fs.DOUBLE, 120 * fs.MM))
     gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 1.0], hspace=0.5, wspace=0.45, left=0.07, right=0.99, top=0.96, bottom=0.02)
+    gs2 = GridSpec(2, 1, figure=fig, height_ratios=[1.0, 1.0], hspace=0.5, left=0.065, right=0.99, top=0.96, bottom=0.02)
     axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
-    axd = fig.add_subplot(gs[1, :])
+    axd = fig.add_subplot(gs2[1, 0])
     # a: heritable fraction vs epoch, every run, by variant
     for v in variants:
         for run in runs[runs["variant"] == v]["run"]:
@@ -354,13 +355,13 @@ def fig4(out):
     for i, v in enumerate(variants):
         d = runs[(runs["variant"] == v) & runs["t_top"].notna()]
         for j, which in enumerate(("first", "final")):
-            x = i * 3.0 + j + rng.uniform(-0.15, 0.15, len(d))
+            x = i * 3.4 + j + rng.uniform(-0.28, 0.28, len(d))
             loop = d[f"{which}_loop"].astype(bool).values
             vals = d[f"{which}_entered"].values
-            axb.scatter(x[~loop], vals[~loop], s=8, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
-            axb.scatter(x[loop], vals[loop], s=8, color=fs.BFF_VARIANT[v], lw=0)
-        axb.text(i * 3.0 + 0.5, 1.07, {"std": "as\npublished", "wrap": "wrapping\npointer", "lit": "literal\npush", "wraplit": "wrap +\nliteral", "wraplitnh": "wrap +\nliteral,\nno halt"}[v], ha="center", va="bottom", fontsize=5, color="black", gid="allow-outside", linespacing=1.1)
-    axb.set_xticks([i * 3.0 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=5, rotation=90)
+            axb.scatter(x[~loop], vals[~loop], s=5, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
+            axb.scatter(x[loop], vals[loop], s=5, color=fs.BFF_VARIANT[v], lw=0)
+        axb.text(i * 3.4 + 0.5, 1.07, {"std": "as\npublished", "wrap": "wrapping\npointer", "lit": "literal\npush", "wraplit": "wrap +\nliteral", "wraplitnh": "wrap +\nliteral,\nno halt"}[v], ha="center", va="bottom", fontsize=5, color="black", gid="allow-outside", linespacing=1.1)
+    axb.set_xticks([i * 3.4 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=5, rotation=90)
     axb.set_ylim(-0.03, 1.03)
     fs.tidy(axb, None, "encounters whose pointer\nenters the partner")
     label(axb, "b")
@@ -378,7 +379,7 @@ def fig4(out):
     fs.tidy(axc, "epoch", "share of the all-P tape in the soup")
     label(axc, "c")
     cp.fig4d(axd)
-    axd.set_anchor("N")
+    axd.set_anchor("NW")
     label(axd, "d")
     save(fig, os.path.join(out, "fig4"))
 
@@ -386,10 +387,10 @@ def fig4(out):
 # ----------------------------------------------------------------------------------------------------------------- fig 5
 def fig5(out):
     fig = plt.figure(figsize=(fs.DOUBLE, 48 * fs.MM))
-    gs = GridSpec(1, 2, figure=fig, width_ratios=[1.6, 1.0], wspace=0.45, left=0.02, right=0.99, top=0.92, bottom=0.2)
+    gs = GridSpec(1, 2, figure=fig, width_ratios=[1.6, 1.0], wspace=0.45, left=0.055, right=0.99, top=0.92, bottom=0.2)
     axa, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     cp.fig5a(axa)
-    axa.set_anchor("N")
+    axa.set_anchor("NW")
     label(axa, "a")
     # c: fidelity vs context dependence, every measured replicator (Z80 first/final partner tests; BFF culture tests)
     try:
@@ -409,12 +410,13 @@ def fig5(out):
             yj = g[f"{which}_copied"].values + rng.uniform(-0.012, 0.012, len(g))
             axc.scatter(xj[~loop], yj[~loop], s=8, marker=mk, facecolors="none", edgecolors=fs.CONCEPT["open"], lw=0.6)
             axc.scatter(xj[loop], yj[loop], s=8, marker=mk, color=fs.CONCEPT["closed"], lw=0)
-        axc.set_xlim(-0.03, 1.03)
+        axc.set_xlim(-0.03, 0.62)
         axc.set_ylim(-0.03, 1.03)
         fs.tidy(axc, "encounters that damage the organism", "random partners that become a copy")
         h = [plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#000000", ms=3, label="Z80, no loop"), plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3, label="Z80, loop"),
-             plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#0072B2", ms=3, label="BFF, no loop"), plt.Line2D([], [], marker="o", ls="none", color="#0072B2", ms=3, label="BFF, loop")]
-        axc.legend(handles=h, fontsize=5, loc="center left", bbox_to_anchor=(0.02, 0.4), frameon=False)
+             plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#0072B2", ms=3, label="BFF, no loop"), plt.Line2D([], [], marker="o", ls="none", color="#0072B2", ms=3, label="BFF, loop"),
+             plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#777777", ms=3, label="first replicator"), plt.Line2D([], [], marker="s", ls="none", mfc="none", mec="#777777", ms=3, label="final dominant")]
+        axc.legend(handles=h, fontsize=5, loc="center right", bbox_to_anchor=(1.0, 0.42), frameon=False)
         label(axc, "b")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"b (data missing: {e})")
