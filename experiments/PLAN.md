@@ -788,3 +788,21 @@ replication; 2% exact share is noisy because return-address smears reach
   within Hamming distance 2 of the pusher, lattice vs mixed, from the interaction census. Same-seed GPU non-determinism
   applies as in Stage G (population claims over seeds). Code review and tests (`tests/test_mixed.py`) and a 1,000-step
   dry run precede the launch; Stage G outputs are untouched.
+- 2026-10-08 night (**Stage I pre-registration: lethal tar in the first machine**, written before any Stage I run).
+  Design: a `zero_halts` rule in which executing a zero byte (NOP, 0x00) halts the pair's execution for the rest of the
+  encounter, as an unmatched bracket halts BFF; everything else identical to Stage G L = 16 (square lattice, 128 steps,
+  k = 4, 300,000 steps, same sample and snapshot schedule); 10 worlds, label `lethal@closure`, seeds 4001–4010, local GPU;
+  culture tests, partner tests and the c4 census run under the same rule (derived test shader). Control: Stage G L = 16
+  (benign tar; 20/20 closed by 300,000 steps, t_close70 median 30,000; pusher first in 20/20, t_rep median 525).
+  Predictions from the classification (Fig. 4d) and the window model: **I1 (tar still forms)**: zero fraction ≥ 0.15 at
+  step 500 in ≥ 7/10 worlds (zeros are written by pushes of empty registers whatever executing a zero does).
+  **I2 (the open phase is cut short)**: among worlds with a heritable replicator, its population heritability (16 random
+  cells) stays below 0.3 and the first replicator's class share falls below 1% within 100,000 steps of t_rep, or the world
+  closes; "open, then extinct" in ≥ 5/10 worlds. **I3 (closure is rarer)**: worlds with a closed dominant (control-flow
+  instruction, heritable fraction ≥ 0.7) by 300,000 steps ≤ 6/10 (control 20/20); kill: ≥ 9/10 close (lethal tar does not
+  shorten the window in this machine). **I4 (descriptive)**: any closed dominant that does arise contains no zero byte and
+  its pointer never enters the partner (closure as the escape from lethal tar). Strong form: ≥ 7/10 worlds never produce a
+  heritable replicator by 300,000 steps (lethal tar prevents the open beginning); report as such. Reading: I2 and I3 met →
+  tar lethality shortens the open window in the Z80 as in BFF and closure is the escape, a two-machine law; I3 killed →
+  the lethal column of the classification does not transfer to the first machine. Code review, tests and a 1,000-step dry
+  run precede the launch; Stage G untouched.
