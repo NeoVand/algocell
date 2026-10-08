@@ -79,7 +79,7 @@ def setup(profile: str = "nature") -> None:
 
 def panel_label(ax, letter: str, x: float = -0.16, y: float = 1.02) -> None:
     """Nature panel letter: 8 pt, bold, lowercase, upright, outside the top-left corner of the axes."""
-    ax.text(x, y, letter, transform=ax.transAxes, fontsize=8, fontweight="bold", va="bottom", ha="right", clip_on=False)
+    ax.text(x, y, letter, transform=ax.transAxes, fontsize=8, fontweight="bold", va="bottom", ha="right", clip_on=False, gid="panel-label")
 
 
 def tidy(ax, xlabel: str | None = None, ylabel: str | None = None) -> None:

@@ -730,3 +730,9 @@ replication; 2% exact share is noisy because return-address smears reach
   schematic rows above the data row; legends updated. Generated images kept gitignored as references only (raster,
   and Fig. 2d/5a drafts inexact per the generator's QA). Pending: Fig. 5b design; the prose rewrite after the user
   reacts to `MAIN_nature_v3_sample.md`.
+- 2026-10-08 night (**figure process + conceptual v3**): the user rejected the v2 vector panels (clipped text, legends on
+  data, crossed labels; too detailed for conceptual panels). Added `manuscript/figures/figcheck.py` (automatic layout checks
+  on every build: text overlaps within and across panels, text crossed by lines, clipping, type < 5 pt, legends on data)
+  and an independent critic pass; redrew the five conceptual panels to the user's compact design proofs (ellipses, short
+  labels, Theorem 2 as a diagram). Fig. 5 is now a | b (closure-window model deferred to Extended Data). All composites
+  build clean. `BIOLOGY_BRIDGE.md` answers the question whether the theory explains anything in real biology.

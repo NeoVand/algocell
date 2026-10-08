@@ -1,4 +1,11 @@
-# Conceptual panels — design brief (built 2026-10-08 with the recommended options: 1a A, 1b C, 2d A, 4d A, 5a A)
+# Conceptual panels — design brief
+
+Status (v3, 2026-10-08 night): rebuilt in vector to the user's compact design proofs
+(`manuscript/figures/refs/compact-figures-v2/`, gitignored): abbreviated strips with ellipses, short local labels, one idea per
+panel, Theorem 2 as a proof diagram; every build passes `figcheck` (no overlaps, nothing clipped, no text crossed by lines, type
+≥ 5 pt, legends off data). The byte-exact drawings of v2 are kept in git history for Extended Data. Earlier status follows.
+
+## (superseded) v2 brief, built 2026-10-08 afternoon with the recommended options: 1a A, 1b C, 2d A, 4d A, 5a A
 
 Status (v2, 2026-10-08 evening): redrawn in vector in `manuscript/figures/concept.py` to the visual language of the user's
 generated reference set (`manuscript/figures/refs/journal-figures-v1/`, gitignored): teal organism cells, grey partner

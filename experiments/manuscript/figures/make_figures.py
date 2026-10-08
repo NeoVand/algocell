@@ -28,6 +28,13 @@ sys.path.insert(0, EXP)
 import figstyle as fs  # noqa: E402
 sys.path.insert(0, HERE)
 import concept as cp  # noqa: E402
+import figcheck  # noqa: E402
+
+
+def save(fig, path_no_ext):
+    """Run the layout checks, print the report, then save. A figure with problems is still written so it can be inspected."""
+    figcheck.print_report(figcheck.check(fig), os.path.basename(path_no_ext))
+    fs.save(fig, path_no_ext)
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.gridspec import GridSpec  # noqa: E402
 
@@ -71,10 +78,11 @@ def km_curve(times, horizon):
 
 # ----------------------------------------------------------------------------------------------------------------- fig 1
 def fig1(out):
-    fig = plt.figure(figsize=(fs.DOUBLE, 162 * fs.MM))
-    gs = GridSpec(3, 2, figure=fig, height_ratios=[48.6, 46.0, 56.0], hspace=0.16, wspace=0.42, left=0.045, right=0.99, top=0.985, bottom=0.07)
-    axa, axb = fig.add_subplot(gs[0, :]), fig.add_subplot(gs[1, :])
-    axc, axd = fig.add_subplot(gs[2, 0]), fig.add_subplot(gs[2, 1])
+    fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
+    gs = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], width_ratios=[18.6, 24.8], hspace=0.3, wspace=0.15, left=0.03, right=0.99, top=0.98, bottom=0.11)
+    gsd = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], hspace=0.3, wspace=0.42, left=0.045, right=0.99, top=0.98, bottom=0.11)
+    axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    axc, axd = fig.add_subplot(gsd[1, 0]), fig.add_subplot(gsd[1, 1])
     cp.fig1a(axa)
     fs.panel_label(axa, "a", x=0.0, y=0.96)
     cp.fig1b(axb)
@@ -98,7 +106,8 @@ def fig1(out):
         axc.set_xlim(40, 3.5e5)
         axc.set_ylim(0, 1.0)
         fs.tidy(axc, "step", "fraction")
-        axc.legend(loc="center left", bbox_to_anchor=(0.0, 0.62), fontsize=5)
+        axc.set_gid("allow-clip")
+        axc.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5, frameon=False)
         fs.panel_label(axc, "c")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"c  (data missing: {e})")
@@ -118,11 +127,12 @@ def fig1(out):
         axd.set_xlim(40, 3.5e5)
         axd.set_ylim(0, 1.02)
         fs.tidy(axd, "step", "worlds with a heritable replicator")
-        axd.legend(loc="lower right", fontsize=5, ncol=2)
+        axd.set_gid("allow-clip")
+        axd.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=6, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
         fs.panel_label(axd, "d")
     except Exception as e:  # noqa: BLE001
         placeholder(axd, f"d  (data missing: {e})")
-    fs.save(fig, os.path.join(out, "fig1"))
+    save(fig, os.path.join(out, "fig1"))
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 2
@@ -161,10 +171,10 @@ def fig2(out):
     h1 = plt.Line2D([], [], marker="o", ls="none", mfc="none", mec=fs.CONCEPT["open"], ms=3.5, label="no loop instruction")
     h2 = plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3.5, label="loop instruction (jump, return or LDIR)")
     fig.legend(handles=[h1, h2], loc="lower center", bbox_to_anchor=(0.5, -0.01), fontsize=5, ncol=2, frameon=False)
-    fs.save(fig, os.path.join(out, "fig2_ab"))
+    save(fig, os.path.join(out, "fig2_ab"))
 
-    fig = plt.figure(figsize=(fs.DOUBLE, 142 * fs.MM))
-    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.3, 1.0], height_ratios=[1.0, 1.42], hspace=0.28, wspace=0.45, left=0.07, right=0.99, top=0.97, bottom=0.02)
+    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
+    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.3, 1.0], height_ratios=[1.0, 0.95], hspace=0.32, wspace=0.45, left=0.07, right=0.99, top=0.97, bottom=0.02)
     axc, axe = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     axd = fig.add_subplot(gs[1, :])
     # c: heritable fraction vs step per L (median + IQR)
@@ -177,7 +187,8 @@ def fig2(out):
     axc.set_xlim(40, 1.2e6)
     axc.set_ylim(-0.02, 1.02)
     fs.tidy(axc, "step", "heritable fraction of random cells")
-    axc.legend(fontsize=5, loc="upper left")
+    axc.set_gid("allow-clip")
+    axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False)
     fs.panel_label(axc, "c")
     # e: convergence and closure counts per L
     rows = []
@@ -196,12 +207,12 @@ def fig2(out):
     axe.set_ylim(0, 27)
     axe.set_yticks([0, 5, 10, 15, 20])
     fs.tidy(axe, None, "worlds (of 20)")
-    axe.legend(fontsize=4.8, loc="upper center", ncol=1, frameon=False)
+    axe.legend(fontsize=5, loc="upper center", ncol=1, frameon=False)
     fs.panel_label(axe, "e")
     cp.fig2d(axd)
     axd.set_anchor("N")
     fs.panel_label(axd, "d", x=0.0, y=0.98)
-    fs.save(fig, os.path.join(out, "fig2_cde"))
+    save(fig, os.path.join(out, "fig2_cde"))
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 3
@@ -285,7 +296,7 @@ def fig3(out):
         fs.panel_label(axd, "d", x=-0.6)
     except Exception as e:  # noqa: BLE001
         placeholder(axd, f"d (data missing: {e})")
-    fs.save(fig, os.path.join(out, "fig3"))
+    save(fig, os.path.join(out, "fig3"))
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 4
@@ -313,8 +324,8 @@ def fig4(out):
         ax.set_xlim(0, 17500)
         ax.set_ylim(-0.02, 1.02)
 
-    fig = plt.figure(figsize=(fs.DOUBLE, 130 * fs.MM))
-    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 1.2], hspace=0.5, wspace=0.45, left=0.07, right=0.99, top=0.96, bottom=0.02)
+    fig = plt.figure(figsize=(fs.DOUBLE, 120 * fs.MM))
+    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 1.0], hspace=0.5, wspace=0.45, left=0.07, right=0.99, top=0.96, bottom=0.02)
     axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
     axd = fig.add_subplot(gs[1, :])
     # a: heritable fraction vs epoch, every run, by variant
@@ -330,7 +341,7 @@ def fig4(out):
     fs.tidy(axa, "epoch", "heritable fraction of random tapes")
     fs.panel_label(axa, "a")
     handles, labels = axa.get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.555), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
+    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.49), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
     # b: first vs final openness per variant (black labels: Nature forbids coloured text)
     rng = np.random.default_rng(0)
     for i, v in enumerate(variants):
@@ -341,8 +352,8 @@ def fig4(out):
             vals = d[f"{which}_entered"].values
             axb.scatter(x[~loop], vals[~loop], s=8, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
             axb.scatter(x[loop], vals[loop], s=8, color=fs.BFF_VARIANT[v], lw=0)
-        axb.text(i * 2.6 + 0.5, 1.08, v, ha="center", fontsize=4.8, color="black")
-    axb.set_xticks([i * 2.6 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=4.5, rotation=90)
+        axb.text(i * 2.6 + 0.5, 1.08, v, ha="center", fontsize=5, color="black", gid="allow-outside")
+    axb.set_xticks([i * 2.6 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=5, rotation=90)
     axb.set_ylim(-0.03, 1.03)
     fs.tidy(axb, None, "encounters whose pointer\nenters the partner")
     fs.panel_label(axb, "b")
@@ -362,18 +373,17 @@ def fig4(out):
     cp.fig4d(axd)
     axd.set_anchor("N")
     fs.panel_label(axd, "d", x=0.0, y=0.98)
-    fs.save(fig, os.path.join(out, "fig4"))
+    save(fig, os.path.join(out, "fig4"))
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 5
 def fig5(out):
-    fig = plt.figure(figsize=(fs.DOUBLE, 58 * fs.MM))
-    gs = GridSpec(1, 4, figure=fig, width_ratios=[1.0, 1.0, 1.1, 1.1], wspace=0.45, left=0.06, right=0.99, top=0.9, bottom=0.2)
-    axa, axa2, axb, axc = [fig.add_subplot(gs[0, i]) for i in range(4)]
-    cp.fig5a(axa, axa2)
-    axa2.set_yticklabels([])
-    fs.panel_label(axa, "a", x=-0.3)
-    placeholder(axb, "b  closure window q∫n dt: open-population integral for\nthe Z80 (benign tar), BFF + literal (lethal tar) and\nthe benign-tar BFF cell — data + model (after follow-ups)")
+    fig = plt.figure(figsize=(fs.DOUBLE, 48 * fs.MM))
+    gs = GridSpec(1, 2, figure=fig, width_ratios=[1.6, 1.0], wspace=0.45, left=0.02, right=0.99, top=0.92, bottom=0.2)
+    axa, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    cp.fig5a(axa)
+    axa.set_anchor("N")
+    fs.panel_label(axa, "a", x=0.0, y=0.98)
     # c: fidelity vs context dependence, every measured replicator (Z80 first/final partner tests; BFF culture tests)
     try:
         rng = np.random.default_rng(3)
@@ -397,11 +407,11 @@ def fig5(out):
         fs.tidy(axc, "encounters that damage the organism", "random partners that become a copy")
         h = [plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#000000", ms=3, label="Z80, no loop"), plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3, label="Z80, loop"),
              plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#0072B2", ms=3, label="BFF, no loop"), plt.Line2D([], [], marker="o", ls="none", color="#0072B2", ms=3, label="BFF, loop")]
-        axc.legend(handles=h, fontsize=4.6, loc="lower left")
-        fs.panel_label(axc, "c")
+        axc.legend(handles=h, fontsize=5, loc="center left", bbox_to_anchor=(0.02, 0.4), frameon=False)
+        fs.panel_label(axc, "b")
     except Exception as e:  # noqa: BLE001
-        placeholder(axc, f"c (data missing: {e})")
-    fs.save(fig, os.path.join(out, "fig5"))
+        placeholder(axc, f"b (data missing: {e})")
+    save(fig, os.path.join(out, "fig5"))
 
 
 def main():
