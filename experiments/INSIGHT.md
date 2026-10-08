@@ -55,8 +55,11 @@ the first evolved innovations should be about control rather than function.
 - Beginnings are communal. The open copier's offspring are partly the environment's; lineages, in the sense of vertical
   descent, do not exist until the return evolves. Woese's progenote and the Darwinian threshold are not a special early
   biology; they are what an open copier is.
-- Beginnings are spatial, or should be: an open copier survives among its own copies and dies among strangers, so the
-  open phase lives in kin neighbourhoods and individuality is selected at frontiers. (Hypothesis under test: Stage H.)
+- Beginnings do not need space. A pre-registered well-mixed control found the open phase exactly as heritable among
+  strangers as among kin, and closure later rather than sooner. The mechanism of the kin idea is real (the first replicator
+  meets its own kind in 57% of encounters on the lattice and 11% when mixed; kin encounters damage it in 0–2.5% of cases,
+  strangers in 31–34%), but the open phase survives strangers all the same. What space seems to change is how reliably
+  closure arrives (post hoc, to test), not whether.
 
 ## 3. The insight as a tool
 
@@ -68,8 +71,8 @@ material and ask whether the products of the products carry the pattern (the cul
 directly as *information inflow*, the entropy of the product distribution across varied contexts, which falls to zero
 when a replicator becomes an individual; (iii) treat by-products as a design variable and screen chemistries for whether
 their tar is inert or inhibitory to the copying process, because that, not yield, decides whether an open phase lasts
-long enough for control to evolve; (iv) look at surfaces and edges: open replicators should persist in dense patches of
-their own copies and individuality should appear where patches meet.
+long enough for control to evolve; (iv) do not require surfaces or compartments for the open phase: in our control it is as heritable when well mixed; but
+expect spatial structure to make the arrival of individuality reliable rather than hit-or-miss.
 
 **For an evolutionary biologist.** The first selected innovations after replication should be about *control*, where
 copying starts, stops and returns (circular templates, rolling-circle replication, terminators, primers), not about
@@ -90,7 +93,7 @@ the open-then-closed order and which will not.
 
 ## 4. Experiments
 
-**Ours, cheap, decisive (pre-registered where launched).** Stage H, well-mixed pairing: does the open phase need kin?
+**Ours, cheap, decisive (pre-registered where launched).** Stage H, well-mixed pairing: does the open phase need kin? (Done: no; the order of events is independent of space.)
 Stage I, lethal zeros: does tar lethality shorten the window in the first machine as in the second? A write-ratio sweep:
 machines whose literal instruction writes one, two or four bytes per cell executed; the theorem predicts the open phase
 disappears at ratio one. A processivity sweep at fixed genome length (budget per encounter), predicting the step at which
@@ -105,7 +108,7 @@ assembly and compression measures, and report what each detects on known sterile
 
 ## 5. What would kill it
 
-A substrate with a literal channel whose first replicator is closed; an open first replicator with zero inflow; a
-well-mixed soup indistinguishable from the lattice at every measure (that kills only the spatial reading); a lethal-tar
+A substrate with a literal channel whose first replicator is closed; an open first replicator with zero inflow; a well-mixed soup indistinguishable from the lattice at every measure (this happened for the open phase: the spatial
+reading is dead, the order of events stands); a lethal-tar
 machine in which closure arrives as readily as with benign tar; a chemistry in which the first heritable products are
 complex. Each is a measurement, not an argument.

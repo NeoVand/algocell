@@ -93,5 +93,8 @@ Dots, with evidence class (A measured on every seed; B measured, post hoc; C hyp
   (heredity without clones) as the all-horizontal extreme, measurable the same way. (A for the drop; C for the reading.)
 - Space and kin: pairs are lattice neighbours, so an open replicator's partners are mostly its own copies; openness is
   cheap in a kin neighbourhood and costly at fronts and tar pockets. Prediction: in a well-mixed Z80 soup the open phase
-  is shorter or absent and closure is selected faster, or life fails to establish. One-line shader change. (C)
+  is shorter or absent and closure is selected faster, or life fails to establish. One-line shader change. (C → tested the
+  same night, Stage H: killed. The open phase is as heritable when mixed; closure is later, not sooner; the order of events
+  is independent of space. Kin encounters 57% vs 11%, harmless; stranger encounters damaging: the mechanism is real, the
+  population consequence is not.)
 - Tar decides what can begin and how the open phase ends: inert versus inhibitory by-products. (A for the machines; C.)
