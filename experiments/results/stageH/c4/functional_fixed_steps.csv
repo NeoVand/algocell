@@ -1,0 +1,6 @@
+label,tape_len,steps,k,step,n,heritable,faithful
+mixed@closure,16,128,4,200,10,0.20625,0.2
+mixed@closure,16,128,4,1000,10,0.19375,0.175
+mixed@closure,16,128,4,5000,10,0.35,0.33125
+mixed@closure,16,128,4,50000,10,0.64375,0.59375
+mixed@closure,16,128,4,300000,10,0.7125,0.6625

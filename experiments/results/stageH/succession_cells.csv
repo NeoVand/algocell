@@ -1,0 +1,2 @@
+label,tape,steps,k,n,stopped_early,last_step_min,final_at_last,family_300k,stack_takeover_n,stack_takeover_med,ldir_takeover_n,ldir_takeover_med,ldir_invasions_complete,ldir_invasions_censored,ldir_invasion_med_steps,stack_plateau_med
+mixed@closure,16,128,4,10,0,300000,"push:5, ex_sp:4, ldir:1","push:5, ex_sp:4, ldir:1",10,175.0,1,350.0,1,0,100.0,0.7923730983967627

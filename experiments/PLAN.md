@@ -806,3 +806,9 @@ replication; 2% exact share is noisy because return-address smears reach
   tar lethality shortens the open window in the Z80 as in BFF and closure is the escape, a two-machine law; I3 killed →
   the lethal column of the classification does not transfer to the first machine. Code review, tests and a 1,000-step dry
   run precede the launch; Stage G untouched.
+- 2026-10-08 night (**Stage H run and scored**): H0 met (8/10), strong form not triggered (0/10 without life), **H1 killed**
+  (h_open median 0.125 = lattice; P 0.78), **H2 killed** (t_close70 median 50,000 vs 30,000; 7/10 vs 20/20 closed; P 0.77).
+  The kin hypothesis is dead at L = 16 and the order of events is independent of spatial structure (the pre-registered null).
+  Descriptive: kin encounters 57% (lattice) vs 11% (mixed); damage against kin 2.5%/0% vs strangers 34%/31%; t_rep 125 vs
+  525; closure timing bimodal when mixed (100, 500, 5,000; 30k–100k; three never). Post hoc reading in
+  `results/stageH/FINDINGS.md`: space changes the reliability of closure, not its possibility. Stage I running.

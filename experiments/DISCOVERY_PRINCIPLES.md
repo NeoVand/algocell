@@ -42,7 +42,7 @@ Grades: **A** meets the principle; **B** partly; **C** not yet. Distance: how fa
 | C6 Life begins at minimum complexity; assembly fires on tar | B (P1 met but unfalsifiable as written; P2 met; P3 grey) | C (our ground truth; Re-Pair bound) | A | C | B | A | moderate: a proper detector comparison, the published assembly algorithm, alternative ground truths |
 | C7 Theorem 2 and the literal channel; one instruction switches the open beginning | A (BFF cells pre-registered, with logged incidents) | A | A | A (theorem, two machines, boundary case) | B (write-ratio counting in BFF to be stated) | A | small: state the saturation route in the theorem |
 | C8 Tar lethality decides how the open phase ends | B (follow-ups pre-registered after the first result) | B | A | C: lethal tar exists only in BFF | C | A | moderate: a lethal-tar Z80 variant (zero halts) |
-| C9 Openness is cheap among kin; space sustains the open phase | C | C | C | C | C | A | far: Stage H is the first test |
+| C9 Openness is cheap among kin; space sustains the open phase | A (Stage H, pre-registered, both predictions killed) | A | A (kin 57% vs 11%; damage 2.5% vs 34%) | C | A | A | dead as a hypothesis; the null (order independent of space) is a result; the reliability-of-closure reading is new and untested |
 | C10 Heredity without clones at 64 steps; error-threshold curve | B (post hoc reading of a pre-registered cell) | B | B | C | B | A | moderate; supplementary unless replicated |
 
 Principles 6, 7, 8 and 10 apply to the whole: 6 is met with one logged failure; 7 is met for the code and runs but the
@@ -60,8 +60,8 @@ word "discovery" without qualification:
 - **Definitions.** The central claims depend on t_rep, the culture-test thresholds (0.75 copy, gen2 0.3) and the
   closure criterion. Re-run the Stage G analysis under a grid of these parameters, on existing data, and report the
   envelope. Cost: a day, no GPU.
-- **Space.** The open phase may exist because neighbours are kin. Stage H (well-mixed pairing, 10 worlds at L = 16)
-  tests it; pre-registered below the line in PLAN.md before launch. Cost: local GPU hours.
+- **Space.** Tested (Stage H): the open phase does not need kin and closure is not hastened by mixing; the order of
+  events is independent of spatial structure. What remains open is whether space makes closure reliable (post hoc).
 - **Lethal tar in the first machine.** The classification's lethal column rests on BFF alone. A Z80 variant in which a
   zero byte halts execution would put the first machine in that column. Cost: a shader flag and ten local worlds.
 - **Horizon.** Closure at L = 64 is in progress at 300,000 steps; either run to one million or say "in progress".

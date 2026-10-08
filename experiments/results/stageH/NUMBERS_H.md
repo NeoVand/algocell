@@ -8,4 +8,14 @@
 
 ## Well-mixed worlds (Stage H)
 
-- not yet available
+- worlds 10; no heritable replicator by horizon: 0; pusher first with t_rep in 100–5,000: 8/10
+- t_rep median 125; h_open median 0.125 (IQR 0.125–0.562); t_close70 median 50000, reached in 7/10
+
+## Verdicts
+
+| prediction   | statement                                                                        | value                                      | outcome       |
+|:-------------|:---------------------------------------------------------------------------------|:-------------------------------------------|:--------------|
+| H0           | pusher first, t_rep in 100–5,000, ≥ 7/10                                         | 8/10                                       | met           |
+| strong form  | ≥ 4/10 mixed worlds with no heritable replicator by horizon                      | 0/10                                       | not triggered |
+| H1           | h_open mixed median < 0.125, one-sided P < 0.05 (kill: ≥ 0.125 and P ≥ 0.2)      | median 0.125; P_perm 0.7841; P_norm 0.7962 | killed        |
+| H2           | t_close70 mixed median < 30,000, one-sided P < 0.05 (kill: ≥ 30,000 and P ≥ 0.2) | median 50000; P_perm 0.7719; P_norm 0.7769 | killed        |
