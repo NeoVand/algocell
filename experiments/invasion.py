@@ -63,13 +63,19 @@ def main():
     ap.add_argument("--steps", type=int, default=20000)
     ap.add_argument("--every", type=int, default=250)
     ap.add_argument("--assay-every", type=int, default=2500)
+    ap.add_argument("--plot-only", action="store_true", help="re-draw the figures and tables from an existing invasion.csv")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     rows = []
     t0 = time.time()
     n_runs = len(CONDS) * len(UNITS) * len(SEED_AT) * a.seeds
     done = 0
-    for z80_steps, k in CONDS:
+    if a.plot_only:
+        rows = pd.read_csv(os.path.join(a.out, "invasion.csv")).to_dict("records")
+        CONDS_RUN = []
+    else:
+        CONDS_RUN = CONDS
+    for z80_steps, k in CONDS_RUN:
         for uname, unit in UNITS.items():
             ph = phases(unit)
             for seed_at in SEED_AT:
@@ -117,8 +123,9 @@ def main():
             axes[1, j].set_xlabel("steps after seeding")
             for ax in axes[:, j]:
                 ax.set_ylim(-0.02, 1.02)
-        axes[0, 0].set_ylabel("cells within Hamming 4 of the unit")
-        axes[1, 0].set_ylabel("heritable fraction (16 random cells)")
+        axes[0, 0].set_ylabel("occupancy of the unit\n(cells within Hamming 4)")
+        axes[1, 0].set_ylabel("heritable fraction\n(16 random cells)")
+        fig.subplots_adjust(hspace=0.35, wspace=0.25)
         from matplotlib.lines import Line2D
         fig.legend([Line2D([], [], color="k", ls="-"), Line2D([], [], color="k", ls="--")], ["seeded at step 0", "seeded at step 1,000"], loc="upper left", bbox_to_anchor=(1.0, 0.95), frameon=False, title=f"{uname} seeded into 1% of cells")
         fs.save(fig, os.path.join(a.out, f"invasion_{uname}"))

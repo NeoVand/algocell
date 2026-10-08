@@ -127,14 +127,14 @@ def main():
         t.set_color(fs.color(lab))
     axes[0].set_xlim(-0.03, 1.25)
     axes[0].set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-    axes[0].set_xlabel("fraction of 20 seeds — heritable (filled), faithful (open); p: one-sided Fisher vs none")
+    axes[0].set_xlabel("fraction of 20 seeds (filled: heritable, open: faithful)")
     axes[1].set_xscale("log")
     axes[1].set_xlim(5_000, 600_000)
-    axes[1].set_xlabel("KM median steps to first heritable replicator (▶ not reached in 300k)")
+    axes[1].set_xlabel("KM median steps to first heritable replicator\n(▶ median not reached in 300,000)")
     axes[0].set_ylim(-1.6 - 0.5 * max(0, len(extra) - 1), len(labels) - 0.4)
     fig.suptitle("L = 9, mutation 1/16: removing stack writers raises emergence (Stage D, seeds 1001–1020)", fontsize=8, y=1.0)
     h = [Line2D([], [], marker="o", color="k", ls="none", ms=4), Line2D([], [], marker="s", color="k", ls="none", ms=4)]
-    fig.legend(h, ["128 Z80 steps", "512 Z80 steps"], loc="upper left", bbox_to_anchor=(1.0, 0.9), frameon=False)
+    fig.legend(h, ["128 Z80 steps", "512 Z80 steps"], loc="upper left", bbox_to_anchor=(1.0, 0.9), frameon=False, title="p: one-sided Fisher vs none\nat the same budget")
     fs.save(fig, os.path.join(out, "D_forest"))
     print("wrote", out)
 
