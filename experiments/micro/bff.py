@@ -13,6 +13,8 @@ can lap the tape as the Z80 ring does). `alphabet` maps each of the 256 byte val
 values to each instruction (noisier random code without changing the language). Byte 0 is the loop-test null as in
 cubff regardless of the map.
 
+Switch `nohalt` (the benign-tar variant): an unmatched bracket is a no-op instead of ending the encounter.
+
 Per encounter the kernel records: steps executed, whether the instruction pointer ever entered the partner's half
 (closure, Definition 2 of THEORY.md), the maximum pointer position, and the number of writes into the partner.
 """
@@ -29,7 +31,7 @@ LIT = "P"                    # opcode id 11, the literal-push switch (byte 0x50 
 WORDS_PER_PAIR = PAIR // 4
 
 WGSL = """
-struct Params { n_pairs: u32, steps: u32, ip_wrap: u32, tape_len: u32, literal: u32, pad0: u32, pad1: u32, pad2: u32 }
+struct Params { n_pairs: u32, steps: u32, ip_wrap: u32, tape_len: u32, literal: u32, nohalt: u32, pad1: u32, pad2: u32 }
 @group(0) @binding(0) var<storage, read_write> mem: array<u32>;
 @group(0) @binding(1) var<storage, read> amap: array<u32>;
 @group(0) @binding(2) var<storage, read_write> outp: array<u32>;
@@ -81,7 +83,7 @@ fn run(@builtin(global_invocation_id) gid: vec3<u32>) {
             if (o == 9u) { depth = depth + 1; } else if (o == 10u) { depth = depth - 1; if (depth == 0) { found = true; break; } }
             q = q + 1u;
           }
-          if (!found) { stop = true; } else { pc = i32(q); }
+          if (!found) { if (P.nohalt == 0u) { stop = true; } } else { pc = i32(q); }
         }
       }
       case 11u: {
@@ -104,7 +106,7 @@ fn run(@builtin(global_invocation_id) gid: vec3<u32>) {
             if (o == 10u) { depth = depth + 1; } else if (o == 9u) { depth = depth - 1; if (depth == 0) { found = true; break; } }
             q = q - 1;
           }
-          if (!found) { stop = true; } else { pc = q; }
+          if (!found) { if (P.nohalt == 0u) { stop = true; } } else { pc = q; }
         }
       }
       default: {}
@@ -156,12 +158,13 @@ def density_map(k: int, seed: int = 0) -> np.ndarray:
 class BFF:
     """Executes many 128-byte pairs for `steps` instructions on the GPU."""
 
-    def __init__(self, max_pairs: int = 1 << 16, steps: int = 1 << 13, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False):
+    def __init__(self, max_pairs: int = 1 << 16, steps: int = 1 << 13, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False, nohalt: bool = False):
         self.dev = get_device()
         self.max_pairs = max_pairs
         self.steps = steps
         self.ip_wrap = ip_wrap
         self.literal = literal
+        self.nohalt = nohalt
         self.alphabet = ascii_map(literal) if alphabet is None else np.asarray(alphabet, dtype=np.uint32)
         B = wgpu.BufferUsage
         self.mem_buf = self.dev.create_buffer(size=max_pairs * PAIR, usage=B.STORAGE | B.COPY_DST | B.COPY_SRC)
@@ -193,7 +196,7 @@ class BFF:
         assert pairs.shape[1] == PAIR and n <= self.max_pairs
         steps = self.steps if steps is None else steps
         self.dev.queue.write_buffer(self.mem_buf, 0, pairs.tobytes())
-        self.dev.queue.write_buffer(self.params_buf, 0, np.array([n, steps, int(self.ip_wrap), TAPE, int(self.literal), 0, 0, 0], dtype=np.uint32).tobytes())
+        self.dev.queue.write_buffer(self.params_buf, 0, np.array([n, steps, int(self.ip_wrap), TAPE, int(self.literal), int(self.nohalt), 0, 0], dtype=np.uint32).tobytes())
         enc = self.dev.create_command_encoder()
         p = enc.begin_compute_pass()
         p.set_pipeline(self.pipeline)
@@ -206,7 +209,7 @@ class BFF:
         return mem, out
 
 
-def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False) -> tuple[np.ndarray, dict]:
+def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False, nohalt: bool = False) -> tuple[np.ndarray, dict]:
     """CPU reference of the kernel, for tests."""
     amap = ascii_map(literal) if alphabet is None else alphabet
     t = pair.astype(np.int32).copy()
@@ -261,7 +264,8 @@ def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alpha
                             break
                     q += 1
                 if not found:
-                    stop = True
+                    if not nohalt:
+                        stop = True
                 else:
                     pc = q
         elif op == 11:
@@ -287,7 +291,8 @@ def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alpha
                             break
                     q -= 1
                 if not found:
-                    stop = True
+                    if not nohalt:
+                        stop = True
                 else:
                     pc = q
         executed += 1

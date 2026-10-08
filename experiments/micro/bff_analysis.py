@@ -110,7 +110,7 @@ def load_run(d: str) -> dict | None:
     amap = ascii_map(lit) if cond["density"] <= 1 else density_map(cond["density"], seed=0)
     if lit:
         amap = amap.copy(); amap[ord(LIT)] = 11
-    variant = ("wrap" if cond["ip_wrap"] else "std") + ("lit" if lit else "") + (f"_d{cond['density']}" if cond["density"] > 1 else "")
+    variant = ("wrap" if cond["ip_wrap"] else "std") + ("lit" if lit else "") + ("nh" if cond.get("nohalt") else "") + (f"_d{cond['density']}" if cond["density"] > 1 else "")
     r = {"run": os.path.basename(d), "variant": variant, "seed": cond["seed"], "epochs_done": int(ep["epoch"].max()), "finished": os.path.exists(os.path.join(d, "summary.json"))}
     S = pd.DataFrame([{"epoch": s["epoch"], "HOE": s["HOE"], "H0": s["H0"], "unique_frac": s["unique_frac"], "frac_heritable": s["frac_heritable"],
                        "top_share": s["top"][0]["share"], "top_gen2": s["top"][0]["gen2"], "top_entered": s["top"][0]["entered"], "top_copies": s["top"][0]["copies"],

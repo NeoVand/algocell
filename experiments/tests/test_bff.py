@@ -145,3 +145,31 @@ def test_literal_push_tiling_is_an_open_replicator_only_with_a_wrapping_pointer(
     b0 = BFF(max_pairs=64, steps=8192, ip_wrap=True, literal=False)
     mem0, _ = b0.execute(np.concatenate([np.repeat(t[None], 32, 0), quiet], axis=1))
     assert np.array_equal(mem0[:, TAPE:], quiet)
+
+
+@pytest.mark.parametrize("ip_wrap", [False, True])
+def test_nohalt_kernel_matches_reference(ip_wrap):
+    rng = np.random.default_rng(23)
+    b = BFF(max_pairs=256, steps=2048, ip_wrap=ip_wrap, literal=True, nohalt=True)
+    pairs = rng.integers(0, 256, size=(256, PAIR), dtype=np.uint8)
+    for i in range(0, 256, 2):
+        prog = "".join(rng.choice(list("<>{}+-.,[]P") + ["x"] * 3, size=rng.integers(4, 40)))
+        pairs[i, : len(prog)] = np.frombuffer(prog.encode(), dtype=np.uint8)
+    mem, out = b.execute(pairs)
+    for i in range(256):
+        ref_mem, ref = reference_execute(pairs[i], 2048, ip_wrap=ip_wrap, literal=True, nohalt=True)
+        assert np.array_equal(mem[i], ref_mem), f"pair {i}"
+        assert tuple(out[i]) == (ref["executed"], ref["entered"], ref["max_pc"], ref["writesB"]), f"pair {i}: {out[i]} vs {ref}"
+
+
+def test_nohalt_makes_unmatched_brackets_noops():
+    t = enc("]" * 8 + "x" * 56)  # eight unmatched ] : halts at the first one normally, runs through under nohalt
+    pair = np.concatenate([t, np.full(TAPE, ord("x"), dtype=np.uint8)])
+    _, o = BFF(max_pairs=4, steps=1000, ip_wrap=False).execute(pair[None])
+    assert o[0, 0] == 1 and o[0, 1] == 0  # one instruction, never reached the partner
+    _, o2 = BFF(max_pairs=4, steps=1000, ip_wrap=False, nohalt=True).execute(pair[None])
+    assert o2[0, 0] == PAIR and o2[0, 1] == 1  # one full pass, entered the partner
+    # a matched loop still loops under nohalt (tape[h0] = '[' is non-zero)
+    t2 = enc("[]" + "x" * 62)
+    _, o3 = BFF(max_pairs=4, steps=1000, ip_wrap=False, nohalt=True).execute(np.concatenate([t2, np.full(TAPE, ord("x"), dtype=np.uint8)])[None])
+    assert o3[0, 0] == 1000 and o3[0, 1] == 0

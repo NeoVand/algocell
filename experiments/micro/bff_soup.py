@@ -101,16 +101,16 @@ def high_order_entropy(soup: np.ndarray) -> tuple[float, float]:
 
 
 def run(out: str, n: int, epochs: int, seed: int, ip_wrap: bool, density: int, sample_every: int, snapshot_epochs: list[int],
-        steps: int = 1 << 13, mutation: float = 2.0 ** -12, sample_pairs: int = 512, literal: bool = False) -> dict:
+        steps: int = 1 << 13, mutation: float = 2.0 ** -12, sample_pairs: int = 512, literal: bool = False, nohalt: bool = False) -> dict:
     os.makedirs(out, exist_ok=True)
     rng = np.random.default_rng(seed)
     amap = None if density <= 1 else density_map(density, seed=0)
     if literal and amap is not None:
         amap = amap.copy(); amap[ord("P")] = 11
-    bff = BFF(max_pairs=n // 2, steps=steps, ip_wrap=ip_wrap, alphabet=amap, literal=literal)
+    bff = BFF(max_pairs=n // 2, steps=steps, ip_wrap=ip_wrap, alphabet=amap, literal=literal, nohalt=nohalt)
     amap_eff = bff.alphabet
     soup = rng.integers(0, 256, size=(n, TAPE), dtype=np.uint8)
-    cond = {"n_programs": n, "tape": TAPE, "steps": steps, "mutation": mutation, "ip_wrap": ip_wrap, "density": density, "literal": literal, "seed": seed,
+    cond = {"n_programs": n, "tape": TAPE, "steps": steps, "mutation": mutation, "ip_wrap": ip_wrap, "density": density, "literal": literal, "nohalt": nohalt, "seed": seed,
             "epochs": epochs, "sample_every": sample_every, "snapshot_epochs": snapshot_epochs, "sample_pairs": sample_pairs}
     json.dump(cond, open(os.path.join(out, "cond.json"), "w"), indent=1)
     ep_f = open(os.path.join(out, "epochs.csv"), "w")
@@ -193,13 +193,14 @@ def main():
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--ip-wrap", action="store_true")
     ap.add_argument("--literal", action="store_true", help="add the literal-push instruction P (byte 0x50)")
+    ap.add_argument("--nohalt", action="store_true", help="unmatched brackets are no-ops instead of halting (benign tar)")
     ap.add_argument("--density", type=int, default=1)
     ap.add_argument("--sample-every", type=int, default=64)
     ap.add_argument("--snapshot-epochs", default="0,1024,2048,4096,8192")
     ap.add_argument("--steps", type=int, default=1 << 13)
     a = ap.parse_args()
     snaps = [int(x) for x in a.snapshot_epochs.split(",") if x]
-    s = run(a.out, a.n, a.epochs, a.seed, a.ip_wrap, a.density, a.sample_every, snaps, steps=a.steps, literal=a.literal)
+    s = run(a.out, a.n, a.epochs, a.seed, a.ip_wrap, a.density, a.sample_every, snaps, steps=a.steps, literal=a.literal, nohalt=a.nohalt)
     print("done", json.dumps(s))
 
 
