@@ -766,3 +766,25 @@ replication; 2% exact share is noisy because return-address smears reach
   in 71/80, median lead 19×), P3 grey zone (AUC 0.72 vs HOE 0.75 at L ≥ 25). Reading for the paper: life begins at
   minimum complexity; complexity-times-abundance detectors fire on the sterile order first; the e^a weighting lets one
   duplicated random tape dominate the measure. Outcomes appended to BIOLOGY_PREREG.md; rows in NUMBERS_INDEX.
+- 2026-10-08 night (**Stage H pre-registration: does space sustain the open phase?** written before any Stage H run).
+  Hypothesis (STORY.md v2 "space and kin"): on the lattice an open replicator's partners are mostly its own copies, so
+  openness is cheap; under well-mixed pairing every partner is a stranger, so the open phase should be less heritable
+  and closure selected sooner, or the open replicator should fail to establish. Design: 10 worlds, label `mixed@closure`,
+  grid `mixed` (partner drawn uniformly from the whole soup; everything else identical to Stage G L = 16: 20,000 cells,
+  8,192 draws, 128 steps, k = 4, 300,000 steps, same sample and snapshot schedule), seeds 3001–3010, local GPU; the
+  control is Stage G L = 16 (20 worlds, seeds 2001–2020). Measures (identical pipeline: assay_batch → t_rep; c4_functional
+  → heritable fraction of 16 random cells per sampled step): h_open = median heritable fraction over sampled steps
+  2,000–20,000; t_close70 = first sampled step with heritable fraction ≥ 0.7. Lattice baselines (Stage G L = 16, this
+  evening, from `results/stageG/c4/functional.csv` and `stage_g_runs.csv`): t_rep median 525 (IQR 200–1,338); h_open
+  median 0.125 (IQR 0.125–0.188); t_close70 median 30,000 (IQR 20,000–50,000), reached in 20/20 worlds.
+  Predictions: **H0 (sanity)** the pusher (`01 c5` or a register variant) is the first heritable tape in ≥ 7/10 mixed
+  worlds, t_rep within 100–5,000 (early partners are random under both topologies). **H1** h_open is lower under mixing:
+  mixed median < 0.125 and one-sided Mann–Whitney (10 vs 20) P < 0.05; kill: mixed median ≥ 0.125 with P ≥ 0.2.
+  **H2** closure comes sooner under mixing: t_close70 mixed median < 30,000 and one-sided Mann–Whitney P < 0.05; kill:
+  mixed median ≥ 30,000 with P ≥ 0.2. **Strong form**: if ≥ 4/10 mixed worlds produce no heritable replicator by 300,000
+  steps (lattice 20/20), establishment itself requires space; report as such and do not score H1/H2 for those worlds.
+  If H1 and H2 are both killed, the kin hypothesis is dead at L = 16 and the paper gains a null: the open → closed order
+  is not an artefact of spatial structure. Descriptive (not scored): the share of pusher encounters whose partner is
+  within Hamming distance 2 of the pusher, lattice vs mixed, from the interaction census. Same-seed GPU non-determinism
+  applies as in Stage G (population claims over seeds). Code review and tests (`tests/test_mixed.py`) and a 1,000-step
+  dry run precede the launch; Stage G outputs are untouched.
