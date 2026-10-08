@@ -29,7 +29,10 @@ const ALL_TAPE_LENGTHS = [...SQUARE_TAPE_LENGTHS, ...HEADLESS_TAPE_LENGTHS];
 // Ring-length variants for the gcd experiments (Stage F): pair memory padded to P bytes.
 const RING_VARIANTS: Array<[number, number]> = [[16, 33], [16, 34], [16, 35], [16, 37], [36, 73], [36, 74], [36, 75], [36, 79],
   // dead-zone probes (Stage E: the pusher's heritability dips at L = 9–12): longer rings at L = 8, 9, 10, 12, 16
-  [8, 20], [8, 24], [8, 32], [9, 20], [9, 24], [9, 32], [10, 24], [10, 28], [10, 32], [10, 40], [12, 28], [12, 32], [12, 36], [12, 48], [16, 40], [16, 48]];
+  [8, 20], [8, 24], [8, 32], [9, 20], [9, 24], [9, 32], [10, 24], [10, 28], [10, 32], [10, 40], [12, 28], [12, 32], [12, 36], [12, 48], [16, 40], [16, 48],
+  // local ring sweep (post Stage F): every even P from 2L to 2L+24 at L = 8, 10, 12, 16
+  [8, 18], [8, 22], [8, 26], [8, 28], [8, 30], [8, 36], [8, 40], [10, 22], [10, 26], [10, 30], [10, 34], [10, 36], [10, 38], [10, 44],
+  [12, 26], [12, 30], [12, 34], [12, 38], [12, 40], [12, 42], [12, 44], [12, 46], [16, 36], [16, 38], [16, 42], [16, 44], [16, 46], [16, 50], [16, 52], [16, 54], [16, 56]];
 const shaders: Record<string, string> = { hex: createSimShader('hex') };
 for (const L of ALL_TAPE_LENGTHS) shaders[`square_L${L}`] = createSimShader('square', L);
 for (const [L, P] of RING_VARIANTS) shaders[`square_L${L}_P${P}`] = createSimShader('square', L, P);
