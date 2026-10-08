@@ -38,6 +38,9 @@ def run_soup(seed: int, ip_wrap: bool, density: int, n: int, epochs: int, batch:
 
     variant = ("wrap" if ip_wrap else "std") + ("lit" if literal else "") + ("nh" if nohalt else "") + (f"_d{density}" if density > 1 else "")
     out = f"/runs/{batch}/{variant}_s{seed}"
+    # A container sees other containers' commits only after reload(): without it, a reused container re-ran a finished
+    # seed on 2026-10-08 (stale view, no summary.json) and overwrote its files on the volume.
+    runs_volume.reload()
     if os.path.exists(os.path.join(out, "summary.json")):
         return json.load(open(os.path.join(out, "summary.json")))
     snaps = [e for e in (1024, 2048, 4096, 8192) if e < epochs]

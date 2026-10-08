@@ -260,6 +260,38 @@ def main():
                   f"(e2) earlier emergence than standard BFF: median t_her {wl_her.median():.0f} vs {std_her.median():.0f} (one-sided Mann–Whitney p = {p_e2:.3g}) → {'met' if p_e2 < 0.05 else 'not met'}; "
                   f"(e3) final dominant closed in {n_final_closed}/{len(wl)} transitioned worlds (≥ 6 predicted) → {'met' if n_final_closed >= 6 else 'not met'}; "
                   f"collapsed after the open wave in {int(wl['collapsed'].sum())}/{len(wl)} (peak heritable fraction median {wl['max_heritable'].median():.2f} at median epoch {wl['peak_heritable_epoch'].median():.0f}, final median {wl['final_heritable'].median():.2f})")
+    nh = R[R["variant"] == "wraplitnh"]
+    nht = nh[nh["t_top"].notna()]
+    if len(nh):
+        f1 = int(((nht["first_class"] == "open") & ~nht["first_loop"].astype(bool)).sum())
+        f2 = int((nh["final_heritable"] >= 0.5).sum())
+        n_coll = int(nh["collapsed"].sum())
+        f3 = int(nh["t_closed"].notna().sum())
+        nh_runs = [r for r in runs if r["variant"] == "wraplitnh"]
+        hoe_before = sum(1 for r in nh_runs if r["S"]["HOE"].iloc[0] >= 1.0 and r["S"]["top_share"].iloc[0] < 0.01)
+        hoe_silent = sum(1 for r in nh_runs if (r["S"][r["S"]["epoch"] >= 64]["HOE"] < 0.1).all())
+        wl_all = R[R["variant"] == "wraplit"]
+        wl_persist = int((wl_all["final_heritable"] >= 0.5).sum())
+        p_f2 = fisher_exact([[f2, len(nh) - f2], [wl_persist, len(wl_all) - wl_persist]])[1] if len(wl_all) else float("nan")
+        md.append(f"- (f1) wrap + literal + no-halt: first replicators straight-line and open {f1}/{len(nht)} transitions of {len(nh)} runs (≥ 9/12 predicted) → {'met' if f1 >= 9 else 'not met'}; "
+                  f"(f2) persistence: heritable fraction ≥ 0.5 at the final sample in {f2}/{len(nh)} (≥ 9/12 predicted; collapsed {n_coll}/{len(nh)}, kill if ≥ 9/12) → {'met' if f2 >= 9 else ('KILL' if n_coll >= 9 else 'not met')}, "
+                  f"against {wl_persist}/{len(wl_all)} persisting in wraplit (Fisher two-sided p = {p_f2:.3g}); "
+                  f"(f3) closed class dominant in {f3}/{len(nh)} (0 predicted) → {'met' if f3 == 0 else 'not met'}; "
+                  f"HOE ≥ 1 at the first sample, before any class holds 1% of the soup, in {hoe_before}/{len(nh)}, and HOE < 0.1 at every sample from epoch 64 on in {hoe_silent}/{len(nh)} "
+                  f"(the detector fires before the replicator exists and is silent during its reign)")
+    lt = R[R["variant"] == "stdlit"]
+    ltt = lt[lt["t_top"].notna()]
+    if len(lt):
+        l1 = int(((ltt["first_class"] == "open") & ~ltt["first_loop"].astype(bool)).sum())
+        l2_letter = int(lt["collapsed"].sum())
+        reached = int(lt["t_her"].notna().sum())
+        fin = lt[lt["finished"].astype(bool)]
+        l2_intent = int((fin["final_heritable"] < 0.1).sum())
+        l_closed = int(lt["t_closed"].notna().sum())
+        md.append(f"- (l1) literal without wrap: first replicators straight-line and open {l1}/{len(ltt)} transitions of {len(lt)} runs (≥ 9/12 predicted) → {'met' if l1 >= 9 else 'not met'}; "
+                  f"(l2) collapse by the pre-registered letter (heritable fraction ≥ 0.5, then < 0.1) {l2_letter}/{len(lt)} (≥ 9/12 predicted) → {'met' if l2_letter >= 9 else 'not met by the letter'}; "
+                  f"the wave reached 0.5 in {reached}/{len(lt)} worlds (peak heritable fraction median {lt['max_heritable'].median():.2f}, range {lt['max_heritable'].min():.2f}–{lt['max_heritable'].max():.2f}, first-replicator copies median {lt['first_copies'].median():.2f}); "
+                  f"final heritable fraction < 0.1 in {l2_intent}/{len(fin)} finished worlds (no persistent open population); closed class dominant in {l_closed}/{len(lt)}")
     with open(os.path.join(out, "NUMBERS_BFF.md"), "w") as fh:
         fh.write("\n".join(md))
     print("\n".join(md[:3]))

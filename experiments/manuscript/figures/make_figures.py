@@ -280,12 +280,32 @@ def fig3(out):
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 4
+def _allp_share(s):
+    """Share of the all-`P` class (hex 50) among the ten largest classes of a sample; 0 when it is not among them."""
+    for t in s["top"]:
+        tp = t["tape"]
+        if tp and set(tp[i:i + 2] for i in range(0, len(tp), 2)) == {"50"}:
+            return t["share"]
+    return 0.0
+
+
 def fig4(out):
+    from matplotlib import ticker as mticker
     bdir = os.path.join(EXP, "runs", "bff_modal", "bff")
     runs = pd.read_csv(os.path.join(R, "bff", "runs.csv"))
+    runs["variant"] = runs["variant"].replace({"stdlit": "lit"})
     variants = [v for v in ["std", "wrap", "lit", "wraplit", "wraplitnh"] if v in set(runs["variant"])]
-    fig = plt.figure(figsize=(fs.DOUBLE, 105 * fs.MM))
-    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], hspace=0.55, wspace=0.45, left=0.07, right=0.99, top=0.95, bottom=0.1)
+    xticks, xlabels = [0, 64, 256, 1024, 4096, 16384], ["0", "64", "256", "1,024", "4,096", "16,384"]
+
+    def epoch_axis(ax):
+        ax.set_xscale("symlog", linthresh=64)
+        ax.set_xticks(xticks, xlabels)
+        ax.xaxis.set_minor_locator(mticker.NullLocator())
+        ax.set_xlim(0, 17500)
+        ax.set_ylim(-0.02, 1.02)
+
+    fig = plt.figure(figsize=(fs.DOUBLE, 112 * fs.MM))
+    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 0.85], hspace=0.8, wspace=0.45, left=0.07, right=0.99, top=0.95, bottom=0.07)
     axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
     axd = fig.add_subplot(gs[1, :])
     # a: heritable fraction vs epoch, every run, by variant
@@ -297,13 +317,12 @@ def fig4(out):
             S = pd.DataFrame([{"epoch": s["epoch"], "h": s["frac_heritable"]} for s in map(json.loads, open(p))])
             axa.plot(S["epoch"], S["h"].rolling(4, min_periods=1).mean(), color=fs.BFF_VARIANT[v], lw=0.5, alpha=0.55)
         axa.plot([], [], color=fs.BFF_VARIANT[v], lw=1.2, label=f"{fs.BFF_VARIANT_LABEL[v]} (n = {int((runs['variant'] == v).sum())})")
-    axa.set_xscale("symlog", linthresh=256)
-    axa.set_xlim(0, 16400)
-    axa.set_ylim(-0.02, 1.02)
+    epoch_axis(axa)
     fs.tidy(axa, "epoch", "heritable fraction of random tapes")
-    axa.legend(fontsize=4.8, loc="upper left", bbox_to_anchor=(0.0, 1.02))
     fs.panel_label(axa, "a")
-    # b: first vs final openness per variant
+    handles, labels = axa.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.505), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
+    # b: first vs final openness per variant (black labels: Nature forbids coloured text)
     rng = np.random.default_rng(0)
     for i, v in enumerate(variants):
         d = runs[(runs["variant"] == v) & runs["t_top"].notna()]
@@ -313,29 +332,24 @@ def fig4(out):
             vals = d[f"{which}_entered"].values
             axb.scatter(x[~loop], vals[~loop], s=8, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
             axb.scatter(x[loop], vals[loop], s=8, color=fs.BFF_VARIANT[v], lw=0)
+        axb.text(i * 2.6 + 0.5, 1.08, v, ha="center", fontsize=4.8, color="black")
     axb.set_xticks([i * 2.6 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=4.5, rotation=90)
-    for i, v in enumerate(variants):
-        axb.text(i * 2.6 + 0.5, 1.08, v, ha="center", fontsize=4.8, color=fs.BFF_VARIANT[v])
     axb.set_ylim(-0.03, 1.03)
     fs.tidy(axb, None, "encounters whose pointer\nenters the partner")
     fs.panel_label(axb, "b")
-    # c: the all-P wave in wraplit: top-class share and pointer-entered fraction vs epoch
-    try:
-        for run in runs[runs["variant"] == "wraplit"]["run"]:
-            S = pd.DataFrame([{"epoch": s["epoch"], "share": s["top"][0]["share"]} for s in map(json.loads, open(os.path.join(bdir, run, "samples.jsonl")))])
-            E = pd.read_csv(os.path.join(bdir, run, "epochs.csv"))
-            axc.plot(S["epoch"], S["share"], color=fs.BFF_VARIANT["wraplit"], lw=0.6, alpha=0.6)
-            axc.plot(E["epoch"], E["frac_entered"], color=fs.CONCEPT["tar"], lw=0.5, alpha=0.5)
-        axc.plot([], [], color=fs.BFF_VARIANT["wraplit"], lw=1.1, label="share of the all-P tape")
-        axc.plot([], [], color=fs.CONCEPT["tar"], lw=1.1, label="encounters entering the partner")
-        axc.set_xscale("symlog", linthresh=64)
-        axc.set_xlim(0, 16400)
-        axc.set_ylim(-0.02, 1.02)
-        fs.tidy(axc, "epoch", "fraction")
-        axc.legend(fontsize=4.8, loc="upper right")
-        fs.panel_label(axc, "c")
-    except Exception as e:  # noqa: BLE001
-        placeholder(axc, f"c (data missing: {e})")
+    # c: the all-P class under lethal (wraplit) and benign (wraplitnh) tar: one switch, collapse vs persistence
+    for v in ("wraplit", "wraplitnh"):
+        if v not in variants:
+            continue
+        for run in runs[runs["variant"] == v]["run"]:
+            p = os.path.join(bdir, run, "samples.jsonl")
+            if not os.path.exists(p):
+                continue
+            S = pd.DataFrame([{"epoch": s["epoch"], "share": _allp_share(s)} for s in map(json.loads, open(p))])
+            axc.plot(S["epoch"], S["share"], color=fs.BFF_VARIANT[v], lw=0.6, alpha=0.6)
+    epoch_axis(axc)
+    fs.tidy(axc, "epoch", "share of the all-P class")
+    fs.panel_label(axc, "c")
     placeholder(axd, "d  conceptual: the 2 × 2 classification — literal write channel × lethality of the tar — with the Z80, BFF, BFF+literal and the benign-tar cell placed (to design)")
     fs.save(fig, os.path.join(out, "fig4"))
 

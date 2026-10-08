@@ -99,3 +99,48 @@ memory), and a memory copier's read and write heads start at the same byte, cros
 
 Figures: `bff_timeseries.{pdf,svg,png}` (high-order entropy, pointer-entered fraction, copy events, heritable fraction
 vs epoch, all runs by variant); `bff_first_vs_final_openness.{pdf,svg,png}`. Per-run table `runs.csv`.
+
+## 4b. Benign tar: the open phase becomes permanent (prediction f, `wraplitnh`, 12 seeds)
+
+Same as `wraplit` but an unmatched bracket is a no-op instead of ending the encounter (pre-registered THEORY.md P1(f),
+run after a constructive search found no closed heritable replicator among 1.3 million periodic programs of this
+language up to period 10).
+- **(f1) met, 12/12:** the first replicator is again the all-`P` one-byte tiling, open (pointer enters the partner in
+  100% of culture-test encounters), loop-free, copies 1.00 of random partners, at the first sample (epoch 64).
+- **(f2) met, 12/12:** the open population **persists**: the heritable fraction of random tapes is ≥ 0.5 at the final
+  sample in 12/12 worlds (final median 1.00; peak 1.00 reached at median epoch 128; collapsed 0/12), against 0/12 in
+  `wraplit`. The kill criterion (collapse in ≥ 9/12) was not triggered.
+- **(f3) met, 0/12 closed:** no closed class ever appears, as the search implied: in this language the literal's
+  operands cannot both execute a loop and be written by it, so closure is unreachable.
+- Reading, fixed in advance: this is the "M1" cell of the minimal-machine ladder realised inside BFF — a substrate in
+  which the open organism is stable and closure is impossible — and it settles the mechanism of the `wraplit` collapse:
+  the only change between the two cells is whether an unmatched bracket halts the pointer. Lethal tar: extinction in
+  12/12 by epoch ≈ 256. Benign tar: a permanent open regime, 12/12, for 16,384 epochs.
+- The high-order-entropy detector fires at the first sample (epoch 0) in 12/12 — before any class holds 0.03% of the
+  soup, because 8,192 un-halted steps of random code already restructure the tapes — and is silent (HOE ≤ 0.03) at
+  every sample from epoch 64 on, through the organism's whole reign: a one-byte organism has no high-order structure
+  to detect. The detector fires before life and goes quiet during it.
+
+## 4c. Literal without the wrapping pointer (`lit`, 12 seeds; 10 finished — seeds 11 and 12 were lost with a stopped Modal app at epochs 153 and 10,560 and are being re-run; the counts below are from the 10)
+
+- **(l1) met, 12/12:** the all-`P` tiling is the first replicator in every world (epoch 64), open and loop-free, copies
+  0.91 of random partners (median; the one-pass bound makes copies into partners with hostile tails partial).
+- **(l2) partly as predicted:** the open wave is weaker than under the wrapping pointer — the heritable fraction of
+  random tapes reaches ≥ 0.5 in only 5/12 worlds (peak median 0.47 at epoch 96) — and the open population dies out in
+  every finished world (final heritable fraction 0.00 in 10/10 finished worlds; the all-`P` class survives only as
+  a minority). By the pre-registered letter of (l2) ("collapse in ≥ 9/12", defined as ≥ 0.5 then < 0.1) the count is
+  4/12, because 7 worlds never reached 0.5; by its intent (no persistent open population) it is 12/12. Both are
+  reported. No closed class (0/12).
+- Together with 4b: the pointer wrap decides how strong the open wave is (bandwidth), the tar decides whether it lasts.
+
+## 5b. The classification, completed
+
+| | tar benign to open organisms | tar lethal to open organisms |
+|---|---|---|
+| **literal write channel** | open, then closed — the Z80 soup (40/40 at 300k; 19/20 by 1M at L = 20) · **open forever — BFF + literal, no-halt (12/12 persist, 0/12 close: closure unreachable)** | open, then extinct — BFF + literal (12/12 collapse) · BFF + literal without wrap (12/12 die out) |
+| **no literal write channel** | — (not run) | born closed — BFF as published (9/9) and with a wrapping pointer (19/19) |
+
+The Z80 and the benign-tar BFF cell share the top-left corner and differ in one respect only: the Z80 instruction set
+offers closers (a jump that keeps the pointer home while the pushes continue), BFF + `P` offers none that can also be
+copied. So "open then closed" needs three things — a literal channel, benign tar, and a reachable closed design — and
+the atlas has now exhibited a substrate that has the first two and lacks the third.

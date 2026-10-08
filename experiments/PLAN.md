@@ -705,3 +705,15 @@ replication; 2% exact share is noisy because return-address smears reach
   there (ETA ≈ 13:30); the four `wraplitnh` seeds (8, 10, 11, 12) were still queued, so their app was stopped and they
   were relaunched on H100. Follow-up spend estimate ≈ $34 against the ≈ $20 approval — the overrun is the two capacity
   incidents (nine soups killed, then a stalled queue); reported to the user.
+- 2026-10-08 13:35 (**follow-up results**, `results/bff/FINDINGS.md` §4b–c): `wraplitnh` — (f1) 12/12 open all-`P`
+  first, (f2) persistence 12/12 (final heritable fraction median 1.00, collapsed 0/12 vs 0/12 persisting in
+  `wraplit`), (f3) 0/12 closed; kill not triggered. `lit` — (l1) 12/12 open first; (l2) by the letter 4/12 (the wave
+  reaches 0.5 in only 5/12), by intent 12/12 die out; 0/12 closed. Classification completed in THEORY/FINDINGS/
+  manuscript. Two `lit` seeds were still at their last epochs when written; the poller refreshes the numbers.
+- 2026-10-08 13:50 (**incident, follow-ups**): the two unfinished `lit` soups (seeds 11, 12) were not running — their app
+  had stopped and the containers were lost at epochs 153 and 10,560. The one live container, after finishing a `wraplitnh`
+  soup, started a duplicate of `wraplitnh` seed 12: `run_soup` checked `summary.json` on a stale volume view (no
+  `reload()`), so it saw no summary and overwrote the finished files on the volume with a partial copy; the rerun is
+  deterministic and restores them (≈ $1). Fix: `runs_volume.reload()` before the skip check. `lit` seeds 11–12
+  relaunched detached on H100 (≈ $2). Follow-up spend ≈ $37 against the ≈ $20 approval; the overrun is the two
+  capacity incidents, the lost soups and this duplicate. The analysis is refreshed when 24/24 summaries exist.

@@ -35,7 +35,9 @@ the audit trail for referees and for us. Paths are relative to `experiments/`.
 | closed-replicator search: 1,309,528 tilings, 0 closed heritable | 1.3 M; 0 | `results/bff_closed_search/NUMBERS_CLOSED_SEARCH_p10.md` |
 | Theorem 1 bound: 64 writes + 63 moves + 2 changes > 128 | arithmetic | `THEOREMS.md` Theorem 1 |
 | compute: 3,560 Z80 runs; 84 BFF soups; ≈ $400 | counts from run summaries; cost from preflight logs and recorded run times | `PLAN.md` change log; `runs/*/` summaries (A 630, B 640, C 490, D 280, E 1,230, F 210, G 80) |
-| `[fill]` lit and wraplitnh cells | pending | `results/bff/NUMBERS_BFF.md` after the follow-up fetch |
+| BFF wraplitnh: 12/12 all-P first (epoch 64); persists 12/12 (final heritable median 1.00, collapsed 0/12) vs 0/12 in wraplit; 0/12 closed; HOE ≥ 1 at epoch 0 in 12/12, ≤ 0.03 from epoch 64 | as stated | `results/bff/NUMBERS_BFF.md` wraplitnh section & readings (f1–f3); `results/bff/runs.csv`; `results/bff/FINDINGS.md` §4b |
+| BFF lit: 12/12 all-P first (epoch 64, copies median 0.91); heritable ≥ 0.5 in 5/12; collapse by the letter 4/12; final heritable 0.00 in 10/10 finished (2 pending); 0/12 closed | as stated | `results/bff/NUMBERS_BFF.md` stdlit section & readings (l1–l2); `results/bff/runs.csv`; `results/bff/FINDINGS.md` §4c |
+| closed-design search behind "none evolves": 1.3 M periodic programs ≤ period 10, 0 closed heritable | 1,309,528; 0 | `results/bff_closed_search/NUMBERS_CLOSED_SEARCH_p10.md` |
 
 Figure data sources: Fig. 1c `runs/stageG/none@closure_L16_st128_k4_s2001.jsonl` + `results/stageG/c4/functional.csv`; Fig. 1d `results/stageE/assays.csv`
 (`none@nominal`); Fig. 2a,b,e `results/stageG/stageG/stage_g_runs.csv`; Fig. 2c `results/stageG/c4/functional.csv`; Fig. 3a
