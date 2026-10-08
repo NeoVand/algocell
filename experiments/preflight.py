@@ -107,6 +107,8 @@ def main() -> int:
     if not a.skip_tests:
         print("1. test suite …", flush=True)
         r = subprocess.run([sys.executable, "-m", "pytest", "tests", "-q", "-x"], capture_output=True, text=True)
+        if r.returncode != 0:
+            print("\n".join(l for l in r.stdout.splitlines() if l.startswith("FAILED") or "Error" in l or "assert" in l)[:4000])
         print(r.stdout.strip().splitlines()[-1] if r.stdout.strip() else r.stderr[-500:])
         if r.returncode != 0:
             problems.append("tests failed")
