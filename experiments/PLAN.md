@@ -736,3 +736,22 @@ replication; 2% exact share is noisy because return-address smears reach
   and an independent critic pass; redrew the five conceptual panels to the user's compact design proofs (ellipses, short
   labels, Theorem 2 as a diagram). Fig. 5 is now a | b (closure-window model deferred to Extended Data). All composites
   build clean. `BIOLOGY_BRIDGE.md` answers the question whether the theory explains anything in real biology.
+- 2026-10-08 evening (**user review round 3; new directions**): the user marked remaining figure defects in purple
+  (1a SP arrow against the ring, 1b arc through the tape labels, 2d LDIR hook, 2e colours, 4b scale and markers, 5a arc,
+  5b design) and judged the data representations "not world-class"; an image AI is redesigning the figures and results
+  will be sent (the designer's seven questions are answered in `manuscript/figures/DESIGN_BRIEF_REPLY.md`); wait for
+  them before changing representations beyond defects. Fixed at once: 4b → horizontal dot plot; 1b tape labels removed;
+  1a one L-shaped SP arrow; 2d LDIR arc in the jump style; 2e palette distinct from 2c. New asks: (1) the full manuscript
+  PDF (`manuscript/build_pdf.py`, Markdown → LaTeX → tectonic → `manuscript/out/MAIN_nature.pdf`); (2) stills of the
+  simulation itself (tar flood, first-replicator explosion, competing species, closed takeover) and supplementary videos
+  (`manuscript/figures/soup_stills.py` renders the stored `.soup_*.u8.br` snapshots in two views; dense frames need one
+  local run with `--snapshot-steps`, pending the browser-sim pause rule); (3) biology-bridge analyses A (assembly measure
+  against the culture test) and B (information inflow from partner tests), pre-registered in `BIOLOGY_PREREG.md`, run by
+  background agents into `results/biology/`. The user's framing: "a legendary paper … completely new"; keep state here.
+- 2026-10-08 evening (**correction: pairing is local**): rendering the stored soup snapshots on the 160 × 125 lattice
+  showed species as spatial patches. The shaders confirm it: `prepare_batch` draws a random cell and pairs it with one
+  of its four lattice neighbours (square grid; the hex shader uses six; edges clamped, self-pairs inactive). Every
+  stage ran `grid: square`. The draft Methods sentence "pairing is random and non-spatial" and the introduction's
+  "no space" were wrong and are corrected in `MAIN_nature.md`; PLAN.md §design always said "random neighbour pairs".
+  Consequence: the Z80 soup is a spatial system with local interaction (BFF as published is well mixed); the
+  first-replicator "explosion" is a spatial wave, and the stills/videos are maps of the lattice.

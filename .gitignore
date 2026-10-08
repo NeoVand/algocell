@@ -23,3 +23,10 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Playwright
 test-results
+
+# manuscript build intermediates and video frame directories
+experiments/manuscript/out/*.tex
+experiments/manuscript/out/*.log
+experiments/manuscript/out/*.aux
+experiments/manuscript/out/fig*.pdf
+experiments/manuscript/figures/out/stills/frames_*/
