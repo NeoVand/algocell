@@ -325,6 +325,20 @@ def test_interaction_readbacks_match_the_soup():
     assert (wc[:, 1] >= changed_b).all()
 
 
+def test_write_soup_round_trip_and_execution():
+    s = Soup(tape_length=16, seed=5)
+    cells = s.read_soup()
+    unit = np.resize(np.frombuffer(bytes.fromhex("01c5"), dtype=np.uint8), 16)
+    cells[:200] = unit
+    s.write_soup(cells)
+    back = s.read_soup()
+    assert back.shape == cells.shape and (back == cells).all()
+    s.step(200)
+    after = s.read_soup()
+    near = ((after != unit).sum(1) <= 4).mean()
+    assert near > 0.02, near                       # the seeded pusher is still present (and usually spreading) after 200 steps
+
+
 def test_fisher_relative_tolerance_at_scale():
     from report import fisher
     assert fisher(40, 0, 0, 40) < 1e-20 and fisher(80, 0, 0, 80) < 1e-40

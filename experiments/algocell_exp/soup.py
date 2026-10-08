@@ -301,6 +301,16 @@ class Soup:
         raw = np.frombuffer(self.device.queue.read_buffer(self.soup_buf), dtype=np.uint8)
         return raw.reshape(self.cell_count, self.words_per_cell * 4)[:, : self.tape_length].copy()
 
+    def write_soup(self, cells: np.ndarray) -> None:
+        """Replace the whole soup with (cell_count, tape_length) uint8 (padding re-zeroed). For invasion assays:
+        read_soup → edit → write_soup. Does not touch the RNG stream or the batch index."""
+        cells = np.ascontiguousarray(cells, dtype=np.uint8)
+        assert cells.shape == (self.cell_count, self.tape_length), cells.shape
+        stride = self.words_per_cell * 4
+        data = np.zeros((self.cell_count, stride), dtype=np.uint8)
+        data[:, : self.tape_length] = cells
+        self.device.queue.write_buffer(self.soup_buf, 0, data.tobytes())
+
     def sync(self) -> None:
         """Block until all submitted work is done (a tiny readback)."""
         self.device.queue.read_buffer(self.byte_counts_buf, size=4)
