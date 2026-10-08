@@ -349,7 +349,9 @@ replication; 2% exact share is noisy because return-address smears reach
   fraction at L = 16; high-order entropy anti-correlated with life under `none` at L ≥ 25
   (the flood compresses); occupancy ≤ 0.75 at every step. **Stage D forest figure** added.
   **Ring sweep** (local, every even P from 2L to 2L + 24 at L = 8, 10, 12, 16; 3 seeds; 20k
-  steps) running to map the pusher regime's (L, P) rule.
+  steps; results/ring_sweep): 40 of 52 (L, P) cells are pusher cells; failures are scattered
+  resonances (L = 12 fails only at P = 24; L = 8 only at P = 32; L = 16 at P = 52; L = 10 on
+  7/12 rings), each reproducible across seeds; no arithmetic rule fits.
 - 2026-10-07 (Stage F read; 210/210 runs, 0 failures): **F1 falsified** — on every padded
   ring the tiled first-replicator periods divide P in 0.00 of cases and keep dividing 2L
   (0.50–1.00); as pre-registered, the gcd-on-the-ring mechanism is dropped and the divisor law

@@ -26,6 +26,19 @@ Padding the ring with zero bytes that are never written back changes which repli
 
 The pusher copies by a race on the ring. The stack pointer starts at the last byte of B and writes two bytes per PUSH downward; the program counter runs forward from A into B. Every byte of B that the program counter reaches before the stack has overwritten it is executed as the partner's code, and when the 3-byte `LD rr,nn` straddles an unwritten byte the register pair is loaded with partner data and every later PUSH propagates it: at L = 8 · P = 16 against one random partner, B is 7/8 correct at step 16 and `01 a3 01 a3 …` from step 32 (a3 was the partner's last byte, the one the stack reaches last); at L = 10 · P = 20 the parent itself is destroyed (0/10 bytes intact at step 128); at L = 12 · P = 24 the copy degenerates to `01 04 …`. Padding changes the instruction phase at the wrap from B to A: the straddling load then reads zero bytes (NOPs), and a fresh `LD rr,nn` executes before the next PUSH, so at L = 12 · P = 28 the parent stays intact (12/12) and B is a complete copy (12/12) by step 64. Because it is a phase effect it is not monotone in P. Averaged over 8 random partners the single-encounter copy fractions do not separate the viable from the non-viable cells (0.41–0.66 of B copied at 128 steps in every cell), and the isolated gen2 (0.31, 0.36, 0.37 at L = 10 for P = 20, 28, 40) sits at the heritability threshold in all three: at L = 10 the population outcome — flood, marginal persistence, flood — is decided at that margin by the ecology (the flood is the partner most pushers meet; its zero bytes are NOPs), not by the single-encounter number.
 
+## Local ring sweep (exploratory, no GPU cost; `ring_sweep.py`, `results/ring_sweep/`)
+
+`none`, 128 steps, 1/16, seeds 101–103, 20,000-step horizon, every even ring from P = 2L to 2L + 24 at L = 8, 10, 12, 16 (plus the Stage F values); a cell counts as a pusher cell when the first heritable replicator has period 2 in 3/3 seeds within 20,000 steps. 40 of 52 (L, P) cells are pusher cells. The failures are scattered, not a law of size:
+
+| L | pusher cells | failing or marginal rings (P: pusher-first of 3) |
+|---|---|---|
+| 8 | 9/11 | 18 (2/3), **32 (0/3)** |
+| 10 | 5/12 | 20 (1/3), 24 (1/3), 26 (2/3), 30 (0/3), 32 (0/3), 34 (0/3), 40 (0/3); working: 22, 28, 36, 38, 44 |
+| 12 | 12/13 | **24 (0/3)** — the unpadded ring is the only failure; two padding bytes (P = 26) restore emergence at 100 steps |
+| 16 | 14/16 | 37 (2/3, with one whole-tape period-16 unit), 52 (1/3) |
+
+The L = 12 dead zone is therefore confined to exactly P = 2L; the L = 8 pusher survives every ring but P = 32; L = 10 is the fragile length (7 of 12 rings fail or are marginal); L = 16 fails once (P = 52). No simple arithmetic rule (parity, P/L, P mod 4) fits all failures; they are resonances of the stack-pointer/program-counter race described above, and each is reproducible across the three seeds (every failing cell is 0/3 or 1/3, every working cell 3/3). Final heritable fractions at 20,000 steps (0.0–0.9) are mid-succession and not comparable with the 300k-step stages.
+
 ## What this settles and what it does not
 
 Settled: the divisor law is a property of the pair length 2L and not of the memory ring (F1 falsified as pre-registered, the ring-arithmetic claim is withdrawn); padded rings handicap both replication regimes, odd rings specifically the 2-byte pusher; the L = 9–12 dead zone is a geometric accident of the stack-pointer race that padding can switch on or off (L = 12 fully, L = 8 destructively, L = 10 marginally). Not settled: a closed-form rule for which (L, P) admit the pusher (the local ring sweep, no GPU cost, will map it); why primality is irrelevant although all padding slows LDIR emergence; whether the marginal L = 10 · P = 28 population would eventually evolve a faithful successor (none by 300k steps).
