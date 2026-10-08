@@ -686,3 +686,9 @@ replication; 2% exact share is noisy because return-address smears reach
   word), Model 5 (the closure window q∫n dt). The counting corrected the held prediction (e4): the all-`P` one-byte
   tiling is a full one-pass replicator in `lit` (22 + 10 pushes = 64 bytes), so `lit` is predicted to behave like
   `wraplit`; withdrawn wording recorded in THEORY.md.
+- 2026-10-08 10:36 (**follow-ups launched**; user approved ≈ $10 each; venue decided: Nature): `lit` (standard pointer +
+  literal, seeds 1–12) and `wraplitnh` (wrap + literal + no-halt, seeds 1–12) on Modal after a smoke test of the
+  no-halt path; predictions and kill criteria in THEORY.md P1(f) and the corrected (e4). Constructive search before
+  launch: no closed heritable replicator among 1.3 M periodic P/bracket tilings up to period 10 under no-halt
+  (`micro/bff_closed_search.py`). `manuscript/PAPER_PLAN.md` records Nature's official constraints (fetched from the
+  formatting and figure guides) and the figure/Extended Data plan; conceptual panels are to be designed with the user.
