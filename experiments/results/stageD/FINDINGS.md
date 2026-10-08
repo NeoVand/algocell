@@ -33,6 +33,24 @@ Removing CALL and RST alone recovers most of the effect at both budgets while re
 - At step 5,000 the interaction census records 0.75–2.1 copy events per step (out of ≈ 3,950 interactions) under the full ISA against 6–35 per step once an LDIR cloud exists (stack arms removed, 512 steps); 79–87% of interactions write nothing into either program.
 - Emergence, when it happens, is slow at L = 9 in every arm: KM medians 82k–252k steps or not reached; the stack writers do not slow LDIR assembly so much as make it fail within the horizon.
 
+## Mechanism: the interaction census and the nascent-copier scan (added 2026-10-08, `census/`, `census_512/`)
+
+The question left open above — destruction of nascent copiers or occupation of the niche by sterile smears — was put to the recorded data in two ways (`census_dynamics.py`, `nascent.py`; CPU only).
+
+*Interaction census, pre-emergence samples ≤ 20,000 steps, medians over seeds (128 steps):* copy events per 1,000 interactions `none` 0.51, `stack-read-only` 0.75, `push` 0.50, `call-rst-write` 0.25, **`stack-write-only` 0.00**; programs destroyed (≥ half their bytes changed in one encounter) per 1,000 interactions `none` 6.8, `stack-read-only` 6.6, `push` 6.3, `call-rst-write` 2.0, **`stack-write-only` 1.3**; zero bytes written into B per interaction 0.042, 0.041, 0.035, 0.023, 0.014 in the same order. At 512 steps: copy events 0.25 / 0.26 / 0.25 / 0.25 / 0.00, destroyed 7.3 / 6.7 / 6.8 / 3.0 / 2.3. Under the full ISA the pre-emergence copy events are the return-address smears copying themselves (none of them is heritable), and the soup destroys five times more programs per encounter than without the stack writers.
+
+*Nascent-copier scan (top-10 exemplars of every sample, LDIR-bearing = contains ED B0/B8/A0/A8), before the heritable event:*
+
+| arm (128 steps) | runs where an LDIR tape ever enters the top-10 | first entry (median step) | episodes (present, then gone) per run, median / max |
+|---|---|---|---|
+| `none` | 5/20 | 118,500 | 0 / 0 |
+| `stack-read-only` | 5/20 | 116,500 | 0 / 0 |
+| `push` | 9/20 | 130,500 | 0 / 1 |
+| `call-rst-write` | 16/20 | 27,750 | 0.5 / 4 |
+| `stack-write-only` | **20/20** | **3,400** | **6.5 / 18** |
+
+At 512 steps the same ordering holds (`none` 2/20 at 103,500; `stack-write-only` 20/20 at 325 steps, 5.5 episodes). So the suppression acts **before** a nascent copier is ever visible: with the stack writers present, LDIR tapes do not reach even 0.5% of the soup for a hundred thousand steps; without them they appear within thousands of steps, flicker in and out of the top-10 several times (a birth-death process close to its threshold) and finally take over. Removing CALL/RST alone moves the first appearance from 118,500 to 27,750 steps (16/20 runs) while removing PUSH alone barely moves it (130,500; 9/20), matching the emergence counts. The mechanism is therefore niche occupation and a high per-encounter destruction rate that keep LDIR units from assembling, not the killing of established copiers.
+
 ## What this settles and what it does not
 
 Settled: removing instructions can raise the probability that self-replication emerges, the effect replicates with independent seeds (p ≈ 10⁻⁶), it is carried by the opcodes that write through the stack pointer, chiefly the return-address writers, and the replicators that then appear are the 3-byte and 9-byte LDIR units whose periods divide the 18-byte ring. Not settled: whether the suppression acts by destroying nascent copiers (zero writes into their tails) or by niche occupation by sterile smears; the time-resolved census in Stage C/E and the snapshots can separate these (fraction of LDIR-bearing cells overwritten per step). The per-byte-hazard prediction (D5) failed and is dropped.
