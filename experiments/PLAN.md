@@ -761,3 +761,8 @@ replication; 2% exact share is noisy because return-address smears reach
   enters the partner in every encounter. The pre-registration had conflated pointer openness with inflow; Lemma 7(ii)
   predicted the data. THEOREMS.md reading qualified, MAIN_nature.md (BFF section, Methods, theorem section) updated,
   NUMBERS_INDEX rows added. Candidate new Fig. 5b: first → final inflow per world (slope chart). Analysis A pending.
+- 2026-10-08 night (**analysis A done**: assembly vs tar): P1 met without power (the first replicator's assembly index is
+  the minimum attainable for its length, equal to the tar's in 79/80 worlds), P2 met (assembly measure fires before t_rep
+  in 71/80, median lead 19×), P3 grey zone (AUC 0.72 vs HOE 0.75 at L ≥ 25). Reading for the paper: life begins at
+  minimum complexity; complexity-times-abundance detectors fire on the sterile order first; the e^a weighting lets one
+  duplicated random tape dominate the measure. Outcomes appended to BIOLOGY_PREREG.md; rows in NUMBERS_INDEX.

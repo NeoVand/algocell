@@ -1,0 +1,153 @@
+stratum,samples,arms,L,step,detector,AUC,n,n_pos,n_neg
+E | L>=25 | all arms | snapshot steps,snapshot steps,all,>=25,all,A_top10,0.7205611926152886,11520,7617,3903
+E | L>=25 | all arms | snapshot steps,snapshot steps,all,>=25,all,hoe,0.7489315117004183,11520,7617,3903
+E | L>=25 | @nominal | snapshot steps,snapshot steps,@nominal,>=25,all,A_top10,0.7063823749358418,2560,1787,773
+E | L>=25 | @nominal | snapshot steps,snapshot steps,@nominal,>=25,all,hoe,0.7708460774994914,2560,1787,773
+E | L<25 | all arms | snapshot steps,snapshot steps,all,<25,all,A_top10,0.9315719632844737,8160,2411,5749
+E | L<25 | all arms | snapshot steps,snapshot steps,all,<25,all,hoe,0.9599129605357944,8160,2411,5749
+E | L>=25 | all arms | all samples,all samples,all,>=25,all,A_top10,0.6949254956112686,502560,400388,102172
+E | L>=25 | all arms | all samples,all samples,all,>=25,all,hoe,0.6912693197219728,502560,400388,102172
+E | L>=25 | @nominal | all samples,all samples,@nominal,>=25,all,A_top10,0.6415359059448752,111680,94315,17365
+E | L>=25 | @nominal | all samples,all samples,@nominal,>=25,all,hoe,0.7068220204609597,111680,94315,17365
+E | L<25 | all arms | all samples,all samples,all,<25,all,A_top10,0.9308871365243226,355980,151534,204446
+E | L<25 | all arms | all samples,all samples,all,<25,all,hoe,0.9487017096360203,355980,151534,204446
+E | L=3 | all arms | snapshot steps,snapshot steps,all,3,all,A_top10,,320,0,320
+E | L=3 | all arms | snapshot steps,snapshot steps,all,3,all,hoe,,320,0,320
+E | L=4 | all arms | snapshot steps,snapshot steps,all,4,all,A_top10,1.0,1280,21,1259
+E | L=4 | all arms | snapshot steps,snapshot steps,all,4,all,hoe,0.9999621770868792,1280,21,1259
+E | L=5 | all arms | snapshot steps,snapshot steps,all,5,all,A_top10,1.0,320,75,245
+E | L=5 | all arms | snapshot steps,snapshot steps,all,5,all,hoe,1.0,320,75,245
+E | L=6 | all arms | snapshot steps,snapshot steps,all,6,all,A_top10,1.0,320,61,259
+E | L=6 | all arms | snapshot steps,snapshot steps,all,6,all,hoe,1.0,320,61,259
+E | L=7 | all arms | snapshot steps,snapshot steps,all,7,all,A_top10,1.0,320,22,298
+E | L=7 | all arms | snapshot steps,snapshot steps,all,7,all,hoe,1.0,320,22,298
+E | L=8 | all arms | snapshot steps,snapshot steps,all,8,all,A_top10,0.9724729064039409,320,175,145
+E | L=8 | all arms | snapshot steps,snapshot steps,all,8,all,hoe,0.9678817733990148,320,175,145
+E | L=9 | all arms | snapshot steps,snapshot steps,all,9,all,A_top10,0.9942538762207729,1440,221,1219
+E | L=9 | all arms | snapshot steps,snapshot steps,all,9,all,hoe,0.9952635310450298,1440,221,1219
+E | L=10 | all arms | snapshot steps,snapshot steps,all,10,all,A_top10,0.9435204821966737,320,31,289
+E | L=10 | all arms | snapshot steps,snapshot steps,all,10,all,hoe,0.9488782230159616,320,31,289
+E | L=12 | all arms | snapshot steps,snapshot steps,all,12,all,A_top10,0.9663205744098352,320,81,239
+E | L=12 | all arms | snapshot steps,snapshot steps,all,12,all,hoe,0.9672503745028153,320,81,239
+E | L=16 | all arms | snapshot steps,snapshot steps,all,16,all,A_top10,0.8594832073890837,2240,1117,1123
+E | L=16 | all arms | snapshot steps,snapshot steps,all,16,all,hoe,0.8983729953419628,2240,1117,1123
+E | L=18 | all arms | snapshot steps,snapshot steps,all,18,all,A_top10,0.6634422555149228,320,173,147
+E | L=18 | all arms | snapshot steps,snapshot steps,all,18,all,hoe,0.8476662341237073,320,173,147
+E | L=20 | all arms | snapshot steps,snapshot steps,all,20,all,A_top10,0.836558111222227,320,211,109
+E | L=20 | all arms | snapshot steps,snapshot steps,all,20,all,hoe,0.9215618070350885,320,211,109
+E | L=24 | all arms | snapshot steps,snapshot steps,all,24,all,A_top10,0.4888354676159216,320,223,97
+E | L=24 | all arms | snapshot steps,snapshot steps,all,24,all,hoe,0.5178216448615413,320,223,97
+E | L=25 | all arms | snapshot steps,snapshot steps,all,25,all,A_top10,0.9283219222184066,1280,832,448
+E | L=25 | all arms | snapshot steps,snapshot steps,all,25,all,hoe,0.9255022321428571,1280,832,448
+E | L=32 | all arms | snapshot steps,snapshot steps,all,32,all,A_top10,0.8424885028104241,320,206,114
+E | L=32 | all arms | snapshot steps,snapshot steps,all,32,all,hoe,0.9384687446772271,320,206,114
+E | L=36 | all arms | snapshot steps,snapshot steps,all,36,all,A_top10,0.8377401983573531,1280,956,324
+E | L=36 | all arms | snapshot steps,snapshot steps,all,36,all,hoe,0.8943450074900563,1280,956,324
+E | L=49 | all arms | snapshot steps,snapshot steps,all,49,all,A_top10,0.8098927928457633,1280,869,411
+E | L=49 | all arms | snapshot steps,snapshot steps,all,49,all,hoe,0.8072427126293892,1280,869,411
+E | L=50 | all arms | snapshot steps,snapshot steps,all,50,all,A_top10,0.933303734398895,320,233,87
+E | L=50 | all arms | snapshot steps,snapshot steps,all,50,all,hoe,0.9418380938286222,320,233,87
+E | L=64 | all arms | snapshot steps,snapshot steps,all,64,all,A_top10,0.7283753074651256,1280,879,401
+E | L=64 | all arms | snapshot steps,snapshot steps,all,64,all,hoe,0.7451167303584043,1280,879,401
+E | L=81 | all arms | snapshot steps,snapshot steps,all,81,all,A_top10,0.6504064395262439,1280,818,462
+E | L=81 | all arms | snapshot steps,snapshot steps,all,81,all,hoe,0.5486774838853078,1280,818,462
+E | L=100 | all arms | snapshot steps,snapshot steps,all,100,all,A_top10,0.7062476050690424,4480,2824,1656
+E | L=100 | all arms | snapshot steps,snapshot steps,all,100,all,hoe,0.7201905937375976,4480,2824,1656
+E | L=3 | @nominal | snapshot steps,snapshot steps,@nominal,3,all,A_top10,,320,0,320
+E | L=3 | @nominal | snapshot steps,snapshot steps,@nominal,3,all,hoe,,320,0,320
+E | L=4 | @nominal | snapshot steps,snapshot steps,@nominal,4,all,A_top10,,320,0,320
+E | L=4 | @nominal | snapshot steps,snapshot steps,@nominal,4,all,hoe,,320,0,320
+E | L=5 | @nominal | snapshot steps,snapshot steps,@nominal,5,all,A_top10,1.0,320,75,245
+E | L=5 | @nominal | snapshot steps,snapshot steps,@nominal,5,all,hoe,1.0,320,75,245
+E | L=6 | @nominal | snapshot steps,snapshot steps,@nominal,6,all,A_top10,1.0,320,61,259
+E | L=6 | @nominal | snapshot steps,snapshot steps,@nominal,6,all,hoe,1.0,320,61,259
+E | L=7 | @nominal | snapshot steps,snapshot steps,@nominal,7,all,A_top10,1.0,320,22,298
+E | L=7 | @nominal | snapshot steps,snapshot steps,@nominal,7,all,hoe,1.0,320,22,298
+E | L=8 | @nominal | snapshot steps,snapshot steps,@nominal,8,all,A_top10,0.9724729064039409,320,175,145
+E | L=8 | @nominal | snapshot steps,snapshot steps,@nominal,8,all,hoe,0.9678817733990148,320,175,145
+E | L=9 | @nominal | snapshot steps,snapshot steps,@nominal,9,all,A_top10,0.9995555555555555,320,50,270
+E | L=9 | @nominal | snapshot steps,snapshot steps,@nominal,9,all,hoe,0.9997777777777778,320,50,270
+E | L=10 | @nominal | snapshot steps,snapshot steps,@nominal,10,all,A_top10,0.9435204821966737,320,31,289
+E | L=10 | @nominal | snapshot steps,snapshot steps,@nominal,10,all,hoe,0.9488782230159616,320,31,289
+E | L=12 | @nominal | snapshot steps,snapshot steps,@nominal,12,all,A_top10,0.9663205744098352,320,81,239
+E | L=12 | @nominal | snapshot steps,snapshot steps,@nominal,12,all,hoe,0.9672503745028153,320,81,239
+E | L=16 | @nominal | snapshot steps,snapshot steps,@nominal,16,all,A_top10,0.8349961970381639,320,217,103
+E | L=16 | @nominal | snapshot steps,snapshot steps,@nominal,16,all,hoe,0.9454163124692407,320,217,103
+E | L=18 | @nominal | snapshot steps,snapshot steps,@nominal,18,all,A_top10,0.6634422555149228,320,173,147
+E | L=18 | @nominal | snapshot steps,snapshot steps,@nominal,18,all,hoe,0.8476662341237073,320,173,147
+E | L=20 | @nominal | snapshot steps,snapshot steps,@nominal,20,all,A_top10,0.836558111222227,320,211,109
+E | L=20 | @nominal | snapshot steps,snapshot steps,@nominal,20,all,hoe,0.9215618070350885,320,211,109
+E | L=24 | @nominal | snapshot steps,snapshot steps,@nominal,24,all,A_top10,0.4888354676159216,320,223,97
+E | L=24 | @nominal | snapshot steps,snapshot steps,@nominal,24,all,hoe,0.5178216448615413,320,223,97
+E | L=25 | @nominal | snapshot steps,snapshot steps,@nominal,25,all,A_top10,0.9255671468786223,320,198,122
+E | L=25 | @nominal | snapshot steps,snapshot steps,@nominal,25,all,hoe,0.9087597284318596,320,198,122
+E | L=32 | @nominal | snapshot steps,snapshot steps,@nominal,32,all,A_top10,0.8424885028104241,320,206,114
+E | L=32 | @nominal | snapshot steps,snapshot steps,@nominal,32,all,hoe,0.9384687446772271,320,206,114
+E | L=36 | @nominal | snapshot steps,snapshot steps,@nominal,36,all,A_top10,0.7502857142857143,320,250,70
+E | L=36 | @nominal | snapshot steps,snapshot steps,@nominal,36,all,hoe,0.8334285714285714,320,250,70
+E | L=49 | @nominal | snapshot steps,snapshot steps,@nominal,49,all,A_top10,0.6932790736700789,320,202,118
+E | L=49 | @nominal | snapshot steps,snapshot steps,@nominal,49,all,hoe,0.673728813559322,320,202,118
+E | L=50 | @nominal | snapshot steps,snapshot steps,@nominal,50,all,A_top10,0.933303734398895,320,233,87
+E | L=50 | @nominal | snapshot steps,snapshot steps,@nominal,50,all,hoe,0.9418380938286222,320,233,87
+E | L=64 | @nominal | snapshot steps,snapshot steps,@nominal,64,all,A_top10,0.7478362573099415,320,225,95
+E | L=64 | @nominal | snapshot steps,snapshot steps,@nominal,64,all,hoe,0.7739415204678363,320,225,95
+E | L=81 | @nominal | snapshot steps,snapshot steps,@nominal,81,all,A_top10,0.35709941520467836,320,225,95
+E | L=81 | @nominal | snapshot steps,snapshot steps,@nominal,81,all,hoe,0.47419883040935673,320,225,95
+E | L=100 | @nominal | snapshot steps,snapshot steps,@nominal,100,all,A_top10,0.38026433691756273,320,248,72
+E | L=100 | @nominal | snapshot steps,snapshot steps,@nominal,100,all,hoe,0.6058467741935484,320,248,72
+E | L>=25 | all arms | step 500,snapshot steps,all,>=25,500,A_top10,0.7479842039670266,720,109,611
+E | L>=25 | all arms | step 500,snapshot steps,all,>=25,500,hoe,0.8862895839276866,720,109,611
+E | L>=25 | all arms | step 1000,snapshot steps,all,>=25,1000,A_top10,0.7055023559811522,720,204,516
+E | L>=25 | all arms | step 1000,snapshot steps,all,>=25,1000,hoe,0.8061350509195926,720,204,516
+E | L>=25 | all arms | step 2000,snapshot steps,all,>=25,2000,A_top10,0.6799189887782121,720,308,412
+E | L>=25 | all arms | step 2000,snapshot steps,all,>=25,2000,hoe,0.7419225192283445,720,308,412
+E | L>=25 | all arms | step 3000,snapshot steps,all,>=25,3000,A_top10,0.7012175819763896,720,351,369
+E | L>=25 | all arms | step 3000,snapshot steps,all,>=25,3000,hoe,0.7220871069109551,720,351,369
+E | L>=25 | all arms | step 5000,snapshot steps,all,>=25,5000,A_top10,0.7362249145987503,720,393,327
+E | L>=25 | all arms | step 5000,snapshot steps,all,>=25,5000,hoe,0.7308790687178529,720,393,327
+E | L>=25 | all arms | step 7500,snapshot steps,all,>=25,7500,A_top10,0.7126976048856516,720,422,298
+E | L>=25 | all arms | step 7500,snapshot steps,all,>=25,7500,hoe,0.7274483921244315,720,422,298
+E | L>=25 | all arms | step 10000,snapshot steps,all,>=25,10000,A_top10,0.7138671875,720,448,272
+E | L>=25 | all arms | step 10000,snapshot steps,all,>=25,10000,hoe,0.7029526654411765,720,448,272
+E | L>=25 | all arms | step 15000,snapshot steps,all,>=25,15000,A_top10,0.6923226399095535,720,488,232
+E | L>=25 | all arms | step 15000,snapshot steps,all,>=25,15000,hoe,0.6986468343697004,720,488,232
+E | L>=25 | all arms | step 20000,snapshot steps,all,>=25,20000,A_top10,0.7547522177015941,720,517,203
+E | L>=25 | all arms | step 20000,snapshot steps,all,>=25,20000,hoe,0.726424712484874,720,517,203
+E | L>=25 | all arms | step 30000,snapshot steps,all,>=25,30000,A_top10,0.7440705340944289,720,558,162
+E | L>=25 | all arms | step 30000,snapshot steps,all,>=25,30000,hoe,0.7227974689145538,720,558,162
+E | L>=25 | all arms | step 50000,snapshot steps,all,>=25,50000,A_top10,0.7289862524355921,720,596,124
+E | L>=25 | all arms | step 50000,snapshot steps,all,>=25,50000,hoe,0.7041296817492964,720,596,124
+E | L>=25 | all arms | step 75000,snapshot steps,all,>=25,75000,A_top10,0.6715411324786325,720,624,96
+E | L>=25 | all arms | step 75000,snapshot steps,all,>=25,75000,hoe,0.6316439636752137,720,624,96
+E | L>=25 | all arms | step 100000,snapshot steps,all,>=25,100000,A_top10,0.57720703125,720,640,80
+E | L>=25 | all arms | step 100000,snapshot steps,all,>=25,100000,hoe,0.57734375,720,640,80
+E | L>=25 | all arms | step 150000,snapshot steps,all,>=25,150000,A_top10,0.5811899862825789,720,648,72
+E | L>=25 | all arms | step 150000,snapshot steps,all,>=25,150000,hoe,0.5164180384087792,720,648,72
+E | L>=25 | all arms | step 200000,snapshot steps,all,>=25,200000,A_top10,0.545554903112155,720,655,65
+E | L>=25 | all arms | step 200000,snapshot steps,all,>=25,200000,hoe,0.4645684086905461,720,655,65
+E | L>=25 | all arms | step 300000,snapshot steps,all,>=25,300000,A_top10,0.46284298780487804,720,656,64
+E | L>=25 | all arms | step 300000,snapshot steps,all,>=25,300000,hoe,0.43452267530487804,720,656,64
+E | L>=25 | none@budget | snapshot steps,snapshot steps,none@budget,>=25,all,A_top10,0.9424992219109866,800,476,324
+E | L>=25 | none@budget | snapshot steps,snapshot steps,none@budget,>=25,all,hoe,0.8346496005809731,800,476,324
+E | L>=25 | none@bytes | snapshot steps,snapshot steps,none@bytes,>=25,all,A_top10,0.6737886735167835,960,857,103
+E | L>=25 | none@bytes | snapshot steps,snapshot steps,none@bytes,>=25,all,hoe,0.2465475637525348,960,857,103
+E | L>=25 | none@mubyte | snapshot steps,snapshot steps,none@mubyte,>=25,all,A_top10,0.4512645249487355,960,770,190
+E | L>=25 | none@mubyte | snapshot steps,snapshot steps,none@mubyte,>=25,all,hoe,0.29606288448393714,960,770,190
+E | L>=25 | none@musweep | snapshot steps,snapshot steps,none@musweep,>=25,all,A_top10,0.6475304977466366,800,601,199
+E | L>=25 | none@musweep | snapshot steps,snapshot steps,none@musweep,>=25,all,hoe,0.37370713801954863,800,601,199
+E | L>=25 | none@nominal | snapshot steps,snapshot steps,none@nominal,>=25,all,A_top10,0.6853970771496545,1280,1183,97
+E | L>=25 | none@nominal | snapshot steps,snapshot steps,none@nominal,>=25,all,hoe,0.41888088121236416,1280,1183,97
+E | L>=25 | none@steps8L | snapshot steps,snapshot steps,none@steps8L,>=25,all,A_top10,0.9897311990335246,960,946,14
+E | L>=25 | none@steps8L | snapshot steps,snapshot steps,none@steps8L,>=25,all,hoe,0.8695258230141951,960,946,14
+E | L>=25 | stack-write-only@budget | snapshot steps,snapshot steps,stack-write-only@budget,>=25,all,A_top10,0.8207634762308998,800,304,496
+E | L>=25 | stack-write-only@budget | snapshot steps,snapshot steps,stack-write-only@budget,>=25,all,hoe,0.9271341786926995,800,304,496
+E | L>=25 | stack-write-only@bytes | snapshot steps,snapshot steps,stack-write-only@bytes,>=25,all,A_top10,0.9338313165159118,960,482,478
+E | L>=25 | stack-write-only@bytes | snapshot steps,snapshot steps,stack-write-only@bytes,>=25,all,hoe,0.967369225160159,960,482,478
+E | L>=25 | stack-write-only@mubyte | snapshot steps,snapshot steps,stack-write-only@mubyte,>=25,all,A_top10,0.5023305496212856,960,418,542
+E | L>=25 | stack-write-only@mubyte | snapshot steps,snapshot steps,stack-write-only@mubyte,>=25,all,hoe,0.5952876992884761,960,418,542
+E | L>=25 | stack-write-only@musweep | snapshot steps,snapshot steps,stack-write-only@musweep,>=25,all,A_top10,0.4312169692095588,800,544,256
+E | L>=25 | stack-write-only@musweep | snapshot steps,snapshot steps,stack-write-only@musweep,>=25,all,hoe,0.5698960248161765,800,544,256
+E | L>=25 | stack-write-only@nominal | snapshot steps,snapshot steps,stack-write-only@nominal,>=25,all,A_top10,0.7174923586347427,1280,604,676
+E | L>=25 | stack-write-only@nominal | snapshot steps,snapshot steps,stack-write-only@nominal,>=25,all,hoe,0.8324067361573729,1280,604,676
+E | L>=25 | stack-write-only@steps8L | snapshot steps,snapshot steps,stack-write-only@steps8L,>=25,all,A_top10,0.836945847362514,960,432,528
+E | L>=25 | stack-write-only@steps8L | snapshot steps,snapshot steps,stack-write-only@steps8L,>=25,all,hoe,0.9160923470819304,960,432,528

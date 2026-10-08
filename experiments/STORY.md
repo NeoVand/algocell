@@ -61,3 +61,37 @@ Whether any of this transfers from a 1970s microprocessor to chemistry is the ob
 **What would make the headline indisputable.** A pre-registered confirmation of claim 3 with new seeds: at L = 16 and L = 50, 20 seeds each, predictions (i) the first replicator has no control flow in ≥ 90% of worlds, (ii) by 300k the faithful dominant has control flow in ≥ 80% and copies ≥ 95% of random partners, (iii) the heritable fraction is < 0.2 at 5k and > 0.7 at 100k; plus 1M-round runs at L = 20 and 64 (20 seeds) predicting that closure arrives later in ≥ 50% of worlds. About 4 GPU-hours, roughly $10. Second, for generality beyond one machine: the mechanism predicts that any open replicator is partner-dependent; a second instruction set would test it, and that is the extension that would justify a Nature or Science main-journal attempt. Without it, the realistic ambitious targets are PNAS, Nature Communications or Science Advances, with the ALife venues as a fallback that would under-sell the work.
 
 **Paper spine.** Title: *Life closes the loop: spontaneous self-replicators begin open and evolve independence from their surroundings.* Abstract claims, in order: three load-bearing primitives and a replacement principle; sterile order that precedes life, fools compression biosignatures and can prevent life from assembling; the open two-byte replicator; closure by control flow with byte-identical convergence; budget threshold and heredity without clones; error threshold. Figures: (1) the soup, the flood, the two-byte quine; (2) the atlas forest plot; (3) the L = 9 reversal and the census; (4) openness vs closure (`closure_partner_independence` + the RET NZ trace + C4 curves); (5) size and budget (E1/E2/E4); (6) mutation (C2/E5); (7) detectors vs the culture test. Methods: the instrument, the assay, pre-registration, the GPU non-determinism statement.
+
+---
+
+## v2 plan (2026-10-08 night): one idea, escalating implications
+
+The piece above tours the results. The new version is organised around one idea: **the first living thing was not an
+individual**. It was a word that wrote itself into its neighbours, lived off them, and later learned to keep to itself;
+we can now say in bits how much of it was its neighbourhood (a median 7 of 8 bits of its offspring are the partner's) and
+watch that number fall to zero when a single jump arrives. Structure: (1) the wave on the lattice (stills); (2) the word
+that writes itself, and base pairing as the same kind of channel; (3) the catch: seven bits of neighbour, a colony, cheap
+among kin, costly at the frontier; (4) the loop, RET NZ's product doubling as its control (the RNA-world property, found
+at 16 bytes), zero bits, convergence; (5) why: write less than you read and you must leave or revisit, and the BFF
+flooding organism as the proof of the boundary (write two for one, overwrite everything, never need a loop); (6) the order
+of events as a prediction for chemistry, and life beginning at minimum complexity (assembly index equal to the tar's),
+so that compression and assembly both fire on the dead; (7) the window: tar lethality and the three fates; (8) what it is
+not, what would test it (a well-mixed Z80 soup; by-product screens in template chemistry), and the definition of life
+that falls out: not complexity, not a boundary, but a measurable independence.
+
+Dots, with evidence class (A measured on every seed; B measured, post hoc; C hypothesis with a stated test):
+- Template copying is a literal channel: the template is instruction and data at once, like `LD BC,nn ; PUSH BC`; the
+  theorem then says the smallest replicators arise there and are open. (C, by analogy; the theorem is A.)
+- The RNA-world property in silicon: RET NZ's written bytes are its return addresses; product = control. (A)
+- Cycle or saturation: Theorem 2 needs write ratio < 1. BFF's wrapping literal pusher writes two bytes per cell executed,
+  floods the ring, has 0.04 bits of inflow with an open pointer: closed without a loop, as the theorem allows. Template
+  copying has ratio 1, so chemistry may close by exhaustive copying; overhead (instructions longer than outputs) forces
+  cycles. (A for the machines; C for chemistry.)
+- Life begins at minimum complexity: the first replicator's assembly index is the lowest any string of its length can
+  have and equals the tar's; complexity thresholds describe evolved life. Detection at the origin needs intervention. (A)
+- Individuality in bits: 7 → 0 across the transition; the Darwinian threshold as inflow → 0; the sub-clonal regime
+  (heredity without clones) as the all-horizontal extreme, measurable the same way. (A for the drop; C for the reading.)
+- Space and kin: pairs are lattice neighbours, so an open replicator's partners are mostly its own copies; openness is
+  cheap in a kin neighbourhood and costly at fronts and tar pockets. Prediction: in a well-mixed Z80 soup the open phase
+  is shorter or absent and closure is selected faster, or life fails to establish. One-line shader change. (C)
+- Tar decides what can begin and how the open phase ends: inert versus inhibitory by-products. (A for the machines; C.)

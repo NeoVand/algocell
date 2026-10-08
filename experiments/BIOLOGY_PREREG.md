@@ -91,6 +91,21 @@ encounters. Lemma 7(ii) had predicted exactly this for a perfect copier; the pre
 that organism and the data sided with the lemma. Corrected statement: inflow comes from partial copying (unwritten
 offspring positions, data read from the partner); pointer entry is the mechanism that makes the Z80 pusher's copy
 partial, but it is neither necessary for inflow (1-byte tails of pointer-closed BFF replicators) nor sufficient (the
-flooding organism). THEOREMS.md's reading of Lemma 7 is qualified accordingly. Analysis A: pending.
+flooding organism). THEOREMS.md's reading of Lemma 7 is qualified accordingly. Analysis A: below.
 
-(A appended when it finishes)
+### A. Assembly fires on sterile order — outcome (2026-10-08, `results/biology/assembly/`)
+
+| | statement | result | verdict |
+|---|---|---|---|
+| P1 | a(first tape) ≤ a(tar modal tape before t_rep) in ≥ 80% | 80/80 (79 equal, 1 less) | met, but without power: every first tape is period-2 and its Re-Pair index (4, 5, 7, 6 at L = 16, 20, 50, 64) is the minimum any string of that length can have, so "≤" could not fail; in 59/80 worlds the modal tape before t_rep is already the first tape |
+| P2 | A_top10 > 10 × step-1 baseline before t_rep in ≥ 75% | 71/80 (0.89); median lead 19× | met |
+| P3 | AUC of A_top10 against `event`, Stage E, L ≥ 25, ≤ 0.65 (kill ≥ 0.75) | 0.721 (HOE on the same samples 0.749) | grey zone: neither met nor killed |
+
+Reading: the assembly index places the first replicator and the sterile order before it at the same, minimal value, and
+the assembly measure rises on the tar well before heredity exists (in the exemplar world the crossing is at step 50
+against t_rep = 700, and A is higher at the tar sample than at t_rep). As a detector of heredity across tape lengths
+≥ 25 it is no better than the compression biosignature. Four L = 64 worlds never cross because one accidentally
+duplicated random 64-byte tape in the step-1 sample sets the baseline at e^63/20,000 ≈ 10^23: under the e^a weighting a
+single coincidence outweighs every periodic class by twenty orders of magnitude, a property of the measure worth
+stating. Post hoc companion (labelled in FINDINGS.md): against the modal tape before the first tape enters the top ten,
+a_first ≤ a_tar in 80/80, strictly less in 48.
