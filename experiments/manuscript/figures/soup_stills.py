@@ -121,9 +121,18 @@ class ClassColours:
         self.next = 0
 
     def colour(self, key: bytes) -> tuple[int, int, int]:
+        """Teal for literal pushers (the first replicators: period-2 `LD rr,nn ; PUSH rr` tilings), light grey for
+        zero-rich sterile tapes, otherwise the palette in order of first appearance (vermilion first: the successors)."""
         if key not in self.assigned:
-            self.assigned[key] = CLASS_COLOURS[self.next % len(CLASS_COLOURS)]
-            self.next += 1
+            b = list(key)
+            pusher = len(b) >= 4 and b[0] in (0x01, 0x11, 0x21) and b[1] in (0xC5, 0xD5, 0xE5) and all(b[i] == b[i % 2] for i in range(len(b) - 1))
+            if pusher:
+                self.assigned[key] = (30, 138, 138)
+            elif sum(1 for x in b if x == 0) * 2 >= len(b):
+                self.assigned[key] = (200, 204, 208)
+            else:
+                self.assigned[key] = CLASS_COLOURS[1 + self.next % (len(CLASS_COLOURS) - 1)]
+                self.next += 1
         return self.assigned[key]
 
 

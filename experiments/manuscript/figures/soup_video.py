@@ -135,7 +135,7 @@ def chart_image(samples: list[dict], last: int, size=(660, 300)):
     ax.tick_params(labelsize=10)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    ax.legend(fontsize=10, frameon=False, loc="upper left", bbox_to_anchor=(0.0, 1.18), ncol=3, columnspacing=1.2, handlelength=1.6)
+    ax.legend(fontsize=11, frameon=False, loc="upper left", bbox_to_anchor=(0.0, 1.2), ncol=3, columnspacing=1.2, handlelength=1.6)
     fig.subplots_adjust(left=0.09, right=0.98, top=0.86, bottom=0.2)
     fig.canvas.draw()
     img = Image.fromarray(np.asarray(fig.canvas.buffer_rgba())[:, :, :3].copy())
@@ -179,10 +179,12 @@ def compose(frame_b: np.ndarray, frame_c: np.ndarray, step: float, caption: str,
     d.line((xcur, cy + yt, xcur, cy + yb), fill=RED, width=3)
     # caption
     if caption and cap_alpha > 0:
+        import textwrap
+        wrapped = "\n".join(textwrap.fill(par, width=62) for par in caption.split("\n"))
         layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         dl = ImageDraw.Draw(layer)
         a = int(255 * cap_alpha)
-        dl.text((1240, 1010), caption, fill=INK + (a,), font=font(21), spacing=6)
+        dl.text((1240, 1000), wrapped, fill=INK + (a,), font=font(20), spacing=5)
         img = Image.alpha_composite(img.convert("RGBA"), layer).convert("RGB")
     return img
 
