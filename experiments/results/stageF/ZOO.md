@@ -1,0 +1,209 @@
+# Replicator zoo
+
+Design signatures of the first heritable replicator (`first`, the t_rep tape) and of the final tape when it is a faithful replicator against random partners (`final`). Tiled tapes are shown as one period ×n. Counts are seeds.
+
+## none@ring28 · L=10 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5` — [LD rr,nn ; PUSH rr] ×5
+
+**final** (10 seeds)
+- 10× `21 e5 21 e5 21 e5 21 e5 21 e5` — [LD rr,nn ; PUSH rr] ×5
+
+## none@ring28 · L=12 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5` — [LD rr,nn ; PUSH rr] ×6
+
+**final** (10 seeds)
+- 10× `11 d5 11 d5 11 d5 11 d5 11 d5 11 d5` — [LD rr,nn ; PUSH rr] ×6
+
+## none@ring32 · L=8 · 128 steps · mutation 1/2^4
+**first** (2 seeds)
+- 1× `44 5e ed b0 44 5e ed b0` — [LD r,(HL) ; LDIR ; LD r,r] ×2
+- 1× `68 0e 36 9d ae 5f ed b0` — LD r,n ; LDIR
+
+**final** (2 seeds)
+- 1× `24 5e ed b0 24 5e ed b0` — [INC H ; LD r,(HL) ; LDIR] ×2
+- 1× `e8 ae 5f ed b0 7b f6 ed` — RET PE ; LDIR
+
+## none@ring33 · L=16 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01` — [LD rr,nn ; PUSH rr] ×8
+
+**final** (9 seeds)
+- 9× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5` — [LD rr,nn ; PUSH rr] ×8
+
+## none@ring34 · L=16 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5` — [LD rr,nn ; PUSH rr] ×8
+
+**final** (10 seeds)
+- 9× `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5` — [LD rr,nn ; PUSH rr] ×8
+- 1× `11 6b cc 6b ed b8 43 99 f9 f2 32 0d da 9c 00 3b` — LD rr,nn ; LDDR ; LD SP,HL ; JP P,nn ; JP C,nn
+
+## none@ring35 · L=16 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `11 d5 11 d5 11 d5 11 d5 11 d5 11 d5 11 d5 11 d5` — [LD rr,nn ; PUSH rr] ×8
+
+**final** (8 seeds)
+- 8× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5` — [LD rr,nn ; PUSH rr] ×8
+
+## none@ring36 · L=12 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5` — [LD rr,nn ; PUSH rr] ×6
+
+**final** (10 seeds)
+- 5× `62 14 ed b0 62 14 ed b0 62 14 ed b0` — [INC D ; LDIR ; LD r,r] ×3
+- 4× `11 d5 11 d5 11 d5 11 d5 11 d5 11 d5` — [LD rr,nn ; PUSH rr] ×6
+- 1× `14 60 ed b0 14 60 ed b0 14 60 ed b0` — [INC D ; LD r,r ; LDIR] ×3
+
+## none@ring37 · L=16 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 7× `f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 03 00 20` — CALL P,nn ; JR NZ,d×6
+- 3× `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5` — [LD rr,nn ; PUSH rr] ×8
+
+**final** (10 seeds)
+- 10× `f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 03 00 20` — CALL P,nn ; JR NZ,d×6
+
+## none@ring40 · L=10 · 128 steps · mutation 1/2^4
+**first** (2 seeds)
+- 1× `f5 5e ed b0 af f5 5e ed b0 af` — [LD r,(HL) ; LDIR ; XOR A ; PUSH rr] ×2
+- 1× `05 5e ed b0 00 05 5e ed b0 00` — [DEC B ; LD r,(HL) ; LDIR ; NOP] ×2
+
+**final** (2 seeds)
+- 1× `f5 5e 7e ed b0 f5 5e 7e ed b0` — [LD r,(HL) ; LD r,(HL) ; LDIR ; PUSH rr] ×2
+- 1× `d2 da 5e ed b0 a6 8c e2 e9 10` — JP NC,nn ; LDIR ; JP PO,nn
+
+## none@ring73 · L=36 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 …` — [LD rr,nn ; PUSH rr] ×18
+
+**final** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 …` — [LD rr,nn ; PUSH rr] ×18
+
+## none@ring74 · L=36 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 …` — [LD rr,nn ; PUSH rr] ×18
+
+**final** (10 seeds)
+- 9× `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 …` — [LD rr,nn ; PUSH rr] ×18
+- 1× `26 b3 26 b3 26 b3 26 b3 26 b3 26 b3 26 f9 ed b8 22 00 26 b3 …` — [LD (nn),rr ; OR E ; LD r,n ; LD r,n ; LD r,n ; LD r,n ; LD r,n ; LD r,n ; LDDR] ×2
+
+## none@ring75 · L=36 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 10× `c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 …` — [LD rr,nn ; PUSH rr] ×18
+
+**final** (10 seeds)
+- 10× `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 …` — [LD rr,nn ; PUSH rr] ×18
+
+## none@ring79 · L=36 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 8× `f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 1e 1c …` — [JR NZ,d] ×18
+- 1× `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 …` — [LD rr,nn ; PUSH rr] ×18
+- 1× `f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 f4 20 1e f4 …` — CALL P,nn ; JR NZ,d×8 ; CALL P,nn ; LD r,(DE) ; CALL P,nn×4
+
+## stack-write-only@ring33 · L=16 · 128 steps · mutation 1/2^4
+**first** (2 seeds)
+- 1× `56 4d ed b0 4d ed b0 4d 56 b0 4d 56 4d ed b0 4d` — LD r,(HL) ; LDIR×2 ; LD r,(HL)×2 ; LDIR
+- 1× `2e e4 51 5d 7d ed a0 01 82 2e 00 f2 28 0d 00 00` — LD r,n ; LDI ; LD rr,nn ; JP P,nn
+
+**final** (2 seeds)
+- 1× `56 17 ed b0 b0 56 17 ed b0 b0 56 17 b0 b0 56 b0` — (LD r,(HL) ; LDIR)×2 ; LD r,(HL)×2
+- 1× `2e a1 5d 27 a8 ed a0 11 a6 82 c3 64 00 00 00 00` — LD r,n ; LDI ; LD rr,nn ; JP nn
+
+## stack-write-only@ring34 · L=16 · 128 steps · mutation 1/2^4
+**first** (6 seeds)
+- 1× `16 26 ed b0 16 26 ed b0 16 26 ed b0 16 26 ed 26` — [LD r,n ; LDIR] ×4
+- 1× `52 52 52 26 da ed b8 52 ed 52 52 52 26 da 52 ed` — LD r,n ; LDDR ; LD r,n
+- 1× `00 02 8b 03 06 b5 0a 10 19 53 4b 00 00 00 00 00` — LD (BC),r ; LD r,n ; LD r,(BC) ; DJNZ d
+- 1× `00 d2 42 26 b8 ed b8 0b dd 00 d2 b8 ed b8 0b dd` — JP NC,nn ; LDDR ; JP NC,nn
+- 1× `3b 15 3b 15 a8 22 3d ed a0 00 00 3d fa 84 f8 eb` — LD (nn),rr ; JP M,nn ; EX rr,rr
+- 1× `00 26 6f b8 26 b8 ed b8 6f 00 26 6f b8 26 b8 ed` — LD r,n×2 ; LDDR ; LD r,n×2
+
+**final** (6 seeds)
+- 1× `17 16 6a 6a ed b8 25 5f e7 16 16 76 37 16 16 8a` — LD r,n ; LDDR ; LD r,n×2
+- 1× `7e d2 42 26 74 ed b8 73 00 7e d2 42 26 74 ed b8` — LD r,(HL) ; JP NC,nn ; LD (HL),r ; LDDR ; LD (HL),r ; LD r,(HL) ; JP NC,nn ; LD (HL),r ; LDDR
+- 1× `00 02 64 03 06 b9 0a 05 e9 d6 d8 18 3e 00 00 00` — LD (BC),r ; LD r,n ; LD r,(BC) ; JP (HL) ; JR d
+- 1× `bc 26 52 7a 40 c7 ed b8 35 bc 26 52 7a 40 c7 ed` — LD r,n ; LDDR ; DEC (HL) ; LD r,n
+- 1× `a0 ed ff 1e 54 31 a0 ed a0 c9 52 e0 54 5d 19 10` — LD r,n ; LD rr,nn ; RET ; RET PO ; DJNZ d
+- 1× `b8 cb d5 ed b8 cb d5 ed b8 cb d5 ed b8 cb d5 ed` — [LDDR ; SET 2,L] ×4
+
+## stack-write-only@ring35 · L=16 · 128 steps · mutation 1/2^4
+**first** (2 seeds)
+- 1× `00 26 01 ed b8 00 00 26 01 ed b8 00 00 26 01 ed` — [LD r,n ; LDDR ; NOP ; NOP] ×2+4B
+- 1× `00 16 5b ed a8 00 d2 00 00 00 00 00 00 00 00 00` — LD r,n ; LDD ; JP NC,nn
+
+**final** (2 seeds)
+- 1× `1b 24 ed b8 ed ed ed 00 1b 24 ed 1b 24 ed b8 ed` — LDDR×2
+- 1× `16 7f 17 ed a8 af c4 c3 98 ae 01 32 00 16 00 00` — LD r,n ; LDD ; JP nn ; LD rr,nn ; LD r,n
+
+## stack-write-only@ring37 · L=16 · 128 steps · mutation 1/2^4
+**first** (1 seeds)
+- 1× `00 c6 06 2e 02 03 45 0a e9 1b cf 00 00 00 00 00` — LD r,n ; LD r,(BC) ; JP (HL)
+
+**final** (1 seeds)
+- 1× `01 00 06 2e 02 03 45 0a e9 4b 27 00 00 00 00 00` — LD rr,nn ; LD r,n ; LD r,(BC) ; JP (HL)
+
+## stack-write-only@ring73 · L=36 · 128 steps · mutation 1/2^4
+**first** (6 seeds)
+- 1× `15 38 36 38 76 4c ed b0 b0 b0 41 b0 b0 be 13 00 15 38 15 38 …` — JR C,d×2 ; LDIR ; JR C,d×3 ; LDIR
+- 1× `e4 3f ad 00 5e ab ed b0 99 e4 3f ad 00 5e ab ed b0 99 e4 3f …` — [CCF ; XOR L ; NOP ; LD r,(HL) ; XOR E ; LDIR ; SBC A,C] ×4
+- 1× `b0 1e df ed b0 1e df ed b0 b0 1e df ed b0 1e df ed b0 1e df …` — (LD r,n ; LDIR)×8 ; LD r,n
+- 1× `b0 00 4f 00 b8 1e e7 a5 31 e7 a5 ed b0 00 4f 00 b8 1e e7 a5 …` — (LD r,n ; LD rr,nn ; LDIR)×2 ; LD r,n ; LD rr,nn
+- 1× `1e e2 ed b0 ec 57 b0 ec 57 b0 b0 ec 57 b0 1e e2 ed b0 ec 57 …` — (LD r,n ; LDIR)×4
+- 1× `b0 00 fb 20 00 00 b0 1e e7 7a ac ed b0 00 fb 20 00 00 b0 1e …` — [EI ; JR NZ,d ; NOP ; OR B ; LD r,n ; LD r,r ; XOR H ; LDIR ; NOP] ×3
+
+**final** (9 seeds)
+- 4× `b0 1e df ed b0 1e df ed b0 b0 1e df ed b0 1e df ed b0 1e df …` — (LD r,n ; LDIR)×8 ; LD r,n
+- 1× `15 f1 39 ed b0 97 5f 3e f1 33 ed 3b 39 26 dd f1 89 15 15 f1 …` — [ADC A,C ; DEC D ; DEC D ; POP rr ; ADD HL,SP ; LDIR ; SUB A ; LD r,r ; LD r,n ; INC SP ; NOP (ED) ; ADD HL,SP ; LD r,n ; POP rr] ×2
+- 1× `b0 99 2c 5e dc ed b0 99 2c 5e dc ed b0 b0 99 2c 5e dc ed b0 …` — (LD r,(HL) ; LDIR)×5 ; LD r,(HL)
+- 1× `15 ed b0 08 aa 87 e0 57 70 69 56 76 de 15 1e aa f5 2b 15 ed …` — LDIR ; EX rr,rr' ; RET PO ; LD (HL),r ; LD r,(HL) ; LD r,n ; LDIR ; EX rr,rr' ; RET PO ; LD (HL),r ; LD r,(HL) ; LD r,n
+- 1× `28 28 28 00 28 27 28 b3 b8 14 7b e2 ff 1b b8 4e 49 0d 28 ed …` — JR Z,d×4 ; JP PO,nn ; LD r,(HL) ; JR Z,d×3 ; JR C,d ; LDIR
+- 1× `15 ed b0 f8 17 e1 96 bc 6b 76 19 58 87 23 5c 87 f6 2b 15 ed …` — (LDIR ; RET M ; POP rr)×2
+
+## stack-write-only@ring74 · L=36 · 128 steps · mutation 1/2^4
+**first** (10 seeds)
+- 2× `61 15 ed b0 61 15 ed b0 61 15 ed b0 61 15 ed b0 61 15 ed b0 …` — [DEC D ; LDIR ; LD r,r] ×9
+- 2× `2e 04 ed b8 2e 04 ed b8 2e 04 ed b8 2e 04 ed b8 2e 04 ed b8 …` — [LD r,n ; LDDR] ×9
+- 1× `b0 00 b0 9e 15 00 6b 9e 61 ed b0 4e b0 00 b0 9e 15 00 6b 9e …` — [DEC D ; NOP ; LD r,r ; SBC A,(HL) ; LD r,r ; LDIR ; LD r,(HL) ; OR B ; NOP ; OR B ; SBC A,(HL)] ×3
+- 1× `b8 cb d5 ed b8 cb d5 ed b8 cb d5 ed b8 cb d5 ed b8 cb d5 ed …` — [LDDR ; SET 2,L] ×9
+- 1× `b0 ee b0 ee 29 00 15 ed b0 66 b0 66 b0 ee b0 ee 29 00 15 ed …` — [DEC D ; LDIR ; LD r,(HL) ; OR B ; LD r,(HL) ; OR B ; XOR n ; XOR n ; NOP] ×3
+- 1× `b0 b0 b0 b0 b0 b0 c2 b0 b0 b0 15 ed b0 b0 b0 b0 c2 b0 b0 b0 …` — (JP NZ,nn ; LDIR)×3
+
+**final** (6 seeds)
+- 3× `b0 61 15 ed b0 61 b0 61 15 ed b0 61 b0 61 15 ed b0 61 b0 61 …` — [DEC D ; LDIR ; LD r,r ; OR B ; LD r,r] ×6
+- 2× `b8 2e 04 ed b8 2e 04 ed b8 2e 04 ed b8 2e 04 ed b8 2e 04 ed …` — [LD r,n ; LDDR] ×9
+- 1× `b0 61 b0 61 15 ed b0 61 b0 61 b0 61 b0 61 b0 61 15 ed b0 61 …` — [DEC D ; LDIR ; LD r,r ; OR B ; LD r,r ; OR B ; LD r,r ; OR B ; LD r,r ; OR B ; LD r,r] ×3
+
+## stack-write-only@ring75 · L=36 · 128 steps · mutation 1/2^4
+**first** (9 seeds)
+- 3× `00 00 00 00 00 26 c8 ed b8 2c 00 00 00 00 00 00 00 00 00 00 …` — (LD r,n ; LDDR)×2
+- 1× `16 7e ed b0 5f 8e b0 5f 8e b0 5f 8e 16 7e ed b0 5f 8e 16 7e …` — (LD r,n ; LDIR)×5
+- 1× `33 ed ed b0 16 33 00 26 3e 29 33 ed b8 ca 29 ed b0 16 33 00 …` — [ADD HL,HL ; INC SP ; LDDR ; JP Z,nn ; OR B ; LD r,n ; NOP ; LD r,n] ×2+10B
+- 1× `b8 8a 00 f9 00 08 6f 8e eb e3 26 b7 ed b8 8a 00 f9 00 08 6f …` — [ADC A,(HL) ; EX rr,rr ; LD r,n ; LDDR ; ADC A,D ; NOP ; LD SP,HL ; NOP ; EX rr,rr' ; LD r,r] ×2+10B
+- 1× `1e eb 55 1d ed b0 1e b9 b0 1e eb 55 1d ed b0 1e b9 b0 1e eb …` — [DEC E ; LDIR ; LD r,n ; OR B ; LD r,n ; LD r,r] ×4
+- 1× `66 eb a4 88 9c bd ed b0 f2 00 96 00 66 eb a4 88 9c bd ed b0 …` — [ADC A,B ; SBC A,H ; CP L ; LDIR ; JP P,nn ; NOP ; LD r,(HL) ; EX rr,rr ; AND H] ×3
+
+**final** (9 seeds)
+- 2× `16 c9 ed b0 5c 1d b0 5c 1d 16 c9 ed b0 5c 1d 16 c9 ed b0 5c …` — (LD r,n ; LDIR)×5 ; LD r,n
+- 1× `ed 00 00 ed 00 00 ed 00 00 ed 00 00 00 ed 7e b9 21 c8 ed f8 …` — LD rr,nn ; RET M ; LD (HL),r ; LDDR
+- 1× `a0 26 2e 94 6f df 59 eb 26 b7 ed b8 00 a0 26 2e 94 6f df 59 …` — [AND B ; LD r,n ; SUB H ; LD r,r ; LD r,r ; EX rr,rr ; LD r,n ; LDDR ; NOP] ×2+10B
+- 1× `00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 26 c8 ed b8 2c …` — LD r,n ; LDDR ; LD r,n
+- 1× `1e 9d 55 1d ed b0 1e 9d 55 1d ed b0 1e 9d 55 1d ed b0 1e 9d …` — (LD r,n ; LDIR)×3 ; LD r,n×2 ; (LDIR ; LD r,n)×2
+- 1× `66 eb 1f ed b0 e3 ea b0 e3 ea b0 e3 66 eb 1f ed b0 e3 ea b0 …` — [EX rr,rr ; RRA ; LDIR ; JP PE,nn ; JP PE,nn ; LD r,(HL)] ×3
+
+## stack-write-only@ring79 · L=36 · 128 steps · mutation 1/2^4
+**first** (8 seeds)
+- 1× `00 1b 26 02 ed b8 ff ff 70 00 4a 70 ed 00 00 1b 26 02 ed b8 …` — [DEC DE ; LD r,n ; LDDR ; LD (HL),r ; NOP ; LD r,r ; LD (HL),r ; NOP (ED) ; NOP] ×2+8B
+- 1× `04 b4 1e f6 ed b0 5f 14 14 04 b4 1e f6 ed b0 5f 14 14 04 b4 …` — [INC B ; OR H ; LD r,n ; LDIR ; LD r,r ; INC D ; INC D] ×4
+- 1× `00 28 00 00 00 00 85 c4 17 eb b0 1d ed b0 b0 1d ed 24 00 28 …` — [ADD A,L ; RLA ; EX rr,rr ; OR B ; DEC E ; LDIR ; OR B ; DEC E ; NOP (ED) ; NOP ; JR Z,d ; NOP ; NOP ; NOP] ×2
+- 1× `1d ed b0 68 1d ed b0 a0 1d ed 28 d8 68 1d 5a ed 02 d8 1d ed …` — [AND B ; DEC E ; NOP (ED) ; RET C ; LD r,r ; DEC E ; LD r,r ; NOP (ED) ; RET C ; DEC E ; LDIR ; LD r,r ; DEC E ; LDIR] ×2
+- 1× `15 60 b0 15 ed b0 b0 15 60 b0 15 ed b0 b0 15 60 b0 15 ed b0 …` — [DEC D ; LD r,r ; OR B ; DEC D ; LDIR ; OR B] ×5+1B
+- 1× `1d ed b0 82 1d ed b0 82 1d 1d 1d 1d 82 1d 1d 60 1d ed 1d ed …` — [ADD A,D ; DEC E ; DEC E ; DEC E ; DEC E ; ADD A,D ; DEC E ; DEC E ; LD r,r ; DEC E ; NOP (ED) ; LDIR ; ADD A,D ; DEC E ; LDIR] ×2
+
+**final** (10 seeds)
+- 1× `00 00 00 00 ed 00 00 1b 26 02 ed b8 00 00 00 00 00 00 ed 00 …` — [DEC DE ; LD r,n ; LDDR ; NOP ; NOP ; NOP ; NOP ; NOP ; NOP ; NOP (ED) ; NOP] ×2+8B
+- 1× `ff ff 13 19 4a 70 ed 00 00 1b 26 a0 ed b8 ff ff 13 19 4a 70 …` — [ADD HL,DE ; LD r,r ; LD (HL),r ; NOP (ED) ; NOP ; DEC DE ; LD r,n ; LDDR ; INC DE] ×2+8B
+- 1× `1e 55 9b ed b0 1e 1e 55 9b ed b0 1e 1e 55 9b ed b0 1e 1e 55 …` — [LD r,n ; LD r,r ; SBC A,E ; LDIR] ×6
+- 1× `5b 1d ed b0 96 eb 10 5b ff de b0 96 eb 10 5b ff de b0 5b 1d …` — [DEC E ; LDIR ; SUB (HL) ; EX rr,rr ; DJNZ d ; SBC A,n ; SUB (HL) ; EX rr,rr ; DJNZ d ; SBC A,n ; LD r,r] ×2
+- 1× `1d ed b0 68 e9 80 a5 dc 1d 10 74 70 3d 98 57 62 cb e4 1d ed …` — [ADD A,B ; AND L ; DEC E ; DJNZ d ; LD (HL),r ; DEC A ; SBC A,B ; LD r,r ; LD r,r ; SET 4,H ; DEC E ; LDIR ; LD r,r ; JP (HL)] ×2
+- 1× `b0 b0 b0 5a 15 15 ed b0 b0 b0 5a 15 15 ed b0 b0 b0 5a 15 15 …` — [DEC D ; DEC D ; LDIR ; OR B ; OR B ; LD r,r] ×5+1B

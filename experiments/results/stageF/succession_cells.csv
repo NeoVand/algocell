@@ -1,0 +1,22 @@
+label,tape,steps,k,n,stopped_early,last_step_min,final_at_last,family_300k,stack_takeover_n,stack_takeover_med,ldir_takeover_n,ldir_takeover_med,ldir_invasions_complete,ldir_invasions_censored,ldir_invasion_med_steps,stack_plateau_med
+none@ring28,10,128,4,10,0,300000,push:10,push:10,10,19500.0,0,,0,0,,0.5668114331885669
+none@ring28,12,128,4,10,0,300000,push:10,push:10,10,975.0,0,,0,0,,0.8625354681799757
+none@ring32,8,128,4,10,0,300000,"none:8, ldir:2","none:8, ldir:2",0,,2,183500.0,2,0,4500.0,
+none@ring33,16,128,4,10,0,300000,push:10,push:10,10,3575.0,0,,0,0,,0.5409260871792244
+none@ring34,16,128,4,10,0,300000,"push:9, ldir:1","push:9, ldir:1",10,3875.0,1,161500.0,1,0,1000.0,0.66088715873585
+none@ring35,16,128,4,10,0,300000,push:10,push:10,10,6000.0,0,,0,0,,0.40928648261025463
+none@ring36,12,128,4,10,0,300000,"ldir:6, push:4","ldir:6, push:4",10,1375.0,6,113250.0,6,0,2250.0,0.7417156465342523
+none@ring37,16,128,4,10,0,300000,none:10,none:10,1,2750.0,0,,0,0,,0.0
+none@ring40,10,128,4,10,0,300000,"none:8, ldir:2","none:8, ldir:2",0,,2,224500.0,2,0,2500.0,
+none@ring73,36,128,4,10,0,300000,push:10,push:10,10,1875.0,0,,0,0,,0.9044097047122766
+none@ring74,36,128,4,10,0,300000,"push:9, ldir:1","push:9, ldir:1",10,925.0,1,79500.0,1,0,3500.0,0.9654003473973217
+none@ring75,36,128,4,10,0,300000,push:10,push:10,10,1475.0,0,,0,0,,0.8776825236734465
+none@ring79,36,128,4,10,0,300000,none:10,none:10,0,,0,,0,0,,
+stack-write-only@ring33,16,128,4,10,0,300000,"none:8, ldir:2","none:8, ldir:2",1,203000.0,2,45750.0,1,1,1500.0,
+stack-write-only@ring34,16,128,4,10,0,300000,"none:5, ldir:4, push:1","none:5, ldir:4, push:1",1,288000.0,5,206500.0,5,0,1500.0,
+stack-write-only@ring35,16,128,4,10,0,300000,"none:8, ldir:2","none:8, ldir:2",0,,2,86750.0,2,0,3000.0,
+stack-write-only@ring37,16,128,4,10,0,300000,none:10,none:10,0,,0,,0,0,,
+stack-write-only@ring73,36,128,4,10,0,300000,"ldir:8, flooded:1, rst:1","ldir:8, flooded:1, rst:1",1,8000.0,9,46500.0,9,0,1500.0,
+stack-write-only@ring74,36,128,4,10,0,300000,ldir:10,ldir:10,1,8000.0,10,13500.0,10,0,2000.0,
+stack-write-only@ring75,36,128,4,10,0,300000,"ldir:9, rst:1","ldir:9, rst:1",0,,9,58000.0,9,0,1400.0,
+stack-write-only@ring79,36,128,4,10,0,300000,ldir:10,ldir:10,1,173000.0,10,67500.0,10,0,1750.0,

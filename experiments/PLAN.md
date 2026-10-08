@@ -337,6 +337,23 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (Stage F read; 210/210 runs, 0 failures): **F1 falsified** — on every padded
+  ring the tiled first-replicator periods divide P in 0.00 of cases and keep dividing 2L
+  (0.50–1.00); as pre-registered, the gcd-on-the-ring mechanism is dropped and the divisor law
+  is restated as a property of the pair length 2L. **F2** slowing confirmed (×7.9–10.4 or
+  absent on prime rings) but tiled units do appear, and composite padding slows the LDIR
+  regime as much (P = 33: 2/10, 35: 2/10, 75: ×14). **F3 falsified** — odd rings slow the
+  pusher ×2–16 (P = 35: KM 3,150 vs 200) and break its tiling (whole-tape units at P = 37;
+  0/10 faithful at P = 79); even rings are within noise. **F4a confirmed** (L = 12 · P = 28, 36:
+  10/10 at KM 350, 600, period 2), **F4b half** (L = 10 · P = 28 rescues emergence, 10/10 at
+  KM 500, but heritability stays at the threshold: gen2 0.35–0.40, 25–50% of cells heritable,
+  flood 0.15–0.21; P = 40: 2/10 as predicted), **F4c confirmed** (L = 8 · P = 32: 2/10).
+  Mechanism from executor traces (stage_f/pusher_trace.csv): a race between the stack pointer
+  (writing B from its last byte downward) and the program counter (executing B forward); a
+  3-byte LD that straddles a not-yet-written byte loads partner data into the register pair
+  and poisons every later PUSH; padding shifts the instruction phase at the wrap so that a
+  fresh LD precedes the next PUSH. Single-encounter numbers do not predict the L = 10
+  outcome (isolated gen2 0.31/0.36/0.37 for P = 20/28/40). Details: results/stageF/FINDINGS.md.
 - 2026-10-07 (Stage F launched, 210 runs incl. F4): preflight OK (47 tests; 210 conditions,
   21 parameter signatures dry-run through the Modal path; volume clean; estimate 8.3 GPU-h
   ≈ $16), Modal smoke OK (2 ok + 1 invalid failed without aborting). One test bound was

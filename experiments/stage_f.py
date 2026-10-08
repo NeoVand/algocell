@@ -135,9 +135,9 @@ def main():
         s = nn[nn["L"] == L].sort_values("P")
         if s.empty:
             continue
-        axes[0].errorbar(s["P"] / (2 * L), s["t_rep_n"] / s["n"], yerr=[s["t_rep_n"] / s["n"] - s["t_rep_lo"], s["t_rep_hi"] - s["t_rep_n"] / s["n"]], marker=m, lw=1, capsize=2, label=f"L = {L}")
+        axes[0].errorbar(s["P"] / (2 * L), s["t_rep_n"] / s["n"], yerr=[s["t_rep_n"] / s["n"] - s["t_rep_lo"], s["t_rep_hi"] - s["t_rep_n"] / s["n"]], marker=m, ls="none", capsize=2, label=f"L = {L}")
         ok = np.isfinite(s["t_rep_km"])
-        axes[1].plot(s["P"][ok] / (2 * L), s["t_rep_km"][ok], marker=m, lw=1, label=f"L = {L}")
+        axes[1].plot(s["P"][ok] / (2 * L), s["t_rep_km"][ok], marker=m, ls="none", label=f"L = {L}")
         axes[1].plot(s["P"][~ok] / (2 * L), [400_000] * int((~ok).sum()), marker="^", mfc="white", ls="none", color="k")
     axes[0].set_ylabel("seeds with a heritable replicator (of 10)")
     axes[1].set_ylabel("KM median steps (△ not reached)")
@@ -148,6 +148,28 @@ def main():
     h, l = axes[0].get_legend_handles_labels()
     fig.legend(h, l, loc="upper left", bbox_to_anchor=(1.0, 0.95), frameon=False, title="`none`, 128 steps, 1/16")
     fs.save(fig, os.path.join(out, "F4_deadzone"))
+
+    # ── mechanism trace: one pusher encounter on the nominal and padded rings, byte by byte ──
+    from algocell_exp.assay import execute_pairs, assay
+    rng = np.random.default_rng(0)
+    trace = []
+    for L, Ps in ((8, (16, 32)), (10, (20, 28, 40)), (12, (24, 28, 36)), (16, (32, 33, 34, 35, 37))):
+        unit = np.resize(np.frombuffer(bytes.fromhex("01c5"), dtype=np.uint8), L)
+        Bs = rng.integers(0, 256, size=(8, L), dtype=np.uint8)           # the same 8 random partners for every P
+        for P in Ps:
+            r = assay(unit, z80_steps=128, suppress=[], n=64, seed=0, mem_length=None if P == 2 * L else P)
+            for steps in (8, 16, 32, 64, 128):
+                pairs = np.concatenate([np.repeat(unit[None], 8, 0), Bs], axis=1)
+                res = np.asarray(execute_pairs(pairs, L, steps, [], None if P == 2 * L else P)).reshape(8, -1)
+                A2, B2 = res[:, :L], res[:, L : 2 * L]
+                trace.append({"L": L, "P": P, "steps": steps, "A_intact_frac": float((A2 == unit).mean()), "B_copy_frac": float((B2 == unit).mean()),
+                              "B_last_byte_copied": float((B2[:, -1] == unit[-1]).mean()), "gen2_isolated": round(r["gen2_score"], 2)})
+    tr = pd.DataFrame(trace)
+    tr.to_csv(os.path.join(out, "pusher_trace.csv"), index=False)
+    piv = tr.pivot_table(index=["L", "P", "gen2_isolated"], columns="steps", values=["A_intact_frac", "B_copy_frac"])
+    md.append("## Mechanism trace — the pusher `01 c5` tiled to L, executed as A against the same 8 random partners for 8 … 128 steps\n\n"
+              "Fraction of A's bytes still intact and fraction of B's bytes equal to the parent, by step; the isolated gen2 (64 partners) in the index.\n\n"
+              + piv.round(2).to_markdown() + "\n")
 
     with open(os.path.join(out, "NUMBERS_F.md"), "w") as fh:
         fh.write("\n".join(md))
