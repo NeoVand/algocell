@@ -126,7 +126,7 @@ def fig2(out):
     c4 = pd.read_csv(os.path.join(R, "stageG", "c4", "functional.csv"))
     Ls = [16, 20, 50, 64]
     fig = plt.figure(figsize=(fs.DOUBLE, 105 * fs.MM))
-    gs = GridSpec(2, 4, figure=fig, hspace=0.6, wspace=0.5, left=0.07, right=0.99, top=0.95, bottom=0.1)
+    gs = GridSpec(2, 4, figure=fig, hspace=0.6, wspace=0.5, left=0.07, right=0.99, top=0.95, bottom=0.14)
     rng = np.random.default_rng(0)
     # a, b: per-world first vs final
     for row, (col, ylab) in enumerate((("copied", "random partners that\nbecome a copy"), ("damaged", "encounters that damage\nthe organism"))):
@@ -147,14 +147,15 @@ def fig2(out):
             else:
                 ax.set_yticklabels([])
             if row == 0:
-                ax.set_title(f"L = {L}, {int(d['horizon'].iloc[0]) // 1000}k steps", fontsize=6)
+                hz = int(d['horizon'].iloc[0])
+                ax.set_title(f"L = {L}, {'1M' if hz >= 1_000_000 else str(hz // 1000) + 'k'} steps", fontsize=6)
             fs.tidy(ax)
             if i == 0:
                 fs.panel_label(ax, "ab"[row], x=-0.45)
     # legend for a/b
     h1 = plt.Line2D([], [], marker="o", ls="none", mfc="none", mec=fs.CONCEPT["open"], ms=3.5, label="no loop instruction")
     h2 = plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3.5, label="loop instruction (jump, return or LDIR)")
-    fig.legend(handles=[h1, h2], loc="upper right", bbox_to_anchor=(0.995, 1.0), fontsize=5, ncol=2, frameon=False)
+    fig.legend(handles=[h1, h2], loc="lower center", bbox_to_anchor=(0.5, -0.01), fontsize=5, ncol=2, frameon=False)
     fs.save(fig, os.path.join(out, "fig2_ab"))
 
     fig = plt.figure(figsize=(fs.DOUBLE, 55 * fs.MM))
@@ -260,6 +261,9 @@ def fig3(out):
     # d: L = 9 reversal (Stage D)
     try:
         D = pd.read_csv(os.path.join(R, "stageD", "stage_d", "cells_D.csv"))
+        if "k" in D:
+            D = D[D["k"] == 4]
+        D = D.drop_duplicates(subset=["label", "steps"])
         arms = [a for a in ["none", "stack-writes", "stack-write-only", "stack-read-only", "push", "call-rst-write"] if a in set(D["label"])]
         y = np.arange(len(arms))
         for st, mk, off in ((128, "o", -0.15), (512, "s", 0.15)):
@@ -345,17 +349,22 @@ def fig5(out):
     placeholder(axb, "b  closure window q∫n dt: open-population integral for\nthe Z80 (benign tar), BFF + literal (lethal tar) and\nthe benign-tar BFF cell — data + model (after follow-ups)")
     # c: fidelity vs context dependence, every measured replicator (Z80 first/final partner tests; BFF culture tests)
     try:
-        g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
-        for which, mk in (("first", "o"), ("final", "s")):
-            loop = (g[f"{which}_has_cf"] | g[f"{which}_has_block"]).values
-            axc.scatter(g[f"{which}_damaged"][~loop], g[f"{which}_copied"][~loop], s=8, marker=mk, facecolors="none", edgecolors=fs.CONCEPT["open"], lw=0.6)
-            axc.scatter(g[f"{which}_damaged"][loop], g[f"{which}_copied"][loop], s=8, marker=mk, color=fs.CONCEPT["closed"], lw=0)
+        rng = np.random.default_rng(3)
         runs = pd.read_csv(os.path.join(R, "bff", "runs.csv"))
         d = runs[runs["t_top"].notna()]
         for which, mk in (("first", "o"), ("final", "s")):
             loop = d[f"{which}_loop"].astype(bool).values
-            axc.scatter(d[f"{which}_self_damage"][~loop], d[f"{which}_copies"][~loop], s=8, marker=mk, facecolors="none", edgecolors="#0072B2", lw=0.6)
-            axc.scatter(d[f"{which}_self_damage"][loop], d[f"{which}_copies"][loop], s=8, marker=mk, color="#0072B2", lw=0)
+            xj = d[f"{which}_self_damage"].values + rng.uniform(-0.012, 0.012, len(d))
+            yj = d[f"{which}_copies"].values + rng.uniform(-0.012, 0.012, len(d))
+            axc.scatter(xj[~loop], yj[~loop], s=8, marker=mk, facecolors="none", edgecolors="#0072B2", lw=0.6)
+            axc.scatter(xj[loop], yj[loop], s=8, marker=mk, color="#0072B2", lw=0)
+        g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
+        for which, mk in (("first", "o"), ("final", "s")):
+            loop = (g[f"{which}_has_cf"] | g[f"{which}_has_block"]).values
+            xj = g[f"{which}_damaged"].values + rng.uniform(-0.012, 0.012, len(g))
+            yj = g[f"{which}_copied"].values + rng.uniform(-0.012, 0.012, len(g))
+            axc.scatter(xj[~loop], yj[~loop], s=8, marker=mk, facecolors="none", edgecolors=fs.CONCEPT["open"], lw=0.6)
+            axc.scatter(xj[loop], yj[loop], s=8, marker=mk, color=fs.CONCEPT["closed"], lw=0)
         axc.set_xlim(-0.03, 1.03)
         axc.set_ylim(-0.03, 1.03)
         fs.tidy(axc, "encounters that damage the organism", "random partners that become a copy")
