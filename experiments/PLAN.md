@@ -654,3 +654,14 @@ replication; 2% exact share is noisy because return-address smears reach
   (read and write heads cross and drift) — so THEORY.md was corrected with readings (b1)/(b2) and the run design
   fixed before launch; 24 local soups (12 standard, 12 wrap; 2¹⁷ programs, 16,384 epochs, mutation 2⁻¹²) and a
   structured search over 16.4M straight-line programs (`micro/bff_search.py`) started.
+- 2026-10-08 03:45 (**two-byte census; BFF on Modal**): `two_byte_census.py` ran all 65,536 two-byte words tiled to
+  L = 16 through the culture test (32 partners) and the partner test (256): five load–push words copy ≥ 0.5 of partners
+  (`01 c5`, `11 d5`, `21 e5`, `2a e5`, `e5 2a`), none ≥ 0.95; 246 `CALL` smears pass gen2 ≥ 0.3 with no 75% copy
+  (`results/census2/`). The BFF soups were moved to Modal with the user's approval (≈ $45 cap): `modal_bff.py`
+  smoke-tested, then seeds 13–24 (03:33) and 1–12 (03:41) for both variants, 48 soups of 2¹⁷ programs × 16,384 epochs;
+  on the L40S containers an epoch takes ≈ 0.07 s against ≈ 0.3 s locally, so the batch costs ≈ $36 and finishes within
+  the hour. Local seeds 1–6 (standard) are kept as a cross-machine reproducibility check and the other local streams are
+  stopped when they finish. The first live samples (03:42) showed quasispecies replicator populations (heritable fraction
+  0.69–0.97 with the top exact class at 0.15% of the soup), so the BFF emergence exemplar is the most common class at the
+  first sample where it is heritable (`t_top`) and the population event is `t_her` (heritable fraction ≥ 0.5); the
+  pre-registered share criterion `t_rep` is reported alongside (THEORY.md P1, amendment 03:45, before any verdict).
