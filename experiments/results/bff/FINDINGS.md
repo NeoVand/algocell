@@ -121,15 +121,15 @@ language up to period 10).
   every sample from epoch 64 on, through the organism's whole reign: a one-byte organism has no high-order structure
   to detect. The detector fires before life and goes quiet during it.
 
-## 4c. Literal without the wrapping pointer (`lit`, 12 seeds; 10 finished — seeds 11 and 12 were lost with a stopped Modal app at epochs 153 and 10,560 and are being re-run; the counts below are from the 10)
+## 4c. Literal without the wrapping pointer (`lit`, 12 seeds, all finished; seeds 11 and 12 were re-run after a stopped Modal app lost them at epochs 153 and 10,560)
 
 - **(l1) met, 12/12:** the all-`P` tiling is the first replicator in every world (epoch 64), open and loop-free, copies
   0.91 of random partners (median; the one-pass bound makes copies into partners with hostile tails partial).
 - **(l2) partly as predicted:** the open wave is weaker than under the wrapping pointer — the heritable fraction of
   random tapes reaches ≥ 0.5 in only 5/12 worlds (peak median 0.47 at epoch 96) — and the open population dies out in
-  every finished world (final heritable fraction 0.00 in 10/10 finished worlds; the all-`P` class survives only as
+  every world (final heritable fraction 0.00 in 12/12; the all-`P` class survives only as
   a minority). By the pre-registered letter of (l2) ("collapse in ≥ 9/12", defined as ≥ 0.5 then < 0.1) the count is
-  4/12, because 7 worlds never reached 0.5; by its intent (no persistent open population) it is 12/12. Both are
+  5/12, because 7 worlds never reached 0.5; by its intent (no persistent open population) it is 12/12. Both are
   reported. No closed class (0/12).
 - Together with 4b: the pointer wrap decides how strong the open wave is (bandwidth), the tar decides whether it lasts.
 

@@ -36,7 +36,7 @@ the audit trail for referees and for us. Paths are relative to `experiments/`.
 | Theorem 1 bound: 64 writes + 63 moves + 2 changes > 128 | arithmetic | `THEOREMS.md` Theorem 1 |
 | compute: 3,560 Z80 runs; 84 BFF soups; ≈ $400 | counts from run summaries; cost from preflight logs and recorded run times | `PLAN.md` change log; `runs/*/` summaries (A 630, B 640, C 490, D 280, E 1,230, F 210, G 80) |
 | BFF wraplitnh: 12/12 all-P first (epoch 64); persists 12/12 (final heritable median 1.00, collapsed 0/12) vs 0/12 in wraplit; 0/12 closed; HOE ≥ 1 at epoch 0 in 12/12, ≤ 0.03 from epoch 64 | as stated | `results/bff/NUMBERS_BFF.md` wraplitnh section & readings (f1–f3); `results/bff/runs.csv`; `results/bff/FINDINGS.md` §4b |
-| BFF lit: 12/12 all-P first (epoch 64, copies median 0.91); heritable ≥ 0.5 in 5/12; collapse by the letter 4/12; final heritable 0.00 in 10/10 finished (2 pending); 0/12 closed | as stated | `results/bff/NUMBERS_BFF.md` stdlit section & readings (l1–l2); `results/bff/runs.csv`; `results/bff/FINDINGS.md` §4c |
+| BFF lit: 12/12 all-P first (epoch 64, copies median 0.91); heritable ≥ 0.5 in 5/12; collapse by the letter 5/12; final heritable 0.00 in 12/12; 0/12 closed | as stated | `results/bff/NUMBERS_BFF.md` stdlit section & readings (l1–l2); `results/bff/runs.csv`; `results/bff/FINDINGS.md` §4c |
 | closed-design search behind "none evolves": 1.3 M periodic programs ≤ period 10, 0 closed heritable | 1,309,528; 0 | `results/bff_closed_search/NUMBERS_CLOSED_SEARCH_p10.md` |
 
 | Fig. 2d partner-test medians (pusher L = 16: copies 0.68, damaged 0.33; closers 1.00 / 0.00) | computed at build time | `manuscript/figures/concept.py` from `results/stageG/stageG/stage_g_runs.csv` |

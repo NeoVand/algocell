@@ -1,6 +1,6 @@
 # Open replicators evolve closure in a digital primordial soup
 
-*Nature Article draft v2, 2026-10-08. Title 61 characters. Summary ≤ 200 words. Subheadings ≤ 40 characters. Main text target ≤ 3,500 words. Every number is from a generated table named in the Methods (Data availability) and in `manuscript/NUMBERS_INDEX.md`. The `lit` cell reports 10 of 12 seeds until the two re-run soups land (`PLAN.md`, 2026-10-08 13:50).*
+*Nature Article draft v2, 2026-10-08. Title 61 characters. Summary ≤ 200 words. Subheadings ≤ 40 characters. Main text target ≤ 3,500 words. Every number is from a generated table named in the Methods (Data availability) and in `manuscript/NUMBERS_INDEX.md`.*
 
 ---
 

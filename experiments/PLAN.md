@@ -722,3 +722,6 @@ replication; 2% exact share is noisy because return-address smears reach
   cycles exact and revealed that the `JR NZ`/`DJNZ` closers cycle through the 16-bit program-counter wrap (dashed
   arrows). Byte-order slip fixed in the manuscript: `01 c5 01` is `LD BC,$01c5` (little-endian), the push writes `c5 01`.
   Image-generation content prompts in `manuscript/figures/CONCEPT_PROMPTS.md`. Fig. 5b (closure window) still a placeholder.
+- 2026-10-08 14:50: all 24 follow-up soups complete (duplicate `wraplitnh` seed 12 restored its files bit-for-bit; `lit` seeds
+  11–12 re-run). Final `lit` counts: (l1) 12/12; (l2) by the letter 5/12, final heritable fraction 0.00 in 12/12; 0/12 closed.
+  `wraplitnh` unchanged (12/12 persist). Tables and Figs 4–5 refreshed.
