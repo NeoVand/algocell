@@ -665,3 +665,8 @@ replication; 2% exact share is noisy because return-address smears reach
   0.69–0.97 with the top exact class at 0.15% of the soup), so the BFF emergence exemplar is the most common class at the
   first sample where it is heritable (`t_top`) and the population event is `t_her` (heritable fraction ≥ 0.5); the
   pre-registered share criterion `t_rep` is reported alongside (THEORY.md P1, amendment 03:45, before any verdict).
+- 2026-10-08 03:52 (**BFF literal-push variant launched**): harness tests showed the straight-line literal pusher `P x`
+  copies only 48 of 64 bytes with the standard (one-pass) pointer — the one-pass bandwidth bound — and copies itself
+  completely under a wrapping pointer with the Z80 pusher's phenotype (0.61 of random partners, self-damage 0.34). THEORY
+  P1(e) pre-registered (wrap + literal: open first, closed later; kill criteria; `lit` cell held as e4), then 12 `wraplit`
+  soups (seeds 1–12) launched on Modal (≈ $8.5; running total for BFF on Modal ≈ $44, within the ≈ $45 approval).
