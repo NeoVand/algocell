@@ -42,6 +42,8 @@ the audit trail for referees and for us. Paths are relative to `experiments/`.
 | Fig. 2d partner-test medians (pusher L = 16: copies 0.68, damaged 0.33; closers 1.00 / 0.00) | computed at build time | `manuscript/figures/concept.py` from `results/stageG/stageG/stage_g_runs.csv` |
 | Fig. 2d cycles and Fig. 5a trajectories (pusher leaves after 10 instructions with 10 of 20 bytes written; RET NZ returns to cells 0 and 3; JR NZ 23→9, 9→31, wrap 35→0; DJNZ 16→7, wrap 15→0; LDIR in place) | generated | `trace_z80.py` → `results/concept/traces.json` |
 | pusher literal byte order: bytes `01 c5 01` = `LD BC,$01c5`; first push writes `c5 01` at cells 29–30 of the 32-byte ring | GPU executor | `trace_z80.py` (sp 31 → 29 after the first push) |
+| information inflow H(o \| x), Z80: first replicators median 7.0 bits (3.9, 6.2, 7.8, 8.0 by L); loop-bearing finals 0 bits in 63/67; drop ≥ 2 bits in 63/80 | 7.0; 3.9/6.2/7.8/8.0; 63/67; 63/80 | `results/biology/individuality/summary.csv`, `predictions.csv`, `NUMBERS_INDIVIDUALITY.md` |
+| information inflow, BFF first replicators: published < 0.5 bit in 6/9; lit 8.0 bits; wraplit 0.75; wraplitnh 0.04 | 6/9; 7.99; 0.75; 0.037 | `results/biology/individuality/summary.csv` |
 
 Figure data sources: Fig. 1c `runs/stageG/none@closure_L16_st128_k4_s2001.jsonl` + `results/stageG/c4/functional.csv`; Fig. 1d `results/stageE/assays.csv`
 (`none@nominal`); Fig. 2a,b,e `results/stageG/stageG/stage_g_runs.csv`; Fig. 2c `results/stageG/c4/functional.csv`; Fig. 3a

@@ -231,10 +231,18 @@ Let the offspring of x in context e be o = F(x, e), with e drawn from a context 
 
 **Reading.** This is Krakauer et al.'s individuality (the organism's future determined by its own past rather than the
 environment's) specialised to one generation and made measurable by intervention: the partner test estimates
-P(o ≈ x | x) under uniformly random e, and the pointer-entered record is a sufficient condition for λ(x) = 0 in these
-machines (no read of the environment, no information about it). "Selection for fidelity is selection against
-information inflow from the environment" is then a theorem, if a modest one: the Z80 pusher has λ > 0 (its copy
-succeeds in 0.66 of contexts) and the `RET NZ` closer has λ = 0 (1.00 in all 256). The lemma is near-tautological; its
+P(o ≈ x | x) under uniformly random e, and λ(x) itself is measurable: for a deterministic executor H(o | x, e) = 0, so
+λ(x) = H(o | x), the entropy of the offspring over partners. *Qualification (measured 2026-10-08,
+`results/biology/individuality/`):* the pointer-entered record (execution never enters the partner) rules out reading
+the context as code and is sufficient for zero inflow into the *copied* region, but not for λ(x) = 0 at byte
+resolution, because unwritten offspring positions keep the partner's bytes (7 of 28 pointer-closed BFF first
+replicators have H(o | x) > 0, three of them ≈ 7 bits from a single unwritten byte); and pointer entry is neither
+necessary for λ > 0 nor sufficient for it: the wrapping literal pusher of BFF enters the partner in every encounter
+and has λ ≈ 0 (0.04 bits) because it overwrites the whole ring. Inflow comes from partial copying; openness of control
+flow is the mechanism that makes the Z80 pusher's copy partial. "Selection for fidelity is selection against
+information inflow from the environment" is then a theorem, if a modest one, and it is measured: the Z80 first
+replicator has λ > 0 in 80 of 80 worlds (median 7.0 bits; its copy succeeds in 0.66 of contexts) and the loop-bearing
+successor has λ = 0 in 63 of 67 (one offspring string in all 256 contexts; the four exceptions copy all but 1–3 bytes). The lemma is near-tautological; its
 value is that it says what the measured quantity *is*, and that the definition of closure is the right one.
 
 ## The dynamics: a classification, not a law

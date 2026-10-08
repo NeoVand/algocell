@@ -1,0 +1,6 @@
+prediction,machine,population,statement,n,count,fraction,threshold_met,threshold_kill,outcome
+Q1,z80,all Stage G worlds,H(O | X_first) > 1 bit,80,80,1.0,0.9,0.6,met
+Q2,z80,worlds whose final dominant carries a loop instruction,H(O | X_final) < 0.5 bit,67,63,0.9402985074626866,0.9,0.6,met
+Q3,z80,all Stage G worlds,H(O | X_first) − H(O | X_final) ≥ 2 bits,80,63,0.7875,0.75,0.5,met
+Q4a,bff,life-producing soups of the published variant (std),H(O | X_first) < 0.5 bit,9,6,0.6666666666666666,0.9,0.6,between (neither met nor killed)
+Q4b,bff,"life-producing soups of the literal-push variants (lit, wraplit, wraplitnh)",H(O | X_first) > 1 bit,36,12,0.3333333333333333,0.9,0.6,KILL

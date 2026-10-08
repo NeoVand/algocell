@@ -755,3 +755,9 @@ replication; 2% exact share is noisy because return-address smears reach
   "no space" were wrong and are corrected in `MAIN_nature.md`; PLAN.md §design always said "random neighbour pairs".
   Consequence: the Z80 soup is a spatial system with local interaction (BFF as published is well mixed); the
   first-replicator "explosion" is a spatial wave, and the stills/videos are maps of the lattice.
+- 2026-10-08 night (**analysis B done**: information inflow): Q1–Q3 met (first replicators import a median 7.0 bits
+  from the partner in 80/80 worlds; loop-bearing finals import 0 bits in 63/67; drop ≥ 2 bits in 63/80), Q4a between,
+  Q4b **killed**: with a wrapping pointer the BFF literal pusher floods the ring and has ≈ 0 inflow although its pointer
+  enters the partner in every encounter. The pre-registration had conflated pointer openness with inflow; Lemma 7(ii)
+  predicted the data. THEOREMS.md reading qualified, MAIN_nature.md (BFF section, Methods, theorem section) updated,
+  NUMBERS_INDEX rows added. Candidate new Fig. 5b: first → final inflow per world (slope chart). Analysis A pending.

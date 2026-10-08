@@ -71,4 +71,26 @@ copied, damaged), a paired first → final figure per machine, NUMBERS_INDIVIDUA
 
 ## Outcomes
 
-(appended after the analyses run)
+### B. Individuality as zero information inflow — outcome (2026-10-08, `results/biology/individuality/`)
+
+| | population | statement | count | outcome |
+|---|---|---|---|---|
+| Q1 | 80 Stage G worlds | H(O \| X_first) > 1 bit | 80/80 | met |
+| Q2 | 67 worlds whose final carries a loop instruction | H(O \| X_final) < 0.5 bit | 63/67 (0.94) | met |
+| Q3 | 80 Stage G worlds | drop ≥ 2 bits | 63/80 (0.79) | met |
+| Q4a | 9 life-producing soups, BFF as published | H(O \| X_first) < 0.5 bit | 6/9 (0.67) | between |
+| Q4b | 36 soups of the literal-push variants | H(O \| X_first) > 1 bit | 12/36 (0.33) | **killed** |
+
+Z80: first replicators carry a median 7.0 bits about the partner (3.9, 6.2, 7.8, 8.0 bits at L = 16, 20, 50, 64); the
+loop-bearing successor carries 0 bits in 63 of 67 worlds, the four exceptions copying all but 1–3 bytes, which stay the
+partner's. Q4b was killed because the clause equated "the pointer enters the partner" with "information flows into the
+offspring": the literal-push variant without a wrapping pointer is at the 8-bit ceiling (12/12), but with a wrapping
+pointer the all-P organism laps the ring and overwrites everything, so its offspring is the same string in nearly every
+context (wraplit 0.75 bits, halted encounters only; wraplitnh 0.04 bits) although execution enters the partner in 100% of
+encounters. Lemma 7(ii) had predicted exactly this for a perfect copier; the pre-registration contradicted the lemma for
+that organism and the data sided with the lemma. Corrected statement: inflow comes from partial copying (unwritten
+offspring positions, data read from the partner); pointer entry is the mechanism that makes the Z80 pusher's copy
+partial, but it is neither necessary for inflow (1-byte tails of pointer-closed BFF replicators) nor sufficient (the
+flooding organism). THEOREMS.md's reading of Lemma 7 is qualified accordingly. Analysis A: pending.
+
+(A appended when it finishes)
