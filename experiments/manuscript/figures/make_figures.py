@@ -40,7 +40,7 @@ from matplotlib.gridspec import GridSpec  # noqa: E402
 
 R = os.path.join(EXP, "results")
 L_COL = dict(fs.L_COLOR)
-L_COL.update({8: "#56B4E9", 9: "#CC79A7", 12: "#F0E442", 10: "#999999"})
+L_COL.update({8: "#56B4E9", 9: "#E69F00", 12: "#F0E442", 10: "#999999"})
 
 
 def wilson(k, n, z=1.96):
@@ -50,6 +50,13 @@ def wilson(k, n, z=1.96):
     c = (p + z * z / (2 * n)) / d
     h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
     return c - h, c + h
+
+
+def label(ax, letter, dx=0.052, dy=0.006):
+    """Panel letter at a fixed offset from the panel's box, so letters align across rows and panel types."""
+    ax.apply_aspect()
+    pos = ax.get_position()
+    ax.figure.text(pos.x0 - dx, pos.y1 + dy, letter, fontsize=8, fontweight="bold", va="bottom", ha="left", gid="panel-label")
 
 
 def placeholder(ax, text):
@@ -84,9 +91,9 @@ def fig1(out):
     axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     axc, axd = fig.add_subplot(gsd[1, 0]), fig.add_subplot(gsd[1, 1])
     cp.fig1a(axa)
-    fs.panel_label(axa, "a", x=0.0, y=0.96)
+    label(axa, "a")
     cp.fig1b(axb)
-    fs.panel_label(axb, "b", x=0.0, y=0.96)
+    label(axb, "b")
     # c: one world's time course (Stage G, L = 16, seed 2001)
     try:
         run = glob.glob(os.path.join(EXP, "runs", "stageG", "none@closure_L16_st128_k4_s2001.jsonl"))[0]
@@ -108,7 +115,7 @@ def fig1(out):
         fs.tidy(axc, "step", "fraction")
         axc.set_gid("allow-clip")
         axc.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5, frameon=False)
-        fs.panel_label(axc, "c")
+        label(axc, "c")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"c  (data missing: {e})")
     # d: Kaplan–Meier emergence by L (Stage E @nominal, none)
@@ -129,7 +136,7 @@ def fig1(out):
         fs.tidy(axd, "step", "worlds with a heritable replicator")
         axd.set_gid("allow-clip")
         axd.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=6, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
-        fs.panel_label(axd, "d")
+        label(axd, "d")
     except Exception as e:  # noqa: BLE001
         placeholder(axd, f"d  (data missing: {e})")
     save(fig, os.path.join(out, "fig1"))
@@ -189,7 +196,7 @@ def fig2(out):
     fs.tidy(axc, "step", "heritable fraction of random cells")
     axc.set_gid("allow-clip")
     axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False)
-    fs.panel_label(axc, "c")
+    label(axc, "c")
     # e: convergence and closure counts per L
     rows = []
     for L in Ls:
@@ -204,14 +211,14 @@ def fig2(out):
     axe.bar(x, T["closed"], w, color="#0072B2", label="copies ≥ 95% of partners")
     axe.bar(x + w, T["identical"], w, color="#999999", label="byte-identical to the modal tape")
     axe.set_xticks(x, [f"L = {L}" for L in Ls])
-    axe.set_ylim(0, 27)
+    axe.set_ylim(0, 21)
     axe.set_yticks([0, 5, 10, 15, 20])
-    fs.tidy(axe, None, "worlds (of 20)")
-    axe.legend(fontsize=5, loc="upper center", ncol=1, frameon=False)
-    fs.panel_label(axe, "e")
+    fs.tidy(axe, "tape length", "worlds (of 20)")
+    axe.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+    label(axe, "e")
     cp.fig2d(axd)
     axd.set_anchor("N")
-    fs.panel_label(axd, "d", x=0.0, y=0.98)
+    label(axd, "d")
     save(fig, os.path.join(out, "fig2_cde"))
 
 
@@ -233,14 +240,14 @@ def fig3(out):
                 axa.plot(r["ratio"], yi, "o", color=col, ms=3.2)
             else:
                 axa.annotate("", xy=(3000, yi), xytext=(600, yi), arrowprops=dict(arrowstyle="->", color=col, lw=0.8))
-            axa.text(1.03, yi, f"{int(r['t_rep_n'])}/{int(r['n'])}", transform=axa.get_yaxis_transform(), fontsize=5, va="center")
+            axa.text(1.03, yi, f"{int(r['t_rep_n'])}/{int(r['n'])}", transform=axa.get_yaxis_transform(), fontsize=5, va="center", gid="allow-outside")
         axa.axvline(1, color="#000000", lw=0.5, ls=":")
         axa.set_xscale("log")
         axa.set_xlim(0.3, 3000)
         axa.set_yticks(y, C["label"].tolist())
         fs.tidy(axa, "emergence delay vs unablated (ratio of KM medians)")
-        axa.text(1.03, len(C) - 0.3, "alive", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color="#555555")
-        fs.panel_label(axa, "a", x=-0.62)
+        axa.text(1.03, len(C) - 0.3, "alive", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color="#555555", gid="allow-outside")
+        label(axa, "a")
     except Exception as e:  # noqa: BLE001
         placeholder(axa, f"a (data missing: {e})")
     # b: size axis — fraction alive by L (none @nominal) with Wilson CI, plus the pusher's isolated heritability
@@ -257,8 +264,8 @@ def fig3(out):
         axb.minorticks_off()
         axb.set_ylim(-0.03, 1.03)
         fs.tidy(axb, "tape length L (bytes)", "fraction")
-        axb.legend(fontsize=5, loc="lower right")
-        fs.panel_label(axb, "b")
+        axb.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+        label(axb, "b")
     except Exception as e:  # noqa: BLE001
         placeholder(axb, f"b (data missing: {e})")
     # c: dead-zone switch (Stage F4 + Stage E reference)
@@ -271,11 +278,11 @@ def fig3(out):
             axc.errorbar(d["P"], frac, yerr=[frac - d["t_rep_lo"], d["t_rep_hi"] - frac], fmt=mk, color=L_COL[L], ms=3.2, lw=0.6, capsize=1.5, label=f"L = {L}")
             for _, r in d.iterrows():
                 if r["P"] == 2 * r["L"]:
-                    axc.annotate("native ring", (r["P"], r["t_rep_n"] / r["n"]), textcoords="offset points", xytext=(0, -9), fontsize=4.5, ha="center", color="#555555")
+                    axc.annotate("native ring", (r["P"], r["t_rep_n"] / r["n"]), textcoords="offset points", xytext=(6, 0), fontsize=5, ha="left", va="center", color="#555555")
         axc.set_ylim(-0.03, 1.03)
         fs.tidy(axc, "pair memory ring P (bytes)", "worlds alive by 300k steps")
-        axc.legend(fontsize=5, loc="center right")
-        fs.panel_label(axc, "c", x=-0.3)
+        axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False)
+        label(axc, "c")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"c (data missing: {e})")
     # d: L = 9 reversal (Stage D)
@@ -292,8 +299,8 @@ def fig3(out):
         axd.set_yticks(y, arms)
         axd.set_xlim(-0.03, 1.03)
         fs.tidy(axd, "worlds alive at L = 9 (of 20)")
-        axd.legend(fontsize=5, loc="lower right")
-        fs.panel_label(axd, "d", x=-0.6)
+        axd.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+        label(axd, "d")
     except Exception as e:  # noqa: BLE001
         placeholder(axd, f"d (data missing: {e})")
     save(fig, os.path.join(out, "fig3"))
@@ -335,11 +342,11 @@ def fig4(out):
             if not os.path.exists(p):
                 continue
             S = pd.DataFrame([{"epoch": s["epoch"], "h": s["frac_heritable"]} for s in map(json.loads, open(p))])
-            axa.plot(S["epoch"], S["h"].rolling(4, min_periods=1).mean(), color=fs.BFF_VARIANT[v], lw=0.5, alpha=0.55)
-        axa.plot([], [], color=fs.BFF_VARIANT[v], lw=1.2, label=f"{fs.BFF_VARIANT_LABEL[v]} (n = {int((runs['variant'] == v).sum())})")
+            axa.plot(S["epoch"], S["h"].rolling(4, min_periods=1).mean(), color=fs.BFF_VARIANT[v], lw=0.6, alpha=0.75)
+        axa.plot([], [], color=fs.BFF_VARIANT[v], lw=0.9, alpha=0.9, label=f"{fs.BFF_VARIANT_LABEL[v]} (n = {int((runs['variant'] == v).sum())})")
     epoch_axis(axa)
     fs.tidy(axa, "epoch", "heritable fraction of random tapes")
-    fs.panel_label(axa, "a")
+    label(axa, "a")
     handles, labels = axa.get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.49), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
     # b: first vs final openness per variant (black labels: Nature forbids coloured text)
@@ -347,16 +354,16 @@ def fig4(out):
     for i, v in enumerate(variants):
         d = runs[(runs["variant"] == v) & runs["t_top"].notna()]
         for j, which in enumerate(("first", "final")):
-            x = i * 2.6 + j + rng.uniform(-0.15, 0.15, len(d))
+            x = i * 3.0 + j + rng.uniform(-0.15, 0.15, len(d))
             loop = d[f"{which}_loop"].astype(bool).values
             vals = d[f"{which}_entered"].values
             axb.scatter(x[~loop], vals[~loop], s=8, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
             axb.scatter(x[loop], vals[loop], s=8, color=fs.BFF_VARIANT[v], lw=0)
-        axb.text(i * 2.6 + 0.5, 1.08, v, ha="center", fontsize=5, color="black", gid="allow-outside")
-    axb.set_xticks([i * 2.6 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=5, rotation=90)
+        axb.text(i * 3.0 + 0.5, 1.07, {"std": "as\npublished", "wrap": "wrapping\npointer", "lit": "literal\npush", "wraplit": "wrap +\nliteral", "wraplitnh": "wrap +\nliteral,\nno halt"}[v], ha="center", va="bottom", fontsize=5, color="black", gid="allow-outside", linespacing=1.1)
+    axb.set_xticks([i * 3.0 + j for i in range(len(variants)) for j in (0, 1)], [w for _ in variants for w in ("first", "final")], fontsize=5, rotation=90)
     axb.set_ylim(-0.03, 1.03)
     fs.tidy(axb, None, "encounters whose pointer\nenters the partner")
-    fs.panel_label(axb, "b")
+    label(axb, "b")
     # c: the all-P class under lethal (wraplit) and benign (wraplitnh) tar: one switch, collapse vs persistence
     for v in ("wraplit", "wraplitnh"):
         if v not in variants:
@@ -368,11 +375,11 @@ def fig4(out):
             S = pd.DataFrame([{"epoch": s["epoch"], "share": _allp_share(s)} for s in map(json.loads, open(p))])
             axc.plot(S["epoch"], S["share"], color=fs.BFF_VARIANT[v], lw=0.6, alpha=0.6)
     epoch_axis(axc)
-    fs.tidy(axc, "epoch", "share of the all-P class")
-    fs.panel_label(axc, "c")
+    fs.tidy(axc, "epoch", "share of the all-P tape in the soup")
+    label(axc, "c")
     cp.fig4d(axd)
     axd.set_anchor("N")
-    fs.panel_label(axd, "d", x=0.0, y=0.98)
+    label(axd, "d")
     save(fig, os.path.join(out, "fig4"))
 
 
@@ -383,7 +390,7 @@ def fig5(out):
     axa, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     cp.fig5a(axa)
     axa.set_anchor("N")
-    fs.panel_label(axa, "a", x=0.0, y=0.98)
+    label(axa, "a")
     # c: fidelity vs context dependence, every measured replicator (Z80 first/final partner tests; BFF culture tests)
     try:
         rng = np.random.default_rng(3)
@@ -408,7 +415,7 @@ def fig5(out):
         h = [plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#000000", ms=3, label="Z80, no loop"), plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3, label="Z80, loop"),
              plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#0072B2", ms=3, label="BFF, no loop"), plt.Line2D([], [], marker="o", ls="none", color="#0072B2", ms=3, label="BFF, loop")]
         axc.legend(handles=h, fontsize=5, loc="center left", bbox_to_anchor=(0.02, 0.4), frameon=False)
-        fs.panel_label(axc, "b")
+        label(axc, "b")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"b (data missing: {e})")
     save(fig, os.path.join(out, "fig5"))

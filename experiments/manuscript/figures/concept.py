@@ -169,14 +169,14 @@ def fig2d(ax):
     cop, dam = f16["first_copied"].median(), f16["first_damaged"].median()
     fin = g[g["final_has_cf"] | g["final_has_block"]]
     fcop, fdam = fin["final_copied"].median(), fin["final_damaged"].median()
-    finish(ax, (-0.3, 33.2), (-7.1, 2.7))
+    finish(ax, (-0.3, 33.2), (-7.1, 2.9))
     # row 1: the open first replicator
-    ax.text(0, 1.75, "open · the first replicator", ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
+    ax.text(0, 1.9, "open · the first replicator", ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
     strip(ax, 0, 0, ["01", "c5", "…", "01", "c5"])
     ax.add_patch(Rectangle((5, 0), 3.6, 1, facecolor=GREY_FILL, edgecolor=INK, lw=0.5, zorder=2))
     ax.text(5.9, 0.5, "···", ha="center", va="center", fontsize=8, color=INK, zorder=3)
     ax.text(7.6, 0.5, "partner", ha="center", va="center", fontsize=FS_SMALL, color=INK, zorder=3)
-    arrow(ax, (4.5, 1.1), (5.9, 1.1), color=INK, lw=1.0, rad=-0.6, scale=6)
+    arrow(ax, (4.5, 1.1), (5.9, 1.1), color=INK, lw=1.0, rad=-0.45, scale=6)
     ax.text(9.6, 0.95, "executes partner code", ha="left", va="center", fontsize=FS_LABEL, color=INK)
     ax.text(9.6, 0.2, f"copies {cop:.2f} of partners; damaged in {dam:.2f} of encounters (medians, 20 worlds)", ha="left", va="center", fontsize=FS_LABEL, color=GREY_TEXT)
     # row 2: four closers, abbreviated to the instruction motif
@@ -189,14 +189,14 @@ def fig2d(ax):
     y0 = -3.3
     for k, (title, items, hl, caption) in enumerate(closers):
         x0 = k * 8.4
-        ax.text(x0, y0 + 1.8, title, ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
+        ax.text(x0, y0 + 1.95, title, ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
         strip(ax, x0, y0, items, fills=[RED_PALE if i in hl else TEAL_FILL for i in range(4)])
         src = x0 + max(hl) + 0.5
         if title.startswith("LDIR"):
             a = FancyArrowPatch((src + 0.3, y0 + 1.1), (src - 0.3, y0 + 1.1), connectionstyle="arc3,rad=1.3", arrowstyle="-|>", mutation_scale=6, lw=1.0, color=RED, zorder=4)
             ax.add_patch(a)
         else:
-            arrow(ax, (src, y0 + 1.1), (x0 + 0.5, y0 + 1.1), color=RED, lw=1.0, rad=0.45, scale=6)
+            arrow(ax, (src, y0 + 1.1), (x0 + 0.5, y0 + 1.1), color=RED, lw=1.0, rad=0.36, scale=6)
         ax.text(x0, y0 - 0.25, caption, ha="left", va="top", fontsize=FS_SMALL, color=INK, linespacing=1.15)
     ax.text(16.4, -5.95, f"closed: copies {fcop:.2f} of partners · {fdam:.2f} self-damage", ha="center", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
     ax.text(16.4, -6.2, "closure is a cycle in control flow, not a wall around the bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK)
