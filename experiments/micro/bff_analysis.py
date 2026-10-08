@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 
 import figstyle as fs
-from micro.bff import OPS, ascii_map, density_map
+from micro.bff import LIT, OPS, ascii_map, density_map
 
 
 def pretty(tape_hex: str, amap: np.ndarray) -> str:
@@ -31,7 +31,7 @@ def pretty(tape_hex: str, amap: np.ndarray) -> str:
     out = []
     for b in t:
         k = int(amap[b])
-        out.append(OPS[k - 1] if k else ("0" if b == 0 else "·"))
+        out.append((OPS + LIT)[k - 1] if k else ("0" if b == 0 else "·"))
     return "".join(out)
 
 
@@ -44,8 +44,11 @@ def load_run(d: str) -> dict | None:
     samples = [json.loads(l) for l in open(os.path.join(d, "samples.jsonl")) if l.strip()]
     if not samples:
         return None
-    amap = ascii_map() if cond["density"] <= 1 else density_map(cond["density"], seed=0)
-    variant = ("wrap" if cond["ip_wrap"] else "std") + (f"_d{cond['density']}" if cond["density"] > 1 else "")
+    lit = bool(cond.get("literal", False))
+    amap = ascii_map(lit) if cond["density"] <= 1 else density_map(cond["density"], seed=0)
+    if lit:
+        amap = amap.copy(); amap[ord(LIT)] = 11
+    variant = ("wrap" if cond["ip_wrap"] else "std") + ("lit" if lit else "") + (f"_d{cond['density']}" if cond["density"] > 1 else "")
     r = {"run": os.path.basename(d), "variant": variant, "seed": cond["seed"], "epochs_done": int(ep["epoch"].max()), "finished": os.path.exists(os.path.join(d, "summary.json"))}
     S = pd.DataFrame([{"epoch": s["epoch"], "HOE": s["HOE"], "H0": s["H0"], "unique_frac": s["unique_frac"], "frac_heritable": s["frac_heritable"],
                        "top_share": s["top"][0]["share"], "top_gen2": s["top"][0]["gen2"], "top_entered": s["top"][0]["entered"], "top_copies": s["top"][0]["copies"],

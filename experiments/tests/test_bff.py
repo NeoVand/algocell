@@ -101,3 +101,47 @@ def test_assay_of_random_tape_is_sterile(bff):
     rng = np.random.default_rng(5)
     r = assay(bff, rng.integers(0, 256, size=TAPE, dtype=np.uint8), n=32)
     assert r["copies"] < 0.1 and r["gen2"] < 0.1
+
+
+@pytest.mark.parametrize("ip_wrap", [False, True])
+def test_literal_push_kernel_matches_reference(ip_wrap):
+    rng = np.random.default_rng(11)
+    b = BFF(max_pairs=256, steps=2048, ip_wrap=ip_wrap, literal=True)
+    pairs = rng.integers(0, 256, size=(256, PAIR), dtype=np.uint8)
+    for i in range(0, 256, 2):
+        prog = "".join(rng.choice(list("<>{}+-.,[]P") + ["x"] * 5, size=rng.integers(4, 40)))
+        pairs[i, : len(prog)] = np.frombuffer(prog.encode(), dtype=np.uint8)
+    mem, out = b.execute(pairs)
+    for i in range(256):
+        ref_mem, ref = reference_execute(pairs[i], 2048, ip_wrap=ip_wrap, literal=True)
+        assert np.array_equal(mem[i], ref_mem), f"pair {i}"
+        assert tuple(out[i]) == (ref["executed"], ref["entered"], ref["max_pc"], ref["writesB"]), f"pair {i}: {out[i]} vs {ref}"
+
+
+def test_literal_push_tiling_is_an_open_replicator_only_with_a_wrapping_pointer():
+    """`P x` tiled: each P writes its two literal bytes (x, P) below head1 — the BFF analogue of `LD rr,nn ; PUSH rr`.
+    Each push costs 4 bytes of code for 2 bytes written, so one pass over the pair copies 48 of 64 bytes (its own copy
+    executes 8 more pushes): the one-pass bandwidth bound of THEORY.md. With a wrapping pointer the tiling laps and
+    copies itself completely, then runs on into the partner (open)."""
+    t = enc("Px" * 32)
+    rng = np.random.default_rng(2)
+    quiet = np.full((32, TAPE), ord("x"), dtype=np.uint8)  # no-op partners
+    b = BFF(max_pairs=64, steps=8192, ip_wrap=False, literal=True)
+    mem, out = b.execute(np.concatenate([np.repeat(t[None], 32, 0), quiet], axis=1))
+    assert (out[:, 3] == 48).all(), out[:, 3]  # 48 bytes written into the partner (half of them equal the quiet byte)
+    assert (out[:, 0] == 80).all() and out[:, 1].all()
+    bw = BFF(max_pairs=64, steps=8192, ip_wrap=True, literal=True)
+    mem, out = bw.execute(np.concatenate([np.repeat(t[None], 32, 0), quiet], axis=1))
+    sims = np.array([similarity(t, m)[0] for m in mem[:, TAPE:]])
+    assert sims.min() >= 0.95, sims
+    assert out[:, 1].all()  # open: the pointer runs into the partner
+    assert (mem[:, :TAPE] == t).all()  # and the organism is intact (phase-consistent overwrite)
+    random_p = rng.integers(0, 256, size=(64, TAPE), dtype=np.uint8)
+    mem2, out2 = bw.execute(np.concatenate([np.repeat(t[None], 64, 0), random_p], axis=1))
+    sims2 = np.array([similarity(t, m)[0] for m in mem2[:, TAPE:]])
+    frac = (sims2 >= 0.75).mean()
+    assert 0.3 < frac < 1.0, frac  # partner-dependent, like the Z80 pusher
+    # without the switch the byte P is a no-op and nothing is copied
+    b0 = BFF(max_pairs=64, steps=8192, ip_wrap=True, literal=False)
+    mem0, _ = b0.execute(np.concatenate([np.repeat(t[None], 32, 0), quiet], axis=1))
+    assert np.array_equal(mem0[:, TAPE:], quiet)

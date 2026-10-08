@@ -25,10 +25,11 @@ import wgpu
 TAPE = 64
 PAIR = 2 * TAPE
 OPS = "<>{}+-.,[]"           # opcode ids 1..10
+LIT = "P"                    # opcode id 11, the literal-push switch (byte 0x50 in the ASCII map)
 WORDS_PER_PAIR = PAIR // 4
 
 WGSL = """
-struct Params { n_pairs: u32, steps: u32, ip_wrap: u32, tape_len: u32 }
+struct Params { n_pairs: u32, steps: u32, ip_wrap: u32, tape_len: u32, literal: u32, pad0: u32, pad1: u32, pad2: u32 }
 @group(0) @binding(0) var<storage, read_write> mem: array<u32>;
 @group(0) @binding(1) var<storage, read> amap: array<u32>;
 @group(0) @binding(2) var<storage, read_write> outp: array<u32>;
@@ -83,6 +84,17 @@ fn run(@builtin(global_invocation_id) gid: vec3<u32>) {
           if (!found) { stop = true; } else { pc = i32(q); }
         }
       }
+      case 11u: {
+        // literal push (variant switch): write the two following code bytes below head1, as the Z80 pusher does
+        if (P.literal == 1u) {
+          let a = rd(base, (upc + 1u) % T); let b = rd(base, (upc + 2u) % T);
+          h1 = (h1 + T - 2u) % T;
+          wr(base, (h1 + 1u) % T, a); wr(base, h1, b);
+          if (((h1 + 1u) % T) >= P.tape_len) { writesB = writesB + 1u; }
+          if (h1 >= P.tape_len) { writesB = writesB + 1u; }
+          pc = pc + 2;
+        }
+      }
       case 10u: {
         if (rd(base, h0) != 0u) {
           var depth: i32 = 1; var q: i32 = pc - 1; var found = false;
@@ -116,10 +128,12 @@ def get_device():
     return _DEVICE
 
 
-def ascii_map() -> np.ndarray:
+def ascii_map(literal: bool = False) -> np.ndarray:
     m = np.zeros(256, dtype=np.uint32)
     for i, c in enumerate(OPS, start=1):
         m[ord(c)] = i
+    if literal:
+        m[ord(LIT)] = 11
     return m
 
 
@@ -129,7 +143,7 @@ def density_map(k: int, seed: int = 0) -> np.ndarray:
     m = np.zeros(256, dtype=np.uint32)
     for i, c in enumerate(OPS, start=1):
         m[ord(c)] = i
-    pool = [b for b in range(1, 256) if m[b] == 0]
+    pool = [b for b in range(1, 256) if m[b] == 0 and b != ord(LIT)]
     rng.shuffle(pool)
     extra = k - 1
     for i in range(1, 11):
@@ -142,17 +156,18 @@ def density_map(k: int, seed: int = 0) -> np.ndarray:
 class BFF:
     """Executes many 128-byte pairs for `steps` instructions on the GPU."""
 
-    def __init__(self, max_pairs: int = 1 << 16, steps: int = 1 << 13, ip_wrap: bool = False, alphabet: np.ndarray | None = None):
+    def __init__(self, max_pairs: int = 1 << 16, steps: int = 1 << 13, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False):
         self.dev = get_device()
         self.max_pairs = max_pairs
         self.steps = steps
         self.ip_wrap = ip_wrap
-        self.alphabet = ascii_map() if alphabet is None else np.asarray(alphabet, dtype=np.uint32)
+        self.literal = literal
+        self.alphabet = ascii_map(literal) if alphabet is None else np.asarray(alphabet, dtype=np.uint32)
         B = wgpu.BufferUsage
         self.mem_buf = self.dev.create_buffer(size=max_pairs * PAIR, usage=B.STORAGE | B.COPY_DST | B.COPY_SRC)
         self.amap_buf = self.dev.create_buffer(size=256 * 4, usage=B.STORAGE | B.COPY_DST)
         self.out_buf = self.dev.create_buffer(size=max_pairs * 16, usage=B.STORAGE | B.COPY_DST | B.COPY_SRC)
-        self.params_buf = self.dev.create_buffer(size=16, usage=B.UNIFORM | B.COPY_DST)
+        self.params_buf = self.dev.create_buffer(size=32, usage=B.UNIFORM | B.COPY_DST)
         self.dev.queue.write_buffer(self.amap_buf, 0, self.alphabet.tobytes())
         module = self.dev.create_shader_module(code=WGSL)
         storage = {"type": wgpu.BufferBindingType.storage}
@@ -178,7 +193,7 @@ class BFF:
         assert pairs.shape[1] == PAIR and n <= self.max_pairs
         steps = self.steps if steps is None else steps
         self.dev.queue.write_buffer(self.mem_buf, 0, pairs.tobytes())
-        self.dev.queue.write_buffer(self.params_buf, 0, np.array([n, steps, int(self.ip_wrap), TAPE], dtype=np.uint32).tobytes())
+        self.dev.queue.write_buffer(self.params_buf, 0, np.array([n, steps, int(self.ip_wrap), TAPE, int(self.literal), 0, 0, 0], dtype=np.uint32).tobytes())
         enc = self.dev.create_command_encoder()
         p = enc.begin_compute_pass()
         p.set_pipeline(self.pipeline)
@@ -191,9 +206,9 @@ class BFF:
         return mem, out
 
 
-def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alphabet: np.ndarray | None = None) -> tuple[np.ndarray, dict]:
+def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False) -> tuple[np.ndarray, dict]:
     """CPU reference of the kernel, for tests."""
-    amap = ascii_map() if alphabet is None else alphabet
+    amap = ascii_map(literal) if alphabet is None else alphabet
     t = pair.astype(np.int32).copy()
     T = len(t)
     half = T // 2
@@ -249,6 +264,15 @@ def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alpha
                     stop = True
                 else:
                     pc = q
+        elif op == 11:
+            if literal:
+                a_, b_ = int(t[(pc + 1) % T]), int(t[(pc + 2) % T])
+                h1 = (h1 - 2) % T
+                t[(h1 + 1) % T] = a_
+                t[h1] = b_
+                writesB += ((h1 + 1) % T) >= half
+                writesB += h1 >= half
+                pc += 2
         elif op == 10:
             if t[h0] != 0:
                 depth, q, found = 1, pc - 1, False
@@ -308,6 +332,6 @@ def assay(bff: BFF, tape: np.ndarray, n: int = 64, seed: int = 0, thresh: float 
 
 
 def has_loop(tape: np.ndarray, alphabet: np.ndarray | None = None) -> bool:
-    amap = ascii_map() if alphabet is None else alphabet
+    amap = ascii_map(True) if alphabet is None else alphabet
     ops = amap[tape]
     return bool((ops == 9).any() and (ops == 10).any())
