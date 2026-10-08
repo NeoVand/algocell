@@ -192,8 +192,6 @@ def main():
         axes[0].set_xlim(-0.05, 1.05)
         axes[0].set_xlabel("fraction of seeds (of 10)")
         axes[0].set_yticks(y, t3["label"])
-        for lab_y, c in zip(axes[0].get_yticklabels(), cols):
-            lab_y.set_color(c)
         km = t3["t_rep_km"].to_numpy(float)
         ok = np.isfinite(km)
         axes[1].scatter(km[ok], y[ok], c=np.array(cols)[ok], s=18, zorder=3)

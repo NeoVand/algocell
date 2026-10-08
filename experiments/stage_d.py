@@ -123,8 +123,6 @@ def main():
         else:
             axes[1].scatter(400_000, yv, c="k", s=22, marker=">", zorder=3)
     axes[0].set_yticks(y, labels)
-    for t, lab in zip(axes[0].get_yticklabels(), labels):
-        t.set_color(fs.color(lab))
     axes[0].set_xlim(-0.03, 1.25)
     axes[0].set_xticks([0, 0.25, 0.5, 0.75, 1.0])
     axes[0].set_xlabel("fraction of 20 seeds (filled: heritable, open: faithful)")
