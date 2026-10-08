@@ -64,5 +64,40 @@ def main():
     print("\n".join(md))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and "--fixed-points" not in __import__("sys").argv:
     main()
+
+
+def fixed_points(L: int = 16, out: str = "runs/census2") -> None:
+    """Deterministic part of THEOREMS.md Proposition 3: every two-byte word tiled to L bytes, executed as A for 128 steps
+    against the all-zero partner: fixed point = B afterwards is a tiling of the word (any cyclic shift). Openness of
+    the fixed points follows from their instruction content (no control transfer or repeat instruction) and the
+    pointer-advance rule; see THEOREMS.md Proposition 3."""
+    import numpy as np
+    import pandas as pd
+    from algocell_exp.assay import execute_pairs
+    words = np.array([(x, y) for x in range(256) for y in range(256)], dtype=np.uint8)
+    tapes = np.tile(words, (1, L // 2))
+    zeros = np.zeros_like(tapes)
+    rows = []
+    for i in range(0, len(tapes), 8192):
+        T = tapes[i:i + 8192]
+        res = np.asarray(execute_pairs(np.concatenate([T, zeros[: len(T)]], axis=1), L, 128, [])).reshape(len(T), 2 * L)
+        B = res[:, L:]
+        A2 = res[:, :L]
+        for j in range(len(T)):
+            t = T[j]
+            fp = any(np.array_equal(B[j], np.roll(t, s)) for s in range(L))
+            rows.append({"word": f"{t[0]:02x} {t[1]:02x}", "fixed_point_zero_context": bool(fp), "self_intact": bool(np.array_equal(A2[j], t)),
+                         "partner_bytes_written": int((B[j] != 0).sum())})
+    D = pd.DataFrame(rows)
+    D[D["fixed_point_zero_context"]].to_csv(f"{out}/fixed_points.csv", index=False)
+    n_fp = int(D["fixed_point_zero_context"].sum())
+    with open(f"{out}/NUMBERS_CENSUS2.md", "a") as fh:
+        fh.write(f"\n## Deterministic fixed points against the all-zero partner (THEOREMS.md Proposition 3)\n\n- words whose tiling reappears in the zero partner after one 128-step encounter: {n_fp} / 65,536 — "
+                 + ", ".join(f"`{w}`" for w in D[D["fixed_point_zero_context"]]["word"]) + f"\n- of these, organism intact after the encounter: {int((D['fixed_point_zero_context'] & D['self_intact']).sum())}\n")
+    print(f"fixed points in the zero context: {n_fp}:", ", ".join(D[D["fixed_point_zero_context"]]["word"].tolist()))
+
+
+if __name__ == "__main__" and "--fixed-points" in __import__("sys").argv:
+    fixed_points()

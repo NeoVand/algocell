@@ -678,3 +678,11 @@ replication; 2% exact share is noisy because return-address smears reach
   open phase is a window set by the lethality of the tar; next pre-registrations listed in THEORY.md P1(e). Analysis
   amendments recorded: heritable one-byte tilings are replicators, sterile fills are tar (classification fixed after
   seeing the all-`P` first replicator, before the verdicts were written). Local vs Modal reproducibility: identical.
+- 2026-10-08 04:55 (**theorems**, at the user's request; `THEOREMS.md`): Theorem 1 (no open replicator in one-pass
+  BFF; ≤ 43 copied bytes for a straight-line execution), Theorem 2 (closure requires a repeated executed address when
+  bytes written per code byte < 1; covers LDIR), Proposition 3 (deterministic: the two-byte fixed points of the Z80
+  against the zero partner are exactly the five load–push words, all open — `two_byte_census.py --fixed-points`),
+  Proposition 4 (open-first as a count: 4.6 expected copies of any two-byte word at step 0, 6 × 10⁻⁵ of any four-byte
+  word), Model 5 (the closure window q∫n dt). The counting corrected the held prediction (e4): the all-`P` one-byte
+  tiling is a full one-pass replicator in `lit` (22 + 10 pushes = 64 bytes), so `lit` is predicted to behave like
+  `wraplit`; withdrawn wording recorded in THEORY.md.

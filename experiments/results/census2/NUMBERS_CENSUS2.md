@@ -45,3 +45,8 @@
 | 32 c4  | LD (nn),A ; CALL NZ,nn | CALL NZ,nn     |    0.44 |   0.45 | False      |     0.00 |      1.00 |
 | 8c f4  | ADC A,H ; CALL P,nn    | CALL P,nn      |    0.50 |   0.45 | False      |     0.00 |      1.00 |
 | 4a e4  | LD C,D ; CALL PO,nn    | CALL PO,nn     |    0.50 |   0.45 | False      |     0.00 |      1.00 |
+
+## Deterministic fixed points against the all-zero partner (THEOREMS.md Proposition 3)
+
+- words whose tiling reappears in the zero partner after one 128-step encounter: 6 / 65,536 — `00 00`, `01 c5`, `11 d5`, `21 e5`, `2a e5`, `e5 2a`
+- of these, organism intact after the encounter: 6
