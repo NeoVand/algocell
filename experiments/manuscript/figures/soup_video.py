@@ -180,7 +180,7 @@ def compose(frame_b: np.ndarray, frame_c: np.ndarray, step: float, caption: str,
     # caption
     if caption and cap_alpha > 0:
         import textwrap
-        wrapped = "\n".join(textwrap.fill(par, width=62) for par in caption.split("\n"))
+        wrapped = textwrap.fill(" ".join(caption.split()), width=62)
         layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         dl = ImageDraw.Draw(layer)
         a = int(255 * cap_alpha)
