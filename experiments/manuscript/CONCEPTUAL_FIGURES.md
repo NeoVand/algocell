@@ -1,4 +1,9 @@
-# Conceptual panels — design brief for our discussion (nothing built yet)
+# Conceptual panels — design brief (built 2026-10-08 with the recommended options: 1a A, 1b C, 2d A, 4d A, 5a A)
+
+Status: drawn in `manuscript/figures/concept.py` with the shared vocabulary below; the closers' cycles and the Theorem 2
+trajectories use exact pointer traces from the GPU executor (`trace_z80.py` → `results/concept/traces.json`), which showed
+that the `JR NZ` and `DJNZ` cycles pass through the 16-bit program-counter wrap (drawn dashed). Content prompts for an
+image-generation pass are in `manuscript/figures/CONCEPT_PROMPTS.md`. Fig. 4d now includes the benign-tar cell.
 
 Five panels in the main figures carry ideas rather than data: Fig. 1a (the system), Fig. 1b (the pusher), Fig. 2d (the
 closers), Fig. 4d (the classification) and Fig. 5a (closure as a cycle). Nature's rules for them: same 5–7 pt
@@ -25,7 +30,7 @@ below, from the far end of the partner.
 
 Must show: the two-byte word is at once the instruction, its operand and what gets written; and that the pointer runs
 on into the partner (openness) without any loop.
-- Option A, *annotated strip*: the organism's strip filled with `01 c5 01 c5 …`; above cell 0 a bracket "LD BC,$c501"
+- Option A, *annotated strip*: the organism's strip filled with `01 c5 01 c5 …`; above cell 0 a bracket "LD BC,$01c5"
   spanning three cells, then a bracket "PUSH BC" on the fourth; below, an arrow from PUSH down to the two vermilion
   cells it writes at the partner's end; a second, fainter pair one push later; at the right edge the pointer arrow
   crossing into the grey partner with the label "executes the partner's bytes".

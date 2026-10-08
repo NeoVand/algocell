@@ -39,6 +39,10 @@ the audit trail for referees and for us. Paths are relative to `experiments/`.
 | BFF lit: 12/12 all-P first (epoch 64, copies median 0.91); heritable ≥ 0.5 in 5/12; collapse by the letter 4/12; final heritable 0.00 in 10/10 finished (2 pending); 0/12 closed | as stated | `results/bff/NUMBERS_BFF.md` stdlit section & readings (l1–l2); `results/bff/runs.csv`; `results/bff/FINDINGS.md` §4c |
 | closed-design search behind "none evolves": 1.3 M periodic programs ≤ period 10, 0 closed heritable | 1,309,528; 0 | `results/bff_closed_search/NUMBERS_CLOSED_SEARCH_p10.md` |
 
+| Fig. 2d partner-test medians (pusher L = 16: copies 0.68, damaged 0.33; closers 1.00 / 0.00) | computed at build time | `manuscript/figures/concept.py` from `results/stageG/stageG/stage_g_runs.csv` |
+| Fig. 2d cycles and Fig. 5a trajectories (pusher leaves after 10 instructions with 10 of 20 bytes written; RET NZ returns to cells 0 and 3; JR NZ 23→9, 9→31, wrap 35→0; DJNZ 16→7, wrap 15→0; LDIR in place) | generated | `trace_z80.py` → `results/concept/traces.json` |
+| pusher literal byte order: bytes `01 c5 01` = `LD BC,$01c5`; first push writes `c5 01` at cells 29–30 of the 32-byte ring | GPU executor | `trace_z80.py` (sp 31 → 29 after the first push) |
+
 Figure data sources: Fig. 1c `runs/stageG/none@closure_L16_st128_k4_s2001.jsonl` + `results/stageG/c4/functional.csv`; Fig. 1d `results/stageE/assays.csv`
 (`none@nominal`); Fig. 2a,b,e `results/stageG/stageG/stage_g_runs.csv`; Fig. 2c `results/stageG/c4/functional.csv`; Fig. 3a
 `results/stageC/stage_c/c3_ablations_st128_k4.csv`; Fig. 3b `results/stageE/stage_e/size_arms.csv` + `unit_fitness_vs_L.csv`; Fig. 3c

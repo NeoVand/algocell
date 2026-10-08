@@ -717,3 +717,8 @@ replication; 2% exact share is noisy because return-address smears reach
   deterministic and restores them (≈ $1). Fix: `runs_volume.reload()` before the skip check. `lit` seeds 11–12
   relaunched detached on H100 (≈ $2). Follow-up spend ≈ $37 against the ≈ $20 approval; the overrun is the two
   capacity incidents, the lost soups and this duplicate. The analysis is refreshed when 24/24 summaries exist.
+- 2026-10-08 14:15 (**conceptual figures built**): Figs 1a, 1b, 2d, 4d, 5a drawn in `manuscript/figures/concept.py` (shared
+  strip vocabulary); pointer traces from the GPU executor (`trace_z80.py` → `results/concept/traces.json`) make the
+  cycles exact and revealed that the `JR NZ`/`DJNZ` closers cycle through the 16-bit program-counter wrap (dashed
+  arrows). Byte-order slip fixed in the manuscript: `01 c5 01` is `LD BC,$01c5` (little-endian), the push writes `c5 01`.
+  Image-generation content prompts in `manuscript/figures/CONCEPT_PROMPTS.md`. Fig. 5b (closure window) still a placeholder.

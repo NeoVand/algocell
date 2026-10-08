@@ -26,6 +26,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 EXP = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, EXP)
 import figstyle as fs  # noqa: E402
+sys.path.insert(0, HERE)
+import concept as cp  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.gridspec import GridSpec  # noqa: E402
 
@@ -69,11 +71,16 @@ def km_curve(times, horizon):
 
 # ----------------------------------------------------------------------------------------------------------------- fig 1
 def fig1(out):
-    fig = plt.figure(figsize=(fs.DOUBLE, 62 * fs.MM))
-    gs = GridSpec(1, 4, figure=fig, width_ratios=[1.1, 1.1, 1.25, 1.25], wspace=0.55, left=0.04, right=0.99, top=0.9, bottom=0.2)
-    axa, axb, axc, axd = [fig.add_subplot(gs[0, i]) for i in range(4)]
-    placeholder(axa, "a  conceptual: the pair, the ring,\nthe pointer and the stack\n(to design)")
-    placeholder(axb, "b  conceptual: the pusher\n01 c5 — code = data = literal\n(to design)")
+    fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
+    gs = GridSpec(2, 12, figure=fig, height_ratios=[0.5, 1.0], hspace=0.25, wspace=2.2, left=0.04, right=0.99, top=0.98, bottom=0.12)
+    axa, axb = fig.add_subplot(gs[0, 0:5]), fig.add_subplot(gs[0, 5:12])
+    axc, axd = fig.add_subplot(gs[1, 0:6]), fig.add_subplot(gs[1, 6:12])
+    cp.fig1a(axa)
+    axa.set_anchor("N")
+    fs.panel_label(axa, "a", x=0.0, y=0.93)
+    cp.fig1b(axb)
+    axb.set_anchor("N")
+    fs.panel_label(axb, "b", x=0.0, y=0.93)
     # c: one world's time course (Stage G, L = 16, seed 2001)
     try:
         run = glob.glob(os.path.join(EXP, "runs", "stageG", "none@closure_L16_st128_k4_s2001.jsonl"))[0]
@@ -158,9 +165,10 @@ def fig2(out):
     fig.legend(handles=[h1, h2], loc="lower center", bbox_to_anchor=(0.5, -0.01), fontsize=5, ncol=2, frameon=False)
     fs.save(fig, os.path.join(out, "fig2_ab"))
 
-    fig = plt.figure(figsize=(fs.DOUBLE, 55 * fs.MM))
-    gs = GridSpec(1, 3, figure=fig, width_ratios=[1.4, 1.1, 1.0], wspace=0.5, left=0.07, right=0.99, top=0.93, bottom=0.2)
-    axc, axd, axe = [fig.add_subplot(gs[0, i]) for i in range(3)]
+    fig = plt.figure(figsize=(fs.DOUBLE, 128 * fs.MM))
+    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.3, 1.0], height_ratios=[1.0, 1.3], hspace=0.3, wspace=0.45, left=0.07, right=0.99, top=0.97, bottom=0.03)
+    axc, axe = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    axd = fig.add_subplot(gs[1, :])
     # c: heritable fraction vs step per L (median + IQR)
     for L in Ls:
         c = c4[c4["tape_len"] == L].groupby("step")["frac_heritable"]
@@ -173,7 +181,6 @@ def fig2(out):
     fs.tidy(axc, "step", "heritable fraction of random cells")
     axc.legend(fontsize=5, loc="upper left")
     fs.panel_label(axc, "c")
-    placeholder(axd, "d  conceptual: the closers\n(RET NZ, JR NZ, DJNZ, LDIR)\nwith the cycle marked\n(to design)")
     # e: convergence and closure counts per L
     rows = []
     for L in Ls:
@@ -188,10 +195,14 @@ def fig2(out):
     axe.bar(x, T["closed"], w, color="#0072B2", label="copies ≥ 95% of partners")
     axe.bar(x + w, T["identical"], w, color="#999999", label="byte-identical to the modal tape")
     axe.set_xticks(x, [f"L = {L}" for L in Ls])
-    axe.set_ylim(0, 20.5)
+    axe.set_ylim(0, 27)
+    axe.set_yticks([0, 5, 10, 15, 20])
     fs.tidy(axe, None, "worlds (of 20)")
-    axe.legend(fontsize=4.8, loc="upper right")
+    axe.legend(fontsize=4.8, loc="upper center", ncol=1, frameon=False)
     fs.panel_label(axe, "e")
+    cp.fig2d(axd)
+    axd.set_anchor("N")
+    fs.panel_label(axd, "d", x=0.0, y=0.98)
     fs.save(fig, os.path.join(out, "fig2_cde"))
 
 
@@ -304,8 +315,8 @@ def fig4(out):
         ax.set_xlim(0, 17500)
         ax.set_ylim(-0.02, 1.02)
 
-    fig = plt.figure(figsize=(fs.DOUBLE, 112 * fs.MM))
-    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 0.85], hspace=0.8, wspace=0.45, left=0.07, right=0.99, top=0.95, bottom=0.07)
+    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
+    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 1.0], hspace=0.55, wspace=0.45, left=0.07, right=0.99, top=0.96, bottom=0.03)
     axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
     axd = fig.add_subplot(gs[1, :])
     # a: heritable fraction vs epoch, every run, by variant
@@ -321,7 +332,7 @@ def fig4(out):
     fs.tidy(axa, "epoch", "heritable fraction of random tapes")
     fs.panel_label(axa, "a")
     handles, labels = axa.get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.505), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
+    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.53), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
     # b: first vs final openness per variant (black labels: Nature forbids coloured text)
     rng = np.random.default_rng(0)
     for i, v in enumerate(variants):
@@ -350,16 +361,20 @@ def fig4(out):
     epoch_axis(axc)
     fs.tidy(axc, "epoch", "share of the all-P class")
     fs.panel_label(axc, "c")
-    placeholder(axd, "d  conceptual: the 2 × 2 classification — literal write channel × lethality of the tar — with the Z80, BFF, BFF+literal and the benign-tar cell placed (to design)")
+    cp.fig4d(axd)
+    axd.set_anchor("N")
+    fs.panel_label(axd, "d", x=0.0, y=0.98)
     fs.save(fig, os.path.join(out, "fig4"))
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 5
 def fig5(out):
     fig = plt.figure(figsize=(fs.DOUBLE, 58 * fs.MM))
-    gs = GridSpec(1, 3, figure=fig, width_ratios=[1.2, 1.0, 1.0], wspace=0.5, left=0.05, right=0.99, top=0.93, bottom=0.2)
-    axa, axb, axc = [fig.add_subplot(gs[0, i]) for i in range(3)]
-    placeholder(axa, "a  conceptual: Theorem 2 — the pointer trajectory of an\nopen organism (runs into the partner) vs a closed one\n(a cycle inside its own bytes) (to design)")
+    gs = GridSpec(1, 4, figure=fig, width_ratios=[1.0, 1.0, 1.1, 1.1], wspace=0.45, left=0.06, right=0.99, top=0.9, bottom=0.2)
+    axa, axa2, axb, axc = [fig.add_subplot(gs[0, i]) for i in range(4)]
+    cp.fig5a(axa, axa2)
+    axa2.set_yticklabels([])
+    fs.panel_label(axa, "a", x=-0.3)
     placeholder(axb, "b  closure window q∫n dt: open-population integral for\nthe Z80 (benign tar), BFF + literal (lethal tar) and\nthe benign-tar BFF cell — data + model (after follow-ups)")
     # c: fidelity vs context dependence, every measured replicator (Z80 first/final partner tests; BFF culture tests)
     try:
