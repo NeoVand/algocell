@@ -337,6 +337,17 @@ replication; 2% exact share is noisy because return-address smears reach
 
 ## Change log
 
+- 2026-10-07 (Stage F launched, 210 runs incl. F4): preflight OK (47 tests; 210 conditions,
+  21 parameter signatures dry-run through the Modal path; volume clean; estimate 8.3 GPU-h
+  ≈ $16), Modal smoke OK (2 ok + 1 invalid failed without aborting). One test bound was
+  corrected first: the active-pair count per step depends on GPU load (≈3,980 on an idle Mac
+  GPU, 4,400–4,600 while another GPU job runs, 3,954 on a dedicated L40S), which is the
+  reason time is also recorded as active interactions per cell; the test now checks the
+  physical range only. Also computed C4 (functional fraction over time, from the recorded
+  random tapes): under `none` at 128 steps the population is 7–14% heritable for thousands
+  of steps after the pusher appears and reaches 0.78 at 50k when the EX (SP),HL family
+  takes over — results/stageC/c4. The assay pipeline now assays every tape on its run's own
+  ring length.
 - 2026-10-07 (Stage E read; 1,230/1,230 runs, 0 failures): **E-flat**: emergence is 10/10
   at every L ≥ 16 in all four arms (one 7/10 cell, @mubyte L = 81); the emergence time's
   mild growth with L (×8 under @nominal and @bytes, ×20 under @mubyte) vanishes under
