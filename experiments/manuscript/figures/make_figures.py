@@ -8,7 +8,7 @@ Figures (180 mm double column, depth ≤ 170 mm, Nature profile from figstyle):
   fig2  First replicator open, successor closed  a copied b self-damage (first vs final, 4 L) | c heritable fraction vs step | d conceptual | e convergence
   fig3  What the instruction set must provide    a atlas forest | b size axis + unit fitness | c dead-zone switch | d L = 9 reversal
   fig4  One instruction decides how life begins in BFF   a heritable fraction vs epoch by variant | b first vs final openness | c the all-P wave | d conceptual
-  fig5  Closure as a cycle                     a conceptual | b closure window (data placeholder) | c fidelity vs context-dependence
+  fig5  Closure as a cycle                     a conceptual | b information inflow first → final per world (analysis B)
 """
 
 from __future__ import annotations
@@ -403,31 +403,39 @@ def fig5(out):
     cp.fig5a(axa)
     axa.set_anchor("NW")
     label(axa, "a")
-    # c: fidelity vs context dependence, every measured replicator (Z80 first/final partner tests; BFF culture tests)
+    # b: information inflow H(o | x) (bits over 256 random partners), first replicator → final dominant per world
+    # (analysis B, results/biology/individuality/per_replicator.csv); filled vermilion = loop instruction present.
     try:
-        rng = np.random.default_rng(3)
-        runs = pd.read_csv(os.path.join(R, "bff", "runs.csv"))
-        d = runs[runs["t_top"].notna()]
-        for which, mk in (("first", "o"), ("final", "s")):
-            loop = d[f"{which}_loop"].astype(bool).values
-            xj = d[f"{which}_self_damage"].values + rng.uniform(-0.012, 0.012, len(d))
-            yj = d[f"{which}_copies"].values + rng.uniform(-0.012, 0.012, len(d))
-            axc.scatter(xj[~loop], yj[~loop], s=8, marker=mk, facecolors="none", edgecolors="#0072B2", lw=0.6)
-            axc.scatter(xj[loop], yj[loop], s=8, marker=mk, color="#0072B2", lw=0)
-        g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
-        for which, mk in (("first", "o"), ("final", "s")):
-            loop = (g[f"{which}_has_cf"] | g[f"{which}_has_block"]).values
-            xj = g[f"{which}_damaged"].values + rng.uniform(-0.012, 0.012, len(g))
-            yj = g[f"{which}_copied"].values + rng.uniform(-0.012, 0.012, len(g))
-            axc.scatter(xj[~loop], yj[~loop], s=8, marker=mk, facecolors="none", edgecolors=fs.CONCEPT["open"], lw=0.6)
-            axc.scatter(xj[loop], yj[loop], s=8, marker=mk, color=fs.CONCEPT["closed"], lw=0)
-        axc.set_xlim(-0.03, 0.62)
-        axc.set_ylim(-0.03, 1.03)
-        fs.tidy(axc, "encounters that damage the organism", "random partners that become a copy")
-        h = [plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#000000", ms=3, label="Z80, no loop"), plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3, label="Z80, loop"),
-             plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#0072B2", ms=3, label="BFF, no loop"), plt.Line2D([], [], marker="o", ls="none", color="#0072B2", ms=3, label="BFF, loop"),
-             plt.Line2D([], [], marker="o", ls="none", mfc="none", mec="#777777", ms=3, label="first replicator"), plt.Line2D([], [], marker="s", ls="none", mfc="none", mec="#777777", ms=3, label="final dominant")]
-        axc.legend(handles=h, fontsize=5, loc="center right", bbox_to_anchor=(1.0, 0.42), frameon=False)
+        P = pd.read_csv(os.path.join(R, "biology", "individuality", "per_replicator.csv"))
+        P = P[P["machine"] == "z80"].copy()
+        P["loop"] = P["has_loop"].map(lambda v: str(v) == "True")
+        rng = np.random.default_rng(1)
+        Ls = [16, 20, 50, 64]
+        for gi, L in enumerate(Ls):
+            d = P[P["group"].astype(int) == L]
+            first = d[d["which"] == "first"].set_index("world")
+            final = d[d["which"] == "final"].set_index("world")
+            worlds = first.index.intersection(final.index)
+            x0 = gi * 3.0
+            j = rng.uniform(-0.14, 0.14, len(worlds))
+            for k, w in enumerate(worlds):
+                axc.plot([x0 + j[k], x0 + 1 + j[k]], [first.loc[w, "H_bits"], final.loc[w, "H_bits"]], color="#B4BAC1", lw=0.5, alpha=0.9, zorder=1)
+            for dx, frame in ((0, first), (1, final)):
+                loop = frame.loc[worlds, "loop"].values
+                y = frame.loc[worlds, "H_bits"].values
+                xs = x0 + dx + j
+                axc.scatter(xs[~loop], y[~loop], s=7, facecolors="white", edgecolors="#6B7280", lw=0.6, zorder=3)
+                axc.scatter(xs[loop], y[loop], s=7, color=cp.RED, lw=0, zorder=3)
+            axc.text(x0 + 0.5, 8.8, f"L = {L}", ha="center", va="bottom", fontsize=6, color=cp.INK)
+        axc.axhline(8.0, color="#B4BAC1", lw=0.5, ls=":", zorder=0)
+        axc.set_xticks([gi * 3.0 + dx for gi in range(len(Ls)) for dx in (0, 1)], ["first", "final"] * len(Ls), fontsize=5)
+        axc.set_xlim(-0.7, (len(Ls) - 1) * 3.0 + 1.7)
+        axc.set_ylim(-0.3, 9.7)
+        axc.set_yticks([0, 2, 4, 6, 8])
+        fs.tidy(axc, None, "information from the partner (bits)")
+        h = [plt.Line2D([], [], marker="o", ls="none", color=cp.RED, ms=3, label="loop instruction"),
+             plt.Line2D([], [], marker="o", ls="none", mfc="white", mec="#6B7280", ms=3, label="no loop instruction")]
+        axc.legend(handles=h, fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False)
         label(axc, "b")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"b (data missing: {e})")
