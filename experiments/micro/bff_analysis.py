@@ -26,6 +26,44 @@ import figstyle as fs
 from micro.bff import LIT, OPS, ascii_map, density_map
 
 
+def fisher_exact(table) -> tuple[float, float]:
+    """Two-sided Fisher exact test for a 2x2 table [[a, b], [c, d]] (sum of hypergeometric probabilities <= observed)."""
+    from math import comb
+    (a, b), (c, d) = table
+    n, r1, c1 = a + b + c + d, a + b, a + c
+    lo, hi = max(0, c1 - (n - r1)), min(r1, c1)
+    denom = comb(n, c1)
+    probs = {k: comb(r1, k) * comb(n - r1, c1 - k) / denom for k in range(lo, hi + 1)}
+    p_obs = probs[a]
+    return float("nan"), float(min(1.0, sum(v for v in probs.values() if v <= p_obs * (1 + 1e-9))))
+
+
+def mannwhitneyu(x, y, alternative: str = "two-sided") -> tuple[float, float]:
+    """Mann–Whitney U with the normal approximation and tie correction (adequate for n >= 8 per group); returns (U, p)."""
+    from math import erfc, sqrt
+    x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
+    nx, ny = len(x), len(y)
+    allv = np.concatenate([x, y])
+    ranks = pd.Series(allv).rank(method="average").to_numpy()
+    u = ranks[:nx].sum() - nx * (nx + 1) / 2  # U for x (large U = x tends to be larger)
+    mu = nx * ny / 2
+    _, counts = np.unique(allv, return_counts=True)
+    tie = (counts ** 3 - counts).sum()
+    n = nx + ny
+    sigma = sqrt(nx * ny / 12 * ((n + 1) - tie / (n * (n - 1)))) if n > 1 else float("nan")
+    if not sigma:
+        return float(u), 1.0
+    z = (u - mu) / sigma
+    if alternative == "two-sided":
+        p = erfc(abs(z) / sqrt(2))
+    elif alternative == "less":  # x stochastically smaller than y
+        p = 0.5 * erfc(-z / sqrt(2)) if False else 0.5 * erfc(z / sqrt(2)) if z > 0 else 1 - 0.5 * erfc(-z / sqrt(2))
+        p = 0.5 * erfc(-(-z) / sqrt(2))  # P(Z <= z)
+    else:  # greater
+        p = 0.5 * erfc(z / sqrt(2))  # P(Z >= z)
+    return float(u), float(min(1.0, p))
+
+
 def pretty(tape_hex: str, amap: np.ndarray) -> str:
     t = bytes.fromhex(tape_hex)
     out = []
@@ -35,14 +73,33 @@ def pretty(tape_hex: str, amap: np.ndarray) -> str:
     return "".join(out)
 
 
+def fill_fraction(tape_hex: str) -> float:
+    t = np.frombuffer(bytes.fromhex(tape_hex), dtype=np.uint8)
+    return float(np.bincount(t, minlength=256).max() / len(t))
+
+
+def classify(top: dict) -> str:
+    """closed / open / intermediate by the culture test; 'fill' if one byte makes up >= 90% of the tape (one-symbol tar)."""
+    if fill_fraction(top["tape"]) >= 0.9:
+        return "fill"
+    if top["entered"] <= 0.05 and top["copies"] >= 0.95:
+        return "closed"
+    if top["entered"] >= 0.5:
+        return "open"
+    return "intermediate"
+
+
 def load_run(d: str) -> dict | None:
     cp = os.path.join(d, "cond.json")
     if not os.path.exists(cp):
         return None
     cond = json.load(open(cp))
-    ep = pd.read_csv(os.path.join(d, "epochs.csv"))
-    samples = [json.loads(l) for l in open(os.path.join(d, "samples.jsonl")) if l.strip()]
-    if not samples:
+    try:
+        ep = pd.read_csv(os.path.join(d, "epochs.csv"))
+        samples = [json.loads(l) for l in open(os.path.join(d, "samples.jsonl")) if l.strip()]
+    except (FileNotFoundError, pd.errors.EmptyDataError, json.JSONDecodeError):
+        return None
+    if not samples or ep.empty:
         return None
     lit = bool(cond.get("literal", False))
     amap = ascii_map(lit) if cond["density"] <= 1 else density_map(cond["density"], seed=0)
@@ -66,21 +123,27 @@ def load_run(d: str) -> dict | None:
         q = [t for t in s_["top"] if t["share"] >= 0.005 and t["gen2"] >= 0.3]
         if q and t_rep is None:
             t_rep = s_["epoch"]
-        if t_top is None and s_["top"][0]["gen2"] >= 0.3:
+        if t_top is None and s_["top"][0]["gen2"] >= 0.3 and fill_fraction(s_["top"][0]["tape"]) < 0.9:
             t_top, first = s_["epoch"], s_["top"][0]
         if t_her is None and s_["frac_heritable"] >= 0.5:
             t_her = s_["epoch"]
     r["t_rep"], r["t_top"], r["t_her"] = t_rep, t_top, t_her
+    if first is not None:
+        r.update({"first_tape": first["tape"], "first_pretty": pretty(first["tape"], amap), "first_loop": first["has_loop"], "first_entered": first["entered"],
+                  "first_copies": first["copies"], "first_gen2": first["gen2"], "first_self_damage": first["self_damage"], "first_share": first["share"],
+                  "first_fill": fill_fraction(first["tape"]),
+                  "first_class": classify(first)})
     t_closed, t_open = None, None
     for s in samples:
         top = s["top"][0]
-        if t_closed is None and top["gen2"] >= 0.3 and top["entered"] <= 0.05 and top["copies"] >= 0.95 and top["share"] >= 0.005:
+        if t_closed is None and top["gen2"] >= 0.3 and top["entered"] <= 0.05 and top["copies"] >= 0.95:
             t_closed = s["epoch"]
-        if t_open is None and any(t["gen2"] >= 0.3 and t["entered"] >= 0.5 and t["share"] >= 0.005 for t in s["top"]):
+        if t_open is None and any(t["gen2"] >= 0.3 and t["entered"] >= 0.5 and fill_fraction(t["tape"]) < 0.9 for t in s["top"]):
             t_open = s["epoch"]
     r["t_closed"], r["t_open"] = t_closed, t_open
     last = samples[-1]["top"][0]
     r.update({"final_epoch": samples[-1]["epoch"], "final_tape": last["tape"], "final_pretty": pretty(last["tape"], amap), "final_loop": last["has_loop"], "final_entered": last["entered"],
+              "final_fill": fill_fraction(last["tape"]), "final_class": classify(last),
               "final_copies": last["copies"], "final_gen2": last["gen2"], "final_self_damage": last["self_damage"], "final_share": last["share"],
               "final_HOE": samples[-1]["HOE"], "final_unique_frac": samples[-1]["unique_frac"], "final_heritable": samples[-1]["frac_heritable"],
               "max_heritable": float(S["frac_heritable"].max())})
@@ -103,7 +166,7 @@ def main():
         print("no runs")
         return
     cols = [k for k in runs[0] if k not in ("S", "E")]
-    for k in ("first_tape", "first_pretty", "first_loop", "first_entered", "first_copies", "first_gen2", "first_self_damage", "first_share", "first_class"):
+    for k in ("first_tape", "first_pretty", "first_loop", "first_entered", "first_copies", "first_gen2", "first_self_damage", "first_share", "first_class", "first_fill"):
         if k not in cols:
             cols.append(k)
     R = pd.DataFrame([{k: r.get(k) for k in cols} for r in runs])
@@ -112,7 +175,7 @@ def main():
     R.to_csv(os.path.join(out, "runs.csv"), index=False)
 
     md = ["# BFF soups — numbers (generated; do not edit)\n",
-          "Events: `t_top` = first sample at which the most common tape class is heritable (gen2 ≥ 0.3; the exemplar used as the first replicator); `t_her` = heritable fraction of 32 random tapes ≥ 0.5; "
+          "Events: `t_top` = first sample at which the most common tape class is heritable (gen2 ≥ 0.3) and not a one-symbol fill (one byte ≥ 90% of the tape; fills are tar, reported as class 'fill'); it is the exemplar used as the first replicator; `t_her` = heritable fraction of 32 random tapes ≥ 0.5; "
           "`t_rep` = the pre-registered Z80 criterion (top-3 class share ≥ 0.5% and gen2 ≥ 0.3), kept for the record; `t_hoe1` = high-order entropy ≥ 1 bit/byte; "
           "`t_closed` = top class enters the partner ≤ 5% and copies ≥ 95% of random partners; `t_open` = a replicating top-3 class enters the partner ≥ 50%. "
           "Culture tests: 64 random partners, 2^13 steps.\n"]
@@ -132,15 +195,37 @@ def main():
             md.append(f"- before t_rep: mean chunk transfer {rep['chunk_mean_pre'].median():.2f} bytes/encounter (median over runs), max 90th percentile {rep['chunk_p90_max_pre'].median():.0f}, "
                       f"max copy-event fraction {rep['copy_frac_max_pre'].median():.4f}\n")
             md.append("first replicators (BFF string; `·` = non-instruction byte, `0` = zero):\n")
-            md.append(rep[["seed", "t_top", "t_her", "t_hoe1", "first_class", "first_loop", "first_entered", "first_copies", "first_self_damage", "first_gen2", "first_pretty"]]
+            md.append(rep[["seed", "t_top", "t_her", "t_hoe1", "first_class", "first_loop", "first_entered", "first_copies", "first_self_damage", "first_gen2", "first_fill", "first_pretty"]]
                       .to_markdown(index=False, floatfmt=".2f") + "\n")
             md.append("final top classes:\n")
-            md.append(rep[["seed", "final_epoch", "final_loop", "final_entered", "final_copies", "final_self_damage", "final_gen2", "final_share", "final_pretty"]]
+            md.append(rep[["seed", "final_epoch", "final_class", "final_loop", "final_entered", "final_copies", "final_self_damage", "final_gen2", "final_fill", "final_pretty"]]
                       .to_markdown(index=False, floatfmt=".2f") + "\n")
         no = g[g["t_top"].isna()]
         if len(no):
             md.append(f"- runs without a replicator by the criterion: seeds {sorted(no['seed'].tolist())}; their final HOE median {no['final_HOE'].median():.2f}, "
                       f"final heritable fraction median {no['final_heritable'].median():.2f}\n")
+    # transition rates and between-variant tests
+    from itertools import combinations
+    horizon = int(R["epochs_done"].max())
+    rows_t = []
+    for v, g in R.groupby("variant"):
+        n = len(g)
+        rows_t.append({"variant": v, "runs": n, "transition (t_top)": int(g["t_top"].notna().sum()), "heritable ≥ 0.5 (t_her)": int(g["t_her"].notna().sum()),
+                       "median t_her (epochs; censored runs at horizon)": float(g["t_her"].fillna(horizon).median()),
+                       "HOE ≥ 1": int(g["t_hoe1"].notna().sum()), "HOE ≥ 1 without a replicator": int((g["t_hoe1"].notna() & g["t_top"].isna()).sum()),
+                       "first replicator open": int((g["first_class"] == "open").sum()), "first closed with loop": int(((g["first_class"] == "closed") & g["first_loop"]).sum()),
+                       "final closed": int((g["final_class"] == "closed").sum())})
+    T = pd.DataFrame(rows_t)
+    md.append("## Transition rates and between-variant tests\n")
+    md.append(T.to_markdown(index=False, floatfmt=".0f") + "\n")
+    for a_, b_ in combinations(sorted(R["variant"].unique()), 2):
+        ga, gb = R[R["variant"] == a_], R[R["variant"] == b_]
+        ta, tb = int(ga["t_top"].notna().sum()), int(gb["t_top"].notna().sum())
+        pf = fisher_exact([[ta, len(ga) - ta], [tb, len(gb) - tb]])[1]
+        ua, ub = ga["t_her"].fillna(horizon), gb["t_her"].fillna(horizon)
+        pm = mannwhitneyu(ua, ub, alternative="two-sided")[1] if len(ua) and len(ub) else float("nan")
+        md.append(f"- {a_} vs {b_}: transitions {ta}/{len(ga)} vs {tb}/{len(gb)} (Fisher two-sided p = {pf:.3g}); t_her with censored runs at the horizon, Mann–Whitney two-sided p = {pm:.3g}")
+    md.append("")
     # verdicts
     md.append("## Readings of THEORY.md P1 (computed, pre-stated thresholds)\n")
     std = R[(R["variant"] == "std") & R["t_top"].notna()]
@@ -153,6 +238,19 @@ def main():
         n_closed_loop = int(((wrap["first_class"] == "closed") & wrap["first_loop"]).sum())
         md.append(f"- (b) wrap BFF: first replicators open {n_open}/{len(wrap)}, closed with a loop {n_closed_loop}/{len(wrap)} → "
                   f"{'(b1) open first' if n_open * 2 >= len(wrap) else ('(b2) born closed' if n_closed_loop * 2 >= len(wrap) else 'neither reading reaches half')}")
+    wl = R[(R["variant"] == "wraplit") & R["t_top"].notna()]
+    if len(wl):
+        n_open_nl = int(((wl["first_class"] == "open") & ~wl["first_loop"]).sum())
+        n_closed_loop = int(((wl["first_class"] == "closed") & wl["first_loop"]).sum())
+        nwl = int((R["variant"] == "wraplit").sum())
+        std_her = R[R["variant"] == "std"]["t_her"].fillna(horizon)
+        wl_her = R[R["variant"] == "wraplit"]["t_her"].fillna(horizon)
+        p_e2 = mannwhitneyu(wl_her, std_her, alternative="less")[1] if len(std_her) else float("nan")
+        n_final_closed = int((wl["final_class"] == "closed").sum())
+        md.append(f"- (e1) wrap + literal: first replicators straight-line and open {n_open_nl}/{len(wl)} transitions of {nwl} runs (≥ 9/12 predicted); closed with a loop {n_closed_loop}/{len(wl)} (≥ 6/12 kills) → "
+                  f"{'(e1) met' if n_open_nl >= 9 else ('KILL' if n_closed_loop >= 6 else 'not met')}; "
+                  f"(e2) earlier emergence than standard BFF: median t_her {wl_her.median():.0f} vs {std_her.median():.0f} (one-sided Mann–Whitney p = {p_e2:.3g}) → {'met' if p_e2 < 0.05 else 'not met'}; "
+                  f"(e3) final dominant closed in {n_final_closed}/{len(wl)} transitioned worlds (≥ 6 predicted) → {'met' if n_final_closed >= 6 else 'not met'}")
     with open(os.path.join(out, "NUMBERS_BFF.md"), "w") as fh:
         fh.write("\n".join(md))
     print("\n".join(md[:3]))

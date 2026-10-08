@@ -20,7 +20,10 @@ rows = []
 for d in sorted(os.listdir("runs/bff")):
     a, b = f"runs/bff/{d}/epochs.csv", f"runs/bff_modal/bff/{d}/epochs.csv"
     if os.path.isdir(f"runs/bff/{d}") and os.path.exists(a) and os.path.exists(b):
-        A, B = pd.read_csv(a), pd.read_csv(b)
+        try:
+            A, B = pd.read_csv(a), pd.read_csv(b)
+        except pd.errors.EmptyDataError:
+            continue
         n = min(len(A), len(B))
         cols = ["executed_mean", "frac_entered", "writesB_mean", "copy_frac", "zero_frac"]
         same = all((A[c].values[:n] == B[c].values[:n]).all() for c in cols)
