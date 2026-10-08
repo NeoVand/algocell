@@ -41,6 +41,7 @@ def main():
 
     cond = {"label": "video", "grid": "square", "width": 160, "height": 125, "tape": a.L, "seed": a.seed, "pairs": 8192,
             "z80_steps": 128, "noise_exp": 4, "horizon": a.horizon, "sample_every": 250, "stop_share": None,
+            "sample_every_early": 25, "early_until": 3000,   # snapshots are taken on sampling steps only
             "snapshot_steps": schedule(a.horizon)}
     print(f"{len(cond['snapshot_steps'])} snapshots, horizon {a.horizon}, seed {a.seed}, L = {a.L}")
     s = run_to_dir(cond, a.out, provenance={"purpose": "supplementary video frames"})

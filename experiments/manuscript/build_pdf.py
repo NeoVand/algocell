@@ -70,6 +70,10 @@ def inline(s: str) -> str:
     return "".join(out)
 
 
+COMPACT = [False]
+NOTE = [r"Draft assembled DATE from \texttt{manuscript/MAIN\_nature.md} and \texttt{manuscript/figures/out}; author list and affiliations to be added."]
+
+
 def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
     lines = md_text.splitlines()
     body = []
@@ -161,8 +165,9 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
     flush_para(); close_list()
 
     today = dt.date.today().isoformat()
+    margin = "14mm" if COMPACT[0] else "20mm"
     preamble = r"""\documentclass[10pt,a4paper]{article}
-\usepackage[margin=20mm]{geometry}
+\usepackage[margin=""" + margin + r"""]{geometry}
 \usepackage{fontspec}
 \setmainfont{texgyretermes}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
 \setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
@@ -176,9 +181,10 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
 \linespread{1.08}
 \pagestyle{plain}
 \begin{document}
+""" + (r"\fontsize{9}{11.2}\selectfont\setlength{\parskip}{3pt}" if COMPACT[0] else "") + r"""
 {\sffamily\bfseries\LARGE """ + title + r"""\par}
 \vspace{3mm}
-{\small\color{gray}Draft assembled """ + today + r""" from \texttt{manuscript/MAIN\_nature.md} and \texttt{manuscript/figures/out}; author list and affiliations to be added.\par}
+{\small\color{gray}""" + NOTE[0].replace("DATE", today) + r"""\par}
 \vspace{6mm}
 """
     return preamble + "\n".join(body) + "\n\\end{document}\n"
@@ -193,7 +199,11 @@ def main():
     ap.add_argument("--figs", default=os.path.join(HERE, "figures", "out"))
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
     ap.add_argument("--name", default=None, help="output PDF basename (default: the Markdown file's basename)")
+    ap.add_argument("--compact", action="store_true", help="9 pt type and 14 mm margins (one-pagers)")
     a = ap.parse_args()
+    COMPACT[0] = a.compact
+    if os.path.basename(a.md) != "MAIN_nature.md":
+        NOTE[0] = "Assembled DATE from " + r"\texttt{" + os.path.basename(a.md).replace("_", r"\_") + "}."
     os.makedirs(a.out, exist_ok=True)
     name = a.name or os.path.splitext(os.path.basename(a.md))[0]
     tex = convert(open(a.md, encoding="utf-8").read(), a.figs, a.out)

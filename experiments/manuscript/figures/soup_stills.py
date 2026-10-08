@@ -168,6 +168,7 @@ def main():
     ap.add_argument("--which", default="", help="comma-separated snapshot names to render (default: all)")
     ap.add_argument("--video", action="store_true", help="also assemble an mp4 from every snapshot (ffmpeg)")
     ap.add_argument("--fps", type=float, default=2.0)
+    ap.add_argument("--crf", type=int, default=23, help="x264 quality (lower = larger file; 18 near-lossless, 28 small)")
     a = ap.parse_args()
     stem = a.run if os.path.isabs(a.run) else os.path.join(EXP, a.run)
     L = a.L or int(re.search(r"_L(\d+)_", stem).group(1))
@@ -200,7 +201,7 @@ def main():
                 fr.crop((0, 0, w, h)).save(os.path.join(fdir, f"f{i:05d}.png"))
             mp4 = os.path.join(a.out, f"{base}.{tag}.mp4")
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(a.fps), "-i", os.path.join(fdir, "f%05d.png"),
-                            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", mp4], check=True)
+                            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", str(a.crf), mp4], check=True)
             print("wrote", mp4)
 
 
