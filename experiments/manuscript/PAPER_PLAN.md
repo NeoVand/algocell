@@ -114,3 +114,11 @@ end).
 - Extended Data panels: lowercase bold panel letters via `fs.panel_label`, legends inside the plotting area where possible, consistent L colours (`fs.L_COLOR`) across all figures.
 - Main Fig. 1d and Fig. 2c: L colours must match (`L_COLOR`), legends placed to avoid data.
 - Fig. 5c: Z80 and BFF markers overlap at (0, 1); consider separate panels or a rank plot.
+
+## 7. arXiv preprint (metadata draft)
+- Primary category: q-bio.PE (Populations and Evolution); cross-lists: cs.NE (Neural and Evolutionary Computing), nlin.AO (Adaptation and Self-Organizing Systems), cs.ET if allowed.
+- Title: Open replicators evolve closure in a digital primordial soup.
+- Abstract: the Nature summary paragraph without reference markers (≤ 1,920 characters for arXiv).
+- Content: main text + Methods + figures (PDF export of the SVGs) + Extended Data + SI as appendix; one PDF built from the Markdown (pandoc → LaTeX) plus the SVG→PDF figures.
+- Timing: post on the day of Nature submission; cite the preprint in the submission (Nature permits preprints; verify the "not during review" clause on the policy page first).
+- License: CC BY 4.0.
