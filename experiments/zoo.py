@@ -114,7 +114,8 @@ def main(d: str) -> None:
                 continue
             rows.append({"label": r["label"], "tape_len": r["tape_len"], "steps": r["steps"], "k": r["k"], "seed": r["seed"], "which": which,
                          "tape": tape, "signature": signature(tape, r["label"])})
-    df = pd.DataFrame(rows)
+    # explicit columns so a batch without any heritable replicator (anticipated for Stage I worlds) yields an empty table, not a KeyError
+    df = pd.DataFrame(rows, columns=["label", "tape_len", "steps", "k", "seed", "which", "tape", "signature"])
     out = os.path.join(d, "analysis")
     df.to_csv(os.path.join(out, "zoo.csv"), index=False)
     lines = ["# Replicator zoo", "",

@@ -12,6 +12,9 @@ comes from `c4_functional.py` (`analysis/c4/functional.csv`). Writes stage_g_run
 Verdicts are computed against the pre-registered thresholds and printed; nothing is chosen after the fact.
 `--no-verdicts` skips them for a directory that is not Stage G (the thresholds are written for 20 worlds per L; Stage H,
 the well-mixed control, is scored by its own pre-registration in PLAN.md from the same per-world table).
+The partner test runs under each world's own rule: rows of `assays.csv` with `zero_halts` true (Stage I, lethal tar) are
+executed on the derived lethal executor; the flag is carried into stage_g_runs.csv. Worlds without a heritable replicator
+(no `trep_tape`; anticipated by the Stage I pre-registration) get empty `first_*` fields instead of breaking the table.
 """
 
 from __future__ import annotations
@@ -48,17 +51,21 @@ def main():
     rows = []
     for _, r in d.iterrows():
         L = int(r["tape_len"])
-        first = r["trep_tape"] if isinstance(r["trep_tape"], str) else None
+        first = r.get("trep_tape") if isinstance(r.get("trep_tape"), str) else None
         final = r["final_tape"] if isinstance(r["final_tape"], str) else None
-        row = {"label": r["label"], "L": L, "seed": int(r["seed"]), "horizon": int(r["horizon"]), "t_rep": r["t_rep"], "t_faith": r["t_faith"],
+        zero_halts = str(r.get("zero_halts", False)).lower() == "true"   # the world's rule (assays.csv column; absent in Stages ≤ H = False)
+        row = {"label": r["label"], "L": L, "seed": int(r["seed"]), "horizon": int(r["horizon"]), "zero_halts": zero_halts, "t_rep": r["t_rep"], "t_faith": r["t_faith"],
                "first_tape": first, "final_tape": final, "final_faithful": bool(r["final_faithful"]), "final_share": r["final_share"],
-               "first_gen2": r["trep_gen2"], "final_gen2": r["final_gen2"]}
+               "first_gen2": r.get("trep_gen2", np.nan), "final_gen2": r["final_gen2"]}
+        for which in ("first", "final"):   # a world without that tape keeps empty fields (bool flags False) so the column set is stable
+            row.update({f"{which}_cf": None, f"{which}_has_cf": False, f"{which}_block": None, f"{which}_has_block": False,
+                        f"{which}_copied": np.nan, f"{which}_damaged": np.nan, f"{which}_sim": np.nan})
         for which, hx in (("first", first), ("final", final)):
             if hx is None:
                 continue
             cf = control_flow(hx)
             br = block_repeat(hx)
-            copied, damaged, sim = partner_test(hb(hx), rng)
+            copied, damaged, sim = partner_test(hb(hx), rng, zero_halts=zero_halts)
             row.update({f"{which}_cf": "+".join(cf) or "-", f"{which}_has_cf": bool(cf), f"{which}_block": "+".join(br) or "-", f"{which}_has_block": bool(br),
                         f"{which}_copied": copied, f"{which}_damaged": damaged, f"{which}_sim": sim})
         rows.append(row)
@@ -72,6 +79,9 @@ def main():
           "Per-world executor tests: 256 random partners, one 128-step encounter; `copied` = fraction of partners that become a ≥ 75% copy "
           "(best cyclic shift), `damaged` = fraction of encounters in which the organism loses ≥ 25% of its bytes. Control flow = jump, relative jump, "
           "DJNZ, CALL/RET, RST by linear disassembly (pre-registered); `block` = LDIR/LDDR-type repeat instructions (reported separately).\n"]
+    if R["zero_halts"].any():
+        md.append(f"Rule: {int(R['zero_halts'].sum())}/{len(R)} worlds ran under `zero_halts` (lethal tar); their partner tests were executed on the derived "
+                  "lethal executor (`z80_test_lethal_*.wgsl`), the others under the normal rule.\n")
     verdicts = []
     for L, g in R.groupby("L"):
         n = len(g)
@@ -84,9 +94,10 @@ def main():
         final_closed_any = int((g["final_faithful"] & (g["final_copied"] >= 0.95) & (g["final_has_cf"] | g["final_has_block"])).sum())
         modal_final = g["final_tape"].mode().iloc[0]
         mf = g[g["final_tape"] == modal_final].iloc[0]
-        modal_first = g["first_tape"].mode().iloc[0]
+        modal_first = g["first_tape"].mode().iloc[0] if g["first_tape"].notna().any() else None   # None: no world of this L produced a heritable replicator
         horizon = int(g["horizon"].iloc[0])
         md.append(f"## L = {L} ({g['label'].iloc[0]}, horizon {horizon:,}, {n} worlds)\n")
+        md.append(f"- worlds with a heritable replicator (t_rep): {int(g['first_tape'].notna().sum())}/{n}")
         md.append(f"- first replicator: control flow in {first_cf}/{n}; copies < 90% of random partners in {first_open}/{n}; "
                   f"modal first tape `{modal_first}` in {int((g['first_tape'] == modal_first).sum())}/{n} worlds; "
                   f"median copied {g['first_copied'].median():.2f} (range {g['first_copied'].min():.2f}–{g['first_copied'].max():.2f}), "

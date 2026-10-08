@@ -4,7 +4,8 @@
 
 For every run and every sample step in STEPS that the run recorded, the 16 random tapes are assayed
 together (assay_many: A role, 32 random partners, gen2 and faithfulness, under the run's own
-suppression set and step budget). Output: functional.csv (one row per run × step) and figures of the
+suppression set, step budget and rule — `zero_halts` runs select the lethal executor, recorded per row).
+Output: functional.csv (one row per run × step) and figures of the
 mean fraction of heritable / faithful cells versus step per arm, at (128, 1/16) and (32, 1/4).
 Pre-registered as C4 ("functional fraction over time") in PLAN.md; no prediction was attached.
 """
@@ -19,7 +20,7 @@ import numpy as np
 import pandas as pd
 
 import figstyle as fs
-from algocell_exp.assay import assay_many
+from algocell_exp.assay import assay_many, executor_file
 from algocell_exp.batch import select_summaries
 
 STEPS = [50, 100, 150, 200, 300, 500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000, 15000, 20000, 30000, 50000, 75000, 100000, 150000, 200000, 300000, 500000, 750000, 1000000]
@@ -48,6 +49,7 @@ def main():
         stem = f[: -len(".summary.json")]
         L = s.get("tape_length", 16)
         patterns = s.get("suppress") or []
+        zero_halts = bool(s.get("zero_halts", False))   # the run's rule: Stage I runs are assayed on the lethal executor
         steps_wanted = set(STEPS)
         n_rows = 0
         with open(stem + ".jsonl") as fh:
@@ -58,12 +60,12 @@ def main():
                 if r["step"] not in steps_wanted or not r.get("random_tapes"):
                     continue
                 tapes = np.stack([hexbytes(h) for h in r["random_tapes"]])
-                res = assay_many(tapes, z80_steps=s["z80_steps"], suppress=patterns, n=a.partners, seed=s["seed"] * 7919 + r["step"])
-                rows.append({"file": os.path.basename(f), "label": s["label"], "tape_len": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "step": r["step"], "n": len(res),
+                res = assay_many(tapes, z80_steps=s["z80_steps"], suppress=patterns, n=a.partners, seed=s["seed"] * 7919 + r["step"], zero_halts=zero_halts)
+                rows.append({"file": os.path.basename(f), "label": s["label"], "tape_len": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "zero_halts": zero_halts, "step": r["step"], "n": len(res),
                              "frac_heritable": float(np.mean([x["is_replicator"] for x in res])), "frac_faithful": float(np.mean([x["faithful"] for x in res])),
                              "gen2_mean": float(np.mean([x["gen2_score"] for x in res])), "zero_frac": r.get("zero_frac", np.nan), "q_share": r.get("q_share", np.nan)})
                 n_rows += 1
-        print(f"[{i + 1}/{len(files)}] {s['label']} st{s['z80_steps']} k{s['noise_exp']} s{s['seed']}: {n_rows} steps", flush=True)
+        print(f"[{i + 1}/{len(files)}] {s['label']} st{s['z80_steps']} k{s['noise_exp']} s{s['seed']}: {n_rows} steps; executor {executor_file(L, None, zero_halts)}{' (zero_halts)' if zero_halts else ''}", flush=True)
     df = pd.DataFrame(rows)
     df.to_csv(os.path.join(out, "functional.csv"), index=False)
 

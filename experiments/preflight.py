@@ -128,8 +128,11 @@ def main() -> int:
         P = c.get("mem_length") or 2 * L
         suffix = "" if P == 2 * L else f"_P{P}"
         grid = c.get("grid", "square")
-        sim = "sim_hex.wgsl" if grid == "hex" else f"sim_{grid}_L{L}{suffix}.wgsl"   # square, or the derived well-mixed shader (Stage H)
-        for f in (sim, f"z80_test_L{L}{suffix}.wgsl"):
+        lethal = bool(c.get("zero_halts", False))                                       # Stage I: the derived lethal-tar shaders (square grid only)
+        if lethal and grid != "square":
+            problems.append(f"{run_stem(c)}: zero_halts is derived for the square grid only (grid {grid!r})")
+        sim = "sim_hex.wgsl" if grid == "hex" else f"sim_{'lethal' if lethal else grid}_L{L}{suffix}.wgsl"   # square, or the derived well-mixed (Stage H) / lethal (Stage I) shader
+        for f in (sim, f"z80_test{'_lethal' if lethal else ''}_L{L}{suffix}.wgsl"):
             if not (SHADER_DIR / f).exists():
                 problems.append(f"missing exported shader {f}")
         if (c.get("stop_share", 0.5) or 0) > 0 and c.get("random_tapes"):

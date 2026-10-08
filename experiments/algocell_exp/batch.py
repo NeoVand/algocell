@@ -98,6 +98,8 @@ def check_outputs(cond: dict, out_dir: str) -> list[str]:
         problems.append(f"{stem}: summary parameters differ from the condition")
     if s.get("grid", "square") != cond.get("grid", "square"):
         problems.append(f"{stem}: summary grid {s.get('grid')!r} differs from the condition's {cond.get('grid', 'square')!r}")
+    if bool(s.get("zero_halts", False)) != bool(cond.get("zero_halts", False)):
+        problems.append(f"{stem}: summary zero_halts {s.get('zero_halts')!r} differs from the condition's {cond.get('zero_halts', False)!r}")
     if cond.get("mutations_per_step") is not None and s["mutations_per_step"] != cond["mutations_per_step"]:
         problems.append(f"{stem}: mutations_per_step override not applied")
     if cond.get("pairs") is not None and s["pairs"] != cond["pairs"]:

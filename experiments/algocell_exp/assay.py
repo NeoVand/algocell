@@ -29,6 +29,9 @@ the instruction that writes it.
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import numpy as np
 import wgpu
 
@@ -41,19 +44,37 @@ GEN2_MIN = 0.3        # pre-registered heritability threshold (PLAN, 2026-10-07,
 FAITHFUL_MIN = 0.5    # share of partners that became >= 75% copies (PLAN change log, 2026-10-07)
 
 
-def _pipeline(tape_length: int = 16, mem_length: int | None = None):
-    """Pipeline for the single-pair executor sized for this tape length and ring length (cached)."""
+def _executor_path(tape_length: int, mem_length: int | None, zero_halts: bool) -> Path:
+    """The single-pair executor shader for this tape length, ring length and rule. `zero_halts` selects the derived
+    lethal-tar executor (algocell_exp.gen_lethal_shader): a zero byte fetched as an opcode halts the pair (Stage I)."""
     P = int(mem_length) if mem_length else 2 * tape_length
-    key = (tape_length, P)
+    suffix = "" if P == 2 * tape_length else f"_P{P}"
+    path = SHADER_DIR / f"z80_test{'_lethal' if zero_halts else ''}_L{tape_length}{suffix}.wgsl"
+    if not path.exists():
+        if zero_halts:
+            raise ValueError(f"no derived zero_halts executor for tape length {tape_length}, ring {P} (run `python -m algocell_exp.gen_lethal_shader --tape {tape_length}`)")
+        if tape_length <= 20 and P == 2 * tape_length:
+            path = SHADER_DIR / "z80_test.wgsl"  # 40-byte memory: fits pairs up to 40 bytes
+        else:
+            raise ValueError(f"no exported executor for tape length {tape_length}, ring {P} (run `npm run export:sim`)")
+    return path
+
+
+def executor_file(tape_length: int = 16, mem_length: int | None = None, zero_halts: bool = False) -> str:
+    """Name of the executor shader the assays run on (provenance for analysis tables and logs)."""
+    return _executor_path(tape_length, mem_length, bool(zero_halts)).name
+
+
+def _pipeline(tape_length: int = 16, mem_length: int | None = None, zero_halts: bool = False):
+    """Pipeline for the single-pair executor sized for this tape length and ring length, under the normal rule or the
+    lethal-tar rule (`zero_halts`); cached per (L, P, rule)."""
+    P = int(mem_length) if mem_length else 2 * tape_length
+    key = (tape_length, P, bool(zero_halts))
     if key not in _PIPE:
         dev = get_device()
-        suffix = "" if P == 2 * tape_length else f"_P{P}"
-        path = SHADER_DIR / f"z80_test_L{tape_length}{suffix}.wgsl"
-        if not path.exists():
-            if tape_length <= 20 and P == 2 * tape_length:
-                path = SHADER_DIR / "z80_test.wgsl"  # 40-byte memory: fits pairs up to 40 bytes
-            else:
-                raise ValueError(f"no exported executor for tape length {tape_length}, ring {P} (run `npm run export:sim`)")
+        path = _executor_path(tape_length, mem_length, bool(zero_halts))
+        if zero_halts:
+            print(f"[assay] zero_halts: compiling the lethal executor {path.name} (a zero byte fetched as an opcode halts the pair)", file=sys.stderr, flush=True)
         module = dev.create_shader_module(code=path.read_text())
         storage = {"type": wgpu.BufferBindingType.storage}
         layout = dev.create_bind_group_layout(
@@ -68,13 +89,14 @@ def _pipeline(tape_length: int = 16, mem_length: int | None = None):
     return _PIPE[key]
 
 
-def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=(), mem_length: int | None = None) -> np.ndarray:
-    """Run many (A,B) pairs independently. pairs: (N, 2L) uint8 → final memories (N, 2L)."""
+def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=(), mem_length: int | None = None, zero_halts: bool = False) -> np.ndarray:
+    """Run many (A,B) pairs independently. pairs: (N, 2L) uint8 → final memories (N, 2L). `zero_halts` runs them under
+    the lethal-tar rule (derived executor), otherwise the normal rule."""
     N = pairs.shape[0]
     L = tape_length
     assert pairs.shape[1] == 2 * L
     dev = get_device()
-    pipe, layout = _pipeline(L, mem_length)
+    pipe, layout = _pipeline(L, mem_length, zero_halts)
     wpc = (L + 3) // 4
     words = np.zeros((N, 2 * wpc * 4), dtype=np.uint8)
     words[:, : 4 * wpc][:, :L] = pairs[:, :L]
@@ -148,8 +170,9 @@ def assay(
     neighbors: np.ndarray | None = None,
     min_informative: int = 16,
     mem_length: int | None = None,
+    zero_halts: bool = False,
 ) -> dict:
-    """Replication score of a tape under a given budget and suppression set.
+    """Replication score of a tape under a given budget, suppression set and rule (`zero_halts`: lethal tar).
 
     `neighbors` (M, L) uint8 — if given, partners are drawn from it instead of
     uniform random bytes ("in situ" assay against the actual soup). Members of
@@ -175,8 +198,8 @@ def assay(
     pairs_a = np.concatenate([np.repeat(T[None, :], n, axis=0), R], axis=1)
     # random A, T as B
     pairs_b = np.concatenate([R, np.repeat(T[None, :], n, axis=0)], axis=1)
-    res_a = execute_pairs(pairs_a, L, z80_steps, suppress, mem_length)
-    res_b = execute_pairs(pairs_b, L, z80_steps, suppress, mem_length)
+    res_a = execute_pairs(pairs_a, L, z80_steps, suppress, mem_length, zero_halts)
+    res_b = execute_pairs(pairs_b, L, z80_steps, suppress, mem_length, zero_halts)
     before_i = _best_shift_match(R, T)
     sim_b, shift_b = _best_shift(res_a[:, L:], T)       # T (as A) wrote itself into B? at which cyclic offset?
     sim_a = _best_shift_match(res_b[:, :L], T)          # T (as B) wrote itself into A?
@@ -197,7 +220,7 @@ def assay(
         R2 = np.ascontiguousarray(neighbors[rng.integers(0, neighbors.shape[0], size=n)]).astype(np.uint8)
     else:
         R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
-    res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress, mem_length)
+    res_g2 = execute_pairs(np.concatenate([offspring, R2], axis=1), L, z80_steps, suppress, mem_length, zero_halts)
     before2 = _best_shift_match(R2, T)
     after2 = _best_shift_match(res_g2[:, L:], T)
     gen2 = _norm_gain(before2, after2)
@@ -253,11 +276,12 @@ def _norm_gain_rows(before: np.ndarray, after: np.ndarray, groups: int, per: int
     return out
 
 
-def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32, seed: int = 0, neighbors: np.ndarray | None = None, mem_length: int | None = None) -> list[dict]:
+def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32, seed: int = 0, neighbors: np.ndarray | None = None, mem_length: int | None = None, zero_halts: bool = False) -> list[dict]:
     """assay() for M tapes at once, as A only (the role that detects every mechanism), with
     gen2 and faithfulness. One GPU dispatch per generation instead of 3 per tape, so a
     random-cell census of a soup (32–64 cells × 32 partners) costs three dispatches.
-    Partners are drawn once and shared by all tapes (seeded), like assay(seed=…)."""
+    Partners are drawn once and shared by all tapes (seeded), like assay(seed=…).
+    `zero_halts` runs every encounter under the lethal-tar rule (derived executor)."""
     T = np.ascontiguousarray(tapes).astype(np.uint8)
     M, L = T.shape
     rng = np.random.default_rng(seed)
@@ -269,13 +293,13 @@ def assay_many(tapes: np.ndarray, z80_steps: int = 128, suppress=(), n: int = 32
         R2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     TT = np.repeat(T, n, axis=0)                      # (M*n, L): tape i repeated n times
     RR = np.tile(R, (M, 1))                           # (M*n, L): the same n partners for every tape
-    res = execute_pairs(np.concatenate([TT, RR], axis=1), L, z80_steps, suppress, mem_length)
+    res = execute_pairs(np.concatenate([TT, RR], axis=1), L, z80_steps, suppress, mem_length, zero_halts)
     before = _best_shift_match_rows(RR, TT)
     after, shifts = _best_shift_rows(res[:, L:], TT)
     score = _norm_gain_rows(before, after, M, n)
     offspring = res[:, L:]
     RR2 = np.tile(R2, (M, 1))
-    res2 = execute_pairs(np.concatenate([offspring, RR2], axis=1), L, z80_steps, suppress, mem_length)
+    res2 = execute_pairs(np.concatenate([offspring, RR2], axis=1), L, z80_steps, suppress, mem_length, zero_halts)
     before2 = _best_shift_match_rows(RR2, TT)
     after2 = _best_shift_match_rows(res2[:, L:], TT)
     gen2 = _norm_gain_rows(before2, after2, M, n)

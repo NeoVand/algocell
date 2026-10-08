@@ -30,7 +30,8 @@ def zero_fraction_table(dirs: list[str]) -> pd.DataFrame:
             s = json.load(open(p))
             L = s.get("tape_length", 16)
             stem = p[: -len(".summary.json")]
-            rec = {"label": s["label"], "tape": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "steps_run": s["steps_run"], "H0_final": s["final"].get("H0")}
+            rec = {"label": s["label"], "tape": L, "steps": s["z80_steps"], "k": s["noise_exp"], "seed": s["seed"], "steps_run": s["steps_run"], "H0_final": s["final"].get("H0"),
+                   "zero_final": np.nan, "zero_emergence": np.nan}   # columns exist even when no world reached tq_10 (anticipated for Stage I)
             for name in ("final", "emergence"):
                 f = f"{stem}.soup_{name}.u8.br"
                 if os.path.exists(f) and (name == "final" or s["tq_10"] >= 0):
@@ -46,6 +47,9 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     asy = pd.concat([pd.read_csv(os.path.join(d, "analysis", "assays.csv")) for d in a.dirs], ignore_index=True)
+    for col in ("trep_period", "trep_offset", "trep_faithful"):   # absent when no run of the batch has a heritable replicator (anticipated for Stage I)
+        if col not in asy:
+            asy[col] = np.nan
     cells = pd.concat([pd.read_csv(os.path.join(d, "analysis", "cells.csv")) for d in a.dirs], ignore_index=True)
     succ = pd.concat([pd.read_csv(os.path.join(d, "analysis", "succession.csv")) for d in a.dirs if os.path.exists(os.path.join(d, "analysis", "succession.csv"))], ignore_index=True)
     out = []

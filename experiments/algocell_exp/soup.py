@@ -78,13 +78,19 @@ class Soup:
         device: wgpu.GPUDevice | None = None,
         mutations_per_step: int | None = None,
         mem_length: int | None = None,
+        zero_halts: bool = False,
     ) -> None:
         # "mixed": the square shader with the partner j drawn uniformly from the whole soup instead of one of the four
         # lattice neighbours (Stage H well-mixed control; shader derived by algocell_exp.gen_mixed_shader, otherwise byte-identical).
+        # zero_halts: the square shader with the lethal-tar rule — a zero byte fetched as an opcode halts the pair for the rest
+        # of the encounter (Stage I control; shader derived by algocell_exp.gen_lethal_shader, otherwise byte-identical).
         assert grid in ("square", "hex", "mixed")
         assert 1 <= pair_count <= MAX_PAIRS
+        if zero_halts and grid != "square":
+            raise ValueError(f"zero_halts is derived for the square grid only (grid={grid!r})")
         self.device = device or get_device()
         self.width, self.height, self.grid = width, height, grid
+        self.zero_halts = bool(zero_halts)
         if grid == "hex":
             self.tape_length = 19
             self.mem_length = 38
@@ -96,8 +102,11 @@ class Soup:
             if self.mem_length < 2 * self.tape_length:
                 raise ValueError(f"mem_length {self.mem_length} < 2 * tape_length {self.tape_length}")
             suffix = "" if self.mem_length == 2 * self.tape_length else f"_P{self.mem_length}"
-            self.shader_file = SHADER_DIR / f"sim_{grid}_L{self.tape_length}{suffix}.wgsl"
+            kind = "lethal" if self.zero_halts else grid
+            self.shader_file = SHADER_DIR / f"sim_{kind}_L{self.tape_length}{suffix}.wgsl"
             if not self.shader_file.exists():
+                if self.zero_halts:
+                    raise ValueError(f"no derived zero_halts shader for tape length {self.tape_length}, ring {self.mem_length} (run `python -m algocell_exp.gen_lethal_shader --tape {self.tape_length}`)")
                 if grid == "mixed":
                     raise ValueError(f"no derived well-mixed shader for tape length {self.tape_length} (run `python -m algocell_exp.gen_mixed_shader --tape {self.tape_length}`)")
                 raise ValueError(f"no exported shader for tape length {self.tape_length} (run `npm run export:sim`)")

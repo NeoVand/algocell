@@ -36,10 +36,12 @@ def control_flow(tape_hex: str) -> list[str]:
     return sorted({i["mnemonic"] for i in disassemble(hb(tape_hex)) if i["family"] in CF_FAMILIES})
 
 
-def partner_test(u: np.ndarray, rng: np.random.Generator, n: int = 256, steps: int = 128) -> tuple[float, float, float]:
+def partner_test(u: np.ndarray, rng: np.random.Generator, n: int = 256, steps: int = 128, zero_halts: bool = False) -> tuple[float, float, float]:
+    """(copied, damaged, mean similarity) of u as A against n random partners for one encounter; `zero_halts` runs the
+    encounters under the lethal-tar rule (Stage I worlds are tested under their own rule)."""
     L = len(u)
     P = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
-    res = np.asarray(execute_pairs(np.concatenate([np.repeat(u[None], n, 0), P], axis=1), L, steps, [])).reshape(n, 2 * L)
+    res = np.asarray(execute_pairs(np.concatenate([np.repeat(u[None], n, 0), P], axis=1), L, steps, [], zero_halts=zero_halts)).reshape(n, 2 * L)
     A2, B2 = res[:, :L], res[:, L:]
     best = np.zeros(n)
     for s in range(L):

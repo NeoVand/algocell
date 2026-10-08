@@ -55,6 +55,7 @@ def run(
     census_pairs: int = 128,
     exemplar_count: int = 3,
     mem_length: int | None = None,
+    zero_halts: bool = False,
 ) -> dict:
     """on_snapshot(name, soup_uint8_2d) is called with 'emergence' (first tq_10
     crossing) and 'final' so callers can persist soup snapshots.
@@ -68,11 +69,13 @@ def run(
     state of every pair that interacted in that step (aggregates + `census_pairs` raw pairs).
     Every sample also carries the shader's per-pair write counters summarised
     (`ix_*`). `mutations_per_step` overrides the default pair_count/2^noise_exp (control
-    arms). `provenance` is stored verbatim in the condition record."""
-    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step, mem_length=mem_length)
+    arms). `provenance` is stored verbatim in the condition record. `zero_halts` selects the lethal-tar rule (a zero
+    byte fetched as an opcode halts the pair; Stage I control, square grid only) and is recorded in the condition record."""
+    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step, mem_length=mem_length, zero_halts=zero_halts)
     cond = {
         "label": label,
         "grid": grid,
+        "zero_halts": soup.zero_halts,
         "tape_length": soup.tape_length,
         "mem_length": soup.mem_length,
         "width": width,
@@ -342,6 +345,7 @@ def main(argv=None) -> None:
     ap.add_argument("--mutations-per-step", type=int, default=None, help="override pair_count/2^noise_exp (control arms)")
     ap.add_argument("--sample-steps", default="", help="comma-separated extra sample steps, e.g. 1,2,3,5,8,13,21,34")
     ap.add_argument("--snapshot-steps", default="", help="comma-separated steps at which the full soup is snapshotted and the interaction census taken")
+    ap.add_argument("--zero-halts", action="store_true", help="lethal-tar rule: a zero byte fetched as an opcode halts the pair for the rest of the encounter (Stage I control; square grid only)")
     a = ap.parse_args(argv)
     out = open(a.out, "w") if a.out else sys.stdout
     try:
@@ -351,6 +355,7 @@ def main(argv=None) -> None:
             stop_share=None if a.stop_share < 0 else a.stop_share, label=a.label, out=out, quiet=a.quiet, random_tapes=a.random_tapes,
             sample_every_early=a.sample_every_early, early_until=a.early_until, mutations_per_step=a.mutations_per_step,
             sample_steps=[int(x) for x in a.sample_steps.split(",") if x], snapshot_steps=[int(x) for x in a.snapshot_steps.split(",") if x],
+            zero_halts=a.zero_halts,
         )
     finally:
         if a.out:
