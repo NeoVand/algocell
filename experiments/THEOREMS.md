@@ -162,3 +162,116 @@ should restore closure; shrinking it in the Z80 (adding a halting byte class to 
    would make "the smallest closed Z80 replicator has at least four bytes" exact.
 3. The model's q for the Z80 closers (`20 f0` at L = 50: two specific bytes at a specific phase — q of order
    μ² · phases) against the measured closure times — a quantitative test of Model 5 without new runs.
+
+---
+
+# Part II — statements above the level of bytes (2026-10-08 05:10, after the user asked for substrate-level theorems)
+
+The user's question: can the main claims be theorems for an arbitrary substrate, in the language of theoretical
+computer science, information theory or thermodynamics? Answer in three parts: an **architectural theorem** (any
+machine with two properties), an **information-theoretic lemma** (substrate-free, definitional), and a
+**classification** in place of a universal dynamical law, with the reasons why the dynamics cannot be a theorem.
+
+## Theorem 6 (architectural open-first theorem)
+
+**Hypotheses.** A machine M executes a program held in a shared memory that also holds its environment (the partner), in
+encounters of bounded length. (H1) *Default flow:* in the absence of an executed control transfer (jump, call, return,
+repeat-in-place, halt) the instruction pointer advances monotonically through memory; the organism's region is followed
+by the environment's. (H2) *Bounded write bandwidth:* over any execution, bytes written ≤ β × bytes of instruction
+stream consumed, with β < 1. (H3, optional) *Self-consistent literal write:* M has an instruction that writes its own
+operand bytes verbatim to a memory pointer that advances, and the operand can encode the instruction's own opcode in
+the phase in which it is executed.
+
+Definitions. A pattern x of length L is a *self-replicator in context e* if the encounter (x, e) ends with the
+environment's region holding a copy of x. It is *open* if its pointer executes an address in the environment in some
+context, *closed* if it executes none in any context.
+
+**Theorem 6.** (i) Under (H1)–(H2), every closed self-replicator executes some address at least twice (contains a
+control cycle). (ii) Under (H1)–(H3), there is a straight-line self-replicator of length at most the literal width plus
+the opcode width (in the Z80, two bytes; in BFF with `P`, one byte), and every straight-line self-replicator is open.
+(iii) Hence, under (H1)–(H3), the minimal open self-replicator is strictly shorter than the minimal closed one; under
+(H1)–(H2) without (H3), no straight-line self-replicator exists and every self-replicator contains a cycle (born closed).
+(iv) Under uniform random initialisation over an alphabet of size σ, the expected number of occurrences of a fixed
+pattern of length k among N regions of length L is N (L − k + 1) σ^−k, so the minimal open pattern is present with
+probability exponentially (in the length difference) higher than any minimal closed pattern.
+
+*Proof.* (i) is Theorem 2: confinement without a repeated address consumes at most L bytes of code and writes at most
+βL < L bytes. (ii) The literal instruction tiled across the region writes its own operands, which by (H3) are the tiling
+itself, at the advancing pointer; it executes no control transfer, so by (H1) its pointer runs on into the environment
+and executes whatever is there: it is open by definition, and it is a self-replicator in every context whose code does
+not divert the pointer or the write pointer (e.g. the all-no-op context), hence a self-replicator in some context.
+Conversely any straight-line program runs into the environment by (H1) and is open. (iii) follows from (i) and (ii):
+a closed replicator needs an executed control transfer, which a straight-line literal tiling does not contain, so the
+closed one is longer by at least the control transfer's encoding; without (H3) a straight-line program writes only what
+it reads, and the counting of Theorem 1 (generalised: a copy of L bytes with D ≥ 3 values needs ≥ 2L + D − 1 instruction
+executions against ≤ L/β... in one pass) excludes a straight-line self-copy, so every self-replicator contains a cycle.
+(iv) is linearity of expectation. ∎
+
+**What it decides.** Whether a substrate's first replicator is open or closed is decided by (H3): a self-consistent
+literal write channel. Z80 (`LD rr,nn ; PUSH rr`: yes) → open first, 80/80 worlds; BFF (no literal store: `+`/`−`
+increment in place, `.`/`,` copy from memory) → born closed, 28/28 first replicators loop-bearing; BFF + `P` → open
+first, 12/12. The theorem does not say the open phase lasts (see the classification below).
+
+**Scope.** (H1)–(H2) are properties of the von Neumann architecture (shared code and data, sequential control, finite
+write bandwidth), not of any particular instruction set: Core War's MARS, Tierra's CPU, Avida's, the Z80 and BFF all
+satisfy them. They are not properties of a chemistry; a chemical reading would need an analogue of "a copier that runs
+off its template into adjacent material by default" (rolling-circle or run-on polymerisation would be the candidates),
+and that is a hypothesis, not a theorem.
+
+## Lemma 7 (information-theoretic form of closure; substrate-free)
+
+Let the offspring of x in context e be o = F(x, e), with e drawn from a context distribution. Define *leakage*
+λ(x) = I(o; e | x), the information the offspring carries about the context given the parent. Then:
+(i) if λ(x) > 0, then P(o = x | x) < 1: an open replicator cannot be perfectly faithful across contexts;
+(ii) if P(o = x | x) = 1 then λ(x) = 0: perfect fidelity across contexts implies closure;
+(iii) fidelity is bounded by Fano's inequality in terms of H(o | x) ≥ λ(x): P(o ≠ x | x) ≥ (H(o|x) − 1)/log|O|.
+
+*Proof.* (i) If o = x with probability one given x, then o is a deterministic function of x and I(o; e | x) = 0.
+(ii) is the contrapositive of (i). (iii) is Fano. ∎
+
+**Reading.** This is Krakauer et al.'s individuality (the organism's future determined by its own past rather than the
+environment's) specialised to one generation and made measurable by intervention: the partner test estimates
+P(o ≈ x | x) under uniformly random e, and the pointer-entered record is a sufficient condition for λ(x) = 0 in these
+machines (no read of the environment, no information about it). "Selection for fidelity is selection against
+information inflow from the environment" is then a theorem, if a modest one: the Z80 pusher has λ > 0 (its copy
+succeeds in 0.66 of contexts) and the `RET NZ` closer has λ = 0 (1.00 in all 256). The lemma is near-tautological; its
+value is that it says what the measured quantity *is*, and that the definition of closure is the right one.
+
+## The dynamics: a classification, not a law
+
+**Why no theorem.** Whether closure follows the open phase depends on the context distribution the open replicator
+itself creates (its copies, its failed copies, the mutants of both) and on how that distribution acts on it. Tonight's
+BFF + `P` runs are the counter-example to any universal "open, then closed": open in 12/12 worlds at epoch 64, extinct
+by epoch ≈ 256 in 12/12, because partial copies into pointer-halting partners are themselves pointer-halting tar that
+kills the next generation. No statement about the machine alone can decide this; it is an ecological feedback.
+
+**Classification (two binary properties of a substrate).**
+
+| | waste benign to open organisms | waste lethal to open organisms |
+|---|---|---|
+| **self-consistent literal write (H3)** | open first, then closed — the Z80 soup (closure by 300k at L = 16, 50; 19/20 by 1M at L = 20) | open first, then extinct — BFF + `P` (12/12 collapse, 0/12 closure) |
+| **no literal write** | born closed — BFF (28/28 loop-bearing first replicators) | born closed or lifeless — not yet run |
+
+Model 5 gives the quantitative form inside the top row: closure occurs with probability ≈ 1 − exp(−q ∫ n dt), where
+∫ n dt is the open population's integral over time (the window) and q the per-tape-epoch rate of closing mutations;
+benign waste makes the window grow without bound, lethal waste closes it. The two parameters are measured, not derived:
+the viability of a copy made into a waste partner (Z80: ≈ 1, zeros are no-ops; BFF: ≈ 0, an unmatched `]` halts) and
+the rate at which waste accumulates. The classification is substrate-independent in form and substrate-specific in its
+two entries, which is the most that is true.
+
+**Thermodynamics.** What can be said without inventing: every copy erases L bytes of the partner (Landauer: ≥ L kT ln 2
+per copy, open or closed alike), so closure does not change the erasure cost; the open organism additionally performs
+whatever computation the environment's code dictates when its pointer runs into it — work it did not choose, at the
+environment's command — and this is what Maturana and Varela's "operationally closed, thermodynamically open" picks
+out: closure cuts the inflow of *control*, not of energy. Whether an inequality separates the two (dissipation per
+faithful copy as a function of λ) is a question for a model with explicit costs; none is claimed here.
+
+## Summary for the paper
+
+- Theorem 6 settles *what the first replicator is* for any von Neumann machine: open if the instruction set has a
+  self-consistent literal write, closed otherwise.
+- Lemma 7 settles *what closure is* in substrate-free terms: zero information inflow from context to offspring, the
+  limit that perfect fidelity requires.
+- The classification settles *what can follow*: closure or extinction, decided by whether the open organism's own
+  waste is lethal to it; the window q ∫ n dt is the quantity to measure and model, and the fourth cell is the next
+  experiment.
