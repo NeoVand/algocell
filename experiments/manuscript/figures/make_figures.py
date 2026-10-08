@@ -71,16 +71,14 @@ def km_curve(times, horizon):
 
 # ----------------------------------------------------------------------------------------------------------------- fig 1
 def fig1(out):
-    fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
-    gs = GridSpec(2, 12, figure=fig, height_ratios=[0.5, 1.0], hspace=0.25, wspace=2.2, left=0.04, right=0.99, top=0.98, bottom=0.12)
-    axa, axb = fig.add_subplot(gs[0, 0:5]), fig.add_subplot(gs[0, 5:12])
-    axc, axd = fig.add_subplot(gs[1, 0:6]), fig.add_subplot(gs[1, 6:12])
+    fig = plt.figure(figsize=(fs.DOUBLE, 162 * fs.MM))
+    gs = GridSpec(3, 2, figure=fig, height_ratios=[48.6, 46.0, 56.0], hspace=0.16, wspace=0.42, left=0.045, right=0.99, top=0.985, bottom=0.07)
+    axa, axb = fig.add_subplot(gs[0, :]), fig.add_subplot(gs[1, :])
+    axc, axd = fig.add_subplot(gs[2, 0]), fig.add_subplot(gs[2, 1])
     cp.fig1a(axa)
-    axa.set_anchor("N")
-    fs.panel_label(axa, "a", x=0.0, y=0.93)
+    fs.panel_label(axa, "a", x=0.0, y=0.96)
     cp.fig1b(axb)
-    axb.set_anchor("N")
-    fs.panel_label(axb, "b", x=0.0, y=0.93)
+    fs.panel_label(axb, "b", x=0.0, y=0.96)
     # c: one world's time course (Stage G, L = 16, seed 2001)
     try:
         run = glob.glob(os.path.join(EXP, "runs", "stageG", "none@closure_L16_st128_k4_s2001.jsonl"))[0]
@@ -165,8 +163,8 @@ def fig2(out):
     fig.legend(handles=[h1, h2], loc="lower center", bbox_to_anchor=(0.5, -0.01), fontsize=5, ncol=2, frameon=False)
     fs.save(fig, os.path.join(out, "fig2_ab"))
 
-    fig = plt.figure(figsize=(fs.DOUBLE, 128 * fs.MM))
-    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.3, 1.0], height_ratios=[1.0, 1.3], hspace=0.3, wspace=0.45, left=0.07, right=0.99, top=0.97, bottom=0.03)
+    fig = plt.figure(figsize=(fs.DOUBLE, 142 * fs.MM))
+    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.3, 1.0], height_ratios=[1.0, 1.42], hspace=0.28, wspace=0.45, left=0.07, right=0.99, top=0.97, bottom=0.02)
     axc, axe = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     axd = fig.add_subplot(gs[1, :])
     # c: heritable fraction vs step per L (median + IQR)
@@ -315,8 +313,8 @@ def fig4(out):
         ax.set_xlim(0, 17500)
         ax.set_ylim(-0.02, 1.02)
 
-    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
-    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 1.0], hspace=0.55, wspace=0.45, left=0.07, right=0.99, top=0.96, bottom=0.03)
+    fig = plt.figure(figsize=(fs.DOUBLE, 130 * fs.MM))
+    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], height_ratios=[1.0, 1.2], hspace=0.5, wspace=0.45, left=0.07, right=0.99, top=0.96, bottom=0.02)
     axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
     axd = fig.add_subplot(gs[1, :])
     # a: heritable fraction vs epoch, every run, by variant
@@ -332,7 +330,7 @@ def fig4(out):
     fs.tidy(axa, "epoch", "heritable fraction of random tapes")
     fs.panel_label(axa, "a")
     handles, labels = axa.get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.53), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
+    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.555), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
     # b: first vs final openness per variant (black labels: Nature forbids coloured text)
     rng = np.random.default_rng(0)
     for i, v in enumerate(variants):

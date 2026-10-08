@@ -1,6 +1,12 @@
 # Conceptual panels — design brief (built 2026-10-08 with the recommended options: 1a A, 1b C, 2d A, 4d A, 5a A)
 
-Status: drawn in `manuscript/figures/concept.py` with the shared vocabulary below; the closers' cycles and the Theorem 2
+Status (v2, 2026-10-08 evening): redrawn in vector in `manuscript/figures/concept.py` to the visual language of the user's
+generated reference set (`manuscript/figures/refs/journal-figures-v1/`, gitignored): teal organism cells, grey partner
+cells, vermilion for what the organism writes or where it jumps, teal instruction pointer, vermilion stack pointer,
+charcoal type, cells numbered from 0, full-width schematic rows (Fig. 1a, 1b, 2d, 4d), large cells, 5–7 pt type. The
+generated images themselves are style references only: they are 1,774-px raster, and the generator's own QA found the
+Fig. 2d draft scientifically wrong (49 cells, shifted bytes, misplaced arrows) and Fig. 5a approximate; every byte and
+arrow in the vector versions comes from the data. Earlier status: drawn with the first vocabulary below; the closers' cycles and the Theorem 2
 trajectories use exact pointer traces from the GPU executor (`trace_z80.py` → `results/concept/traces.json`), which showed
 that the `JR NZ` and `DJNZ` cycles pass through the 16-bit program-counter wrap (drawn dashed). Content prompts for an
 image-generation pass are in `manuscript/figures/CONCEPT_PROMPTS.md`. Fig. 4d now includes the benign-tar cell.

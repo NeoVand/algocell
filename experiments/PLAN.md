@@ -725,3 +725,8 @@ replication; 2% exact share is noisy because return-address smears reach
 - 2026-10-08 14:50: all 24 follow-up soups complete (duplicate `wraplitnh` seed 12 restored its files bit-for-bit; `lit` seeds
   11–12 re-run). Final `lit` counts: (l1) 12/12; (l2) by the letter 5/12, final heritable fraction 0.00 in 12/12; 0/12 closed.
   `wraplitnh` unchanged (12/12 persist). Tables and Figs 4–5 refreshed.
+- 2026-10-08 17:30 (**conceptual figures v2**): the user's generated reference images (five panels, journal style)
+  fixed the visual language; all five panels redrawn in vector to it (`concept.py`), Fig. 1 relaid as two full-width
+  schematic rows above the data row; legends updated. Generated images kept gitignored as references only (raster,
+  and Fig. 2d/5a drafts inexact per the generator's QA). Pending: Fig. 5b design; the prose rewrite after the user
+  reacts to `MAIN_nature_v3_sample.md`.
