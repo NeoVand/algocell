@@ -812,3 +812,8 @@ replication; 2% exact share is noisy because return-address smears reach
   Descriptive: kin encounters 57% (lattice) vs 11% (mixed); damage against kin 2.5%/0% vs strangers 34%/31%; t_rep 125 vs
   525; closure timing bimodal when mixed (100, 500, 5,000; 30k–100k; three never). Post hoc reading in
   `results/stageH/FINDINGS.md`: space changes the reliability of closure, not its possibility. Stage I running.
+- 2026-10-08 late night (**manuscript v3 results condensed**): the nine inventory sections became seven finding-led
+  sections (sterile order; the literal; openness, now with inflow in bits; closure as a control cycle, now with zero
+  inflow and the well-mixed null; three load-bearing families with the size axis folded in; one instruction decides the
+  beginning; closure requires a cycle). Byte listings moved to Extended Data references. Main text ≈ 4,000 words
+  (target 3,500): trim after Stage I is integrated. Every number unchanged from the audited tables.
