@@ -77,9 +77,15 @@ def fill_fraction(tape_hex: str) -> float:
     return float(np.bincount(t, minlength=256).max() / len(t))
 
 
+def is_sterile_fill(top: dict) -> bool:
+    """One-symbol tar: one byte >= 90% of the tape and no heredity (gen2 < 0.3). A heritable one-byte tiling (e.g. the
+    all-`P` literal pusher, whose literal is itself) is a period-1 replicator, not tar."""
+    return fill_fraction(top["tape"]) >= 0.9 and top["gen2"] < 0.3
+
+
 def classify(top: dict) -> str:
-    """closed / open / intermediate by the culture test; 'fill' if one byte makes up >= 90% of the tape (one-symbol tar)."""
-    if fill_fraction(top["tape"]) >= 0.9:
+    """closed / open / intermediate by the culture test; 'fill' for sterile one-symbol tar."""
+    if is_sterile_fill(top):
         return "fill"
     if top["entered"] <= 0.05 and top["copies"] >= 0.95:
         return "closed"
@@ -122,7 +128,7 @@ def load_run(d: str) -> dict | None:
         q = [t for t in s_["top"] if t["share"] >= 0.005 and t["gen2"] >= 0.3]
         if q and t_rep is None:
             t_rep = s_["epoch"]
-        if t_top is None and s_["top"][0]["gen2"] >= 0.3 and fill_fraction(s_["top"][0]["tape"]) < 0.9:
+        if t_top is None and s_["top"][0]["gen2"] >= 0.3:
             t_top, first = s_["epoch"], s_["top"][0]
         if t_her is None and s_["frac_heritable"] >= 0.5:
             t_her = s_["epoch"]
@@ -137,7 +143,7 @@ def load_run(d: str) -> dict | None:
         top = s["top"][0]
         if t_closed is None and top["gen2"] >= 0.3 and top["entered"] <= 0.05 and top["copies"] >= 0.95:
             t_closed = s["epoch"]
-        if t_open is None and any(t["gen2"] >= 0.3 and t["entered"] >= 0.5 and fill_fraction(t["tape"]) < 0.9 for t in s["top"]):
+        if t_open is None and any(t["gen2"] >= 0.3 and t["entered"] >= 0.5 for t in s["top"]):
             t_open = s["epoch"]
     r["t_closed"], r["t_open"] = t_closed, t_open
     last = samples[-1]["top"][0]
@@ -146,6 +152,8 @@ def load_run(d: str) -> dict | None:
               "final_copies": last["copies"], "final_gen2": last["gen2"], "final_self_damage": last["self_damage"], "final_share": last["share"],
               "final_HOE": samples[-1]["HOE"], "final_unique_frac": samples[-1]["unique_frac"], "final_heritable": samples[-1]["frac_heritable"],
               "max_heritable": float(S["frac_heritable"].max())})
+    r["peak_heritable_epoch"] = int(S.loc[S["frac_heritable"].idxmax(), "epoch"])
+    r["collapsed"] = bool(t_her is not None and samples[-1]["frac_heritable"] < 0.1)
     pre = ep[ep["epoch"] < (t_top if t_top is not None else ep["epoch"].max() + 1)]
     r["chunk_mean_pre"] = float(pre["chunk_mean"].mean()) if len(pre) else float("nan")
     r["chunk_p90_max_pre"] = float(pre["chunk_p90"].max()) if len(pre) else float("nan")
@@ -190,7 +198,8 @@ def main():
             md.append(f"- first replicators: {cls}; with a loop {int(rep['first_loop'].sum())}/{len(rep)}; median entered {rep['first_entered'].median():.2f}, "
                       f"copies {rep['first_copies'].median():.2f}, self-damage {rep['first_self_damage'].median():.2f}")
             md.append(f"- final top class: closed in {int(((rep['final_entered'] <= 0.05) & (rep['final_copies'] >= 0.95)).sum())}/{len(rep)}, with a loop {int(rep['final_loop'].sum())}/{len(rep)}; "
-                      f"final heritable fraction median {rep['final_heritable'].median():.2f} (max over time, median {rep['max_heritable'].median():.2f})")
+                      f"final heritable fraction median {rep['final_heritable'].median():.2f} (max over time, median {rep['max_heritable'].median():.2f}, reached at median epoch {rep['peak_heritable_epoch'].median():.0f}); "
+                      f"collapsed (heritable fraction ≥ 0.5 reached, < 0.1 at the end) {int(rep['collapsed'].sum())}/{len(rep)}; first replicator a one-byte tiling in {int((rep['first_fill'] >= 0.9).sum())}/{len(rep)}")
             md.append(f"- before t_rep: mean chunk transfer {rep['chunk_mean_pre'].median():.2f} bytes/encounter (median over runs), max 90th percentile {rep['chunk_p90_max_pre'].median():.0f}, "
                       f"max copy-event fraction {rep['copy_frac_max_pre'].median():.4f}\n")
             md.append("first replicators (BFF string; `·` = non-instruction byte, `0` = zero):\n")
@@ -213,7 +222,7 @@ def main():
                        "median t_her (epochs; censored runs at horizon)": float(g["t_her"].fillna(horizon).median()),
                        "HOE ≥ 1": int(g["t_hoe1"].notna().sum()), "HOE ≥ 1 without a replicator": int((g["t_hoe1"].notna() & g["t_top"].isna()).sum()),
                        "first replicator open": int((g["first_class"] == "open").sum()), "first closed with loop": int(((g["first_class"] == "closed") & g["first_loop"]).sum()),
-                       "final closed": int((g["final_class"] == "closed").sum())})
+                       "final closed": int((g["final_class"] == "closed").sum()), "collapsed": int(g["collapsed"].sum())})
     T = pd.DataFrame(rows_t)
     md.append("## Transition rates and between-variant tests\n")
     md.append(T.to_markdown(index=False, floatfmt=".0f") + "\n")
@@ -239,7 +248,7 @@ def main():
                   f"{'(b1) open first' if n_open * 2 >= len(wrap) else ('(b2) born closed' if n_closed_loop * 2 >= len(wrap) else 'neither reading reaches half')}")
     wl = R[(R["variant"] == "wraplit") & R["t_top"].notna()]
     if len(wl):
-        n_open_nl = int(((wl["first_class"] == "open") & ~wl["first_loop"]).sum())
+        n_open_nl = int(((wl["first_class"] == "open") & ~wl["first_loop"].astype(bool)).sum())
         n_closed_loop = int(((wl["first_class"] == "closed") & wl["first_loop"]).sum())
         nwl = int((R["variant"] == "wraplit").sum())
         std_her = R[R["variant"] == "std"]["t_her"].fillna(horizon)
@@ -249,7 +258,8 @@ def main():
         md.append(f"- (e1) wrap + literal: first replicators straight-line and open {n_open_nl}/{len(wl)} transitions of {nwl} runs (≥ 9/12 predicted); closed with a loop {n_closed_loop}/{len(wl)} (≥ 6/12 kills) → "
                   f"{'(e1) met' if n_open_nl >= 9 else ('KILL' if n_closed_loop >= 6 else 'not met')}; "
                   f"(e2) earlier emergence than standard BFF: median t_her {wl_her.median():.0f} vs {std_her.median():.0f} (one-sided Mann–Whitney p = {p_e2:.3g}) → {'met' if p_e2 < 0.05 else 'not met'}; "
-                  f"(e3) final dominant closed in {n_final_closed}/{len(wl)} transitioned worlds (≥ 6 predicted) → {'met' if n_final_closed >= 6 else 'not met'}")
+                  f"(e3) final dominant closed in {n_final_closed}/{len(wl)} transitioned worlds (≥ 6 predicted) → {'met' if n_final_closed >= 6 else 'not met'}; "
+                  f"collapsed after the open wave in {int(wl['collapsed'].sum())}/{len(wl)} (peak heritable fraction median {wl['max_heritable'].median():.2f} at median epoch {wl['peak_heritable_epoch'].median():.0f}, final median {wl['final_heritable'].median():.2f})")
     with open(os.path.join(out, "NUMBERS_BFF.md"), "w") as fh:
         fh.write("\n".join(md))
     print("\n".join(md[:3]))

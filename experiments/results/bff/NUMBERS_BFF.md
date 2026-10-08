@@ -2,44 +2,56 @@
 
 Events: `t_top` = first sample at which the most common tape class is heritable (gen2 ≥ 0.3) and not a one-symbol fill (one byte ≥ 90% of the tape; fills are tar, reported as class 'fill'); it is the exemplar used as the first replicator; `t_her` = heritable fraction of 32 random tapes ≥ 0.5; `t_rep` = the pre-registered Z80 criterion (top-3 class share ≥ 0.5% and gen2 ≥ 0.3), kept for the record; `t_hoe1` = high-order entropy ≥ 1 bit/byte; `t_closed` = top class enters the partner ≤ 5% and copies ≥ 95% of random partners; `t_open` = a replicating top-3 class enters the partner ≥ 50%. Culture tests: 64 random partners, 2^13 steps.
 
-## std: 15 runs (15 finished; epochs done median 16,384)
+## std: 24 runs (24 finished; epochs done median 16,384)
 
-- transitions: top class heritable (t_top) in 4/15 (median 8800 epochs); heritable fraction ≥ 0.5 (t_her) in 4/15 (median 8800); pre-registered share criterion (t_rep) in 0/15; HOE ≥ 1 in 6/15 (median 9920); closed top class in 4/15; an open replicator ever in the top 3 in 1/15
-- first replicators: {'closed': 4}; with a loop 4/4; median entered 0.00, copies 1.00, self-damage 0.00
-- final top class: closed in 4/4, with a loop 4/4; final heritable fraction median 0.98 (max over time, median 1.00)
-- before t_rep: mean chunk transfer 0.48 bytes/encounter (median over runs), max 90th percentile 61, max copy-event fraction 0.3271
+- transitions: top class heritable (t_top) in 9/24 (median 6464 epochs); heritable fraction ≥ 0.5 (t_her) in 7/24 (median 10880); pre-registered share criterion (t_rep) in 2/24; HOE ≥ 1 in 9/24 (median 10816); closed top class in 9/24; an open replicator ever in the top 3 in 3/24
+- first replicators: {'closed': 7, 'intermediate': 2}; with a loop 9/9; median entered 0.00, copies 1.00, self-damage 0.00
+- final top class: closed in 7/9, with a loop 7/9; final heritable fraction median 0.97 (max over time, median 1.00, reached at median epoch 8896); collapsed (heritable fraction ≥ 0.5 reached, < 0.1 at the end) 0/9; first replicator a one-byte tiling in 0/9
+- before t_rep: mean chunk transfer 0.47 bytes/encounter (median over runs), max 90th percentile 2, max copy-event fraction 0.0117
 
 first replicators (BFF string; `·` = non-instruction byte, `0` = zero):
 
 |   seed |    t_top |    t_her |   t_hoe1 | first_class   | first_loop   |   first_entered |   first_copies |   first_self_damage |   first_gen2 |   first_fill | first_pretty                                                     |
 |-------:|---------:|---------:|---------:|:--------------|:-------------|----------------:|---------------:|--------------------:|-------------:|-------------:|:-----------------------------------------------------------------|
+|     10 |  3072.00 |  3392.00 |  3200.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.12 | ·<······[··,···········}·<,]··,<·}···[·····,·,··[·········<····· |
+|     11 | 16064.00 | 16384.00 | 16128.00 | intermediate  | True         |            0.03 |           0.86 |                0.00 |         0.73 |         0.14 | ·<·0··[······,·}·····<·]·[··<·<··[·]·<·····}·,······[·····0·<<·> |
 |     16 | 12672.00 | 12736.00 |  9024.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.08 | ··········[<,·}····]··}···,,··<·[············{····{}······{·}··} |
 |     17 |  6464.00 |  6400.00 |  6336.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.08 | ····<·,·[··[·[·,·}·····<···]·-······]··<·······}·,·[[·····,·<··· |
+|      2 |  3648.00 |   nan    |   nan    | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.22 | ·<·······[,·<·}··,···············]···············,··}·<·,[······ |
 |     20 |  2368.00 |  4992.00 |  2432.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.41 | ·····[[[[·[[[[[[[[[[[<·,}]······················]},·<[[[[[[[[[[[ |
 |     22 | 11136.00 | 11200.00 | 11072.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.08 | ·[·<····}·········,]·}······,··<[···[[··················,·.····· |
+|      4 | 10688.00 | 10880.00 | 10880.00 | intermediate  | True         |            0.34 |           0.72 |                0.05 |         0.56 |         0.31 | [[·[··,···<}······]·········]]·········]······}<···,··[·[[[···<· |
+|      9 |  1920.00 |   nan    |   nan    | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.16 | ····[············<,·}·]·}····,<·}·<,····}·]·}·,<············[··· |
 
 final top classes:
 
 |   seed |   final_epoch | final_class   | final_loop   |   final_entered |   final_copies |   final_self_damage |   final_gen2 |   final_fill | final_pretty                                                     |
 |-------:|--------------:|:--------------|:-------------|----------------:|---------------:|--------------------:|-------------:|-------------:|:-----------------------------------------------------------------|
+|     10 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.09 | ·····<········,·····,·····[···}·<,··],<·}···········,··[····+,<· |
+|     11 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.11 | -·····+[[··[···[··[·············<····,··}·],····<···}···[[·,,,,< |
 |     16 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ·····[<,·}····]··}····,··<·[·······················}·····{····-+ |
 |     17 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.06 | ··00··<·,+[-·[···,·}·····<···]······-·]·<·····}·,···[··[·,·<·0·· |
+|      2 |         16384 | fill          | False        |            1.00 |           0.00 |                0.00 |         0.00 |         1.00 | ································································ |
 |     20 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ·,··············[·<·,}]··························},·<········[·· |
 |     22 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.03 | ··{[·····<····}·········,]·}·····,··<·[·····+··················- |
+|      4 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.08 | ·······[··········[<···,····}······]·············}····,···<[···· |
+|      9 |         16384 | fill          | False        |            1.00 |           0.00 |                0.00 |         0.00 |         1.00 | ································································ |
 
-- runs without a replicator by the criterion: seeds [1, 6, 7, 13, 14, 15, 18, 19, 21, 23, 24]; their final HOE median 0.13, final heritable fraction median 0.00
+- runs without a replicator by the criterion: seeds [1, 3, 5, 6, 7, 8, 12, 13, 14, 15, 18, 19, 21, 23, 24]; their final HOE median 0.13, final heritable fraction median 0.00
 
-## wrap: 13 runs (13 finished; epochs done median 16,384)
+## wrap: 24 runs (24 finished; epochs done median 16,384)
 
-- transitions: top class heritable (t_top) in 11/13 (median 3968 epochs); heritable fraction ≥ 0.5 (t_her) in 11/13 (median 4032); pre-registered share criterion (t_rep) in 8/13; HOE ≥ 1 in 13/13 (median 64); closed top class in 11/13; an open replicator ever in the top 3 in 2/13
-- first replicators: {'closed': 10, 'intermediate': 1}; with a loop 11/11; median entered 0.00, copies 1.00, self-damage 0.00
-- final top class: closed in 10/11, with a loop 10/11; final heritable fraction median 0.97 (max over time, median 1.00)
-- before t_rep: mean chunk transfer 1.26 bytes/encounter (median over runs), max 90th percentile 61, max copy-event fraction 0.8184
+- transitions: top class heritable (t_top) in 19/24 (median 6912 epochs); heritable fraction ≥ 0.5 (t_her) in 19/24 (median 6976); pre-registered share criterion (t_rep) in 14/24; HOE ≥ 1 in 24/24 (median 64); closed top class in 19/24; an open replicator ever in the top 3 in 2/24
+- first replicators: {'closed': 16, 'intermediate': 3}; with a loop 19/19; median entered 0.00, copies 1.00, self-damage 0.00
+- final top class: closed in 18/19, with a loop 18/19; final heritable fraction median 0.97 (max over time, median 1.00, reached at median epoch 7680); collapsed (heritable fraction ≥ 0.5 reached, < 0.1 at the end) 0/19; first replicator a one-byte tiling in 0/19
+- before t_rep: mean chunk transfer 0.98 bytes/encounter (median over runs), max 90th percentile 62, max copy-event fraction 0.8066
 
 first replicators (BFF string; `·` = non-instruction byte, `0` = zero):
 
 |   seed |    t_top |    t_her |   t_hoe1 | first_class   | first_loop   |   first_entered |   first_copies |   first_self_damage |   first_gen2 |   first_fill | first_pretty                                                     |
 |-------:|---------:|---------:|---------:|:--------------|:-------------|----------------:|---------------:|--------------------:|-------------:|-------------:|:-----------------------------------------------------------------|
+|      1 |  7424.00 |  7424.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.16 | >>>>···<<,·<····<[···<·········,·,,}··],,,]··},,·,·········<···[ |
+|     10 |  4224.00 |  4224.00 |    64.00 | intermediate  | True         |            0.00 |           0.89 |                0.17 |         0.81 |         0.12 | <<[[><·[·>[,··<·····}···]······--······]···}·····<··,[>·[·<>[[<< |
 |     12 |  8576.00 |  8960.00 |    64.00 | intermediate  | True         |            0.00 |           0.83 |                0.00 |         0.62 |         0.22 | 0<[,····<·}··]<·<·<·<]··}·<····,,····<·}··]<·<·<·<]··}·<····,[<0 |
 |     13 |  3712.00 |  3712.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.12 | ··<···[,}····<··-,]·········<··<<··<·········],-··<····},[···<·· |
 |     14 |  1536.00 |  1536.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.17 | ,,,,,,,,,>>{··<<···[}<·····,·····]·····]·····,·····<}[···<<··{>> |
@@ -47,15 +59,23 @@ first replicators (BFF string; `·` = non-instruction byte, `0` = zero):
 |     16 |  1728.00 |  1728.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.11 | >>>······<<<···············><<[·>····{·.·]{]·.·{····>·[<<>······ |
 |     17 |  7680.00 |  7616.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.19 | {<<[[·<·}>·<,······<·>··]············]··>·<······,<·>}·<·[[<<{{{ |
 |     18 |  3968.00 |  4032.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.47 | <,,,,·,,,,[,}<,····],,·,·,,·····,<},[,,,,·,,,,,·,,,·,·<<<···>··> |
+|      2 | 13120.00 | 13120.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.14 | ····,[··<···,,·····}···]·····,}····},·····]···}·····,,···<··[,·· |
 |     20 |   768.00 |   960.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.28 | [···{·····..····,········>···],,,]···>········,····..·····{···[· |
 |     22 |  1088.00 |  1088.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.25 | <[,·,[·[[·[·[·,[[·.>{]>··.{····{{····{.··>]{>.·[[,·[·[·[[·[,·,[< |
 |     23 |  7552.00 |  7552.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.39 | ··<·····<,·[,·<··}·,·]··········}··········]·,·}··<·,[·,<·····<· |
 |     24 | 16320.00 | 16320.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.22 | ··{····[·····<·····}·,]··]·,,··,,··,,·]··],·}·····<·····[····{·· |
+|      3 | 12288.00 | 12288.00 |    64.00 | intermediate  | True         |            0.00 |           0.88 |                0.00 |         0.63 |         0.19 | <<>>><><>><<··<[,·<}],]}<·,[····[,·<}],]}<·,[<·················· |
+|      6 | 13952.00 | 13888.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.19 | ·······[<,···}······]]]·]·]·]········]·]·]·]]]······}···,<[····· |
+|      7 |  7680.00 |  7552.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.12 | ·<0··0·,0[··········[[,·····<}]·-·]}<·····,[[··········[0,·0··0< |
+|      8 |  5376.00 |  5376.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.25 | ·········,,·}<·,[·<··,··}]·,-··<·<·<··-,·]}··,··<·[,·<}·,,······ |
+|      9 |  6912.00 |  6976.00 |    64.00 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.12 | ·{····[··········<·····}····,]<<<<],····}·····<··········[····{· |
 
 final top classes:
 
 |   seed |   final_epoch | final_class   | final_loop   |   final_entered |   final_copies |   final_self_damage |   final_gen2 |   final_fill | final_pretty                                                     |
 |-------:|--------------:|:--------------|:-------------|----------------:|---------------:|--------------------:|-------------:|-------------:|:-----------------------------------------------------------------|
+|      1 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ·········[····<···········,·}··]······},,···········<······[···· |
+|     10 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ·······[···<··,·····}···]·······-······]···}·····,··<·[[········ |
 |     12 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.11 | ·<,··,··[···<}·,,··]··[··············]·,···]·,·}·<··[··,···<···· |
 |     13 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.03 | ··[·<····,}·]·························]·},····<·[··············· |
 |     14 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ··{·······[}<·····,·····]·······,·····<}[···<·····{··>········[· |
@@ -63,23 +83,74 @@ final top classes:
 |     16 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ·······[··,·········[{·.>··]>.·{·····[·························· |
 |     17 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ················{[<},············]·······,}<[{···········[······ |
 |     18 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.09 | <···········,·····[·}<·······,·····]···,·<}·[·,··+·····<<··<··>> |
+|      2 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.09 | ·····[··<····,·····}···]······}···········]···}······,···<··[[·· |
 |     20 |         16384 | fill          | False        |            1.00 |           0.02 |                0.09 |         0.00 |         1.00 | ................................................................ |
 |     22 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.06 | {·········[·····[·.>{·····················]{>.··[··············{ |
 |     23 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ····.·[<,···}·]·····}···,<·················[·········,·········· |
 |     24 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.22 | ··{····[·····<·····}·,]··]·,,··,,··,,·]··],·}·····<·····[····{·· |
+|      3 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.12 | ·[····<·,[[,·<}·,]}<·,[·,·······+·······],]}<·,[[,·<············ |
+|      6 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.06 | >·<·[··················[<,···}······]]]······}···,<[············ |
+|      7 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.06 | 0··<,+············[[,·····<}]·-·]}<·····,[[·······+·····,<······ |
+|      8 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.03 | ···[·<··,··}]················}··,··<·[·························· |
+|      9 |         16384 | closed        | True         |            0.00 |           1.00 |                0.00 |         1.00 |         0.05 | ·{····[··········<·····}····,]····],····}·····<··········[··[·{· |
 
-- runs without a replicator by the criterion: seeds [19, 21]; their final HOE median 0.93, final heritable fraction median 0.00
+- runs without a replicator by the criterion: seeds [4, 5, 11, 19, 21]; their final HOE median 0.92, final heritable fraction median 0.00
+
+## wraplit: 12 runs (12 finished; epochs done median 16,384)
+
+- transitions: top class heritable (t_top) in 12/12 (median 64 epochs); heritable fraction ≥ 0.5 (t_her) in 12/12 (median 64); pre-registered share criterion (t_rep) in 12/12; HOE ≥ 1 in 0/12 (median nan); closed top class in 0/12; an open replicator ever in the top 3 in 12/12
+- first replicators: {'open': 12}; with a loop 0/12; median entered 1.00, copies 0.91, self-damage 0.00
+- final top class: closed in 0/12, with a loop 0/12; final heritable fraction median 0.00 (max over time, median 0.66, reached at median epoch 64); collapsed (heritable fraction ≥ 0.5 reached, < 0.1 at the end) 12/12; first replicator a one-byte tiling in 12/12
+- before t_rep: mean chunk transfer 1.53 bytes/encounter (median over runs), max 90th percentile 64, max copy-event fraction 0.7569
+
+first replicators (BFF string; `·` = non-instruction byte, `0` = zero):
+
+|   seed |   t_top |   t_her |   t_hoe1 | first_class   | first_loop   |   first_entered |   first_copies |   first_self_damage |   first_gen2 |   first_fill | first_pretty                                                     |
+|-------:|--------:|--------:|---------:|:--------------|:-------------|----------------:|---------------:|--------------------:|-------------:|-------------:|:-----------------------------------------------------------------|
+|      1 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.91 |                0.00 |         0.88 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|     10 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.89 |                0.00 |         0.89 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|     11 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           1.00 |                0.00 |         0.91 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|     12 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.92 |                0.00 |         0.78 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      2 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.95 |                0.00 |         0.92 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      3 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.92 |                0.00 |         0.86 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      4 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.88 |                0.00 |         0.82 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      5 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.89 |                0.00 |         0.83 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      6 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.89 |                0.00 |         0.75 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      7 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.91 |                0.00 |         0.85 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      8 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.91 |                0.00 |         0.82 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      9 |   64.00 |   64.00 |      nan | open          | False        |            1.00 |           0.91 |                0.00 |         0.82 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+
+final top classes:
+
+|   seed |   final_epoch | final_class   | final_loop   |   final_entered |   final_copies |   final_self_damage |   final_gen2 |   final_fill | final_pretty                                                     |
+|-------:|--------------:|:--------------|:-------------|----------------:|---------------:|--------------------:|-------------:|-------------:|:-----------------------------------------------------------------|
+|      1 |         16384 | open          | False        |            1.00 |           0.95 |                0.00 |         0.80 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|     10 |         16384 | open          | False        |            1.00 |           0.94 |                0.00 |         0.82 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|     11 |         16384 | open          | False        |            1.00 |           0.94 |                0.00 |         0.85 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|     12 |         16384 | open          | False        |            1.00 |           0.89 |                0.00 |         0.86 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      2 |         16384 | open          | False        |            1.00 |           0.92 |                0.00 |         0.72 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      3 |         16384 | open          | False        |            1.00 |           0.92 |                0.00 |         0.86 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      4 |         16384 | open          | False        |            1.00 |           0.89 |                0.00 |         0.86 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      5 |         16384 | open          | False        |            1.00 |           0.86 |                0.00 |         0.70 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      6 |         16384 | open          | False        |            1.00 |           0.97 |                0.00 |         0.91 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      7 |         16384 | open          | False        |            1.00 |           0.86 |                0.00 |         0.78 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      8 |         16384 | open          | False        |            1.00 |           0.94 |                0.00 |         0.85 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
+|      9 |         16384 | open          | False        |            1.00 |           0.95 |                0.00 |         0.86 |         1.00 | PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP |
 
 ## Transition rates and between-variant tests
 
-| variant   |   runs |   transition (t_top) |   heritable ≥ 0.5 (t_her) |   median t_her (epochs; censored runs at horizon) |   HOE ≥ 1 |   HOE ≥ 1 without a replicator |   first replicator open |   first closed with loop |   final closed |
-|:----------|-------:|---------------------:|--------------------------:|--------------------------------------------------:|----------:|-------------------------------:|------------------------:|-------------------------:|---------------:|
-| std       |     15 |                    4 |                         4 |                                             16384 |         6 |                              2 |                       0 |                        4 |              4 |
-| wrap      |     13 |                   11 |                        11 |                                              4480 |        13 |                              2 |                       0 |                       10 |             10 |
+| variant   |   runs |   transition (t_top) |   heritable ≥ 0.5 (t_her) |   median t_her (epochs; censored runs at horizon) |   HOE ≥ 1 |   HOE ≥ 1 without a replicator |   first replicator open |   first closed with loop |   final closed |   collapsed |
+|:----------|-------:|---------------------:|--------------------------:|--------------------------------------------------:|----------:|-------------------------------:|------------------------:|-------------------------:|---------------:|------------:|
+| std       |     24 |                    9 |                         7 |                                             16384 |         9 |                              2 |                       0 |                        7 |              7 |           0 |
+| wrap      |     24 |                   19 |                        19 |                                              7552 |        24 |                              5 |                       0 |                       16 |             18 |           0 |
+| wraplit   |     12 |                   12 |                        12 |                                                64 |         0 |                              0 |                      12 |                        0 |              0 |          12 |
 
-- std vs wrap: transitions 4/15 vs 11/13 (Fisher two-sided p = 0.00323); t_her with censored runs at the horizon, Mann–Whitney two-sided p = 0.000883
+- std vs wrap: transitions 9/24 vs 19/24 (Fisher two-sided p = 0.00766); t_her with censored runs at the horizon, Mann–Whitney two-sided p = 0.000286
+- std vs wraplit: transitions 9/24 vs 12/12 (Fisher two-sided p = 0.000258); t_her with censored runs at the horizon, Mann–Whitney two-sided p = 1.31e-07
+- wrap vs wraplit: transitions 19/24 vs 12/12 (Fisher two-sided p = 0.146); t_her with censored runs at the horizon, Mann–Whitney two-sided p = 8.19e-07
 
 ## Readings of THEORY.md P1 (computed, pre-stated thresholds)
 
-- (a) standard BFF: first replicators closed 4/4, with a loop 4/4, open 0/4 → confirmed
-- (b) wrap BFF: first replicators open 0/11, closed with a loop 10/11 → (b2) born closed
+- (a) standard BFF: first replicators closed 7/9, with a loop 9/9, open 0/9 → NOT as predicted
+- (b) wrap BFF: first replicators open 0/19, closed with a loop 16/19 → (b2) born closed
+- (e1) wrap + literal: first replicators straight-line and open 12/12 transitions of 12 runs (≥ 9/12 predicted); closed with a loop 0/12 (≥ 6/12 kills) → (e1) met; (e2) earlier emergence than standard BFF: median t_her 64 vs 16384 (one-sided Mann–Whitney p = 6.56e-08) → met; (e3) final dominant closed in 0/12 transitioned worlds (≥ 6 predicted) → not met; collapsed after the open wave in 12/12 (peak heritable fraction median 0.66 at median epoch 64, final median 0.00)

@@ -670,3 +670,11 @@ replication; 2% exact share is noisy because return-address smears reach
   completely under a wrapping pointer with the Z80 pusher's phenotype (0.61 of random partners, self-damage 0.34). THEORY
   P1(e) pre-registered (wrap + literal: open first, closed later; kill criteria; `lit` cell held as e4), then 12 `wraplit`
   soups (seeds 1–12) launched on Modal (≈ $8.5; running total for BFF on Modal ≈ $44, within the ≈ $45 approval).
+- 2026-10-08 04:35 (**BFF results, 60 soups, 24.8 GPU-h ≈ $47 at list, approval was ≈ $45**; `results/bff/FINDINGS.md`): (a) standard BFF —
+  transitions 9/24, first replicators loop-bearing 9/9, open 0/9, strictly closed 7/9; (b) wrap — 19/24, loop-bearing
+  19/19, open 0/19 → reading (b2) born closed; (e) wrap + literal — first replicator the one-byte `P` tiling in 12/12 at
+  epoch 64, open and loop-free (e1 met), earliest of all variants (e2 met), **no closure and collapse in 12/12** by
+  epoch ≈ 256 as the soup becomes pointer-halting tar (e3 not met; kill criteria not triggered). Theory refined: the
+  open phase is a window set by the lethality of the tar; next pre-registrations listed in THEORY.md P1(e). Analysis
+  amendments recorded: heritable one-byte tilings are replicators, sterile fills are tar (classification fixed after
+  seeing the all-`P` first replicator, before the verdicts were written). Local vs Modal reproducibility: identical.
