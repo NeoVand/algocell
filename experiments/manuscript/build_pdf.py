@@ -1,11 +1,14 @@
-"""Build the manuscript PDF from MAIN_nature.md and the built figures.
+"""Build a manuscript PDF from a Markdown file and the built figures.
 
     python manuscript/build_pdf.py [--md manuscript/MAIN_nature.md] [--figs manuscript/figures/out] [--out manuscript/out]
+                                   [--name NAME] [--compact] [--inline-figures]
 
-A small converter for the Markdown subset the manuscript uses (#/##/### headings, paragraphs, numbered lists,
-**bold**, *italic*, `code`, ^superscript^ citations) writes LaTeX, and tectonic compiles it. Figure legends in the
-"Figure legends" section pull in the corresponding figure files above the legend text; Extended Data legends are set
-as text. Nothing here alters the manuscript source.
+A small converter for the Markdown subset the manuscript uses (#/##/### headings, paragraphs, numbered lists, **bold**,
+*italic*, `code`, ^superscript^ citations, unicode superscripts) writes LaTeX, and tectonic compiles it.
+Default layout: figures with their legends on their own pages after the text (submission style). With --inline-figures
+each figure is placed after the paragraph that first cites it (reading style), and the legends section is dropped.
+Extended Data legends are set as text, with the images above them where a built file exists. Nothing here alters the
+Markdown source.
 """
 
 from __future__ import annotations
@@ -19,7 +22,12 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+EXP = os.path.abspath(os.path.join(HERE, ".."))
 FIG_FILES = {"1": ["fig1.pdf"], "2": ["fig2_ab.pdf", "fig2_cde.pdf"], "3": ["fig3.pdf"], "4": ["fig4.pdf"], "5": ["fig5.pdf"]}
+ED_FILES = {
+    "11": [os.path.join(EXP, "results", "biology", "individuality", "fig_bff_slope.pdf")],
+    "12": [os.path.join(EXP, "results", "biology", "assembly", "assembly_exemplar_L16_s2001.pdf"), os.path.join(EXP, "results", "biology", "assembly", "assembly_first_cross_vs_trep.pdf")],
+}
 
 SYM = {
     "≥": r"$\geq$", "≤": r"$\leq$", "×": r"$\times$", "→": r"$\rightarrow$", "←": r"$\leftarrow$", "∞": r"$\infty$",
@@ -27,11 +35,10 @@ SYM = {
     "±": r"$\pm$", "·": r"\textperiodcentered{}", "…": r"\ldots{}", "°": r"\textdegree{}", "µ": r"$\mu$", "μ": r"$\mu$",
     "σ": r"$\sigma$", "ε": r"$\varepsilon$", "δ": r"$\delta$", "λ": r"$\lambda$", "α": r"$\alpha$", "β": r"$\beta$",
     "γ": r"$\gamma$", "θ": r"$\theta$", "π": r"$\pi$", "ρ": r"$\rho$", "τ": r"$\tau$", "φ": r"$\varphi$", "ω": r"$\omega$",
-    "Δ": r"$\Delta$", "∈": r"$\in$", "∑": r"$\sum$", "√": r"$\surd$", "≡": r"$\equiv$", "∝": r"$\propto$", "½": r"\textonehalf{}", "∫": r"$\int$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$",
-    "⌋": r"$\rfloor$", "∂": r"$\partial$", "∇": r"$\nabla$", "≫": r"$\gg$", "≪": r"$\ll$", "∪": r"$\cup$", "∩": r"$\cap$", "⊂": r"$\subset$",
+    "Δ": r"$\Delta$", "∈": r"$\in$", "∑": r"$\sum$", "√": r"$\surd$", "≡": r"$\equiv$", "∝": r"$\propto$",
+    "½": r"\textonehalf{}", "∫": r"$\int$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$",
+    "∂": r"$\partial$", "∇": r"$\nabla$", "≫": r"$\gg$", "≪": r"$\ll$", "∪": r"$\cup$", "∩": r"$\cap$", "⊂": r"$\subset$",
 }
-
-
 SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "−", "⁺": "+"}
 
 
@@ -44,15 +51,13 @@ def esc(s: str) -> str:
 
 
 def symbols(s: str) -> str:
-    """Replace symbols the text fonts may lack by math-mode equivalents."""
     return "".join(SYM.get(ch, ch) for ch in s)
 
 
 def inline(s: str) -> str:
     """Code spans, superscripts, bold, italic → LaTeX. Code spans are escaped verbatim; text is escaped then marked up."""
     out = []
-    parts = re.split(r"(`[^`]*`)", s)
-    for p in parts:
+    for p in re.split(r"(`[^`]*`)", s):
         if p.startswith("`") and p.endswith("`") and len(p) >= 2:
             code = symbols(esc(p[1:-1]))
             for brk in ("/", r"\_", "-", "."):
@@ -70,17 +75,49 @@ def inline(s: str) -> str:
     return "".join(out)
 
 
+def figure_block(files: list[str], legend_tex: str, out_dir: str, floating: bool) -> list[str]:
+    """Images (copied next to the .tex) above a legend; a float placed near the citation, or a fixed block with a page
+    break after it."""
+    body = [r"\begin{figure}[!htbp]\centering" if floating else r"\noindent\begin{minipage}{\textwidth}\centering"]
+    present = [f for f in files if os.path.exists(f)]
+    for f in present:
+        dst = os.path.join(out_dir, os.path.basename(f))
+        if os.path.abspath(f) != os.path.abspath(dst):
+            shutil.copy(f, dst)
+        h = (r"0.34\textheight" if len(present) > 1 else r"0.62\textheight") if floating else (r"0.36\textheight" if len(present) > 1 else r"0.70\textheight")
+        body.append(r"\includegraphics[width=\textwidth,height=%s,keepaspectratio]{%s}\par\vspace{2mm}" % (h, os.path.basename(f)))
+    if not present:
+        body.append(r"\fbox{\parbox{0.9\textwidth}{\centering\vspace{20mm}\small figure file not built\vspace{20mm}}}\par\vspace{2mm}")
+    if floating:
+        body += [r"{\small " + legend_tex + r"\par}", r"\end{figure}", ""]
+    else:
+        body += [r"\end{minipage}\par\vspace{3mm}", r"{\small " + legend_tex + r"\par}", r"\clearpage", ""]
+    return body
+
+
 COMPACT = [False]
+INLINE = [False]
 NOTE = [r"Draft assembled DATE from \texttt{manuscript/MAIN\_nature.md} and \texttt{manuscript/figures/out}; author list and affiliations to be added."]
 
 
 def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
     lines = md_text.splitlines()
-    body = []
+    legends: dict[str, str] = {}
+    for l in lines:
+        m = re.match(r"\*\*Fig\. (\d+) \| ", l)
+        if m:
+            legends[m.group(1)] = l.strip()
+    body: list[str] = []
     title = "Manuscript"
+    title_set = False
     section = ""
     para: list[str] = []
     in_list = False
+    placed: set[str] = set()
+
+    def main_fig_block(n: str, floating: bool) -> list[str]:
+        files = [os.path.join(figs_dir, f) for f in FIG_FILES.get(n, [])]
+        return figure_block(files, inline(legends[n]), out_dir, floating)
 
     def flush_para():
         nonlocal para
@@ -89,20 +126,15 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
         text = " ".join(x.strip() for x in para)
         para = []
         m = re.match(r"\*\*Fig\. (\d+) \| ", text)
-        if section.startswith("Figure legends") and m:
-            files = [f for f in FIG_FILES.get(m.group(1), []) if os.path.exists(os.path.join(figs_dir, f))]
-            # fixed placement (no float): images, then the legend, then a page break
-            body.append(r"\noindent\begin{minipage}{\textwidth}\centering")
-            for f in files:
-                shutil.copy(os.path.join(figs_dir, f), os.path.join(out_dir, f))
-                h = r"0.36\textheight" if len(files) > 1 else r"0.70\textheight"
-                body.append(r"\includegraphics[width=\textwidth,height=%s,keepaspectratio]{%s}\par\vspace{2mm}" % (h, f))
-            if not files:
-                body.append(r"\fbox{\parbox{0.9\textwidth}{\centering\vspace{20mm}\small figure file not built\vspace{20mm}}}\par\vspace{2mm}")
-            body.append(r"\end{minipage}\par\vspace{3mm}")
-            body.append(r"{\small " + inline(text) + r"\par}")
-            body.append(r"\clearpage")
-            body.append("")
+        if m and section.startswith("Figure legends"):
+            if INLINE[0] and m.group(1) in placed:
+                return
+            body.extend(main_fig_block(m.group(1), floating=False))
+            placed.add(m.group(1))
+            return
+        m = re.match(r"\*\*Extended Data Fig\. (\d+) \| ", text)
+        if m and m.group(1) in ED_FILES and any(os.path.exists(f) for f in ED_FILES[m.group(1)]):
+            body.extend(figure_block(ED_FILES[m.group(1)], inline(text), out_dir, floating=True))
             return
         if text.startswith("*") and text.endswith("*") and text.count("*") == 2:
             body.append(r"{\small\color{gray}" + inline(text) + "}")
@@ -110,6 +142,11 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             return
         body.append(inline(text))
         body.append("")
+        if INLINE[0] and not section.startswith(("Figure legends", "Extended Data", "References")):
+            for n in re.findall(r"Fig\.\s*(\d)", text):
+                if n in legends and n not in placed:
+                    body.extend(main_fig_block(n, floating=True))
+                    placed.add(n)
 
     def close_list():
         nonlocal in_list
@@ -120,15 +157,17 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
 
     for raw in lines:
         line = raw.rstrip()
-        if line.startswith("# ") and not title_set[0]:
+        if line.startswith("# ") and not title_set:
             flush_para()
             title = inline(line[2:].strip())
-            title_set[0] = True
+            title_set = True
             continue
         if line.startswith("## "):
             flush_para(); close_list()
             leaving_figs = section.startswith("Figure legends")
             section = line[3:].strip()
+            if section.startswith("Figure legends") and INLINE[0] and set(legends) <= placed:
+                continue
             if section.startswith("Figure legends") or leaving_figs:
                 body.append(r"\clearpage")
             body.append(r"\section*{" + inline(section) + "}")
@@ -158,7 +197,6 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             flush_para(); close_list()
             continue
         if in_list:
-            # continuation line of a list item
             body[-1] += " " + inline(line.strip())
             continue
         para.append(line)
@@ -190,9 +228,6 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
     return preamble + "\n".join(body) + "\n\\end{document}\n"
 
 
-title_set = [False]
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--md", default=os.path.join(HERE, "MAIN_nature.md"))
@@ -200,10 +235,14 @@ def main():
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
     ap.add_argument("--name", default=None, help="output PDF basename (default: the Markdown file's basename)")
     ap.add_argument("--compact", action="store_true", help="9 pt type and 14 mm margins (one-pagers)")
+    ap.add_argument("--inline-figures", action="store_true", help="place each figure after the paragraph that first cites it")
     a = ap.parse_args()
     COMPACT[0] = a.compact
+    INLINE[0] = a.inline_figures
     if os.path.basename(a.md) != "MAIN_nature.md":
         NOTE[0] = "Assembled DATE from " + r"\texttt{" + os.path.basename(a.md).replace("_", r"\_") + "}."
+    elif a.inline_figures:
+        NOTE[0] = NOTE[0].replace("Draft assembled", "Reading copy (figures placed in the text) assembled")
     os.makedirs(a.out, exist_ok=True)
     name = a.name or os.path.splitext(os.path.basename(a.md))[0]
     tex = convert(open(a.md, encoding="utf-8").read(), a.figs, a.out)

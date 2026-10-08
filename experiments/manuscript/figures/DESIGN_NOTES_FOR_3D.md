@@ -135,3 +135,23 @@ and execution comes back inside; the stack pointer walks through the organism's 
 - The moment the IP crosses cell 15 into B (the open phase in one frame).
 - For the closer: the IP turning back at `c0`, the stack pointer walking inside A, every B cell becoming a copy.
 - Nothing else: no "occupied memory", no infinite tape, no third byte that jumps.
+
+## Round 2 (core-figure.pdf, three.js): what is now right, and two things to fix
+
+Right, and keep: the two tapes end to end with the seam marked; the stack pointer starting at the partner's far end and
+the written pair `c5 01` appearing there with "next push" to its left; "operand = output"; execution running on into B;
+in panel b the return arrow bringing execution back inside the organism and a separate arrow for the write into the
+partner; the closing line "individuality is a cycle in execution, not a wall around the bytes"; the restraint of the
+palette (teal organism, grey partner, vermilion for writes and jumps).
+
+Fix: (1) in panel b, mark the instruction that returns. The closed successor is a specific tape (`ad e3 21 e3 21 c0 ad c0`,
+twice); its `c0` (`RET NZ`) is the cell the return arrow should leave from, shaded vermilion like the written pair in
+panel a, so the reader sees that closure is one instruction, not a property of the whole strip. (2) The far ends of both
+strips are drawn so small that the bytes are illegible; shorten the strips with an ellipsis (three cells, a gap, two cells)
+so every drawn cell can be read at print size, and keep the heads where they are. Small points: the "first four bytes"
+inset would be clearer as `01 c5 01 | c5` with the bracket showing that the three-byte load carries the operand `c5 01`
+and the fourth byte pushes it; the caption under panel a should say the copy lands eight cells deep in the partner after
+one pass (four pushes), which is the fact the theorem turns on.
+
+For the legend, the measured numbers the panel illustrates: the open first replicator's offspring carry a median 7 of 8
+bits about the partner; the closed successor's carry 0 bits (63 of 67 worlds).

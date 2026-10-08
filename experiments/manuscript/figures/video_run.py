@@ -23,7 +23,7 @@ sys.path.insert(0, EXP)
 
 
 def schedule(horizon: int) -> list[int]:
-    steps = set(range(25, 3001, 25)) | set(range(3250, 30001, 250)) | set(range(31000, horizon + 1, 1000))
+    steps = set(range(5, 3001, 5)) | set(range(3050, 30001, 50)) | set(range(30250, horizon + 1, 250))
     return sorted(s for s in steps if s <= horizon)
 
 
@@ -40,8 +40,8 @@ def main():
     from algocell_exp.batch import run_to_dir
 
     cond = {"label": "video", "grid": "square", "width": 160, "height": 125, "tape": a.L, "seed": a.seed, "pairs": 8192,
-            "z80_steps": 128, "noise_exp": 4, "horizon": a.horizon, "sample_every": 250, "stop_share": None,
-            "sample_every_early": 25, "early_until": 3000,   # snapshots are taken on sampling steps only
+            "z80_steps": 128, "noise_exp": 4, "horizon": a.horizon, "sample_every": 50, "stop_share": None,
+            "sample_every_early": 5, "early_until": 3000,   # snapshots are taken on sampling steps only
             "snapshot_steps": schedule(a.horizon)}
     print(f"{len(cond['snapshot_steps'])} snapshots, horizon {a.horizon}, seed {a.seed}, L = {a.L}")
     s = run_to_dir(cond, a.out, provenance={"purpose": "supplementary video frames"})

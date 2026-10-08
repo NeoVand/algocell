@@ -61,18 +61,18 @@ def is_pusher(tape: str) -> bool:
 def detect_phases(samples: list[dict], summary: dict, last_step: int) -> dict:
     steps = np.array([s["step"] for s in samples])
     zero = np.array([s["zero"] for s in samples], float)
-    t_tar = int(steps[np.argmax(zero >= 0.25)]) if (zero >= 0.25).any() else 500
     t_first = summary.get("tq_10") or next((s["step"] for s in samples if is_pusher(s["tape"])), 1500)
+    t_tar = max(int(steps[np.argmax(zero >= 0.25)]) if (zero >= 0.25).any() else 500, int(0.6 * t_first))   # end of the tar phase
     later = [(s["step"], s["zero"]) for s in samples if s["step"] > t_first + 2000]
     t_closed = next((st for st, z in later if z < 0.02), None)
-    return {"t_tar": t_tar, "t_first": int(t_first), "t_closed": t_closed, "last": last_step}
+    return {"t_tar": t_tar, "t_first": int(t_first), "t_closed": t_closed, "last": last_step, "first_snapshot": None}
 
 
 def segments(ph: dict) -> list[dict]:
     """(step range, seconds, caption) in play order. Durations are editorial choices, stated here in one place."""
     tf, tc, last = ph["t_first"], ph["t_closed"], ph["last"]
     seg = [
-        {"a": 0, "b": ph["t_tar"], "s": 5.0, "cap": "Twenty thousand random programs. Neighbours run each other.\nStack instructions push empty registers: zero bytes spread. Order, but nothing copies."},
+        {"a": ph["first_snapshot"], "b": ph["t_tar"], "s": 6.0, "cap": "Twenty thousand random programs. Neighbours run each other.\nStack instructions push empty registers: zero bytes spread. Order, but nothing copies."},
         {"a": ph["t_tar"], "b": tf + 1500, "s": 14.0, "cap": "The first replicator: the two-byte word 01 c5, repeated. Executed, it writes itself\ninto its neighbour and runs on into the neighbour's code. It spreads as a wave."},
     ]
     if tc:
@@ -206,6 +206,7 @@ def main():
     snaps = sorted({s: (n, s, p) for n, s, p in snaps}.values(), key=lambda x: x[1])   # one per step
     last = int(snaps[-1][1])
     ph = detect_phases(samples, summary, last)
+    ph["first_snapshot"] = int(snaps[0][1])
     seg = segments(ph)
     print("phases", ph, "snapshots", len(snaps))
     cache = SnapCache(snaps, L, ss.ClassColours())
@@ -229,7 +230,7 @@ def main():
     d = ImageDraw.Draw(card)
     d.text((W // 2, H // 2 - 60), a.title, fill=INK, font=font(44, bold=True), anchor="mm")
     d.text((W // 2, H // 2 + 20), "Each step, 8,192 random cells run their neighbours for 128 instructions. Nothing is selected.", fill=GREY, font=font(26), anchor="mm")
-    d.text((W // 2, H // 2 + 70), "One world, 100,000 steps, played at variable speed.", fill=GREY, font=font(26), anchor="mm")
+    d.text((W // 2, H // 2 + 70), f"One world, {ph['last']:,} steps, played at variable speed ({a.fps} frames per second).", fill=GREY, font=font(26), anchor="mm")
     for _ in range(int(3.0 * a.fps)):
         proc.stdin.write(card.tobytes()); n_frames += 1
     hold = 0.6   # seconds of hold at each phase boundary
