@@ -282,11 +282,11 @@ def fig6a(ax):
     finish(ax, (-0.5, 30.5), (-0.6, 13.6))
     W = 1.25
     org = ["", "", "", "…", "", "", "", ""]
-    # the budget, longer than the organism
-    ax.add_patch(Rectangle((0.5, 11.0), 29.0, 0.9, facecolor=RED_PALE, edgecolor=INK, lw=0.5, zorder=2))
-    ax.text(15.0, 11.45, "128 executions per encounter", ha="center", va="center", fontsize=FS_LABEL, color=INK, zorder=3)
-    bracket(ax, 0.5, 0.5 + W * len(org), 10.55, color=INK, up=False)
-    ax.text(0.5 + W * len(org) / 2, 10.2, "the organism: L ≤ 100 cells", ha="center", va="top", fontsize=FS_LABEL, color=INK)
+    # the budget against the largest organism, to scale (128 against 100)
+    ax.add_patch(Rectangle((0.5, 11.2), 29.0, 0.85, facecolor="white", edgecolor=INK, lw=0.5, zorder=2))
+    ax.text(15.0, 11.62, "128 executions per encounter", ha="center", va="center", fontsize=FS_LABEL, color=INK, zorder=3)
+    ax.add_patch(Rectangle((0.5, 10.05), 29.0 * 100 / 128, 0.85, facecolor=TEAL_FILL, edgecolor=INK, lw=0.5, zorder=2))
+    ax.text(0.5 + 29.0 * 100 / 256, 10.47, "at most 100 cells of the organism", ha="center", va="center", fontsize=FS_LABEL, color=INK, zorder=3)
     # open: runs on into the partner
     y = 6.0
     text_runs(ax, 0.5, y + 1.6, [("open", TEAL, True), (" · leaves its cells", INK, True)], fs=FS_TITLE)
@@ -296,12 +296,11 @@ def fig6a(ax):
     ax.text(0.5 + W * 14 + 0.6, y + 0.6, "partner", ha="left", va="center", fontsize=FS_LABEL, color=INK)
     # closed: stays, so some cell runs twice
     y = 1.4
-    text_runs(ax, 0.5, y + 1.6, [("closed", TEAL, True), (" · revisits a cell", INK, True)], fs=FS_TITLE)
+    text_runs(ax, 0.5, y + 1.6, [("closed", RED, True), (" · revisits a cell", INK, True)], fs=FS_TITLE)
     strip(ax, 0.5, y, org, w=W, h=1.2)
     x_end = 0.5 + W * len(org)
     arrow(ax, (0.9, y - 0.4), (x_end - 0.4, y - 0.4), color=TEAL, lw=1.2)
     arrow(ax, (x_end - 0.4, y - 0.6), (1.1, y - 0.6), color=RED, lw=1.2, rad=-0.18)
-    ax.plot([0.5 + W / 2], [y + 0.6], marker="o", ms=4, mfc="white", mec=INK, mew=0.8, zorder=6)
     ax.text(x_end + 0.9, y + 0.8, "128 executions in L cells:", ha="left", va="bottom", fontsize=FS_LABEL, color=INK)
     ax.text(x_end + 0.9, y + 0.6, "some cell runs twice, a cycle", ha="left", va="top", fontsize=FS_LABEL, color=INK)
 

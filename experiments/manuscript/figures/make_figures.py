@@ -437,29 +437,29 @@ def fig4(out):
         axa.set_xlim(0.3, 3000)
         axa.set_yticks(y, C["label"].tolist())
         axa.set_ylim(-0.7, len(C) + 0.3)
-        fs.tidy(axa, "emergence delay vs unablated (ratio of KM medians)")
+        fs.tidy(axa, "emergence delay against the unablated soup\n(ratio of Kaplan–Meier medians; dotted line, no change)")
         axa.text(1.03, len(C) + 0.05, "alive", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color=GREY, gid="allow-outside")
         h = [plt.Line2D([], [], marker="o", ls="none", color=INK, ms=3, label="all 10 worlds alive"),
              plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=INK, ms=3, label="fewer alive"),
              plt.Line2D([], [], marker=r"$\rightarrow$", ls="none", color=GREY, ms=5, label="no median: fewer than half the worlds alive")]
         axa.legend(handles=h, fontsize=5, loc="lower center", bbox_to_anchor=(0.4, 1.0), ncol=3, frameon=False, columnspacing=1.0, handletextpad=0.3)
-        label(axa, "a")
+        label(axa, "a", dy=0.045)
     except Exception as e:  # noqa: BLE001
         placeholder(axa, f"a (data missing: {e})")
     # b: size axis: fraction alive by L (none @nominal) with Wilson CI, plus the pusher's isolated heritability
     try:
         S = pd.read_csv(os.path.join(R, "stageE", "stage_e", "size_arms.csv"))
         S = S[(S["ablation"] == "none") & (S["arm"] == "nominal")].sort_values("tape_len")
-        axb.errorbar(S["tape_len"], S["t_rep_frac"], yerr=[S["t_rep_frac"] - S["t_rep_lo"], S["t_rep_hi"] - S["t_rep_frac"]], fmt="o", color=INK, ms=3, lw=0.6, capsize=1.5, label="worlds alive by 300k steps")
+        axb.errorbar(S["tape_len"], S["t_rep_frac"], yerr=[S["t_rep_frac"] - S["t_rep_lo"], S["t_rep_hi"] - S["t_rep_frac"]], fmt="o", color=INK, ms=3, lw=0.6, capsize=1.5, label="fraction of worlds alive by 300,000 steps")
         U = pd.read_csv(os.path.join(R, "stageE", "stage_e", "unit_fitness_vs_L.csv"))
         U = U[(U["unit"].str.startswith("pusher")) & (U["steps"] == 128)].sort_values("L")
-        axb.plot(U["L"], U["gen2"], color=TEAL, lw=0.9, ls="--", label="the first replicator's heritability in isolation")
+        axb.plot(U["L"], U["gen2"], color=TEAL, lw=0.9, ls="--", label="heredity (gen2) of the pusher tiling in isolation")
         axb.axhline(0.3, color=RULE, lw=0.5, ls=":")
         axb.set_xscale("log")
         axb.set_xticks([3, 5, 8, 12, 16, 25, 36, 50, 64, 100], ["3", "5", "8", "12", "16", "25", "36", "50", "64", "100"])
         axb.minorticks_off()
         axb.set_ylim(-0.03, 1.03)
-        fs.tidy(axb, "tape length L (bytes)", "fraction")
+        fs.tidy(axb, "tape length L (bytes)", "fraction of worlds, or gen2")
         axb.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
         label(axb, "b")
     except Exception as e:  # noqa: BLE001
@@ -468,16 +468,16 @@ def fig4(out):
     try:
         F = pd.read_csv(os.path.join(R, "stageF", "stage_f", "rings.csv"))
         F = F[(F["ablation"] == "none") & (F["L"].isin([8, 10, 12]))].sort_values(["L", "P"])
-        for L, mk, col in ((8, "s", INK), (10, "^", TEAL), (12, "o", RED)):
+        for L, mk, col, dx in ((8, "s", "#56B4E9", -0.45), (10, "^", "#999999", 0.0), (12, "o", "#E69F00", 0.45)):
             d = F[F["L"] == L]
             frac = d["t_rep_n"] / d["n"]
-            axc.errorbar(d["P"], frac, yerr=[frac - d["t_rep_lo"], d["t_rep_hi"] - frac], fmt=mk, color=col, ms=3.2, lw=0.6, capsize=1.5, label=f"L = {L}")
-            for _, r in d.iterrows():
-                if r["P"] == 2 * r["L"]:
-                    axc.annotate("native ring", (r["P"], r["t_rep_n"] / r["n"]), textcoords="offset points", xytext=(6, 0), fontsize=5, ha="left", va="center", color=GREY)
+            axc.errorbar(d["P"] + dx, frac, yerr=[frac - d["t_rep_lo"], d["t_rep_hi"] - frac], fmt=mk, color=col, ms=3.2, lw=0.6, capsize=1.5, label=f"L = {L}")
+            nat = d[d["P"] == 2 * d["L"]]
+            axc.scatter(nat["P"] + dx, nat["t_rep_n"] / nat["n"], s=40, facecolors="none", edgecolors=INK, lw=0.6, zorder=5)
+        axc.scatter([], [], s=40, facecolors="none", edgecolors=INK, lw=0.6, label="native ring, P = 2L")
         axc.set_ylim(-0.03, 1.03)
-        fs.tidy(axc, "pair memory ring P (bytes)", "worlds alive by 300k steps")
-        axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False)
+        fs.tidy(axc, "pair memory ring P (bytes)", "fraction of worlds alive\nby 300,000 steps")
+        axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False, columnspacing=1.0)
         label(axc, "c")
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"c (data missing: {e})")
@@ -491,10 +491,10 @@ def fig4(out):
         y = np.arange(len(arms))
         for st, mk, off, col in ((128, "o", -0.15, INK), (512, "s", 0.15, TEAL)):
             d = D[D["steps"] == st].set_index("label").reindex(arms)
-            axd.errorbar(d["t_rep_frac"], y + off, xerr=[d["t_rep_frac"] - d["t_rep_lo"], d["t_rep_hi"] - d["t_rep_frac"]], fmt=mk, color=col, ms=3, lw=0.6, capsize=1.5, label=f"{st} steps per encounter")
+            axd.errorbar(d["t_rep_frac"], y + off, xerr=[d["t_rep_frac"] - d["t_rep_lo"], d["t_rep_hi"] - d["t_rep_frac"]], fmt=mk, color=col, ms=3, lw=0.6, capsize=1.5, label=f"{st} instructions per encounter")
         axd.set_yticks(y, arms)
         axd.set_xlim(-0.03, 1.03)
-        fs.tidy(axd, "worlds alive at L = 9 (of 20)")
+        fs.tidy(axd, "fraction of 20 worlds alive at L = 9")
         axd.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
         label(axd, "d")
     except Exception as e:  # noqa: BLE001
@@ -673,7 +673,7 @@ def ed12(out):
     T = pd.DataFrame(recs)
     for det, col, mk_, lab in (("A_top10", TEAL, "o", "assembly measure"), ("hoe", INK, "s", "high-order entropy")):
         d = T[T["det"] == det].sort_values("L")
-        axc.plot(d["L"], d["auc"], ls="-", lw=0.6, color=col, marker=mk_, ms=3, label=lab, mfc="white" if det == "hoe" else col)
+        axc.plot(d["L"], d["auc"], ls="none", color=col, marker=mk_, ms=3, label=lab, mfc="white" if det == "hoe" else col)
     # unablated worlds only (results/detectors/NUMBERS_DETECTORS.md, "by ablation and L", none@nominal)
     rows = []
     for line in open(os.path.join(R, "detectors", "NUMBERS_DETECTORS.md")):
@@ -684,7 +684,7 @@ def ed12(out):
             except ValueError:
                 pass
     U0 = pd.DataFrame(rows).dropna().sort_values("L")
-    axc.plot(U0["L"], U0["auc"], ls="--", lw=0.6, color=RED, marker="s", ms=3, mfc="white", label="high-order entropy, unablated worlds")
+    axc.plot(U0["L"], U0["auc"], ls="none", color="#7B3294", marker="D", ms=2.8, mfc="#7B3294", label="high-order entropy, unablated worlds")
     axc.axhline(0.5, color=RULE, lw=0.5, ls=":")
     axc.set_xscale("log")
     axc.set_xticks([4, 8, 16, 32, 64, 100], ["4", "8", "16", "32", "64", "100"])
@@ -714,24 +714,24 @@ def ed13(out):
             ax.plot(d["step"], d[col], color=RULE, lw=0.5, alpha=0.9)
         for seed, d in leth.groupby("seed"):
             d = d.sort_values("step")
-            ax.plot(d["step"], d[col], color=RED, lw=0.6, alpha=0.85)
+            ax.plot(d["step"], d[col], color=LETHAL_COL, lw=0.6, alpha=0.85)
         ax.set_xscale("log")
         ax.set_xlim(40, 3.5e5)
         ax.set_ylim(-0.02, 1.02 if col == "frac_heritable" else 0.5)
         fs.tidy(ax, "step", ylab)
         ax.set_gid("allow-clip")
-    h = [plt.Line2D([], [], color=RED, lw=0.9, label="zero byte halts the pair (lethal tar, 10 worlds)"),
+    h = [plt.Line2D([], [], color=LETHAL_COL, lw=0.9, label="zero byte halts the pair (lethal tar, 10 worlds)"),
          plt.Line2D([], [], color=RULE, lw=0.9, label="zero byte is a no-op (benign tar, 20 worlds)")]
     fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.42, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
     label(axa, "a")
     label(axb, "b")
     # c: the first heritable replicator's step, lethal vs benign
     rng = np.random.default_rng(0)
-    for y, d, col, name in ((1, gl, RED, "lethal"), (0, gb, RULE, "benign")):
+    for y, d, col, name in ((1, gl, LETHAL_COL, "lethal"), (0, gb, GREY, "benign")):
         t = d["t_rep"].astype(float).values
-        t = t[np.isfinite(t) & (t > 0)]
-        axc.scatter(t, y + rng.uniform(-0.12, 0.12, len(t)), s=8, facecolors="white" if col == RULE else col, edgecolors=INK if col == RULE else col, lw=0.6, zorder=3)
-        med = float(np.median(t))
+        t = np.sort(t[np.isfinite(t) & (t > 0)])
+        axc.scatter(t, y + rng.uniform(-0.12, 0.12, len(t)), s=8, facecolors="white" if name == "benign" else col, edgecolors=col, lw=0.6, zorder=3)
+        med = float(t[int(np.ceil(len(t) / 2)) - 1])   # Kaplan-Meier median (no censoring)
         axc.plot([med, med], [y - 0.3, y + 0.3], color=INK, lw=0.8, zorder=4)
         axc.text(med, y + 0.36, f"median {med:,.0f}", ha="center", va="bottom", fontsize=5, color=INK)
         print(f"  ed13 {name}: n = {len(t)}, median t_rep = {med:,.0f}")
@@ -739,7 +739,7 @@ def ed13(out):
     axc.set_xlim(60, 3.5e5)
     axc.set_ylim(-0.6, 1.9)
     axc.set_yticks([0, 1], ["benign", "lethal"])
-    fs.tidy(axc, "first heritable replicator (step)")
+    fs.tidy(axc, "first heritable clone, t_rep (step)")
     label(axc, "c")
     save(fig, os.path.join(out, "ed13"))
 
@@ -750,12 +750,11 @@ def ed14(out):
     T = pd.read_csv(os.path.join(R, "mutscan", "mutscan_tapes.csv"))
     Ls = [16, 20, 50, 64]
     fig = plt.figure(figsize=(fs.DOUBLE, 58 * fs.MM))
-    gs = GridSpec(1, 3, figure=fig, wspace=0.42, left=0.075, right=0.99, top=0.84, bottom=0.14)
-    axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
-    specs = [("n_sites", "transmissible sites (positions)", (-1.5, 38.0), [0, 10, 20, 30], 35.2),
-             ("capacity_bits", "capacity for inherited variation (bits)", (-15, 440), [0, 100, 200, 300, 400], 410),
-             ("robustness_h", "single mutants that remain heritable", (-0.04, 1.12), [0, 0.25, 0.5, 0.75, 1.0], 1.04)]
-    for ax, (col, ylab, ylim, yt, hy), sd in zip(axes, specs, (0, 1, 2)):
+    gs = GridSpec(1, 2, figure=fig, wspace=0.3, left=0.075, right=0.99, top=0.84, bottom=0.14)
+    axes = [fig.add_subplot(gs[0, i]) for i in range(2)]
+    specs = [("capacity_bits", "capacity for inherited variation (bits)", (-15, 470), [0, 100, 200, 300, 400], 425),
+             ("robustness_h", "fraction of single mutants\nthat remain heritable", (-0.04, 1.16), [0, 0.25, 0.5, 0.75, 1.0], 1.06)]
+    for ax, (col, ylab, ylim, yt, hy), sd in zip(axes, specs, (1, 2)):
         groups, first, final, lf, ll = [], {}, {}, {}, {}
         for L in Ls:
             f = T[(T.L == L) & (T.which == "first")].set_index("seed")
@@ -766,10 +765,10 @@ def ed14(out):
                 first[key], final[key] = f.loc[sd_, col], n.loc[sd_, col]
                 lf[key], ll[key] = bool(f.loc[sd_, "has_loop"]), bool(n.loc[sd_, "has_loop"])
         slope_chart(ax, groups, first, final, lf, ll, ylab, ylim, yt, seed=sd, header_y=hy)
-    h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (jump, return or LDIR)"),
+    h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (return, jump or block copy)"),
          plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
     fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
-    for ax, letter in zip(axes, "abc"):
+    for ax, letter in zip(axes, "ab"):
         label(ax, letter)
     save(fig, os.path.join(out, "ed14"))
 
@@ -784,14 +783,14 @@ def ed_census(out):
     gs = GridSpec(1, 2, figure=fig, wspace=0.32, left=0.075, right=0.98, top=0.82, bottom=0.16)
     axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     rng = np.random.default_rng(5)
-    for ax, (xc, yc, xl, yl) in ((axa, ("score", "gen2", "culture-test score (32 partners)", "gen2 (heredity of the copies)")),
-                                (axb, ("copied", "damaged", "partners copied (of 256)", "encounters with self-damage (of 256)"))):
-        jx, jy = rng.uniform(-0.012, 0.012, len(H)), rng.uniform(-0.012, 0.012, len(H))
-        ax.scatter(H[xc][cf] + jx[cf], H[yc][cf] + jy[cf], s=5, facecolors="white", edgecolors=GREY, lw=0.4, label=f"with a call, jump or return ({int(cf.sum())})", zorder=2)
+    for ax, (xc, yc, xl, yl) in ((axa, ("score", "gen2", "culture-test score (32 partners)", "heredity of the copies (gen2)")),
+                                (axb, ("copied", "damaged", "fraction of 256 partners copied", "fraction of 256 encounters with self-damage"))):
+        jx, jy = np.abs(rng.normal(0, 0.006, len(H))), -np.abs(rng.normal(0, 0.006, len(H)))
+        ax.scatter((H[xc] + jx)[cf].clip(0, 1), (H[yc] + jy)[cf].clip(0, 1), s=5, color=RED, lw=0, alpha=0.7, label=f"with a call, jump or return ({int(cf.sum())})", zorder=2)
         nf = (~cf) & (~H["word"].isin(fx))
-        ax.scatter(H[xc][nf], H[yc][nf], s=10, color=INK, lw=0, label=f"other straight-line words ({int(nf.sum())})", zorder=3)
+        ax.scatter(H[xc][nf], H[yc][nf], s=10, facecolors="white", edgecolors=INK, lw=0.7, label=f"other straight-line words ({int(nf.sum())})", zorder=3)
         sel = H["word"].isin(fx)
-        ax.scatter(H[xc][sel], H[yc][sel], s=14, color=TEAL, lw=0, label="the five self-writers: 01 c5, 11 d5, 21 e5, 2a e5, e5 2a", zorder=4)
+        ax.scatter(H[xc][sel], H[yc][sel], s=14, facecolors="white", edgecolors=TEAL, lw=1.0, label="the five self-writers: 01 c5, 11 d5, 21 e5, 2a e5, e5 2a", zorder=4)
         ax.set_xlim(-0.05, 1.02)
         ax.set_ylim(-0.05, 1.05)
         fs.tidy(ax, xl, yl)
@@ -814,10 +813,12 @@ def ed_confine(out):
     rng = np.random.default_rng(7)
     fi, fl = X[X.which == "first"], X[X.which == "final"]
     lp = fl.has_loop.astype(bool)
-    for d, kw, lab in ((fi, dict(marker="o", facecolors="white", edgecolors=GREY, lw=0.5, s=8), f"first replicators ({len(fi)})"),
-                       (fl[~lp], dict(marker="s", facecolors="white", edgecolors=INK, lw=0.5, s=8), f"final dominants, no loop instruction ({int((~lp).sum())})"),
-                       (fl[lp], dict(marker="o", color=RED, lw=0, s=9), f"final dominants with a loop instruction ({int(lp.sum())})")):
-        axa.scatter(d.entered_frac + rng.uniform(-0.04, 0.04, len(d)), d.H_bits + rng.uniform(-0.08, 0.08, len(d)), label=lab, zorder=3, **kw)
+    fl_ = fi.has_loop.astype(bool)
+    for d, kw, lab in ((fi[~fl_], dict(marker="o", facecolors="white", edgecolors=GREY, lw=0.5, s=8), f"first replicators, no loop instruction ({int((~fl_).sum())})"),
+                       (fi[fl_], dict(marker="o", color=RED, lw=0, s=9), f"first replicators with a loop, lethal tar ({int(fl_.sum())})"),
+                       (fl[~lp], dict(marker="s", facecolors="white", edgecolors=GREY, lw=0.5, s=8), f"final dominants, no loop instruction ({int((~lp).sum())})"),
+                       (fl[lp], dict(marker="s", color=RED, lw=0, s=9), f"final dominants with a loop instruction ({int(lp.sum())})")):
+        axa.scatter(d.entered_frac + rng.uniform(-0.05, 0.05, len(d)), d.H_bits, label=lab, zorder=3, **kw)
     axa.axhline(8.0, color=RULE, lw=0.5, ls=":")
     axa.set_xlim(-0.12, 1.12)
     axa.set_ylim(-0.4, 8.6)
@@ -841,12 +842,12 @@ def ed_confine(out):
 
 def ed_closure(out):
     """Closure across the stages added in revision: aligned L = 32 (K), ten million steps (L), the 8080 subset (M)."""
-    sets = [("stageK", 32, "Z80, L = 32\n1M steps"), ("stageL", 16, "Z80, L = 16\n10M steps"), ("stageL", 20, "Z80, L = 20\n10M steps"),
-            ("stageM", 16, "8080, L = 16\n300k steps"), ("stageM", 32, "8080, L = 32\n1M steps")]
+    sets = [("stageL", 16, "Z80, L = 16\n10⁷ steps"), ("stageL", 20, "Z80, L = 20\n10⁷ steps"), ("stageK", 32, "Z80, L = 32\n10⁶ steps"),
+            ("stageM", 16, "8080, L = 16\n3 × 10⁵ steps"), ("stageM", 32, "8080, L = 32\n10⁶ steps")]
     fig = plt.figure(figsize=(fs.DOUBLE, 64 * fs.MM))
     gs = GridSpec(1, 2, figure=fig, wspace=0.28, left=0.07, right=0.99, top=0.8, bottom=0.12)
     axes = [fig.add_subplot(gs[0, i]) for i in range(2)]
-    for ax, col, ylab, sd in ((axes[0], "copied", "partners copied (of 256)", 1), (axes[1], "damaged", "encounters with self-damage (of 256)", 2)):
+    for ax, col, ylab, sd in ((axes[0], "copied", "fraction of 256 partners copied", 1), (axes[1], "damaged", "fraction of 256 encounters with self-damage", 2)):
         groups, first, final, lf, ll = [], {}, {}, {}, {}
         for st, L, name in sets:
             d = pd.read_csv(os.path.join(R, st, st, "stage_g_runs.csv"))
@@ -869,7 +870,7 @@ def ed_bffinflow(out):
     """Information inflow of first replicators and final dominants in BFF, by variant (results/biology/individuality)."""
     P = pd.read_csv(os.path.join(R, "biology", "individuality", "per_replicator.csv"))
     P = P[P.machine == "bff"]
-    names = {"std": "as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal", "wraplitnh": "wrap + literal,\nno-op brackets"}
+    names = {"std": "BFF as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal push", "wraplitnh": "wrap + literal push,\nharmless brackets"}
     fig = plt.figure(figsize=(fs.DOUBLE, 62 * fs.MM))
     ax = fig.add_axes([0.07, 0.13, 0.92, 0.72])
     groups, first, final, lf, ll = [], {}, {}, {}, {}
@@ -877,14 +878,14 @@ def ed_bffinflow(out):
         d = P[P.group.astype(str) == v]
         f, l = d[d.which == "first"].set_index("world"), d[d.which == "final"].set_index("world")
         idx = [f"{v}:{w}" for w in f.index.intersection(l.index)]
-        groups.append((f"{names[v]}\n(n = {len(idx)})", idx))
+        groups.append((f"{names[v]}\n({len(idx)} soups with life)", idx))
         for w, k in zip(f.index.intersection(l.index), idx):
             first[k], final[k] = f.loc[w, "H_bits"], l.loc[w, "H_bits"]
             lf[k], ll[k] = bool(f.loc[w, "has_loop"]), bool(l.loc[w, "has_loop"])
     slope_chart(ax, groups, first, final, lf, ll, "information inflow " + H_LABEL + " (bits)", (-0.45, 10.4), [0, 2, 4, 6, 8], seed=4, header_y=8.75)
-    for y, t in ((8.0, "ceiling of 256 partners"), (1.0, "1 bit"), (0.5, "0.5 bit")):
+    for y, t, va, dy in ((8.0, "ceiling of 256 partners", "bottom", 0.08), (1.0, "1 bit", "bottom", 0.06), (0.5, "0.5 bit", "top", -0.06)):
         ax.axhline(y, color=RULE, lw=0.5, ls=":", zorder=0)
-        ax.text(ax.get_xlim()[1] - 0.05, y + 0.08, t, fontsize=5, color=GREY, va="bottom", ha="right")
+        ax.text(ax.get_xlim()[1] - 0.05, y + dy, t, fontsize=5, color=GREY, va=va, ha="right")
     ax.set_gid("allow-clip")
     h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (both brackets present)"),
          plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
