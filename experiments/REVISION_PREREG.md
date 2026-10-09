@@ -219,3 +219,85 @@ The outcome note above says "every first replicator fetches partner bytes in all
 set (the 80 Stage G first replicators) and of Stage K (20 of 20), but not of Stage I: its 10 first replicators, born under lethal
 tar, never enter the partner (entered 0.00, inflow 0 bits). The pooled count is 100 of 110. The error reached the findings file
 and the v4 draft, both now corrected; the result itself (open under benign tar, born closed under lethal tar) is unchanged.
+
+### Correction to the outcome of M (2026-10-09, round-2 review)
+M4 was marked "supported" on the reading that the 8080 subset expresses no closer on a 32-byte ring. That reading is false.
+A reviewer constructed a 20-byte closer from 8080 instructions (`21 20 00 31 40 00 16 10 2b 46 2b 4e c5 15 c2 08 00 c3 11
+00`, a counted PUSH loop closed by JP NZ, then a jump to itself) plus 12 arbitrary bytes; in our executor under `i8080` it
+copies exactly into 256 of 256 random partners, never enters the partner, survives eight serial transfers exactly and scores
+1.00 on the culture test (`check_8080_closer.py`, `results/review_r2/check_8080_closer.txt`). M3 (0 of 20 closed at L = 32)
+stands as observed; M4 is withdrawn: the barrier at L = 32 is that evolution did not find a closer, not that none exists.
+
+## R2 — four tests asked for by the round-2 review (written before any run, 2026-10-09)
+
+All local GPU, deterministic executor, no Modal. Scripts: `serial_retention.py` (S), `invasion_closer.py` (A),
+`marker_check.py` (V), `population_sample.py` (Q). Every quoted number will come from the tables they write.
+
+**S — serial allele retention.** The mutational scan scores transmission in first-generation copies only. S follows each
+single-byte allele through serial transfers, with every lineage in the denominator.
+
+*Panel* (tape, executor rule): (1) pusher `01 c5`×8, L = 16; (2) pusher ×25, L = 50; (3) pusher ×32, L = 64; (4) the RET NZ
+closer `ad e3 21 e3 21 c0 ad c0`×2, L = 16 (Stage G modal final); (5) the LDIR tiling `1e 04 ed b0`×5, L = 20 (Stage G
+modal final); (6) the LDIR tiling `04 5e ed b0`×8, L = 32 (Stage K modal block-copy final); (7) the pusher with three jumps,
+L = 50 (Stage G modal final; offspring = parent + one jump); (8) the Stage I final with the most first-generation sites
+(`1d 2e 0f c3 …`, seed 4009, L = 16), lethal tar; (9–11) the three transient genomes, the modal tape at the first snapshot
+where each was modal (Stage L L = 16 seed 6006 step 1,000,000; L = 20 seed 6003 step 100,000; L = 20 seed 6004 step 500,000);
+(12) the 8080 pusher `01 c5`×16, L = 32, under `i8080`; (13, 14) the constructed 8080 closer with two random 12-byte
+payloads (seed 20261010), L = 32, under `i8080`.
+
+*Procedure.* Mutants x[i ← v]: all 255 values at every position for L ≤ 32, 32 seeded values per position at L ≥ 50.
+Each mutant founds R = 16 lineages; the unmutated tape founds 256. Generation g: the lineage tape runs as A against a
+fresh uniform random partner (128 instructions); the partner half after the encounter is the next lineage tape. The
+partner sequence of lineage r is shared by all mutants of a genotype (common random numbers). A transfer is a *copy* if
+the offspring matches its parent at ≥ 75% of positions at the best cyclic shift; a lineage is *alive* at g if transfers
+1..g were all copies. The allele is *present* at g if the mutant's 5-byte cyclic window centred on i occurs cyclically in
+the lineage tape (alignment-free, so inserted jumps and shifts do not hide it). A mutant is *identifiable* if its window
+does not occur cyclically in the wild type; others are excluded and counted. Background b_g(i, v): the share of alive
+control lineages whose tape contains the mutant's window at g.
+
+*Outcomes,* per genotype at g = 1, 2, 4, 8, over identifiable mutants with every lineage counted: **lost** (not alive),
+**erased** (alive, window absent), **retained** (alive, window present). A site is *serially transmissible* at g if, for
+at least half of its identifiable values, P(present | alive) − b_g ≥ 0.5 (the mutational scan's 0.5 thresholds carried to
+generation g). Also reported: the first-generation aligned rate as in `mutscan.py`, for continuity.
+
+*Predictions.* S1: the pusher's sites persist; at L = 50 and 64 its serially transmissible sites at g = 4 are at least half
+of its first-generation count at g = 1, and ≥ 10. S2: the evolved Z80 closers (4–7) have ≤ 2 serially transmissible sites
+at g = 4, and among their non-lost lineages at g = 1 the erased share exceeds the retained share. S3: the constructed 8080
+closer (13, 14) retains its payload: ≥ 11 of 12 payload positions serially transmissible at g = 8, control lineages alive
+at g = 8 in ≥ 0.99. S4: each transient genome (9–11) has ≥ 5 serially transmissible sites at g = 4. S5 (descriptive): the
+pusher at L = 16 (first-generation median 0 sites) has ≤ 2 at g = 4.
+*Kill.* S1 failing narrows "the first replicator transmits its mutations" to first-generation copies, and the contrast in
+the paper is restated on S's numbers. S3 failing withdraws "closure does not by itself erase variation".
+
+**A — accessibility or selection.** Stage M dynamics (160 × 125 square lattice, 8,192 pairs, 128 instructions, mutation
+1/16 per pair, L = 32). A1: the constructed 8080 closer (payload 1 of S) seeded at 1% into a world filled with the 8080
+pusher `01 c5`×16, under `i8080`; 5 seeds; and the pusher at 1% into a closer-filled world, 5 seeds; 3 unseeded controls
+per resident; 20,000 steps. A2 (full Z80): the same constructed closer against the evolved LDIR closer `04 5e ed b0`×8,
+1% each way, 5 seeds each, 3 controls each, 50,000 steps. Recorded every 10 steps to 500, then every 250: the share of
+cells carrying the closer's 20-byte core at any cyclic shift, the share within Hamming 8 of each resident tape at any
+shift, and among core carriers the share whose 12 payload bytes equal the seeded payload and the number of distinct
+payloads.
+*Predictions.* A1-1: the closer passes 50% core share by step 20,000 in ≥ 4 of 5 soups. A1-2: the pusher seeded into the
+closer world stays < 5% (Hamming-8 class) in ≥ 4 of 5. A1-3: among core carriers at step 20,000, ≥ 10 distinct payloads
+(variation is carried in the soup). A2 is two-sided and descriptive: invader > 50% at 50,000 steps in ≥ 4 of 5 counts as
+favoured, < 5% in ≥ 4 of 5 as disfavoured, otherwise neither.
+*Kill.* A1-1 failing means the 8080 closer exists but does not win against the pusher; the paper then says expressible
+but not competitive, not "not found".
+
+**V — the invasion marker.** The L = 50 invasion endpoint is the share of cells carrying `20 f0` (post hoc). V re-runs the
+closed-into-pusher invasion (seeds 1–3, the same initial conditions) and at steps 0, 50, 100, 150, 200, 300, 500 and
+1,000 traces 512 random cells against 16 random partners each; a cell is *confined* if no partner byte is fetched in any
+of the 16. *Prediction* V1: at every time point the confined share is within 0.10 of the marker share, ≥ 90% of marker
+cells are confined and ≤ 10% of marker-free cells are. *Kill.* V1 failing: the figure reports the confined share and the
+marker is dropped.
+
+**Q — population sampling.** Final snapshot of every Stage G, K, I and M world, and the ten-million-step snapshot of every
+Stage L world: 256 random cells (seeded), each assayed by the culture test (32 partners, gen2 ≥ 0.3) and traced against
+16 partners. Per world: heritable share, confined share among heritable cells, share of heritable cells identical (any
+cyclic shift) to the modal tape, and the median Hamming distance of heritable cells to the modal tape at its best shift.
+Up to 8 random heritable cells per world get the single-mutant scan (16 values per position, 16 partners) for the
+distribution of transmissible sites across the population, not only on the modal tape. *Prediction* Q1 (descriptive): in
+worlds whose modal tape is closed, ≥ 90% of heritable cells are confined and the median number of transmissible sites of
+sampled heritable cells is ≤ 2.
+
+*Cost.* Local GPU; S ≈ minutes; A ≈ 1–2 h; V ≈ 10 min; Q ≈ 30 min.
