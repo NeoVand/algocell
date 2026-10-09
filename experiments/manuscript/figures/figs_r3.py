@@ -223,7 +223,7 @@ def _drift_panel(ax):
         jit = (np.arange(len(ends)) - len(ends) / 2) * 0.035
         ax.plot(i + jit, ends, marker="o", ls="none", ms=2.6, mfc=INK, mec="none")
     ax.axhline(0.5, color=GREY, lw=0.5, ls=(0, (3, 2)))
-    ax.set_xticks(range(3), [r[2] for r in rows])
+    ax.set_xticks(range(3), [r[2].replace(", ", ",\n") for r in rows])
     ax.set_xlim(-0.5, 2.5)
     ax.set_ylim(-0.03, 1.03)
     fs.tidy(ax, None, "transmitter share at\n100,000 steps (no mutation)")
@@ -240,31 +240,21 @@ def _parse_md_table(path):
 
 def _encounter_panel(ax):
     head, rows = _parse_md_table(os.path.join(R, "offset", "OFFSET_ENCOUNTER.md"))
-    comps = ["copies into a partner", "survives as a partner", "core intact as partner", "mutant still copies"]
-    labels, y = [], 0
-    for ci, comp in enumerate(comps):
-        for tar in ("benign", "lethal"):
-            for r in rows:
-                if r[0] != tar:
-                    continue
-                v = float(r[2 + ci])
-                col = REGEN_C if r[1] == "R" else TRANS_C
-                ax.plot(v, -y + (0.13 if r[1] == "R" else -0.13), marker="o", ls="none", ms=2.8, mfc=col, mec=col)
-            labels.append(f"{comp}, {tar}")
-            y += 1
-        y += 0.5
-    ys = []
-    yy = 0
-    for ci in range(4):
-        ys += [-yy, -(yy + 1)]
-        yy += 2.5
-    ax.set_yticks(ys, labels)
-    ax.set_xlim(-0.03, 1.05)
-    ax.set_ylim(-(yy - 1.5) - 0.7, 0.8)
-    fs.tidy(ax, "share of 4,096 encounters", None)
-    ax.tick_params(axis="y", labelsize=5.0)
-    ax.text(0.3, 0.55, "regenerator", color=REGEN_C, fontsize=5.2, ha="left", va="center")
-    ax.text(0.3, -0.3, "transmitter", color=TRANS_C, fontsize=5.2, ha="left", va="center")
+    comps = ["copies", "survives", "core", "mutant"]
+    off = {("benign", "R"): -0.27, ("benign", "T"): -0.11, ("lethal", "R"): 0.11, ("lethal", "T"): 0.27}
+    for r in rows:
+        tar, typ = r[0], r[1]
+        col = REGEN_C if typ == "R" else TRANS_C
+        for k in range(4):
+            v = float(r[2 + k])
+            ax.plot(k + off[(tar, typ)], v, marker="o", ls="none", ms=2.8, mfc=col if tar == "lethal" else "white", mec=col, mew=0.7)
+    ax.set_xticks(range(4), comps, fontsize=5)
+    ax.set_xlim(-0.55, 3.55)
+    ax.set_ylim(-0.03, 1.3)
+    ax.set_yticks([0, 0.5, 1.0])
+    fs.tidy(ax, None, "share of 4,096 encounters")
+    for k, (t, col) in enumerate((("regenerator", REGEN_C), ("transmitter", TRANS_C), ("open, benign tar", INK), ("filled, lethal tar", INK))):
+        ax.text(1.45, 1.27 - 0.085 * k, t, color=col, fontsize=5.0, ha="left", va="center")
 
 
 def _ref22_panel(ax):
@@ -294,7 +284,7 @@ def _randreg_panel(ax):
     xs = np.concatenate([[1e3], t, [3e6]])
     ys = np.concatenate([[0], np.arange(1, len(t) + 1) / n, [len(t) / n]])
     ax.step(xs, ys, where="post", color=INK, lw=0.9, label=None)
-    D = pd.read_csv(os.path.join(R, "r4", "r4_long.csv"))
+    D = pd.concat([pd.read_csv(os.path.join(R, "r4", f)) for f in ("r4_long.csv", "r4_rep.csv")])
     steps = sorted(D.step.unique())
     frac = [(D[D.step == s].confined_given_heritable > 0.5).mean() for s in steps]
     ax.step([1e3] + steps + [3e6], [0] + frac + [frac[-1]], where="post", color="#0072B2", lw=0.9, label=None)
@@ -303,29 +293,121 @@ def _randreg_panel(ax):
     ax.set_xlim(1e3, 3.3e6)
     ax.set_ylim(-0.02, 1.05)
     fs.tidy(ax, "step", "fraction of worlds closed")
-    ax.text(1.1e3, 0.72, "zero registers\n(Stages G and L,\n30 worlds)", color=INK, fontsize=5.2, ha="left", va="center")
-    ax.text(2.5e4, 0.2, "random registers\n(20 worlds)", color="#0072B2", fontsize=5.2, ha="left", va="center")
+    ax.text(3.0e6, 0.78, "zero registers\n(Stages G and L,\n30 worlds)", color=INK, fontsize=5.2, ha="right", va="center")
+    ax.text(3.0e6, 0.45, "random registers\n(40 worlds)", color="#0072B2", fontsize=5.2, ha="right", va="center")
 
 
 def ed_switch(out):
     """Extended Data Fig. 10 | The copy-offset switch and closure without supplied registers."""
-    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
-    gs = GridSpec(2, 3, figure=fig, wspace=0.62, hspace=0.6, left=0.11, right=0.985, top=0.9, bottom=0.1)
-    axa, axb, axc = (fig.add_subplot(gs[0, i]) for i in range(3))
-    axd, axe, axf = (fig.add_subplot(gs[1, i]) for i in range(3))
+    fig = plt.figure(figsize=(fs.DOUBLE, 122 * fs.MM))
+    gs1 = GridSpec(1, 3, figure=fig, wspace=0.55, left=0.09, right=0.985, top=0.87, bottom=0.58)
+    gs2 = GridSpec(1, 4, figure=fig, wspace=0.62, left=0.09, right=0.985, top=0.4, bottom=0.1)
+    axa, axb, axc = (fig.add_subplot(gs1[0, i]) for i in range(3))
+    axd, axe, axf, axg = (fig.add_subplot(gs2[0, i]) for i in range(4))
     for ax, fn, letter in ((axa, lambda a: _switch_panel(a, 32, "benign", "L = 32, benign tar"), "a"),
-                           (axb, lambda a: _switch_panel(a, 16, "lethal", "L = 16, lethal tar"), "b"),
-                           (axc, _drift_panel, "c"), (axd, _encounter_panel, "d"), (axe, _ref22_panel, "e"), (axf, _randreg_panel, "f")):
+                           (axb, lambda a: _switch_panel(a, 32, "lethal", "L = 32, lethal tar"), "b"),
+                           (axc, lambda a: _switch_panel(a, 16, "lethal", "L = 16, lethal tar"), "c"),
+                           (axd, _drift_panel, "d"), (axe, _encounter_panel, "e"), (axf, _ref22_panel, "f"), (axg, _randreg_panel, "g")):
         try:
             fn(ax)
         except Exception as e:  # noqa: BLE001
             import traceback
             traceback.print_exc()
             placeholder(ax, f"{letter} (data missing: {e})")
-    axa.legend(fontsize=5.2, loc="lower center", bbox_to_anchor=(1.25, 1.12), ncol=3, frameon=False)
-    for ax, letter, y in ((axa, "a", 0.985), (axb, "b", 0.985), (axc, "c", 0.985), (axd, "d", 0.47), (axe, "e", 0.47), (axf, "f", 0.47)):
-        _letter(fig, ax, letter, y, dx=0.075 if letter != "d" else 0.105)
+    axb.legend(fontsize=5.2, loc="lower center", bbox_to_anchor=(0.5, 1.13), ncol=3, frameon=False)
+    for ax, letter, y in ((axa, "a", 0.985), (axb, "b", 0.985), (axc, "c", 0.985), (axd, "d", 0.47), (axe, "e", 0.47), (axf, "f", 0.47), (axg, "g", 0.47)):
+        _letter(fig, ax, letter, y, dx=0.07)
     save(fig, os.path.join(out, "ed_switch"))
+
+
+# ------------------------------------------------------------------------------------------------ ED Fig. 11
+MODE_C = {"open": OPEN_C, "regenerator": REGEN_C, "transmitter": TRANS_C}
+
+
+def _pe_panel(ax):
+    D = pd.read_csv(os.path.join(R, "pe", "pe_matrix.csv"))
+    envs = list(dict.fromkeys(D.environment))
+    pars = list(dict.fromkeys(D.parent))
+    env_lab = {e: e.replace("random partners, ", "random partners,\n").replace("closed benign world", "closed\nbenign world").replace("open phase (t5000)", "open phase\n(step 5,000)").replace("random registers", "random\nregisters").replace("lethal world", "lethal\nworld") for e in envs}
+    for i, pa in enumerate(pars):
+        for j, e in enumerate(envs):
+            r = D[(D.parent == pa) & (D.environment == e)].iloc[0]
+            col = MODE_C[r["mode"]]
+            alive = r.alive_g8 >= 0.5
+            ax.plot(j, -i, marker="o", ms=9, mfc=col if alive else "white", mec=col, mew=0.8, ls="none")
+            ax.text(j, -i, f"{int(r.sites_g8)}" if alive else "", ha="center", va="center", fontsize=5.2, color="white", fontweight="bold")
+    ax.set_xticks(range(len(envs)), [env_lab[e] for e in envs], fontsize=5)
+    ax.set_yticks([-i for i in range(len(pars))], pars, fontsize=5.2)
+    ax.set_xlim(-0.6, len(envs) - 0.4)
+    ax.set_ylim(-len(pars) + 0.4, 0.6)
+    ax.tick_params(length=0)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.xaxis.set_ticks_position("top")
+
+
+DIAL_ORDER = ["lp0", "lp001", "lp003", "lp01", "lp03", "lp1"]
+DIAL_LAB = ["0", "0.01", "0.03", "0.1", "0.3", "1"]
+
+
+def _dial_df():
+    return pd.read_csv(os.path.join(R, "dial", "dial_worlds.csv"))
+
+
+def _dial_open(ax):
+    D = _dial_df()
+    xs = range(len(DIAL_ORDER))
+    o = [int(D[D.variant == v].first_open.fillna(False).astype(bool).sum()) for v in DIAL_ORDER]
+    n = [int((D.variant == v).sum()) for v in DIAL_ORDER]
+    ax.plot(xs, [a / b if b else np.nan for a, b in zip(o, n)], marker="o", color=OPEN_C, ms=3)
+    ax.set_xticks(list(xs), DIAL_LAB)
+    ax.set_ylim(-0.03, 1.05)
+    fs.tidy(ax, "probability p that a zero halts", "worlds whose first\nreplicator is open")
+
+
+def _dial_closure(ax):
+    D = _dial_df()
+    xs = range(len(DIAL_ORDER))
+    for k, v in enumerate(DIAL_ORDER):
+        d = D[D.variant == v]
+        t = d.t_closed.fillna(d.horizon.max() * 1.25).values
+        jit = (np.arange(len(t)) - len(t) / 2) * 0.04
+        ax.plot(k + jit, t, marker="o", ls="none", ms=2.4, mfc=np.where(True, INK, INK), mec="none", alpha=0.8)
+    ax.set_yscale("log")
+    ax.axhline(D.horizon.max(), color=GREY, lw=0.5, ls=(0, (3, 2)))
+    ax.set_xticks(list(xs), DIAL_LAB)
+    fs.tidy(ax, "probability p that a zero halts", "first closed replicator (step)")
+
+
+def _dial_trans(ax):
+    D = _dial_df()
+    xs = range(len(DIAL_ORDER))
+    for k, v in enumerate(DIAL_ORDER):
+        d = D[D.variant == v]
+        y = d.frac_transmitter_of_heritable.values
+        jit = (np.arange(len(y)) - len(y) / 2) * 0.04
+        ax.plot(k + jit, y, marker="o", ls="none", ms=2.4, mfc=TRANS_C, mec="none", alpha=0.85)
+        ax.plot([k - 0.25, k + 0.25], [np.nanmedian(y)] * 2, color=INK, lw=0.9)
+    ax.set_xticks(list(xs), DIAL_LAB)
+    ax.set_ylim(-0.03, 1.05)
+    fs.tidy(ax, "probability p that a zero halts", "transmitters among heritable\ncells at 300,000 steps")
+
+
+def ed_dial(out):
+    """Extended Data Fig. 11 | Parent, environment and the lethality dial."""
+    fig = plt.figure(figsize=(fs.DOUBLE, 120 * fs.MM))
+    axa = fig.add_axes([0.2, 0.52, 0.62, 0.36])
+    gs = GridSpec(1, 3, figure=fig, wspace=0.55, left=0.09, right=0.985, top=0.36, bottom=0.09)
+    axb, axc, axd = (fig.add_subplot(gs[0, i]) for i in range(3))
+    for ax, fn, letter in ((axa, _pe_panel, "a"), (axb, _dial_open, "b"), (axc, _dial_closure, "c"), (axd, _dial_trans, "d")):
+        try:
+            fn(ax)
+        except Exception as e:  # noqa: BLE001
+            placeholder(ax, f"{letter} (data missing: {e})")
+    fig.text(0.01, 0.985, "a", fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
+    for ax, letter in ((axb, "b"), (axc, "c"), (axd, "d")):
+        _letter(fig, ax, letter, 0.44, dx=0.075)
+    save(fig, os.path.join(out, "ed_dial"))
 
 
 def main():
@@ -334,7 +416,7 @@ def main():
     ap.add_argument("--only", default="")
     a = ap.parse_args()
     fs.setup()
-    for name, fn in (("fig6v5", fig6v5), ("ed_invasions2", ed_invasions2), ("ed_switch", ed_switch)):
+    for name, fn in (("fig6v5", fig6v5), ("ed_invasions2", ed_invasions2), ("ed_switch", ed_switch), ("ed_dial", ed_dial)):
         if a.only and name not in a.only.split(","):
             continue
         fn(a.out)

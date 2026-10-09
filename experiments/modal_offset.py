@@ -31,7 +31,7 @@ def world(c: dict) -> dict:
 
 
 @app.local_entrypoint()
-def main(smoke: bool = False):
+def main(smoke: bool = False, part: str = "e"):
     import offset_switch
     if smoke:
         print(world.remote({"L": 16, "tar": "lethal", "mut": "off", "start": "mix50", "seed": 99, "steps": 2000}))
@@ -41,7 +41,8 @@ def main(smoke: bool = False):
         done = {e.path.split("/")[-1] for e in runs_volume.listdir("/offset")}
     except Exception:  # noqa: BLE001
         pass
-    todo = [c for c in offset_switch.conditions() if offset_switch.stem(c) + "_final.npy" not in done]
+    conds = offset_switch.conditions_l32lethal() if part == "l32lethal" else offset_switch.conditions()
+    todo = [c for c in conds if offset_switch.stem(c) + "_final.npy" not in done]
     print(f"{len(todo)} conditions to run ({len(done)} files already on the volume)")
     for r in world.map(todo, return_exceptions=True):
         print(r if isinstance(r, dict) else f"FAILED: {r!r}"[:300], flush=True)

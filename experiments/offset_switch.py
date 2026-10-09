@@ -41,6 +41,15 @@ def conditions():
     return out
 
 
+def conditions_l32lethal():
+    """E-L32L (REVISION_PREREG): the matched pair at L = 32 under lethal tar."""
+    out = [{"L": 32, "tar": "lethal", "mut": "on", "start": "mix50", "seed": s, "steps": 300000} for s in range(1, 11)]
+    for s in range(1, 6):
+        out.append({"L": 32, "tar": "lethal", "mut": "on", "start": "R_into_T", "seed": s, "steps": 300000})
+        out.append({"L": 32, "tar": "lethal", "mut": "on", "start": "T_into_R", "seed": s, "steps": 300000})
+    return out
+
+
 def stem(c):
     return f"L{c['L']}_{c['tar']}_mut{c['mut']}_{c['start']}_s{c['seed']}"
 

@@ -603,3 +603,28 @@ everywhere except with partners drawn from the closed benign world, where 0.36 o
 survived (1.00, 10 sites); the zero-register closers and the pusher 0.00–0.01. Also: the return closer dies under the
 lethal rule (0.00 alive with random partners and with lethal-world partners), while both block copiers survive it.
 *Reading:* the mode of heredity belongs to the parent; the environment decides which parents survive.
+
+## E-L32L — the matched pair at L = 32 under lethal tar (written before the run, 2026-10-09)
+*Why.* The two informative conditions of E differ in both length and tar (L = 32 benign, regenerators favoured; L = 16
+lethal, transmitters favoured), so "the environment chooses" is confounded with length. *Design.* As E, at L = 32 with
+lethal tar (shaders derived by `gen_lethal_shader --tape 32`): R = `04 5e ed b0` × 8, T = `a0 5e ed b0` + 28 random
+bytes; ten 50:50 worlds and five 1% invasions each way, standard mutation, 300,000 steps (`offset_switch.py`,
+`modal_offset.py --part l32lethal`). *Prediction* (environment, not length): the transmitter share among core-carrying
+cells at 300,000 steps exceeds 0.5 in ≥ 7 of 10 mixtures (L = 32 benign: 0.03–0.14). *Kill.* If it is below 0.4 in ≥ 7
+of 10, the matched-pair evidence for an environmental choice is withdrawn and the L = 16/32 contrast is reported as
+possibly a length effect.
+
+### Outcome of C4a-rep (appended 2026-10-09; `results/r4/R4_REP.md`, `r4_rep.csv`, `R4_REP_CLOSERS.md`; Modal)
+Met: 2 of 20 closed by 3,000,000 steps (seeds 8204 and 8218, both even, first closed at one million); none by 300,000.
+The odd-seed concentration of C4a does not replicate. Pooled: 8 of 40 random-register worlds closed by three million
+steps, and 1 of 60 by 300,000 (C3, C4a and C4a-rep). Closers (32 heritable cells each): 8218 is like the C4a closers
+(whole-tape exact copy 1.00, LDIR, a jump, 6 never-executed bytes); 8204 is a different design, a loop through a
+conditional jump around a single block-move step (`ed a8`, LDD; 0.06 of cells carry LDIR or LDDR), with 7 never-executed
+bytes and no whole-tape copy. Across the 8 closed worlds, whole-tape transmitters in 6.
+
+### Outcome of E-L32L (appended 2026-10-09; `results/offset/REPORT.md`, `SWITCH_TIMES.md`; Modal)
+Met: at L = 32 with lethal tar the transmitter share among core-carrying cells at 300,000 steps is above 0.5 in 10 of 10
+mixtures (0.55–0.87; median 0.77), and converges there from both 1% starts (from 1% regenerators 0.62–0.79, median 0.76;
+from 1% transmitters 0.58–0.81, median 0.78); no world lost the core (core-carrying cells 0.88–0.93 of the soup at the
+end, medians). Against L = 32 with benign tar (0.03–0.37 in all 20 worlds, medians 0.06–0.08), the tar alone reverses
+the equilibrium at the same length. The confound with length is removed.

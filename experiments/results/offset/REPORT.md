@@ -16,7 +16,11 @@ Transmitting share among core-carrying cells (T / (R + T)) at the end; logit slo
 | 32 | benign | on | R_into_T | 5 | 0.99 | 0.07 (0.04–0.31) | -0.014 (-0.015 to -0.013) | 0.80 | 391 |
 | 32 | benign | on | T_into_R | 5 | 0.01 | 0.08 (0.04–0.37) | +0.002 (-0.004 to +0.009) | 0.87 | 396 |
 | 32 | benign | on | mix50 | 10 | 0.50 | 0.06 (0.03–0.14) | -0.004 (-0.010 to -0.002) | 0.84 | 308 |
+| 32 | lethal | on | R_into_T | 5 | 0.99 | 0.76 (0.62–0.79) | -0.004 (-0.006 to -0.003) | 0.88 | 3879 |
+| 32 | lethal | on | T_into_R | 5 | 0.01 | 0.78 (0.58–0.81) | +0.013 (+0.011 to +0.014) | 0.93 | 4272 |
+| 32 | lethal | on | mix50 | 10 | 0.50 | 0.77 (0.55–0.87) | +0.003 (+0.001 to +0.004) | 0.92 | 4135 |
 
 - L = 16, benign tar [E1/E2]: mutation off, T share in 0.3–0.7 at the end in 3 of 10 (E1 needs ≥ 7); mutation on, T share in 0.05–0.4 in 3 of 10 (E2 needs ≥ 7)
 - L = 16, lethal tar [E3 (lethal, descriptive)]: mutation off, T share in 0.3–0.7 at the end in 1 of 10 (E1 needs ≥ 7); mutation on, T share in 0.05–0.4 in 0 of 10 (E2 needs ≥ 7)
 - L = 32, benign tar [E1/E2]: mutation off, T share in 0.3–0.7 at the end in 2 of 10 (E1 needs ≥ 7); mutation on, T share in 0.05–0.4 in 6 of 10 (E2 needs ≥ 7)
+- L = 32, lethal tar [E3 (lethal, descriptive)]: mutation off, T share in 0.3–0.7 at the end in 0 of 0 (E1 needs ≥ 7); mutation on, T share in 0.05–0.4 in 0 of 10 (E2 needs ≥ 7)
