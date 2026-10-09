@@ -854,3 +854,11 @@ replication; 2% exact share is noisy because return-address smears reach
   passes 50% of cells (jump-word share) at step 110–130 in 5/5; pusher into a closed world leaves no trace; pusher-only
   controls close de novo at 5,000–13,250 steps (3/3). Pre-registered class-share metric failed definitionally (reported);
   jump-word share post hoc. Results paragraph and Methods paragraph added; `results/invasion_pair/FINDINGS.md`.
+- 2026-10-08 night (**review 2 assessed; Stage K launched**): `REVIEW_2_ASSESSMENT.md`. Verified: the L = 50 (20/20) and
+  five L = 20 closers jump through the 16-bit wrap of the mod-2L memory (traces: 9 → 31 at L = 50), 25 of 67 closers in
+  all; the "ninety-fold delay" is thirty-fold by heritable fraction ≥ 0.1 and vanishes at ≥ 0.5 (40,000 vs 30,000);
+  "no floor" wrong (0/10 at L = 3, 4, 7); Stage D numbers are stack-write-only's; BFF p. 6 mixes `wraplit` (share) and
+  `lit` (8 bits); 23 of 44 references uncited and out of order; 15 ablation rows, not thirteen. Stage K (L = 32, aligned
+  ring, 20 worlds, 1M steps, seeds 5001–5020) pre-registered and launched on Modal (`conds/stageK.json`, batch `stageK`,
+  ≈ $3–4). Fetch: `modal volume get algocell-atlas-runs stageK runs/stageK/` then the Stage G scoring pipeline
+  (`stage_h_pipeline.sh` as the template).

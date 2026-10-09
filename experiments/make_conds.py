@@ -245,7 +245,17 @@ def stage_i() -> list[dict]:
     return [_c("lethal@closure", 16, 128, 4, s, zero_halts=True) for s in SEEDS_I]
 
 
-STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g, "stageH": stage_h, "stageI": stage_i}
+SEEDS_K = list(range(5001, 5021))
+
+
+def stage_k() -> list[dict]:
+    """REVISION_PREREG.md Stage K — closure at the aligned intermediate length L = 32 (2L = 64 divides 65,536, so no closer
+    can use the 16-bit address wrap that the L = 20 and 50 relative-jump closers use). Stage G `none@closure1M` conditions
+    at L = 32, seeds 5001–5020, one million steps, on Modal."""
+    return [_c("none@closure1M", 32, 128, 4, s, 1_000_000, 1000) for s in SEEDS_K]
+
+
+STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g, "stageH": stage_h, "stageI": stage_i, "stageK": stage_k}
 
 
 if __name__ == "__main__":

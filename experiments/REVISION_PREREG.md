@@ -97,3 +97,26 @@ share splits the quasispecies cloud between classes; a definitional miss, report
 carrying the jump word, defined post hoc: the closed form passes 50% at step 110–130 in 5 of 5 soups. I2 met: the pusher
 seeded into a closed world leaves no trace (its core share equals the closed world's own cloud). Unregistered control
 result: in pusher-only worlds the jump word arises and passes 50% at steps 5,000, 7,500 and 13,250 (3 of 3).
+
+## K — closure at an aligned intermediate length (written before the run, 2026-10-08 night; launched on Modal)
+
+*Why.* Review 2 (Required 1) notes that the L = 20 and L = 50 closers jump "through the 16-bit address wrap": with memory
+mapped modulo 2L and a 16-bit program counter, a backward relative jump that crosses address 0 lands at (65,536 + target)
+mod 2L, which differs from the true-ring target whenever 2L does not divide 65,536. Our traces confirm it: the L = 50
+JR NZ closer's second jump (from address 9, offset −16) lands at 31, not 95. Count from `stage_g_runs.csv`: 25 of the 67
+closers use a relative jump at a misaligned length (all 20 at L = 50, 5 of 19 at L = 20); the other 42 (RET NZ designs
+at L = 16, block copies at L = 20 and 64) do not depend on the wrap. L = 32 (2L = 64 divides 65,536) is the untested
+aligned length between 16 and 64.
+
+*Design.* Stage G conditions at L = 32 (`none@closure1M`, 128 instructions, k = 4, square lattice, 1,000,000 steps),
+seeds 5001–5020, on Modal (`conds/stageK.json`, batch `stageK`), scored by the Stage G pipeline (culture test, partner
+tests, c4 census, closure).
+
+*Predictions.* K1: the first heritable replicator is a load–push word in ≥ 18 of 20 worlds. K2: a closed successor (loop-
+bearing, ≥ 0.95 of partners copied, 0.00 self-damage) dominates by one million steps in ≥ 15 of 20 worlds, by a mechanism
+that cannot use the wrap (there is none at this length). K3: the median first-replicator step lies between 300 and 1,000.
+
+*Kill.* K2 below 10 of 20 kills "closure evolves at intermediate lengths" as a wrap-independent result; the paper would
+then restrict the closure claim to L = 16 and 64 and name the dependence at L = 20 and 50.
+
+*Cost.* 20 runs × 1,000,000 steps ≈ $0.16 each at the recorded rate, ≈ $3–4 with overhead.
