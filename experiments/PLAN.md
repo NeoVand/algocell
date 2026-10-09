@@ -850,3 +850,7 @@ replication; 2% exact share is noisy because return-address smears reach
   (`results/mutscan/FINDINGS.md`). **B5** (BFF published + no-op brackets, 12 soups) launched on Modal at 21:44 local,
   batch `bff_stdnh`, ≈ $10 estimated under the user's authorisation of 2026-10-08; outcome pending (fetch with
   `modal volume get algocell-atlas-runs bff_stdnh runs/bff_modal/`, then score with `micro/bff_analysis.py`).
+- 2026-10-08 night (**I, pair invasion at L = 50**): closed form (pusher + 3 × `20 f0`) seeded at 1% into a pusher world
+  passes 50% of cells (jump-word share) at step 110–130 in 5/5; pusher into a closed world leaves no trace; pusher-only
+  controls close de novo at 5,000–13,250 steps (3/3). Pre-registered class-share metric failed definitionally (reported);
+  jump-word share post hoc. Results paragraph and Methods paragraph added; `results/invasion_pair/FINDINGS.md`.

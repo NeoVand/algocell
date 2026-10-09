@@ -74,3 +74,26 @@ inherits mutations in its operand bytes; heritable variation returns only in gen
 is not supported by this measure.
 
 **B5 (launched 2026-10-08 21:44 local on Modal, batch `bff_stdnh`, 12 soups; outcome pending).**
+
+## I — head-to-head invasion of the matched pair at L = 50 (written before the run, 2026-10-08 night)
+
+*Why.* Review 1's first priority: show that the closing change itself confers an advantage in competition, not only in
+the partner test. At L = 50 the final dominant of 14 worlds is the pusher tiling with `20 f0` (JR NZ) inserted three times,
+so ancestor and successor are matched except for the jump.
+
+*Design.* `invasion_pair.py`: soups of 20,000 cells at L = 50, 8,192 pairs per step, 128 instructions, mutation 1/16
+(k = 4), square lattice, as in Stage G. Resident: every cell set to one tape (phase 0). Invader: 1% of cells (200, seeded
+RNG) set to the other tape at step 0. Two directions (closed into pusher-filled; pusher into closed-filled), 5 seeds each,
+20,000 steps, recorded every 250 steps: share of cells within Hamming distance 4 of either tape under any cyclic shift
+(nearest class wins; the two tapes differ at 6 positions), zero fraction; every 2,500 steps the heritable fraction of 16
+random cells.
+
+*Predictions.* I1: the closed form rises above 50% of cells within 20,000 steps in ≥ 4 of 5 soups. I2: the pusher stays
+below 5% of cells in ≥ 4 of 5 soups when seeded into the closed resident. *Kill.* I1 failing kills "the return itself
+is selected" in a kin-filled world (the advantage would then exist only among strangers or damaged copies, or not at all).
+
+**I (run 2026-10-08 night; `results/invasion_pair/FINDINGS.md`).** I1 by the pre-registered class share: not met (the
+share splits the quasispecies cloud between classes; a definitional miss, reported as such). By the share of cells
+carrying the jump word, defined post hoc: the closed form passes 50% at step 110–130 in 5 of 5 soups. I2 met: the pusher
+seeded into a closed world leaves no trace (its core share equals the closed world's own cloud). Unregistered control
+result: in pusher-only worlds the jump word arises and passes 50% at steps 5,000, 7,500 and 13,250 (3 of 3).
