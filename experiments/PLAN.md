@@ -878,3 +878,14 @@ replication; 2% exact share is noisy because return-address smears reach
 - 2026-10-09 (**Stage M scored**): the 8080 subset: load–push first 40/40; the RET NZ design closes 20/20 at L = 16
   (byte-identical to the Z80's); 0/20 closures at L = 32 by 1M steps (no block copy, no short-ring return); M1–M4 met.
   Written into the results and Methods; `results/stageM/FINDINGS.md`.
+- 2026-10-09 (**Stage L scored, kill fired**): no recovery of inherited variation by ten million steps (L1 1/10 and 0/10);
+  17/20 worlds end on a minimal closer with no transmissible site; genome-bearing block copiers transient in 3/20.
+  `results/stageL/FINDINGS.md`, `score_L.py`.
+- 2026-10-09 (**dials scored**): tar lethality is a threshold between p = 0.1 and 0.3, not a dial (D1-1 half met, D1-2 not
+  met, D1-3 met); write ratio r ≥ 2 gives an information-closed, loop-free, pointer-open first replicator that never
+  collapses (D2-1..3 met). `results/bff_dials/FINDINGS.md`. The dial waiting chain counted summaries at the wrong
+  directory level and was replaced by hand (no cost beyond ~15 min).
+- 2026-10-09 (**v4 manuscript**): `manuscript/MAIN_v4.md` written around the transitions; Fig. 4 (variation),
+  Fig. 5 (dials), Fig. 6 (theory as proved) redrawn; Extended Data 8 figures + 2 tables; references renumbered (36).
+  Corrections to the record: first replicators enter the partner in 100/110 traces (not 110/110; the lethal-tar firsts
+  are born closed); detector, timing and share claims narrowed to what the tables show. See `HANDOFF_2026-10-09.md`.
