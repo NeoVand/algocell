@@ -936,6 +936,10 @@ def _capacity_panel(ax):
         d = C[(C.stage == stage) & (C.L == L)]
         if d.empty:
             continue
+        if stage == "L":  # individual ten-million-step worlds, so that transient genomes are visible
+            for _, w in d.groupby("seed"):
+                w = w.sort_values("step")
+                ax.plot(w.step, w.capacity_bits, color=col, lw=0.35, alpha=0.35, zorder=1)
         g = d.groupby("step")
         med = g.capacity_bits.median()
         closed = g.entered_frac.apply(lambda v: float((v < 0.5).mean())) >= 0.5

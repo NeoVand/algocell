@@ -20,7 +20,7 @@ the capacity scan of the most common tape at every snapshot (`capacity_over_time
   eight-byte return design `ad e3 21 e3 21 c0 ad c0` in 9/10 worlds at L = 16 (share 0.40–0.64 of the soup, 6 bits of
   capacity), the four-byte block-copy tiling `1e xx ed b0` in 8/10 at L = 20 (share 0.18–0.26; 8–10 bits).
 - Genomes arise and are lost. In 3/20 worlds an irregular block copier carrying 10–12 transmissible sites, 7–10 of them
-  never executed, was the most common tape for one to three million steps, always at a share below 0.3% (a diverse
+  never executed, was the most common tape for one to three million steps, never above 0.33% of the soup (seed 6006 at three million steps) (a diverse
   cloud, not a clone): seed 6006 (L = 16; `1e 50 c3 … ed b0`, 10 sites, 9 unexecuted, 1M–3M), seed 6003 (L = 20; LDDR
   genome, 11 sites, 10 unexecuted, 100k–300k) and seed 6004 (L = 20; an LDI-based genome `… 11 6c ed a0 c1 cf …`, 12
   sites, 7 unexecuted, 500k–1M, then an LDIR genome with 5 sites to 3M). Each was replaced: 6006 by an 8-byte LDIR
