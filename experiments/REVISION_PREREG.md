@@ -301,3 +301,25 @@ worlds whose modal tape is closed, ≥ 90% of heritable cells are confined and t
 sampled heritable cells is ≤ 2.
 
 *Cost.* Local GPU; S ≈ minutes; A ≈ 1–2 h; V ≈ 10 min; Q ≈ 30 min.
+
+## R2b — population classes over time (written 2026-10-09 after the first Q results and before this run; exploratory)
+
+*Why.* Q's final-snapshot sample showed that the modal tape can misrepresent a world: at L = 50 no world's modal tape is
+confined and 18–39% of heritable cells are; in lethal-tar worlds and some L = 20 and 64 worlds most heritable cells are
+distinct closers carrying 9–44 transmissible sites while the modal tape carries none. A clonal population yields a
+modal tape and a diverse one hardly does, so modal-tape analysis selects regenerators. Q2 measures classes of cells
+directly. Because Q motivated it, Q2 is exploratory; definitions are fixed here before it runs.
+
+*Sample.* Every snapshot of every Stage G, I, K, L and M world (final included): 64 random cells (seeded). Each cell: the
+culture test (32 partners; heritable iff gen2 ≥ 0.3) and tracing against 16 random partners (confined iff no partner byte
+is fetched in any). Up to 16 random heritable cells per snapshot: the single-mutant scan (16 values per position, 16
+partners; transmissible site as in the mutational scan) and the executed union of the 16 traced encounters.
+
+*Classes of heritable cells.* **open**: not confined. **regenerator**: confined, ≤ 2 transmissible sites. **transmitter**:
+confined, ≥ 5 transmissible sites. **intermediate**: confined, 3–4 sites. Per snapshot: the heritable share, the share of
+heritable cells in each class (classes of unscanned confined cells are inferred from the scanned ones), and the median
+number of unexecuted transmissible sites among transmitters. For open cells the scan is first-generation only, which S
+showed overstates their sustained transmission; they are reported as open, not by sites.
+
+*Use.* Replaces modal-tape counts wherever the paper speaks about a world's population (closure, variation, the fate of
+genomes); modal-tape results stay, labelled as such. No predictions are registered; the outcome is reported as found.
