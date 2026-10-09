@@ -195,3 +195,6 @@ collapse into bracket tar is slower or absent at r ≥ 2 (fewer partial copies),
 1,024. *Kill.* D2-1 failing (≥ 4 bits at r ≥ 2) kills the saturation reading of Theorem 2's boundary.
 
 *Cost.* 36 soups ≈ 25 min each on an L40S ≈ $30.
+
+**M (run 2026-10-09 on Modal; `results/stageM/FINDINGS.md`).** M1 met (20/20 and 20/20 load–push first). M2 met (20/20
+closed at L = 16, all by the byte-identical RET NZ design). M3 met (0/20 at L = 32). M4 supported.

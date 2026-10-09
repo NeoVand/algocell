@@ -875,3 +875,6 @@ replication; 2% exact share is noisy because return-address smears reach
   G, K, I. BFF dials built (`halt_p`, `lit_rep`; kernel = reference; 15 tests pass) and D1 (p ∈ {0.01, 0.03, 0.1, 0.3} ×
   6 on wraplit) and D2 (r ∈ {2, 3} × 6 on lit) launched (batches `bff_dial_hp*`, `bff_dial_r*`, ≈ $30). Generic
   `stage_pipeline.sh <stage> <runs_dir>` for fetched Modal stages.
+- 2026-10-09 (**Stage M scored**): the 8080 subset: load–push first 40/40; the RET NZ design closes 20/20 at L = 16
+  (byte-identical to the Z80's); 0/20 closures at L = 32 by 1M steps (no block copy, no short-ring return); M1–M4 met.
+  Written into the results and Methods; `results/stageM/FINDINGS.md`.
