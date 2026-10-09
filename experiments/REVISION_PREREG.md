@@ -120,3 +120,8 @@ that cannot use the wrap (there is none at this length). K3: the median first-re
 then restrict the closure claim to L = 16 and 64 and name the dependence at L = 20 and 50.
 
 *Cost.* 20 runs × 1,000,000 steps ≈ $0.16 each at the recorded rate, ≈ $3–4 with overhead.
+
+**K (run 2026-10-09 early on Modal; `results/stageK/FINDINGS.md`).** K1 met (20/20 load–push first). K2 not met, not
+killed: 12/20 closed by one million steps, all by block copy, none by a jump; 8 worlds still open. K3 met (median 425).
+Reading: closure at aligned lengths is monotone in L (20/20 at 16 by 300k; 12/20 at 32 and 8/20 at 64 by 1M) and goes by
+block copy or return; the jump closures at L = 20 and 50 depend on the wrap and are reported as such.
