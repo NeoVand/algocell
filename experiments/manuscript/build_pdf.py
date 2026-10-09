@@ -45,6 +45,7 @@ ED_FILES_V4 = {
     "8": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
     "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed_invasions2.pdf")],
     "10": [os.path.join(EXP, "manuscript", "figures", "out", "ed_switch.pdf")],
+    "11": [os.path.join(EXP, "manuscript", "figures", "out", "ed_dial.pdf")],
 }
 
 SYM = {

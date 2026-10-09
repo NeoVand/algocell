@@ -628,3 +628,18 @@ mixtures (0.55–0.87; median 0.77), and converges there from both 1% starts (fr
 from 1% transmitters 0.58–0.81, median 0.78); no world lost the core (core-carrying cells 0.88–0.93 of the soup at the
 end, medians). Against L = 32 with benign tar (0.03–0.37 in all 20 worlds, medians 0.06–0.08), the tar alone reverses
 the equilibrium at the same length. The confound with length is removed.
+
+### Outcome of DZ (appended 2026-10-09; `results/dial/DIAL.md`, `dial_worlds.csv`; 60 worlds on Modal, A10/A10G)
+**DZ1 met.** The first replicator is open in 10 of 10 worlds at p = 0, 0.01, 0.03 and 0.1, in 2 of 10 at p = 0.3 and in
+0 of 10 at p = 1 (Cochran–Armitage z = −6.10). The open beginning ends at a threshold between p = 0.1 and 0.3, the
+same interval as the BFF lethality dial. At p = 0.1 every first replicator is the load–push word `e5 2a` (PUSH HL;
+LD HL,(nn)), still open, arriving at a Kaplan–Meier median of 5,000 steps (250–400 at p ≤ 0.03); at p = 0.3 most first
+replicators are closed block copiers (KM 40,000), at p = 1 all are closed (KM 52,500; one world without a replicator).
+**DZ2 partly met.** Spearman(p, t_closed) = 0.25, permutation P = 0.023 (met), but the KM medians are 18,000, 42,500,
+60,000, 75,000, 57,500 and 52,500 steps: they rise to p = 0.1 and fall twice after it, so the registered monotone part
+fails. The kill applies: Model 5's window reading of closure timing is restricted to the contrast of the extremes; a
+damaged open phase (0.01 ≤ p ≤ 0.1) delays closure relative to both no lethality and full lethality.
+**DZ3 partly met.** Spearman(p, transmitter share of heritable cells at 300,000) = 0.50, permutation P < 5 × 10⁻⁵ (met);
+medians 0.00, 0.00, 0.00, 0.26, 0.56, 0.78; regenerator medians 1.00, 0.60, 0.41, 0.00, 0.09, 0.03. Transmitter-majority
+worlds: 1 of 10 at p = 0 (met, ≤ 3) and 6 of 10 at p = 1 (registered ≥ 7: not met). The dose–response is supported by
+the registered trend test; the endpoint count missed by one world.

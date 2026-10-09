@@ -19,6 +19,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import make_figures as mf  # noqa: E402
+sys.path.insert(0, mf.EXP)
 from make_figures import fs, cp, plt, GridSpec, R, save, placeholder, INK, GREY, RED, TEAL  # noqa: E402
 
 EXP = mf.EXP
@@ -367,15 +368,21 @@ def _dial_open(ax):
 
 def _dial_closure(ax):
     D = _dial_df()
-    xs = range(len(DIAL_ORDER))
+    hz = D.horizon.max()
+    from dial_soups import _km_median
     for k, v in enumerate(DIAL_ORDER):
         d = D[D.variant == v]
-        t = d.t_closed.fillna(d.horizon.max() * 1.25).values
+        t = d.t_closed.values.astype(float)
+        cens = ~np.isfinite(t)
+        y = np.where(cens, hz * 1.35, t)
         jit = (np.arange(len(t)) - len(t) / 2) * 0.04
-        ax.plot(k + jit, t, marker="o", ls="none", ms=2.4, mfc=np.where(True, INK, INK), mec="none", alpha=0.8)
+        ax.plot((k + jit)[~cens], y[~cens], marker="o", ls="none", ms=2.4, mfc="#8A929B", mec="none")
+        if cens.any():
+            ax.plot((k + jit)[cens], y[cens], marker="o", ls="none", ms=2.4, mfc="white", mec="#8A929B", mew=0.6)
+        ax.plot([k - 0.25, k + 0.25], [_km_median(d.t_closed.tolist(), hz)] * 2, color=INK, lw=1.0)
     ax.set_yscale("log")
-    ax.axhline(D.horizon.max(), color=GREY, lw=0.5, ls=(0, (3, 2)))
-    ax.set_xticks(list(xs), DIAL_LAB)
+    ax.axhline(hz, color=GREY, lw=0.5, ls=(0, (3, 2)))
+    ax.set_xticks(range(len(DIAL_ORDER)), DIAL_LAB)
     fs.tidy(ax, "probability p that a zero halts", "first closed replicator (step)")
 
 
