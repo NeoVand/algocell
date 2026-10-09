@@ -80,7 +80,7 @@
 
 - Lineage tags to settle descent against displacement at L = 16 and 32.
 - A real 8080 with its alternate opcodes, and a functional payload for the unexecuted bytes.
-- The mechanism by which the environment chooses between regenerators and transmitters: our registered explanation by isolated mutational flows failed, and the choice is reported without a mechanism.
+- The full mechanism by which the environment chooses between regenerators and transmitters: our registered explanation by isolated mutational flows failed. Exploratory censuses found one component, that a body of copies of the copying code is hijacked by intruding executors while a body of junk protects, but it favours transmitters under both tars and does not by itself explain the benign-tar equilibrium.
 
 ## Errors we found ourselves
 

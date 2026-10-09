@@ -643,3 +643,23 @@ damaged open phase (0.01 ≤ p ≤ 0.1) delays closure relative to both no letha
 medians 0.00, 0.00, 0.00, 0.26, 0.56, 0.78; regenerator medians 1.00, 0.60, 0.41, 0.00, 0.09, 0.03. Transmitter-majority
 worlds: 1 of 10 at p = 0 (met, ≤ 3) and 6 of 10 at p = 1 (registered ≥ 7: not met). The dose–response is supported by
 the registered trend test; the endpoint count missed by one world.
+
+## E-census — where the tar acts (exploratory, written before the run, 2026-10-09; no prediction registered)
+At L = 32, the final soups of the ten 50:50 mutation-on worlds of each tar are sampled as lattice-neighbour pairs (organism
+a random cell, partner one of its four neighbours, torus), 200,000 pairs per soup set, and executed under each rule
+(benign, lethal), crossing composition with rule. Every cell before and after is classed by its first four bytes (R, T,
+core with another offset, no core). Reported: per encounter, the probability that a partner of each class keeps its
+class, becomes the other class or loses the core, by the executor's class; and the expected one-encounter change in the
+transmitter share. The aim is to locate the asymmetry (composition, rule, or their interaction); results are descriptive.
+
+### Outcome of E-census (exploratory; `results/offset/ENCOUNTER_CENSUS.md`, `INTRUDER.md`)
+One round of encounters in the equilibrium soups changes the transmitter share by at most 5 × 10⁻⁴ under either rule and
+composition: the equilibrium is maintained by slow processes, and one round does not locate it. One asymmetry is clear
+(`offset_intruder.py`, 16,384 encounters per row, executors the core-free cells of each tar's soups): as partners of
+executors whose pointer enters them, regenerators keep their class in 0.05–0.24 of encounters and transmitters with a
+random body in 0.35–0.49; a transmitter whose body is tiled copies of its core (`a0 5e ed b0` × 8) is as vulnerable as
+the regenerator (0.07–0.25), and where the executor does not enter, all three keep their class alike (0.08–0.15). The
+lethal rule widens the transmitters' overall advantage (benign-soup executors: 0.154 against 0.092 benign, 0.208 against
+0.126 lethal). Reading: a body made of copies of the copying code is hijacked by intruders, and a body of junk protects
+against them; this favours transmitters under both rules, more under lethal tar, and so does not by itself explain why
+regenerators win under benign tar. Post hoc and descriptive.
