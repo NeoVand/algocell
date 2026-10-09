@@ -868,3 +868,10 @@ replication; 2% exact share is noisy because return-address smears reach
   (L = 32, aligned): 20/20 pusher first, 12/20 closed by 1M, all by block copy — `results/stageK/FINDINGS.md`. Both runs
   completed in under an hour each on Modal; the BFF app list showed "stopped" while soups were still writing, which misled
   a first check (the logs, not `volume ls`, are the reliable progress signal).
+- 2026-10-09 (**executing NATURE_PLAN**): Stage L (10M steps, L = 16/20 × 10) and Stage M (8080 subset, L = 16 × 20 at
+  300k and L = 32 × 20 at 1M) launched on Modal (pre-registered L, M). Traced executor built (`gen_trace_shader.py`,
+  `exectrace.py`): pointer confinement measured for every Z80 tape (P met; `results/exectrace/`). Mutational scan run for
+  Stage K and I tapes. Capacity-over-time scan (`capacity_over_time.py`) running on the dominant tape of every snapshot of
+  G, K, I. BFF dials built (`halt_p`, `lit_rep`; kernel = reference; 15 tests pass) and D1 (p ∈ {0.01, 0.03, 0.1, 0.3} ×
+  6 on wraplit) and D2 (r ∈ {2, 3} × 6 on lit) launched (batches `bff_dial_hp*`, `bff_dial_r*`, ≈ $30). Generic
+  `stage_pipeline.sh <stage> <runs_dir>` for fetched Modal stages.

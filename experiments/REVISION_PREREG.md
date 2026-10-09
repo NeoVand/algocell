@@ -170,3 +170,28 @@ the return route is not enough and the Z80's closure depended on its extensions;
 encounters; every loop-bearing final (89 of 89 across G, K, I) never does; pointer closure and zero inflow agree in 106 of
 110 finals, the four exceptions being pointer-closed with one to three partner bytes retained; no pointer-open final has
 zero inflow. Unregistered: the pusher's transmissible sites are all executed (operands); the closers' are unexecuted.
+
+## D — two dials in the second machine (written before the run, 2026-10-09; NATURE_PLAN Move 3)
+
+*Machinery.* `micro/bff.py` gains `halt_p` (an unmatched bracket halts the encounter with probability p, hashed from pair
+index, step and a per-call seed so that the GPU kernel and the CPU reference agree; p = 1 is the published rule, p = 0
+the `nohalt` variant) and `lit_rep` (the literal `P a b` writes its two operand bytes r times, write ratio 2r/3; r = 1 is
+the published switch). Kernel and reference checked byte for byte under five settings; the 15 BFF tests pass.
+
+**D1, tar lethality as a dial** (Model 5's crossover). Variant `wraplit` (wrap + literal) with p ∈ {0.01, 0.03, 0.1, 0.3},
+6 soups each (seeds 1–6), 16,384 epochs; p = 0 (`wraplitnh`, 12 soups) and p = 1 (`wraplit`, 12 soups) exist.
+*Predictions.* D1-1: the open all-`P` population persists to 16,384 epochs (share ≥ 10%) in ≥ 4 of 6 soups at p = 0.01
+and in ≤ 1 of 6 at p = 0.3. D1-2: the epoch at which the all-`P` share first falls below 1% decreases monotonically in p
+over p = 0.03, 0.1, 0.3, 1 (medians), within a factor of three of 1/p scaling. D1-3: no closure by control flow at any p
+(no closed heritable tiling exists). *Kill.* D1-1 failing in the direction of extinction at p = 0.01 (≥ 4 of 6 extinct)
+kills the window reading: lethality would then be a step, not a dial.
+
+**D2, literal bandwidth as a dial** (the write-ratio boundary). Variant `lit` (no wrap) with r ∈ {2, 3}, 6 soups each
+(seeds 1–6); r = 1 exists (12 soups: 8 bits of inflow, open, then a 0.2% minority). *Predictions.* D2-1: at r ≥ 2 the
+first replicator's inflow is ≤ 1 bit (the copy completes within one pass: 21 pushes × 4 bytes ≥ 64) against 8 bits at
+r = 1: information-closed from birth without a loop and without a wrapping pointer, the theorem's boundary. D2-2: the
+first replicator is still the all-`P` tiling, loop-free, pointer-open (enters the partner in every encounter). D2-3: the
+collapse into bracket tar is slower or absent at r ≥ 2 (fewer partial copies), measured as the all-`P` share at epoch
+1,024. *Kill.* D2-1 failing (≥ 4 bits at r ≥ 2) kills the saturation reading of Theorem 2's boundary.
+
+*Cost.* 36 soups ≈ 25 min each on an L40S ≈ $30.
