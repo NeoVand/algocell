@@ -95,38 +95,78 @@ def loop_flags(d, which):
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 1
+def km_panel(ax, ncol=3):
+    """b: Kaplan–Meier emergence by tape length (Stage E, none@nominal, 128 steps, k = 4)."""
+    A = pd.read_csv(os.path.join(R, "stageE", "assays.csv"))
+    A = A[(A["label"] == "none@nominal") & (A["steps"] == 128) & (A["k"] == 4)]
+    if "replicate" in A:
+        A = A[A["replicate"].isna()]
+    for L in (8, 9, 16, 36, 64, 100):
+        g = A[A["tape_len"] == L]
+        if g.empty:
+            continue
+        x, y = km_curve(g["t_rep"].tolist(), 300000)
+        ax.step(np.maximum(x, 40), 1 - y, where="post", color=L_COL.get(L, "#444444"), lw=0.9, label=f"L = {L}")
+    ax.set_xscale("log")
+    ax.set_xlim(40, 3.5e5)
+    ax.set_ylim(-0.03, 1.03)
+    fs.tidy(ax, "step", "worlds with a heritable replicator")
+    ax.set_gid("allow-clip")
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=ncol, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
+
+
+COMPOSE_TEX = r"""\documentclass{article}
+\usepackage[paperwidth=180mm,paperheight=%(h)smm,margin=0mm,top=2mm,headheight=0pt,headsep=0pt]{geometry}
+\usepackage{fontspec}
+\setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\usepackage{graphicx}
+\pagestyle{empty}\setlength{\parindent}{0pt}
+\begin{document}
+\noindent\begin{minipage}[t]{%(wa)smm}\vspace{0pt}{\sffamily\bfseries\fontsize{8}{9}\selectfont a}\par\vspace{0.4mm}\includegraphics[width=%(wa)smm]{%(a)s}\end{minipage}\hfill
+\begin{minipage}[t]{%(wb)smm}\vspace{0pt}{\sffamily\bfseries\fontsize{8}{9}\selectfont b}\par\vspace{0.4mm}\includegraphics[width=%(wb)smm]{%(b)s}\end{minipage}
+\end{document}
+"""
+
+
 def fig1(out):
-    """a: the designer's conceptual panel (review copy) or the code-drawn stand-in; b: Kaplan–Meier emergence by L."""
-    design = os.path.join(HERE, "refs", "designer_fig1_round3.png")
+    """a: the designer's conceptual panel (vector PDF, round 4, composed with tectonic so it stays vector; else the round-3 PNG;
+    else the code-drawn stand-in); b: Kaplan–Meier emergence by L."""
+    import shutil
+    import subprocess
+    design_pdf = os.path.join(HERE, "refs", "designer_fig1_round4.pdf")
+    design_png = os.path.join(HERE, "refs", "designer_fig1_round3.png")
+    if os.path.exists(design_pdf) and shutil.which("tectonic"):
+        fig = plt.figure(figsize=(62 * fs.MM, 62 * fs.MM))
+        ax = fig.add_axes([0.16, 0.12, 0.82, 0.74])
+        km_panel(ax, ncol=3)
+        figcheck.print_report(figcheck.check(fig), "fig1_km")
+        fs.save(fig, os.path.join(out, "fig1_km"), formats=("pdf",))
+        wa = 112.0                                   # designer panel width; its page is 510 x 340.08 pt (3:2)
+        ha = wa * 340.08 / 510.0
+        tex = COMPOSE_TEX % {"h": f"{ha + 6.5:.1f}", "wa": f"{wa:.0f}", "wb": "62", "a": design_pdf, "b": os.path.join(out, "fig1_km.pdf")}
+        tex_path = os.path.join(out, "fig1_compose.tex")
+        open(tex_path, "w").write(tex)
+        subprocess.run(["tectonic", "--outdir", out, tex_path], check=True, capture_output=True)
+        os.replace(os.path.join(out, "fig1_compose.pdf"), os.path.join(out, "fig1.pdf"))
+        for stale in ("fig1.svg", "fig1_compose.tex"):
+            if os.path.exists(os.path.join(out, stale)):
+                os.remove(os.path.join(out, stale))
+        if shutil.which("pdftoppm"):
+            subprocess.run(["pdftoppm", "-r", "300", "-png", "-singlefile", os.path.join(out, "fig1.pdf"), os.path.join(out, "fig1")], check=False)
+        print("  fig1 composed from the designer's vector PDF (a) and the KM panel (b)")
+        return
     fig = plt.figure(figsize=(fs.DOUBLE, 72 * fs.MM))
     gs = GridSpec(1, 2, figure=fig, width_ratios=[112, 58], wspace=0.22, left=0.012, right=0.99, top=0.9, bottom=0.14)
     axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
-    if os.path.exists(design):
-        axa.imshow(plt.imread(design))
+    if os.path.exists(design_png):
+        axa.imshow(plt.imread(design_png))
         axa.set_axis_off()
-        axa.set_anchor("NW")
-        label(axa, "a", dx=0.01)
     else:
         cp.fig1a(axa)
-        axa.set_anchor("NW")
-        label(axa, "a", dx=0.01)
+    axa.set_anchor("NW")
+    label(axa, "a", dx=0.01)
     try:
-        A = pd.read_csv(os.path.join(R, "stageE", "assays.csv"))
-        A = A[(A["label"] == "none@nominal") & (A["steps"] == 128) & (A["k"] == 4)]
-        if "replicate" in A:
-            A = A[A["replicate"].isna()]
-        for L in (8, 9, 16, 36, 64, 100):
-            g = A[A["tape_len"] == L]
-            if g.empty:
-                continue
-            x, y = km_curve(g["t_rep"].tolist(), 300000)
-            axb.step(np.maximum(x, 40), 1 - y, where="post", color=L_COL.get(L, "#444444"), lw=0.9, label=f"L = {L}")
-        axb.set_xscale("log")
-        axb.set_xlim(40, 3.5e5)
-        axb.set_ylim(-0.03, 1.03)
-        fs.tidy(axb, "step", "worlds with a heritable replicator")
-        axb.set_gid("allow-clip")
-        axb.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
+        km_panel(axb, ncol=3)
         label(axb, "b")
     except Exception as e:  # noqa: BLE001
         placeholder(axb, f"b  (data missing: {e})")
@@ -277,10 +317,10 @@ def fig3(out):
     g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
     c4 = pd.read_csv(os.path.join(R, "stageG", "c4", "functional.csv"))
     Ls = [16, 20, 50, 64]
-    fig = plt.figure(figsize=(fs.DOUBLE, 150 * fs.MM))
-    gs1 = GridSpec(1, 3, figure=fig, wspace=0.42, left=0.075, right=0.99, top=0.93, bottom=0.7)
-    gs2 = GridSpec(1, 2, figure=fig, width_ratios=[1.45, 1.0], wspace=0.3, left=0.075, right=0.99, top=0.58, bottom=0.37)
-    gs3 = GridSpec(1, 1, figure=fig, left=0.03, right=0.99, top=0.3, bottom=0.01)
+    fig = plt.figure(figsize=(fs.DOUBLE, 160 * fs.MM))
+    gs1 = GridSpec(1, 3, figure=fig, wspace=0.42, left=0.075, right=0.99, top=0.95, bottom=0.74)
+    gs2 = GridSpec(1, 2, figure=fig, width_ratios=[1.45, 1.0], wspace=0.3, left=0.075, right=0.99, top=0.63, bottom=0.42)
+    gs3 = GridSpec(1, 1, figure=fig, left=0.03, right=0.99, top=0.335, bottom=0.005)   # 52.8 mm: the 3.35:1 drawing fills the width
     axa, axb, axc = fig.add_subplot(gs1[0, 0]), fig.add_subplot(gs1[0, 1]), fig.add_subplot(gs1[0, 2])
     axd, axe = fig.add_subplot(gs2[0, 0]), fig.add_subplot(gs2[0, 1])
     axf = fig.add_subplot(gs3[0, 0])
@@ -299,7 +339,7 @@ def fig3(out):
     slope_chart(axb, groups, first_d, final_d, lf, ll, "encounters that damage the organism", (-0.04, 1.12), [0, 0.25, 0.5, 0.75, 1.0], seed=1, header_y=1.04)
     h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (jump, return or LDIR)"),
          plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
-    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 0.995), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
+    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
     label(axa, "a")
     label(axb, "b")
     # c: information inflow H(o | x) in bits (analysis B)

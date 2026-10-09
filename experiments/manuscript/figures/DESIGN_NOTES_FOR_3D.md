@@ -175,3 +175,25 @@ content, not by number. The encounter panel is Fig. 1a (approved; one request: m
 vermilion). The closers' control-flow panel (five strips: pusher, `RET NZ`, `JR NZ`, `DJNZ`, `LDIR`) is now Fig. 3f.
 The classification table is Fig. 5d. The theorem diagram is Fig. 6, a single panel, 120 mm wide. A new Fig. 2 shows seven
 lattice frames of one world (the supplementary video's world) and needs no design work.
+
+## Round 4 (three.js export, `core-figure.pdf`, 510 × 340 pt) — approved and adopted as Fig. 1a (2026-10-08, late night)
+
+Everything we asked for is there: the `c0` cell is marked in vermilion and the return arc leaves from it; the stack starts at
+the partner's far end with the first write `c5 01` and the next push to its left; operand = output; execution runs on into
+B; the closed panel shows the return, the write into occupied B, and says the bytes remain exposed; the inset reads the four
+bytes correctly. The vector PDF is now composed directly into Fig. 1 (panel a, 112 mm wide) with the emergence chart as
+panel b, so nothing is rasterised.
+
+For the submission version only, three mechanical points, none of them about content:
+- Nature puts figure titles in the legend, not in the panel: the heading "Heredity before individuality" and the closing
+  line "Individuality is a cycle in execution" will have to move to the legend (keep them in the review copy; the user
+  likes them, and so do we).
+- Panel text in Helvetica or Arial, nothing below 5 pt at the printed width of 112 mm; the serif display face can stay for
+  the review copy.
+- Export at the final width (112 mm) or any vector size with a 3:2 page; the current page ratio is right.
+
+Next panels, in the order the paper needs them: Fig. 3f, the control flow of the first replicator and the four closers
+(`RET NZ`, `JR NZ`, `DJNZ`, `LDIR`; exact traces in `results/concept/traces.json`; brief in the round-1 reply); Fig. 5d,
+the classification table (literal-write instruction present/absent × tar benign/lethal, with the observed order of events
+and world counts in each cell); Fig. 6, the theorem diagram (one pass over 16 cells writes 8 of the 16 bytes a copy needs:
+leave the cells, or revisit one).

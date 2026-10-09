@@ -833,3 +833,8 @@ replication; 2% exact share is noisy because return-address smears reach
   statements and proofs appended to the manuscript (self-contained PDF; the "exactly when" claim softened to what is
   proved; Theorem 2 stated with two provisos). References cleaned (reserved 43 removed; 44/45 → 43/44; flags removed);
   repository-file references removed from the review copy. Handoff brief `STATE_2026-10-08.md` for the next model.
+- 2026-10-08 late night (**designer round 4 adopted; Fig. 3 spacing**): the three.js export of the encounter panel meets
+  every request (the `c0` return cell marked); it is composed into Fig. 1 as a vector PDF by a small tectonic job in
+  `make_figures.fig1` (panel b, the KM chart, drawn separately as `fig1_km.pdf`; fallbacks: round-3 PNG, then code).
+  Fig. 3's control-flow row given the height its 3.35 : 1 drawing needs at full width (the user noticed it fell short).
+  Designer notes round 4 (submission-only points: titles to the legend, Helvetica, ≥ 5 pt). PDFs rebuilt.
