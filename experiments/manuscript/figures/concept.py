@@ -222,8 +222,10 @@ def fig4d(ax):
         (xa, 20.3 - 3.15 * L, "BFF + literal push, harmless brackets", True), (xa, 20.3 - 4.15 * L, "open through 16,384 epochs · 12 of 12 soups;", False), (xa, 20.3 - 5.15 * L, "no closed design up to period 10", False),
         (xb, 19.9, "BFF + literal push, lethal brackets", True), (xb, 19.9 - L, "open, then collapses to 0.2% · 12 of 12 soups", False),
         (xb, 19.9 - 2.2 * L, "Z80, zero halts", True), (xb, 19.9 - 3.2 * L, "born closed, late · 10 of 10 worlds;", False), (xb, 19.9 - 4.2 * L, "the open beginning never happens", False),
-        (xa, 6.7, "BFF as published, harmless brackets", True), (xa, 6.7 - L, "born closed · 7 of 12 soups; lost again in 4", False),
-        (xb, 6.7, "BFF as published (and wrapping pointer)", True), (xb, 6.7 - L, "born closed · all 28 replicators of 48 soups", False),
+        (xa, 6.7, "BFF as published, harmless brackets", True), (xa, 6.7 - L, "born loop-bearing · 7 of 12 soups (5 confined,", False),
+        (xa, 6.7 - 2 * L, "1 partly, 1 open); lost again in 4", False),
+        (xb, 6.7, "BFF as published (and wrapping pointer)", True), (xb, 6.7 - L, "born loop-bearing · all 28 replicators of 48", False),
+        (xb, 6.7 - 2 * L, "soups; partner entered in at most 34%", False),
     ]
     for x, y, text, bold in rows:
         ax.text(x, y, text, ha="left", va="top", fontsize=FS_C, color=INK, fontweight="bold" if bold else "normal")
