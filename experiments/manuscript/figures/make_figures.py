@@ -426,9 +426,9 @@ def fig4(out):
             alive, n = int(r["t_rep_n"]), int(r["n"])
             if np.isfinite(r["ratio"]):
                 if alive == n:
-                    axa.plot(r["ratio"], yi, "o", color=INK, ms=3.2)
+                    axa.plot(r["ratio"], yi, "o", color=fs.MARK, ms=3.2)
                 else:
-                    axa.plot(r["ratio"], yi, "o", mfc="white", mec=INK, mew=0.7, ms=3.2)
+                    axa.plot(r["ratio"], yi, "o", mfc="white", mec=fs.MARK, mew=0.7, ms=3.2)
             else:
                 axa.annotate("", xy=(3000, yi), xytext=(600, yi), arrowprops=dict(arrowstyle="->", color=GREY, lw=0.8))
             axa.text(1.03, yi, f"{alive}/{n}", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color=INK if alive == n else GREY, gid="allow-outside")
@@ -439,8 +439,8 @@ def fig4(out):
         axa.set_ylim(-0.7, len(C) + 0.3)
         fs.tidy(axa, "emergence delay against the unablated soup\n(ratio of Kaplan–Meier medians; dotted line, no change)")
         axa.text(1.03, len(C) + 0.05, "alive", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color=GREY, gid="allow-outside")
-        h = [plt.Line2D([], [], marker="o", ls="none", color=INK, ms=3, label="all 10 worlds alive"),
-             plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=INK, ms=3, label="fewer alive"),
+        h = [plt.Line2D([], [], marker="o", ls="none", color=fs.MARK, ms=3, label="all 10 worlds alive"),
+             plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=fs.MARK, ms=3, label="fewer alive"),
              plt.Line2D([], [], marker=r"$\rightarrow$", ls="none", color=GREY, ms=5, label="no median: fewer than half the worlds alive")]
         axa.legend(handles=h, fontsize=5, loc="lower center", bbox_to_anchor=(0.4, 1.0), ncol=3, frameon=False, columnspacing=1.0, handletextpad=0.3)
         label(axa, "a", dy=0.045)
@@ -450,7 +450,7 @@ def fig4(out):
     try:
         S = pd.read_csv(os.path.join(R, "stageE", "stage_e", "size_arms.csv"))
         S = S[(S["ablation"] == "none") & (S["arm"] == "nominal")].sort_values("tape_len")
-        axb.errorbar(S["tape_len"], S["t_rep_frac"], yerr=[S["t_rep_frac"] - S["t_rep_lo"], S["t_rep_hi"] - S["t_rep_frac"]], fmt="o", color=INK, ms=3, lw=0.6, capsize=1.5, label="fraction of worlds alive by 300,000 steps")
+        axb.errorbar(S["tape_len"], S["t_rep_frac"], yerr=[S["t_rep_frac"] - S["t_rep_lo"], S["t_rep_hi"] - S["t_rep_frac"]], fmt="o", color=fs.MARK, ms=3, lw=0.6, capsize=1.5, label="fraction of worlds alive by 300,000 steps")
         U = pd.read_csv(os.path.join(R, "stageE", "stage_e", "unit_fitness_vs_L.csv"))
         U = U[(U["unit"].str.startswith("pusher")) & (U["steps"] == 128)].sort_values("L")
         axb.plot(U["L"], U["gen2"], color=TEAL, lw=0.9, ls="--", label="heredity (gen2) of the pusher tiling in isolation")
@@ -489,7 +489,7 @@ def fig4(out):
         D = D.drop_duplicates(subset=["label", "steps"])
         arms = [a for a in ["none", "stack-writes", "stack-write-only", "stack-read-only", "push", "call-rst-write"] if a in set(D["label"])]
         y = np.arange(len(arms))
-        for st, mk, off, col in ((128, "o", -0.15, INK), (512, "s", 0.15, TEAL)):
+        for st, mk, off, col in ((128, "o", -0.15, fs.MARK), (512, "s", 0.15, TEAL)):
             d = D[D["steps"] == st].set_index("label").reindex(arms)
             axd.errorbar(d["t_rep_frac"], y + off, xerr=[d["t_rep_frac"] - d["t_rep_lo"], d["t_rep_hi"] - d["t_rep_frac"]], fmt=mk, color=col, ms=3, lw=0.6, capsize=1.5, label=f"{st} instructions per encounter")
         axd.set_yticks(y, arms)
@@ -926,7 +926,7 @@ def figvar(out):
         tr = st["transmissible"].astype(bool).values if len(st) == L else np.zeros(L, bool)
         scale = 64.0 / L
         for i in range(L):
-            axa.add_patch(Rectangle((i * scale, y), scale, 0.8, facecolor=INK if union[i] else "#FFFFFF", edgecolor=RULE, lw=0.3))
+            axa.add_patch(Rectangle((i * scale, y), scale, 0.8, facecolor=EXEC_C if union[i] else "#FFFFFF", edgecolor=RULE, lw=0.3))
             if tr[i]:
                 axa.plot(i * scale + scale / 2, y + 0.4, "o", color=RED, ms=2.6, mec="white", mew=0.3, zorder=5)
         axa.text(-1.0, y + 0.4, title, ha="right", va="center", fontsize=5.5, color=INK)
@@ -936,7 +936,7 @@ def figvar(out):
     axa.set_ylim(-0.2, y)
     axa.invert_yaxis()
     axa.set_axis_off()
-    h = [Rectangle((0, 0), 1, 1, facecolor=INK, edgecolor=RULE, lw=0.3, label="byte executed (fetched as instruction stream)"),
+    h = [Rectangle((0, 0), 1, 1, facecolor=EXEC_C, edgecolor=RULE, lw=0.3, label="byte executed (fetched as instruction stream)"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=RULE, lw=0.3, label="byte never executed"),
          plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="transmissible site: a mutation here is inherited")]
     axa.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5.5, frameon=False, columnspacing=1.5)
@@ -1016,7 +1016,7 @@ def _position_maps(axa):
         tr = st["transmissible"].astype(bool).values if len(st) == L else np.zeros(L, bool)
         scale = 64.0 / L
         for k in range(L):
-            axa.add_patch(Rectangle((k * scale, y), scale, 0.8, facecolor=INK if union[k] else "#FFFFFF", edgecolor=RULE, lw=0.3))
+            axa.add_patch(Rectangle((k * scale, y), scale, 0.8, facecolor=EXEC_C if union[k] else "#FFFFFF", edgecolor=RULE, lw=0.3))
             if tr[k]:
                 axa.plot(k * scale + scale / 2, y + 0.4, "o", color=RED, ms=2.6, mec="white", mew=0.3, zorder=5)
         axa.text(-1.0, y + 0.4, title, ha="right", va="center", fontsize=5.5, color=INK)
@@ -1028,7 +1028,7 @@ def _position_maps(axa):
     axa.set_ylim(-0.2, y)
     axa.invert_yaxis()
     axa.set_axis_off()
-    h = [Rectangle((0, 0), 1, 1, facecolor=INK, edgecolor=RULE, lw=0.3, label="byte executed (fetched as instruction stream)"),
+    h = [Rectangle((0, 0), 1, 1, facecolor=EXEC_C, edgecolor=RULE, lw=0.3, label="byte executed (fetched as instruction stream)"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=RULE, lw=0.3, label="byte never executed"),
          plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="transmissible site")]
     axa.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5.5, frameon=False, columnspacing=1.5)
@@ -1131,8 +1131,9 @@ def fig4v4(out):
 
 
 # ------------------------------------------------------------------------------------------------ v5 Fig. 4 (round 2)
-OPEN_C, REGEN_C, TRANS_C, INTER_C, J50_C = INK, RED, TEAL, "#E69F00", "#0072B2"
-LOST_C, ERASED_C = "#4A4A4A", "#C8CCD1"
+OPEN_C, REGEN_C, TRANS_C, INTER_C, J50_C = fs.MARK, RED, TEAL, "#E69F00", "#0072B2"
+LOST_C, ERASED_C = fs.FILL_MID, fs.FILL_LIGHT
+EXEC_C = "#7F8B98"   # byte executed (was near-black)
 SR_ROWS = [("open first replicators", OPEN_C, [("pusher16", "pusher, L = 16"), ("pusher50", "pusher, L = 50"), ("pusher64", "pusher, L = 64"), ("pusher32_8080", "pusher, 8080 subset, L = 32")]),
            ("evolved closers", REGEN_C, [("ret16", "return closer, L = 16"), ("ldir20", "block-copy tiling, L = 20"), ("ldir32", "block-copy tiling, L = 32"), ("jr50", "pusher with three jumps, L = 50")]),
            ("closers that copy bytes they never run", TRANS_C, [("lethal16_s4009", "lethal-tar closer, L = 16"), ("genome16_s6006", "transient genome, L = 16"), ("genome20_s6003", "transient genome, L = 20 (world 3)"), ("genome20_s6004", "transient genome, L = 20 (world 4)")]),
@@ -1148,7 +1149,7 @@ def _sr_partition(ax):
     S = _sr_summary()
     y, yt, yl = 0.0, [], []
     for gname, gcol, rows in SR_ROWS:
-        ax.text(-0.02, y - 0.15, gname, ha="right", va="bottom", fontsize=5.5, color=gcol if gcol != OPEN_C else INK, fontweight="bold", transform=ax.get_yaxis_transform(), gid="allow-outside")
+        ax.text(-0.02, y - 0.15, gname, ha="right", va="bottom", fontsize=5.5, color=gcol, fontweight="bold", transform=ax.get_yaxis_transform(), gid="allow-outside")
         y += 0.55
         for key, lab in rows:
             r = S.loc[key]
@@ -1212,7 +1213,7 @@ def _position_maps_sr(ax):
         s8 = st[(st.key == key) & (st.gen == 8)].set_index("pos").transmissible.reindex(range(L)).fillna(False).astype(bool).values
         scale = 64.0 / L
         for k in range(L):
-            ax.add_patch(Rectangle((k * scale, y), scale, 0.8, facecolor=INK if ex[k] else "#FFFFFF", edgecolor=RULE, lw=0.3))
+            ax.add_patch(Rectangle((k * scale, y), scale, 0.8, facecolor=EXEC_C if ex[k] else "#FFFFFF", edgecolor=RULE, lw=0.3))
             if s8[k]:
                 ax.plot(k * scale + scale / 2, y + 0.4, "o", color=TRANS_C, ms=2.6, mec="white", mew=0.3, zorder=5)
             elif s1[k]:
@@ -1226,7 +1227,7 @@ def _position_maps_sr(ax):
     ax.set_ylim(-0.2, y)
     ax.invert_yaxis()
     ax.set_axis_off()
-    h = [Rectangle((0, 0), 1, 1, facecolor=INK, edgecolor=RULE, lw=0.3, label="byte executed"),
+    h = [Rectangle((0, 0), 1, 1, facecolor=EXEC_C, edgecolor=RULE, lw=0.3, label="byte executed"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=RULE, lw=0.3, label="byte never executed"),
          plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=TRANS_C, mew=0.6, ms=3, label="site, first copy only"),
          plt.Line2D([], [], marker="o", ls="none", color=TRANS_C, ms=3, label="site, carried through eight transfers")]
@@ -1234,7 +1235,7 @@ def _position_maps_sr(ax):
 
 
 
-CLASS_PARTS = (("not heritable", "#ECEDEF"), ("open", OPEN_C), ("closed, ≤ 2 sites", REGEN_C), ("closed, 3–4 sites", INTER_C), ("closed, ≥ 5 sites", TRANS_C))
+CLASS_PARTS = (("not heritable", "#ECEDEF"), ("open", "#6F7C8B"), ("closed, ≤ 2 sites", REGEN_C), ("closed, 3–4 sites", INTER_C), ("closed, ≥ 5 sites", TRANS_C))
 
 
 def _class_bars_h(ax, rows, xlabel):
@@ -1406,7 +1407,7 @@ def ed_invasions(out):
 
 BFF_NAMES = {"std": "BFF as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal push",
              "wraplitnh": "wrap + literal push,\nharmless brackets"}
-P_COLS = {0.0: fs.BFF_VARIANT["wraplitnh"], 0.01: "#BDBDBD", 0.03: "#969696", 0.1: "#636363", 0.3: "#252525", 1.0: fs.BFF_VARIANT["wraplit"]}
+P_COLS = {0.0: fs.BFF_VARIANT["wraplitnh"], 0.01: "#BCC3CA", 0.03: "#969FAA", 0.1: "#6F7A87", 0.3: "#3E4753", 1.0: fs.BFF_VARIANT["wraplit"]}
 EPOCH_TICKS = ([64, 256, 1024, 4096, 16384], ["64", "256", "1,024", "4,096", "16,384"])
 
 
@@ -1438,7 +1439,7 @@ def _dial_lethality(ax):
         if not os.path.exists(q):
             continue
         S = _samples(q, _allp_share)
-        ax.plot(S.epoch, S.v, color=P_COLS[pv], lw=0.6, alpha=0.8)
+        ax.plot(S.epoch, S.v, color=P_COLS[pv], lw=0.6)
         n_by_p[pv] = n_by_p.get(pv, 0) + 1
     for pv in sorted(n_by_p):
         lab = {0.0: "p = 0 (harmless brackets)", 1.0: "p = 1 (as published)"}.get(pv, f"p = {pv:g}")

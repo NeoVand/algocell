@@ -46,7 +46,7 @@ def _letter(fig, ax, letter, y, dx=0.06, x=None):
 
 
 # ------------------------------------------------------------------------------------------------ Fig. 6 v5
-LC = {16: "#000000", 20: "#56B4E9", 32: "#0072B2", 64: "#999999"}
+LC = {16: "#CC79A7", 20: "#56B4E9", 32: "#0072B2", 64: "#7B3294"}   # lengths in colour; the marker key stays neutral grey
 
 
 def _theorem_panel(ax):
@@ -242,7 +242,7 @@ def _drift_panel(ax):
             ends.append(t.Tsh.iloc[-1])
         ends = np.array(ends)
         jit = (np.arange(len(ends)) - len(ends) / 2) * 0.035
-        ax.plot(i + jit, ends, marker="o", ls="none", ms=2.6, mfc=INK, mec="none")
+        ax.plot(i + jit, ends, marker="o", ls="none", ms=2.6, mfc=fs.MARK, mec="none")
     ax.axhline(0.5, color=GREY, lw=0.5, ls=(0, (3, 2)))
     ax.set_xticks(range(3), [r[2].replace(", ", ",\n") for r in rows])
     ax.set_xlim(-0.5, 2.5)
@@ -277,9 +277,9 @@ def _encounter_panel(ax):
     ax.spines["left"].set_bounds(0, 1.0)
     for k, (t, col) in enumerate((("regenerator", REGEN_C), ("transmitter", TRANS_C))):
         ax.text(1.45, 1.27 - 0.085 * k, t, color=col, fontsize=5.0, ha="left", va="center")
-    for k, (t, fill) in enumerate((("benign tar", "white"), ("lethal tar", INK))):
+    for k, (t, fill) in enumerate((("benign tar", "white"), ("lethal tar", fs.MARK))):
         y = 1.27 - 0.085 * (k + 2)
-        ax.plot([1.55], [y], marker="o", ms=2.6, mfc=fill, mec=INK, mew=0.6, ls="none")
+        ax.plot([1.55], [y], marker="o", ms=2.6, mfc=fill if fill == "white" else fs.MARK, mec=fs.MARK, mew=0.6, ls="none")
         ax.text(1.75, y, t, color=INK, fontsize=5.0, ha="left", va="center")
 
 
@@ -309,7 +309,7 @@ def _randreg_panel(ax):
     g = g.drop_duplicates(["stage", "seed", "step"])
     zs = g.groupby("step").apply(lambda d: ((d.frac_confined_of_heritable > 0.5).sum() / d.seed.nunique(), d.seed.nunique()))
     steps0 = [st for st in zs.index if zs[st][1] >= 20]
-    ax.plot(steps0, [zs[st][0] for st in steps0], marker="o", ms=2.2, color=INK, lw=0.6)
+    ax.plot(steps0, [zs[st][0] for st in steps0], marker="o", ms=2.2, color=fs.MARK, lw=0.6)
     D = pd.concat([pd.read_csv(os.path.join(R, "r4", f)) for f in ("r4_long.csv", "r4_rep.csv")])
     steps = sorted(D.step.unique())
     frac = [(D[D.step == st].confined_given_heritable > 0.5).mean() for st in steps]
@@ -319,7 +319,7 @@ def _randreg_panel(ax):
     ax.set_ylim(-0.02, 1.05)
     fs.tidy(ax, "step", "fraction of worlds closed")
     _logfmt(ax)
-    ax.text(3.6e6, 0.86, "zero registers", color=INK, fontsize=5.2, ha="right", va="center")
+    ax.text(3.6e6, 0.86, "zero registers", color=fs.MARK, fontsize=5.2, ha="right", va="center")
     ax.text(3.6e6, 0.45, "random registers\n(40 worlds)", color="#CC79A7", fontsize=5.2, ha="right", va="center")
 
 

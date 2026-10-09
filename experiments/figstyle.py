@@ -18,7 +18,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 COLOR = {
-    "none": "#000000",
+    "none": "#56616F",
     "block-copy": "#E69F00",
     "stack-writes": "#56B4E9",
     "ld-mem": "#009E73",
@@ -50,10 +50,14 @@ COL15 = 120 * MM
 DOUBLE = 180 * MM
 MAX_DEPTH = 170 * MM
 
-# Concepts, fixed across the paper: open organisms black (open markers), closed vermilion (filled), tar grey, intermediate orange.
-CONCEPT = {"open": "#000000", "closed": "#D55E00", "tar": "#999999", "intermediate": "#E69F00", "first": "#000000", "final": "#D55E00"}
+# Concepts, fixed across the paper: open organisms slate (no black fills: black reads too heavy in print), closed vermilion,
+# tar grey, intermediate orange. MARK is the neutral for filled markers, FILL_MID for filled bars and blocks.
+MARK = "#56616F"
+FILL_MID = "#8A95A1"
+FILL_LIGHT = "#D6DADF"
+CONCEPT = {"open": "#56616F", "closed": "#D55E00", "tar": "#999999", "intermediate": "#E69F00", "first": "#000000", "final": "#D55E00"}
 # BFF variants, fixed across the paper.
-BFF_VARIANT = {"std": "#000000", "wrap": "#D55E00", "wraplit": "#0072B2", "wraplitnh": "#009E73", "lit": "#CC79A7"}
+BFF_VARIANT = {"std": "#56616F", "wrap": "#D55E00", "wraplit": "#0072B2", "wraplitnh": "#009E73", "lit": "#CC79A7"}
 BFF_VARIANT_LABEL = {"std": "BFF as published", "wrap": "wrapping pointer", "wraplit": "wrap + literal push", "wraplitnh": "wrap + literal, no halt", "lit": "literal push"}
 # Tape lengths, fixed across the paper (Okabe–Ito order).
 L_COLOR = {16: "#000000", 20: "#E69F00", 50: "#0072B2", 64: "#D55E00", 36: "#009E73", 100: "#CC79A7", 9: "#56B4E9", 25: "#F0E442"}
