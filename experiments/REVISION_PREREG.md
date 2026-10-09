@@ -373,3 +373,33 @@ fetches no partner byte in any). *Prediction.* P1: no closed self-writer of peri
 successive random single-byte mutations; a trial is robust if the mutant, run for 512 instructions against the all-zero
 partner, leaves the partner equal to the mutant (shift 0; any shift reported too). *Prediction* (from ref. 22): F1, the
 block-copy finals are more robust than the pushers at every k. Reported beside the single-mutant scan of the same tapes.
+
+## E — the copy-offset switch: is erasing variation selected, or only likelier? (written before any run, 2026-10-09)
+
+*Finding that motivates it (measured before this registration, `offset_census.py`).* In the 4-byte block-copy core
+`XX 5e ed b0` (LD E,(HL); LDIR, with HL = D = B = C = 0), the first byte XX is both the first instruction and the copy
+offset: E = XX, so the copy lands at XX mod 2L. Offsets 4 and 8 (and 16 at L = 32) overwrite the ring, the organism's own
+body included, with a tiling of its first 4, 8 or 16 bytes: the closer regenerates and erases every other byte. An
+offset of exactly L copies the tape verbatim: the closer transmits. Among the 256 values of XX, the working ones are 13
+regenerating against 3 transmitting at L = 16 (`04 24 44 64 84 a4`, `08 48 68 88 a8 c8 e8` against `50 90 b0`) and 9
+against 2 at L = 32 (`04 44 84`, `08 48 88 c8`, `50 90` against `60 a0`). One byte switches a closer between erasing and
+keeping variation, and the erasing values are about four times more numerous.
+
+*Hypotheses.* H-sel: regeneration is selected (a regenerator outcompetes a transmitter with the same core). H-bias:
+the two are nearly neutral and mutation of the offset byte, which reaches a regenerating value about four times more
+often than a transmitting one, drives populations toward regeneration.
+
+*Design* (`offset_switch.py`, Modal). R and T differ only in byte 0 and in what follows the core: L = 16, R = `44 5e ed
+b0`×4, T = `b0 5e ed b0` + 12 random bytes drawn separately for every T cell; L = 32, R = `04 5e ed b0`×8, T = `a0 5e ed
+b0` + 28 random bytes. Conditions: L = 16 benign tar, L = 16 lethal tar (zero halts), L = 32 benign tar. Starts: a 50:50
+random mixture (10 worlds with mutation off, 100,000 steps; 10 with the standard mutation, 300,000 steps), and 1%
+invasions each way with mutation (5 worlds each, 300,000 steps). Every 500 steps (every 50 to 5,000): every cell is
+classified by its first four bytes (core `5e ed b0` at bytes 1–3 and the offset class of byte 0: regenerating,
+transmitting, broken) and, among transmitting cells, the number of distinct tails. Soup at the end saved.
+*Predictions (from H-bias).* E1: with mutation off, the transmitting share among core-carrying cells at 100,000 steps
+lies in 0.3–0.7 in ≥ 7 of 10 mixtures at each benign condition. E2: with mutation on, it falls below its start and
+lies in 0.05–0.4 at 300,000 steps in ≥ 7 of 10 mixtures (the neutral mutation-bias equilibrium is ≈ 0.19 at L = 16 and
+0.18 at L = 32 if only offset-byte mutations act). E3 (lethal tar): no direction registered; observed lethal-tar
+populations are mostly transmitters, and this tests whether that is selection.
+*Reading.* E1 failing with the regenerating share rising means regeneration is selected at a fixed core (H-sel); E1
+failing the other way means transmission is selected. Cost ≈ 90 worlds × 2–3 min on L40S ≈ $8.
