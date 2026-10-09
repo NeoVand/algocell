@@ -749,6 +749,99 @@ def ed14(out):
     save(fig, os.path.join(out, "ed14"))
 
 
+# ------------------------------------------------------------------------------------------- the variation figure (v4 Fig. 4)
+def figvar(out):
+    """The cost of closure and the birth of the genotype: a executed/transmissible position maps of exemplar genomes;
+    b the matched-pair invasion (jump-word share vs step); c capacity of the dominant tape over evolutionary time."""
+    sys.path.insert(0, EXP)
+    from algocell_exp import exectrace as X
+    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
+    gs_a = GridSpec(1, 1, figure=fig, left=0.2, right=0.84, top=0.9, bottom=0.6)
+    gs = GridSpec(1, 2, figure=fig, width_ratios=[1.0, 1.0], wspace=0.3, left=0.07, right=0.99, top=0.45, bottom=0.1)
+    axa = fig.add_subplot(gs_a[0, 0])
+    axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    # a: position maps
+    gG = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
+    gI = pd.read_csv(os.path.join(R, "stageI", "stageI", "stage_g_runs.csv"))
+    sG = pd.read_csv(os.path.join(R, "mutscan", "mutscan_sites.csv"))
+    sI = pd.read_csv(os.path.join(R, "mutscan_I", "mutscan_sites.csv"))
+    ex_rows = [("the first replicator (L = 50)", gG, 50, 2001, "first", sG, False),
+               ("its successor: the pusher with a jump (L = 50)", gG, 50, 2001, "final", sG, False),
+               ("return closer (L = 16)", gG, 16, 2001, "final", sG, False),
+               ("block copy with a skipped segment (L = 16)", gG, 16, 2002, "final", sG, False),
+               ("born closed under lethal tar (L = 16)", gI, 16, 4009, "final", sI, True)]
+    y = 0
+    for title, g, L, seed, which, sites, zh in ex_rows:
+        w = g[(g.L == L) & (g.seed == seed)].iloc[0]
+        tape = np.array([int(b, 16) for b in str(w[f"{which}_tape"]).split()], np.uint8)
+        rng = np.random.default_rng([20261010, L, seed])
+        Rp = rng.integers(0, 256, size=(64, L), dtype=np.uint8)
+        res, masks = X.execute_pairs_traced(np.concatenate([np.repeat(tape[None, :], 64, 0), Rp], 1), L, 128, zero_halts=zh)
+        union = X.exec_positions(masks, 2 * L)[:, :L].any(axis=0)
+        st = sites[(sites.L == L) & (sites.seed == seed) & (sites.which == which)].sort_values("pos")
+        tr = st["transmissible"].astype(bool).values if len(st) == L else np.zeros(L, bool)
+        scale = 64.0 / L
+        for i in range(L):
+            axa.add_patch(Rectangle((i * scale, y), scale, 0.8, facecolor=INK if union[i] else "#FFFFFF", edgecolor=RULE, lw=0.3))
+            if tr[i]:
+                axa.plot(i * scale + scale / 2, y + 0.4, "o", color=RED, ms=2.6, mec="white", mew=0.3, zorder=5)
+        axa.text(-1.0, y + 0.4, title, ha="right", va="center", fontsize=5.5, color=INK)
+        axa.text(65.0, y + 0.4, f"executed {int(union.sum())}/{L} · transmissible {int(tr.sum())}" + (f" ({int((tr & ~union).sum())} unexecuted)" if tr.any() else ""), ha="left", va="center", fontsize=5, color=GREY)
+        y += 1.2
+    axa.set_xlim(-0.5, 64.5)
+    axa.set_ylim(-0.2, y)
+    axa.invert_yaxis()
+    axa.set_axis_off()
+    h = [Rectangle((0, 0), 1, 1, facecolor=INK, edgecolor=RULE, lw=0.3, label="byte executed (fetched as instruction stream)"),
+         Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=RULE, lw=0.3, label="byte never executed"),
+         plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="transmissible site: a mutation here is inherited")]
+    axa.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5.5, frameon=False, columnspacing=1.5)
+    label(axa, "a", dx=0.185)
+    # b: matched-pair invasion
+    try:
+        d = pd.read_csv(os.path.join(R, "invasion_pair", "invasion_pair.csv"))
+        for (res_, inv), col, ls, lab in ((("pusher", "closed"), RED, "-", "closed form seeded at 1% into a pusher world"),
+                                          (("closed", "pusher"), GREY, "-", "pusher seeded at 1% into a closed world"),
+                                          (("pusher", "none"), INK, ":", "pusher world, no seeding (closure arises by mutation)"),
+                                          (("closed", "none"), RULE, ":", "closed world, no seeding")):
+            g_ = d[(d.resident == res_) & (d.invader == inv)]
+            first = True
+            for sd, e in g_.groupby("seed"):
+                e = e[e.step > 0].sort_values("step")
+                axb.plot(e.step, e.jump_share, color=col, ls=ls, lw=0.8, alpha=0.85, label=lab if first else None)
+                first = False
+        axb.set_xscale("log")
+        axb.set_xlim(8, 2.2e4)
+        axb.set_ylim(-0.02, 1.0)
+        fs.tidy(axb, "step", "cells carrying the jump word")
+        axb.set_gid("allow-clip")
+        axb.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+        label(axb, "b")
+    except Exception as e:  # noqa: BLE001
+        placeholder(axb, f"b (data missing: {e})")
+    # c: capacity of the dominant tape over time
+    try:
+        C = pd.read_csv(os.path.join(R, "capacity_time", "capacity_over_time.csv"))
+        C = C[C.tape != "all-zero"].dropna(subset=["capacity_bits"])
+        for L, col in ((16, L_COL[16]), (20, L_COL[20]), (50, L_COL[50]), (64, L_COL[64])):
+            d = C[(C.stage == "G") & (C.L == L)]
+            if d.empty:
+                continue
+            med = d.groupby("step").capacity_bits.median()
+            lo, hi = d.groupby("step").capacity_bits.quantile(0.25), d.groupby("step").capacity_bits.quantile(0.75)
+            axc.plot(med.index, med.values, color=col, lw=0.9, label=f"L = {L}")
+            axc.fill_between(med.index, lo.values, hi.values, color=col, alpha=0.15, lw=0)
+        axc.set_xscale("log")
+        axc.set_xlim(400, 1.2e6)
+        fs.tidy(axc, "step", "capacity for inherited variation\nof the dominant tape (bits)")
+        axc.set_gid("allow-clip")
+        axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False)
+        label(axc, "c")
+    except Exception as e:  # noqa: BLE001
+        placeholder(axc, f"c (data missing: {e})")
+    save(fig, os.path.join(out, "figvar"))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
@@ -756,7 +849,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar)):
         if a.only and name not in a.only.split(","):
             continue
         try:
