@@ -719,6 +719,36 @@ def ed13(out):
     save(fig, os.path.join(out, "ed13"))
 
 
+# ------------------------------------------------------------------------------------------------------ Extended Data 14
+def ed14(out):
+    """Mutational scan (results/mutscan/mutscan_tapes.csv): transmissible sites, capacity and robustness, first -> final per world."""
+    T = pd.read_csv(os.path.join(R, "mutscan", "mutscan_tapes.csv"))
+    Ls = [16, 20, 50, 64]
+    fig = plt.figure(figsize=(fs.DOUBLE, 58 * fs.MM))
+    gs = GridSpec(1, 3, figure=fig, wspace=0.42, left=0.075, right=0.99, top=0.84, bottom=0.14)
+    axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
+    specs = [("n_sites", "transmissible sites (positions)", (-1.5, 38.0), [0, 10, 20, 30], 35.2),
+             ("capacity_bits", "capacity for inherited variation (bits)", (-15, 440), [0, 100, 200, 300, 400], 410),
+             ("robustness_h", "single mutants that remain heritable", (-0.04, 1.12), [0, 0.25, 0.5, 0.75, 1.0], 1.04)]
+    for ax, (col, ylab, ylim, yt, hy), sd in zip(axes, specs, (0, 1, 2)):
+        groups, first, final, lf, ll = [], {}, {}, {}, {}
+        for L in Ls:
+            f = T[(T.L == L) & (T.which == "first")].set_index("seed")
+            n = T[(T.L == L) & (T.which == "final")].set_index("seed")
+            idx = [f"{L}:{sd_}" for sd_ in f.index.intersection(n.index)]
+            groups.append((f"L = {L}", idx))
+            for sd_, key in zip(f.index.intersection(n.index), idx):
+                first[key], final[key] = f.loc[sd_, col], n.loc[sd_, col]
+                lf[key], ll[key] = bool(f.loc[sd_, "has_loop"]), bool(n.loc[sd_, "has_loop"])
+        slope_chart(ax, groups, first, final, lf, ll, ylab, ylim, yt, seed=sd, header_y=hy)
+    h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (jump, return or LDIR)"),
+         plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
+    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
+    for ax, letter in zip(axes, "abc"):
+        label(ax, letter)
+    save(fig, os.path.join(out, "ed14"))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
@@ -726,7 +756,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14)):
         if a.only and name not in a.only.split(","):
             continue
         try:

@@ -28,6 +28,7 @@ ED_FILES = {
     "11": [os.path.join(EXP, "results", "biology", "individuality", "fig_bff_slope.pdf")],
     "12": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
     "13": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
+    "14": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
 }
 
 SYM = {
