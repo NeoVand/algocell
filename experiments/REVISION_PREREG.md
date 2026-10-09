@@ -530,3 +530,76 @@ the closers that evolve there are transmitters carrying never-executed bytes, as
 "The L = 50 closer's lineage stops copying at the third transfer" is wrong by one: generations 1 and 2 copy into every
 partner, generation 3 (made at the third transfer) copies into 0.008 of partners, and the fourth transfer fails. The
 manuscript says "at the fourth transfer".
+
+## DZ — the lethality dial in the Z80 (written before any run, 2026-10-09; round-2 report, optional item 3)
+
+*Question.* Two harsh conditions, lethal tar and random registers, gave closed populations of transmitters, and the
+benign one regenerators; benign tar closed L = 16 earlier than lethal tar. Is there a dose–response, and does closure
+timing track the open window as Model 5 says?
+*Design* (`gen_dial_shader.py`, `dial_soups.py`, `modal_dial.py`). Derived shaders in which a zero byte fetched as the
+first byte of an instruction halts the pair with probability p (a fresh draw per fetch), p ∈ {0, 0.01, 0.03, 0.1,
+0.3, 1}. Validated before any soup (65,536 random pairs with 25% zero bytes): p = 0 equals the standard executor and
+p = 1 the Stage I executor, exactly. L = 16, Stage G conditions (20,000 tapes, square lattice, 8,192 pairs per step,
+128 instructions, the standard mutation), 10 worlds per p with seeds 9001–9010 (the same seeds at every
+p), 300,000 steps. Top-3 tapes every 50 steps to 2,000, every 250 to 20,000 and every 2,500 after; snapshots at 2,000,
+20,000, 100,000 and 300,000. Every assay runs under the world's own p.
+*Endpoints.* t_rep: first sample with a heritable top-3 tape holding ≥ 0.5% of cells; whether that first replicator is
+open (its pointer enters the partner in at least half of 16 traced encounters). t_closed: first sample with a top-3 tape
+(≥ 0.5%) heritable and confined in 16 of 16 encounters; censored at 300,000. Population classes at 300,000 steps (64
+random cells; up to 16 heritable cells scanned): share of heritable cells that are transmitters (confined, ≥ 5
+transmissible sites) and regenerators (confined, ≤ 2).
+*Predictions.* DZ1 (the open beginning): the first replicator is open in ≥ 8 of 10 worlds at p = 0 and ≤ 2 of 10 at
+p = 1, and the number of open-first worlds falls with p (Cochran–Armitage trend on the rank of p, one-sided P < 0.05).
+DZ2 (Model 5, closure timing tracks the window): first closure is later at higher p: Kaplan–Meier medians non-decreasing
+across the six levels up to one reversal, and Spearman correlation between p and t_closed (censored values at the
+horizon) positive with permutation P < 0.05. DZ3 (the environment's choice): the transmitter share of heritable cells at
+300,000 steps rises with p (Spearman, permutation P < 0.05); transmitters are the majority of heritable cells in ≤ 3 of
+10 worlds at p = 0 and ≥ 7 of 10 at p = 1.
+*Kill.* DZ2 failing: Model 5's window reading of closure timing is restricted to the benign/lethal contrast. DZ3 failing:
+"the environment chooses" is restated as a contrast of two conditions, not a dose–response. *Cost.* 60 worlds × ≈ 3 min
+on L40S ≈ $6.
+
+## C4a-rep — replication of closure under random registers (written before the run, 2026-10-09)
+*Why.* The independent figure critic noted that the 6 closed C4a worlds are all odd seeds (8101–8111); the chance of
+that split is about 0.005, though it was noticed post hoc. Batch seeds come from SplitMix64 of the world seed and the
+wall times show no split by GPU type, so no mechanism is known; a replication settles it. *Design.* 20 new
+random-register worlds at L = 16, seeds 8201–8220, 3,000,000 steps, as C4a, with the GPU model recorded per world.
+*Prediction.* Closure (most heritable cells confined) by 3,000,000 steps in 2–12 of 20; closed worlds not concentrated in
+one seed parity (both parities represented if ≥ 4 close). *Reading.* Fewer than 2 closures: the C4a rate is reported as
+an upper estimate, pooled with the replication.
+
+### Correction to the outcome of E (2026-10-09, figure critic)
+The core was lost (fewer than 1,000 core cells after 20,000 steps) in 7 of the 20 lethal-tar worlds with mutation, not
+3: 1 of 5 started from 1% regenerators, 3 of 5 from 1% transmitters and 3 of 10 mixtures. At L = 16 benign with mutation
+it was lost in all 20. Fixed-time shares, counting only worlds with ≥ 1,000 core cells (`offset_switch_times.py`,
+`results/offset/SWITCH_TIMES.md`): L = 16 lethal, 0.71–0.92 at 20,000 steps in all 20 worlds and 0.79–0.92 at 300,000 in
+the 13 that kept the core; L = 32 benign, 0.03–0.37 at 300,000 in all 20.
+
+## PE — parent × environment serial transfer (written before the run, 2026-10-09; third report, top request)
+
+*Question.* Is the regenerate-or-transmit mode a property of the parent, or of the environment it is copied in?
+*Design* (`pe_matrix.py`, local GPU; the serial-retention machinery of S: every single-byte mutant, 16 lineages each, 256
+unmutated control lineages, eight serial transfers, five-byte window allele). Six parents at L = 16: the pusher `01 c5` × 8;
+the evolved return closer (`ad e3 21 e3 21 c0 ad c0` × 2); the block-copy regenerator R = `44 5e ed b0` × 4; the matched
+transmitter T = `b0 5e ed b0` + 12 fixed random bytes; the evolved lethal-tar closer of world 4009; the hand-built
+self-initialising closer `2e 00 1e 10 ed b0` + 10 fixed random bytes. Six environments: (1) benign rule, uniform random
+partners; (2) lethal rule (zero halts), random partners; (3) benign rule, partners drawn from the final soup of Stage G
+world 2001 (closed); (4) lethal rule, partners from the final soup of Stage I world 4001; (5) benign rule, partners from
+the open phase of world 2001 (the recorded snapshot nearest step 5,000); (6) random registers, random partners.
+*Endpoints* per parent and environment: unmutated lineages alive after eight transfers; transmissible sites after one
+and eight transfers (S's definition); shares of mutant lineages lost, erased and carrying the allele at eight.
+*Predictions.* PE1 (the mode belongs to the parent): wherever a parent's unmutated lineages survive (≥ 0.5 alive at
+eight transfers), the two regenerators carry ≤ 2 sites after eight transfers and the three transmitters ≥ 8. PE2: the
+pusher's lineages are lost (≤ 0.2 alive at eight) in every environment. PE3 (descriptive): under random registers only
+the self-initialising closer survives (≥ 0.9 alive), the zero-register closers ≤ 0.1. *Kill.* PE1 failing in any
+environment: the mode is reported as environment-dependent there.
+
+### Outcome of PE (appended 2026-10-09; `results/pe/PE_MATRIX.md`, `pe_matrix.csv`; local GPU)
+PE1 met: in all 24 parent–environment cells in which the unmutated lineages survived (all with 1.00 alive at eight
+transfers), the regenerators carried 0 sites after eight transfers and the transmitters 9–12 (block-copy T 12 in every
+environment, the lethal-tar closer 9, the self-initialising closer 10–11). PE2 not met: the pusher's lineages were lost
+everywhere except with partners drawn from the closed benign world, where 0.36 of them were alive at eight transfers
+(0.00–0.04 elsewhere), still with 0 sites. PE3 as described: under random registers only the self-initialising closer
+survived (1.00, 10 sites); the zero-register closers and the pusher 0.00–0.01. Also: the return closer dies under the
+lethal rule (0.00 alive with random partners and with lethal-world partners), while both block copiers survive it.
+*Reading:* the mode of heredity belongs to the parent; the environment decides which parents survive.

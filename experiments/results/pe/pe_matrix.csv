@@ -1,0 +1,37 @@
+environment,parent,mode,tape,alive_g8,alive_g1,sites_g1,sites_g8,lost_g8,erased_g8,retained_g8,wall_s
+"random partners, benign",pusher,open,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,0.01953125,0.68359375,0,0,0.95,0.04998468137254902,1.5318627450980392e-05,0.8
+"random partners, benign",return closer,regenerator,ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0,1.0,1.0,0,0,0.39659926470588236,0.6034007352941176,0.0,0.4
+"random partners, benign",block-copy R,regenerator,44 5e ed b0 44 5e ed b0 44 5e ed b0 44 5e ed b0,1.0,1.0,0,0,0.2426470588235294,0.7533394607843137,0.004013480392156862,0.4
+"random partners, benign",block-copy T,transmitter,b0 5e ed b0 f5 b6 9a 57 0e ed b2 40 4d 11 56 a0,1.0,1.0,12,12,0.24934129901960783,0.0001685049019607843,0.7504901960784314,0.4
+"random partners, benign",lethal-tar closer 4009,transmitter,1d 2e 0f c3 eb 1d 74 5b 70 a0 28 ed b8 7f 8d 1c,1.0,1.0,9,9,0.43161764705882355,0.0,0.5683823529411764,0.4
+"random partners, benign",self-initialising closer,transmitter,2e 00 1e 10 ed b0 2d 42 08 bd d5 ee 2f 76 8d 1a,1.0,1.0,11,11,0.3157781862745098,0.008486519607843137,0.6757352941176471,0.4
+"random partners, lethal",pusher,open,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,0.0,0.65234375,3,0,1.0,0.0,0.0,0.4
+"random partners, lethal",return closer,regenerator,ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0,0.0,0.0,0,0,1.0,0.0,0.0,0.4
+"random partners, lethal",block-copy R,regenerator,44 5e ed b0 44 5e ed b0 44 5e ed b0 44 5e ed b0,1.0,1.0,0,0,0.24284620098039217,0.753155637254902,0.003998161764705882,0.4
+"random partners, lethal",block-copy T,transmitter,b0 5e ed b0 f5 b6 9a 57 0e ed b2 40 4d 11 56 a0,1.0,1.0,12,12,0.24934129901960783,0.0001685049019607843,0.7504901960784314,0.4
+"random partners, lethal",lethal-tar closer 4009,transmitter,1d 2e 0f c3 eb 1d 74 5b 70 a0 28 ed b8 7f 8d 1c,1.0,1.0,9,9,0.43161764705882355,0.0,0.5683823529411764,0.4
+"random partners, lethal",self-initialising closer,transmitter,2e 00 1e 10 ed b0 2d 42 08 bd d5 ee 2f 76 8d 1a,1.0,1.0,10,10,0.3611825980392157,0.004013480392156862,0.6348039215686274,0.4
+closed benign world,pusher,open,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,0.35546875,0.93359375,1,0,0.7741421568627451,0.2258578431372549,0.0,0.4
+closed benign world,return closer,regenerator,ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0,1.0,1.0,0,0,0.26613051470588234,0.7333026960784313,0.0005667892156862746,0.4
+closed benign world,block-copy R,regenerator,44 5e ed b0 44 5e ed b0 44 5e ed b0 44 5e ed b0,1.0,1.0,0,0,0.2359375,0.7585477941176471,0.0055147058823529415,0.4
+closed benign world,block-copy T,transmitter,b0 5e ed b0 f5 b6 9a 57 0e ed b2 40 4d 11 56 a0,1.0,1.0,12,12,0.24950980392156863,0.0,0.7504901960784314,0.4
+closed benign world,lethal-tar closer 4009,transmitter,1d 2e 0f c3 eb 1d 74 5b 70 a0 28 ed b8 7f 8d 1c,1.0,1.0,9,9,0.4315410539215686,0.0,0.5684589460784314,0.4
+closed benign world,self-initialising closer,transmitter,2e 00 1e 10 ed b0 2d 42 08 bd d5 ee 2f 76 8d 1a,1.0,1.0,11,11,0.317202818627451,0.006816789215686275,0.6759803921568628,0.4
+lethal world,pusher,open,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,0.0,0.46484375,2,0,1.0,0.0,0.0,0.4
+lethal world,return closer,regenerator,ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0,0.0,0.0,0,0,1.0,0.0,0.0,0.3
+lethal world,block-copy R,regenerator,44 5e ed b0 44 5e ed b0 44 5e ed b0 44 5e ed b0,1.0,1.0,0,0,0.23704044117647058,0.7577665441176471,0.005193014705882353,0.4
+lethal world,block-copy T,transmitter,b0 5e ed b0 f5 b6 9a 57 0e ed b2 40 4d 11 56 a0,1.0,1.0,12,12,0.2471047794117647,0.0008731617647058824,0.7520220588235295,0.4
+lethal world,lethal-tar closer 4009,transmitter,1d 2e 0f c3 eb 1d 74 5b 70 a0 28 ed b8 7f 8d 1c,1.0,1.0,9,9,0.43160232843137253,0.0,0.5683976715686274,0.4
+lethal world,self-initialising closer,transmitter,2e 00 1e 10 ed b0 2d 42 08 bd d5 ee 2f 76 8d 1a,1.0,1.0,10,10,0.3616268382352941,0.0035692401960784313,0.6348039215686274,0.4
+open phase (t5000),pusher,open,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,0.0390625,0.828125,1,0,0.9688265931372549,0.0311734068627451,0.0,0.4
+open phase (t5000),return closer,regenerator,ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0,1.0,1.0,0,0,0.39526654411764706,0.6047334558823529,0.0,0.4
+open phase (t5000),block-copy R,regenerator,44 5e ed b0 44 5e ed b0 44 5e ed b0 44 5e ed b0,1.0,1.0,0,0,0.2420189950980392,0.7539368872549019,0.004044117647058824,0.4
+open phase (t5000),block-copy T,transmitter,b0 5e ed b0 f5 b6 9a 57 0e ed b2 40 4d 11 56 a0,1.0,1.0,12,12,0.24950980392156863,0.0,0.7504901960784314,0.4
+open phase (t5000),lethal-tar closer 4009,transmitter,1d 2e 0f c3 eb 1d 74 5b 70 a0 28 ed b8 7f 8d 1c,1.0,1.0,9,9,0.43161764705882355,0.0,0.5683823529411764,0.4
+open phase (t5000),self-initialising closer,transmitter,2e 00 1e 10 ed b0 2d 42 08 bd d5 ee 2f 76 8d 1a,1.0,1.0,11,11,0.31590073529411766,0.008363970588235294,0.6757352941176471,0.4
+random registers,pusher,open,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,0.01171875,0.6640625,0,0,0.9879136029411765,0.01208639705882353,0.0,0.4
+random registers,return closer,regenerator,ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0,0.0,0.32421875,0,0,0.9998927696078431,0.00010723039215686274,0.0,0.4
+random registers,block-copy R,regenerator,44 5e ed b0 44 5e ed b0 44 5e ed b0 44 5e ed b0,0.0,0.11328125,1,0,0.999938725490196,0.0,6.127450980392157e-05,0.4
+random registers,block-copy T,transmitter,b0 5e ed b0 f5 b6 9a 57 0e ed b2 40 4d 11 56 a0,0.0,0.02734375,0,0,1.0,0.0,0.0,0.4
+random registers,lethal-tar closer 4009,transmitter,1d 2e 0f c3 eb 1d 74 5b 70 a0 28 ed b8 7f 8d 1c,0.0,0.14453125,7,0,1.0,0.0,0.0,0.4
+random registers,self-initialising closer,transmitter,2e 00 1e 10 ed b0 2d 42 08 bd d5 ee 2f 76 8d 1a,1.0,1.0,10,10,0.3723958333333333,0.0034926470588235296,0.6241115196078432,0.4

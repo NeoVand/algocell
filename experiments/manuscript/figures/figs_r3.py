@@ -23,7 +23,6 @@ from make_figures import fs, cp, plt, GridSpec, R, save, placeholder, INK, GREY,
 
 EXP = mf.EXP
 OPEN_C, REGEN_C, TRANS_C = mf.OPEN_C, mf.REGEN_C, mf.TRANS_C
-LC = {16: "#000000", 20: "#E69F00", 32: "#009E73", 64: "#D55E00"}
 
 
 def _letter(fig, ax, letter, y, dx=0.06, x=None):
@@ -34,6 +33,34 @@ def _letter(fig, ax, letter, y, dx=0.06, x=None):
 
 
 # ------------------------------------------------------------------------------------------------ Fig. 6 v5
+LC = {16: "#000000", 20: "#56B4E9", 32: "#0072B2", 64: "#999999"}
+
+
+def _theorem_panel(ax):
+    """Theorem 2 as used for the Z80 with benign tar (concept): open in black, closed in vermilion (the paper's concepts)."""
+    cp.finish(ax, (-0.5, 30.5), (0.2, 13.0))
+    W = 1.25
+    org = ["", "", "", "…", "", "", "", ""]
+    ax.add_patch(mf.Rectangle((0.5, 11.25), 29.0, 1.05, facecolor="white", edgecolor=INK, lw=0.5, zorder=2))
+    ax.text(15.0, 11.77, "128 executions per encounter", ha="center", va="center", fontsize=6, color=INK, zorder=3)
+    ax.add_patch(mf.Rectangle((0.5, 9.95), 29.0 * 100 / 128, 1.05, facecolor=cp.TEAL_FILL, edgecolor=INK, lw=0.5, zorder=2))
+    ax.text(0.5 + 29.0 * 100 / 256, 10.47, "at most 100 cells of the organism", ha="center", va="center", fontsize=6, color=INK, zorder=3)
+    y = 6.0
+    cp.text_runs(ax, 0.5, y + 1.6, [("open", INK, True), (" · leaves its cells", INK, False)], fs=6.5)
+    cp.strip(ax, 0.5, y, org, w=W, h=1.2)
+    cp.strip(ax, 0.5 + W * len(org), y, ["", "", "", "…", "", ""], fill=cp.GREY_FILL, w=W, h=1.2)
+    cp.arrow(ax, (0.9, y - 0.4), (0.5 + W * 13.7, y - 0.4), color=INK, lw=1.0)
+    ax.text(0.5 + W * 14 + 0.6, y + 0.6, "partner", ha="left", va="center", fontsize=6, color=INK)
+    y = 1.6
+    cp.text_runs(ax, 0.5, y + 1.6, [("closed", RED, True), (" · revisits a cell", INK, False)], fs=6.5)
+    cp.strip(ax, 0.5, y, org, w=W, h=1.2)
+    x_end = 0.5 + W * len(org)
+    cp.arrow(ax, (0.9, y - 0.4), (x_end - 0.4, y - 0.4), color=INK, lw=1.0)
+    cp.arrow(ax, (x_end - 0.4, y - 0.6), (1.1, y - 0.6), color=RED, lw=1.0, rad=-0.18)
+    ax.text(x_end + 0.9, y + 0.8, "128 executions in L cells:", ha="left", va="bottom", fontsize=6, color=INK)
+    ax.text(x_end + 0.9, y + 0.6, "some cell runs twice, a cycle", ha="left", va="top", fontsize=6, color=INK)
+
+
 def _census_panel(ax):
     """Self-writers among all words of period 2, 3 and 4 tiled to 16 bytes (Proposition 3), open against closed."""
     counts = {}
@@ -41,41 +68,36 @@ def _census_panel(ax):
         d = pd.read_csv(os.path.join(R, "review_r2", f"census_p{k}.csv"))
         d = d[d.primitive_period == k] if "primitive_period" in d else d
         counts[k] = (int((~d.closed.astype(bool)).sum()), int(d.closed.astype(bool).sum()))
-    x = np.arange(3)
-    w = 0.36
     for i, k in enumerate((2, 3, 4)):
         o, c = counts[k]
-        for dx, v, col in ((-w / 2, o, OPEN_C), (w / 2, c, REGEN_C)):
-            if v > 0:
-                ax.bar(i + dx, v, width=w * 0.92, color=col, edgecolor="none")
-            ax.text(i + dx, max(v, 1) * 1.25, f"{v:,}", ha="center", va="bottom", fontsize=5.0, color=col)
-    ax.set_yscale("log")
-    ax.set_ylim(0.8, 3000)
-    ax.set_xticks(x, ["2", "3", "4"])
-    ax.set_xlim(-0.6, 2.6)
+        for dx, v, col in ((-0.13, o, OPEN_C), (0.13, c, REGEN_C)):
+            ax.plot([i + dx, i + dx], [0, v], color=col, lw=0.8, solid_capstyle="butt")
+            ax.plot(i + dx, v, marker="o", ms=3.2, mfc=col, mec=col, ls="none")
+            ax.text(i + dx, v + 22, f"{v:,}", ha="center", va="bottom", fontsize=5.0, color=col)
+    ax.set_ylim(0, 650)
+    ax.set_xticks(range(3), ["2", "3", "4"])
+    ax.set_xlim(-0.55, 2.55)
     fs.tidy(ax, "period of the tiled word (bytes)", "self-writers")
-    ax.text(-0.5, 2200, "open", color=OPEN_C, fontsize=5.5, va="top")
-    ax.text(-0.5, 1050, "closed", color=REGEN_C, fontsize=5.5, va="top")
+    ax.text(-0.45, 630, "open", color=OPEN_C, fontsize=5.5, va="top")
+    ax.text(-0.45, 565, "closed", color=REGEN_C, fontsize=5.5, va="top")
 
 
 def _copy_period_panel(ax):
-    """Transmissible sites against the copy offset d for confined block-copy cells of the population scans."""
+    """Transmissible sites against the copy offset d for every confined block-copy cell with d <= L (medians by group)."""
     D = pd.read_csv(os.path.join(R, "offset", "offset_cells.csv"))
     D = D[D.offset <= D.L]
     xs = np.geomspace(4, 67, 200)
     ax.plot(xs, xs - 4, color=GREY, lw=0.6, ls=(0, (3, 2)), zorder=1)
     ax.text(40, 30, "d − 4", color=GREY, fontsize=5.5, ha="left", va="top")
     for (L, d), e in D.groupby(["L", "offset"]):
-        if len(e) < 3:
-            continue
         med = e.n_sites.median()
-        q1, q3 = e.n_sites.quantile(0.25), e.n_sites.quantile(0.75)
         col = LC.get(int(L), GREY)
-        ms = 2.2 + 1.1 * np.log10(len(e))
-        filled = d == L
-        d = d * {16: 0.93, 20: 0.98, 32: 1.03, 64: 1.08}.get(int(L), 1.0)
-        ax.errorbar(d, med, yerr=[[med - q1], [q3 - med]], fmt="none", ecolor=col, elinewidth=0.5, zorder=2)
-        ax.plot(d, med, marker="o", ms=ms, mfc=col if filled else "white", mec=col, mew=0.7, zorder=3, ls="none")
+        x = d * {16: 0.93, 20: 0.98, 32: 1.03, 64: 1.08}.get(int(L), 1.0)
+        if int(L) % int(d):
+            ax.plot(x, med, marker="x", ms=3.0, mec=col, mew=0.8, ls="none", zorder=3)
+            continue
+        ms = 2.0 + 1.1 * np.log10(len(e))
+        ax.plot(x, med, marker="o", ms=ms, mfc=col if d == L else "white", mec=col, mew=0.7, zorder=3, ls="none")
     ax.set_xscale("log", base=2)
     ax.set_xticks([4, 8, 16, 32, 64], ["4", "8", "16", "32", "64"])
     ax.minorticks_off()
@@ -84,10 +106,10 @@ def _copy_period_panel(ax):
     fs.tidy(ax, "copy offset d (bytes)", "transmissible sites")
     for i, L in enumerate((16, 20, 32, 64)):
         ax.text(3.6, 61 - 5.2 * i, f"L = {L}", color=LC[L], fontsize=5.2, va="center")
-    ax.plot([11.5], [61], marker="o", ms=3.0, mfc="white", mec=INK, mew=0.7, ls="none")
-    ax.text(13.2, 61, "d < L, regenerates", fontsize=5.2, va="center", color=INK)
-    ax.plot([11.5], [55.8], marker="o", ms=3.0, mfc=INK, mec=INK, mew=0.7, ls="none")
-    ax.text(13.2, 55.8, "d = L, transmits", fontsize=5.2, va="center", color=INK)
+    for yy, kw, txt in ((61, dict(marker="o", mfc="white"), "d < L, regenerates"), (55.8, dict(marker="o", mfc=GREY), "d = L, transmits"),
+                        (50.6, dict(marker="x"), "d does not divide L")):
+        ax.plot([11.5], [yy], ms=3.0, mec=GREY, mew=0.7, ls="none", **kw)
+        ax.text(13.2, yy, txt, fontsize=5.2, va="center", color=INK)
 
 
 def fig6v5(out):
@@ -96,7 +118,7 @@ def fig6v5(out):
     axa = fig.add_axes([0.01, 0.04, 0.44, 0.86])
     axb = fig.add_axes([0.535, 0.2, 0.15, 0.66])
     axc = fig.add_axes([0.775, 0.2, 0.215, 0.66])
-    cp.fig6a(axa)
+    _theorem_panel(axa)
     axa.set_anchor("NW")
     for ax, fn, letter in ((axb, _census_panel, "b"), (axc, _copy_period_panel, "c")):
         try:
@@ -110,19 +132,24 @@ def fig6v5(out):
 
 
 # ------------------------------------------------------------------------------------------------ ED Fig. 9 v2
-def _aligned_panel(ax, L):
+def _aligned_panel(ax, L, legend=False):
     D = pd.read_csv(os.path.join(R, "invasion_aligned", "invasion_aligned.csv"))
     d0 = D[D.L == L]
     first = True
+    for sd, d in d0[(d0.resident == "pusher") & (d0.invader == "none")].groupby("seed"):
+        d = d[d.step > 0].sort_values("step")
+        ax.plot(d.step, d.pusher_share, color="#B4BAC1", lw=0.8, label="pusher, unseeded pusher world" if first else None, zorder=1)
+        first = False
+    first = True
     for sd, d in d0[(d0.resident == "pusher") & (d0.invader == "closer")].groupby("seed"):
         d = d[d.step > 0].sort_values("step")
-        ax.plot(d.step, d.closer_share, color=REGEN_C, lw=0.8, label="closer, seeded into a pusher world" if first else None)
-        ax.plot(d.step, d.pusher_share, color=OPEN_C, lw=0.8, label="pusher in that world" if first else None)
+        ax.plot(d.step, d.closer_share, color=REGEN_C, lw=0.8, label="closer, seeded at 1% into a pusher world" if first else None, zorder=3)
+        ax.plot(d.step, d.pusher_share, color=OPEN_C, lw=0.8, label="pusher, in those worlds" if first else None, zorder=2)
         first = False
     first = True
     for sd, d in d0[(d0.resident == "closer") & (d0.invader == "pusher")].groupby("seed"):
         d = d[d.step > 0].sort_values("step")
-        ax.plot(d.step, d.pusher_share, color=OPEN_C, lw=0.8, ls=(0, (1, 1.2)), label="pusher, seeded into a closer world" if first else None)
+        ax.plot(d.step, d.pusher_share, color=OPEN_C, lw=0.8, ls=(0, (1, 1.2)), label="pusher, seeded at 1% into a closer world (at zero)" if first else None, zorder=2)
         first = False
     ax.set_xscale("log")
     ax.set_xlim(8, 2.5e4)
@@ -130,7 +157,8 @@ def _aligned_panel(ax, L):
     fs.tidy(ax, "step", "share of cells (class)")
     name = "return closer" if L == 16 else "block-copy tiling"
     ax.text(0.02, 1.0, f"L = {L}, {name}", transform=ax.transAxes, fontsize=6, ha="left", va="bottom", gid="allow-outside")
-    ax.legend(fontsize=5.3, loc="lower center", bbox_to_anchor=(0.5, 1.07), ncol=3, frameon=False, columnspacing=1.0)
+    if legend:
+        ax.legend(fontsize=5.3, loc="lower left", bbox_to_anchor=(0.0, 1.1), ncol=2, frameon=False, columnspacing=1.2)
 
 
 def ed_invasions2(out):
@@ -138,17 +166,17 @@ def ed_invasions2(out):
     fig = plt.figure(figsize=(fs.DOUBLE, 158 * fs.MM))
     gs = GridSpec(1, 2, figure=fig, wspace=0.35, left=0.08, right=0.985, top=0.9, bottom=0.71)
     gs2 = GridSpec(1, 1, figure=fig, left=0.33, right=0.80, top=0.585, bottom=0.355)
-    gs3 = GridSpec(1, 2, figure=fig, wspace=0.35, left=0.08, right=0.985, top=0.225, bottom=0.06)
+    gs3 = GridSpec(1, 2, figure=fig, wspace=0.35, left=0.08, right=0.985, top=0.2, bottom=0.06)
     axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     axc = fig.add_subplot(gs2[0, 0])
     axd, axe = fig.add_subplot(gs3[0, 0]), fig.add_subplot(gs3[0, 1])
     for ax, fn, letter in ((axa, mf._marker_vs_confined, "a"), (axb, mf._a1_curves, "b"), (axc, mf._inv_classes, "c"),
-                           (axd, lambda a: _aligned_panel(a, 16), "d"), (axe, lambda a: _aligned_panel(a, 32), "e")):
+                           (axd, lambda a: _aligned_panel(a, 16, legend=True), "d"), (axe, lambda a: _aligned_panel(a, 32), "e")):
         try:
             fn(ax)
         except Exception as e:  # noqa: BLE001
             placeholder(ax, f"{letter} (data missing: {e})")
-    for ax, letter, y in ((axa, "a", 0.99), (axb, "b", 0.99), (axc, "c", 0.66), (axd, "d", 0.295), (axe, "e", 0.295)):
+    for ax, letter, y in ((axa, "a", 0.99), (axb, "b", 0.99), (axc, "c", 0.66), (axd, "d", 0.285), (axe, "e", 0.285)):
         _letter(fig, ax, letter, y, x=0.01 if letter == "c" else None, dx=0.07)
     save(fig, os.path.join(out, "ed_invasions2"))
 
@@ -172,7 +200,9 @@ def _traj(L, tar, mut):
 def _switch_panel(ax, L, tar, title):
     seen = set()
     for c, t in _traj(L, tar, "on"):
-        t = t[t.step > 0]
+        t = t[t.step > 0].copy()
+        late = t.step > 5000
+        t.loc[late, "Tsh"] = t.loc[late, "Tsh"].rolling(9, center=True, min_periods=3).median()
         lab = START_LAB[c["start"]] if c["start"] not in seen else None
         seen.add(c["start"])
         ax.plot(t.step, t.Tsh, color=START_C[c["start"]], lw=0.55, alpha=0.85, label=lab)
@@ -210,23 +240,31 @@ def _parse_md_table(path):
 
 def _encounter_panel(ax):
     head, rows = _parse_md_table(os.path.join(R, "offset", "OFFSET_ENCOUNTER.md"))
-    comps = ["copies into a\nsoup partner", "survives as partner\nof a soup executor", "core intact\nas partner", "single mutant\nstill copies"]
-    y = np.arange(4)[::-1]
-    for r in rows:
-        tar, typ = r[0], r[1]
-        vals = [float(v) for v in r[2:6]]
-        col = REGEN_C if typ == "R" else TRANS_C
-        mk = "o" if tar == "benign" else "s"
-        off = 0.12 if typ == "R" else -0.12
-        ax.plot(vals, y + off, marker=mk, ls="none", ms=2.8, mfc=col if tar == "lethal" else "white", mec=col, mew=0.7)
-    ax.set_yticks(y, comps)
+    comps = ["copies into a partner", "survives as a partner", "core intact as partner", "mutant still copies"]
+    labels, y = [], 0
+    for ci, comp in enumerate(comps):
+        for tar in ("benign", "lethal"):
+            for r in rows:
+                if r[0] != tar:
+                    continue
+                v = float(r[2 + ci])
+                col = REGEN_C if r[1] == "R" else TRANS_C
+                ax.plot(v, -y + (0.13 if r[1] == "R" else -0.13), marker="o", ls="none", ms=2.8, mfc=col, mec=col)
+            labels.append(f"{comp}, {tar}")
+            y += 1
+        y += 0.5
+    ys = []
+    yy = 0
+    for ci in range(4):
+        ys += [-yy, -(yy + 1)]
+        yy += 2.5
+    ax.set_yticks(ys, labels)
     ax.set_xlim(-0.03, 1.05)
-    ax.set_ylim(-0.6, 3.6)
+    ax.set_ylim(-(yy - 1.5) - 0.7, 0.8)
     fs.tidy(ax, "share of 4,096 encounters", None)
-    ax.tick_params(axis="y", labelsize=5)
-    for i, (t, col) in enumerate((("regenerator", REGEN_C), ("transmitter", TRANS_C))):
-        ax.text(0.3, 3.45 - 0.34 * i, t, color=col, fontsize=5.2, ha="left", va="center")
-    ax.text(0.3, 2.77, "open, benign tar; filled, lethal", color=INK, fontsize=5.0, ha="left", va="center")
+    ax.tick_params(axis="y", labelsize=5.0)
+    ax.text(0.3, 0.55, "regenerator", color=REGEN_C, fontsize=5.2, ha="left", va="center")
+    ax.text(0.3, -0.3, "transmitter", color=TRANS_C, fontsize=5.2, ha="left", va="center")
 
 
 def _ref22_panel(ax):
@@ -259,20 +297,20 @@ def _randreg_panel(ax):
     D = pd.read_csv(os.path.join(R, "r4", "r4_long.csv"))
     steps = sorted(D.step.unique())
     frac = [(D[D.step == s].confined_given_heritable > 0.5).mean() for s in steps]
-    ax.step([1e3] + steps + [3e6], [0] + frac + [frac[-1]], where="post", color=TRANS_C, lw=0.9, label=None)
-    ax.plot(steps, frac, marker="o", ms=2.2, color=TRANS_C, ls="none")
+    ax.step([1e3] + steps + [3e6], [0] + frac + [frac[-1]], where="post", color="#0072B2", lw=0.9, label=None)
+    ax.plot(steps, frac, marker="o", ms=2.2, color="#0072B2", ls="none")
     ax.set_xscale("log")
     ax.set_xlim(1e3, 3.3e6)
     ax.set_ylim(-0.02, 1.05)
-    fs.tidy(ax, "step", "worlds closed")
+    fs.tidy(ax, "step", "fraction of worlds closed")
     ax.text(1.1e3, 0.72, "zero registers\n(Stages G and L,\n30 worlds)", color=INK, fontsize=5.2, ha="left", va="center")
-    ax.text(2.5e4, 0.2, "random registers\n(20 worlds)", color=TRANS_C, fontsize=5.2, ha="left", va="center")
+    ax.text(2.5e4, 0.2, "random registers\n(20 worlds)", color="#0072B2", fontsize=5.2, ha="left", va="center")
 
 
 def ed_switch(out):
     """Extended Data Fig. 10 | The copy-offset switch and closure without supplied registers."""
     fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
-    gs = GridSpec(2, 3, figure=fig, wspace=0.62, hspace=0.75, left=0.09, right=0.985, top=0.9, bottom=0.1)
+    gs = GridSpec(2, 3, figure=fig, wspace=0.62, hspace=0.6, left=0.11, right=0.985, top=0.9, bottom=0.1)
     axa, axb, axc = (fig.add_subplot(gs[0, i]) for i in range(3))
     axd, axe, axf = (fig.add_subplot(gs[1, i]) for i in range(3))
     for ax, fn, letter in ((axa, lambda a: _switch_panel(a, 32, "benign", "L = 32, benign tar"), "a"),
@@ -286,7 +324,7 @@ def ed_switch(out):
             placeholder(ax, f"{letter} (data missing: {e})")
     axa.legend(fontsize=5.2, loc="lower center", bbox_to_anchor=(1.25, 1.12), ncol=3, frameon=False)
     for ax, letter, y in ((axa, "a", 0.985), (axb, "b", 0.985), (axc, "c", 0.985), (axd, "d", 0.47), (axe, "e", 0.47), (axf, "f", 0.47)):
-        _letter(fig, ax, letter, y, dx=0.075 if letter != "d" else 0.13)
+        _letter(fig, ax, letter, y, dx=0.075 if letter != "d" else 0.105)
     save(fig, os.path.join(out, "ed_switch"))
 
 
