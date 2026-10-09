@@ -33,7 +33,7 @@ ED_FILES = {
 
 # v4 layout (MAIN_v4.md): Fig. 4 is the variation figure, Fig. 5 gains the dial panel, Fig. 6 is redrawn; eight Extended Data
 # figures and two tables, numbered by first citation (detectors, census, atlas, confinement, closure stages, scan, BFF inflow, lethal tar).
-FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v4.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v4.pdf"]}
+FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v5.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v4.pdf"]}
 ED_FILES_V4 = {
     "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
     "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
@@ -43,6 +43,7 @@ ED_FILES_V4 = {
     "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
     "7": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
     "8": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
+    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed_invasions.pdf")],
 }
 
 SYM = {

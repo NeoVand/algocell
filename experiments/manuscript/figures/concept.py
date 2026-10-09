@@ -218,7 +218,7 @@ def fig4d(ax):
     xa, xb = x1 + 2.0, x2 + 2.0
     FS_H, FS_C = 6.0, 5.5
     rows = [
-        (xa, 20.3, "Z80 and its 8080 subset", True), (xa, 20.3 - L, "open, then closed · 67 of 80 worlds (Z80),", False), (xa, 20.3 - 2 * L, "20 of 20 (8080, L = 16)", False),
+        (xa, 20.3, "Z80 and its 8080-like subset", True), (xa, 20.3 - L, "open, then closed · 47 of 80 worlds (Z80),", False), (xa, 20.3 - 2 * L, "20 of 20 (8080, L = 16)", False),
         (xa, 20.3 - 3.15 * L, "BFF + literal push, harmless brackets", True), (xa, 20.3 - 4.15 * L, "open through 16,384 epochs · 12 of 12 soups;", False), (xa, 20.3 - 5.15 * L, "no closed design up to period 10", False),
         (xb, 19.9, "BFF + literal push, lethal brackets", True), (xb, 19.9 - L, "open, then collapses to 0.2% · 12 of 12 soups", False),
         (xb, 19.9 - 2.2 * L, "Z80, zero halts", True), (xb, 19.9 - 3.2 * L, "born closed, late · 10 of 10 worlds;", False), (xb, 19.9 - 4.2 * L, "the open beginning never happens", False),

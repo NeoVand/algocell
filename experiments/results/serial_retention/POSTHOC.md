@@ -15,6 +15,32 @@
 | A1_pusher_closer_s3 | `21 d0 0a 31 40 07 30 52 2b 46 2b 4e c5 3d c2 08 21 d0 0a 31 40 07 30 52 2b 46 2b 4e c5 3d c2 08` (0.004) | 1.00 | 6 / 4 (0) | 0.38 / 0.50 / 0.12 |
 | A1_pusher_closer_s4 | `21 10 1b 31 40 ca 61 24 2b 46 2b 4e c5 c2 48 be 21 10 1b 31 40 ca 61 24 2b 46 2b 4e c5 c2 48 be` (0.006) | 1.00 | 5 / 5 (0) | 0.36 / 0.50 / 0.14 |
 | A1_pusher_closer_s5 | `d9 1e 40 31 40 8e 2e 10 2b 46 2b 4e c5 17 c2 08 d9 1e 40 31 40 8e 2e 10 2b 46 2b 4e c5 17 c2 08` (0.006) | 1.00 | 4 / 4 (0) | 0.38 / 0.50 / 0.12 |
+| A2_closer_ldir_s1 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.318) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_closer_ldir_s2 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.394) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_closer_ldir_s3 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.375) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_closer_ldir_s4 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.614) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_closer_ldir_s5 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.599) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_closer_none_s1 | `21 90 88 31 c0 c0 2b 46 2b 4e c5 87 d2 46 88 fd 21 90 88 31 c0 c0 2b 46 2b 4e c5 87 d2 46 88 fd` (0.004) | 1.00 | 5 / 4 (1) | 0.36 / 0.50 / 0.14 |
+| A2_closer_none_s2 | `21 d0 81 31 80 5e 2b 46 2b 4e c5 89 c2 86 5f 5d 21 d0 81 31 80 5e 2b 46 2b 4e c5 89 c2 86 5f 5d` (0.003) | 1.00 | 6 / 4 (1) | 0.36 / 0.50 / 0.14 |
+| A2_closer_none_s3 | `21 50 73 31 c0 26 2b 46 2b 4e c5 b4 d2 46 5c 24 21 50 73 31 c0 26 2b 46 2b 4e c5 b4 d2 46 5c 24` (0.005) | 1.00 | 5 / 4 (1) | 0.36 / 0.50 / 0.14 |
 | A2_ldir_closer_s1 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.427) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
 | A2_ldir_closer_s2 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.630) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
 | A2_ldir_closer_s3 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.361) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_ldir_closer_s4 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.378) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_ldir_closer_s5 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.415) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_ldir_none_s1 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.315) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_ldir_none_s2 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.675) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+| A2_ldir_none_s3 | `04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0` (0.545) | 1.00 | 0 / 0 (0) | 0.12 / 0.88 / 0.00 |
+
+## Part 2: one random closed cell with ≥ 5 sites from each seeded A1 soup and each unseeded A2 closer soup
+
+| soup | cell | unmutated lineages alive at g = 8 | sites g = 1 / 8 (never executed at 8) | lost / erased / retained at g = 8 |
+|---|---|---|---|---|
+| A1_closer_pusher_s1_cell | `21 50 97 31 40 77 75 b1 2b 46 2b 4e c5 f2 08 2b 21 50 97 31 40 77 75 b1 2b 46 2b 4e c5 f2 08 2b` | 1.00 | 5 / 5 (0) | 0.36 / 0.50 / 0.14 |
+| A1_closer_pusher_s2_cell | `21 20 10 31 00 9e 0e 9e 2b 46 2b 4e c5 4d c2 46 fc 10 33 78 00 00 85 8e 00 06 00 43 9e 3a 00 00` | 1.00 | 21 / 19 (15) | 0.39 / 0.00 / 0.61 |
+| A1_closer_pusher_s3_cell | `21 20 cf 31 40 f7 09 81 2b 46 2b 4e c5 54 d2 08 37 f2 31 f2 f4 f2 31 f2 08 6e 08 6e 08 6e 17 00` | 1.00 | 21 / 21 (15) | 0.38 / 0.00 / 0.62 |
+| A1_closer_pusher_s4_cell | `21 20 d8 31 40 13 8a 24 2b 46 2b 4e c5 4e c2 08 4f 19 81 55 06 c0 09 52 fa 23 97 3b fb a3 2b 4e` | 1.00 | 21 / 19 (15) | 0.39 / 0.00 / 0.61 |
+| A1_closer_pusher_s5_cell | `3e 27 21 20 83 31 40 ab 2b 46 2b 4e c5 83 c2 08 34 54 fb e9 f2 3f 00 59 6e 00 1c 83 1b 3f 02 16` | 1.00 | 21 / 20 (15) | 0.38 / 0.00 / 0.62 |
+| A2_closer_none_s1_cell | `21 50 d5 31 c0 ad 2d 46 2d 4e c5 f2 c5 0d 33 77 21 50 d5 31 c0 ad 2d 46 2d 4e c5 f2 c5 0d 33 77` | 1.00 | 7 / 5 (2) | 0.35 / 0.50 / 0.15 |
+| A2_closer_none_s2_cell | `21 1f 5c fa 50 d9 2b 46 2b 4e c5 e2 46 fe 00 9e 00 fe 00 5e 00 5e 00 cb 00 87 00 5e 00 00 00 d9` | 1.00 | 19 / 19 (15) | 0.31 / 0.09 / 0.60 |
+| A2_closer_none_s3_cell | `21 20 5f 31 40 5b 2b 46 2b 4e c5 fd d2 86 0f f5 4f 00 2e 41 35 33 55 14 f6 f6 95 93 48 00 46 2b` | 1.00 | 22 / 20 (17) | 0.36 / 0.00 / 0.64 |

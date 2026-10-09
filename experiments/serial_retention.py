@@ -85,7 +85,8 @@ def window_codes(T: np.ndarray) -> np.ndarray:
     return c
 
 
-def run_genotype(gt: dict, seed: int) -> tuple[pd.DataFrame, dict]:
+def run_genotype(gt: dict, seed: int, pool: np.ndarray | None = None) -> tuple[pd.DataFrame, dict]:
+    """pool: if given (post hoc use only), partners are drawn uniformly from these tapes instead of uniform random bytes."""
     x, sup, zh = gt["tape"], list(gt["sup"]), gt["zh"]
     L = x.size
     K = 255 if L <= 32 else 32
@@ -105,8 +106,12 @@ def run_genotype(gt: dict, seed: int) -> tuple[pd.DataFrame, dict]:
     wt_codes = window_codes(x[None, :])[0]
     ident = ~np.isin(wcode, wt_codes)
     # partners: lineage r, generation g; control lineages 0..15 share the mutant lineages' partners
-    Pm = rng.integers(0, 256, size=(G, R_MUT, L), dtype=np.uint8)
-    Pc = rng.integers(0, 256, size=(G, R_CTRL, L), dtype=np.uint8)
+    if pool is None:
+        Pm = rng.integers(0, 256, size=(G, R_MUT, L), dtype=np.uint8)
+        Pc = rng.integers(0, 256, size=(G, R_CTRL, L), dtype=np.uint8)
+    else:
+        Pm = pool[rng.integers(0, len(pool), size=(G, R_MUT))]
+        Pc = pool[rng.integers(0, len(pool), size=(G, R_CTRL))]
     Pc[:, :R_MUT] = Pm
     # executed positions of the wild type (64 partners) for annotation
     Q = rng.integers(0, 256, size=(64, L), dtype=np.uint8)

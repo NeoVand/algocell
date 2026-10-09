@@ -1130,6 +1130,280 @@ def fig4v4(out):
     save(fig, os.path.join(out, "fig4v4"))
 
 
+# ------------------------------------------------------------------------------------------------ v5 Fig. 4 (round 2)
+OPEN_C, REGEN_C, TRANS_C, INTER_C, J50_C = INK, RED, TEAL, "#E69F00", "#0072B2"
+LOST_C, ERASED_C = "#4A4A4A", "#C8CCD1"
+SR_ROWS = [("open first replicators", OPEN_C, [("pusher16", "pusher, L = 16"), ("pusher50", "pusher, L = 50"), ("pusher64", "pusher, L = 64"), ("pusher32_8080", "pusher, 8080 subset, L = 32")]),
+           ("evolved closers", REGEN_C, [("ret16", "return closer, L = 16"), ("ldir20", "block-copy tiling, L = 20"), ("ldir32", "block-copy tiling, L = 32"), ("jr50", "pusher with three jumps, L = 50")]),
+           ("closers that copy bytes they never run", TRANS_C, [("lethal16_s4009", "lethal-tar closer, L = 16"), ("genome16_s6006", "transient genome, L = 16"), ("genome20_s6003", "transient genome, L = 20 (world 3)"), ("genome20_s6004", "transient genome, L = 20 (world 4)")]),
+           ("constructed closer", TRANS_C, [("closer32_8080_p1", "8080 closer + payload 1, L = 32"), ("closer32_8080_p2", "8080 closer + payload 2, L = 32")])]
+
+
+def _sr_summary():
+    return pd.read_csv(os.path.join(R, "serial_retention", "sr_summary.csv")).set_index("key")
+
+
+def _sr_partition(ax):
+    """Fate of every single-byte allele after eight serial transfers into fresh random partners (all lineages counted)."""
+    S = _sr_summary()
+    y, yt, yl = 0.0, [], []
+    for gname, gcol, rows in SR_ROWS:
+        ax.text(-0.02, y - 0.15, gname, ha="right", va="bottom", fontsize=5.5, color=gcol if gcol != OPEN_C else INK, fontweight="bold", transform=ax.get_yaxis_transform(), gid="allow-outside")
+        y += 0.55
+        for key, lab in rows:
+            r = S.loc[key]
+            x0 = 0.0
+            for v, c in ((r.lost_g8, LOST_C), (r.erased_g8, ERASED_C), (r.retained_g8, TRANS_C)):
+                ax.barh(y, v, left=x0, height=0.72, color=c, lw=0)
+                x0 += v
+            ax.text(1.02, y, f"{r.ctrl_alive_g8:.2f}", ha="left", va="center", fontsize=5.5, color=GREY, transform=ax.get_yaxis_transform(), gid="allow-outside")
+            yt.append(y)
+            yl.append(lab.strip())
+            y += 1.0
+        y += 0.35
+    ax.set_yticks(yt, yl, fontsize=5.5)
+    ax.tick_params(axis="y", length=0)
+    ax.set_ylim(y - 0.6, -0.6)
+    ax.set_xlim(0, 1)
+    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0", "0.25", "0.5", "0.75", "1"])
+    fs.tidy(ax, "share of mutant lineages after eight transfers", None)
+    ax.spines["left"].set_visible(False)
+    ax.text(1.02, -0.6, "unmutated\nlineages alive", ha="left", va="bottom", fontsize=5.0, color=GREY, transform=ax.get_yaxis_transform(), gid="allow-outside")
+    h = [Rectangle((0, 0), 1, 1, color=LOST_C, label="lineage lost"), Rectangle((0, 0), 1, 1, color=ERASED_C, label="alive, allele erased"),
+         Rectangle((0, 0), 1, 1, color=TRANS_C, label="alive, allele carried")]
+    ax.legend(handles=h, loc="lower center", bbox_to_anchor=(0.45, 1.0), ncol=3, fontsize=5.5, frameon=False, columnspacing=1.2, handlelength=1.0)
+
+
+def _sr_curves(ax):
+    """Share of all mutant lineages carrying the allele against the number of transfers."""
+    S = _sr_summary()
+    gx = [1, 2, 4, 8]
+    for gname, gcol, rows in SR_ROWS:
+        for key, lab in rows:
+            if key not in S.index:
+                continue
+            r = S.loc[key]
+            col = J50_C if key == "jr50" else gcol
+            ax.plot(gx, [r[f"retained_g{g}"] for g in gx], color=col, lw=0.8, marker="o", ms=2.2, mew=0, alpha=0.9)
+    ax.set_xscale("log", base=2)
+    ax.set_xticks(gx, [str(g) for g in gx])
+    ax.minorticks_off()
+    ax.set_xlim(0.85, 9.5)
+    ax.set_ylim(-0.02, 0.8)
+    fs.tidy(ax, "serial transfers", "share of mutant lineages\ncarrying the allele")
+    for txt, yy, col in (("closers that copy bytes they never run", 0.72, TRANS_C), ("pushers (L = 16, 50, 64; 8080, L = 32)", 0.33, OPEN_C),
+                         ("pusher with three jumps, L = 50", 0.26, J50_C), ("return and block-copy closers", 0.19, REGEN_C)):
+        ax.text(9.3, yy, txt, ha="right", va="center", fontsize=5.0, color=col)
+
+
+def _position_maps_sr(ax):
+    """Executed bytes and serially transmissible sites of six genomes (S): filled dot, the allele is still carried after
+    eight transfers by at least half of its values; open dot, only into first-generation copies."""
+    S = _sr_summary()
+    st = pd.read_csv(os.path.join(R, "serial_retention", "sr_sites.csv"))
+    rows = [("pusher50", "pusher, L = 50"), ("ret16", "return closer, L = 16"), ("ldir32", "block-copy tiling, L = 32"),
+            ("lethal16_s4009", "lethal-tar closer, L = 16"), ("genome20_s6004", "transient genome, L = 20"), ("closer32_8080_p1", "constructed 8080 closer, L = 32")]
+    y = 0
+    for key, title in rows:
+        r = S.loc[key]
+        L = int(r.L)
+        ex = np.array([c == "1" for c in str(r.executed).zfill(L)])
+        s1 = st[(st.key == key) & (st.gen == 1)].set_index("pos").transmissible.reindex(range(L)).fillna(False).astype(bool).values
+        s8 = st[(st.key == key) & (st.gen == 8)].set_index("pos").transmissible.reindex(range(L)).fillna(False).astype(bool).values
+        scale = 64.0 / L
+        for k in range(L):
+            ax.add_patch(Rectangle((k * scale, y), scale, 0.8, facecolor=INK if ex[k] else "#FFFFFF", edgecolor=RULE, lw=0.3))
+            if s8[k]:
+                ax.plot(k * scale + scale / 2, y + 0.4, "o", color=TRANS_C, ms=2.6, mec="white", mew=0.3, zorder=5)
+            elif s1[k]:
+                ax.plot(k * scale + scale / 2, y + 0.4, "o", mfc="white", mec=TRANS_C, ms=2.4, mew=0.6, zorder=5)
+        ax.text(-1.0, y + 0.4, title, ha="right", va="center", fontsize=5.5, color=INK)
+        n1, n8, nu = int(s1.sum()), int(s8.sum()), int((s8 & ~ex).sum())
+        note = f"{int(ex.sum())}/{L} executed · sites {n1} after one transfer, {n8} after eight" + (f" ({nu} never executed)" if n8 else "")
+        ax.text(65.0, y + 0.4, note, ha="left", va="center", fontsize=5.5, color=GREY, gid="allow-outside")
+        y += 1.2
+    ax.set_xlim(-0.5, 64.5)
+    ax.set_ylim(-0.2, y)
+    ax.invert_yaxis()
+    ax.set_axis_off()
+    h = [Rectangle((0, 0), 1, 1, facecolor=INK, edgecolor=RULE, lw=0.3, label="byte executed"),
+         Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=RULE, lw=0.3, label="byte never executed"),
+         plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=TRANS_C, mew=0.6, ms=3, label="site, first copy only"),
+         plt.Line2D([], [], marker="o", ls="none", color=TRANS_C, ms=3, label="site, carried through eight transfers")]
+    ax.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, fontsize=5.5, frameon=False, columnspacing=1.4)
+
+
+
+CLASS_PARTS = (("not heritable", "#ECEDEF"), ("open", OPEN_C), ("closed, ≤ 2 sites", REGEN_C), ("closed, 3–4 sites", INTER_C), ("closed, ≥ 5 sites", TRANS_C))
+
+
+def _class_bars_h(ax, rows, xlabel):
+    """Horizontal stacked bars of cell classes. rows: (label, frame of per-world or per-soup class shares) or None for a gap."""
+    y, yt, yl = 0.0, [], []
+    for row in rows:
+        if row is None:
+            y += 0.5
+            continue
+        lab, d = row
+        h = d.frac_heritable
+        vals = (1 - h, h * d.frac_open_of_heritable.fillna(0), h * d.frac_regenerator_of_heritable.fillna(0),
+                h * d.frac_intermediate_of_heritable.fillna(0), h * d.frac_transmitter_of_heritable.fillna(0))
+        x0 = 0.0
+        for v, (_, c) in zip(vals, CLASS_PARTS):
+            m = float(v.mean())
+            ax.barh(y, m, left=x0, height=0.72, color=c, lw=0)
+            x0 += m
+        ax.text(1.02, y, f"{len(d)}", ha="left", va="center", fontsize=5.0, color=GREY, transform=ax.get_yaxis_transform(), gid="allow-outside")
+        yt.append(y)
+        yl.append(lab)
+        y += 1.0
+    ax.set_yticks(yt, yl, fontsize=5.5)
+    ax.tick_params(axis="y", length=0)
+    ax.set_ylim(y - 0.4, -0.6)
+    ax.set_xlim(0, 1)
+    ax.set_xticks([0, 0.5, 1.0], ["0", "0.5", "1"])
+    fs.tidy(ax, xlabel, None)
+    ax.spines["left"].set_visible(False)
+    h = [Rectangle((0, 0), 1, 1, color=c, label=n) for n, c in CLASS_PARTS]
+    ax.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5.5, frameon=False, columnspacing=1.0, handlelength=1.0)
+
+POP_ROWS = [("G", 16, "Z80, L = 16, 3 × 10⁵ steps"), ("G", 20, "L = 20, 10⁶"), ("K", 32, "L = 32, 10⁶"), ("G", 50, "L = 50, 3 × 10⁵"), ("G", 64, "L = 64, 10⁶"), None,
+            ("L", 16, "L = 16, 10⁷"), ("L", 20, "L = 20, 10⁷"), None, ("I", 16, "L = 16, lethal tar, 3 × 10⁵"), None, ("M", 16, "8080 subset, L = 16, 3 × 10⁵"), ("M", 32, "L = 32, 10⁶")]
+
+
+def _pop_classes(ax):
+    """Composition of 64 random cells at the final snapshot, mean over worlds (Q2)."""
+    S = pd.read_csv(os.path.join(R, "population", "classes_snapshots.csv"))
+    F = S[S.snapshot == "final"]
+    rows = []
+    for item in POP_ROWS:
+        if item is None:
+            rows.append(None)
+            continue
+        st, L, lab = item
+        d = F[(F.stage == st) & (F.L == L)]
+        if len(d):
+            rows.append((lab, d))
+    _class_bars_h(ax, rows, "share of random cells at the last snapshot")
+
+
+def _pop_time(ax):
+    """Share of heritable cells that are closed transmitters, against step: medians over worlds (Q2)."""
+    S = pd.read_csv(os.path.join(R, "population", "classes_snapshots.csv"))
+    S = S[S.step.notna() & (S.snapshot != "emergence") & (S.frac_heritable >= 0.2)]
+    for st, L, col, ls, lab in (("L", 16, L_COL[16], "-", "L = 16"), ("L", 20, L_COL[20], "-", "L = 20"), ("G", 64, L_COL[64], "-", "L = 64"),
+                                ("I", 16, LETHAL_COL, "--", "L = 16, lethal tar")):
+        d = S[(S.stage == st) & (S.L == L)]
+        if d.empty:
+            continue
+        nw = d.seed.nunique()
+        full = d.groupby("step").seed.nunique()
+        d = d[d.step.isin(full[full >= max(1, int(np.ceil(0.8 * nw)))].index)]
+        m = d.groupby("step").frac_transmitter_of_heritable.mean()
+        ax.plot(m.index, m.values, color=col, ls=ls, lw=0.9, label=lab)
+    ax.set_xscale("log")
+    ax.set_xlim(300, 1.3e7)
+    ax.set_ylim(-0.02, 1.0)
+    fs.tidy(ax, "step", "share of heritable cells that are\nclosed with ≥ 5 sites (mean over worlds)")
+    ax.legend(fontsize=5.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False, columnspacing=1.2)
+
+
+def fig4v5(out):
+    """v5 Fig. 4 | Closure regenerates or transmits."""
+    fig = plt.figure(figsize=(fs.DOUBLE, 168 * fs.MM))
+    gs_top = GridSpec(1, 2, figure=fig, width_ratios=[1.35, 1.0], wspace=0.55, left=0.215, right=0.985, top=0.935, bottom=0.62)
+    gs_mid = GridSpec(1, 1, figure=fig, left=0.215, right=0.69, top=0.535, bottom=0.36)
+    gs_bot = GridSpec(1, 2, figure=fig, width_ratios=[1.35, 1.0], wspace=0.55, left=0.215, right=0.985, top=0.27, bottom=0.06)
+    axa, axb = fig.add_subplot(gs_top[0, 0]), fig.add_subplot(gs_top[0, 1])
+    axc = fig.add_subplot(gs_mid[0, 0])
+    axd, axe = fig.add_subplot(gs_bot[0, 0]), fig.add_subplot(gs_bot[0, 1])
+    for ax, fn, letter in ((axa, _sr_partition, "a"), (axb, _sr_curves, "b"), (axc, _position_maps_sr, "c"), (axd, _pop_classes, "d"), (axe, _pop_time, "e")):
+        try:
+            fn(ax)
+        except Exception as e:  # noqa: BLE001
+            placeholder(ax, f"{letter} (data missing: {e})")
+    for ax, letter, x, y in ((axa, "a", 0.01, 0.975), (axb, "b", None, 0.975), (axc, "c", 0.01, 0.585), (axd, "d", 0.01, 0.33), (axe, "e", None, 0.33)):
+        if x is None:
+            ax.apply_aspect()
+            x = ax.get_position().x0 - 0.075
+        fig.text(x, y, letter, fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
+    save(fig, os.path.join(out, "fig4v5"))
+
+
+def _marker_vs_confined(ax):
+    """V: share of cells carrying the jump word against the confined share of 512 traced cells, closed form seeded at 1%
+    into an ancestor world at L = 50 (three soups)."""
+    M = pd.read_csv(os.path.join(R, "marker_check", "marker_check.csv"))
+    for sd, d in M.groupby("seed"):
+        d = d[d.step > 0].sort_values("step")
+        ax.plot(d.step, d.marker_share_soup, color=J50_C, lw=0.8, marker="o", ms=2.0, mew=0, label="cells carrying the jump word 20 f0" if sd == 1 else None)
+        ax.plot(d.step, d.confined_share, color=REGEN_C, lw=0.8, marker="o", ms=2.0, mew=0, label="cells confined in 16 of 16 encounters" if sd == 1 else None)
+    ax.set_xscale("log")
+    ax.set_xlim(40, 1200)
+    ax.set_ylim(-0.02, 1.0)
+    fs.tidy(ax, "step", "share of cells")
+    ax.legend(fontsize=5.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+
+
+def _a1_curves(ax):
+    """A1: the constructed 8080 closer seeded at 1% into a world of the 8080 pusher (L = 32): share of cells carrying the
+    closer's loop body (post hoc) and share within Hamming 8 of the pusher, five soups; unseeded pusher worlds dotted."""
+    D = pd.read_csv(os.path.join(R, "invasion_closer", "A1.csv"))
+    first = True
+    for sd, d in D[(D.resident == "pusher") & (D.invader == "closer")].groupby("seed"):
+        d = d[d.step > 0].sort_values("step")
+        ax.plot(d.step, d.loop_share_posthoc, color=TRANS_C, lw=0.8, label="closer's loop body, closer seeded" if first else None)
+        ax.plot(d.step, d.pusher_class_share, color=OPEN_C, lw=0.8, label="pusher class, closer seeded" if first else None)
+        first = False
+    first = True
+    for sd, d in D[(D.resident == "pusher") & (D.invader == "none")].groupby("seed"):
+        d = d[d.step > 0].sort_values("step")
+        ax.plot(d.step, d.pusher_class_share, color=OPEN_C, lw=0.8, ls=":", label="pusher class, no seeding" if first else None)
+        first = False
+    ax.set_xscale("log")
+    ax.set_xlim(8, 2.2e4)
+    ax.set_ylim(-0.02, 1.02)
+    fs.tidy(ax, "step", "share of cells")
+    ax.legend(fontsize=5.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+
+
+INV_ROWS = [("A1", "A1_pusher_none", "8080 subset: pusher world"), ("A1", "A1_pusher_closer", "constructed closer seeded into it"), ("A1", "A1_closer_none", "constructed-closer world"),
+            ("A1", "A1_closer_pusher", "pusher seeded into it"), None, ("A2", "A2_ldir_none", "Z80: block-copy world"), ("A2", "A2_ldir_closer", "constructed closer seeded into it"),
+            ("A2", "A2_closer_none", "constructed-closer world"), ("A2", "A2_closer_ldir", "block copier seeded into it")]
+
+
+def _inv_classes(ax):
+    """Composition of 64 random cells at the last step of every invasion soup (A1, 20,000 steps; A2, 50,000), mean over
+    soups; classes as in Fig. 4d."""
+    rows = []
+    for item in INV_ROWS:
+        if item is None:
+            rows.append(None)
+            continue
+        tag, pre, lab = item
+        C = pd.read_csv(os.path.join(R, "invasion_closer", f"{tag}_classes.csv"))
+        rows.append((lab, C[C.file.str.startswith(pre + "_s")]))
+    _class_bars_h(ax, rows, "share of random cells at the last step")
+
+
+def ed_invasions(out):
+    """Extended Data: three invasion tests of round 2 (V, A1, A2)."""
+    fig = plt.figure(figsize=(fs.DOUBLE, 112 * fs.MM))
+    gs = GridSpec(1, 2, figure=fig, wspace=0.35, left=0.08, right=0.985, top=0.86, bottom=0.6)
+    gs2 = GridSpec(1, 1, figure=fig, left=0.33, right=0.80, top=0.40, bottom=0.08)
+    axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    axc = fig.add_subplot(gs2[0, 0])
+    for ax, fn, letter in ((axa, _marker_vs_confined, "a"), (axb, _a1_curves, "b"), (axc, _inv_classes, "c")):
+        try:
+            fn(ax)
+        except Exception as e:  # noqa: BLE001
+            placeholder(ax, f"{letter} (data missing: {e})")
+    for ax, letter, y in ((axa, "a", 0.985), (axb, "b", 0.985), (axc, "c", 0.53)):
+        ax.apply_aspect()
+        fig.text(0.01 if letter == "c" else max(0.005, ax.get_position().x0 - 0.07), y, letter, fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
+    save(fig, os.path.join(out, "ed_invasions"))
+
+
 BFF_NAMES = {"std": "BFF as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal push",
              "wraplitnh": "wrap + literal push,\nharmless brackets"}
 P_COLS = {0.0: fs.BFF_VARIANT["wraplitnh"], 0.01: "#BDBDBD", 0.03: "#969696", 0.1: "#636363", 0.3: "#252525", 1.0: fs.BFF_VARIANT["wraplit"]}
@@ -1258,7 +1532,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4), ("fig6v4", fig6v4), ("ed_census", ed_census), ("ed_confine", ed_confine), ("ed_closure", ed_closure), ("ed_bffinflow", ed_bffinflow)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig4v5", fig4v5), ("ed_invasions", ed_invasions), ("fig5v4", fig5v4), ("fig6v4", fig6v4), ("ed_census", ed_census), ("ed_confine", ed_confine), ("ed_closure", ed_closure), ("ed_bffinflow", ed_bffinflow)):
         if a.only and name not in a.only.split(","):
             continue
         try:
