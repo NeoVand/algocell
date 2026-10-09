@@ -165,3 +165,8 @@ the popped address back into the organism.
 the return route is not enough and the Z80's closure depended on its extensions; reported as such.
 
 *Cost.* 20 × 300k + 20 × 1M ≈ $4.
+
+**P (run 2026-10-09; `results/exectrace/FINDINGS.md`).** Met: every first replicator fetches partner bytes in all 256
+encounters; every loop-bearing final (89 of 89 across G, K, I) never does; pointer closure and zero inflow agree in 106 of
+110 finals, the four exceptions being pointer-closed with one to three partner bytes retained; no pointer-open final has
+zero inflow. Unregistered: the pusher's transmissible sites are all executed (operands); the closers' are unexecuted.
