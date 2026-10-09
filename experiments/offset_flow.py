@@ -1,0 +1,145 @@
+"""E-mech (REVISION_PREREG): where do single mutants of the regenerator R and the transmitter T go?
+
+For each condition (L = 16 benign, L = 16 lethal, L = 32 benign) and type (R as in E; T with 64 random tails), every
+single-byte mutant (L positions x 255 values; for T, each mutant gets one of the 64 tails) is executed against K random
+partners (gen1 offspring = partner after); each gen1 offspring is executed against a fresh random partner (gen2).
+Functional class of a mutant-partner trial, from the gen1 offspring O and gen2 offspring G:
+  R  G == O and O's minimal cyclic period is < L (a regenerating tiling),
+  T  G == O and O's minimal cyclic period is L,
+  O  anything else (no exact self-copy of the offspring).
+Also the first-four-byte class of O as the soups' classifier sees it (offset_switch.classify).
+Flows per mutation: f_RT, f_TR, l_R, l_T, and the two-type neutral-model equilibrium x* of the T share solving
+  f_RT (1 - x) - f_TR x - (l_T - l_R) x (1 - x) = 0.
+Partners: uniform random bytes ('random') and, as a check, cells drawn from the E mix50 final soups ('soup').
+Output: results/offset/OFFSET_FLOW.md, offset_flow.csv.
+
+    .venv/bin/python offset_flow.py
+"""
+from __future__ import annotations
+
+import glob
+import os
+import sys
+
+import numpy as np
+import pandas as pd
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from algocell_exp import assay as A  # noqa: E402
+from offset_switch import R_TAPE, T_BYTE, classify  # noqa: E402
+
+K = 4
+N_TAILS = 64
+CONDS = ((16, "benign"), (16, "lethal"), (32, "benign"))
+OUT = os.path.join(HERE, "results", "offset")
+
+
+def min_period(X: np.ndarray) -> np.ndarray:
+    """Minimal cyclic period of each row (L if aperiodic)."""
+    n, L = X.shape
+    per = np.full(n, L)
+    for p in sorted(d for d in range(1, L) if L % d == 0)[::-1]:
+        eq = (X == np.roll(X, -p, axis=1)).all(1)
+        per = np.where(eq, p, per)
+    return per
+
+
+def mutants(base: np.ndarray, L: int, rng) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """All single-byte mutants of the rows of base (one base row per mutant, cycled), excluding identity."""
+    pos, val = np.meshgrid(np.arange(L), np.arange(256), indexing="ij")
+    pos, val = pos.ravel(), val.ravel()
+    rows = np.arange(len(pos)) % len(base)
+    M = base[rows].copy()
+    keep = M[np.arange(len(pos)), pos] != val
+    M[np.arange(len(pos)), pos] = val
+    return M[keep], pos[keep], val[keep]
+
+
+def run(L: int, tar: str, typ: str, partners: str, rng, pool=None) -> pd.DataFrame:
+    zh = tar == "lethal"
+    if typ == "R":
+        base = np.array([R_TAPE[L]], np.uint8)
+    else:
+        tails = rng.integers(0, 256, size=(N_TAILS, L - 4), dtype=np.uint8)
+        base = np.concatenate([np.tile(np.array([T_BYTE[L], 0x5E, 0xED, 0xB0], np.uint8), (N_TAILS, 1)), tails], 1)
+    M, pos, val = mutants(base, L, rng)
+    M = np.repeat(M, K, 0)
+    pos, val = np.repeat(pos, K), np.repeat(val, K)
+
+    def draw(n):
+        if partners == "random":
+            return rng.integers(0, 256, size=(n, L), dtype=np.uint8)
+        return pool[rng.integers(0, len(pool), n)]
+
+    r1 = A.execute_pairs(np.concatenate([M, draw(len(M))], 1), L, 128, zero_halts=zh)
+    O = r1[:, L:]
+    r2 = A.execute_pairs(np.concatenate([O, draw(len(O))], 1), L, 128, zero_halts=zh)
+    G = r2[:, L:]
+    selfcopy = (G == O).all(1)
+    per = min_period(O)
+    fclass = np.where(~selfcopy, "O", np.where(per < L, "R", "T"))
+    _, isR, isT = classify(O, L)
+    k4 = np.where(isR, "R", np.where(isT, "T", "X"))
+    return pd.DataFrame({"L": L, "tar": tar, "type": typ, "partners": partners, "pos": pos, "val": val, "fclass": fclass, "k4": k4, "period": per})
+
+
+def equilibrium(fRT, fTR, lR, lT):
+    c = lT - lR
+    # f_RT (1-x) - f_TR x - c x (1-x) = 0  ->  c x^2 - (fRT + fTR + c) x + fRT = 0
+    if abs(c) < 1e-12:
+        return fRT / (fRT + fTR) if fRT + fTR > 0 else float("nan")
+    a, b, cc = c, -(fRT + fTR + c), fRT
+    disc = b * b - 4 * a * cc
+    roots = [(-b - np.sqrt(disc)) / (2 * a), (-b + np.sqrt(disc)) / (2 * a)]
+    roots = [x for x in roots if -1e-9 <= x <= 1 + 1e-9]
+    return float(roots[0]) if roots else float("nan")
+
+
+def main():
+    rng = np.random.default_rng(20261009)
+    frames = []
+    for L, tar in CONDS:
+        soups = sorted(glob.glob(os.path.join(HERE, "runs", "offset", "offset", f"L{L}_{tar}_muton_mix50_s*_final.npy")))
+        pool = np.concatenate([np.load(f) for f in soups]) if soups else None
+        for partners in ("random", "soup"):
+            if partners == "soup" and pool is None:
+                continue
+            for typ in ("R", "T"):
+                frames.append(run(L, tar, typ, partners, rng, pool))
+                print(L, tar, partners, typ, "done", flush=True)
+    D = pd.concat(frames)
+    D.to_csv(os.path.join(OUT, "offset_flow.csv.gz"), index=False, compression="gzip")
+    lines = ["# E-mech — mutational flow between regeneration and transmission (generated by `offset_flow.py`)", "",
+             f"Every single-byte mutant of R and of T (T with {N_TAILS} random tails), {K} partner trials each; class from the gen1 and gen2 offspring (R: exact self-copying tiling with period < L; T: exact self-copying, aperiodic; O: other). Shares are per mutation, uniform over positions and values.", "",
+             "| L | tar | partners | from | to R | to T | to O | first-four-byte class of offspring: R / T / other |", "|---|---|---|---|---|---|---|---|"]
+    eq = []
+    for (L, tar, partners), e in D.groupby(["L", "tar", "partners"], sort=False):
+        f = {}
+        for typ in ("R", "T"):
+            g = e[e.type == typ]
+            s = g.fclass.value_counts(normalize=True)
+            k = g.k4.value_counts(normalize=True)
+            f[typ] = s
+            lines.append(f"| {L} | {tar} | {partners} | {typ} | {s.get('R', 0):.4f} | {s.get('T', 0):.4f} | {s.get('O', 0):.4f} | {k.get('R', 0):.3f} / {k.get('T', 0):.3f} / {1 - k.get('R', 0) - k.get('T', 0):.3f} |")
+        fRT, fTR = f["R"].get("T", 0), f["T"].get("R", 0)
+        lR, lT = f["R"].get("O", 0), f["T"].get("O", 0)
+        eq.append((L, tar, partners, fRT, fTR, lR, lT, equilibrium(fRT, fTR, lR, lT)))
+    lines += ["", "Two-type neutral model: equilibrium transmitter share x* from the flows.", "",
+              "| L | tar | partners | f_RT | f_TR | l_R | l_T | x* |", "|---|---|---|---|---|---|---|---|"]
+    for L, tar, partners, fRT, fTR, lR, lT, x in eq:
+        lines.append(f"| {L} | {tar} | {partners} | {fRT:.4f} | {fTR:.4f} | {lR:.4f} | {lT:.4f} | {x:.3f} |")
+    # where the class switches come from: by mutated position
+    lines += ["", "Class switches and losses by mutated position (random partners): share of that position's mutants.", "",
+              "| L | tar | from | position | to R | to T | to O |", "|---|---|---|---|---|---|---|"]
+    for (L, tar, typ, p), g in D[D.partners == "random"].groupby(["L", "tar", "type", "pos"], sort=False):
+        if p > 7:
+            continue
+        s = g.fclass.value_counts(normalize=True)
+        lines.append(f"| {L} | {tar} | {typ} | {p} | {s.get('R', 0):.3f} | {s.get('T', 0):.3f} | {s.get('O', 0):.3f} |")
+    open(os.path.join(OUT, "OFFSET_FLOW.md"), "w").write("\n".join(lines) + "\n")
+    print("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main()

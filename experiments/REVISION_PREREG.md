@@ -430,3 +430,103 @@ b0`×4, 1% each way, 5 seeds each, 100,000 steps, standard mutation. *No directi
 Endpoints: share of cells carrying each design (pusher: Hamming ≤ 4 at any shift; self-initialising closer: its first 11
 bytes with at most one mismatch; regenerator: core `5e ed b0` at bytes 1–3 with a regenerating offset byte), every 250
 steps; classes of 64 random cells at the end under the world's convention. Cost ≈ $15.
+
+### Outcome of E (appended 2026-10-09; `results/offset/REPORT.md`, `offset_switch.csv`; 90 worlds on Modal, L40S)
+E1 not met at any condition (mutation off, T share in 0.3–0.7 at 100,000 steps in 3, 1 and 2 of 10): without mutation
+the share drifts to either side (end values 0.22–0.98, 0.00–1.00, 0.00–0.97), as a neutral pair would at this population
+size. E2 not met (mutation on, T share in 0.05–0.4 in 3, 0 and 6 of 10). With mutation on, the two benign-or-lethal
+conditions where core cells persist converge from every start to a condition-specific share: L = 32 benign, T share
+0.07 (0.04–0.31) from 1% R, 0.08 (0.04–0.37) from 1% T and 0.06 (0.03–0.14) from 50:50, below the offset-byte mutation
+equilibrium 0.18; L = 16 lethal, 0.87 (0.80–0.90), 0.81 (0.79–0.82; core cells lost late in 3 of 5) and 0.86 (0.82–1.00).
+At L = 16 benign with mutation on the first-four-byte classifier fails: core-carrying cells fall to 3–5% of the soup, so
+the share is not interpretable there. Post hoc (`offset_encounter.py`, `results/offset/OFFSET_ENCOUNTER.md`; 4,096
+encounters per entry, soup cells from the final mix50 soups): the pristine R and T are indistinguishable in every
+encounter component measured (benign / lethal: copy into a soup partner 1.000 for both; exact survival as the partner of a
+soup executor 0.026 and 0.028 / 0.025 and 0.024; core intact 0.082 and 0.086 / 0.534 and 0.539; a random single mutant
+still copies 0.750 and 0.744 / 0.759 and 0.757). *Reading:* neither H-sel nor H-bias as registered. The pair is neutral
+in encounters and drifts without mutation; with mutation the direction is set by the environment (regeneration at
+L = 32 benign, transmission at L = 16 lethal), so selection acts through what the mutants of each type become.
+
+## E-mech — the mutational flow between regeneration and transmission (written before the run, 2026-10-09)
+
+*Question.* R and T are neutral in encounters, yet mutation pushes the soup to a condition-specific share. Is that
+share predicted by where single mutants of each type go, measured in isolation?
+*Design* (`offset_flow.py`, local GPU). For each condition (L = 16 benign, L = 16 lethal, L = 32 benign) and type (R as
+in E; T with 64 random tails), every single-byte mutant (L positions × 255 values) is executed against 4 random partners;
+each offspring is executed against a fresh random partner (gen2). Each mutant is labelled by the functional class of its
+gen2 offspring: R (offspring periodic with period < L and carrying a block-copy core), T (offspring equal to its parent
+at shift 0 and not periodic below L), or O (anything else), with the first-four-byte label also reported. Flows per
+mutation: f_RT, f_TR (class switch), l_R, l_T (loss to O). The two-type neutral model with these flows predicts the
+equilibrium T share x* solving f_RT (1 − x) − f_TR x − (l_T − l_R) x (1 − x) = 0.
+*Predictions.* EM1: x* < 0.18 at L = 32 benign (regeneration favoured beyond the offset-byte bias). EM2: x* > 0.5 at
+L = 16 lethal. *Kill.* Either failing: the mutational-flow explanation is withdrawn and the environment dependence is
+reported without a mechanism.
+
+### Outcome of E-mech (appended 2026-10-09; `results/offset/OFFSET_FLOW.md`, `offset_flow.csv.gz`)
+As registered (random partners), EM1 failed: x* = 0.42 at L = 32 benign (needed < 0.18); EM2 was met only nominally
+(x* = 0.59 at L = 16 lethal), and the random-partner flows are the same under benign and lethal tar (x* 0.583 and
+0.589; f_RT 0.009 and 0.010, f_TR 0.003 and 0.003). The registered kill applies: the flows of isolated mutants do not
+explain the environment dependence, and it is reported without a mechanism. A check run beside it, with partners drawn
+from each condition's own final soups, gives x* = 0.16 at L = 32 benign and 0.75 at L = 16 lethal, but it is circular:
+the pools are already at the condition's equilibrium, and a mutant whose copy fails leaves the partner, often a cell of
+the majority type, in place. It is not used as evidence. What the environment acts through (the soup's background, the
+partial overwrites of byte 0 by halted executors, or a population-level effect) is open.
+
+### Outcomes of B, T, P and F (appended 2026-10-09; `results/invasion_aligned/REPORT.md`, `results/review_r2/FIRST_CLOSURE.md`, `CENSUS_P2.md`, `CENSUS_P3.md`, `ROBUST_REF22.md`)
+**B.** B1 met at both lengths (5 of 5): seeded at 1% into a pusher-filled world, the return closer at L = 16 holds
+0.855–0.907 of cells at 20,000 steps and the block-copy tiling at L = 32 0.639–0.811, with heritable cells confined
+(1.00 in all ten); the closer class first passes half the cells at 400–750 steps (L = 16) and 260–290 (L = 32). B2 met
+(5 of 5 at both lengths): the pusher seeded into a closer-filled world is at 0.000 at 20,000 steps. Unseeded pusher
+controls keep 0.000–0.113 (L = 16) and 0.207–0.383 (L = 32) pusher-class cells. The selection claim stands at aligned
+lengths.
+**T.** Benign L = 16 (Stages G and L, 30 worlds) closes earlier than lethal L = 16 (Stage I, 10): KM medians 22,500 and
+38,000 steps, log-rank χ² = 7.21, P = 0.007. The registered rule is met; the text still says "displaced" (descent not
+shown).
+**P.** P1 failed: one closed self-writer of period 3 exists, `b0 5e ed` tiled, a block copier whose copy offset is the
+tape length (a transmitter). Period 2: 5 self-writers, all open (the load–push words). The smallest closed self-writer
+therefore has period 3, not 4; Corollary 2.1 and Proposition 4 are restated on the census. [Period 4: running.]
+**F.** F1 failed: by ref. 22's criterion (exact self-copy into the zero partner after k mutations, 512 instructions)
+both pushers and block-copy finals score ≈ 0 at every k (medians 0.000–0.002). Post hoc, the matched pair of the
+copy-offset switch: the transmitter scores 0.880, 0.585 and 0.341 at k = 1, 4, 8, the regenerator 0.000–0.001. Ref.
+22's criterion measures transmission of mutations, not survival of function; the regenerator, which survives most
+single mutations functionally, fails it by erasing them.
+
+### Outcomes of C4b and C4c (appended 2026-10-09; `results/r4/R4_INVASIONS.md`, `r4_inv.csv`; Modal)
+The registered design-share endpoints failed on definition, as the motif endpoints of A1 and E did: the
+self-initialising closer's motif (its first 11 bytes, at most one mismatch) is below 5% of cells by 550–750 steps in
+every world where it was the resident, because the high bytes of its 16-bit operands are neutral (addresses are taken
+mod 2L) and drift in a transmitter. Its opcode skeleton is also gone by the end (≤ 0.001 of cells). The registered class
+endpoint (64 random cells at the end, under the world's convention) is unambiguous.
+**C4b** (random registers, L = 16, 50,000 steps). Closer seeded at 1% into the pusher world: the pusher falls below 5% of
+cells by 650–1,300 steps in 5 of 5; at the end 0.81–0.91 of cells are heritable and 0.93–0.98 of those confined, and
+0.930–0.936 carry an LDIR. Pusher seeded at 1% into the closer world: 0.000 at the end in 5 of 5 (met); heritable
+0.84–0.89, confined 0.93–0.98. Unseeded pusher controls: pusher share 0.04–0.11, heritable 0.03–0.08, none confined.
+Reading: under random registers, closure is not reached from a random start in 300,000 steps (C3), but once a
+self-initialising closer is present it displaces the pusher within about a thousand steps and its descendants, a
+diverse family of LDIR closers that set their own registers, hold the soup closed. The barrier is accessibility.
+**C4c** (standard convention, L = 16, 100,000 steps). Neither design persists as such: the 4-byte regenerator's share is
+0.003–0.119 with SI13 invading, 0.006–0.645 when it invades SI13 (above half the cells in one world, from 40,250
+steps), and 0.039–0.095 alone; the 13-byte closer's motif is gone everywhere. Populations stay closed (heritable
+0.88–0.97, confined 0.98–1.00) and 0.94–0.97 of cells carry an LDIR. Seeded at 1% into the SI13 world, the 4-byte
+regenerator reaches 0.07–0.36 of cells by 20,000 steps in 5 of 5 (0.000–0.005 in the unseeded SI13 worlds); the reverse
+invasion leaves no SI13 motif. With zero registers supplied the 4-byte core invades the 13-byte design's world, but no
+winner is declared: the long-run population is a diverse block-copy family that neither motif endpoint sees.
+
+### Outcome of C4a (appended 2026-10-09; `results/r4/R4_LONG.md`, `r4_long.csv`, `R4_CLOSERS.md`; Modal, L40S)
+C4a not met: 6 of 20 random-register worlds were closed (most heritable cells confined) at 3,000,000 steps (registered:
+≤ 5). Closed worlds by snapshot: 1 at 300,000 steps (seed 8105; with C3, 1 of 40 random-register worlds by 300,000), 3
+at one million, 4 at two million, 6 at three million; the other 14 hold the open pusher (heritable share 0.05–0.16,
+none confined). Post hoc (`r4_closers.py`, 32 heritable cells per closed world): in all 6 closed worlds every tested
+cell carries a block move (LDIR or LDDR), 0.84–1.00 of cells execute a JP or JR, and a median of 5–7 bytes per tape is
+never executed; in 5 of 6 the offspring is an exact whole-tape copy in a median of 1.00 of encounters (transmitters), in
+one (8107) in none. The closers load their own source and offset (addresses are taken mod 2L, so only the low byte of
+HL and DE matters), jump over bytes they never run and copy with a block move. A hand-built 6-byte closer, `2e 00 1e 10
+ed b0` (LD L,0; LD E,16; LDIR), scores 1.00 / 1.00 in the culture test under both conventions, while the evolved 4-byte
+core `44 5e ed b0` scores 0.34 / 0.13 under random registers. *Reading:* closure under random registers is not
+impossible but slow (≥ 100-fold later than with zero registers at L = 16, where 20 of 20 closed by 300,000 steps), and
+the closers that evolve there are transmitters carrying never-executed bytes, as under lethal tar.
+
+### Correction to the outcome of S (2026-10-09, audit)
+"The L = 50 closer's lineage stops copying at the third transfer" is wrong by one: generations 1 and 2 copy into every
+partner, generation 3 (made at the third transfer) copies into 0.008 of partners, and the fourth transfer fails. The
+manuscript says "at the fourth transfer".

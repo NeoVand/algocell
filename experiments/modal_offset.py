@@ -20,7 +20,7 @@ runs_volume = modal.Volume.from_name("algocell-atlas-runs", create_if_missing=Tr
 app = modal.App("algocell-offset")
 
 
-@app.function(image=image, gpu="L40S", timeout=2 * 60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))
+@app.function(image=image, gpu=["L40S", "A10G", "L4"], timeout=2 * 60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))
 def world(c: dict) -> dict:
     import sys
     sys.path.insert(0, "/root")
@@ -36,5 +36,12 @@ def main(smoke: bool = False):
     if smoke:
         print(world.remote({"L": 16, "tar": "lethal", "mut": "off", "start": "mix50", "seed": 99, "steps": 2000}))
         return
-    for r in world.map(offset_switch.conditions(), return_exceptions=True):
+    done = set()
+    try:
+        done = {e.path.split("/")[-1] for e in runs_volume.listdir("/offset")}
+    except Exception:  # noqa: BLE001
+        pass
+    todo = [c for c in offset_switch.conditions() if offset_switch.stem(c) + "_final.npy" not in done]
+    print(f"{len(todo)} conditions to run ({len(done)} files already on the volume)")
+    for r in world.map(todo, return_exceptions=True):
         print(r if isinstance(r, dict) else f"FAILED: {r!r}"[:300], flush=True)

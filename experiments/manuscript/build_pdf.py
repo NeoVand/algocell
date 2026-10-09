@@ -33,7 +33,7 @@ ED_FILES = {
 
 # v4 layout (MAIN_v4.md): Fig. 4 is the variation figure, Fig. 5 gains the dial panel, Fig. 6 is redrawn; eight Extended Data
 # figures and two tables, numbered by first citation (detectors, census, atlas, confinement, closure stages, scan, BFF inflow, lethal tar).
-FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v5.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v4.pdf"]}
+FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v5.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v5.pdf"]}
 ED_FILES_V4 = {
     "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
     "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
@@ -43,7 +43,8 @@ ED_FILES_V4 = {
     "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
     "7": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
     "8": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
-    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed_invasions.pdf")],
+    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed_invasions2.pdf")],
+    "10": [os.path.join(EXP, "manuscript", "figures", "out", "ed_switch.pdf")],
 }
 
 SYM = {
@@ -55,7 +56,7 @@ SYM = {
     "Δ": r"$\Delta$", "∈": r"$\in$", "∑": r"$\sum$", "√": r"$\surd$", "≡": r"$\equiv$", "∝": r"$\propto$",
     "½": r"\textonehalf{}", "∫": r"$\int$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$",
     "∎": r"$\blacksquare$", "ℓ": r"$\ell$", "□": r"$\square$", "⊆": r"$\subseteq$", "∅": r"$\emptyset$",
-    "∂": r"$\partial$", "₂": r"$_2$", "₁": r"$_1$", "ₙ": r"$_n$", "∇": r"$\nabla$", "≫": r"$\gg$", "≪": r"$\ll$", "∪": r"$\cup$", "∩": r"$\cap$", "⊂": r"$\subset$",
+    "∂": r"$\partial$", "′": r"$'$", "₂": r"$_2$", "₁": r"$_1$", "ₙ": r"$_n$", "∇": r"$\nabla$", "≫": r"$\gg$", "≪": r"$\ll$", "∪": r"$\cup$", "∩": r"$\cap$", "⊂": r"$\subset$",
 }
 SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "−", "⁺": "+"}
 
