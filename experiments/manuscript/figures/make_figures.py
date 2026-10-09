@@ -627,7 +627,7 @@ def ed12(out):
     axa1.set_yscale("log")
     axa1.set_ylim(1, 1e4)
     axa1.set_yticks([1, 10, 100, 1000, 10000], ["1", "10", "100", "1,000", "10,000"])
-    fs.tidy(axa1, None, "assembly measure\nover the ten most common classes")
+    fs.tidy(axa1, None, "assembly measure,\nten commonest classes")
     axa1.set_xticklabels([])
     axa2.plot(S["step"], S["hoe"], color=INK, lw=0.8)
     axa2.set_ylim(0, 4.2)
@@ -638,6 +638,7 @@ def ed12(out):
         ax.set_xlim(1, 3.5e5)
         ax.axvline(w["t_rep"], color=RED, lw=0.6, ls="--")
         ax.set_gid("allow-clip")
+    axa1.tick_params(axis="x", labelbottom=False)
     axa1.text(w["t_rep"] * 1.15, 5e3, "first heritable\nreplicator", fontsize=5, color=RED, va="top")
     axa1.plot([w["step_first_cross"]], [w["A_first_cross"]], "o", mfc="white", mec=TEAL, ms=4, mew=0.8)
     axa1.text(w["step_first_cross"] / 1.25, w["A_first_cross"] * 1.9, "first tenfold rise", fontsize=5, color=TEAL, va="bottom", ha="right")
@@ -862,6 +863,33 @@ def ed_closure(out):
     fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
     label(axes[0], "a"); label(axes[1], "b")
     save(fig, os.path.join(out, "ed_closure"))
+
+
+def ed_bffinflow(out):
+    """Information inflow of first replicators and final dominants in BFF, by variant (results/biology/individuality)."""
+    P = pd.read_csv(os.path.join(R, "biology", "individuality", "per_replicator.csv"))
+    P = P[P.machine == "bff"]
+    names = {"std": "as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal", "wraplitnh": "wrap + literal,\nno-op brackets"}
+    fig = plt.figure(figsize=(fs.DOUBLE, 62 * fs.MM))
+    ax = fig.add_axes([0.07, 0.13, 0.92, 0.72])
+    groups, first, final, lf, ll = [], {}, {}, {}, {}
+    for v in ("std", "wrap", "lit", "wraplit", "wraplitnh"):
+        d = P[P.group.astype(str) == v]
+        f, l = d[d.which == "first"].set_index("world"), d[d.which == "final"].set_index("world")
+        idx = [f"{v}:{w}" for w in f.index.intersection(l.index)]
+        groups.append((f"{names[v]}\n(n = {len(idx)})", idx))
+        for w, k in zip(f.index.intersection(l.index), idx):
+            first[k], final[k] = f.loc[w, "H_bits"], l.loc[w, "H_bits"]
+            lf[k], ll[k] = bool(f.loc[w, "has_loop"]), bool(l.loc[w, "has_loop"])
+    slope_chart(ax, groups, first, final, lf, ll, "information inflow H(o | x) (bits)", (-0.45, 10.4), [0, 2, 4, 6, 8], seed=4, header_y=8.75)
+    for y, t in ((8.0, "ceiling of 256 partners"), (1.0, "1 bit"), (0.5, "0.5 bit")):
+        ax.axhline(y, color=RULE, lw=0.5, ls=":", zorder=0)
+        ax.text(ax.get_xlim()[1] - 0.05, y + 0.08, t, fontsize=5, color=GREY, va="bottom", ha="right")
+    ax.set_gid("allow-clip")
+    h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (both brackets present)"),
+         plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
+    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.47, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
+    save(fig, os.path.join(out, "ed_bffinflow"))
 
 
 # ------------------------------------------------------------------------------------------- the variation figure (v4 Fig. 4)
@@ -1230,7 +1258,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4), ("fig6v4", fig6v4), ("ed_census", ed_census), ("ed_confine", ed_confine), ("ed_closure", ed_closure)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4), ("fig6v4", fig6v4), ("ed_census", ed_census), ("ed_confine", ed_confine), ("ed_closure", ed_closure), ("ed_bffinflow", ed_bffinflow)):
         if a.only and name not in a.only.split(","):
             continue
         try:

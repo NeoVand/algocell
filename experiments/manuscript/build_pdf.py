@@ -31,15 +31,18 @@ ED_FILES = {
     "14": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
 }
 
-# v4 layout (MAIN_v4.md): Fig. 4 is the variation figure, Fig. 5 gains the dial panel, the ablation atlas moves to
-# Extended Data Fig. 1, and the Extended Data items are renumbered (old 5+12 -> 6, old 8 -> 7, old 9+11 -> 8, 13 -> 9, 14 -> 10).
+# v4 layout (MAIN_v4.md): Fig. 4 is the variation figure, Fig. 5 gains the dial panel, Fig. 6 is redrawn; eight Extended Data
+# figures and two tables, numbered by first citation (detectors, census, atlas, confinement, closure stages, scan, BFF inflow, lethal tar).
 FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v4.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v4.pdf"]}
 ED_FILES_V4 = {
-    "1": [os.path.join(EXP, "manuscript", "figures", "out", "fig4.pdf")],
-    "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
-    "8": [os.path.join(EXP, "results", "biology", "individuality", "fig_bff_slope.pdf")],
-    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
-    "10": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
+    "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
+    "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
+    "3": [os.path.join(EXP, "manuscript", "figures", "out", "fig4.pdf")],
+    "4": [os.path.join(EXP, "manuscript", "figures", "out", "ed_confine.pdf")],
+    "5": [os.path.join(EXP, "manuscript", "figures", "out", "ed_closure.pdf")],
+    "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
+    "7": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
+    "8": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
 }
 
 SYM = {
@@ -141,6 +144,9 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
         para = []
         if text.startswith("**Extended Data"):
             text = re.sub(r"\s*Source: .*$", "", text)       # provenance stays in the Markdown, not in the review copy
+        if text.startswith("**Extended Data Table"):
+            pending_table_legend.append(inline(text))       # kept with its table (see flush_table)
+            return
         m = re.match(r"\*\*Fig\. (\d+) \| ", text)
         if m and section.startswith("Figure legends"):
             if INLINE[0] and m.group(1) in placed:
@@ -163,6 +169,44 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
                 if n in legends and n not in placed:
                     body.extend(main_fig_block(n, floating=True))
                     placed.add(n)
+
+    table_rows: list[str] = []
+    pending_table_legend: list[str] = []
+
+    def flush_table():
+        """A Markdown pipe table as a small booktabs tabular (alignment from the separator row)."""
+        rows = [r for r in table_rows]
+        table_rows.clear()
+        if not rows:
+            return
+        cells = [[c.strip() for c in r.strip("|").split("|")] for r in rows]
+        sep = next((i for i, r in enumerate(cells) if all(re.fullmatch(r":?-{2,}:?", c) for c in r if c)), None)
+        aligns = ["l"] * len(cells[0])
+        if sep is not None:
+            aligns = ["r" if c.endswith(":") and not c.startswith(":") else ("c" if c.startswith(":") and c.endswith(":") else "l") for c in cells[sep]]
+        head = cells[:sep] if sep is not None else []
+        data = cells[sep + 1:] if sep is not None else cells
+        for k in range(len(aligns)):                       # a long text column wraps
+            if max(len(r[k]) for r in data if k < len(r)) > 70:
+                aligns[k] = r">{\raggedright\arraybackslash}p{0.55\linewidth}"
+        out = []
+        if pending_table_legend:
+            out.append(r"\par\noindent\begin{minipage}{\linewidth}")
+            out.append(pending_table_legend.pop(0))
+            out.append(r"\par\vspace{2pt}")
+        out += [r"{\footnotesize\setlength{\tabcolsep}{4pt}\begin{tabular}{" + "".join(aligns) + "}", r"\toprule"]
+        for h in head:
+            out.append(" & ".join(r"\textbf{" + inline(c) + "}" for c in h) + r" \\")
+        if head:
+            out.append(r"\midrule")
+        for r in data:
+            out.append(" & ".join(inline(c) for c in r) + r" \\")
+        out.append(r"\bottomrule")
+        out.append(r"\end{tabular}\par}")
+        if out[0].startswith(r"\par\noindent\begin{minipage}"):
+            out.append(r"\end{minipage}\par\vspace{4mm}")
+        body.extend(out)
+        body.append("")
 
     def close_list():
         nonlocal in_list
@@ -197,6 +241,12 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
         if line.strip() == "---":
             flush_para(); close_list()
             continue
+        if line.lstrip().startswith("|"):
+            flush_para(); close_list()
+            table_rows.append(line.strip())
+            continue
+        if table_rows:
+            flush_table()
         m = re.match(r"^(\d+)\. (.*)", line)
         if m:
             flush_para()
@@ -217,6 +267,8 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             continue
         para.append(line)
     flush_para(); close_list()
+    if table_rows:
+        flush_table()
 
     today = dt.date.today().isoformat()
     margin = "14mm" if COMPACT[0] else "20mm"
@@ -231,6 +283,8 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{array}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt plus 1pt}
 \linespread{1.08}
