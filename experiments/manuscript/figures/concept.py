@@ -276,6 +276,60 @@ def fig5a(ax):
     ax.text(15.0, 0.1, "a complete self-copy must leave its cells or revisit one", ha="center", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
 
 
+# ------------------------------------------------------------------------------------------------------- v4 Fig. 6
+def fig6a(ax):
+    """Theorem 2 as used for the Z80 (proviso ii): the budget outlasts one pass, so a pointer that stays must revisit a cell."""
+    finish(ax, (-0.5, 30.5), (-0.6, 13.6))
+    W = 1.25
+    org = ["", "", "", "…", "", "", "", ""]
+    # the budget, longer than the organism
+    ax.add_patch(Rectangle((0.5, 11.0), 29.0, 0.9, facecolor=RED_PALE, edgecolor=INK, lw=0.5, zorder=2))
+    ax.text(15.0, 11.45, "128 executions per encounter", ha="center", va="center", fontsize=FS_LABEL, color=INK, zorder=3)
+    bracket(ax, 0.5, 0.5 + W * len(org), 10.55, color=INK, up=False)
+    ax.text(0.5 + W * len(org) / 2, 10.2, "the organism: L ≤ 100 cells", ha="center", va="top", fontsize=FS_LABEL, color=INK)
+    # open: runs on into the partner
+    y = 6.0
+    text_runs(ax, 0.5, y + 1.6, [("open", TEAL, True), (" · leaves its cells", INK, True)], fs=FS_TITLE)
+    strip(ax, 0.5, y, org, w=W, h=1.2)
+    strip(ax, 0.5 + W * len(org), y, ["", "", "", "…", "", ""], fill=GREY_FILL, w=W, h=1.2)
+    arrow(ax, (0.9, y - 0.4), (0.5 + W * 13.7, y - 0.4), color=TEAL, lw=1.2)
+    ax.text(0.5 + W * 14 + 0.6, y + 0.6, "partner", ha="left", va="center", fontsize=FS_LABEL, color=INK)
+    # closed: stays, so some cell runs twice
+    y = 1.4
+    text_runs(ax, 0.5, y + 1.6, [("closed", TEAL, True), (" · revisits a cell", INK, True)], fs=FS_TITLE)
+    strip(ax, 0.5, y, org, w=W, h=1.2)
+    x_end = 0.5 + W * len(org)
+    arrow(ax, (0.9, y - 0.4), (x_end - 0.4, y - 0.4), color=TEAL, lw=1.2)
+    arrow(ax, (x_end - 0.4, y - 0.6), (1.1, y - 0.6), color=RED, lw=1.2, rad=-0.18)
+    ax.plot([0.5 + W / 2], [y + 0.6], marker="o", ms=4, mfc="white", mec=INK, mew=0.8, zorder=6)
+    ax.text(x_end + 0.9, y + 0.8, "128 executions in L cells:", ha="left", va="bottom", fontsize=FS_LABEL, color=INK)
+    ax.text(x_end + 0.9, y + 0.6, "some cell runs twice, a cycle", ha="left", va="top", fontsize=FS_LABEL, color=INK)
+
+
+def fig6b(ax):
+    """Proposition 3 with the count of Proposition 4: the smallest self-writer is straight-line, hence open, and present from the start."""
+    finish(ax, (-0.5, 22.5), (-0.6, 13.6))
+    W = 1.25
+    ax.text(21.9, 9.85, "chance the word is in", ha="right", va="bottom", fontsize=FS_SMALL, color=GREY_TEXT)
+    ax.text(21.9, 9.8, "the first soup (L = 16)", ha="right", va="top", fontsize=FS_SMALL, color=GREY_TEXT)
+    # the two-byte load-push word: straight-line, open
+    y = 6.0
+    text_runs(ax, 0.5, y + 1.6, [("2 bytes", TEAL, True), (" · no jump", INK, True)], fs=FS_TITLE)
+    x1 = strip(ax, 0.5, y, ["01", "c5", "01", "c5", "…", "c5"], w=W, h=1.2)
+    strip(ax, x1, y, ["", ""], fill=GREY_FILL, w=W, h=1.2)
+    arrow(ax, (0.9, y - 0.4), (x1 + 2 * W - 0.3, y - 0.4), color=TEAL, lw=1.2)
+    ax.text(x1 + 2 * W + 0.4, y + 0.85, "5 of 65,536 two-byte", ha="left", va="center", fontsize=FS_SMALL, color=GREY_TEXT)
+    ax.text(x1 + 2 * W + 0.4, y + 0.25, "words write themselves", ha="left", va="center", fontsize=FS_SMALL, color=GREY_TEXT)
+    ax.text(21.9, y + 0.6, "0.99", ha="right", va="center", fontsize=8, color=TEAL, fontweight="bold")
+    # the smallest closer observed: a four-byte block copy
+    y = 1.4
+    text_runs(ax, 0.5, y + 2.3, [("4 bytes", RED, True), (" · a loop", INK, True)], fs=FS_TITLE)
+    x1 = strip(ax, 0.5, y, ["1e", "a4", "ed", "b0", "…", "b0"], fills=[TEAL_FILL, TEAL_FILL, RED_PALE, RED_PALE, TEAL_FILL, RED_PALE], w=W, h=1.2)
+    arrow(ax, (0.5 + 3.7 * W, y + 1.25), (0.5 + 2.3 * W, y + 1.25), color=RED, lw=1.1, rad=0.75, scale=6)
+    ax.text(x1 + 0.4, y + 0.85, "LDIR repeats in place;", ha="left", va="center", fontsize=FS_SMALL, color=GREY_TEXT)
+    ax.text(x1 + 0.4, y + 0.25, "no closed self-writer of 2 bytes", ha="left", va="center", fontsize=FS_SMALL, color=GREY_TEXT)
+    ax.text(21.9, y + 0.6, r"$6\times10^{-5}$", ha="right", va="center", fontsize=8, color=RED, fontweight="bold")
+
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import figcheck

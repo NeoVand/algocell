@@ -33,7 +33,7 @@ ED_FILES = {
 
 # v4 layout (MAIN_v4.md): Fig. 4 is the variation figure, Fig. 5 gains the dial panel, the ablation atlas moves to
 # Extended Data Fig. 1, and the Extended Data items are renumbered (old 5+12 -> 6, old 8 -> 7, old 9+11 -> 8, 13 -> 9, 14 -> 10).
-FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v4.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6.pdf"]}
+FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v4.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v4.pdf"]}
 ED_FILES_V4 = {
     "1": [os.path.join(EXP, "manuscript", "figures", "out", "fig4.pdf")],
     "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],

@@ -595,6 +595,19 @@ def fig6(out):
     save(fig, os.path.join(out, "fig6"))
 
 
+def fig6v4(out):
+    """v4 Fig. 6 | What is proved: a Theorem 2 (budget pigeonhole, the Z80 case); b Proposition 3 with Proposition 4's count."""
+    fig = plt.figure(figsize=(fs.DOUBLE, 58 * fs.MM))
+    axa = fig.add_axes([0.02, 0.02, 0.55, 0.9])
+    axb = fig.add_axes([0.6, 0.02, 0.39, 0.9])
+    cp.fig6a(axa)
+    cp.fig6b(axb)
+    for ax, letter in ((axa, "a"), (axb, "b")):
+        ax.set_anchor("NW")
+        label(ax, letter, dx=0.02, dy=0.0)
+    save(fig, os.path.join(out, "fig6v4"))
+
+
 # ------------------------------------------------------------------------------------------------------ Extended Data 12
 def ed12(out):
     A = os.path.join(R, "biology", "assembly")
@@ -1115,7 +1128,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4), ("fig6v4", fig6v4)):
         if a.only and name not in a.only.split(","):
             continue
         try:
