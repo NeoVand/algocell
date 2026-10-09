@@ -125,6 +125,7 @@ These are predictions for chemistry, not results about it. Template copying is a
 **Extended Data Fig. 10 | Closure trades variation for fidelity.** Single-byte mutational scan of the first heritable replicator (first) and the final dominant (final) of every Stage G world, grouped by tape length (grey lines join the same world; filled, loop instruction; open, none). **a**, Transmissible sites: positions at which at least half of the tested alternative bytes leave the mutant heritable and are carried into at least half of its copies. **b**, Capacity for inherited variation, Σ log₂(1 + 255 × fraction of transmissible values) over positions, in bits. **c**, Robustness: fraction of single mutants that remain heritable (gen2 ≥ 0.3). All 255 alternative bytes per position at L = 16 and 20, 32 seeded values at L = 50 and 64; 32 partners per generation. Source: `results/mutscan/`.
 
 **Extended Data Table 1 | Final-tape classes per tape length (Stage G).** Control-flow and block-repeat content, partner-copy fraction and self-damage of the final dominant, number of worlds per class. Source: `results/stageG/stageG/NUMBERS_G.md`.
+
 **Extended Data Table 2 | Ablation sets.** Opcode families removed in each ablation, with opcode counts and example mnemonics. Source: `make_conds.ABLATIONS`, `src/lib/z80-opcodes.ts`.
 
 ## References

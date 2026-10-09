@@ -928,6 +928,7 @@ def _capacity_panel(ax):
     the dominants are pointer-closed, an open marker at the first snapshot."""
     frames = [pd.read_csv(p) for p in (os.path.join(R, "capacity_time", "capacity_over_time.csv"), os.path.join(R, "capacity_time_L", "capacity_over_time.csv")) if os.path.exists(p)]
     C = pd.concat(frames, ignore_index=True)
+    C = C.drop_duplicates(["stage", "L", "seed", "step"])
     C = C[(C.tape != "all-zero") & C.ctrl_herit.astype(bool)].dropna(subset=["capacity_bits"])
     series = [("L", 16, L_COL[16], "-", "L = 16"), ("L", 20, L_COL[20], "-", "L = 20"), ("K", 32, "#009E73", "-", "L = 32"),
               ("G", 50, L_COL[50], "-", "L = 50"), ("G", 64, L_COL[64], "-", "L = 64"), ("I", 16, RED, "--", "L = 16, lethal tar")]
