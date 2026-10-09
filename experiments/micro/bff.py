@@ -31,12 +31,22 @@ LIT = "P"                    # opcode id 11, the literal-push switch (byte 0x50 
 WORDS_PER_PAIR = PAIR // 4
 
 WGSL = """
-struct Params { n_pairs: u32, steps: u32, ip_wrap: u32, tape_len: u32, literal: u32, nohalt: u32, pad1: u32, pad2: u32 }
+struct Params { n_pairs: u32, steps: u32, ip_wrap: u32, tape_len: u32, literal: u32, nohalt: u32, halt_q: u32, roll_seed: u32, lit_rep: u32, pad1: u32, pad2: u32, pad3: u32 }
 @group(0) @binding(0) var<storage, read_write> mem: array<u32>;
 @group(0) @binding(1) var<storage, read> amap: array<u32>;
 @group(0) @binding(2) var<storage, read_write> outp: array<u32>;
 @group(0) @binding(3) var<uniform> P: Params;
 
+fn hash32(x: u32) -> u32 {
+  var h = x * 0x9E3779B9u; h = h ^ (h >> 16u); h = h * 0x85EBCA6Bu; h = h ^ (h >> 13u); h = h * 0xC2B2AE35u; h = h ^ (h >> 16u); return h;
+}
+// Lethality dial: an unmatched bracket halts the encounter with probability halt_q / 2^32 (halt_q = 0xffffffff: always, the
+// published rule; nohalt = 1 overrides: never). The roll is a hash of (pair index, step, roll_seed) so GPU and CPU agree.
+fn bracket_halts(p: u32, s: u32) -> bool {
+  if (P.nohalt == 1u) { return false; }
+  if (P.halt_q == 0xffffffffu) { return true; }
+  return hash32(p * 0x9E3779B1u ^ (s + 1u) * 0x85EBCA77u ^ P.roll_seed) < P.halt_q;
+}
 fn rd(base: u32, i: u32) -> u32 { let w = mem[base + (i >> 2u)]; return (w >> ((i & 3u) * 8u)) & 0xffu; }
 fn wr(base: u32, i: u32, v: u32) {
   let idx = base + (i >> 2u); let sh = (i & 3u) * 8u;
@@ -83,17 +93,20 @@ fn run(@builtin(global_invocation_id) gid: vec3<u32>) {
             if (o == 9u) { depth = depth + 1; } else if (o == 10u) { depth = depth - 1; if (depth == 0) { found = true; break; } }
             q = q + 1u;
           }
-          if (!found) { if (P.nohalt == 0u) { stop = true; } } else { pc = i32(q); }
+          if (!found) { if (bracket_halts(p, s)) { stop = true; } } else { pc = i32(q); }
         }
       }
       case 11u: {
         // literal push (variant switch): write the two following code bytes below head1, as the Z80 pusher does
         if (P.literal == 1u) {
+          // bandwidth dial: the two operand bytes are written lit_rep times (write ratio 2·lit_rep / 3; lit_rep = 1 is the published switch)
           let a = rd(base, (upc + 1u) % T); let b = rd(base, (upc + 2u) % T);
-          h1 = (h1 + T - 2u) % T;
-          wr(base, (h1 + 1u) % T, a); wr(base, h1, b);
-          if (((h1 + 1u) % T) >= P.tape_len) { writesB = writesB + 1u; }
-          if (h1 >= P.tape_len) { writesB = writesB + 1u; }
+          for (var r: u32 = 0u; r < P.lit_rep; r = r + 1u) {
+            h1 = (h1 + T - 2u) % T;
+            wr(base, (h1 + 1u) % T, a); wr(base, h1, b);
+            if (((h1 + 1u) % T) >= P.tape_len) { writesB = writesB + 1u; }
+            if (h1 >= P.tape_len) { writesB = writesB + 1u; }
+          }
           pc = pc + 2;
         }
       }
@@ -106,7 +119,7 @@ fn run(@builtin(global_invocation_id) gid: vec3<u32>) {
             if (o == 10u) { depth = depth + 1; } else if (o == 9u) { depth = depth - 1; if (depth == 0) { found = true; break; } }
             q = q - 1;
           }
-          if (!found) { if (P.nohalt == 0u) { stop = true; } } else { pc = q; }
+          if (!found) { if (bracket_halts(p, s)) { stop = true; } } else { pc = q; }
         }
       }
       default: {}
@@ -158,8 +171,13 @@ def density_map(k: int, seed: int = 0) -> np.ndarray:
 class BFF:
     """Executes many 128-byte pairs for `steps` instructions on the GPU."""
 
-    def __init__(self, max_pairs: int = 1 << 16, steps: int = 1 << 13, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False, nohalt: bool = False):
+    def __init__(self, max_pairs: int = 1 << 16, steps: int = 1 << 13, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False, nohalt: bool = False,
+                 halt_p: float = 1.0, lit_rep: int = 1):
         self.dev = get_device()
+        self.halt_p = float(halt_p)
+        self.lit_rep = int(lit_rep)
+        self.halt_q = 0xFFFFFFFF if self.halt_p >= 1.0 else int(round(self.halt_p * 4294967296.0))
+        self._rolls = 0
         self.max_pairs = max_pairs
         self.steps = steps
         self.ip_wrap = ip_wrap
@@ -170,7 +188,7 @@ class BFF:
         self.mem_buf = self.dev.create_buffer(size=max_pairs * PAIR, usage=B.STORAGE | B.COPY_DST | B.COPY_SRC)
         self.amap_buf = self.dev.create_buffer(size=256 * 4, usage=B.STORAGE | B.COPY_DST)
         self.out_buf = self.dev.create_buffer(size=max_pairs * 16, usage=B.STORAGE | B.COPY_DST | B.COPY_SRC)
-        self.params_buf = self.dev.create_buffer(size=32, usage=B.UNIFORM | B.COPY_DST)
+        self.params_buf = self.dev.create_buffer(size=48, usage=B.UNIFORM | B.COPY_DST)
         self.dev.queue.write_buffer(self.amap_buf, 0, self.alphabet.tobytes())
         module = self.dev.create_shader_module(code=WGSL)
         storage = {"type": wgpu.BufferBindingType.storage}
@@ -189,14 +207,17 @@ class BFF:
             {"binding": 0, "resource": res(self.mem_buf)}, {"binding": 1, "resource": res(self.amap_buf)},
             {"binding": 2, "resource": res(self.out_buf)}, {"binding": 3, "resource": res(self.params_buf)}])
 
-    def execute(self, pairs: np.ndarray, steps: int | None = None) -> tuple[np.ndarray, np.ndarray]:
+    def execute(self, pairs: np.ndarray, steps: int | None = None, roll_seed: int | None = None) -> tuple[np.ndarray, np.ndarray]:
         """pairs: (n, 128) uint8 → (memory after, (n, 4) uint32 [executed, entered_partner, max_pc, writes_into_partner])."""
         pairs = np.ascontiguousarray(pairs, dtype=np.uint8)
         n = pairs.shape[0]
         assert pairs.shape[1] == PAIR and n <= self.max_pairs
         steps = self.steps if steps is None else steps
         self.dev.queue.write_buffer(self.mem_buf, 0, pairs.tobytes())
-        self.dev.queue.write_buffer(self.params_buf, 0, np.array([n, steps, int(self.ip_wrap), TAPE, int(self.literal), int(self.nohalt), 0, 0], dtype=np.uint32).tobytes())
+        if roll_seed is None:
+            self._rolls += 1
+            roll_seed = self._rolls
+        self.dev.queue.write_buffer(self.params_buf, 0, np.array([n, steps, int(self.ip_wrap), TAPE, int(self.literal), int(self.nohalt), self.halt_q, roll_seed & 0xFFFFFFFF, self.lit_rep, 0, 0, 0], dtype=np.uint32).tobytes())
         enc = self.dev.create_command_encoder()
         p = enc.begin_compute_pass()
         p.set_pipeline(self.pipeline)
@@ -209,7 +230,27 @@ class BFF:
         return mem, out
 
 
-def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False, nohalt: bool = False) -> tuple[np.ndarray, dict]:
+def hash32(x: int) -> int:
+    h = (x * 0x9E3779B9) & 0xFFFFFFFF
+    h ^= h >> 16
+    h = (h * 0x85EBCA6B) & 0xFFFFFFFF
+    h ^= h >> 13
+    h = (h * 0xC2B2AE35) & 0xFFFFFFFF
+    h ^= h >> 16
+    return h
+
+
+def bracket_halts(p: int, s: int, nohalt: bool, halt_q: int, roll_seed: int) -> bool:
+    if nohalt:
+        return False
+    if halt_q == 0xFFFFFFFF:
+        return True
+    return hash32(((p * 0x9E3779B1) & 0xFFFFFFFF) ^ (((s + 1) * 0x85EBCA77) & 0xFFFFFFFF) ^ (roll_seed & 0xFFFFFFFF)) < halt_q
+
+
+def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alphabet: np.ndarray | None = None, literal: bool = False, nohalt: bool = False,
+                      halt_p: float = 1.0, lit_rep: int = 1, pair_index: int = 0, roll_seed: int = 1) -> tuple[np.ndarray, dict]:
+    halt_q = 0xFFFFFFFF if halt_p >= 1.0 else int(round(halt_p * 4294967296.0))
     """CPU reference of the kernel, for tests."""
     amap = ascii_map(literal) if alphabet is None else alphabet
     t = pair.astype(np.int32).copy()
@@ -220,7 +261,7 @@ def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alpha
     maxpc = 0
     writesB = 0
     executed = 0
-    for _ in range(steps):
+    for s in range(steps):
         if pc < 0 or pc >= T:
             if ip_wrap:
                 pc %= T
@@ -264,18 +305,19 @@ def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alpha
                             break
                     q += 1
                 if not found:
-                    if not nohalt:
+                    if bracket_halts(pair_index, s, nohalt, halt_q, roll_seed):
                         stop = True
                 else:
                     pc = q
         elif op == 11:
             if literal:
                 a_, b_ = int(t[(pc + 1) % T]), int(t[(pc + 2) % T])
-                h1 = (h1 - 2) % T
-                t[(h1 + 1) % T] = a_
-                t[h1] = b_
-                writesB += ((h1 + 1) % T) >= half
-                writesB += h1 >= half
+                for _ in range(lit_rep):
+                    h1 = (h1 - 2) % T
+                    t[(h1 + 1) % T] = a_
+                    t[h1] = b_
+                    writesB += ((h1 + 1) % T) >= half
+                    writesB += h1 >= half
                 pc += 2
         elif op == 10:
             if t[h0] != 0:
@@ -291,7 +333,7 @@ def reference_execute(pair: np.ndarray, steps: int, ip_wrap: bool = False, alpha
                             break
                     q -= 1
                 if not found:
-                    if not nohalt:
+                    if bracket_halts(pair_index, s, nohalt, halt_q, roll_seed):
                         stop = True
                 else:
                     pc = q
