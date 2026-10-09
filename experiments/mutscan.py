@@ -26,13 +26,14 @@ sys.path.insert(0, HERE)
 from algocell_exp import assay as A  # noqa: E402
 
 R = os.path.join(HERE, "results")
+SUPPRESS: tuple = ()
 
 
 def parse_tape(s: str) -> np.ndarray:
     return np.array([int(b, 16) for b in s.split()], dtype=np.uint8)
 
 
-def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int, zero_halts: bool = False) -> dict:
+def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int, zero_halts: bool = False, suppress=()) -> dict:
     L = tape.size
     rng = np.random.default_rng(seed)
     vals = []
@@ -50,7 +51,7 @@ def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int, zero_halt
     Rp2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     TT = np.repeat(T, n, axis=0)
     RR = np.tile(Rp, (M1, 1))
-    res = A.execute_pairs(np.concatenate([TT, RR], axis=1), L, steps, zero_halts=zero_halts)
+    res = A.execute_pairs(np.concatenate([TT, RR], axis=1), L, steps, suppress=suppress, zero_halts=zero_halts)
     before = A._best_shift_match_rows(RR, TT)
     after, shifts = A._best_shift_rows(res[:, L:], TT)
     score = A._norm_gain_rows(before, after, M1, n)
@@ -68,7 +69,7 @@ def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int, zero_halt
     ncp = cp.sum(axis=1)
     trans = np.where(ncp > 0, ca.sum(axis=1) / np.maximum(ncp, 1), np.nan)
     RR2 = np.tile(Rp2, (M1, 1))
-    res2 = A.execute_pairs(np.concatenate([offspring, RR2], axis=1), L, steps, zero_halts=zero_halts)
+    res2 = A.execute_pairs(np.concatenate([offspring, RR2], axis=1), L, steps, suppress=suppress, zero_halts=zero_halts)
     before2 = A._best_shift_match_rows(RR2, TT)
     after2 = A._best_shift_match_rows(res2[:, L:], TT)
     gen2 = A._norm_gain_rows(before2, after2, M1, n)
@@ -115,7 +116,7 @@ def run(a) -> None:
             loop = bool(w[f"{which}_has_cf"]) or bool(w[f"{which}_has_block"])
             label = f"L{L}_s{seed}_{which}"
             t0 = time.time()
-            d = scan_tape(tape, K, a.n, 128, seed=20261009 + 1000 * L + seed + (7 if which == "final" else 0), zero_halts=a.zero_halts)
+            d = scan_tape(tape, K, a.n, 128, seed=20261009 + 1000 * L + seed + (7 if which == "final" else 0), zero_halts=a.zero_halts, suppress=SUPPRESS)
             row, site = summarise(d, L)
             row.update({"label": label, "L": L, "seed": seed, "which": which, "has_loop": loop, "tape": w[f"{which}_tape"], "K": K, "n_partners": a.n,
                         **{f"ctrl_{k}": v for k, v in d["ctrl"].items()}, "wall_s": round(time.time() - t0, 1)})
@@ -169,10 +170,15 @@ def main() -> None:
     ap.add_argument("--out", default=os.path.join(R, "mutscan"))
     ap.add_argument("--runs", default=os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"), help="per-world table with first_tape/final_tape")
     ap.add_argument("--zero-halts", action="store_true", help="run the mutants under the lethal-tar rule (Stage I tapes)")
+    ap.add_argument("--ablation", default="", help="run the mutants under this make_conds ablation (e.g. i8080 for the Stage M tapes)")
     ap.add_argument("--fresh", action="store_true")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--yes", action="store_true", help="confirm that the browser simulation is paused (local GPU)")
     a = ap.parse_args()
+    global SUPPRESS
+    if a.ablation:
+        from make_conds import ABLATIONS
+        SUPPRESS = tuple(ABLATIONS[a.ablation])
     if a.report:
         report(a)
         return
