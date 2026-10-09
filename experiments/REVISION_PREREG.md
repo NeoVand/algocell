@@ -663,3 +663,10 @@ lethal rule widens the transmitters' overall advantage (benign-soup executors: 0
 0.126 lethal). Reading: a body made of copies of the copying code is hijacked by intruders, and a body of junk protects
 against them; this favours transmitters under both rules, more under lethal tar, and so does not by itself explain why
 regenerators win under benign tar. Post hoc and descriptive.
+
+### Correction to the outcome of DZ (2026-10-09, figure critic)
+At p = 1 one world (9004) has no heritable top-3 tape, so DZ1's count is 0 of 9 worlds with one. The registered closure
+endpoint (a top-3 tape at ≥ 0.5% of cells) misses closed transmitter populations: worlds 9007 (p = 0.03) and 9004
+(p = 1) are counted as unclosed, yet all their heritable random cells are confined (transmitters 1.00 and 0.875 of
+heritable cells). The DZ2 timing test is therefore biased against closure at high p; it is reported as registered, with
+this bias stated.

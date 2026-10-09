@@ -26,6 +26,18 @@ EXP = mf.EXP
 OPEN_C, REGEN_C, TRANS_C = mf.OPEN_C, mf.REGEN_C, mf.TRANS_C
 
 
+SUP = str.maketrans("0123456789-", "⁰¹²³⁴⁵⁶⁷⁸⁹⁻")
+
+
+def _logfmt(ax, axis="x"):
+    from matplotlib.ticker import FuncFormatter, LogLocator, NullFormatter
+    f = FuncFormatter(lambda v, _: ("10" + str(int(round(np.log10(v)))).translate(SUP)) if v > 0 and abs(np.log10(v) - round(np.log10(v))) < 1e-9 else "")
+    a = ax.xaxis if axis == "x" else ax.yaxis
+    a.set_major_locator(LogLocator(base=10))
+    a.set_major_formatter(f)
+    a.set_minor_formatter(NullFormatter())
+
+
 def _letter(fig, ax, letter, y, dx=0.06, x=None):
     ax.apply_aspect()
     if x is None:
@@ -198,19 +210,27 @@ def _traj(L, tar, mut):
     return out
 
 
-def _switch_panel(ax, L, tar, title):
+def _switch_panel(ax, L, tar, title, ylabel=True):
     seen = set()
     for c, t in _traj(L, tar, "on"):
         t = t[t.step > 0].copy()
+        raw = t["T"] / (t["R"] + t["T"]).replace(0, np.nan)
+        ok = (t["R"] + t["T"]) >= 1000
+        sm = raw.copy()
         late = t.step > 5000
-        t.loc[late, "Tsh"] = t.loc[late, "Tsh"].rolling(9, center=True, min_periods=3).median()
+        sm[late] = raw[late].rolling(9, center=True, min_periods=3).median()
+        sm[~ok] = np.nan
         lab = START_LAB[c["start"]] if c["start"] not in seen else None
         seen.add(c["start"])
-        ax.plot(t.step, t.Tsh, color=START_C[c["start"]], lw=0.55, alpha=0.85, label=lab)
+        ax.plot(t.step, sm, color=START_C[c["start"]], lw=0.55, alpha=0.85, label=lab)
+        if (~ok & (t.step > 20000)).any():
+            last = sm.last_valid_index()
+            ax.plot(t.step[last], sm[last], marker="x", ms=3.2, mew=0.8, color=START_C[c["start"]], zorder=4)
     ax.set_xscale("log")
     ax.set_xlim(40, 3.2e5)
     ax.set_ylim(-0.02, 1.02)
-    fs.tidy(ax, "step", "transmitters among\ncore-carrying cells")
+    fs.tidy(ax, "step", "transmitters among\ncore-carrying cells" if ylabel else None)
+    _logfmt(ax)
     ax.text(0.02, 1.02, title, transform=ax.transAxes, fontsize=6, ha="left", va="bottom", gid="allow-outside")
 
 
@@ -254,8 +274,13 @@ def _encounter_panel(ax):
     ax.set_ylim(-0.03, 1.3)
     ax.set_yticks([0, 0.5, 1.0])
     fs.tidy(ax, None, "share of 4,096 encounters")
-    for k, (t, col) in enumerate((("regenerator", REGEN_C), ("transmitter", TRANS_C), ("open, benign tar", INK), ("filled, lethal tar", INK))):
+    ax.spines["left"].set_bounds(0, 1.0)
+    for k, (t, col) in enumerate((("regenerator", REGEN_C), ("transmitter", TRANS_C))):
         ax.text(1.45, 1.27 - 0.085 * k, t, color=col, fontsize=5.0, ha="left", va="center")
+    for k, (t, fill) in enumerate((("benign tar", "white"), ("lethal tar", INK))):
+        y = 1.27 - 0.085 * (k + 2)
+        ax.plot([1.55], [y], marker="o", ms=2.6, mfc=fill, mec=INK, mew=0.6, ls="none")
+        ax.text(1.75, y, t, color=INK, fontsize=5.0, ha="left", va="center")
 
 
 def _ref22_panel(ax):
@@ -278,24 +303,24 @@ def _ref22_panel(ax):
 
 
 def _randreg_panel(ax):
-    F = pd.read_csv(os.path.join(R, "review_r2", "first_closure.csv"))
-    g = F[(F.stage.isin(["G", "L"])) & (F.L == 16)]
-    t = np.sort(g.t_closed.dropna().values)
-    n = len(g)
-    xs = np.concatenate([[1e3], t, [3e6]])
-    ys = np.concatenate([[0], np.arange(1, len(t) + 1) / n, [len(t) / n]])
-    ax.step(xs, ys, where="post", color=INK, lw=0.9, label=None)
+    """Fraction of worlds closed (most heritable cells among 64 random cells confined) at recorded snapshots, L = 16."""
+    C = pd.read_csv(os.path.join(R, "population", "classes_snapshots.csv"))
+    g = C[C.stage.isin(["G", "L"]) & (C.L == 16) & C.step.notna() & (C.step <= 3e6)]
+    g = g.drop_duplicates(["stage", "seed", "step"])
+    zs = g.groupby("step").apply(lambda d: ((d.frac_confined_of_heritable > 0.5).sum() / d.seed.nunique(), d.seed.nunique()))
+    steps0 = [st for st in zs.index if zs[st][1] >= 20]
+    ax.plot(steps0, [zs[st][0] for st in steps0], marker="o", ms=2.2, color=INK, lw=0.6)
     D = pd.concat([pd.read_csv(os.path.join(R, "r4", f)) for f in ("r4_long.csv", "r4_rep.csv")])
     steps = sorted(D.step.unique())
-    frac = [(D[D.step == s].confined_given_heritable > 0.5).mean() for s in steps]
-    ax.step([1e3] + steps + [3e6], [0] + frac + [frac[-1]], where="post", color="#0072B2", lw=0.9, label=None)
-    ax.plot(steps, frac, marker="o", ms=2.2, color="#0072B2", ls="none")
+    frac = [(D[D.step == st].confined_given_heritable > 0.5).mean() for st in steps]
+    ax.plot(steps, frac, marker="s", ms=2.2, color="#CC79A7", lw=0.6)
     ax.set_xscale("log")
-    ax.set_xlim(1e3, 3.3e6)
+    ax.set_xlim(300, 4e6)
     ax.set_ylim(-0.02, 1.05)
     fs.tidy(ax, "step", "fraction of worlds closed")
-    ax.text(3.0e6, 0.78, "zero registers\n(Stages G and L,\n30 worlds)", color=INK, fontsize=5.2, ha="right", va="center")
-    ax.text(3.0e6, 0.45, "random registers\n(40 worlds)", color="#0072B2", fontsize=5.2, ha="right", va="center")
+    _logfmt(ax)
+    ax.text(3.6e6, 0.86, "zero registers", color=INK, fontsize=5.2, ha="right", va="center")
+    ax.text(3.6e6, 0.45, "random registers\n(40 worlds)", color="#CC79A7", fontsize=5.2, ha="right", va="center")
 
 
 def ed_switch(out):
@@ -306,8 +331,8 @@ def ed_switch(out):
     axa, axb, axc = (fig.add_subplot(gs1[0, i]) for i in range(3))
     axd, axe, axf, axg = (fig.add_subplot(gs2[0, i]) for i in range(4))
     for ax, fn, letter in ((axa, lambda a: _switch_panel(a, 32, "benign", "L = 32, benign tar"), "a"),
-                           (axb, lambda a: _switch_panel(a, 32, "lethal", "L = 32, lethal tar"), "b"),
-                           (axc, lambda a: _switch_panel(a, 16, "lethal", "L = 16, lethal tar"), "c"),
+                           (axb, lambda a: _switch_panel(a, 32, "lethal", "L = 32, lethal tar", ylabel=False), "b"),
+                           (axc, lambda a: _switch_panel(a, 16, "lethal", "L = 16, lethal tar", ylabel=False), "c"),
                            (axd, _drift_panel, "d"), (axe, _encounter_panel, "e"), (axf, _ref22_panel, "f"), (axg, _randreg_panel, "g")):
         try:
             fn(ax)
@@ -316,7 +341,7 @@ def ed_switch(out):
             traceback.print_exc()
             placeholder(ax, f"{letter} (data missing: {e})")
     axb.legend(fontsize=5.2, loc="lower center", bbox_to_anchor=(0.5, 1.13), ncol=3, frameon=False)
-    for ax, letter, y in ((axa, "a", 0.985), (axb, "b", 0.985), (axc, "c", 0.985), (axd, "d", 0.47), (axe, "e", 0.47), (axf, "f", 0.47), (axg, "g", 0.47)):
+    for ax, letter, y in ((axa, "a", 0.95), (axb, "b", 0.95), (axc, "c", 0.95), (axd, "d", 0.45), (axe, "e", 0.45), (axf, "f", 0.45), (axg, "g", 0.45)):
         _letter(fig, ax, letter, y, dx=0.07)
     save(fig, os.path.join(out, "ed_switch"))
 
@@ -359,11 +384,11 @@ def _dial_open(ax):
     D = _dial_df()
     xs = range(len(DIAL_ORDER))
     o = [int(D[D.variant == v].first_open.fillna(False).astype(bool).sum()) for v in DIAL_ORDER]
-    n = [int((D.variant == v).sum()) for v in DIAL_ORDER]
-    ax.plot(xs, [a / b if b else np.nan for a, b in zip(o, n)], marker="o", color=OPEN_C, ms=3)
+    n = [int((D.variant == v).t_rep.notna().sum()) if False else int(D[D.variant == v].t_rep.notna().sum()) for v in DIAL_ORDER]
+    ax.plot(xs, [a / b if b else np.nan for a, b in zip(o, n)], marker="o", color=OPEN_C, ms=3, ls="none")
     ax.set_xticks(list(xs), DIAL_LAB)
     ax.set_ylim(-0.03, 1.05)
-    fs.tidy(ax, "probability p that a zero halts", "worlds whose first\nreplicator is open")
+    fs.tidy(ax, "probability p that a zero halts", "worlds whose first\nreplicator is open (fraction)")
 
 
 def _dial_closure(ax):
@@ -384,6 +409,7 @@ def _dial_closure(ax):
     ax.axhline(hz, color=GREY, lw=0.5, ls=(0, (3, 2)))
     ax.set_xticks(range(len(DIAL_ORDER)), DIAL_LAB)
     fs.tidy(ax, "probability p that a zero halts", "first closed replicator (step)")
+    _logfmt(ax, "y")
 
 
 def _dial_trans(ax):
@@ -402,18 +428,18 @@ def _dial_trans(ax):
 
 def ed_dial(out):
     """Extended Data Fig. 11 | Parent, environment and the lethality dial."""
-    fig = plt.figure(figsize=(fs.DOUBLE, 120 * fs.MM))
-    axa = fig.add_axes([0.2, 0.52, 0.62, 0.36])
-    gs = GridSpec(1, 3, figure=fig, wspace=0.55, left=0.09, right=0.985, top=0.36, bottom=0.09)
+    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
+    axa = fig.add_axes([0.17, 0.56, 0.8, 0.33])
+    gs = GridSpec(1, 3, figure=fig, wspace=0.5, left=0.08, right=0.985, top=0.41, bottom=0.1)
     axb, axc, axd = (fig.add_subplot(gs[0, i]) for i in range(3))
     for ax, fn, letter in ((axa, _pe_panel, "a"), (axb, _dial_open, "b"), (axc, _dial_closure, "c"), (axd, _dial_trans, "d")):
         try:
             fn(ax)
         except Exception as e:  # noqa: BLE001
             placeholder(ax, f"{letter} (data missing: {e})")
-    fig.text(0.01, 0.985, "a", fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
+    fig.text(0.01, 0.97, "a", fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
     for ax, letter in ((axb, "b"), (axc, "c"), (axd, "d")):
-        _letter(fig, ax, letter, 0.44, dx=0.075)
+        _letter(fig, ax, letter, 0.465, dx=0.07)
     save(fig, os.path.join(out, "ed_dial"))
 
 
