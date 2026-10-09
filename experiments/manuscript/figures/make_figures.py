@@ -822,7 +822,7 @@ def ed_confine(out):
     axa.set_xlim(-0.12, 1.12)
     axa.set_ylim(-0.4, 8.6)
     axa.set_xticks([0, 0.5, 1], ["0", "0.5", "1"])
-    fs.tidy(axa, "encounters in which the pointer\nfetches a partner byte (of 256)", "information inflow H(o | x) (bits)")
+    fs.tidy(axa, "fraction of encounters in which the\npointer fetches a partner byte", "information inflow " + H_LABEL + " (bits)")
     axa.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
     X["exec_frac"] = X.exec_union / X.L
     groups, first, final, lf, ll = [], {}, {}, {}, {}
@@ -881,7 +881,7 @@ def ed_bffinflow(out):
         for w, k in zip(f.index.intersection(l.index), idx):
             first[k], final[k] = f.loc[w, "H_bits"], l.loc[w, "H_bits"]
             lf[k], ll[k] = bool(f.loc[w, "has_loop"]), bool(l.loc[w, "has_loop"])
-    slope_chart(ax, groups, first, final, lf, ll, "information inflow H(o | x) (bits)", (-0.45, 10.4), [0, 2, 4, 6, 8], seed=4, header_y=8.75)
+    slope_chart(ax, groups, first, final, lf, ll, "information inflow " + H_LABEL + " (bits)", (-0.45, 10.4), [0, 2, 4, 6, 8], seed=4, header_y=8.75)
     for y, t in ((8.0, "ceiling of 256 partners"), (1.0, "1 bit"), (0.5, "0.5 bit")):
         ax.axhline(y, color=RULE, lw=0.5, ls=":", zorder=0)
         ax.text(ax.get_xlim()[1] - 0.05, y + 0.08, t, fontsize=5, color=GREY, va="bottom", ha="right")
@@ -986,19 +986,23 @@ def figvar(out):
 
 
 # ------------------------------------------------------------------------------------------------ v4 Fig. 4 and Fig. 5
+LETHAL_COL = "#7B3294"      # lethal tar (Z80 Stage I), distinct from vermilion (loop) and the L = 64 orange
+H_LABEL = r"$H(o \mid x)$"   # mathtext: the bar renders as a relation bar, not as an I or l
+
+
 def _position_maps(axa):
-    """Executed and transmissible positions of five exemplar genomes (shared by figvar and fig4v4)."""
+    """Executed and transmissible positions of five exemplar genomes (fig4v4 a)."""
     sys.path.insert(0, EXP)
     from algocell_exp import exectrace as X
     gG = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
     gI = pd.read_csv(os.path.join(R, "stageI", "stageI", "stage_g_runs.csv"))
     sG = pd.read_csv(os.path.join(R, "mutscan", "mutscan_sites.csv"))
     sI = pd.read_csv(os.path.join(R, "mutscan_I", "mutscan_sites.csv"))
-    ex_rows = [("the first replicator (L = 50)", gG, 50, 2001, "first", sG, False),
-               ("its successor: the pusher with a jump (L = 50)", gG, 50, 2001, "final", sG, False),
-               ("return closer (L = 16)", gG, 16, 2001, "final", sG, False),
-               ("block copy with a skipped segment (L = 16)", gG, 16, 2002, "final", sG, False),
-               ("born closed under lethal tar (L = 16)", gI, 16, 4009, "final", sI, True)]
+    ex_rows = [("first replicator, L = 50", gG, 50, 2001, "first", sG, False),
+               ("its closed successor, L = 50", gG, 50, 2001, "final", sG, False),
+               ("return closer, L = 16", gG, 16, 2001, "final", sG, False),
+               ("block copier, L = 16", gG, 16, 2002, "final", sG, False),
+               ("lethal-tar closer, L = 16", gI, 16, 4009, "final", sI, True)]
     y = 0
     for title, g, L, seed, which, sites, zh in ex_rows:
         w = g[(g.L == L) & (g.seed == seed)].iloc[0]
@@ -1010,12 +1014,14 @@ def _position_maps(axa):
         st = sites[(sites.L == L) & (sites.seed == seed) & (sites.which == which)].sort_values("pos")
         tr = st["transmissible"].astype(bool).values if len(st) == L else np.zeros(L, bool)
         scale = 64.0 / L
-        for i in range(L):
-            axa.add_patch(Rectangle((i * scale, y), scale, 0.8, facecolor=INK if union[i] else "#FFFFFF", edgecolor=RULE, lw=0.3))
-            if tr[i]:
-                axa.plot(i * scale + scale / 2, y + 0.4, "o", color=RED, ms=2.6, mec="white", mew=0.3, zorder=5)
+        for k in range(L):
+            axa.add_patch(Rectangle((k * scale, y), scale, 0.8, facecolor=INK if union[k] else "#FFFFFF", edgecolor=RULE, lw=0.3))
+            if tr[k]:
+                axa.plot(k * scale + scale / 2, y + 0.4, "o", color=RED, ms=2.6, mec="white", mew=0.3, zorder=5)
         axa.text(-1.0, y + 0.4, title, ha="right", va="center", fontsize=5.5, color=INK)
-        axa.text(65.0, y + 0.4, f"executed {int(union.sum())}/{L} · transmissible {int(tr.sum())}" + (f" ({int((tr & ~union).sum())} unexecuted)" if tr.any() else ""), ha="left", va="center", fontsize=5, color=GREY)
+        n_tr, n_un = int(tr.sum()), int((tr & ~union).sum())
+        note = f"{int(union.sum())}/{L} executed · {n_tr} site{'' if n_tr == 1 else 's'}" + (f" ({n_un} unexecuted)" if n_un else "")
+        axa.text(65.0, y + 0.4, note, ha="left", va="center", fontsize=5.5, color=GREY)
         y += 1.2
     axa.set_xlim(-0.5, 64.5)
     axa.set_ylim(-0.2, y)
@@ -1023,12 +1029,12 @@ def _position_maps(axa):
     axa.set_axis_off()
     h = [Rectangle((0, 0), 1, 1, facecolor=INK, edgecolor=RULE, lw=0.3, label="byte executed (fetched as instruction stream)"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=RULE, lw=0.3, label="byte never executed"),
-         plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="transmissible site: a mutation here is inherited")]
+         plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="transmissible site")]
     axa.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5.5, frameon=False, columnspacing=1.5)
 
 
 def _sites_slope(ax):
-    """Transmissible sites, first replicator -> final dominant, per Stage G world (panel a of ed14)."""
+    """Transmissible sites, first replicator -> final dominant, per Stage G world."""
     T = pd.read_csv(os.path.join(R, "mutscan", "mutscan_tapes.csv"))
     groups, first, final, lf, ll = [], {}, {}, {}, {}
     for L in (16, 20, 50, 64):
@@ -1039,215 +1045,208 @@ def _sites_slope(ax):
         for sd_, key in zip(f.index.intersection(n.index), idx):
             first[key], final[key] = f.loc[sd_, "n_sites"], n.loc[sd_, "n_sites"]
             lf[key], ll[key] = bool(f.loc[sd_, "has_loop"]), bool(n.loc[sd_, "has_loop"])
-    slope_chart(ax, groups, first, final, lf, ll, "transmissible sites (positions)", (-1.5, 38.0), [0, 10, 20, 30], seed=0, header_y=35.2)
+    slope_chart(ax, groups, first, final, lf, ll, "transmissible sites (positions)", (-1.5, 42.0), [0, 10, 20, 30], seed=0, header_y=38.5)
     h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction"),
          plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
-    ax.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5, frameon=False, columnspacing=1.5)
+    ax.legend(handles=h, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, fontsize=5.5, frameon=False)
 
 
 def _invasion_panel(ax):
     d = pd.read_csv(os.path.join(R, "invasion_pair", "invasion_pair.csv"))
-    for (res_, inv), col, ls, lab in ((("pusher", "closed"), RED, "-", "closed form seeded at 1% into a pusher world"),
-                                      (("closed", "pusher"), GREY, "-", "pusher seeded at 1% into a closed world"),
-                                      (("pusher", "none"), INK, ":", "pusher world, no seeding (closure arises by mutation)"),
-                                      (("closed", "none"), RULE, ":", "closed world, no seeding")):
+    for (res_, inv), col, ls, lw, lab in ((("pusher", "closed"), RED, "-", 0.8, "closed form seeded at 1% into an ancestor world"),
+                                          (("closed", "pusher"), GREY, "-", 0.8, "ancestor seeded at 1% into a closed world"),
+                                          (("pusher", "none"), INK, ":", 0.9, "ancestor world, no seeding"),
+                                          (("closed", "none"), "#2B8CBE", (0, (3, 2)), 0.9, "closed world, no seeding")):
         g_ = d[(d.resident == res_) & (d.invader == inv)]
         first = True
         for sd, e in g_.groupby("seed"):
             e = e[e.step > 0].sort_values("step")
-            ax.plot(e.step, e.jump_share, color=col, ls=ls, lw=0.8, alpha=0.85, label=lab if first else None)
+            ax.plot(e.step, e.jump_share, color=col, ls=ls, lw=lw, alpha=0.9, label=lab if first else None, zorder=3 if inv == "none" else 2)
             first = False
     ax.set_xscale("log")
     ax.set_xlim(8, 2.2e4)
     ax.set_ylim(-0.02, 1.0)
-    fs.tidy(ax, "step", "cells carrying the jump word")
+    fs.tidy(ax, "step", "fraction of cells carrying 20 f0")
     ax.set_gid("allow-clip")
-    ax.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+    ax.legend(fontsize=5.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
 
 
 def _capacity_panel(ax):
-    """Capacity for inherited variation of the most common tape against step: Stage G (L = 50, 64), K (L = 32), I (lethal) and
-    L (L = 16, 20 to ten million steps); median over worlds; a filled marker at the first snapshot at which at least half of
-    the dominants are pointer-closed, an open marker at the first snapshot."""
+    """Capacity for inherited variation of the most common tape against step: Stage G (L = 50, 64), K (L = 32), I (lethal
+    tar) and L (L = 16, 20 to ten million steps). Medians only at steps where every world of the series has a heritable
+    most common tape on record (snapshots taken in a few worlds only are dropped); thin lines, the individual Stage L worlds."""
     frames = [pd.read_csv(p) for p in (os.path.join(R, "capacity_time", "capacity_over_time.csv"), os.path.join(R, "capacity_time_L", "capacity_over_time.csv")) if os.path.exists(p)]
-    C = pd.concat(frames, ignore_index=True)
-    C = C.drop_duplicates(["stage", "L", "seed", "step"])
-    C = C[(C.tape != "all-zero") & C.ctrl_herit.astype(bool)].dropna(subset=["capacity_bits"])
+    C = pd.concat(frames, ignore_index=True).drop_duplicates(["stage", "L", "seed", "step"])
+    C = C[(C.tape != "all-zero") & C.ctrl_herit.fillna(False).astype(bool)].dropna(subset=["capacity_bits"])
     series = [("L", 16, L_COL[16], "-", "L = 16"), ("L", 20, L_COL[20], "-", "L = 20"), ("K", 32, "#009E73", "-", "L = 32"),
-              ("G", 50, L_COL[50], "-", "L = 50"), ("G", 64, L_COL[64], "-", "L = 64"), ("I", 16, RED, "--", "L = 16, lethal tar")]
+              ("G", 50, L_COL[50], "-", "L = 50"), ("G", 64, L_COL[64], "-", "L = 64"), ("I", 16, LETHAL_COL, "--", "L = 16, lethal tar")]
     for stage, L, col, ls, lab in series:
         d = C[(C.stage == stage) & (C.L == L)]
         if d.empty:
             continue
-        if stage == "L":  # individual ten-million-step worlds, so that transient genomes are visible
+        n_worlds = d.seed.nunique()
+        full = d.groupby("step").seed.nunique()
+        d = d[d.step.isin(full[full >= max(1, int(np.ceil(0.8 * n_worlds)))].index)]
+        if stage == "L":
             for _, w in d.groupby("seed"):
                 w = w.sort_values("step")
                 ax.plot(w.step, w.capacity_bits, color=col, lw=0.35, alpha=0.35, zorder=1)
         g = d.groupby("step")
         med = g.capacity_bits.median()
         closed = g.entered_frac.apply(lambda v: float((v < 0.5).mean())) >= 0.5
-        ax.plot(med.index, med.values, color=col, ls=ls, lw=0.9, label=lab)
+        ax.plot(med.index, med.values, color=col, ls=ls, lw=0.9, label=lab, zorder=3)
         ax.scatter([med.index[0]], [med.values[0]], s=9, facecolors="white", edgecolors=col, lw=0.7, zorder=4)
         if closed.any():
             k = int(np.argmax(closed.values))
             ax.scatter([med.index[k]], [med.values[k]], s=11, color=col, zorder=5, lw=0)
     ax.set_xscale("log")
-    ax.set_xlim(400, 1.3e7)
+    ax.set_xlim(300, 1.3e7)
     fs.tidy(ax, "step", "capacity for inherited variation\nof the most common tape (bits)")
     ax.set_gid("allow-clip")
-    ax.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False, columnspacing=1.2)
+    ax.legend(fontsize=5.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False, columnspacing=1.2)
+
+
+def _row_letters(fig, axes_letters, y):
+    for ax, letter in axes_letters:
+        ax.apply_aspect()
+        fig.text(ax.get_position().x0 - 0.052, y, letter, fontsize=8, fontweight="bold", va="bottom", ha="left", gid="panel-label")
 
 
 def fig4v4(out):
-    """v4 Fig. 4 | Closure wins the competition and inherits nothing: a position maps; b transmissible sites first -> final;
-    c the matched-pair invasion; d capacity of the most common tape over evolutionary time (G, K, I, L)."""
-    fig = plt.figure(figsize=(fs.DOUBLE, 150 * fs.MM))
-    gs_a = GridSpec(1, 1, figure=fig, left=0.2, right=0.84, top=0.955, bottom=0.745)
-    gs = GridSpec(1, 3, figure=fig, width_ratios=[0.9, 1.0, 1.1], wspace=0.5, left=0.065, right=0.99, top=0.585, bottom=0.07)
+    """v4 Fig. 4 | Closure wins the competition and inherits nothing."""
+    fig = plt.figure(figsize=(fs.DOUBLE, 132 * fs.MM))
+    gs_a = GridSpec(1, 1, figure=fig, left=0.245, right=0.765, top=0.93, bottom=0.715)
+    gs = GridSpec(1, 3, figure=fig, width_ratios=[0.9, 1.0, 1.1], wspace=0.5, left=0.065, right=0.99, top=0.505, bottom=0.075)
     axa = fig.add_subplot(gs_a[0, 0])
-    axb, axc, axd = (fig.add_subplot(gs[0, i]) for i in range(3))
-    for ax, fn, letter, dx in ((axa, _position_maps, "a", 0.185), (axb, _sites_slope, "b", 0.052), (axc, _invasion_panel, "c", 0.052), (axd, _capacity_panel, "d", 0.052)):
+    axb, axc, axd = (fig.add_subplot(gs[0, k]) for k in range(3))
+    for ax, fn, letter in ((axa, _position_maps, "a"), (axb, _sites_slope, "b"), (axc, _invasion_panel, "c"), (axd, _capacity_panel, "d")):
         try:
             fn(ax)
         except Exception as e:  # noqa: BLE001
             placeholder(ax, f"{letter} (data missing: {e})")
-        label(ax, letter, dx=dx)
+    fig.text(0.01, 0.975, "a", fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
+    _row_letters(fig, ((axb, "b"), (axc, "c"), (axd, "d")), 0.635)
     save(fig, os.path.join(out, "fig4v4"))
 
 
-def _dial_lethality(axd1):
-    """Share of the all-P class against epoch by the lethality p of an unmatched bracket (six soups per p, plus p = 0 and 1)."""
+BFF_NAMES = {"std": "BFF as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal push",
+             "wraplitnh": "wrap + literal push,\nharmless brackets"}
+P_COLS = {0.0: fs.BFF_VARIANT["wraplitnh"], 0.01: "#BDBDBD", 0.03: "#969696", 0.1: "#636363", 0.3: "#252525", 1.0: fs.BFF_VARIANT["wraplit"]}
+EPOCH_TICKS = ([64, 256, 1024, 4096, 16384], ["64", "256", "1,024", "4,096", "16,384"])
+
+
+def _epoch_axis(ax, ylab):
     from matplotlib import ticker as mticker
+    ax.set_xscale("log")
+    ax.set_xticks(*EPOCH_TICKS)
+    ax.xaxis.set_minor_locator(mticker.NullLocator())
+    ax.set_xlim(56, 19000)
+    ax.set_ylim(-0.02, 1.02)
+    fs.tidy(ax, "epoch", ylab)
+
+
+def _samples(path, fn):
+    S = [json.loads(l) for l in open(path)]
+    return pd.DataFrame([{"epoch": s["epoch"], "v": fn(s)} for s in S if s["epoch"] > 0])
+
+
+def _dial_lethality(ax):
+    """Share of the all-P tape against epoch by the probability p that an unmatched bracket halts (wrap + literal push)."""
     bdir = os.path.join(EXP, "runs", "bff_modal")
     runs = pd.read_csv(os.path.join(R, "bff", "runs.csv"))
-    runs["variant"] = runs["variant"].replace({"stdlit": "lit"})
-    pcols = {0.0: fs.BFF_VARIANT["wraplitnh"], 0.01: "#56B4E9", 0.03: "#CC79A7", 0.1: "#E69F00", 0.3: "#D55E00", 1.0: fs.BFF_VARIANT["wraplit"]}
-    series = []
-    for v, pv in (("wraplitnh", 0.0), ("wraplit", 1.0)):
-        for run in runs[runs["variant"] == v]["run"]:
-            series.append((pv, os.path.join(bdir, "bff", run, "samples.jsonl")))
+    series = [(0.0, os.path.join(bdir, "bff", r, "samples.jsonl")) for r in runs[runs.variant == "wraplitnh"].run]
+    series += [(1.0, os.path.join(bdir, "bff", r, "samples.jsonl")) for r in runs[runs.variant == "wraplit"].run]
     for pv in (0.01, 0.03, 0.1, 0.3):
-        for p_ in sorted(glob.glob(os.path.join(bdir, f"bff_dial_hp{pv}", "**", "samples.jsonl"), recursive=True)):
-            series.append((pv, p_))
+        series += [(pv, q) for q in sorted(glob.glob(os.path.join(bdir, f"bff_dial_hp{pv}", "**", "samples.jsonl"), recursive=True))]
     n_by_p = {}
-    for pv, p_ in series:
-        if not os.path.exists(p_):
+    for pv, q in series:
+        if not os.path.exists(q):
             continue
-        S = pd.DataFrame([{"epoch": s["epoch"], "share": _allp_share(s)} for s in map(json.loads, open(p_))])
-        axd1.plot(S["epoch"], S["share"], color=pcols[pv], lw=0.6, alpha=0.65)
+        S = _samples(q, _allp_share)
+        ax.plot(S.epoch, S.v, color=P_COLS[pv], lw=0.6, alpha=0.8)
         n_by_p[pv] = n_by_p.get(pv, 0) + 1
     for pv in sorted(n_by_p):
-        lab = {0.0: "never halts (no-op)", 1.0: "always halts (as published)"}.get(pv, f"halts with probability {pv:g}")
-        axd1.plot([], [], color=pcols[pv], lw=0.9, label=f"{lab} (n = {n_by_p[pv]})")
-    axd1.set_xscale("symlog", linthresh=64)
-    axd1.set_xticks([0, 64, 256, 1024, 4096, 16384], ["0", "64", "256", "1,024", "4,096", "16,384"])
-    axd1.xaxis.set_minor_locator(mticker.NullLocator())
-    axd1.set_xlim(0, 17500)
-    axd1.set_ylim(-0.02, 1.02)
-    fs.tidy(axd1, "epoch", "share of the all-P tape in the soup")
-    axd1.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False, columnspacing=1.2)
+        lab = {0.0: "p = 0 (harmless brackets)", 1.0: "p = 1 (as published)"}.get(pv, f"p = {pv:g}")
+        ax.plot([], [], color=P_COLS[pv], lw=0.9, label=f"{lab}, n = {n_by_p[pv]}")
+    _epoch_axis(ax, "share of the all-P tape in the soup")
+    ax.legend(fontsize=5.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False, columnspacing=1.2)
 
 
-def _dial_write_ratio(axd2):
-    """Information inflow of the first replicator by the literal's write ratio r (one point per soup)."""
+def _dial_write_ratio(ax):
+    """Information inflow of the first replicator by the literal's write ratio r (literal push, no wrapping pointer)."""
     D2 = pd.read_csv(os.path.join(R, "bff_dials", "d2_bandwidth.csv"))
     D2 = D2[D2["transition"].astype(bool)]
     rng = np.random.default_rng(3)
     for r_, d in D2.groupby("lit_rep"):
         x = r_ + rng.uniform(-0.12, 0.12, len(d))
         loop = d["first_loop"].astype(bool).values
-        axd2.scatter(x[~loop], d["H_bits"].values[~loop], s=9, facecolors="none", edgecolors=fs.BFF_VARIANT["lit"], lw=0.7)
-        axd2.scatter(x[loop], d["H_bits"].values[loop], s=9, color=fs.BFF_VARIANT["lit"], lw=0)
-    axd2.axhline(8.0, color=RULE, lw=0.5, ls=":")
-    axd2.text(3.45, 8.0, "ceiling of 256 partners", ha="right", va="bottom", fontsize=5, color=GREY)
-    axd2.set_xticks([1, 2, 3], ["1", "2", "3"])
-    axd2.set_xlim(0.5, 3.5)
-    axd2.set_ylim(-0.3, 8.8)
-    fs.tidy(axd2, "copies of its word the literal writes per execution (r)", "information inflow of the\nfirst replicator, H(o | x) (bits)")
+        ax.scatter(x[~loop], d["H_bits"].values[~loop], s=9, facecolors="white", edgecolors=GREY, lw=0.7)
+        ax.scatter(x[loop], d["H_bits"].values[loop], s=9, color=RED, lw=0)
+        ax.text(r_, 8.45, f"n = {len(d)}", ha="center", va="bottom", fontsize=5.5, color=GREY)
+    ax.axhline(8.0, color=RULE, lw=0.5, ls=":")
+    ax.set_xticks([1, 2, 3], ["1", "2", "3"])
+    ax.set_xlim(0.5, 3.5)
+    ax.set_ylim(-0.4, 9.3)
+    ax.set_yticks([0, 2, 4, 6, 8])
+    fs.tidy(ax, "copies of its word the literal writes per execution, r", "information inflow of the\nfirst replicator, " + H_LABEL + " (bits)")
 
 
 def fig5v4(out):
-    """v4 Fig. 5 | Two properties of the substrate decide the beginning: a–c as fig5; d the two dials; e the map."""
-    from matplotlib import ticker as mticker
-    bdir = os.path.join(EXP, "runs", "bff_modal", "bff")
+    """v4 Fig. 5 | Two properties of the substrate decide the beginning."""
     runs = pd.read_csv(os.path.join(R, "bff", "runs.csv"))
     runs["variant"] = runs["variant"].replace({"stdlit": "lit"})
+    bdir = os.path.join(EXP, "runs", "bff_modal", "bff")
     variants = [v for v in ["std", "wrap", "lit", "wraplit", "wraplitnh"] if v in set(runs["variant"])]
-    xticks, xlabels = [0, 64, 256, 1024, 4096, 16384], ["0", "64", "256", "1,024", "4,096", "16,384"]
-
-    def epoch_axis(ax):
-        ax.set_xscale("symlog", linthresh=64)
-        ax.set_xticks(xticks, xlabels)
-        ax.xaxis.set_minor_locator(mticker.NullLocator())
-        ax.set_xlim(0, 17500)
-        ax.set_ylim(-0.02, 1.02)
-
-    fig = plt.figure(figsize=(fs.DOUBLE, 178 * fs.MM))
-    gsA = GridSpec(1, 3, figure=fig, width_ratios=[1.4, 1.0, 1.0], wspace=0.45, left=0.07, right=0.99, top=0.975, bottom=0.745)
-    gsD = GridSpec(1, 2, figure=fig, width_ratios=[1.25, 1.0], wspace=0.4, left=0.07, right=0.99, top=0.60, bottom=0.40)
-    gsE = GridSpec(1, 1, figure=fig, left=0.065, right=0.99, top=0.325, bottom=0.01)
-    axa, axb, axc = fig.add_subplot(gsA[0, 0]), fig.add_subplot(gsA[0, 1]), fig.add_subplot(gsA[0, 2])
-    axd1, axd2 = fig.add_subplot(gsD[0, 0]), fig.add_subplot(gsD[0, 1])
+    fig = plt.figure(figsize=(fs.DOUBLE, 172 * fs.MM))
+    gsA = GridSpec(1, 2, figure=fig, width_ratios=[1.5, 1.0], wspace=0.32, left=0.07, right=0.99, top=0.965, bottom=0.77)
+    gsD = GridSpec(1, 2, figure=fig, width_ratios=[1.5, 1.0], wspace=0.32, left=0.07, right=0.99, top=0.565, bottom=0.37)
+    gsE = GridSpec(1, 1, figure=fig, left=0.065, right=0.99, top=0.29, bottom=0.01)
+    axa, axb = fig.add_subplot(gsA[0, 0]), fig.add_subplot(gsA[0, 1])
+    axc, axd = fig.add_subplot(gsD[0, 0]), fig.add_subplot(gsD[0, 1])
     axe = fig.add_subplot(gsE[0, 0])
     for v in variants:
         for run in runs[runs["variant"] == v]["run"]:
-            p = os.path.join(bdir, run, "samples.jsonl")
-            if not os.path.exists(p):
+            q = os.path.join(bdir, run, "samples.jsonl")
+            if not os.path.exists(q):
                 continue
-            S = pd.DataFrame([{"epoch": s["epoch"], "h": s["frac_heritable"]} for s in map(json.loads, open(p))])
-            axa.plot(S["epoch"], S["h"].rolling(4, min_periods=1).mean(), color=fs.BFF_VARIANT[v], lw=0.6, alpha=0.75)
-        axa.plot([], [], color=fs.BFF_VARIANT[v], lw=0.9, alpha=0.9, label=f"{fs.BFF_VARIANT_LABEL[v]} (n = {int((runs['variant'] == v).sum())})")
-    epoch_axis(axa)
-    fs.tidy(axa, "epoch", "heritable fraction of random tapes")
-    label(axa, "a")
-    handles, labels = axa.get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.672), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
+            S = _samples(q, lambda s: s["frac_heritable"])
+            axa.plot(S.epoch, S.v.rolling(4, min_periods=1).mean(), color=fs.BFF_VARIANT[v], lw=0.6, alpha=0.75)
+        axa.plot([], [], color=fs.BFF_VARIANT[v], lw=0.9, label=f"{BFF_NAMES[v].replace(chr(10), ' ')} (n = {int((runs['variant'] == v).sum())})")
+    _epoch_axis(axa, "heritable fraction of random tapes")
+    h_, l_ = axa.get_legend_handles_labels()
+    fig.legend(h_, l_, fontsize=5.5, loc="upper center", bbox_to_anchor=(0.5, 0.715), ncol=3, frameon=False, columnspacing=1.6)
     rng = np.random.default_rng(0)
-    ROW, SUB, JIT = 2.6, 0.45, 0.22
+    ROW, SUB, JIT = 2.6, 0.45, 0.2
     yticks, ylabels = [], []
-    for i, v in enumerate(variants):
+    for k, v in enumerate(variants):
         d = runs[(runs["variant"] == v) & runs["t_top"].notna()]
-        y0 = -ROW * i
+        y0 = -ROW * k
         for which, dy, mk in (("first", SUB, "o"), ("final", -SUB, "s")):
             y = y0 + dy + rng.uniform(-JIT, JIT, len(d))
+            x = d[f"{which}_entered"].values + rng.uniform(-0.035, 0.035, len(d))
             loop = d[f"{which}_loop"].astype(bool).values
-            vals = d[f"{which}_entered"].values
-            axb.scatter(vals[~loop], y[~loop], s=6, marker=mk, facecolors="none", edgecolors=fs.BFF_VARIANT[v], lw=0.6)
-            axb.scatter(vals[loop], y[loop], s=6, marker=mk, color=fs.BFF_VARIANT[v], lw=0)
+            axb.scatter(x[~loop], y[~loop], s=5, marker=mk, facecolors="white", edgecolors=fs.BFF_VARIANT[v], lw=0.5)
+            axb.scatter(x[loop], y[loop], s=5, marker=mk, color=fs.BFF_VARIANT[v], lw=0)
             yticks.append(y0 + dy)
             ylabels.append(which)
-        axb.text(0.0, y0 + SUB + JIT + 0.3, fs.BFF_VARIANT_LABEL[v], ha="left", va="bottom", fontsize=5, fontweight="bold", color="black")
-    axb.set_yticks(yticks, ylabels, fontsize=5)
-    axb.set_ylim(-ROW * (len(variants) - 1) - SUB - JIT - 0.35, SUB + JIT + 0.3 + 0.75)
+        axb.text(0.0, y0 + SUB + JIT + 0.3, f"{BFF_NAMES[v].replace(chr(10), ' ')} ({len(d)} of {int((runs['variant'] == v).sum())} soups)", ha="left", va="bottom", fontsize=5.5, color=INK)
+    axb.set_yticks(yticks, ylabels, fontsize=5.5)
+    axb.set_ylim(-ROW * (len(variants) - 1) - SUB - JIT - 0.35, SUB + JIT + 0.3 + 0.8)
     axb.set_xticks([0, 0.5, 1.0], ["0", "0.5", "1"])
-    axb.set_xlim(-0.04, 1.04)
+    axb.set_xlim(-0.08, 1.08)
     axb.tick_params(axis="y", length=2)
-    fs.tidy(axb, "encounters whose pointer\nenters the partner")
-    label(axb, "b")
-    for v in ("wraplit", "wraplitnh"):
-        if v not in variants:
-            continue
-        for run in runs[runs["variant"] == v]["run"]:
-            p = os.path.join(bdir, run, "samples.jsonl")
-            if not os.path.exists(p):
-                continue
-            S = pd.DataFrame([{"epoch": s["epoch"], "share": _allp_share(s)} for s in map(json.loads, open(p))])
-            axc.plot(S["epoch"], S["share"], color=fs.BFF_VARIANT[v], lw=0.6, alpha=0.6)
-    epoch_axis(axc)
-    fs.tidy(axc, "epoch", "share of the all-P tape in the soup")
-    label(axc, "c")
-    try:
-        _dial_lethality(axd1)
-    except Exception as e:  # noqa: BLE001
-        placeholder(axd1, f"d (data missing: {e})")
-    try:
-        _dial_write_ratio(axd2)
-    except Exception as e:  # noqa: BLE001
-        placeholder(axd2, f"d, right (data missing: {e})")
-    label(axd1, "d")
+    fs.tidy(axb, "fraction of encounters in which\nthe pointer enters the partner")
+    for fn, ax in ((_dial_lethality, axc), (_dial_write_ratio, axd)):
+        try:
+            fn(ax)
+        except Exception as e:  # noqa: BLE001
+            placeholder(ax, f"(data missing: {e})")
     cp.fig4d(axe)
     axe.set_anchor("NW")
-    label(axe, "e")
+    fig.text(0.01, 0.985, "a", fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
+    _row_letters(fig, ((axb, "b"),), 0.975)
+    _row_letters(fig, ((axc, "c"), (axd, "d")), 0.635)
+    fig.text(0.01, 0.315, "e", fontsize=8, fontweight="bold", va="top", ha="left", gid="panel-label")
     save(fig, os.path.join(out, "fig5v4"))
 
 

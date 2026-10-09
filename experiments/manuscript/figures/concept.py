@@ -209,25 +209,25 @@ def fig4d(ax):
         ax.plot([0, W], [yy, yy], color=GRID, lw=0.7, zorder=1)
     for xx in (x1, x2):
         ax.plot([xx, xx], [y_bot, H], color=GRID, lw=0.7, zorder=1)
-    ax.text(1.0, (y_hdr + H) / 2, "literal-write instruction", ha="left", va="center", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text((x1 + x2) / 2, (y_hdr + H) / 2, "tar benign", ha="center", va="center", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text((x2 + W) / 2, (y_hdr + H) / 2, "tar lethal", ha="center", va="center", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text(1.0, (y_hdr + y_mid) / 2, "present", ha="left", va="center", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text(1.0, (y_mid + y_bot) / 2, "absent", ha="left", va="center", fontsize=FS_TITLE, color=INK, fontweight="bold")
+    ax.text(1.0, (y_hdr + H) / 2, "literal-write instruction", ha="left", va="center", fontsize=6.0, color=INK, fontweight="bold")
+    ax.text((x1 + x2) / 2, (y_hdr + H) / 2, "tar benign", ha="center", va="center", fontsize=6.0, color=INK, fontweight="bold")
+    ax.text((x2 + W) / 2, (y_hdr + H) / 2, "tar lethal", ha="center", va="center", fontsize=6.0, color=INK, fontweight="bold")
+    ax.text(1.0, (y_hdr + y_mid) / 2, "present", ha="left", va="center", fontsize=6.0, color=INK, fontweight="bold")
+    ax.text(1.0, (y_mid + y_bot) / 2, "absent", ha="left", va="center", fontsize=6.0, color=INK, fontweight="bold")
     L = 1.75   # line pitch
     xa, xb = x1 + 2.0, x2 + 2.0
+    FS_H, FS_C = 6.0, 5.5
     rows = [
-        (xa, 19.9, "Z80", True), (xa, 19.9 - L, "open, then closed · 67 of 80 worlds", False),
-        (xa, 19.9 - 2.4 * L, "modified BFF, harmless brackets", True), (xa, 19.9 - 3.4 * L, "open through 16,384 epochs · 12 of 12", False), (xa, 19.9 - 4.4 * L, "no closed design found (period ≤ 10)", False),
-        (xb, 19.9, "modified BFF, lethal brackets", True), (xb, 19.9 - L, "open, then extinct · 12 of 12 worlds", False),
-        (xb, 19.9 - 2.4 * L, "Z80, zero halts", True), (xb, 19.9 - 3.4 * L, "born closed, late · 10 of 10 worlds", False), (xb, 19.9 - 4.4 * L, "the open beginning never happens", False),
-        (xa, 6.7, "BFF as published, harmless brackets", True), (xa, 6.7 - L, "born closed · 7 of 12 worlds; lost again in 4", False),
-        (xb, 6.7, "BFF as published", True), (xb, 6.7 - L, "born closed · 28 of 28 (published and wrapping pointer)", False),
+        (xa, 20.3, "Z80 and its 8080 subset", True), (xa, 20.3 - L, "open, then closed · 67 of 80 worlds (Z80),", False), (xa, 20.3 - 2 * L, "20 of 20 (8080, L = 16)", False),
+        (xa, 20.3 - 3.15 * L, "BFF + literal push, harmless brackets", True), (xa, 20.3 - 4.15 * L, "open through 16,384 epochs · 12 of 12 soups;", False), (xa, 20.3 - 5.15 * L, "no closed design up to period 10", False),
+        (xb, 19.9, "BFF + literal push, lethal brackets", True), (xb, 19.9 - L, "open, then collapses to 0.2% · 12 of 12 soups", False),
+        (xb, 19.9 - 2.2 * L, "Z80, zero halts", True), (xb, 19.9 - 3.2 * L, "born closed, late · 10 of 10 worlds;", False), (xb, 19.9 - 4.2 * L, "the open beginning never happens", False),
+        (xa, 6.7, "BFF as published, harmless brackets", True), (xa, 6.7 - L, "born closed · 7 of 12 soups; lost again in 4", False),
+        (xb, 6.7, "BFF as published (and wrapping pointer)", True), (xb, 6.7 - L, "born closed · all 28 replicators of 48 soups", False),
     ]
     for x, y, text, bold in rows:
-        ax.text(x, y, text, ha="left", va="top", fontsize=FS_LABEL, color=INK if (bold or text != "not run") else GREY_TEXT, fontweight="bold" if bold else "normal")
-    ax.text(0, -1.4, "lethal tar ends the open phase before it begins (Z80) or soon after (BFF); life then starts closed if a closed design exists, and late", ha="left", va="top", fontsize=FS_LABEL, color=INK)
-    finish(ax, (-0.5, W + 0.5), (-3.4, H + 0.5))
+        ax.text(x, y, text, ha="left", va="top", fontsize=FS_C, color=INK, fontweight="bold" if bold else "normal")
+    finish(ax, (-0.5, W + 0.5), (-0.6, H + 0.5))
 
 
 # ------------------------------------------------------------------------------------------------------------ Fig. 5a

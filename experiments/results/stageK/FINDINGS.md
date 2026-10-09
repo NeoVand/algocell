@@ -11,7 +11,7 @@ pipeline (`stage_k_pipeline.sh`); tables in `stageK/`, scoring in `SCORING.md`.
 | K3 median first-replicator step 300–1,000 | **met**: 425 |
 
 Reading. At an aligned length the open → closed order holds wherever closure has arrived, and the closer is the block copy,
-not a relative jump. With L = 16 (20/20 by 300k, RET NZ and LDIR), L = 32 (12/20 by 1M, LDIR) and L = 64 (8/20 by 1M, LDIR
-and LDDR), closure at aligned lengths is monotone in L; the fast jump closures at L = 20 and 50 are enabled by the address
+not a relative jump. With L = 16 (20/20 by 300k, RET NZ and LDIR), L = 32 (12/20 by 1M, LDIR) and L = 64 (8/20 by 1M, seven by LDIR
+or LDDR and one by JP (HL); corrected 2026-10-09), closure at aligned lengths is monotone in L; the fast jump closures at L = 20 and 50 are enabled by the address
 wrap of the mod-2L memory and should be set apart in the text. The pair-invasion result at L = 50 is a result about that
 machine as defined, not about a true ring.
