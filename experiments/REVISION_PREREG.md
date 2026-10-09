@@ -330,3 +330,46 @@ genomes); modal-tape results stay, labelled as such. No predictions are register
 **A1.** A1-1 not met on the registered metric (exact 20-byte core share 0 at 20,000 steps in 5 of 5): the core mutates within a few hundred steps. Post hoc: the closer's loop body passes 50% of cells at steps 300–320 and the pusher class falls below 1% at steps 490–1,000 in 5 of 5; at 20,000 steps 84–98% of random cells are heritable and at most 2% of heritable cells are open, most of them closed with ≥ 5 sites. A1-2 met (pusher class < 5% in 5 of 5). A1-3 not scorable on the registered core metric; post hoc, random transmitter cells carry 15–17 never-executed sites through eight transfers. The kill (closer exists but does not win) did not fire.
 **A2.** The evolved block-copy tiling seeded into the closer world: tiling class > 50% at 50,000 steps in 5 of 5 (favoured). The closer seeded into the tiling world: < 5% core share in 5 of 5 (disfavoured; registered core metric, consistent with the population classes).
 **Q.** Q1 not met: among the 109 worlds with a confined modal tape, confinement of heritable cells is ≥ 0.9 in 105 (fails: three L = 20 worlds at 0.60–0.61 and one L = 64 world at 0.86); the median number of transmissible sites of sampled heritable cells is 0 (that part met), but the pooled median hides a split by stage, lethal-tar worlds having a median of 12. L = 50: no world's modal tape confined; confined among heritable cells 0.18–0.39.
+
+## R3 — tests asked for by the second round-2 report (written before any run, 2026-10-09)
+
+Local GPU, no Modal. Scripts: `gen_conv_shader.py` + `conv_soups.py` (C), `invasion_aligned.py` (B), `first_closure.py`
+(T), `census_period.py` (P), `robust_ref22.py` (F).
+
+**C — harness conventions.** Two derived soup and executor shaders, byte-identical to the Stage G ones except for one
+hunk after the register reset of every encounter: *randreg* draws A, F, B, C, D, E, H, L, their alternates, IX and IY
+uniformly at random (PC = 0 and SP as before); *randsp* draws SP uniformly from 0–65,535 (registers zero). The draw is
+seeded by the step's batch seed and the pair index. 20 worlds each at L = 16 (seeds 8001–8020), Stage G conditions,
+300,000 steps; top-3 tapes recorded every 250 steps to 20,000 and every 2,500 after; snapshots at 20,000, 100,000 and
+300,000. Every assay (culture test, tracing) runs under the world's own convention.
+*Predictions.* C1: the first replicator is a load–push word in ≥ 18 of 20 worlds under randreg (its mechanism reads no
+register but SP). C2: under randsp the first replicator is open (pointer enters the partner in ≥ half of 16 encounters)
+in ≥ 15 of 20 worlds with a replicator. C3 (descriptive, no direction registered): population closure at 300,000 steps
+under each convention, against 20 of 20 in Stage G. *Kill.* C1 failing: "open first" is reported as a property of the
+zero-register convention. Also: the partner test (256 partners) of every Stage G and K first and final tape under
+randreg and randsp: copies, self-damage, confinement.
+
+**B — invasions at aligned lengths.** Stage G dynamics; L = 16: the return closer `ad e3 21 e3 21 c0 ad c0`×2 against
+the pusher `01 c5`×8; L = 32 (Stage K dynamics): the block-copy tiling `04 5e ed b0`×8 against `01 c5`×16. 1% each way,
+five seeds each, three unseeded controls per resident, 20,000 steps. Endpoints: share within Hamming ⌈L/4⌉ of each tape
+(any shift) every 10 steps to 500 and every 250 after; classes of 64 random cells (culture test, tracing) at steps 1,000,
+5,000 and 20,000. *Predictions.* B1: the closer seeded into the pusher world holds most cells (class share > 0.5) and
+most heritable cells are confined at 20,000 steps in ≥ 4 of 5 soups at each length. B2: the pusher seeded into the
+closer world stays below 5% in ≥ 4 of 5. *Kill.* B1 failing at both lengths: the selection claim is withdrawn.
+
+**T — first-closure timing.** For every world of Stages G (L = 16, 20, 64), L, K, I and M (L = 16), the first sample at
+which one of the three most common tapes holding ≥ 0.5% of cells is heritable (gen2 ≥ 0.3, 64 partners) and confined in
+16 of 16 traced encounters; censored at the horizon. Kaplan–Meier medians; log-rank tests of benign L = 16 (Stages G and
+L, 30 worlds) against lethal L = 16 (Stage I, 10). *Decision rule, registered:* unless benign closure is significantly
+earlier (log-rank P < 0.05), the text says "displaced" and restricts the window reading to BFF; in either case it says
+"displaced" unless descent is shown.
+
+**P — census by period.** All 16,777,216 three-byte words tiled to 16 bytes (five words and the first byte), executed
+for 128 instructions as organism against the all-zero partner: self-writers are tapes whose partner ends equal to the
+tape at some cyclic shift; each self-writer traced against the zero partner and 16 random partners (closed if the pointer
+fetches no partner byte in any). *Prediction.* P1: no closed self-writer of period 3.
+
+**F — ref. 22's robustness test.** Every Stage K first and final tape (L = 32): 1,000 trials each of 1, 4 and 8
+successive random single-byte mutations; a trial is robust if the mutant, run for 512 instructions against the all-zero
+partner, leaves the partner equal to the mutant (shift 0; any shift reported too). *Prediction* (from ref. 22): F1, the
+block-copy finals are more robust than the pushers at every k. Reported beside the single-mutant scan of the same tapes.
