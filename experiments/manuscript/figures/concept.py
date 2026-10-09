@@ -217,12 +217,12 @@ def fig4d(ax):
     L = 1.75   # line pitch
     xa, xb = x1 + 2.0, x2 + 2.0
     rows = [
-        (xa, 19.9, "Z80", True), (xa, 19.9 - L, "open, then closed · 40 of 40 worlds", False),
+        (xa, 19.9, "Z80", True), (xa, 19.9 - L, "open, then closed · 67 of 80 worlds (20 of 20 at L = 16)", False),
         (xa, 19.9 - 2.4 * L, "modified BFF, harmless brackets", True), (xa, 19.9 - 3.4 * L, "open for ever · 12 of 12 worlds", False), (xa, 19.9 - 4.4 * L, "no closed design exists", False),
         (xb, 19.9, "modified BFF, lethal brackets", True), (xb, 19.9 - L, "open, then extinct · 12 of 12 worlds", False),
         (xb, 19.9 - 2.4 * L, "Z80, zero halts", True), (xb, 19.9 - 3.4 * L, "born closed, late · 10 of 10 worlds", False), (xb, 19.9 - 4.4 * L, "the open beginning never happens", False),
-        (xa, 5.7, "not run", False),
-        (xb, 6.7, "BFF as published", True), (xb, 6.7 - L, "born closed · 28 of 28 life-producing worlds", False),
+        (xa, 6.7, "BFF as published, harmless brackets", True), (xa, 6.7 - L, "born closed · 7 of 12 worlds; lost again in 4", False),
+        (xb, 6.7, "BFF as published", True), (xb, 6.7 - L, "born closed · 28 of 28 (published and wrapping pointer)", False),
     ]
     for x, y, text, bold in rows:
         ax.text(x, y, text, ha="left", va="top", fontsize=FS_LABEL, color=INK if (bold or text != "not run") else GREY_TEXT, fontweight="bold" if bold else "normal")

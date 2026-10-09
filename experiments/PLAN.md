@@ -862,3 +862,9 @@ replication; 2% exact share is noisy because return-address smears reach
   ring, 20 worlds, 1M steps, seeds 5001–5020) pre-registered and launched on Modal (`conds/stageK.json`, batch `stageK`,
   ≈ $3–4). Fetch: `modal volume get algocell-atlas-runs stageK runs/stageK/` then the Stage G scoring pipeline
   (`stage_h_pipeline.sh` as the template).
+- 2026-10-09 early (**B5 and K scored**): B5 (BFF published + no-op brackets, 12 soups, Modal ≈ $10): born closed 7/7
+  (B5-1 met), transitions 7/12 (B5-2 not met), one pointer-open first replicator (B5-3 not met), replicator lost again
+  in 4/7 — `results/bff_stdnh/FINDINGS.md`; Fig. 5d's fourth cell filled in text, Methods and the concept panel. Stage K
+  (L = 32, aligned): 20/20 pusher first, 12/20 closed by 1M, all by block copy — `results/stageK/FINDINGS.md`. Both runs
+  completed in under an hour each on Modal; the BFF app list showed "stopped" while soups were still writing, which misled
+  a first check (the logs, not `volume ls`, are the reliable progress signal).

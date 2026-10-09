@@ -73,7 +73,9 @@ inherits mutations in its operand bytes; heritable variation returns only in gen
 (five worlds with a jump or load before a block copy). Cicala et al.'s mutational-robustness explanation of the succession
 is not supported by this measure.
 
-**B5 (launched 2026-10-08 21:44 local on Modal, batch `bff_stdnh`, 12 soups; outcome pending).**
+**B5 (run 2026-10-08/09 on Modal, batch `bff_stdnh`, 12 soups; `results/bff_stdnh/FINDINGS.md`).** B5-1 met (7 of 7 first
+replicators loop-bearing). B5-2 not met (7 of 12 transitions). B5-3 not met (one first replicator enters the partner in every
+encounter; five are pointer-closed, one intermediate). Unregistered: the replicator is lost again by 16,384 epochs in 4 of 7.
 
 ## I — head-to-head invasion of the matched pair at L = 50 (written before the run, 2026-10-08 night)
 
