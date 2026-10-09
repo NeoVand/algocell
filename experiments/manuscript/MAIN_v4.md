@@ -86,7 +86,7 @@ These are predictions for chemistry, not results about it. Template copying is a
 
 **Data availability.** Every condition file, raw run summary and sample record, every generated table from which a number in the text or a figure is drawn, and the pre-registration documents with their dated change log are in the project repository, to be archived with a DOI on acceptance. Supplementary Video 1 shows the world of Fig. 2.
 
-**Code availability.** The simulator (a Z80 emulator in WGSL with the prefix-aware ablation hook, the traced executor and the BFF kernel with its CPU reference), the assays, the analysis scripts and the figure scripts are in the same repository under an open licence; each figure is produced from the generated tables by one script.
+**Code availability.** The simulator (a Z80 emulator in WGSL with the prefix-aware ablation hook, the traced executor and the BFF kernel with its CPU reference), the assays, the analysis scripts and the figure scripts are in the same repository; each figure is produced from the generated tables by one script.
 
 ## Figure legends
 
