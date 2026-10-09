@@ -294,7 +294,7 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
 \pagestyle{plain}
 \begin{document}
 """ + (r"\fontsize{9}{11.2}\selectfont\setlength{\parskip}{3pt}" if COMPACT[0] else "") + r"""
-{\sffamily\bfseries\LARGE """ + title + r"""\par}
+{\raggedright\sffamily\bfseries\LARGE """ + title + r"""\par}
 \vspace{3mm}
 {\small\color{gray}""" + NOTE[0].replace("DATE", today) + r"""\par}
 \vspace{6mm}

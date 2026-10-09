@@ -258,22 +258,22 @@ These are predictions for chemistry, not results about it. Template copying is a
 | last snapshot: share of heritable random cells confined | Stage M, L = 32 | 0.00 | 0.00–0.00 | 20 |
 | last snapshot: share of random cells heritable | Stage M, L = 32 | 0.49 | 0.36–0.54 | 20 |
 
-**Extended Data Table 4 | Every Z80 soup run of the numbered stages.** From the run summaries: arms (the unablated soup, `none`, and the instruction-set ablations of Extended Data Table 2; `mixed`, well-mixed pairing; `lethal`, lethal tar; `i8080`, the 8080-like subset), tape lengths, budgets, background mutations per step, seeds, horizons and the runs stopped early by the occupancy rule of Stages A and B; 3,660 runs in all. The revision-2 tests (harness conventions, invasions, the copy-offset switch, the lethality dial) are listed in Methods. Source: `results/review_r2/RUN_TABLE.md`.
+**Extended Data Table 4 | Every Z80 soup run of the numbered stages.** From the run summaries: arms (their number, or the arm itself: `none`, the unablated soup; `mixed`, well-mixed pairing; `lethal`, lethal tar; `i8080`, the 8080-like subset; the ablations are listed in Extended Data Table 2), tape lengths L, budgets (instructions per encounter), background mutations per step, seeds, horizons (k, thousand steps; M, million) and the runs stopped early by the occupancy rule of Stages A and B; 3,660 runs in all. The revision-2 tests (harness conventions, invasions, the copy-offset switch, the lethality dial) are listed in Methods. Source: `results/review_r2/RUN_TABLE.md`.
 
-| stage | runs | arms (instruction sets) | tape lengths L | budgets (instructions per encounter) | mutations per step | seeds | horizon (steps) | stopped early |
-|---|---|---|---|---|---|---|---|---|
-| A | 630 | 7: all-ld, block-copy, ld-mem, no-copy, none, rmw-only … | 16 | 32, 128, 512 | 128, 512, 2048 | 1–10 | 300,000 | 112 |
-| B | 640 | 4: block-copy, no-copy, none, stack-writes | 4, 9, 25, 36, 49, 64, 81, 100 | 128, 512 | 512 | 1–10 | 300,000 | 144 |
-| C | 490 | 16: all-ld, block-copy, call-rst, cb-page, ed-loads, ex-sp-only … | 16, 36, 100 | 32, 128, 512 | 128, 512, 2048 | 101–110 | 300,000, 1,000,000 | 0 |
-| D | 280 | 6: call-rst-write, none, push, stack-read-only, stack-write-only, stack-writes | 9 | 32, 128, 512 | 128, 512 | 1001–1020 | 300,000 | 0 |
-| E | 1230 | 4: block-copy, none, stack-write-only, stack-writes | 3–100 (21) | 32–2048 (13) | 32, 81, 101, 127, 128, 167 … | 1–1020 (31) | 300,000 | 0 |
-| F | 210 | 2: none, stack-write-only | 8, 10, 12, 16, 36 | 128 | 512 | 101–110 | 300,000 | 0 |
-| G | 80 | 1: none | 16, 20, 50, 64 | 128 | 512 | 2001–2020 | 300,000, 1,000,000 | 0 |
-| H | 10 | 1: mixed | 16 | 128 | 512 | 3001–3010 | 300,000 | 0 |
-| I | 10 | 1: lethal | 16 | 128 | 512 | 4001–4010 | 300,000 | 0 |
-| K | 20 | 1: none | 32 | 128 | 512 | 5001–5020 | 1,000,000 | 0 |
-| L | 20 | 1: none | 16, 20 | 128 | 512 | 6001–6010 | 10,000,000 | 0 |
-| M | 40 | 1: i8080 | 16, 32 | 128 | 512 | 7001–7020 | 300,000, 1,000,000 | 0 |
+| stage | runs | arms | L | budgets | mutations / step | seeds | horizon | early stops |
+|---|---:|---|---|---|---|---|---|---:|
+| A | 630 | 7 | 16 | 32, 128, 512 | 128, 512, 2048 | 1–10 | 300k | 112 |
+| B | 640 | 4 | 4, 9, 25, 36, 49, 64, 81, 100 | 128, 512 | 512 | 1–10 | 300k | 144 |
+| C | 490 | 16 | 16, 36, 100 | 32, 128, 512 | 128, 512, 2048 | 101–110 | 300k, 1M | 0 |
+| D | 280 | 6 | 9 | 32, 128, 512 | 128, 512 | 1001–1020 | 300k | 0 |
+| E | 1230 | 4 | 3–100 (21) | 32–2048 (13) | 32–4096 (20) | 1–1020 (31) | 300k | 0 |
+| F | 210 | none, stack-write-only | 8, 10, 12, 16, 36 | 128 | 512 | 101–110 | 300k | 0 |
+| G | 80 | none | 16, 20, 50, 64 | 128 | 512 | 2001–2020 | 300k, 1M | 0 |
+| H | 10 | mixed | 16 | 128 | 512 | 3001–3010 | 300k | 0 |
+| I | 10 | lethal | 16 | 128 | 512 | 4001–4010 | 300k | 0 |
+| K | 20 | none | 32 | 128 | 512 | 5001–5020 | 1M | 0 |
+| L | 20 | none | 16, 20 | 128 | 512 | 6001–6010 | 10M | 0 |
+| M | 40 | i8080 | 16, 32 | 128 | 512 | 7001–7020 | 300k, 1M | 0 |
 
 ## References
 
