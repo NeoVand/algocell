@@ -127,3 +127,41 @@ then restrict the closure claim to L = 16 and 64 and name the dependence at L = 
 killed: 12/20 closed by one million steps, all by block copy, none by a jump; 8 worlds still open. K3 met (median 425).
 Reading: closure at aligned lengths is monotone in L (20/20 at 16 by 300k; 12/20 at 32 and 8/20 at 64 by 1M) and goes by
 block copy or return; the jump closures at L = 20 and 50 depend on the wrap and are reported as such.
+
+## L — ten-million-step extensions: does the capacity for inherited variation recover after closure? (written before the run, 2026-10-09)
+
+*Design.* Stage G conditions at L = 16 and L = 20, 10 worlds each (seeds 6001–6010), horizon 10,000,000 steps, samples every
+5,000, snapshots at the Stage G steps and at 2, 3, 5, 7.5 and 10 million (`conds/stageL.json`, Modal batch `stageL`). Scored
+by the Stage G pipeline plus the mutational scan (`mutscan.py`) of the dominant tape at every snapshot and, once the
+executed-address bitmap exists, the copied-but-unexecuted fraction U.
+
+*Predictions.* L1: in ≥ 5 of 10 worlds at each length the dominant tape at ten million steps has more transmissible sites
+than the closed dominant at 300,000 (L = 16) or one million (L = 20) steps. L2: every such recovery is in a block-copy
+lineage (the dominant carries `LDIR`/`LDDR`) and its transmissible sites are copied-but-unexecuted positions. L3: no
+return-based or push-based dominant has more than one transmissible site at any snapshot.
+
+*Kill.* L1 failing at both lengths (capacity stays ≤ 1 site in ≥ 8 of 10 worlds) kills "the genotype reopens" within this
+horizon; the paper would then report the first individuals as canalised for as long as we watched.
+
+*Cost.* 20 runs × 10,000,000 steps ≈ $1.6 each at the recorded rate, ≈ $35 with overhead; ~1 h wall in parallel.
+
+## M — the 8080 subset: a second real instruction set (written before the run, 2026-10-09)
+
+*Design.* The Z80 restricted to the Intel 8080 instruction set by suppression (`i8080` in `make_conds.ABLATIONS`: the
+whole CB page, the 78 defined ED-page opcodes, and EX AF,AF', DJNZ, the five JR forms and EXX; verified tonight that
+`01 c5`, `ad e3 21 c0`, JP, JP (HL) and CALL are untouched). Deviations from a real 8080 are stated in the paper (IX/IY
+prefixes keep selecting the IX/IY form of an 8080 instruction; suppressed bytes are NOPs, not the 8080's undocumented
+aliases). Stage G conditions at L = 16 (300,000 steps) and L = 32 (one million), 20 worlds each, seeds 7001–7020
+(`conds/stageM.json`, Modal batch `stageM`).
+
+*Predictions.* M1: the first heritable replicator is a load–push word in ≥ 18 of 20 worlds at both lengths (the literal
+word is 8080 code). M2: at L = 16, a closed successor dominates by 300,000 steps in ≥ 15 of 20 worlds, by a return design
+(the Z80's `ad e3 21 e3 21 c0 ad c0` is entirely 8080 code), none by block copy (there is none). M3: at L = 32, closure by
+one million steps in ≤ 5 of 20 worlds (the Z80 closed 12 of 20 there, all by block copy, which the 8080 lacks). M4: the
+8080 subset explains the published negative result for long 8080 tapes: return closure needs the short ring that aliases
+the popped address back into the organism.
+
+*Kill.* M1 failing kills "open first" as a two-machine result. M2 failing (closure at L = 16 in fewer than 10 of 20) means
+the return route is not enough and the Z80's closure depended on its extensions; reported as such.
+
+*Cost.* 20 × 300k + 20 × 1M ≈ $4.

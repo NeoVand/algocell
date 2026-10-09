@@ -30,7 +30,7 @@ GPU = "L40S"  # fastest per step in the latency-bound regime (modal run modal_ap
 
 
 # Timeout: the longest planned run is ≈ 10 min (1M steps, or 800 Z80 steps at L = 100); 1 h bounds a hung readback.
-@app.function(image=image, gpu=GPU, timeout=60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))
+@app.function(image=image, gpu=GPU, timeout=4 * 60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))  # 4 h: the ten-million-step Stage L runs take ~1 h
 def run_condition(cond: dict, batch: str = "adhoc", provenance: dict | None = None) -> dict:
     """One condition → /runs/<batch>/{stem}.* on the volume. The file-writing path is
     algocell_exp.batch.run_to_dir, the same function preflight.py runs locally."""

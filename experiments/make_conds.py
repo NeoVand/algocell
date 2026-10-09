@@ -54,6 +54,13 @@ ABLATIONS = {
     # ── Stage I lethal-tar control: NOT an instruction ablation either. Nothing is suppressed; the label prefix names the
     #    rule (`zero_halts: true`, a zero byte fetched as an opcode halts the pair) so that stems, zoo and preflight resolve it. ──
     "lethal": [],
+    # ── 8080 subset (NATURE_PLAN Move 1): the Z80 restricted to the Intel 8080 instruction set by suppressing every Z80-only
+    #    instruction: the whole CB page (rotates, shifts, bit ops), every defined ED-page opcode (block copies, 16-bit
+    #    ADC/SBC, IN/OUT (C), NEG, RETN/RETI, IM, LD A,I/R, RLD/RRD, LDI/LDD/CPI/CPD and their repeats) and the eight
+    #    Z80-only base opcodes (EX AF,AF', DJNZ, JR ×5, EXX). Deviations from a real 8080, stated in the paper: IX/IY
+    #    prefixes still select the IX/IY form of an 8080 instruction (a real 8080 treats DD/FD as CALL aliases), and the
+    #    suppressed bytes are NOPs rather than the 8080's undocumented aliases (CB = JMP, ED = CALL, D9 = RET). ──
+    "i8080": ["family:bit", "family:bit-set", "family:bit-set-mem", "family:rotate", "family:rotate-mem", "EX AF,AF'", "DJNZ", "JR ", "EXX"] + ["ed:40", "ed:41", "ed:42", "ed:43", "ed:44", "ed:45", "ed:46", "ed:47", "ed:48", "ed:49", "ed:4a", "ed:4b", "ed:4c", "ed:4d", "ed:4e", "ed:4f", "ed:50", "ed:51", "ed:52", "ed:53", "ed:54", "ed:55", "ed:56", "ed:57", "ed:58", "ed:59", "ed:5a", "ed:5b", "ed:5c", "ed:5d", "ed:5e", "ed:5f", "ed:60", "ed:61", "ed:62", "ed:63", "ed:64", "ed:65", "ed:66", "ed:67", "ed:68", "ed:69", "ed:6a", "ed:6b", "ed:6c", "ed:6d", "ed:6e", "ed:6f", "ed:70", "ed:71", "ed:72", "ed:73", "ed:74", "ed:75", "ed:76", "ed:78", "ed:79", "ed:7a", "ed:7b", "ed:7c", "ed:7d", "ed:7e", "ed:a0", "ed:a1", "ed:a2", "ed:a3", "ed:a8", "ed:a9", "ed:aa", "ed:ab", "ed:b0", "ed:b1", "ed:b2", "ed:b3", "ed:b8", "ed:b9", "ed:ba", "ed:bb"],
 }
 STAGE_A_ABLATIONS = ["none", "block-copy", "stack-writes", "ld-mem", "all-ld", "no-copy", "rmw-only"]
 SEEDS = list(range(1, 11))
@@ -255,7 +262,26 @@ def stage_k() -> list[dict]:
     return [_c("none@closure1M", 32, 128, 4, s, 1_000_000, 1000) for s in SEEDS_K]
 
 
-STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g, "stageH": stage_h, "stageI": stage_i, "stageK": stage_k}
+SEEDS_L = list(range(6001, 6011))
+SNAPSHOTS_10M = tuple(SNAPSHOTS) + (2_000_000, 3_000_000, 5_000_000, 7_500_000, 10_000_000)
+
+
+def stage_l() -> list[dict]:
+    """NATURE_PLAN Move 2c (pre-registered in REVISION_PREREG.md, L) — ten-million-step extensions at L = 16 and 20, 10 worlds
+    each, to see whether the capacity for inherited variation recovers after closure and in which lineages."""
+    return [_c("none@closure10M", L, 128, 4, s, 10_000_000, 5000, snapshot_steps=list(SNAPSHOTS_10M)) for L in (16, 20) for s in SEEDS_L]
+
+
+SEEDS_M = list(range(7001, 7021))
+
+
+def stage_m() -> list[dict]:
+    """NATURE_PLAN Move 1 (pre-registered in REVISION_PREREG.md, M) — the 8080 subset: Stage G conditions under the `i8080`
+    suppression at L = 16 (300k steps) and L = 32 (one million steps), 20 worlds each."""
+    return [_c("i8080@closure", 16, 128, 4, s) for s in SEEDS_M] + [_c("i8080@closure1M", 32, 128, 4, s, 1_000_000, 1000) for s in SEEDS_M]
+
+
+STAGES = {"stageA": stage_a, "stageB": stage_b, "stageC": stage_c, "stageD": stage_d, "stageE": stage_e, "stageF": stage_f, "stageG": stage_g, "stageH": stage_h, "stageI": stage_i, "stageK": stage_k, "stageL": stage_l, "stageM": stage_m}
 
 
 if __name__ == "__main__":
