@@ -198,3 +198,11 @@ collapse into bracket tar is slower or absent at r ≥ 2 (fewer partial copies),
 
 **M (run 2026-10-09 on Modal; `results/stageM/FINDINGS.md`).** M1 met (20/20 and 20/20 load–push first). M2 met (20/20
 closed at L = 16, all by the byte-identical RET NZ design). M3 met (0/20 at L = 32). M4 supported.
+
+### Outcome of L (appended 2026-10-09, after `score_L.py`)
+L1 not met (1/10 at L = 16, 0/10 at L = 20); L2 not met at L = 16 (the one recovery is a block-copy lineage with 1 of 4 sites
+unexecuted), n/a at L = 20; L3 not met as written (the open pusher at L = 20 holds 2–3 sites and the DJNZ-based closer 2); the
+kill criterion fired (final dominant with ≤ 1 site in 9/10 and 8/10 worlds). Every world closed; 17/20 end on a minimal closer
+with no transmissible site; genome-bearing block copiers (10–12 sites, 7–10 unexecuted) were the most common tape in 3/20
+worlds for 1–3 million steps at < 0.3% share and were replaced. The paper reports the first individuals as canalised for as
+long as we watched (ten million steps). Details: `results/stageL/FINDINGS.md`, `SCORING.md`.

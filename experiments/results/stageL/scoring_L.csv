@@ -1,0 +1,21 @@
+L,seed,first_closed_step,ref_step,ref_kind,ref_sites,ref_tape,final_tape,final_share,final_herit,final_entered,final_sites,final_unexec,final_capacity,final_block,recovered,sites_trajectory
+16,6001,10000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.6106,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6002,50000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.50055,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6003,50000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.46965,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6004,10000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.40495,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6005,50000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.63865,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6006,10000,300000,reference step,0,1e 24 ed b0 1e 24 ed b0,6b f3 cb db 9c ed b0 b3,0.0064,True,0.0,4,1,31.351911909786693,True,True,300k:0 1000k:10 2000k:10 3000k:10 5000k:4 7500k:4 10000k:4
+16,6007,20000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.529,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6008,75000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.5557,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6009,30000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.6149,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+16,6010,50000,300000,reference step,0,ad e3 21 e3 21 c0 ad c0,ad e3 21 e3 21 c0 ad c0,0.5374,True,0.0,0,0,6.0,False,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6001,175000,1000000,reference step,0,1e 2c ed b0 1e 2c ed b0,1e a4 ed b0 1e a4 ed b0,0.19965,True,0.0,0,0,8.90689059560852,True,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6002,200000,1000000,reference step,0,1e a4 ed b0 1e a4 ed b0,1e 04 ed b0 1e 04 ed b0,0.25205,True,0.0,0,0,10.044394119358454,True,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6003,100000,1000000,reference step,3,11 44 6b ed b8 ed c2 9e,11 44 6b ed b8 94 be 5a,0.00265,True,0.0,3,0,37.12120971640928,True,False,300k:11 1000k:3 2000k:3 3000k:4 5000k:3 7500k:3 10000k:3
+20,6004,500000,1000000,reference step,12,00 04 5e 94 41 27 11 94,1e 2c ed b0 1e 2c ed b0,0.18175,True,0.0,0,0,7.870364719583405,True,False,300k:3 1000k:12 2000k:5 3000k:5 5000k:0 7500k:0 10000k:0
+20,6005,20000,1000000,reference step,0,04 5e ed b0 04 5e ed b0,1e a4 ed b0 1e a4 ed b0,0.2643,True,0.0,0,0,8.90689059560852,True,False,300k:2 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6006,500000,1000000,reference step,0,11 fd d9 ed b0 11 fd d9,1e 7c ed b0 1e 7c ed b0,0.25135,True,0.0,0,0,9.199672344836364,True,False,300k:2 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6007,295000,1000000,reference step,1,11 1d e2 ed b0 11 1d e2,1e 7c ed b0 1e 7c ed b0,0.20165,True,0.0,0,0,9.076815597050832,True,False,300k:0 1000k:1 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6008,500000,1000000,reference step,0,a4 5e ed b0 a4 5e ed b0,1e 7c ed b0 1e 7c ed b0,0.2388,True,0.0,0,0,9.044394119358454,True,False,300k:1 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6009,115000,1000000,reference step,0,b0 11 ad d9 ed b0 11 ad,1e a4 ed b0 1e a4 ed b0,0.2174,True,0.0,0,0,9.139551352398794,True,False,300k:0 1000k:0 2000k:0 3000k:0 5000k:0 7500k:0 10000k:0
+20,6010,200000,1000000,reference step,3,00 11 e6 26 30 ed b8 62,cb b2 4d 11 e6 26 30 ed,0.00145,True,0.0,3,0,28.16478699645072,True,False,300k:3 1000k:3 2000k:3 3000k:3 5000k:3 7500k:3 10000k:3
