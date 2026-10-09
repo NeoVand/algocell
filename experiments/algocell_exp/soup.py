@@ -79,6 +79,7 @@ class Soup:
         mutations_per_step: int | None = None,
         mem_length: int | None = None,
         zero_halts: bool = False,
+        shader_variant: str | None = None,
     ) -> None:
         # "mixed": the square shader with the partner j drawn uniformly from the whole soup instead of one of the four
         # lattice neighbours (Stage H well-mixed control; shader derived by algocell_exp.gen_mixed_shader, otherwise byte-identical).
@@ -104,6 +105,9 @@ class Soup:
             suffix = "" if self.mem_length == 2 * self.tape_length else f"_P{self.mem_length}"
             kind = "lethal" if self.zero_halts else grid
             self.shader_file = SHADER_DIR / f"sim_{kind}_L{self.tape_length}{suffix}.wgsl"
+            if shader_variant:   # convention test (REVISION_PREREG R3/C): sim_randreg_L*.wgsl, sim_randsp_L*.wgsl
+                assert grid == "square" and not self.zero_halts and not suffix, "shader variants are derived for the plain square shader"
+                self.shader_file = SHADER_DIR / f"sim_{shader_variant}_L{self.tape_length}.wgsl"
             if not self.shader_file.exists():
                 if self.zero_halts:
                     raise ValueError(f"no derived zero_halts shader for tape length {self.tape_length}, ring {self.mem_length} (run `python -m algocell_exp.gen_lethal_shader --tape {self.tape_length}`)")

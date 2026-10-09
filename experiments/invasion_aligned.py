@@ -1,0 +1,113 @@
+"""B — invasions at aligned lengths (registered: REVISION_PREREG.md R3/B, 2026-10-09).
+
+    .venv/bin/python invasion_aligned.py --yes [--L 16,32]
+
+L = 16: the return closer `ad e3 21 e3 21 c0 ad c0`x2 against the pusher `01 c5`x8 (Stage G dynamics). L = 32: the block-copy
+tiling `04 5e ed b0`x8 against `01 c5`x16 (Stage K dynamics). 1% of cells each way, five seeds per direction, three unseeded
+controls per resident, 20,000 steps. Every 10 steps to 500, then every 250: share of cells within Hamming ceil(L/4) of each
+tape at any cyclic shift (nearest wins). At steps 1,000, 5,000 and 20,000: 64 random cells, culture test (32 partners) and
+traced confinement (16 partners). Output: results/invasion_aligned/invasion_aligned.csv, cells.csv, REPORT.md.
+"""
+from __future__ import annotations
+
+import argparse
+import os
+import sys
+import time
+
+import numpy as np
+import pandas as pd
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from algocell_exp import assay as A  # noqa: E402
+from algocell_exp import exectrace as X  # noqa: E402
+from algocell_exp.soup import Soup  # noqa: E402
+
+PAIRS = {16: ("closer", [0xad, 0xe3, 0x21, 0xe3, 0x21, 0xc0, 0xad, 0xc0] * 2), 32: ("closer", [0x04, 0x5e, 0xed, 0xb0] * 8)}
+CHECK = (1000, 5000, 20000)
+
+
+def min_ham(s, t):
+    L = t.size
+    best = np.full(len(s), L, dtype=int)
+    for sh in range(L):
+        best = np.minimum(best, (s != np.roll(t, sh)).sum(axis=1))
+    return best
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--L", default="16,32")
+    ap.add_argument("--seeds", type=int, default=5)
+    ap.add_argument("--controls", type=int, default=3)
+    ap.add_argument("--steps", type=int, default=20000)
+    ap.add_argument("--out", default=os.path.join(HERE, "results", "invasion_aligned"))
+    ap.add_argument("--yes", action="store_true")
+    a = ap.parse_args()
+    if not a.yes:
+        sys.exit("refusing to run: pass --yes after pausing the browser simulation (local GPU)")
+    os.makedirs(a.out, exist_ok=True)
+    rows, crow = [], []
+    for L in (int(x) for x in a.L.split(",")):
+        r = int(np.ceil(L / 4))
+        tapes = {"pusher": np.array([0x01, 0xc5] * (L // 2), np.uint8), "closer": np.array(PAIRS[L][1], np.uint8)}
+        plan = [("pusher", "closer", sd) for sd in range(1, a.seeds + 1)] + [("closer", "pusher", sd) for sd in range(1, a.seeds + 1)]
+        plan += [("pusher", "none", sd) for sd in range(1, a.controls + 1)] + [("closer", "none", sd) for sd in range(1, a.controls + 1)]
+        for resident, invader, seed in plan:
+            soup = Soup(160, 125, "square", L, 500 + seed + 10 * L, 8192, 128, 4, [])
+            rng = np.random.default_rng([seed, L, 1 if resident == "pusher" else 2, 33])
+            cells = soup.read_soup()
+            cells[:] = tapes[resident][None, :]
+            if invader != "none":
+                idx = rng.choice(len(cells), size=int(0.01 * len(cells)), replace=False)
+                cells[idx] = tapes[invader][None, :]
+            soup.write_soup(cells)
+            step, t0 = 0, time.time()
+            while step <= a.steps:
+                s = soup.read_soup()
+                hp, hc = min_ham(s, tapes["pusher"]), min_ham(s, tapes["closer"])
+                rec = {"L": L, "resident": resident, "invader": invader, "seed": seed, "step": step,
+                       "pusher_share": float(((hp <= r) & (hp < hc)).mean()), "closer_share": float(((hc <= r) & (hc <= hp)).mean()), "zero_frac": float((s == 0).mean())}
+                if step in CHECK:
+                    pick = s[rng.choice(len(s), size=64, replace=False)]
+                    res = A.assay_many(pick, z80_steps=128, n=32, seed=int(rng.integers(1 << 31)))
+                    herit = np.array([x["is_replicator"] for x in res])
+                    P = rng.integers(0, 256, size=(64 * 16, L), dtype=np.uint8)
+                    _, masks = X.execute_pairs_traced(np.concatenate([np.repeat(pick, 16, 0), P], 1), L, 128)
+                    conf = ~X.exec_positions(masks, 2 * L)[:, L:].any(axis=1).reshape(64, 16).any(axis=1)
+                    rec.update({"frac_heritable": float(herit.mean()), "confined_given_heritable": float(conf[herit].mean()) if herit.any() else np.nan})
+                rows.append(rec)
+                dt = 10 if step < 500 else 250
+                soup.step(dt)
+                step += dt
+            last = rows[-1]
+            print(f"L{L} {invader:>6} into {resident:<6} s{seed}: closer {last['closer_share']:.3f} pusher {last['pusher_share']:.3f} herit {last.get('frac_heritable', float('nan')):.2f} conf|herit {last.get('confined_given_heritable', float('nan')):.2f} ({time.time() - t0:.0f} s)", flush=True)
+            pd.DataFrame(rows).to_csv(os.path.join(a.out, "invasion_aligned.csv"), index=False)
+    report(a.out)
+
+
+def report(out):
+    D = pd.read_csv(os.path.join(out, "invasion_aligned.csv"))
+    fin = D[D.step == D.step.max()]
+    lines = ["# B — invasions at aligned lengths (generated by `invasion_aligned.py`)", ""]
+    for (L, res, inv), d in fin.groupby(["L", "resident", "invader"]):
+        which = "closer" if (inv == "closer" or (inv == "none" and res == "closer")) else "pusher"
+        sh = d[f"{which}_share"]
+        lines.append(f"- L = {L}, {inv} into {res}-filled world, step {int(d.step.iloc[0]):,}: {which} class share " + ", ".join(f"{v:.3f}" for v in sh)
+                     + f"; heritable {', '.join(f'{v:.2f}' for v in d.frac_heritable)}; confined among heritable {', '.join(f'{v:.2f}' for v in d.confined_given_heritable)}")
+    for L in sorted(D.L.unique()):
+        d = fin[(fin.L == L) & (fin.resident == "pusher") & (fin.invader == "closer")]
+        b1 = int(((d.closer_share > 0.5) & (d.confined_given_heritable > 0.5)).sum())
+        e = fin[(fin.L == L) & (fin.resident == "closer") & (fin.invader == "pusher")]
+        b2 = int((e.pusher_share < 0.05).sum())
+        inv = D[(D.L == L) & (D.resident == "pusher") & (D.invader == "closer")]
+        t50 = inv[inv.closer_share > 0.5].groupby("seed").step.min()
+        lines.append(f"- L = {L}: B1 (closer > 50% of cells and most heritable cells confined at the end, >= 4 of 5): {'met' if b1 >= 4 else 'NOT met'} ({b1} of {len(d)}); "
+                     f"B2 (pusher < 5% in the closer world, >= 4 of 5): {'met' if b2 >= 4 else 'NOT met'} ({b2} of {len(e)}); closer class first above 50% at steps {', '.join(str(int(x)) for x in t50.values) or 'never'}")
+    open(os.path.join(out, "REPORT.md"), "w").write("\n".join(lines) + "\n")
+    print("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main()

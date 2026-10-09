@@ -403,3 +403,30 @@ lies in 0.05–0.4 at 300,000 steps in ≥ 7 of 10 mixtures (the neutral mutatio
 populations are mostly transmitters, and this tests whether that is selection.
 *Reading.* E1 failing with the regenerating share rising means regeneration is selected at a fixed core (H-sel); E1
 failing the other way means transmission is selected. Cost ≈ 90 worlds × 2–3 min on L40S ≈ $8.
+
+### Outcome of C (appended 2026-10-09; `results/conv/REPORT.md`, `conv_worlds.csv`; run on Modal, L40S)
+C1 met: under random initial registers the first replicator is a load–push word in 20 of 20 worlds (all open). C2 met:
+under a random stack pointer the first replicator is open in 18 of 20 (a load–push word in 5; `e1 e3`, POP HL; EX (SP),HL,
+in 13). C3 (descriptive): under random registers no population closed by 300,000 steps (0 of 19 with heritable cells;
+heritable share median 0.08); under a random stack pointer 15 of 20 closed, mostly by block-copy closers, many of them
+transmitters. Every evolved closer of the standard soups relies on zero registers (the 4-byte LDIR core needs HL = D = B
+= C = 0; the return closer needs a zero flag and zero A and L).
+
+## R4 — closure under random registers: accessible or impossible? (written before the runs, 2026-10-09)
+
+Self-initialising closers exist: `21 00 00 11 10 00 01 10 00 ed b0 18 fe` + 3 bytes (LD HL,0; LD DE,16; LD BC,16; LDIR;
+JR −2; a 13-byte transmitter at L = 16) and the 20-byte 8080 closer copy exactly under zero, random-register and
+random-SP conventions (culture test 1.00, checked before this registration). The 4-byte cores that evolve use the zero
+registers the harness provides.
+**C4a.** 20 random-register worlds at L = 16 (seeds 8101–8120) for 3,000,000 steps (Modal). *Prediction:* closure (most
+heritable cells confined) in ≤ 5 of 20 by 3,000,000 steps.
+**C4b.** Random registers, L = 16: the self-initialising transmitter (random 3-byte tail per cell) seeded at 1% into a
+world filled with the pusher, 5 seeds, 50,000 steps; and the pusher at 1% into a closer-filled world, 5 seeds.
+*Prediction:* the closer holds > 50% of cells and most heritable cells are confined at 50,000 steps in ≥ 4 of 5; the
+pusher stays below 5% in ≥ 4 of 5.
+**C4c.** Standard convention, L = 16: the 13-byte self-initialising transmitter against the 4-byte regenerator `44 5e ed
+b0`×4, 1% each way, 5 seeds each, 100,000 steps, standard mutation. *No direction registered* (a test of core length:
+13 executed bytes against 4).
+Endpoints: share of cells carrying each design (pusher: Hamming ≤ 4 at any shift; self-initialising closer: its first 11
+bytes with at most one mismatch; regenerator: core `5e ed b0` at bytes 1–3 with a regenerating offset byte), every 250
+steps; classes of 64 random cells at the end under the world's convention. Cost ≈ $15.
