@@ -10,4 +10,5 @@
 
 ## D2 literal bandwidth (lit, no wrap; first replicator against 256 random partners)
 - r = 1 (write ratio 0.67): soups 12, transitions 12; first replicator inflow median 8.00 bits (max 8.00); loop-free first replicators 12/12; pointer entry median 1.00
+- r = 2 (write ratio 1.33): soups 6, transitions 6; first replicator inflow median 0.00 bits (max -0.00); loop-free first replicators 6/6; pointer entry median 1.00
 - r = 3 (write ratio 2.00): soups 6, transitions 6; first replicator inflow median 0.00 bits (max -0.00); loop-free first replicators 6/6; pointer entry median 1.00

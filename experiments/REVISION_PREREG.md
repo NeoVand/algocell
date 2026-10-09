@@ -212,3 +212,4 @@ D1-1 half met (6/6 persist at p = 0.01; at p = 0.3 the share falls below 1% in 6
 5/6); D1-2 not met (no collapse at p ≤ 0.1; a threshold between 0.1 and 0.3, not 1/p); D1-3 met; kill not fired. D2-1 met at
 r = 3 (0.00 bits against 8.00 at r = 1); D2-2 met (6/6 loop-free, pointer-open); D2-3 met (collapse absent at r = 3; every
 random tape heritable at 16,384 epochs). Details: `results/bff_dials/FINDINGS.md`, `SCORING.md`.
+r = 2 landed 23:51: D2-1 met (0.00 bits, 6/6), D2-2 met (loop-free, pointer-open, 6/6), D2-3 met (all-`P` share 22–31% at epoch 1,024, 0.97 at 16,384, every random tape heritable). All D predictions scored.
