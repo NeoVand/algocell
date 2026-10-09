@@ -85,15 +85,28 @@ def km_curve(times, horizon):
 
 # ----------------------------------------------------------------------------------------------------------------- fig 1
 def fig1(out):
-    fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
-    gs = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], width_ratios=[18.6, 24.8], hspace=0.3, wspace=0.15, left=0.055, right=0.99, top=0.98, bottom=0.11)
-    gsd = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], hspace=0.3, wspace=0.42, left=0.065, right=0.99, top=0.98, bottom=0.11)
-    axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
-    axc, axd = fig.add_subplot(gsd[1, 0]), fig.add_subplot(gsd[1, 1])
-    cp.fig1a(axa)
-    label(axa, "a")
-    cp.fig1b(axb)
-    label(axb, "b")
+    design = os.path.join(HERE, "refs", "designer_fig1_round3.png")
+    if os.path.exists(design):
+        # review layout: the designer's conceptual panel (a) at left, the two data charts stacked at right (b, c)
+        fig = plt.figure(figsize=(fs.DOUBLE, 80 * fs.MM))
+        gs = GridSpec(2, 2, figure=fig, width_ratios=[104, 66], height_ratios=[1.0, 1.0], hspace=0.62, wspace=0.28, left=0.015, right=0.99, top=0.96, bottom=0.1)
+        axa, axc, axd = fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])
+        axa.imshow(plt.imread(design))
+        axa.set_axis_off()
+        axa.set_anchor("NW")
+        label(axa, "a", dx=0.012)
+        letters, ncol_c, ncol_d = ("b", "c"), 3, 3
+    else:
+        fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
+        gs = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], width_ratios=[18.6, 24.8], hspace=0.3, wspace=0.15, left=0.055, right=0.99, top=0.98, bottom=0.11)
+        gsd = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], hspace=0.3, wspace=0.42, left=0.065, right=0.99, top=0.98, bottom=0.11)
+        axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+        axc, axd = fig.add_subplot(gsd[1, 0]), fig.add_subplot(gsd[1, 1])
+        cp.fig1a(axa)
+        label(axa, "a")
+        cp.fig1b(axb)
+        label(axb, "b")
+        letters, ncol_c, ncol_d = ("c", "d"), 3, 6
     # c: one world's time course (Stage G, L = 16, seed 2001)
     try:
         run = glob.glob(os.path.join(EXP, "runs", "stageG", "none@closure_L16_st128_k4_s2001.jsonl"))[0]
@@ -114,8 +127,8 @@ def fig1(out):
         axc.set_ylim(0, 1.0)
         fs.tidy(axc, "step", "fraction")
         axc.set_gid("allow-clip")
-        axc.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5, frameon=False)
-        label(axc, "c")
+        axc.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=ncol_c, fontsize=5, frameon=False)
+        label(axc, letters[0])
     except Exception as e:  # noqa: BLE001
         placeholder(axc, f"c  (data missing: {e})")
     # d: Kaplan–Meier emergence by L (Stage E @nominal, none)
@@ -135,8 +148,8 @@ def fig1(out):
         axd.set_ylim(-0.03, 1.03)
         fs.tidy(axd, "step", "worlds with a heritable replicator")
         axd.set_gid("allow-clip")
-        axd.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=6, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
-        label(axd, "d")
+        axd.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=ncol_d, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
+        label(axd, letters[1])
     except Exception as e:  # noqa: BLE001
         placeholder(axd, f"d  (data missing: {e})")
     save(fig, os.path.join(out, "fig1"))

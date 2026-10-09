@@ -155,3 +155,15 @@ one pass (four pushes), which is the fact the theorem turns on.
 
 For the legend, the measured numbers the panel illustrates: the open first replicator's offspring carry a median 7 of 8
 bits about the partner; the closed successor's carry 0 bits (63 of 67 worlds).
+
+## Round 3 (the improved design): approved, one request left
+
+Every point of mechanism is now right: the stack starts at the partner's far end and the first write lands there with
+"next push" to its left; "operand = output"; execution runs on into B; the closed panel shows the return and says that
+the bytes remain exposed; the inset reads `01 c5 01 | c5` with `LD BC,nn` and `PUSH BC`. The closing line, "individuality is
+a cycle in execution", is the paper's thesis in six words. This version now sits in the review copy of the manuscript as
+Fig. 1a, with the two data charts beside it.
+
+One request remains from round 2: in the lower panel, mark the cell the return leaves from, the `c0` of the real closed
+successor, in vermilion like the written pair above, so the reader sees that closure is one instruction. Optional: the
+far cells of the strips are still very small; if a print test shows them unreadable, shorten the strips with an ellipsis.
