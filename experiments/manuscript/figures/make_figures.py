@@ -673,13 +673,24 @@ def ed12(out):
     for det, col, mk_, lab in (("A_top10", TEAL, "o", "assembly measure"), ("hoe", INK, "s", "high-order entropy")):
         d = T[T["det"] == det].sort_values("L")
         axc.plot(d["L"], d["auc"], ls="-", lw=0.6, color=col, marker=mk_, ms=3, label=lab, mfc="white" if det == "hoe" else col)
+    # unablated worlds only (results/detectors/NUMBERS_DETECTORS.md, "by ablation and L", none@nominal)
+    rows = []
+    for line in open(os.path.join(R, "detectors", "NUMBERS_DETECTORS.md")):
+        if line.startswith("| none@nominal"):
+            c = [x.strip() for x in line.strip().strip("|").split("|")]
+            try:
+                rows.append({"L": int(c[1]), "auc": float(c[4])})
+            except ValueError:
+                pass
+    U0 = pd.DataFrame(rows).dropna().sort_values("L")
+    axc.plot(U0["L"], U0["auc"], ls="--", lw=0.6, color=RED, marker="s", ms=3, mfc="white", label="high-order entropy, unablated worlds")
     axc.axhline(0.5, color=RULE, lw=0.5, ls=":")
     axc.set_xscale("log")
     axc.set_xticks([4, 8, 16, 32, 64, 100], ["4", "8", "16", "32", "64", "100"])
     axc.minorticks_off()
     axc.set_ylim(-0.03, 1.03)
     fs.tidy(axc, "tape length L (bytes)", "AUC against the heredity event")
-    axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False)
+    axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
     label(axc, "c")
     save(fig, os.path.join(out, "ed12"))
     print("  ed12 numbers:", {k: w[k] for k in ("t_rep", "step_first_cross", "A_first_cross", "threshold")}, "AUC rows", len(T))
@@ -760,6 +771,97 @@ def ed14(out):
     for ax, letter in zip(axes, "abc"):
         label(ax, letter)
     save(fig, os.path.join(out, "ed14"))
+
+
+# ------------------------------------------------------------------------------------------------ v4 Extended Data, new
+def ed_census(out):
+    """Every two-byte word (results/census2): the 254 heritable words by the culture test and by the partner test."""
+    H = pd.read_csv(os.path.join(R, "census2", "heritable.csv"))
+    fx = set(pd.read_csv(os.path.join(R, "census2", "fixed_points.csv"))["word"]) - {"00 00"}
+    cf = H["control_flow"].astype(str) != "-"
+    fig = plt.figure(figsize=(fs.DOUBLE, 62 * fs.MM))
+    gs = GridSpec(1, 2, figure=fig, wspace=0.32, left=0.075, right=0.98, top=0.82, bottom=0.16)
+    axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    rng = np.random.default_rng(5)
+    for ax, (xc, yc, xl, yl) in ((axa, ("score", "gen2", "culture-test score (32 partners)", "gen2 (heredity of the copies)")),
+                                (axb, ("copied", "damaged", "partners copied (of 256)", "encounters with self-damage (of 256)"))):
+        jx, jy = rng.uniform(-0.012, 0.012, len(H)), rng.uniform(-0.012, 0.012, len(H))
+        ax.scatter(H[xc][cf] + jx[cf], H[yc][cf] + jy[cf], s=5, facecolors="white", edgecolors=GREY, lw=0.4, label=f"with a call, jump or return ({int(cf.sum())})", zorder=2)
+        nf = (~cf) & (~H["word"].isin(fx))
+        ax.scatter(H[xc][nf], H[yc][nf], s=10, color=INK, lw=0, label=f"other straight-line words ({int(nf.sum())})", zorder=3)
+        sel = H["word"].isin(fx)
+        ax.scatter(H[xc][sel], H[yc][sel], s=14, color=TEAL, lw=0, label="the five self-writers: 01 c5, 11 d5, 21 e5, 2a e5, e5 2a", zorder=4)
+        ax.set_xlim(-0.05, 1.02)
+        ax.set_ylim(-0.05, 1.05)
+        fs.tidy(ax, xl, yl)
+    axa.axhline(0.3, color=RULE, lw=0.5, ls=":")
+    axa.text(1.0, 0.31, "heredity threshold", fontsize=5, color=GREY, ha="right", va="bottom")
+    axb.axvline(0.95, color=RULE, lw=0.5, ls=":")
+    axb.text(0.94, 1.0, "closed: ≥ 0.95", fontsize=5, color=GREY, ha="right", va="top")
+    h, l = axa.get_legend_handles_labels()
+    fig.legend(h, l, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=1.6)
+    label(axa, "a"); label(axb, "b")
+    save(fig, os.path.join(out, "ed_census"))
+
+
+def ed_confine(out):
+    """Pointer confinement against information inflow, and the executed fraction of the tape (results/exectrace)."""
+    X = pd.read_csv(os.path.join(R, "exectrace", "per_replicator.csv"))
+    fig = plt.figure(figsize=(fs.DOUBLE, 66 * fs.MM))
+    gs = GridSpec(1, 2, figure=fig, width_ratios=[0.8, 1.2], wspace=0.3, left=0.07, right=0.99, top=0.84, bottom=0.14)
+    axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    rng = np.random.default_rng(7)
+    fi, fl = X[X.which == "first"], X[X.which == "final"]
+    lp = fl.has_loop.astype(bool)
+    for d, kw, lab in ((fi, dict(marker="o", facecolors="white", edgecolors=GREY, lw=0.5, s=8), f"first replicators ({len(fi)})"),
+                       (fl[~lp], dict(marker="s", facecolors="white", edgecolors=INK, lw=0.5, s=8), f"final dominants, no loop instruction ({int((~lp).sum())})"),
+                       (fl[lp], dict(marker="o", color=RED, lw=0, s=9), f"final dominants with a loop instruction ({int(lp.sum())})")):
+        axa.scatter(d.entered_frac + rng.uniform(-0.04, 0.04, len(d)), d.H_bits + rng.uniform(-0.08, 0.08, len(d)), label=lab, zorder=3, **kw)
+    axa.axhline(8.0, color=RULE, lw=0.5, ls=":")
+    axa.set_xlim(-0.12, 1.12)
+    axa.set_ylim(-0.4, 8.6)
+    axa.set_xticks([0, 0.5, 1], ["0", "0.5", "1"])
+    fs.tidy(axa, "encounters in which the pointer\nfetches a partner byte (of 256)", "information inflow H(o | x) (bits)")
+    axa.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
+    X["exec_frac"] = X.exec_union / X.L
+    groups, first, final, lf, ll = [], {}, {}, {}, {}
+    for st, L, name in (("G", 16, "L = 16"), ("G", 20, "L = 20"), ("K", 32, "L = 32"), ("G", 50, "L = 50"), ("G", 64, "L = 64"), ("I", 16, "lethal tar")):
+        f = X[(X.stage == st) & (X.L == L) & (X.which == "first")].set_index("seed")
+        n = X[(X.stage == st) & (X.L == L) & (X.which == "final")].set_index("seed")
+        idx = [f"{st}{L}:{sd}" for sd in f.index.intersection(n.index)]
+        groups.append((name, idx))
+        for sd, k in zip(f.index.intersection(n.index), idx):
+            first[k], final[k] = f.loc[sd, "exec_frac"], n.loc[sd, "exec_frac"]
+            lf[k], ll[k] = bool(f.loc[sd, "has_loop"]), bool(n.loc[sd, "has_loop"])
+    slope_chart(axb, groups, first, final, lf, ll, "fraction of the tape executed\n(union over 256 encounters)", (-0.03, 1.16), [0, 0.25, 0.5, 0.75, 1.0], seed=3, header_y=1.06)
+    label(axa, "a"); label(axb, "b")
+    save(fig, os.path.join(out, "ed_confine"))
+
+
+def ed_closure(out):
+    """Closure across the stages added in revision: aligned L = 32 (K), ten million steps (L), the 8080 subset (M)."""
+    sets = [("stageK", 32, "Z80, L = 32\n1M steps"), ("stageL", 16, "Z80, L = 16\n10M steps"), ("stageL", 20, "Z80, L = 20\n10M steps"),
+            ("stageM", 16, "8080, L = 16\n300k steps"), ("stageM", 32, "8080, L = 32\n1M steps")]
+    fig = plt.figure(figsize=(fs.DOUBLE, 64 * fs.MM))
+    gs = GridSpec(1, 2, figure=fig, wspace=0.28, left=0.07, right=0.99, top=0.8, bottom=0.12)
+    axes = [fig.add_subplot(gs[0, i]) for i in range(2)]
+    for ax, col, ylab, sd in ((axes[0], "copied", "partners copied (of 256)", 1), (axes[1], "damaged", "encounters with self-damage (of 256)", 2)):
+        groups, first, final, lf, ll = [], {}, {}, {}, {}
+        for st, L, name in sets:
+            d = pd.read_csv(os.path.join(R, st, st, "stage_g_runs.csv"))
+            d = d[d.L == L].reset_index(drop=True)
+            idx = [f"{st}{L}:{sd_}" for sd_ in d.seed]
+            groups.append((name, idx))
+            lf_, ll_ = loop_flags(d, "first"), loop_flags(d, "final")
+            for i, k in enumerate(idx):
+                first[k], final[k] = d.loc[i, f"first_{col}"], d.loc[i, f"final_{col}"]
+                lf[k], ll[k] = bool(lf_[i]), bool(ll_[i])
+        slope_chart(ax, groups, first, final, lf, ll, ylab, (-0.04, 1.2), [0, 0.25, 0.5, 0.75, 1.0], seed=sd, header_y=1.05)
+    h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (return, jump or block copy)"),
+         plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
+    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
+    label(axes[0], "a"); label(axes[1], "b")
+    save(fig, os.path.join(out, "ed_closure"))
 
 
 # ------------------------------------------------------------------------------------------- the variation figure (v4 Fig. 4)
@@ -1128,7 +1230,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4), ("fig6v4", fig6v4)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13), ("ed14", ed14), ("figvar", figvar), ("fig4v4", fig4v4), ("fig5v4", fig5v4), ("fig6v4", fig6v4), ("ed_census", ed_census), ("ed_confine", ed_confine), ("ed_closure", ed_closure)):
         if a.only and name not in a.only.split(","):
             continue
         try:

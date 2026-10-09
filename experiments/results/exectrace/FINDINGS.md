@@ -7,7 +7,10 @@ execution, plus a bitmap of every address fetched as instruction stream). Table 
 
 ## Pointer confinement, now measured in the Z80
 
-- First replicators: 110 of 110 fetch partner bytes in every one of 256 encounters (entered 1.00). Final dominants:
+- First replicators: 100 of 110 fetch partner bytes in every one of 256 encounters (entered 1.00): all 80 of Stage G and 20 of
+  Stage K. The 10 Stage I first replicators, born under lethal tar, never do (entered 0.00, inflow 0): they are born closed.
+  (Corrected 2026-10-09: this line first read "110 of 110", pooling Stage I in error; the registered prediction covered the
+  160 Stage G tapes and is met there.) Final dominants:
   89 of 110 never fetch a partner byte (entered 0.00) and 21 do so in every encounter; nothing in between.
 - The 89 pointer-closed finals are exactly the loop-bearing ones (67 in G, 12 in K, 10 in I). Pointer closure and zero
   inflow agree in 106 of 110 finals; the four disagreements are the Stage G finals that keep one to three partner bytes

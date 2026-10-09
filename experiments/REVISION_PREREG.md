@@ -213,3 +213,9 @@ D1-1 half met (6/6 persist at p = 0.01; at p = 0.3 the share falls below 1% in 6
 r = 3 (0.00 bits against 8.00 at r = 1); D2-2 met (6/6 loop-free, pointer-open); D2-3 met (collapse absent at r = 3; every
 random tape heritable at 16,384 epochs). Details: `results/bff_dials/FINDINGS.md`, `SCORING.md`.
 r = 2 landed 23:51: D2-1 met (0.00 bits, 6/6), D2-2 met (loop-free, pointer-open, 6/6), D2-3 met (all-`P` share 22–31% at epoch 1,024, 0.97 at 16,384, every random tape heritable). All D predictions scored.
+
+### Correction to the outcome of P (2026-10-09)
+The outcome note above says "every first replicator fetches partner bytes in all 256 encounters". That is true of the registered
+set (the 80 Stage G first replicators) and of Stage K (20 of 20), but not of Stage I: its 10 first replicators, born under lethal
+tar, never enter the partner (entered 0.00, inflow 0 bits). The pooled count is 100 of 110. The error reached the findings file
+and the v4 draft, both now corrected; the result itself (open under benign tar, born closed under lethal tar) is unchanged.
