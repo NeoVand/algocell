@@ -307,11 +307,11 @@ def main():
     ap.add_argument("--name", default=None, help="output PDF basename (default: the Markdown file's basename)")
     ap.add_argument("--compact", action="store_true", help="9 pt type and 14 mm margins (one-pagers)")
     ap.add_argument("--inline-figures", action="store_true", help="place each figure after the paragraph that first cites it")
-    ap.add_argument("--layout", default=None, choices=["v3", "v4"], help="figure-file mapping (default: v4 for MAIN_v4*.md, else v3)")
+    ap.add_argument("--layout", default=None, choices=["v3", "v4"], help="figure-file mapping (default v4; v3 for the archived manuscript/archive/MAIN_nature_v3.md)")
     a = ap.parse_args()
     COMPACT[0] = a.compact
     INLINE[0] = a.inline_figures
-    layout = a.layout or ("v4" if os.path.basename(a.md).startswith("MAIN_v4") else "v3")
+    layout = a.layout or ("v3" if "_v3" in os.path.basename(a.md) else "v4")
     if layout == "v4":
         FIG_FILES.clear(); FIG_FILES.update(FIG_FILES_V4)
         ED_FILES.clear(); ED_FILES.update(ED_FILES_V4)
