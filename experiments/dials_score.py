@@ -61,7 +61,7 @@ def d1_rows(root: str) -> list[dict]:
 
 def d2_rows(root: str, n_partners: int = 256) -> list[dict]:
     rows = []
-    specs = [("bff", "lit_s", 1), ("bff_dial_r2", "stdlit_r2_s", 2), ("bff_dial_r3", "stdlit_r3_s", 3)]
+    specs = [("bff", "stdlit_s", 1), ("bff_dial_r2", "stdlit_r2_s", 2), ("bff_dial_r3", "stdlit_r3_s", 3)]
     rng = np.random.default_rng(20261010)
     partners = rng.integers(0, 256, size=(n_partners, TAPE), dtype=np.uint8)
     for batch, prefix, r in specs:
@@ -69,8 +69,8 @@ def d2_rows(root: str, n_partners: int = 256) -> list[dict]:
         if not os.path.exists(runs_csv):
             print("no runs.csv for", batch, "(score with micro/bff_analysis.py first)")
             continue
-        T = pd.read_csv(runs_csv)
-        T = T[T["run"].astype(str).str.startswith(prefix.replace("_s", ""))] if "run" in T else T
+        T = pd.read_csv(runs_csv, dtype={"first_tape": str, "final_tape": str})  # all-digit hex tapes (50 50 ...) must stay strings
+        T = T[T["run"].astype(str).str.startswith(prefix)] if "run" in T else T
         bff = BFF(max_pairs=n_partners, steps=1 << 13, ip_wrap=False, literal=True, nohalt=False, halt_p=1.0, lit_rep=r)
         for _, w in T.iterrows():
             if not isinstance(w.get("first_tape"), str) or not w["first_tape"]:
