@@ -206,3 +206,9 @@ kill criterion fired (final dominant with ≤ 1 site in 9/10 and 8/10 worlds). E
 with no transmissible site; genome-bearing block copiers (10–12 sites, 7–10 unexecuted) were the most common tape in 3/20
 worlds for 1–3 million steps at < 0.3% share and were replaced. The paper reports the first individuals as canalised for as
 long as we watched (ten million steps). Details: `results/stageL/FINDINGS.md`, `SCORING.md`.
+
+### Outcome of D (appended 2026-10-09, after `dials_score.py`; r = 2 pending at the time of writing)
+D1-1 half met (6/6 persist at p = 0.01; at p = 0.3 the share falls below 1% in 6/6 at ~850 epochs and recovers to 0.10–0.11 in
+5/6); D1-2 not met (no collapse at p ≤ 0.1; a threshold between 0.1 and 0.3, not 1/p); D1-3 met; kill not fired. D2-1 met at
+r = 3 (0.00 bits against 8.00 at r = 1); D2-2 met (6/6 loop-free, pointer-open); D2-3 met (collapse absent at r = 3; every
+random tape heritable at 16,384 epochs). Details: `results/bff_dials/FINDINGS.md`, `SCORING.md`.
