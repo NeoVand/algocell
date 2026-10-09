@@ -32,7 +32,7 @@ def parse_tape(s: str) -> np.ndarray:
     return np.array([int(b, 16) for b in s.split()], dtype=np.uint8)
 
 
-def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int) -> dict:
+def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int, zero_halts: bool = False) -> dict:
     L = tape.size
     rng = np.random.default_rng(seed)
     vals = []
@@ -50,7 +50,7 @@ def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int) -> dict:
     Rp2 = rng.integers(0, 256, size=(n, L), dtype=np.uint8)
     TT = np.repeat(T, n, axis=0)
     RR = np.tile(Rp, (M1, 1))
-    res = A.execute_pairs(np.concatenate([TT, RR], axis=1), L, steps)
+    res = A.execute_pairs(np.concatenate([TT, RR], axis=1), L, steps, zero_halts=zero_halts)
     before = A._best_shift_match_rows(RR, TT)
     after, shifts = A._best_shift_rows(res[:, L:], TT)
     score = A._norm_gain_rows(before, after, M1, n)
@@ -68,7 +68,7 @@ def scan_tape(tape: np.ndarray, K: int, n: int, steps: int, seed: int) -> dict:
     ncp = cp.sum(axis=1)
     trans = np.where(ncp > 0, ca.sum(axis=1) / np.maximum(ncp, 1), np.nan)
     RR2 = np.tile(Rp2, (M1, 1))
-    res2 = A.execute_pairs(np.concatenate([offspring, RR2], axis=1), L, steps)
+    res2 = A.execute_pairs(np.concatenate([offspring, RR2], axis=1), L, steps, zero_halts=zero_halts)
     before2 = A._best_shift_match_rows(RR2, TT)
     after2 = A._best_shift_match_rows(res2[:, L:], TT)
     gen2 = A._norm_gain_rows(before2, after2, M1, n)
@@ -93,7 +93,7 @@ def summarise(d: dict, L: int) -> tuple[dict, pd.DataFrame]:
 
 
 def run(a) -> None:
-    g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
+    g = pd.read_csv(a.runs)
     Ls = [int(x) for x in a.L.split(",")]
     g = g[g["L"].isin(Ls)].reset_index(drop=True)
     os.makedirs(a.out, exist_ok=True)
@@ -115,7 +115,7 @@ def run(a) -> None:
             loop = bool(w[f"{which}_has_cf"]) or bool(w[f"{which}_has_block"])
             label = f"L{L}_s{seed}_{which}"
             t0 = time.time()
-            d = scan_tape(tape, K, a.n, 128, seed=20261009 + 1000 * L + seed + (7 if which == "final" else 0))
+            d = scan_tape(tape, K, a.n, 128, seed=20261009 + 1000 * L + seed + (7 if which == "final" else 0), zero_halts=a.zero_halts)
             row, site = summarise(d, L)
             row.update({"label": label, "L": L, "seed": seed, "which": which, "has_loop": loop, "tape": w[f"{which}_tape"], "K": K, "n_partners": a.n,
                         **{f"ctrl_{k}": v for k, v in d["ctrl"].items()}, "wall_s": round(time.time() - t0, 1)})
@@ -167,6 +167,8 @@ def main() -> None:
     ap.add_argument("--K", type=int, default=32, help="alternative values per position at L >= 50 (all 255 at L <= 20)")
     ap.add_argument("--n", type=int, default=32, help="partners per generation")
     ap.add_argument("--out", default=os.path.join(R, "mutscan"))
+    ap.add_argument("--runs", default=os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"), help="per-world table with first_tape/final_tape")
+    ap.add_argument("--zero-halts", action="store_true", help="run the mutants under the lethal-tar rule (Stage I tapes)")
     ap.add_argument("--fresh", action="store_true")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--yes", action="store_true", help="confirm that the browser simulation is paused (local GPU)")
