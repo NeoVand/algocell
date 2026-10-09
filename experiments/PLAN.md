@@ -838,3 +838,15 @@ replication; 2% exact share is noisy because return-address smears reach
   `make_figures.fig1` (panel b, the KM chart, drawn separately as `fig1_km.pdf`; fallbacks: round-3 PNG, then code).
   Fig. 3's control-flow row given the height its 3.35 : 1 drawing needs at full width (the user noticed it fell short).
   Designer notes round 4 (submission-only points: titles to the legend, Helvetica, ≥ 5 pt). PDFs rebuilt.
+- 2026-10-08 night (**review 1 and the revision experiments**): review 1 (three AI perspectives) assessed in
+  `REVIEW_1_ASSESSMENT.md`; its novelty objection verified against the primary sources (Agüera y Arcas 2024 names the
+  stack-based first mechanism and zero-poisoning; Cicala 2026 names Load–Push, its LDIR takeover and a no-task control;
+  Knierim 2026 has a serial-transfer detector): the "what has not been asked" sentence was wrong and is replaced by a
+  paragraph crediting them and stating what is measured here. Entropy headline ("seven of eight bits") replaced by
+  exact-copy probability, varying positions and the sample ceiling (from `per_replicator.csv`). Three closure properties
+  separated in the text; finite-search claims bounded; Theorem 1 quantified; Theorem 6(iii) says loop-bearing.
+  `REVISION_PREREG.md` written before any run. **M (mutational scan, `mutscan.py`, local GPU, 2 min)**: M1–M3 killed;
+  the first closers execute everything they copy and inherit no variation, the open pusher inherits operand mutations
+  (`results/mutscan/FINDINGS.md`). **B5** (BFF published + no-op brackets, 12 soups) launched on Modal at 21:44 local,
+  batch `bff_stdnh`, ≈ $10 estimated under the user's authorisation of 2026-10-08; outcome pending (fetch with
+  `modal volume get algocell-atlas-runs bff_stdnh runs/bff_modal/`, then score with `micro/bff_analysis.py`).
