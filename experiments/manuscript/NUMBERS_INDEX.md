@@ -53,3 +53,11 @@ Figure data sources: Fig. 1c `runs/stageG/none@closure_L16_st128_k4_s2001.jsonl`
 `results/stageC/stage_c/c3_ablations_st128_k4.csv`; Fig. 3b `results/stageE/stage_e/size_arms.csv` + `unit_fitness_vs_L.csv`; Fig. 3c
 `results/stageF/stage_f/rings.csv`; Fig. 3d `results/stageD/stage_d/cells_D.csv`; Fig. 4a–c `runs/bff_modal/bff/*/samples.jsonl`, `epochs.csv`,
 `results/bff/runs.csv`; Fig. 5c `stage_g_runs.csv` + `results/bff/runs.csv`. Builder: `manuscript/figures/make_figures.py`.
+
+Figure renumbering (2026-10-08, late night): old Fig. 1c → Fig. 1b (old 1b, the seed-2001 world, dropped); new Fig. 2 =
+seven lattice frames of `runs/video/video_L16_st128_k4_s2002` (zero peak 0.373 at step 320; tq_10 840; at step 100,000:
+zero fraction 0.004, dominant-tape occupancy 0.894, 2,290 distinct tapes; frame-3 window rows 72–88, cols 30–54; top
+classes `21 e5` 984 tapes, `01 c5` 568); old Fig. 2a,b,c,d,e → Fig. 3a,b,d,f,e; old Fig. 5b → Fig. 3c; old Fig. 3 → Fig. 4;
+old Fig. 4 → Fig. 5; old Fig. 5a → Fig. 6. ED 12 and ED 13 are now drawn by `make_figures.ed12`/`ed13` from
+`results/biology/assembly/{per_sample,per_world,auc}.csv` and `results/stageI/{c4/functional.csv,stageI/stage_g_runs.csv}`
+with the Stage G L = 16 tables as the benign control (medians 46,250 vs 525).

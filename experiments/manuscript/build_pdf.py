@@ -23,10 +23,11 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EXP = os.path.abspath(os.path.join(HERE, ".."))
-FIG_FILES = {"1": ["fig1.pdf"], "2": ["fig2_ab.pdf", "fig2_cde.pdf"], "3": ["fig3.pdf"], "4": ["fig4.pdf"], "5": ["fig5.pdf"]}
+FIG_FILES = {str(i): [f"fig{i}.pdf"] for i in range(1, 7)}
 ED_FILES = {
     "11": [os.path.join(EXP, "results", "biology", "individuality", "fig_bff_slope.pdf")],
-    "12": [os.path.join(EXP, "results", "biology", "assembly", "assembly_exemplar_L16_s2001.pdf"), os.path.join(EXP, "results", "biology", "assembly", "assembly_first_cross_vs_trep.pdf")],
+    "12": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
+    "13": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
 }
 
 SYM = {
@@ -37,6 +38,7 @@ SYM = {
     "γ": r"$\gamma$", "θ": r"$\theta$", "π": r"$\pi$", "ρ": r"$\rho$", "τ": r"$\tau$", "φ": r"$\varphi$", "ω": r"$\omega$",
     "Δ": r"$\Delta$", "∈": r"$\in$", "∑": r"$\sum$", "√": r"$\surd$", "≡": r"$\equiv$", "∝": r"$\propto$",
     "½": r"\textonehalf{}", "∫": r"$\int$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$",
+    "∎": r"$\blacksquare$", "ℓ": r"$\ell$", "□": r"$\square$", "⊆": r"$\subseteq$", "∅": r"$\emptyset$",
     "∂": r"$\partial$", "∇": r"$\nabla$", "≫": r"$\gg$", "≪": r"$\ll$", "∪": r"$\cup$", "∩": r"$\cap$", "⊂": r"$\subset$",
 }
 SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "−", "⁺": "+"}
@@ -97,7 +99,7 @@ def figure_block(files: list[str], legend_tex: str, out_dir: str, floating: bool
 
 COMPACT = [False]
 INLINE = [False]
-NOTE = [r"Draft assembled DATE from \texttt{manuscript/MAIN\_nature.md} and \texttt{manuscript/figures/out}; author list and affiliations to be added."]
+NOTE = [r"Review copy assembled DATE; author list and affiliations to be added."]
 
 
 def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
@@ -125,6 +127,8 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             return
         text = " ".join(x.strip() for x in para)
         para = []
+        if text.startswith("**Extended Data"):
+            text = re.sub(r"\s*Source: .*$", "", text)       # provenance stays in the Markdown, not in the review copy
         m = re.match(r"\*\*Fig\. (\d+) \| ", text)
         if m and section.startswith("Figure legends"):
             if INLINE[0] and m.group(1) in placed:
@@ -143,7 +147,7 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
         body.append(inline(text))
         body.append("")
         if INLINE[0] and not section.startswith(("Figure legends", "Extended Data", "References")):
-            for n in re.findall(r"Fig\.\s*(\d)", text):
+            for n in re.findall(r"(?<!Extended Data )Fig\.\s*(\d)", text):
                 if n in legends and n not in placed:
                     body.extend(main_fig_block(n, floating=True))
                     placed.add(n)
@@ -211,6 +215,7 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
 \setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
 \setmonofont{texgyrecursor}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,Scale=0.9]
 \usepackage{graphicx}
+\usepackage{amssymb}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{textcomp}
@@ -242,7 +247,7 @@ def main():
     if os.path.basename(a.md) != "MAIN_nature.md":
         NOTE[0] = "Assembled DATE from " + r"\texttt{" + os.path.basename(a.md).replace("_", r"\_") + "}."
     elif a.inline_figures:
-        NOTE[0] = NOTE[0].replace("Draft assembled", "Reading copy (figures placed in the text) assembled")
+        NOTE[0] = NOTE[0].replace("Review copy assembled", "Reading copy (figures placed in the text) assembled")
     os.makedirs(a.out, exist_ok=True)
     name = a.name or os.path.splitext(os.path.basename(a.md))[0]
     tex = convert(open(a.md, encoding="utf-8").read(), a.figs, a.out)

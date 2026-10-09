@@ -1,14 +1,18 @@
-"""Composite main figures for the Nature manuscript, data panels only (conceptual panels are placeholders until designed
-with the user). Every number plotted comes from a generated table under results/ or a recorded run file.
+"""Composite figures for the Nature manuscript. Every number plotted comes from a generated table under results/ or a
+recorded run file; the conceptual panels come from concept.py (code-drawn stand-ins until the designer's set arrives).
 
-    python manuscript/figures/make_figures.py [--out manuscript/figures/out]
+    python manuscript/figures/make_figures.py [--out manuscript/figures/out] [--only fig2,fig3]
 
-Figures (180 mm double column, depth ≤ 170 mm, Nature profile from figstyle):
-  fig1  The soup and the order of events      a,b conceptual | c one world's time course | d emergence by L (KM)
-  fig2  First replicator open, successor closed  a copied b self-damage (first vs final, 4 L) | c heritable fraction vs step | d conceptual | e convergence
-  fig3  What the instruction set must provide    a atlas forest | b size axis + unit fitness | c dead-zone switch | d L = 9 reversal
-  fig4  One instruction decides how life begins in BFF   a heritable fraction vs epoch by variant | b first vs final openness | c the all-P wave | d conceptual
-  fig5  Closure as a cycle                     a conceptual | b information inflow first → final per world (analysis B)
+Main figures (180 mm double column, depth <= 170 mm, Nature profile from figstyle):
+  fig1  The first replicator and its closure     a design panel (refs/designer_fig1_round3.png if present) | b emergence by L (KM)
+  fig2  One world, watched                        a seven lattice frames (seed 2002) | b its time course | c a byte-resolution window
+  fig3  The first replicator is open, the successor closed
+                                                 a copies b self-damage c information inflow (first -> final per world, slope charts)
+                                                 d heritable fraction vs step | e convergence counts | f control flow of the closers (concept)
+  fig4  What the instruction set must provide    a atlas forest | b size axis + unit fitness | c dead-zone switch | d L = 9 reversal
+  fig5  One instruction decides how life begins in BFF   a heritable fraction vs epoch | b first vs final openness | c the all-P wave | d classification (concept)
+  fig6  Closure requires a cycle                 the theorem as a diagram (concept, single panel)
+Extended Data drawn here: ed12 (assembly measure against the culture test), ed13 (lethal tar in the first machine).
 """
 
 from __future__ import annotations
@@ -17,6 +21,7 @@ import argparse
 import glob
 import json
 import os
+import re
 import sys
 
 import numpy as np
@@ -29,18 +34,21 @@ import figstyle as fs  # noqa: E402
 sys.path.insert(0, HERE)
 import concept as cp  # noqa: E402
 import figcheck  # noqa: E402
+import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.gridspec import GridSpec  # noqa: E402
+from matplotlib.patches import Rectangle  # noqa: E402
+
+R = os.path.join(EXP, "results")
+L_COL = dict(fs.L_COLOR)
+L_COL.update({8: "#56B4E9", 9: "#E69F00", 12: "#F0E442", 10: "#999999"})
+INK, GREY, RULE, TEAL, RED = cp.INK, "#6B7280", "#B4BAC1", cp.TEAL, cp.RED
+LOOP_MS = 7          # marker area for the slope charts
 
 
 def save(fig, path_no_ext):
     """Run the layout checks, print the report, then save. A figure with problems is still written so it can be inspected."""
     figcheck.print_report(figcheck.check(fig), os.path.basename(path_no_ext))
     fs.save(fig, path_no_ext)
-import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.gridspec import GridSpec  # noqa: E402
-
-R = os.path.join(EXP, "results")
-L_COL = dict(fs.L_COLOR)
-L_COL.update({8: "#56B4E9", 9: "#E69F00", 12: "#F0E442", 10: "#999999"})
 
 
 def wilson(k, n, z=1.96):
@@ -71,7 +79,6 @@ def km_curve(times, horizon):
     t = np.array([x if (x is not None and x == x and x >= 0) else np.inf for x in times], float)
     xs = [0.0]
     ys = [1.0]
-    n = len(t)
     for v in sorted(set(t[np.isfinite(t)])):
         d = int((t == v).sum())
         at_risk = int((t >= v).sum())
@@ -83,55 +90,26 @@ def km_curve(times, horizon):
     return np.array(xs), np.array(ys)
 
 
+def loop_flags(d, which):
+    return (d[f"{which}_has_cf"].astype(bool) | d[f"{which}_has_block"].astype(bool)).values
+
+
 # ----------------------------------------------------------------------------------------------------------------- fig 1
 def fig1(out):
+    """a: the designer's conceptual panel (review copy) or the code-drawn stand-in; b: Kaplan–Meier emergence by L."""
     design = os.path.join(HERE, "refs", "designer_fig1_round3.png")
+    fig = plt.figure(figsize=(fs.DOUBLE, 72 * fs.MM))
+    gs = GridSpec(1, 2, figure=fig, width_ratios=[112, 58], wspace=0.22, left=0.012, right=0.99, top=0.9, bottom=0.14)
+    axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     if os.path.exists(design):
-        # review layout: the designer's conceptual panel (a) at left, the two data charts stacked at right (b, c)
-        fig = plt.figure(figsize=(fs.DOUBLE, 80 * fs.MM))
-        gs = GridSpec(2, 2, figure=fig, width_ratios=[104, 66], height_ratios=[1.0, 1.0], hspace=0.62, wspace=0.28, left=0.015, right=0.99, top=0.96, bottom=0.1)
-        axa, axc, axd = fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])
         axa.imshow(plt.imread(design))
         axa.set_axis_off()
         axa.set_anchor("NW")
-        label(axa, "a", dx=0.012)
-        letters, ncol_c, ncol_d = ("b", "c"), 3, 3
+        label(axa, "a", dx=0.01)
     else:
-        fig = plt.figure(figsize=(fs.DOUBLE, 92 * fs.MM))
-        gs = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], width_ratios=[18.6, 24.8], hspace=0.3, wspace=0.15, left=0.055, right=0.99, top=0.98, bottom=0.11)
-        gsd = GridSpec(2, 2, figure=fig, height_ratios=[26.0, 56.0], hspace=0.3, wspace=0.42, left=0.065, right=0.99, top=0.98, bottom=0.11)
-        axa, axb = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
-        axc, axd = fig.add_subplot(gsd[1, 0]), fig.add_subplot(gsd[1, 1])
         cp.fig1a(axa)
-        label(axa, "a")
-        cp.fig1b(axb)
-        label(axb, "b")
-        letters, ncol_c, ncol_d = ("c", "d"), 3, 6
-    # c: one world's time course (Stage G, L = 16, seed 2001)
-    try:
-        run = glob.glob(os.path.join(EXP, "runs", "stageG", "none@closure_L16_st128_k4_s2001.jsonl"))[0]
-        rows = [json.loads(l) for l in open(run) if '"kind": "sample"' in l]
-        S = pd.DataFrame([{"step": r["step"], "zero": r.get("zero_frac", np.nan), "q": r.get("q_share", np.nan)} for r in rows]).sort_values("step")
-        S = S[S["step"] > 0]
-        c4 = pd.read_csv(os.path.join(R, "stageG", "c4", "functional.csv"))
-        h = c4[(c4["tape_len"] == 16) & (c4["seed"] == 2001)].sort_values("step")
-        axc.plot(S["step"], S["zero"], color=fs.CONCEPT["tar"], lw=0.9, label="zero bytes")
-        axc.plot(S["step"], S["q"], color=cp.TEAL, lw=0.9, label="dominant tape, occupancy")
-        axc.plot(h["step"], h["frac_heritable"], color=cp.RED, lw=0.9, marker="o", ms=2.2, label="heritable random cells (sampled)")
-        g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
-        trep = float(g[(g["L"] == 16) & (g["seed"] == 2001)]["t_rep"].iloc[0])
-        axc.axvline(trep, color="#000000", lw=0.5, ls=":")
-        axc.text(trep * 1.15, 0.97, "first\nreplicator", fontsize=5, va="top")
-        axc.set_xscale("log")
-        axc.set_xlim(40, 3.5e5)
-        axc.set_ylim(0, 1.0)
-        fs.tidy(axc, "step", "fraction")
-        axc.set_gid("allow-clip")
-        axc.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=ncol_c, fontsize=5, frameon=False)
-        label(axc, letters[0])
-    except Exception as e:  # noqa: BLE001
-        placeholder(axc, f"c  (data missing: {e})")
-    # d: Kaplan–Meier emergence by L (Stage E @nominal, none)
+        axa.set_anchor("NW")
+        label(axa, "a", dx=0.01)
     try:
         A = pd.read_csv(os.path.join(R, "stageE", "assays.csv"))
         A = A[(A["label"] == "none@nominal") & (A["steps"] == 128) & (A["k"] == 4)]
@@ -142,106 +120,262 @@ def fig1(out):
             if g.empty:
                 continue
             x, y = km_curve(g["t_rep"].tolist(), 300000)
-            axd.step(np.maximum(x, 40), 1 - y, where="post", color=L_COL.get(L, "#444444"), lw=0.9, label=f"L = {L}")
-        axd.set_xscale("log")
-        axd.set_xlim(40, 3.5e5)
-        axd.set_ylim(-0.03, 1.03)
-        fs.tidy(axd, "step", "worlds with a heritable replicator")
-        axd.set_gid("allow-clip")
-        axd.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=ncol_d, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
-        label(axd, letters[1])
+            axb.step(np.maximum(x, 40), 1 - y, where="post", color=L_COL.get(L, "#444444"), lw=0.9, label=f"L = {L}")
+        axb.set_xscale("log")
+        axb.set_xlim(40, 3.5e5)
+        axb.set_ylim(-0.03, 1.03)
+        fs.tidy(axb, "step", "worlds with a heritable replicator")
+        axb.set_gid("allow-clip")
+        axb.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=5, frameon=False, columnspacing=1.0, handlelength=1.4)
+        label(axb, "b")
     except Exception as e:  # noqa: BLE001
-        placeholder(axd, f"d  (data missing: {e})")
+        placeholder(axb, f"b  (data missing: {e})")
     save(fig, os.path.join(out, "fig1"))
 
 
 # ----------------------------------------------------------------------------------------------------------------- fig 2
+VIDEO_STEM = os.path.join(EXP, "runs", "video", "video_L16_st128_k4_s2002")
+FRAME_STEPS = [5, 320, 600, 1200, 10000, 41000, 100000]
+FRAME_CAPS = ["random programs", "tar: zeros spread", "first replicators", "the wave", "the open phase", "closure spreads", "closed"]
+WINDOW_STEP, WIN_W, WIN_H = 600, 24, 16
+
+
+def _frame_rgb(soup, cc, k=4, min_count=20):
+    """Lattice map, one pixel per tape: the k most common classes (>= min_count tapes, not zero-rich) in the mean colour of
+    their bytes (the same rule as the supplementary video); every other tape grey, lighter the more of its bytes are zero,
+    so the tar flood and the zero pockets are visible as bleaching."""
+    uniq, inv, counts = np.unique(soup, axis=0, return_inverse=True, return_counts=True)
+    inv = inv.ravel()
+    zf = (uniq == 0).mean(axis=1)
+    base = np.array([168.0, 173.0, 181.0])
+    col = (base[None, :] + (255.0 - base)[None, :] * zf[:, None]).astype(np.uint8)
+    order = np.argsort(-counts, kind="stable")
+    top = []
+    for i in order[:k]:
+        if counts[i] >= min_count and zf[i] < 0.5:
+            col[i] = cc.colour(uniq[i].tobytes())
+            top.append(i)
+    return col[inv].reshape(125, 160, 3), [(uniq[i], int(counts[i])) for i in top]
+
+
+def _best_window(soup, top_class):
+    """Window (row, col) of WIN_W x WIN_H tapes whose share of the top class is closest to 0.45 (a patch edge)."""
+    member = (soup == top_class[None, :]).all(axis=1).reshape(125, 160).astype(float)
+    best, score = (0, 0), 9.0
+    for r in range(0, 125 - WIN_H + 1, 2):
+        for c in range(0, 160 - WIN_W + 1, 2):
+            s = abs(member[r:r + WIN_H, c:c + WIN_W].mean() - 0.45)
+            if s < score:
+                best, score = (r, c), s
+    return best
+
+
 def fig2(out):
+    import soup_stills as ss
+    rows = [json.loads(l) for l in open(VIDEO_STEM + ".jsonl") if '"kind": "sample"' in l]
+    rows.sort(key=lambda r: r["step"])
+    S = pd.DataFrame([{"step": r["step"], "zero": r["zero_frac"], "q": r.get("q_share", np.nan), "unique": r.get("unique", np.nan)} for r in rows])
+    S = S[S["step"] > 0]
+    snaps = ss.snapshot_files(VIDEO_STEM)
+    files = {st: min(snaps, key=lambda t: abs((t[1] if t[1] is not None else -1) - st)) for st in FRAME_STEPS}
+    cc = ss.ClassColours(k=8)
+    frames = {}
+    for st in FRAME_STEPS:
+        name, sp, f = files[st]
+        soup = ss.load(f, 16)
+        frames[st] = (sp, soup, *_frame_rgb(soup, cc))
+
+    fig = plt.figure(figsize=(fs.DOUBLE, 84 * fs.MM))
+    gs_top = GridSpec(1, 7, figure=fig, wspace=0.06, left=0.02, right=0.99, top=0.9, bottom=0.6)
+    gs_bot = GridSpec(1, 2, figure=fig, width_ratios=[2.35, 1.0], wspace=0.12, left=0.075, right=0.99, top=0.44, bottom=0.11)
+    for i, st in enumerate(FRAME_STEPS):
+        ax = fig.add_subplot(gs_top[0, i])
+        sp, soup, rgb, top = frames[st]
+        ax.imshow(np.repeat(np.repeat(rgb, 4, axis=0), 4, axis=1), interpolation="nearest")
+        ax.set_axis_off()
+        ax.set_title(FRAME_CAPS[i], fontsize=5.5, color=INK, pad=2)
+        ax.text(0.5, -0.06, f"step {sp:,}", transform=ax.transAxes, ha="center", va="top", fontsize=5, color=GREY, gid="allow-outside")
+        ax.text(0.03, 0.97, str(i + 1), transform=ax.transAxes, ha="left", va="top", fontsize=5, color=INK, gid="allow-outside",
+                bbox=dict(boxstyle="circle,pad=0.15", fc="white", ec="none"))
+        if st == WINDOW_STEP:
+            r0, c0 = _best_window(soup, top[0][0])
+            ax.add_patch(Rectangle((c0 * 4 - 0.5, r0 * 4 - 0.5), WIN_W * 4, WIN_H * 4, fill=False, ec=RED, lw=0.7))
+        if i == 0:
+            label(ax, "a", dx=0.012)
+    # b: the world's time course with the frames marked
+    axb = fig.add_subplot(gs_bot[0, 0])
+    axb.plot(S["step"], S["zero"], color=GREY, lw=0.9, label="zero bytes (fraction of all bytes)")
+    axb.plot(S["step"], S["q"], color=TEAL, lw=0.9, label="occupancy of the dominant tape")
+    axb.plot(S["step"], S["unique"] / 20000.0, color=INK, lw=0.8, ls="--", label="distinct tapes (fraction of 20,000)")
+    for i, st in enumerate(FRAME_STEPS):
+        sp = frames[st][0]
+        axb.axvline(sp, color=RULE, lw=0.5, ls=":", zorder=0)
+        axb.text(sp, 1.03, str(i + 1), ha="center", va="bottom", fontsize=5, color=INK, gid="allow-outside")
+    axb.set_xscale("log")
+    axb.set_xlim(4, 1.3e5)
+    axb.set_ylim(0, 1.0)
+    axb.set_yticks([0, 0.25, 0.5, 0.75, 1.0], ["0", "0.25", "0.5", "0.75", "1"])
+    fs.tidy(axb, "step", "fraction")
+    axb.set_gid("allow-clip")
+    axb.legend(loc="lower center", bbox_to_anchor=(0.5, 1.08), ncol=3, fontsize=5, frameon=False, columnspacing=1.2, handlelength=1.6)
+    label(axb, "b")
+    # c: a byte-resolution window of frame 3
+    axc = fig.add_subplot(gs_bot[0, 1])
+    sp, soup, rgb, top = frames[WINDOW_STEP]
+    r0, c0 = _best_window(soup, top[0][0])
+    idx = np.array([[(r0 + r) * 160 + (c0 + c) for c in range(WIN_W)] for r in range(WIN_H)]).ravel()
+    # one 4 x 4 block per tape with a one-pixel white gutter, so the tapes read as tiles
+    win = np.full((WIN_H * 5 + 1, WIN_W * 5 + 1, 3), 255, np.uint8)
+    for r in range(WIN_H):
+        for c in range(WIN_W):
+            win[1 + r * 5:5 + r * 5, 1 + c * 5:5 + c * 5] = ss.LUT[soup[idx[r * WIN_W + c]]].reshape(4, 4, 3)
+    axc.imshow(np.repeat(np.repeat(win, 5, axis=0), 5, axis=1), interpolation="nearest")
+    for sp_ in axc.spines.values():
+        sp_.set_edgecolor(RED)
+        sp_.set_linewidth(0.7)
+    axc.set_xticks([])
+    axc.set_yticks([])
+    word = " ".join(f"{b:02x}" for b in top[0][0][:2])
+    axc.set_title(f"{WIN_W} × {WIN_H} tapes of frame 3 at byte resolution", fontsize=5.5, color=INK, pad=2)
+    axc.text(0.5, -0.05, f"one block per tape, one pixel per byte; zero bytes white;\nthe replicator is the repeated word {word}", transform=axc.transAxes,
+             ha="center", va="top", fontsize=5, color=GREY, gid="allow-outside")
+    label(axc, "c", dx=0.03)
+    save(fig, os.path.join(out, "fig2"))
+    # the numbers the legend quotes
+    z = S.set_index("step")["zero"]
+    print("  fig2 numbers: zero peak %.3f at step %d; tq_10 %s; zero at 100k %.3f; q at 100k %.3f; distinct at 100k %d" % (
+        z.max(), z.idxmax(), json.load(open(VIDEO_STEM + ".summary.json")).get("tq_10"), z.iloc[-1], S["q"].iloc[-1], S["unique"].iloc[-1]))
+    print("  fig2 window: rows %d–%d, cols %d–%d of frame at step %d; top classes %s" % (r0, r0 + WIN_H, c0, c0 + WIN_W, sp,
+          [(" ".join(f"{b:02x}" for b in t[:4]), n) for t, n in top]))
+
+
+# ----------------------------------------------------------------------------------------------------------------- fig 3
+def slope_chart(ax, groups, first, final, loop_first, loop_final, ylab, ylim, yticks, seed=0, header_y=None):
+    """Paired first -> final per world, grouped (one group per tape length): grey lines join the same world; filled
+    vermilion = loop instruction present, open grey = absent (the convention of every first/final chart in the paper)."""
+    rng = np.random.default_rng(seed)
+    for gi, (name, idx) in enumerate(groups):
+        x0 = gi * 3.0
+        j = rng.uniform(-0.14, 0.14, len(idx))
+        for k, w in enumerate(idx):
+            ax.plot([x0 + j[k], x0 + 1 + j[k]], [first[w], final[w]], color=RULE, lw=0.5, alpha=0.9, zorder=1)
+        for dx, vals, loop in ((0, first, loop_first), (1, final, loop_final)):
+            y = np.array([vals[w] for w in idx])
+            lp = np.array([loop[w] for w in idx], bool)
+            xs = x0 + dx + j
+            ax.scatter(xs[~lp], y[~lp], s=LOOP_MS, facecolors="white", edgecolors=GREY, lw=0.6, zorder=3)
+            ax.scatter(xs[lp], y[lp], s=LOOP_MS, color=RED, lw=0, zorder=3)
+        ax.text(x0 + 0.5, header_y if header_y is not None else ylim[1], name, ha="center", va="bottom", fontsize=6, color=INK)
+    ax.set_xticks([gi * 3.0 + dx for gi in range(len(groups)) for dx in (0, 1)], ["first", "final"] * len(groups), fontsize=5)
+    ax.set_xlim(-0.7, (len(groups) - 1) * 3.0 + 1.7)
+    ax.set_ylim(*ylim)
+    ax.set_yticks(yticks)
+    fs.tidy(ax, None, ylab)
+
+
+def fig3(out):
     g = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
     c4 = pd.read_csv(os.path.join(R, "stageG", "c4", "functional.csv"))
     Ls = [16, 20, 50, 64]
-    fig = plt.figure(figsize=(fs.DOUBLE, 105 * fs.MM))
-    gs = GridSpec(2, 4, figure=fig, hspace=0.6, wspace=0.5, left=0.07, right=0.99, top=0.95, bottom=0.14)
-    rng = np.random.default_rng(0)
-    # a, b: per-world first vs final
-    for row, (col, ylab) in enumerate((("copied", "random partners that\nbecome a copy"), ("damaged", "encounters that damage\nthe organism"))):
-        for i, L in enumerate(Ls):
-            ax = fig.add_subplot(gs[row, i])
-            d = g[g["L"] == L]
-            jit = rng.uniform(-0.12, 0.12, len(d))
-            for x, which in ((0, "first"), (1, "final")):
-                loop = (d[f"{which}_has_cf"] | d[f"{which}_has_block"]).values
-                v = d[f"{which}_{col}"].values
-                ax.scatter(x + jit[~loop], v[~loop], s=9, facecolors="none", edgecolors=fs.CONCEPT["open"], lw=0.6)
-                ax.scatter(x + jit[loop], v[loop], s=9, color=fs.CONCEPT["closed"], lw=0)
-            ax.set_xticks([0, 1], ["first", "final"])
-            ax.set_xlim(-0.5, 1.5)
-            ax.set_ylim(-0.03, 1.03)
-            if i == 0:
-                ax.set_ylabel(ylab)
-            else:
-                ax.set_yticklabels([])
-            if row == 0:
-                hz = int(d['horizon'].iloc[0])
-                ax.set_title(f"L = {L}, {'1M' if hz >= 1_000_000 else str(hz // 1000) + 'k'} steps", fontsize=6)
-            fs.tidy(ax)
-            if i == 0:
-                fs.panel_label(ax, "ab"[row], x=-0.45)
-    # legend for a/b
-    h1 = plt.Line2D([], [], marker="o", ls="none", mfc="none", mec=fs.CONCEPT["open"], ms=3.5, label="no loop instruction")
-    h2 = plt.Line2D([], [], marker="o", ls="none", color=fs.CONCEPT["closed"], ms=3.5, label="loop instruction (jump, return or LDIR)")
-    fig.legend(handles=[h1, h2], loc="lower center", bbox_to_anchor=(0.5, -0.01), fontsize=5, ncol=2, frameon=False)
-    save(fig, os.path.join(out, "fig2_ab"))
-
-    fig = plt.figure(figsize=(fs.DOUBLE, 118 * fs.MM))
-    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.3, 1.0], height_ratios=[1.0, 0.95], hspace=0.32, wspace=0.45, left=0.07, right=0.99, top=0.97, bottom=0.02)
-    axc, axe = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
-    axd = fig.add_subplot(gs[1, :])
-    # c: heritable fraction vs step per L (median + IQR)
+    fig = plt.figure(figsize=(fs.DOUBLE, 150 * fs.MM))
+    gs1 = GridSpec(1, 3, figure=fig, wspace=0.42, left=0.075, right=0.99, top=0.93, bottom=0.7)
+    gs2 = GridSpec(1, 2, figure=fig, width_ratios=[1.45, 1.0], wspace=0.3, left=0.075, right=0.99, top=0.58, bottom=0.37)
+    gs3 = GridSpec(1, 1, figure=fig, left=0.03, right=0.99, top=0.3, bottom=0.01)
+    axa, axb, axc = fig.add_subplot(gs1[0, 0]), fig.add_subplot(gs1[0, 1]), fig.add_subplot(gs1[0, 2])
+    axd, axe = fig.add_subplot(gs2[0, 0]), fig.add_subplot(gs2[0, 1])
+    axf = fig.add_subplot(gs3[0, 0])
+    # a, b: partner test, first replicator -> final dominant per world
+    groups, first_c, final_c, first_d, final_d, lf, ll = [], {}, {}, {}, {}, {}, {}
+    for L in Ls:
+        d = g[g["L"] == L].reset_index(drop=True)
+        idx = [f"{L}:{i}" for i in range(len(d))]
+        hz = int(d["horizon"].iloc[0])
+        groups.append((f"L = {L}", idx))
+        for i, key in enumerate(idx):
+            first_c[key], final_c[key] = d.loc[i, "first_copied"], d.loc[i, "final_copied"]
+            first_d[key], final_d[key] = d.loc[i, "first_damaged"], d.loc[i, "final_damaged"]
+            lf[key], ll[key] = loop_flags(d, "first")[i], loop_flags(d, "final")[i]
+    slope_chart(axa, groups, first_c, final_c, lf, ll, "random partners that become a copy", (-0.04, 1.12), [0, 0.25, 0.5, 0.75, 1.0], seed=0, header_y=1.04)
+    slope_chart(axb, groups, first_d, final_d, lf, ll, "encounters that damage the organism", (-0.04, 1.12), [0, 0.25, 0.5, 0.75, 1.0], seed=1, header_y=1.04)
+    h = [plt.Line2D([], [], marker="o", ls="none", color=RED, ms=3, label="loop instruction (jump, return or LDIR)"),
+         plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=GREY, ms=3, label="no loop instruction")]
+    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.5, 0.995), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
+    label(axa, "a")
+    label(axb, "b")
+    # c: information inflow H(o | x) in bits (analysis B)
+    try:
+        P = pd.read_csv(os.path.join(R, "biology", "individuality", "per_replicator.csv"))
+        P = P[P["machine"] == "z80"].copy()
+        P["loop"] = P["has_loop"].map(lambda v: str(v) == "True")
+        groups_i, fH, lH, lfH, llH = [], {}, {}, {}, {}
+        for L in Ls:
+            d = P[P["group"].astype(int) == L]
+            first = d[d["which"] == "first"].set_index("world")
+            final = d[d["which"] == "final"].set_index("world")
+            worlds = first.index.intersection(final.index)
+            idx = [f"{L}:{w}" for w in worlds]
+            groups_i.append((f"L = {L}", idx))
+            for w, key in zip(worlds, idx):
+                fH[key], lH[key] = first.loc[w, "H_bits"], final.loc[w, "H_bits"]
+                lfH[key], llH[key] = first.loc[w, "loop"], final.loc[w, "loop"]
+        slope_chart(axc, groups_i, fH, lH, lfH, llH, "information from the partner (bits)", (-0.3, 9.0), [0, 2, 4, 6, 8], seed=2, header_y=8.35)
+        axc.axhline(8.0, color=RULE, lw=0.5, ls=":", zorder=0)
+        axc.text(axc.get_xlim()[0] + 0.15, 7.6, "8-bit ceiling", ha="left", va="top", fontsize=5, color=GREY)
+        label(axc, "c")
+    except Exception as e:  # noqa: BLE001
+        placeholder(axc, f"c (data missing: {e})")
+    # d: heritable fraction of random cells vs step per L (median + IQR)
     for L in Ls:
         c = c4[c4["tape_len"] == L].groupby("step")["frac_heritable"]
         med, lo, hi = c.median(), c.quantile(0.25), c.quantile(0.75)
-        axc.plot(med.index, med.values, color=L_COL[L], lw=0.9, label=f"L = {L}")
-        axc.fill_between(med.index, lo.values, hi.values, color=L_COL[L], alpha=0.15, lw=0)
-    axc.set_xscale("log")
-    axc.set_xlim(40, 1.2e6)
-    axc.set_ylim(-0.02, 1.02)
-    fs.tidy(axc, "step", "heritable fraction of random cells")
-    axc.set_gid("allow-clip")
-    axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False)
-    label(axc, "c")
-    # e: convergence and closure counts per L
+        axd.plot(med.index, med.values, color=L_COL[L], lw=0.9, label=f"L = {L}")
+        axd.fill_between(med.index, lo.values, hi.values, color=L_COL[L], alpha=0.15, lw=0)
+    axd.set_xscale("log")
+    axd.set_xlim(40, 1.2e6)
+    axd.set_ylim(-0.02, 1.02)
+    fs.tidy(axd, "step", "heritable fraction of random cells")
+    axd.set_gid("allow-clip")
+    axd.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False)
+    label(axd, "d")
+    # e: convergence and closure counts per L as a count table (filled proportion behind each count)
     rows = []
     for L in Ls:
         d = g[g["L"] == L]
         modal = d["final_tape"].mode().iloc[0]
-        rows.append({"L": L, "identical": int((d["final_tape"] == modal).sum()), "closed": int((d["final_copied"] >= 0.95).sum()),
-                     "loop": int((d["final_has_cf"] | d["final_has_block"]).sum()), "n": len(d)})
+        hz = int(d["horizon"].iloc[0])
+        rows.append({"L": L, "hz": hz, "loop": int(loop_flags(d, "final").sum()), "closed": int((d["final_copied"] >= 0.95).sum()),
+                     "identical": int((d["final_tape"] == modal).sum()), "n": len(d)})
     T = pd.DataFrame(rows)
-    x = np.arange(len(Ls))
-    w = 0.26
-    # colours not used by panel c's tape lengths: grey, teal (the organism colour of the schematics), light grey
-    axe.bar(x - w, T["loop"], w, color="#6B7280", label="loop instruction")
-    axe.bar(x, T["closed"], w, color=cp.TEAL, label="copies ≥ 95% of partners")
-    axe.bar(x + w, T["identical"], w, color="#B4BAC1", label="byte-identical to the modal tape")
-    axe.set_xticks(x, [f"L = {L}" for L in Ls])
-    axe.set_ylim(0, 21)
-    axe.set_yticks([0, 5, 10, 15, 20])
-    fs.tidy(axe, "tape length", "worlds (of 20)")
-    axe.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, frameon=False)
-    label(axe, "e")
-    cp.fig2d(axd)
-    axd.set_anchor("NW")
-    label(axd, "d")
-    save(fig, os.path.join(out, "fig2_cde"))
+    cols = [("loop", "loop\ninstruction"), ("closed", "copies ≥ 95%\nof partners"), ("identical", "byte-identical\nto the modal tape")]
+    axe.set_xlim(0, 3.9)
+    axe.set_ylim(-0.1, len(Ls) + 1.1)
+    axe.set_axis_off()
+    for j, (_, head) in enumerate(cols):
+        axe.text(1.3 + j * 0.9, len(Ls) + 0.05, head, ha="center", va="bottom", fontsize=5, color=INK, linespacing=1.1)
+    axe.text(0.42, len(Ls) + 0.05, "worlds of 20\nby horizon", ha="center", va="bottom", fontsize=5, color=GREY, linespacing=1.1)
+    for i, r in T.iterrows():
+        y = len(Ls) - 1 - i
+        axe.text(0.42, y + 0.5, f"L = {r['L']}\n{'1M' if r['hz'] >= 10**6 else str(r['hz'] // 1000) + 'k'} steps", ha="center", va="center", fontsize=5, color=INK, linespacing=1.1)
+        for j, (key, _) in enumerate(cols):
+            x = 0.85 + j * 0.9
+            frac = r[key] / r["n"]
+            axe.add_patch(Rectangle((x, y + 0.08), 0.9, 0.84, facecolor=cp.TEAL_FILL, edgecolor="none", alpha=0.25 + 0.75 * frac))
+            axe.text(x + 0.45, y + 0.5, f"{r[key]}", ha="center", va="center", fontsize=6, color=INK)
+    label(axe, "e", dx=0.03)
+    # f: control flow of the first replicator and four closed successors (conceptual)
+    cp.fig2d(axf)
+    axf.set_anchor("NW")
+    label(axf, "f", dx=0.01)
+    save(fig, os.path.join(out, "fig3"))
+    print("  fig3 table:", T.to_dict("records"))
 
 
-# ----------------------------------------------------------------------------------------------------------------- fig 3
-def fig3(out):
+# ----------------------------------------------------------------------------------------------------------------- fig 4
+def fig4(out):
     fig = plt.figure(figsize=(fs.DOUBLE, 100 * fs.MM))
     gs = GridSpec(2, 2, figure=fig, width_ratios=[1.25, 1.0], hspace=0.55, wspace=0.45, left=0.2, right=0.98, top=0.96, bottom=0.1)
     axa, axb, axc, axd = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 0]), fig.add_subplot(gs[1, 1])
-    # a: atlas forest (Stage C, 128 steps, 1/16)
+    # a: atlas forest (Stage C, 128 steps, 1/16). One colour; filled = all ten worlds alive; open = fewer; arrow = no emergence.
     try:
         C = pd.read_csv(os.path.join(R, "stageC", "stage_c", "c3_ablations_st128_k4.csv"))
         C = C[C["label"] != "none"].copy()
@@ -249,30 +383,38 @@ def fig3(out):
         C = C.sort_values("ratio", na_position="last")
         y = np.arange(len(C))
         for yi, (_, r) in zip(y, C.iterrows()):
-            col = fs.color(r["label"])
+            alive, n = int(r["t_rep_n"]), int(r["n"])
             if np.isfinite(r["ratio"]):
-                axa.plot(r["ratio"], yi, "o", color=col, ms=3.2)
+                if alive == n:
+                    axa.plot(r["ratio"], yi, "o", color=INK, ms=3.2)
+                else:
+                    axa.plot(r["ratio"], yi, "o", mfc="white", mec=INK, mew=0.7, ms=3.2)
             else:
-                axa.annotate("", xy=(3000, yi), xytext=(600, yi), arrowprops=dict(arrowstyle="->", color=col, lw=0.8))
-            axa.text(1.03, yi, f"{int(r['t_rep_n'])}/{int(r['n'])}", transform=axa.get_yaxis_transform(), fontsize=5, va="center", gid="allow-outside")
-        axa.axvline(1, color="#000000", lw=0.5, ls=":")
+                axa.annotate("", xy=(3000, yi), xytext=(600, yi), arrowprops=dict(arrowstyle="->", color=GREY, lw=0.8))
+            axa.text(1.03, yi, f"{alive}/{n}", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color=INK if alive == n else GREY, gid="allow-outside")
+        axa.axvline(1, color=INK, lw=0.5, ls=":")
         axa.set_xscale("log")
         axa.set_xlim(0.3, 3000)
         axa.set_yticks(y, C["label"].tolist())
+        axa.set_ylim(-0.7, len(C) + 0.3)
         fs.tidy(axa, "emergence delay vs unablated (ratio of KM medians)")
-        axa.text(1.03, len(C) - 0.3, "alive", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color="#555555", gid="allow-outside")
+        axa.text(1.03, len(C) + 0.05, "alive", transform=axa.get_yaxis_transform(), fontsize=5, va="center", color=GREY, gid="allow-outside")
+        h = [plt.Line2D([], [], marker="o", ls="none", color=INK, ms=3, label="all 10 worlds alive"),
+             plt.Line2D([], [], marker="o", ls="none", mfc="white", mec=INK, ms=3, label="fewer alive"),
+             plt.Line2D([], [], marker=r"$\rightarrow$", ls="none", color=GREY, ms=5, label="no median: fewer than half the worlds alive")]
+        axa.legend(handles=h, fontsize=5, loc="lower center", bbox_to_anchor=(0.4, 1.0), ncol=3, frameon=False, columnspacing=1.0, handletextpad=0.3)
         label(axa, "a")
     except Exception as e:  # noqa: BLE001
         placeholder(axa, f"a (data missing: {e})")
-    # b: size axis — fraction alive by L (none @nominal) with Wilson CI, plus the pusher's isolated heritability
+    # b: size axis: fraction alive by L (none @nominal) with Wilson CI, plus the pusher's isolated heritability
     try:
         S = pd.read_csv(os.path.join(R, "stageE", "stage_e", "size_arms.csv"))
         S = S[(S["ablation"] == "none") & (S["arm"] == "nominal")].sort_values("tape_len")
-        axb.errorbar(S["tape_len"], S["t_rep_frac"], yerr=[S["t_rep_frac"] - S["t_rep_lo"], S["t_rep_hi"] - S["t_rep_frac"]], fmt="o", color="#000000", ms=3, lw=0.6, capsize=1.5, label="worlds alive by 300k steps")
+        axb.errorbar(S["tape_len"], S["t_rep_frac"], yerr=[S["t_rep_frac"] - S["t_rep_lo"], S["t_rep_hi"] - S["t_rep_frac"]], fmt="o", color=INK, ms=3, lw=0.6, capsize=1.5, label="worlds alive by 300k steps")
         U = pd.read_csv(os.path.join(R, "stageE", "stage_e", "unit_fitness_vs_L.csv"))
         U = U[(U["unit"].str.startswith("pusher")) & (U["steps"] == 128)].sort_values("L")
-        axb.plot(U["L"], U["gen2"], color=fs.CONCEPT["closed"], lw=0.9, ls="--", label="pusher heritability in isolation")
-        axb.axhline(0.3, color="#999999", lw=0.5, ls=":")
+        axb.plot(U["L"], U["gen2"], color=TEAL, lw=0.9, ls="--", label="the first replicator's heritability in isolation")
+        axb.axhline(0.3, color=RULE, lw=0.5, ls=":")
         axb.set_xscale("log")
         axb.set_xticks([3, 5, 8, 12, 16, 25, 36, 50, 64, 100], ["3", "5", "8", "12", "16", "25", "36", "50", "64", "100"])
         axb.minorticks_off()
@@ -286,13 +428,13 @@ def fig3(out):
     try:
         F = pd.read_csv(os.path.join(R, "stageF", "stage_f", "rings.csv"))
         F = F[(F["ablation"] == "none") & (F["L"].isin([8, 10, 12]))].sort_values(["L", "P"])
-        for L, mk in ((8, "s"), (10, "^"), (12, "o")):
+        for L, mk, col in ((8, "s", INK), (10, "^", TEAL), (12, "o", RED)):
             d = F[F["L"] == L]
             frac = d["t_rep_n"] / d["n"]
-            axc.errorbar(d["P"], frac, yerr=[frac - d["t_rep_lo"], d["t_rep_hi"] - frac], fmt=mk, color=L_COL[L], ms=3.2, lw=0.6, capsize=1.5, label=f"L = {L}")
+            axc.errorbar(d["P"], frac, yerr=[frac - d["t_rep_lo"], d["t_rep_hi"] - frac], fmt=mk, color=col, ms=3.2, lw=0.6, capsize=1.5, label=f"L = {L}")
             for _, r in d.iterrows():
                 if r["P"] == 2 * r["L"]:
-                    axc.annotate("native ring", (r["P"], r["t_rep_n"] / r["n"]), textcoords="offset points", xytext=(6, 0), fontsize=5, ha="left", va="center", color="#555555")
+                    axc.annotate("native ring", (r["P"], r["t_rep_n"] / r["n"]), textcoords="offset points", xytext=(6, 0), fontsize=5, ha="left", va="center", color=GREY)
         axc.set_ylim(-0.03, 1.03)
         fs.tidy(axc, "pair memory ring P (bytes)", "worlds alive by 300k steps")
         axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False)
@@ -307,9 +449,9 @@ def fig3(out):
         D = D.drop_duplicates(subset=["label", "steps"])
         arms = [a for a in ["none", "stack-writes", "stack-write-only", "stack-read-only", "push", "call-rst-write"] if a in set(D["label"])]
         y = np.arange(len(arms))
-        for st, mk, off in ((128, "o", -0.15), (512, "s", 0.15)):
+        for st, mk, off, col in ((128, "o", -0.15, INK), (512, "s", 0.15, TEAL)):
             d = D[D["steps"] == st].set_index("label").reindex(arms)
-            axd.errorbar(d["t_rep_frac"], y + off, xerr=[d["t_rep_frac"] - d["t_rep_lo"], d["t_rep_hi"] - d["t_rep_frac"]], fmt=mk, color="#000000" if st == 128 else "#0072B2", ms=3, lw=0.6, capsize=1.5, label=f"{st} steps per encounter")
+            axd.errorbar(d["t_rep_frac"], y + off, xerr=[d["t_rep_frac"] - d["t_rep_lo"], d["t_rep_hi"] - d["t_rep_frac"]], fmt=mk, color=col, ms=3, lw=0.6, capsize=1.5, label=f"{st} steps per encounter")
         axd.set_yticks(y, arms)
         axd.set_xlim(-0.03, 1.03)
         fs.tidy(axd, "worlds alive at L = 9 (of 20)")
@@ -317,10 +459,10 @@ def fig3(out):
         label(axd, "d")
     except Exception as e:  # noqa: BLE001
         placeholder(axd, f"d (data missing: {e})")
-    save(fig, os.path.join(out, "fig3"))
+    save(fig, os.path.join(out, "fig4"))
 
 
-# ----------------------------------------------------------------------------------------------------------------- fig 4
+# ----------------------------------------------------------------------------------------------------------------- fig 5
 def _allp_share(s):
     """Share of the all-`P` class (hex 50) among the ten largest classes of a sample; 0 when it is not among them."""
     for t in s["top"]:
@@ -330,7 +472,7 @@ def _allp_share(s):
     return 0.0
 
 
-def fig4(out):
+def fig5(out):
     from matplotlib import ticker as mticker
     bdir = os.path.join(EXP, "runs", "bff_modal", "bff")
     runs = pd.read_csv(os.path.join(R, "bff", "runs.csv"))
@@ -350,7 +492,6 @@ def fig4(out):
     gs2 = GridSpec(2, 1, figure=fig, height_ratios=[1.0, 1.0], hspace=0.5, left=0.065, right=0.99, top=0.96, bottom=0.02)
     axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
     axd = fig.add_subplot(gs2[1, 0])
-    # a: heritable fraction vs epoch, every run, by variant
     for v in variants:
         for run in runs[runs["variant"] == v]["run"]:
             p = os.path.join(bdir, run, "samples.jsonl")
@@ -364,9 +505,6 @@ def fig4(out):
     label(axa, "a")
     handles, labels = axa.get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.53, 0.49), ncol=5, frameon=False, fontsize=5, handlelength=1.8, columnspacing=1.6)
-    # b: first vs final openness per variant as a horizontal dot plot: one row pair per variant (first replicator
-    # above, final dominant below), x = fraction of partner-test encounters in which the pointer enters the partner.
-    # Group headers in black (Nature forbids coloured text); circles first, squares final; filled = loop instruction.
     rng = np.random.default_rng(0)
     ROW, SUB, JIT = 2.6, 0.45, 0.22
     yticks, ylabels = [], []
@@ -389,7 +527,6 @@ def fig4(out):
     axb.tick_params(axis="y", length=2)
     fs.tidy(axb, "encounters whose pointer\nenters the partner")
     label(axb, "b")
-    # c: the all-P class under lethal (wraplit) and benign (wraplitnh) tar: one switch, collapse vs persistence
     for v in ("wraplit", "wraplitnh"):
         if v not in variants:
             continue
@@ -405,54 +542,141 @@ def fig4(out):
     cp.fig4d(axd)
     axd.set_anchor("NW")
     label(axd, "d")
-    save(fig, os.path.join(out, "fig4"))
-
-
-# ----------------------------------------------------------------------------------------------------------------- fig 5
-def fig5(out):
-    fig = plt.figure(figsize=(fs.DOUBLE, 48 * fs.MM))
-    gs = GridSpec(1, 2, figure=fig, width_ratios=[1.6, 1.0], wspace=0.45, left=0.055, right=0.99, top=0.92, bottom=0.2)
-    axa, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
-    cp.fig5a(axa)
-    axa.set_anchor("NW")
-    label(axa, "a")
-    # b: information inflow H(o | x) (bits over 256 random partners), first replicator → final dominant per world
-    # (analysis B, results/biology/individuality/per_replicator.csv); filled vermilion = loop instruction present.
-    try:
-        P = pd.read_csv(os.path.join(R, "biology", "individuality", "per_replicator.csv"))
-        P = P[P["machine"] == "z80"].copy()
-        P["loop"] = P["has_loop"].map(lambda v: str(v) == "True")
-        rng = np.random.default_rng(1)
-        Ls = [16, 20, 50, 64]
-        for gi, L in enumerate(Ls):
-            d = P[P["group"].astype(int) == L]
-            first = d[d["which"] == "first"].set_index("world")
-            final = d[d["which"] == "final"].set_index("world")
-            worlds = first.index.intersection(final.index)
-            x0 = gi * 3.0
-            j = rng.uniform(-0.14, 0.14, len(worlds))
-            for k, w in enumerate(worlds):
-                axc.plot([x0 + j[k], x0 + 1 + j[k]], [first.loc[w, "H_bits"], final.loc[w, "H_bits"]], color="#B4BAC1", lw=0.5, alpha=0.9, zorder=1)
-            for dx, frame in ((0, first), (1, final)):
-                loop = frame.loc[worlds, "loop"].values
-                y = frame.loc[worlds, "H_bits"].values
-                xs = x0 + dx + j
-                axc.scatter(xs[~loop], y[~loop], s=7, facecolors="white", edgecolors="#6B7280", lw=0.6, zorder=3)
-                axc.scatter(xs[loop], y[loop], s=7, color=cp.RED, lw=0, zorder=3)
-            axc.text(x0 + 0.5, 8.8, f"L = {L}", ha="center", va="bottom", fontsize=6, color=cp.INK)
-        axc.axhline(8.0, color="#B4BAC1", lw=0.5, ls=":", zorder=0)
-        axc.set_xticks([gi * 3.0 + dx for gi in range(len(Ls)) for dx in (0, 1)], ["first", "final"] * len(Ls), fontsize=5)
-        axc.set_xlim(-0.7, (len(Ls) - 1) * 3.0 + 1.7)
-        axc.set_ylim(-0.3, 9.7)
-        axc.set_yticks([0, 2, 4, 6, 8])
-        fs.tidy(axc, None, "information from the partner (bits)")
-        h = [plt.Line2D([], [], marker="o", ls="none", color=cp.RED, ms=3, label="loop instruction"),
-             plt.Line2D([], [], marker="o", ls="none", mfc="white", mec="#6B7280", ms=3, label="no loop instruction")]
-        axc.legend(handles=h, fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False)
-        label(axc, "b")
-    except Exception as e:  # noqa: BLE001
-        placeholder(axc, f"b (data missing: {e})")
     save(fig, os.path.join(out, "fig5"))
+
+
+# ----------------------------------------------------------------------------------------------------------------- fig 6
+def fig6(out):
+    """Theorem 2 as a diagram, a single panel (no letter): 120 mm wide."""
+    fig = plt.figure(figsize=(120 * fs.MM, 52 * fs.MM))
+    ax = fig.add_axes([0.01, 0.01, 0.98, 0.98])
+    cp.fig5a(ax)
+    ax.set_anchor("NW")
+    save(fig, os.path.join(out, "fig6"))
+
+
+# ------------------------------------------------------------------------------------------------------ Extended Data 12
+def ed12(out):
+    A = os.path.join(R, "biology", "assembly")
+    fig = plt.figure(figsize=(fs.DOUBLE, 62 * fs.MM))
+    gs = GridSpec(2, 3, figure=fig, width_ratios=[1.25, 1.0, 1.0], height_ratios=[1.0, 0.8], hspace=0.12, wspace=0.42, left=0.075, right=0.99, top=0.9, bottom=0.14)
+    axa1, axa2 = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[1, 0])
+    axb, axc = fig.add_subplot(gs[:, 1]), fig.add_subplot(gs[:, 2])
+    world = "none@closure_L16_st128_k4_s2001"
+    S = pd.read_csv(os.path.join(A, "per_sample.csv"))
+    S = S[S["world"] == world].sort_values("step")
+    S = S[S["step"] > 0]
+    W = pd.read_csv(os.path.join(A, "per_world.csv"))
+    w = W[W["world"] == world].iloc[0]
+    axa1.plot(S["step"], S["A_top10"], color=TEAL, lw=0.8)
+    axa1.axhline(w["threshold"], color=RULE, lw=0.5, ls=":")
+    axa1.text(2.6e4, w["threshold"] * 1.35, "10 × baseline", fontsize=5, color=GREY, va="bottom", ha="right")
+    axa1.set_yscale("log")
+    axa1.set_ylim(1, 1e4)
+    axa1.set_yticks([1, 10, 100, 1000, 10000], ["1", "10", "100", "1,000", "10,000"])
+    fs.tidy(axa1, None, "assembly measure\nover the ten most common classes")
+    axa1.set_xticklabels([])
+    axa2.plot(S["step"], S["hoe"], color=INK, lw=0.8)
+    axa2.set_ylim(0, 4.2)
+    axa2.set_yticks([0, 1, 2, 3, 4])
+    fs.tidy(axa2, "step", "high-order entropy\n(bits per byte)")
+    for ax in (axa1, axa2):
+        ax.set_xscale("log")
+        ax.set_xlim(1, 3.5e5)
+        ax.axvline(w["t_rep"], color=RED, lw=0.6, ls="--")
+        ax.set_gid("allow-clip")
+    axa1.text(w["t_rep"] * 1.15, 5e3, "first heritable\nreplicator", fontsize=5, color=RED, va="top")
+    axa1.plot([w["step_first_cross"]], [w["A_first_cross"]], "o", mfc="white", mec=TEAL, ms=4, mew=0.8)
+    axa1.text(w["step_first_cross"] / 1.25, w["A_first_cross"] * 1.9, "first tenfold rise", fontsize=5, color=TEAL, va="bottom", ha="right")
+    label(axa1, "a")
+    # b: first tenfold rise vs the first heritable replicator, all Stage G worlds
+    mk = {16: "o", 20: "s", 50: "^", 64: "D"}
+    top_edge = 2.0e4
+    for L in (16, 20, 50, 64):
+        d = W[W["L"] == L]
+        y = d["step_first_cross"].astype(float).values
+        ok = np.isfinite(y)
+        axb.scatter(d["t_rep"].values[ok], y[ok], s=9, marker=mk[L], facecolors="white", edgecolors=INK, lw=0.6, label=f"L = {L} (n = {len(d)})")
+        if (~ok).any():
+            axb.scatter(d["t_rep"].values[~ok], np.full((~ok).sum(), top_edge), s=12, marker="x", color=RED, lw=0.7)
+    axb.plot([60, 1e4], [60, 1e4], color=RULE, lw=0.5, ls=":")
+    axb.set_xscale("log")
+    axb.set_yscale("log")
+    axb.set_xlim(60, 1e4)
+    axb.set_ylim(1, 3e4)
+    axb.text(70, 1.4, "rises before\nthe replicator", fontsize=5, color=GREY, va="bottom")
+    axb.text(70, 1.6e4, "no rise (x)", fontsize=5, color=RED, va="center")
+    fs.tidy(axb, "first heritable replicator (step)", "first tenfold rise of the measure (step)")
+    axb.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False, columnspacing=0.8, handletextpad=0.2)
+    label(axb, "b")
+    # c: AUC of the two detectors against the heredity event by tape length (Stage E, snapshot steps)
+    U = pd.read_csv(os.path.join(A, "auc.csv"))
+    recs = []
+    for _, r in U.iterrows():
+        m = re.match(r"E \| L=(\d+) \| all arms \| snapshot steps", str(r["stratum"]))
+        if m and np.isfinite(r["AUC"]):
+            recs.append({"L": int(m.group(1)), "det": r["detector"], "auc": r["AUC"]})
+    T = pd.DataFrame(recs)
+    for det, col, mk_, lab in (("A_top10", TEAL, "o", "assembly measure"), ("hoe", INK, "s", "high-order entropy")):
+        d = T[T["det"] == det].sort_values("L")
+        axc.plot(d["L"], d["auc"], ls="-", lw=0.6, color=col, marker=mk_, ms=3, label=lab, mfc="white" if det == "hoe" else col)
+    axc.axhline(0.5, color=RULE, lw=0.5, ls=":")
+    axc.set_xscale("log")
+    axc.set_xticks([4, 8, 16, 32, 64, 100], ["4", "8", "16", "32", "64", "100"])
+    axc.minorticks_off()
+    axc.set_ylim(-0.03, 1.03)
+    fs.tidy(axc, "tape length L (bytes)", "AUC against the heredity event")
+    axc.legend(fontsize=5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False)
+    label(axc, "c")
+    save(fig, os.path.join(out, "ed12"))
+    print("  ed12 numbers:", {k: w[k] for k in ("t_rep", "step_first_cross", "A_first_cross", "threshold")}, "AUC rows", len(T))
+
+
+# ------------------------------------------------------------------------------------------------------ Extended Data 13
+def ed13(out):
+    leth = pd.read_csv(os.path.join(R, "stageI", "c4", "functional.csv"))
+    ben = pd.read_csv(os.path.join(R, "stageG", "c4", "functional.csv"))
+    ben = ben[(ben["tape_len"] == 16) & (ben["label"].str.startswith("none@closure"))]
+    gl = pd.read_csv(os.path.join(R, "stageI", "stageI", "stage_g_runs.csv"))
+    gb = pd.read_csv(os.path.join(R, "stageG", "stageG", "stage_g_runs.csv"))
+    gb = gb[gb["L"] == 16]
+    fig = plt.figure(figsize=(fs.DOUBLE, 55 * fs.MM))
+    gs = GridSpec(1, 3, figure=fig, width_ratios=[1.0, 1.0, 0.9], wspace=0.42, left=0.07, right=0.99, top=0.86, bottom=0.17)
+    axa, axb, axc = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[0, 2])
+    for ax, col, ylab in ((axa, "frac_heritable", "heritable fraction of random cells"), (axb, "zero_frac", "zero bytes (fraction of all bytes)")):
+        for seed, d in ben.groupby("seed"):
+            d = d.sort_values("step")
+            ax.plot(d["step"], d[col], color=RULE, lw=0.5, alpha=0.9)
+        for seed, d in leth.groupby("seed"):
+            d = d.sort_values("step")
+            ax.plot(d["step"], d[col], color=RED, lw=0.6, alpha=0.85)
+        ax.set_xscale("log")
+        ax.set_xlim(40, 3.5e5)
+        ax.set_ylim(-0.02, 1.02 if col == "frac_heritable" else 0.5)
+        fs.tidy(ax, "step", ylab)
+        ax.set_gid("allow-clip")
+    h = [plt.Line2D([], [], color=RED, lw=0.9, label="zero byte halts the pair (lethal tar, 10 worlds)"),
+         plt.Line2D([], [], color=RULE, lw=0.9, label="zero byte is a no-op (benign tar, 20 worlds)")]
+    fig.legend(handles=h, loc="upper center", bbox_to_anchor=(0.42, 1.0), ncol=2, fontsize=5.5, frameon=False, columnspacing=2.0)
+    label(axa, "a")
+    label(axb, "b")
+    # c: the first heritable replicator's step, lethal vs benign
+    rng = np.random.default_rng(0)
+    for y, d, col, name in ((1, gl, RED, "lethal"), (0, gb, RULE, "benign")):
+        t = d["t_rep"].astype(float).values
+        t = t[np.isfinite(t) & (t > 0)]
+        axc.scatter(t, y + rng.uniform(-0.12, 0.12, len(t)), s=8, facecolors="white" if col == RULE else col, edgecolors=INK if col == RULE else col, lw=0.6, zorder=3)
+        med = float(np.median(t))
+        axc.plot([med, med], [y - 0.3, y + 0.3], color=INK, lw=0.8, zorder=4)
+        axc.text(med, y + 0.36, f"median {med:,.0f}", ha="center", va="bottom", fontsize=5, color=INK)
+        print(f"  ed13 {name}: n = {len(t)}, median t_rep = {med:,.0f}")
+    axc.set_xscale("log")
+    axc.set_xlim(60, 3.5e5)
+    axc.set_ylim(-0.6, 1.9)
+    axc.set_yticks([0, 1], ["benign", "lethal"])
+    fs.tidy(axc, "first heritable replicator (step)")
+    label(axc, "c")
+    save(fig, os.path.join(out, "ed13"))
 
 
 def main():
@@ -462,13 +686,15 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.setup()
-    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5)):
+    for name, fn in (("fig1", fig1), ("fig2", fig2), ("fig3", fig3), ("fig4", fig4), ("fig5", fig5), ("fig6", fig6), ("ed12", ed12), ("ed13", ed13)):
         if a.only and name not in a.only.split(","):
             continue
         try:
             fn(a.out)
             print("built", name)
         except Exception as e:  # noqa: BLE001
+            import traceback
+            traceback.print_exc()
             print("FAILED", name, repr(e))
 
 

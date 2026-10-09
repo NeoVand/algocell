@@ -167,3 +167,11 @@ Fig. 1a, with the two data charts beside it.
 One request remains from round 2: in the lower panel, mark the cell the return leaves from, the `c0` of the real closed
 successor, in vermilion like the written pair above, so the reader sees that closure is one instruction. Optional: the
 far cells of the strips are still very small; if a print test shows them unreadable, shorten the strips with an ellipsis.
+
+## Figure renumbering (2026-10-08, late night)
+
+The main figures were renumbered so that they appear in the order the text cites them; the designer's panels are keyed by
+content, not by number. The encounter panel is Fig. 1a (approved; one request: mark the returning `c0` cell in
+vermilion). The closers' control-flow panel (five strips: pusher, `RET NZ`, `JR NZ`, `DJNZ`, `LDIR`) is now Fig. 3f.
+The classification table is Fig. 5d. The theorem diagram is Fig. 6, a single panel, 120 mm wide. A new Fig. 2 shows seven
+lattice frames of one world (the supplementary video's world) and needs no design work.

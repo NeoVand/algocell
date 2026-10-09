@@ -823,3 +823,13 @@ replication; 2% exact share is noisy because return-address smears reach
   closed and late (block-copy replicators with `LDIR`/`LDDR`, 1.00/0.00 from the first appearance, no zero byte, t_rep
   median 46,250 vs 525). The classification's lethal column gains "born closed, late" (Z80) beside "open, then extinct"
   (BFF); Fig. 4d and the manuscript updated. `results/stageI/FINDINGS.md`.
+- 2026-10-08 late night (**review-copy iteration after the user's figure critique**): figure order bug fixed (the inline
+  placement matched "Extended Data Fig. 5" as a main-figure cite, so Fig. 5 floated before Fig. 2); Fig. 2 rebuilt as
+  the lattice-frames figure of the video world (seed 2002: seven frames, traces, byte window); the rejected 2 × 4
+  strip-plot grid replaced by three slope charts (copies, damage, inflow) plus the heritable-fraction curve, a count
+  table and the control-flow schematic (now Fig. 3); Fig. 4a (atlas) in one colour with the alive counts; ED 12 redrawn
+  as one composed figure (was two misaligned agent PDFs); ED 13 drawn (lethal vs benign tar). Renumbering: old 1c → 1b;
+  old 2a–e → 3a,b,d,f,e; old 5b → 3c; old 3 → 4; old 4 → 5; old 5a → 6. Supplementary Information with full theorem
+  statements and proofs appended to the manuscript (self-contained PDF; the "exactly when" claim softened to what is
+  proved; Theorem 2 stated with two provisos). References cleaned (reserved 43 removed; 44/45 → 43/44; flags removed);
+  repository-file references removed from the review copy. Handoff brief `STATE_2026-10-08.md` for the next model.
