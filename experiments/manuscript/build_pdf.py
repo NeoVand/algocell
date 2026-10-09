@@ -31,6 +31,17 @@ ED_FILES = {
     "14": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
 }
 
+# v4 layout (MAIN_v4.md): Fig. 4 is the variation figure, Fig. 5 gains the dial panel, the ablation atlas moves to
+# Extended Data Fig. 1, and the Extended Data items are renumbered (old 5+12 -> 6, old 8 -> 7, old 9+11 -> 8, 13 -> 9, 14 -> 10).
+FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v4.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6.pdf"]}
+ED_FILES_V4 = {
+    "1": [os.path.join(EXP, "manuscript", "figures", "out", "fig4.pdf")],
+    "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
+    "8": [os.path.join(EXP, "results", "biology", "individuality", "fig_bff_slope.pdf")],
+    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
+    "10": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
+}
+
 SYM = {
     "≥": r"$\geq$", "≤": r"$\leq$", "×": r"$\times$", "→": r"$\rightarrow$", "←": r"$\leftarrow$", "∞": r"$\infty$",
     "≈": r"$\approx$", "⇔": r"$\Leftrightarrow$", "⇒": r"$\Rightarrow$", "Σ": r"$\Sigma$", "−": r"$-$", "≠": r"$\neq$",
@@ -242,12 +253,19 @@ def main():
     ap.add_argument("--name", default=None, help="output PDF basename (default: the Markdown file's basename)")
     ap.add_argument("--compact", action="store_true", help="9 pt type and 14 mm margins (one-pagers)")
     ap.add_argument("--inline-figures", action="store_true", help="place each figure after the paragraph that first cites it")
+    ap.add_argument("--layout", default=None, choices=["v3", "v4"], help="figure-file mapping (default: v4 for MAIN_v4*.md, else v3)")
     a = ap.parse_args()
     COMPACT[0] = a.compact
     INLINE[0] = a.inline_figures
-    if os.path.basename(a.md) != "MAIN_nature.md":
+    layout = a.layout or ("v4" if os.path.basename(a.md).startswith("MAIN_v4") else "v3")
+    if layout == "v4":
+        FIG_FILES.clear(); FIG_FILES.update(FIG_FILES_V4)
+        ED_FILES.clear(); ED_FILES.update(ED_FILES_V4)
+    if os.path.basename(a.md).startswith("MAIN_v4") and not a.inline_figures:
+        pass  # keep the review-copy note
+    elif os.path.basename(a.md) != "MAIN_nature.md" and not os.path.basename(a.md).startswith("MAIN_v4"):
         NOTE[0] = "Assembled DATE from " + r"\texttt{" + os.path.basename(a.md).replace("_", r"\_") + "}."
-    elif a.inline_figures:
+    if a.inline_figures and (os.path.basename(a.md) == "MAIN_nature.md" or os.path.basename(a.md).startswith("MAIN_v4")):
         NOTE[0] = NOTE[0].replace("Review copy assembled", "Reading copy (figures placed in the text) assembled")
     os.makedirs(a.out, exist_ok=True)
     name = a.name or os.path.splitext(os.path.basename(a.md))[0]
