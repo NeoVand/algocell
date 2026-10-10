@@ -53,10 +53,9 @@ def _executor_path(tape_length: int, mem_length: int | None, zero_halts: bool) -
     if not path.exists():
         if zero_halts:
             raise ValueError(f"no derived zero_halts executor for tape length {tape_length}, ring {P} (run `python -m algocell_exp.gen_lethal_shader --tape {tape_length}`)")
-        if tape_length <= 20 and P == 2 * tape_length:
-            path = SHADER_DIR / "z80_test.wgsl"  # 40-byte memory: fits pairs up to 40 bytes
-        else:
-            raise ValueError(f"no exported executor for tape length {tape_length}, ring {P} (run `npm run export:sim`)")
+        # No fallback: the generic z80_test.wgsl has a fixed 32-byte ring (MEM_LENGTH = 32), which is the pair ring only at
+        # L = 16. Every length used in the results has its own exported executor (checked 2026-10-10).
+        raise ValueError(f"no exported executor for tape length {tape_length}, ring {P} (run `npm run export:sim`)")
     return path
 
 
