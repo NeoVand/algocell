@@ -675,7 +675,7 @@ pre-registration log `REVISION_PREREG.md`).
 - **Communal evolution**: Woese's picture of early life as loosely organised cells exchanging genes so freely that there were no stable
   lineages.
 - **Control flow**: instructions that decide where the processor's finger goes next (jumps, loops, calls, returns).
-- **Copy offset (*d*)**: how far ahead a block copier's copy lands; set by the first byte of its core.
+- **Copy offset** (*d*): how far ahead a block copier's copy lands; set by the first byte of its core.
 - **Core**: the few bytes of a replicator that do the copying.
 - **Culture test**: our heredity test: a tape is heritable if the copies of its copies still resemble it, against fresh random
   partners.
