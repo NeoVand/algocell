@@ -370,8 +370,9 @@ A simple model in the paper ties these together. Think of every open replicator 
 finding a closer: the more open replicators there are, and the longer they last, the more likely a closer has been found.
 Harmless tar keeps the window open until a closer is found; lethal tar shuts it first. Two honest caveats: the dial supports this
 picture only at its two ends (closure timing in the middle does not follow it neatly), and the model was written with point
-mutations in mind, whereas our newest result (section 13) shows that the first closers are assembled by mixing. The tickets, it
-seems, are chances to assemble a closer from parts the open replicators keep in circulation.
+mutations in mind, whereas our newest result (section 13) shows that the first closers are written by programs that cannot copy
+themselves. The tickets, it seems, are chances for such a program to write a closer from words the open replicators keep in
+circulation.
 
 **In one sentence: the rules of the world decide the order.** A world with a cheap literal channel and harmless debris passes
 through a communal, open phase. A harsh world starts with self-contained replicators, or with nothing.
@@ -507,23 +508,27 @@ counted from the most recent ancestor that was still an open copier.
 - **Every founder's line runs back to open pushers.** This was almost bound to be so: by then, essentially every living cell's ancestry
   passes through an open copier within the previous 2,000 steps. So descent is observed, but on its own it is weak evidence; the
   informative part is *how* the founder was made.
-- **The first founder in each world was completed by mixing, never by a single-byte change to a working copier.** In 16 of 17 worlds,
-  the encounter that completed it was a **recombination**, which stitched bytes from two different tapes into a new one; in the
-  remaining world, it was an imperfect copy of a neighbour. In none was it a **point mutation** (a random change of one byte) of a
-  tape that could already copy itself.
-- **It happened fast, and through tapes that could not copy.** The founder appeared a median of 79 steps after its most recent
-  open-copier ancestor (between 1 and 360 steps). In 16 of 17 worlds, every tape in between was a non-copier, a cell repeatedly
-  written over, in part, by its neighbours. The founder's bytes came from a median of 3 separate events (between 1 and 6).
+- **The first founder was never a single-byte change to a working copier.** In none of the 17 worlds was it a **point mutation** (a
+  random change of one byte) of a tape that could already copy itself. It appeared a median of 79 steps after its most recent
+  open-copier ancestor (between 1 and 360 steps).
+- **It was written by a program that could not copy itself.** We replayed the exact encounter that made each founder. In all 17
+  worlds, the program that ran in that encounter was a **non-copier**: a tape that fails the copying test. It *wrote* the founder,
+  into its partner in 13 worlds and into its own half in 4; a median of 7 of the founder's 16 bytes were in neither tape before, so
+  this is writing, not splicing. There were two routes. In 11 worlds an open non-copier, its finger running into its partner, wrote
+  the closer in that one encounter; with other partners it almost never does (at most 19% of random partners). In 5 worlds a
+  *confined* program that writes the closer into any partner, and turns itself into the closer, had appeared one to three steps
+  earlier, made by a point mutation in two and a rewrite in three; it does not count as a copier only because it does not copy the
+  half of itself it never runs. (In one more world, the block copier, an open program did the same.)
 - **Its parts are the pusher's own words, slightly changed.** The pusher `21 e5` means "load register HL; push HL". Change one byte
   and you get `21 e3` ("load HL; *swap* HL with the top of the stack") or `21 e0` ("load HL; *return*, if a check passes"). Swapping
   with the stack lets a program pick up the bytes it has just written; returning sends the finger to them. Those are exactly the two
   ingredients of a closer. Before each founder appeared, the words it runs were carried by roughly eight times as many cells as random
-  tapes would carry (a median of 0.21% of cells, against 0.024%). Join a few of these words in the right order and you get a return
-  closer, such as `3d e3 21 e3 21 e0 3d e0` (a cousin of the closer in section 8: the same pattern with a few bytes changed). In 15 of
+  tapes would carry (a median of 0.21% of cells, against 0.024%), as debris of the pushers. A non-copier that pushes these words in
+  the right order writes a return closer, such as `3d e3 21 e3 21 e0 3d e0` (a cousin of the closer in section 8: the same pattern with a few bytes changed). In 15 of
   the 17 worlds, the first founder carries this pattern; one was a block copier and one a push-and-return hybrid.
 - **Later founders are different.** Once a closer exists, new self-confined copiers in the same world (15 of them) mostly arise when
-  an existing closer overwrites part of a neighbour: 11 of the 15 took bytes from a closer. The first individual is assembled; later
-  ones are mostly made by individuals.
+  an existing closer overwrites part of a neighbour: 11 of the 15 took bytes from a closer. The first individual is written by
+  non-individuals; later ones are mostly made by individuals.
 
 We also asked, in an exploratory test, whether evolution *could* have taken the slow road. We took a pusher and an evolved return
 closer and built every in-between tape you can make by taking, at each position where they differ, either the pusher's byte or the
@@ -534,8 +539,13 @@ islands that single changes mostly cannot reach without passing through tapes th
 
 So, in one sentence:
 
-> **Point mutations made the parts; mixing put them together. In each of these worlds, the first self-confined replicator was
-> assembled from words circulating among non-individual replicators, not polished into being one mutation at a time.**
+> **The first self-confined replicator in each of these worlds was not copied or mutated from a replicator. It was written, in one
+> encounter, by a program that could not copy itself, from words the sloppy open replicators keep in circulation.**
+
+A note on honesty. Our first version of this result said the founder was "assembled by recombination". An independent critic
+showed that the category we had called recombination simply meant "neither a copy nor mostly the old tape", and that in several
+worlds the founder's predecessor already wrote it. Replaying the founding encounters gave the more precise answer above, and we
+withdrew the first wording.
 
 ---
 
@@ -549,12 +559,12 @@ So, in one sentence:
 2. **We can watch something like Woese's Darwinian threshold, byte by byte.** Woese's picture of a communal era giving way to
    individual lineages was a theory about ancient cells. Here there is a communal phase: sloppy copiers whose children depend on
    their neighbours, and, in the extreme case of Part IV, populations that carry heredity with no clone at all. There is a pool of
-   shared words kept in circulation by those copiers. And there is the moment when mixing assembles, from that pool, the first copier
-   whose children depend only on itself.
-3. **Mixing may be older than individuality.** We usually think of sex and gene swapping as refinements that individuals evolved
-   later. In this world, mixing is not an evolved trait at all; it is a by-product of how sloppy copiers meet and overwrite one
-   another. And it is what *builds* the first individual. Horizontal transfer is not just noise that individuality must overcome; it
-   can be the workshop in which individuality is made.
+   shared words kept in circulation by those copiers. And there is the moment when a program that cannot copy itself writes, from
+   that pool, the first copier whose children depend only on itself.
+3. **The first individual can be made by non-individuals.** We usually picture the first self-copier as a lucky mutant of an
+   earlier copier. Here it was written by programs that could not copy themselves, out of material the sloppy copiers had spread
+   around. The communal soup, with all its sideways traffic, is not just noise that individuality must overcome; it is where the
+   first individual is made.
 4. **The path depends on the chemistry.** A cheap literal channel and harmless by-products give a communal, open beginning. Toxic
    by-products, or no literal channel, give a beginning with loops and self-contained replicators. Origin-of-life researchers argue
    about whether life began with genes, with cells, or with **metabolism** (self-sustaining cycles of chemical reactions). Some of
@@ -604,8 +614,8 @@ These are predictions for chemistry, not results about it.
   lasts long enough for control to evolve. Matched experiments with inert and blocking additives could test it.
 - **Where a copy restarts matters.** If a copying molecule restarts partway through the unit it is copying, it should regenerate a short
   repeat (a regenerator); if it restarts at the unit's end, it transmits the whole unit (a transmitter).
-- **Mixing before selves.** If the analogy holds, the first self-sustaining replicators should be found among the recombinants of
-  sloppier ones, not as point mutants of them.
+- **Made before self-made.** If the analogy holds, the first self-sustaining replicators should first appear as products of
+  molecules that do not themselves replicate, not as point mutants of earlier replicators.
 
 ---
 
@@ -643,7 +653,7 @@ pre-registration log `REVISION_PREREG.md`).
 
 ### 20. Where this goes next
 
-- **Is assembly by mixing general?** The same exact recording under lethal tar, where life begins closed, and on 32-byte tapes, where
+- **Is the first individual always written by non-copiers?** The same exact recording under lethal tar, where life begins closed, and on 32-byte tapes, where
   the closers are block copiers; and a fresh, pre-registered run to confirm the founder result.
 - **A faithful 8080.** The real Intel 8080 treats some bytes differently from our "8080-like" machine; a faithful copy would make the
   second-machine comparison cleaner.
@@ -688,7 +698,7 @@ pre-registration log `REVISION_PREREG.md`).
 - **Extended phenotype**: Dawkins's term for effects of genes outside the body that carries them.
 - **Fitness function**: a score the experimenters use to decide which programs reproduce; our soups have none.
 - **Founder**: the earliest ancestor on a line of descent that already stays home, counted from the most recent open-copier ancestor.
-- **Functional parent**: in a recombination, the parent that supplied the bytes the new tape actually runs.
+- **Functional parent**: when a new tape has two parents, the parent that supplied the bytes the new tape actually runs.
 - **Genotype**: one exact sequence of bytes.
 - **Germline and soma**: the inherited material of an organism, and the body that is rebuilt each generation.
 - **GPU**: a graphics chip that does thousands of small calculations at once.
@@ -724,7 +734,8 @@ pre-registration log `REVISION_PREREG.md`).
 - **Post hoc**: decided after looking at the data, and so weaker evidence than a pre-registered test.
 - **Pre-registration**: writing down predictions and kill criteria before seeing the data.
 - **Protocell**: a hypothetical early cell: a membrane bag holding molecules that copy themselves.
-- **Recombination**: an encounter that produces a tape made of bytes from two different tapes.
+- **Non-copier**: a tape that fails the copying test: it does not make copies of itself against random partners.
+- **Rewrite**: our name for a new tape that is neither a copy of its partner nor mostly its own old bytes.
 - **Register**: a tiny storage slot inside the processor (the Z80 has pairs such as BC and HL).
 - **Regenerator**: a self-confined replicator that copies only the code it runs and rebuilds the rest of its tape from it, erasing
   mutations (for example, the block copier with a small copy offset, and the evolved 16-byte return closer).
