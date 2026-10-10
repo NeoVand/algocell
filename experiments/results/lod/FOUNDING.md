@@ -29,6 +29,13 @@ Producer = a tape that, run as the executor against 64 random partners, writes t
 - the founding executor's pointer enters random partners in ≥ half of encounters (open execution): 12 of 17; among the 6 producers: 1
 - bytes of F in neither parent: median 7 (range 1–13); at best shifts median 5 (1–10)
 - an earlier record on the chain already produces F: 6 of 17
+- executor copies its executed bytes (≥ 75% of them in ≥ half of runs; copier by executed bytes): 5 of 17; non-copier by both criteria: 12 of 17
+- executor's pointer entered the partner in the founding encounter itself: 10 of 17
+- share of 512 soup partners with which the founding executor makes F: median 0.07; among executors that are non-copiers by both criteria, max 1.00
+- founder is a copy of an open copier (copyA from an open-copier partner): 1 of 17
+- bytes of F in neither parent, each 8-byte half at its own best shifts: median 2 (range 0–7); at most 1 in 7 of 17
+- events on the chains before the founder (all 17): 212; point mutations 54 (0.25); partial overwrite 101, rewrite (neither copy nor ≥ 75% own) 41, copy 15, copy of the partner 1
+- founding events that are point mutations: 0 of 17; probability under exchangeability with chain events (1 − 0.25)^17 = 0.0068
   - producer made by: rewrite (neither copy nor ≥ 75% own) 3, point mutation 3
   - producer class: non-copier 6
   - steps before F: median 2 (range 1.0–3.0)

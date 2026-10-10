@@ -54,6 +54,42 @@ def enters(T):
     return float(X.exec_positions(m, 2 * L)[:, L:].any(1).mean())
 
 
+def exec_copier(T):
+    """Copier by executed bytes only: T's executed positions (fetched in at least half of 64 random encounters); a run
+    copies if at least 75% of them reappear in the partner at the best cyclic shift; share of runs that copy."""
+    res, m = X.execute_pairs_traced(np.concatenate([np.tile(T, (len(P), 1)), P], 1).astype(np.uint8), L, 128)
+    ex = X.exec_positions(m, 2 * L)[:, :L].mean(0) >= 0.5
+    if not ex.any():
+        return 0.0
+    B = res[:, L:]
+    best = np.max(np.stack([(B == np.roll(T, s_))[:, ex].mean(1) for s_ in range(L)]), 0)
+    return float((best >= 0.75).mean())
+
+
+def entered_in(A, B):
+    """Did the executor's pointer fetch a partner byte in this one encounter?"""
+    _, m = X.execute_pairs_traced(np.concatenate([np.atleast_2d(A), np.atleast_2d(B)], 1).astype(np.uint8), L, 128)
+    return bool(X.exec_positions(m, 2 * L)[0, L:].any())
+
+
+def soup_produces(T, F, soup, n=512, seed=11):
+    """Share of n partners sampled from the soup snapshot into which T writes F exactly, or in which T becomes F."""
+    rng = np.random.default_rng(seed)
+    Q = soup[rng.choice(len(soup), size=n, replace=False)]
+    a, b = run(np.tile(T, (n, 1)), Q)
+    return float(((b == F).all(1) | (a == F).all(1)).mean())
+
+
+def new_bytes_halves(F, own, oth):
+    """Bytes of F in neither parent, letting each 8-byte half of F take its own best cyclic shift of each parent."""
+    tot = 0
+    for h0 in (0, L // 2):
+        idx = np.arange(h0, h0 + L // 2)
+        best = min(int(((F[idx] != np.roll(own, s1)[idx]) & (F[idx] != np.roll(oth, s2)[idx])).sum()) for s1 in range(L) for s2 in range(L))
+        tot += best
+    return tot
+
+
 def best_shift(F, X_):
     m = [(F == np.roll(X_, s)).sum() for s in range(L)]
     return np.roll(X_, int(np.argmax(m)))
@@ -101,6 +137,14 @@ def main():
         else:
             side, exe, partner = "not reproduced", oth, own
         wB, wA = produces(exe, Fb)
+        S = np.load(os.path.join(IND, f"L16_benign_s{r.seed}", "soups.npz"))
+        ksnap = np.where(S["steps"] < z["step"][F])[0]
+        soup = S["soups"][ksnap.max()] if len(ksnap) else None
+        soupP = soup_produces(exe, Fb, soup) if soup is not None else float("nan")
+        ent_here = entered_in(exe, partner)
+        exec_cp = exec_copier(exe)
+        nb_half = new_bytes_halves(Fb, own, oth)
+        F_from_open_copy = bool(kind == "copyA" and cls(h(partner)) == "open copier")
         neither0 = int(((Fb != own) & (Fb != oth)).sum())
         neitherB = int(((Fb != best_shift(Fb, own)) & (Fb != best_shift(Fb, oth))).sum())
         # earliest record on the chain that already produces F
@@ -111,13 +155,15 @@ def main():
                 prod = (rid, pb, pa)
                 break
         row = {"seed": r.seed, "F_tape": r.F_tape, "F_kind": NAME[kind], "side": side, "executor": h(exe), "executor_class": cls(h(exe)),
-               "partner_class": cls(h(partner)), "executor_writes_F": wB, "executor_self_F": wA, "executor_enters": enters(exe), "bytes_in_neither_parent": neither0,
+               "partner_class": cls(h(partner)), "executor_writes_F": wB, "executor_self_F": wA, "executor_enters": enters(exe), "executor_entered_in_founding": ent_here,
+               "executor_exec_copier": exec_cp, "executor_soup_produces_F": soupP, "bytes_in_neither_halves": nb_half, "F_copy_of_open_copier": F_from_open_copy, "bytes_in_neither_parent": neither0,
                "bytes_in_neither_best_shift": neitherB, "producer_on_chain": prod is not None}
         if prod:
             rid = prod[0]
             row.update({"producer_tape": tapes[rid], "producer_steps_before_F": int(z["step"][F] - z["step"][rid]),
                         "producer_made_by": NAME[K[int(z["kind"][rid])]], "producer_class": cls(tapes[rid]),
                         "producer_writes_F": prod[1], "producer_self_F": prod[2], "producer_enters": enters(z["tape"][rid])})
+        row["chain_events"] = ";".join(K[int(z["kind"][rid])] for rid in chain[1:-1])
         rows.append(row)
         md.append(f"- world {r.seed}: F `{r.F_tape}`; completed by {row['F_kind']} on the {side}; executor `{h(exe)}` "
                   f"({row['executor_class']}) writes F into {wB:.2f} of random partners (own half becomes F in {wA:.2f}); partner "
@@ -137,7 +183,21 @@ def main():
            f"among the {int((ex >= 0.5).sum())} producers: {int(((T.executor_enters >= 0.5) & (ex >= 0.5)).sum())}",
            f"- bytes of F in neither parent: median {T.bytes_in_neither_parent.median():.0f} (range {T.bytes_in_neither_parent.min()}–{T.bytes_in_neither_parent.max()}); "
            f"at best shifts median {T.bytes_in_neither_best_shift.median():.0f} ({T.bytes_in_neither_best_shift.min()}–{T.bytes_in_neither_best_shift.max()})",
-           f"- an earlier record on the chain already produces F: {int(T.producer_on_chain.sum())} of {n}"]
+           f"- an earlier record on the chain already produces F: {int(T.producer_on_chain.sum())} of {n}",
+           f"- executor copies its executed bytes (≥ 75% of them in ≥ half of runs; copier by executed bytes): {int((T.executor_exec_copier >= 0.5).sum())} of {n}; "
+           f"non-copier by both criteria: {int((T.executor_exec_copier < 0.5).sum())} of {n}",
+           f"- executor's pointer entered the partner in the founding encounter itself: {int(T.executor_entered_in_founding.sum())} of {n}",
+           f"- share of 512 soup partners with which the founding executor makes F: median {T.executor_soup_produces_F.median():.2f}; "
+           f"among executors that are non-copiers by both criteria, max {T[T.executor_exec_copier < 0.5].executor_soup_produces_F.max():.2f}",
+           f"- founder is a copy of an open copier (copyA from an open-copier partner): {int(T.F_copy_of_open_copier.sum())} of {n}",
+           f"- bytes of F in neither parent, each 8-byte half at its own best shifts: median {T.bytes_in_neither_halves.median():.0f} (range {T.bytes_in_neither_halves.min()}–{T.bytes_in_neither_halves.max()}); at most 1 in {int((T.bytes_in_neither_halves <= 1).sum())} of {n}"]
+    ev = [e for x in T.chain_events for e in x.split(";") if e]
+    from collections import Counter
+    cnt = Counter(ev)
+    pm = cnt.get("mut", 0) / max(len(ev), 1)
+    md += [f"- events on the chains before the founder (all 17): {len(ev)}; point mutations {cnt.get('mut', 0)} ({pm:.2f}); "
+           + ", ".join(f"{NAME.get(k, k)} {v}" for k, v in cnt.most_common() if k != "mut"),
+           f"- founding events that are point mutations: 0 of {n}; probability under exchangeability with chain events (1 − {pm:.2f})^{n} = {(1 - pm) ** n:.4f}"]
     if T.producer_on_chain.any():
         Pp = T[T.producer_on_chain]
         md += [f"  - producer made by: " + ", ".join(f"{k} {v}" for k, v in Pp.producer_made_by.value_counts().items()),
