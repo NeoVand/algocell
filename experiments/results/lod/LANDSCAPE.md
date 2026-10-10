@@ -60,3 +60,10 @@ Every intermediate (each subset of the differing positions taking the closer's b
   - `21 e5 21 e5 21 e0 21 e5 21 e5 21 e5 21 e5 21 e0` open copier (copies 0.97, enters 1.00)
   - `21 e5 21 e5 21 e0 21 e5 21 e3 21 e5 21 e5 21 e0` open copier (copies 1.00, enters 0.62)
   - `21 e3 21 e5 21 e0 21 e5 21 e3 21 e5 21 e5 21 e0` confined copier (copies 1.00, enters 0.00)
+
+## With heritability (gen2 copy rate ≥ 0.3 against fresh partners, as the culture test)
+
+- `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5` (heritable open) → `ad e3 21 e3 21 e0 ad e0 ad e3 21 e3 21 e0 ad e0`: {'heritable open': 125, 'heritable confined': 57, 'not heritable': 3914}; single-byte path through heritable genotypes to a heritable confined one: none
+- `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5` (heritable open) → `ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0`: {'heritable open': 125, 'heritable confined': 57, 'not heritable': 3914}; single-byte path through heritable genotypes to a heritable confined one: none
+- `01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5` (heritable open) → `47 e3 21 e3 21 e0 47 e0 47 e3 21 e3 21 e0 47 e0`: {'heritable open': 287, 'heritable confined': 163, 'not heritable': 65086}; single-byte path through heritable genotypes to a heritable confined one: none
+- `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5` (heritable open) → `00 e3 21 e3 21 e0 12 e0 12 e3 21 e3 21 e0 12 e0`: {'heritable open': 155, 'heritable confined': 43, 'not heritable': 3898}; single-byte path through heritable genotypes to a heritable confined one: 6 steps: `21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5` → `21 e5 21 e5 21 e0 21 e5 21 e5 21 e5 21 e5 21 e5` → `21 e5 21 e5 21 e0 21 e5 12 e5 21 e5 21 e5 21 e5` → `21 e5 21 e5 21 e0 21 e5 12 e5 21 e5 21 e0 21 e5` → `21 e3 21 e5 21 e0 21 e5 12 e5 21 e5 21 e0 21 e5` → `21 e3 21 e5 21 e0 21 e5 12 e5 21 e3 21 e0 21 e5` → `21 e3 21 e5 21 e0 12 e5 12 e5 21 e3 21 e0 21 e5`

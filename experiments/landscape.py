@@ -133,3 +133,79 @@ for a, b in PAIRS:
 with open(os.path.join(HERE, "results", "lod", "LANDSCAPE.md"), "a") as fh:
     fh.write("\n".join(lines3) + "\n")
 print("\n".join(lines3))
+
+
+
+def classify_heritable(tapes, n=32, seed=11):
+    """Culture-test-like: gen1 = copies (>= 0.75 at best shift) of the tape against n random partners; gen2 = copies of
+    those copies against fresh partners, scored against the ORIGINAL tape; heritable if the gen2 copy rate >= 0.3
+    (the paper's threshold). Confined if the pointer of the original never enters the partner in >= half."""
+    from algocell_exp import exectrace as X
+    rng = np.random.default_rng(seed)
+    uniq = sorted(set(tapes))
+    out = {}
+    for i in range(0, len(uniq), 512):
+        chunk = uniq[i:i + 512]
+        T = np.stack([np.array([int(x, 16) for x in t.split()], np.uint8) for t in chunk])
+        P1 = rng.integers(0, 256, (len(chunk) * n, 16), dtype=np.uint8)
+        A = np.repeat(T, n, axis=0)
+        r1, m = X.execute_pairs_traced(np.concatenate([A, P1], 1), 16, 128)
+        ent = X.exec_positions(m, 32)[:, 16:].any(1).reshape(len(chunk), n).mean(1)
+        B1 = r1[:, 16:]
+        P2 = rng.integers(0, 256, (len(chunk) * n, 16), dtype=np.uint8)
+        r2, _ = X.execute_pairs_traced(np.concatenate([B1, P2], 1), 16, 128)
+        B2 = r2[:, 16:]
+        s2 = np.max(np.stack([(B2 == np.roll(A, s, axis=1)).mean(1) for s in range(16)]), 0).reshape(len(chunk), n)
+        g2 = (s2 >= 0.75).mean(1)
+        for j, t in enumerate(chunk):
+            her = g2[j] >= 0.3
+            out[t] = "heritable confined" if her and ent[j] < 0.5 else ("heritable open" if her else "not heritable")
+    return out
+
+
+def heritable_paths(a, b):
+    from collections import deque
+    A, B = a.split(), b.split()
+    diff = [i for i in range(16) if A[i] != B[i]]
+    k = len(diff)
+    tapes = {}
+    for mask in range(1 << k):
+        t = list(A)
+        for j, pos in enumerate(diff):
+            if mask >> j & 1:
+                t[pos] = B[pos]
+        tapes[mask] = " ".join(t)
+    C = classify_heritable(list(tapes.values()))
+    cls = {m: C[t] for m, t in tapes.items()}
+    counts = {c: sum(1 for v in cls.values() if v == c) for c in ("heritable open", "heritable confined", "not heritable")}
+    prev, dq, hit = {0: None}, deque([0]), None
+    if cls[0] == "not heritable":
+        return counts, None, cls[0]
+    while dq:
+        m = dq.popleft()
+        if cls[m] == "heritable confined":
+            hit = m
+            break
+        for j in range(k):
+            nn = m ^ (1 << j)
+            if nn not in prev and cls[nn] != "not heritable":
+                prev[nn] = m
+                dq.append(nn)
+    path = None
+    if hit is not None:
+        path, m = [], hit
+        while m is not None:
+            path.append(tapes[m])
+            m = prev[m]
+        path = list(reversed(path))
+    return counts, path, cls[0]
+
+
+lines4 = ["", "## With heritability (gen2 copy rate ≥ 0.3 against fresh partners, as the culture test)", ""]
+for a, b in PAIRS:
+    counts, path, c0 = heritable_paths(a, b)
+    lines4.append(f"- `{a}` ({c0}) → `{b}`: {counts}; single-byte path through heritable genotypes to a heritable confined one: " +
+                  (f"{len(path) - 1} steps: " + " → ".join(f"`{t}`" for t in path) if path else "none"))
+with open(os.path.join(HERE, "results", "lod", "LANDSCAPE.md"), "a") as fh:
+    fh.write("\n".join(lines4) + "\n")
+print("\n".join(lines4))

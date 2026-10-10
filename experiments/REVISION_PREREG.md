@@ -904,3 +904,10 @@ so resident and invader both read ≈ 0 and the registered endpoint confounds in
 (trajectories are recorded every 250 steps): the invader's share at 2,000 steps, in runs where invader + resident hold
 ≥ 0.5 of cells at that time; N5-1 and N5-2 are evaluated on it with the registered thresholds (≥ 0.5 in ≥ 4 of 5;
 < 0.05 in ≥ 4 of 5). Runs that fail the ≥ 0.5 condition are reported as evolved away.
+*Outcome of N5 (2026-10-09 night; `results/n5/PATH.md`).* Uninformative as designed, under both the registered and the
+amended endpoints: the designs differ by single bytes in a soup that mutates each cell about 0.026 times per step, so
+both the resident and the invader leave the Hamming ≤ 2 classes within a few hundred steps (median combined share 0.017
+at 500 steps, 0.002 at 2,000). The genotype table is informative: along the four-step path, exact copying collapses
+after the first step (0.52 → 0.003 → 0.000) and the last two genotypes are not heritable by the culture test (gen2 0.25
+and 0.17, threshold 0.3). The exploratory "gradual path" of the landscape used a lenient copier criterion (≥ 0.75
+similar copies) and is withdrawn; it is re-tested with heritability.
