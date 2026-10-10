@@ -3,21 +3,16 @@
 Each item gives the pre-registration (REVISION_PREREG.md), the outcome and the source table. Nothing here has been put
 into the manuscript.
 
-## Headline (N3, 20 worlds recorded exactly, 17 closed)
-**The first self-confined replicators were assembled, not evolved by point mutation.** On the exact line of descent of
-every closed world, the founder of the confined lineage was completed by a recombination (19 of 32 founders) or by a
-partial overwrite from a neighbour (12), once by a copy of the partner, and never by a point mutation. Its bytes were
-written mostly by tapes that cannot copy themselves (64% of all founder bytes; per founder, median 78%), in a median of 4
-separate events over a median of 240 steps after the last open copier on its line. In 16 of 17 worlds the founder is a
-return closer built from the pusher's own vocabulary (`21` loads with EX (SP),HL and a return in place of PUSH), and the
-words it executes were already circulating, about 10 times more often than in random tapes, 98% of them in non-copiers;
-sloppy pushers spread such words as data (a mutated operand is pushed into partners about once per encounter). Every
-founder's line runs back to the open pushers. Source: `results/lod/founders_v6.csv`, `CHAIN_v6.md`, `PARTS_v6.md`;
-draft figure `manuscript/figures/out/fig_assembly.png` (critic review pending).
-Why it matters for the paper: it answers the question the round-2 reviewers and Cicala et al. (2026) leave open
-(descent versus displacement), and it gives the "heredity before individuality" thesis a mechanism: individuality is
-assembled from a pool of words kept by non-individual replicators, by horizontal transfer — the Woese picture, observed
-byte by byte.
+## Headline (N3, 20 worlds recorded exactly, 17 closed) — corrected after the figure critic
+**The first self-confined replicator in each world is born by recombination.** On the exact line of descent, the first
+confined copier of each of the 17 closed worlds was completed by a recombination (16) or a copy of the partner (1), never
+by a point mutation of a copier, a median of 79 steps after its line left the open-copier lineage, with only non-copying
+intermediates in between (16 of 17), from bytes of a median of 3 separate events. Its parts are one-byte variants of the
+pusher's own words (`21 e3`, EX (SP),HL; `21 e0`, RET PO): point mutation made the parts, recombination joined them.
+Every founder's line runs back to the open pushers (descent, with the base-rate caveat that pushers dominated the soup).
+Later founders in the same worlds (15) are mostly conversions by existing closers. Withdrawn after the critic: "bytes
+written mostly by non-copiers" (it matches the soup's composition, 0.88 against 0.86) and the longer chain lengths (a bug
+in the chain start). Sources: `results/lod/FOUNDERS2.md`, `founders2.csv`; figure to be revised.
 
 ## Spend
 Modal tonight: $52.96 through 00:00 CDT (algocell-lod), about $55 in all. With the previous night's revision runs

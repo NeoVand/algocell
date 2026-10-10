@@ -943,3 +943,22 @@ before the final confined stretch) was found in all 17 worlds: 32 distinct found
   in cells that could not copy themselves, from words circulating in the open copiers' world, by recombination and
   partial overwrites from several neighbours. Exploratory support (`results/lod/LANDSCAPE.md`): in 3 of 4 hypercubes
   between a pusher and a return closer, no single-byte path through heritable genotypes reaches a heritable confined one.
+
+### Correction to the outcome of N3 (2026-10-10, after the independent figure critic; `results/lod/FOUNDERS2.md`, `founders2.csv`, `chain_v6b.csv`)
+The critic found two errors in the analysis reported above, and one missing null.
+1. *Chain start.* `lod_chain.py` started each chain at the first open copier at or before the stable-stretch threshold,
+   not at the newest open copier older than the founder; open copiers lay between them on 26 of 36 lines. Corrected.
+2. *First founders and conversions were pooled.* All 12 founders completed by a partial overwrite are later founders in
+   worlds that already held confined copiers, and 11 of the 15 later founders took bytes from a confined copier: they are
+   conversions by existing closers, not new assemblies. First founders (the earliest in each world) are now reported
+   separately.
+3. *Null.* The share of founder bytes from non-copiers (0.88 per first founder, median) matches the share of non-copiers
+   in the soup at the snapshot before (0.86): it reflects abundance and is not evidence of anything. The sentence "bytes
+   written mostly by tapes that cannot copy themselves" is withdrawn as a finding.
+Corrected outcome. *First founders, one per world (17 of 17 closed worlds):* completed by a recombination in 16, by a copy
+of the partner in 1, by a point mutation in none; a median of 79 steps and 14 records after the newest open copier on the
+line, with only non-copiers in between in 16 of 17; bytes from a median of 3 separate events (1–6), none from a confined
+copier. The parts the founders execute are words such as `21 e3` and `21 e0`, which differ from the pusher's `21 e5` in
+one byte (two bits): point mutation made the parts, recombination joined them. *Later founders (15 in 10 worlds):*
+mostly conversions (12 by partial overwrite, 3 by recombination; 11 with bytes from a confined copier). The descent
+statement stands: every founder's line runs back to open pushers.

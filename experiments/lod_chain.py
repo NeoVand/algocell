@@ -65,6 +65,7 @@ def main():
             if lo is None:
                 continue
             fq = next((q for q in range(lo - 1, -1, -1) if cls[ids[q]] == "confined copier"), None)
+            lo = next(q for q in range(fq + 1, n) if cls[ids[q]] == "open copier")   # newest open copier older than F (critic fix)
             F = int(ids[fq])
             if F in done:
                 continue
@@ -82,6 +83,7 @@ def main():
                 contrib[qpos] = src
             srcs = Counter()
             classes = Counter()
+            roles_cls = Counter()
             for qpos, rid in contrib.items():
                 if rid is None:
                     srcs["inherited from the last open copier"] += 1
@@ -99,13 +101,14 @@ def main():
                     role = {"damage": "writer", "novel": "minor parent"}.get(k, k)
                 srcs[f"{role}"] += 1
                 classes[C[tsrc]["class"] if tsrc else "?"] += 1
+                roles_cls[f"{role}:{C[tsrc]['class'] if tsrc else '?'}"] += 1
             events = len({rid for rid in contrib.values() if rid is not None})
             between = [cls[r] for r in chain[1:-1]]
             row = {"seed": res["seed"], "t_close": res["t_close"], "F_step": int(z["step"][F]), "F_tape": tapes[F], "F_kind": K[int(z["kind"][F])],
                    "last_open_step": int(z["step"][chain[0]]), "last_open_tape": tapes[chain[0]], "chain_records": len(chain) - 1,
                    "steps_elapsed": int(z["step"][F] - z["step"][chain[0]]), "contributing_events": events,
                    "all_between_noncopiers": all(c == "non-copier" for c in between) if between else None,
-                   "sources": dict(srcs), "source_classes": dict(classes),
+                   "sources": dict(srcs), "source_classes": dict(classes), "roles_classes": dict(roles_cls),
                    "kinds_on_chain": dict(Counter(K[int(z["kind"][r])] for r in chain[1:]))}
             rows.append(row)
             md.append(f"- world {res['seed']}: F `{tapes[F]}` at step {row['F_step']} ({row['F_kind']}); last open copier `{tapes[chain[0]]}` at {row['last_open_step']}; "
