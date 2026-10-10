@@ -45,7 +45,6 @@ OTHER = "#CDD2D8"            # any other byte
 OTHER_EDGE = "#9AA3AD"
 BYTE_KEY = (("PUSH", SLATE), ("LD rr,nn", SKY), ("EX (SP),HL", ORANGE), ("RET, RET cc", PURPLE), ("other", OTHER))
 # vermilion (RED) only for the return-closer motif and confined copiers; every square in c-e is one first founder.
-CHAIN_C = "#8A95A1"          # events on the chains (panel d)
 EVENT = {1: "copy", 2: "partial overwrite", 3: "rewrite", 4: "point mutation", 5: "copy of the partner"}
 KIND = {"copy": "copy", "damage": "partial overwrite", "novel": "rewrite", "mut": "point mutation", "copyA": "copy of the partner"}
 MADE = {"rewrite (neither copy nor ≥ 75% own)": "rewrite", "point mutation": "point mutation", "copy of the partner": "copy of the partner",
@@ -242,34 +241,33 @@ def panel_line(ax, row, title, xr, yr, key):
     return rec
 
 
-def panel_soup(ax, M, shown):
-    """Per first founder: the share of 512 soup partners with which the founding executor makes the founder (log axis, 0
-    below a break), one row per kind of executor; filled if its pointer entered the partner in the founding encounter."""
-    v = M.executor_soup_produces_F.values.astype(float)
-    e0 = np.floor(np.log10(v[v > 0].min()))
-    zero_x, lo_x = 10 ** (e0 - 0.6), 10 ** (e0 - 0.22)
-    xv = np.where(v > 0, v, zero_x)
-    base = {CODE: 0.0, NEITHER: 1.55}
-    dy = 0.24
-    seen, pos = {}, {}
-    for i in sorted(range(len(M)), key=lambda i: (xv[i], M.seed.values[i])):
-        r = base[M.type.values[i]]
-        key = (r, round(np.log10(xv[i]) / 0.13))
-        k = seen.get(key, 0)
-        seen[key] = k + 1
-        pos[i] = (xv[i], r + dy * k)
-        founder_marker(ax, [xv[i]], [r + dy * k], M.entered.values[i])
-    for sd in shown:
-        ring(ax, *pos[int(np.where(M.seed.values == sd)[0][0])])
-    for i in np.where(M.F_copy_of_open_copier.values)[0]:
-        ax.annotate("copy of an\nopen copier", pos[i], xytext=(-4, -2), textcoords="offset points", fontsize=5.5, color=GREY, ha="right", va="top")
-    n = M.type.value_counts()
-    top = max(pos[i][1] for i in range(len(M)) if M.type.values[i] == NEITHER)
-    ax.text(zero_x / 1.5, top + 0.42, f"{NEITHER} ({n[NEITHER]})", fontsize=5.5, color=INK, ha="left", va="center")
-    ax.text(0.55, base[CODE] + 0.5, f"{CODE} ({n[CODE]})", fontsize=5.5, color=INK, ha="right", va="center")
+def load_reach(M):
+    """Mutational-reach null (lod_reach.py): per-world distances from reach.csv, pooled numbers from REACH.md (generated)."""
+    R = pd.read_csv(os.path.join(LOD, "reach.csv"))
+    txt = open(os.path.join(LOD, "REACH.md")).read()
+
+    def num(pat):
+        m = re.search(pat, txt)
+        assert m, pat
+        return float(m.group(1))
+    out = {"n_tapes": int(num(r"chains \(before the founder\): (\d+)")), "n_reach": int(num(r"confined copier: (\d+);")),
+           "max_share": num(r"largest share of such mutants: ([\d.]+)"), "n_mut": int(num(r"recorded point mutations on the chains: (\d+)")),
+           "expected": num(r"\(sum of the mutated tapes' shares\): ([\d.]+)"), "p_abund": num(r"by soup composition: ([\d.]+)")}
+    assert out["n_reach"] == int(R.chain_tapes_with_confined_neighbour.sum()) and abs(out["max_share"] - R.max_neighbour_share.max()) < 1e-4
+    assert out["n_mut"] == sum(str(x).split(";").count("mut") for x in M.chain_events.dropna())
+    D = M.merge(R, on="seed")
+    assert len(D) == len(M)
+    return D, out
+
+
+def _strip_x(ax, zero_x, lo_x, show):
     ax.set_xscale("log")
     ax.set_xlim(zero_x / 1.7, 1.7)
-    ax.set_ylim(-0.4, top + 0.75)
+    if not show:
+        ax.set_xticks([])
+        ax.xaxis.set_minor_locator(plt.matplotlib.ticker.NullLocator())
+        ax.spines["bottom"].set_visible(False)
+        return
     ticks = [t for t in (0.001, 0.01, 0.1, 1) if t > lo_x]
     ax.set_xticks([zero_x] + ticks, ["0"] + [f"{t:g}" for t in ticks])
     minor = [m * 10.0 ** e for e in range(-5, 1) for m in range(2, 10) if lo_x * 1.25 < m * 10.0 ** e < 1]
@@ -280,57 +278,88 @@ def panel_soup(ax, M, shown):
     tr = plt.matplotlib.transforms.blended_transform_factory(ax.transData, ax.transAxes)
     ax.plot([zero_x / 1.7, brk / 1.2], [0, 0], color=INK, lw=0.5, transform=tr, clip_on=False, solid_capstyle="butt")
     for xb in (brk / 1.2, brk * 1.2):
-        ax.plot([xb / 1.07, xb * 1.07], [-0.04, 0.04], color=INK, lw=0.5, transform=tr, clip_on=False)
-    ax.set_yticks([])
-    ax.spines["left"].set_visible(False)
-    fs.tidy(ax, "share of 512 soup partners with which\nthe founding executor makes the founder", None)
+        ax.plot([xb / 1.07, xb * 1.07], [-0.06, 0.06], color=INK, lw=0.5, transform=tr, clip_on=False)
+
+
+def panel_soup(axs, M, shown):
+    """Per first founder: the share of 512 soup partners with which the founding executor makes the founder (log axis, 0
+    below a break), one strip per kind of executor; filled if its pointer entered the partner in the founding encounter."""
+    v = M.executor_soup_produces_F.values.astype(float)
+    e0 = np.floor(np.log10(v[v > 0].min()))
+    zero_x, lo_x = 10 ** (e0 - 0.6), 10 ** (e0 - 0.22)
+    xv = np.where(v > 0, v, zero_x)
+    dy = 1.0
+    for ax, t in zip(axs, (NEITHER, CODE)):
+        idx = [i for i in sorted(range(len(M)), key=lambda i: (xv[i], M.seed.values[i])) if M.type.values[i] == t]
+        seen, pos = {}, {}
+        for i in idx:
+            key = round(np.log10(xv[i]) / 0.13)
+            k = seen.get(key, 0)
+            seen[key] = k + 1
+            pos[i] = (xv[i], dy * k)
+            founder_marker(ax, [xv[i]], [dy * k], M.entered.values[i])
+        for sd in shown:
+            i = int(np.where(M.seed.values == sd)[0][0])
+            if i in pos:
+                ring(ax, *pos[i])
+        top = max(seen.values()) - 1
+        for i in idx:
+            if M.F_copy_of_open_copier.values[i]:
+                ax.annotate("copy of an\nopen copier", pos[i], xytext=(-7, 0), textcoords="offset points", fontsize=5.5, color=GREY,
+                            ha="right", va="center", arrowprops=dict(arrowstyle="-", lw=0.4, color=GREY, shrinkA=1.0, shrinkB=2.5))
+            if t == NEITHER and M.producer.values[i]:
+                made = MADE[M.producer_made_by.values[i]]
+                kind = "open" if M.executor_enters.values[i] >= 0.5 else "confined"
+                ax.annotate(f"{kind} producer,\nmade by {made}", pos[i], xytext=(3, 10), textcoords="offset points", fontsize=5.5,
+                            color=GREY, ha="right", va="center")
+        ax.text(0.0, 1.0, f"{t} ({len(idx)})", fontsize=5.5, color=INK, ha="left", va="bottom", transform=ax.transAxes, gid="allow-outside")
+        ax.set_ylim(-1.4 if t == NEITHER else -0.7, max(top, 1) + 1.6)
+        ax.set_yticks([])
+        ax.spines["left"].set_visible(False)
+        _strip_x(ax, zero_x, lo_x, show=(t == CODE))
+    fs.tidy(axs[1], "share of 512 soup partners with which\nthe founding executor makes the founder", None)
     h = [plt.Line2D([], [], marker="s", ls="none", ms=3.2, mfc=RED, mec=RED, mew=0, label="pointer entered the partner"),
          plt.Line2D([], [], marker="s", ls="none", ms=2.9, mfc="white", mec=RED, mew=0.7, label="did not"),
          plt.Line2D([], [], marker="o", ls="none", ms=5.0, mfc="none", mec=INK, mew=0.6, label="worlds in a, b")]
-    ax.legend(handles=h, loc="lower left", bbox_to_anchor=(-0.01, 1.0), ncol=3, fontsize=5.5, frameon=False, handletextpad=0.2,
-              columnspacing=0.8, borderaxespad=0.0)
+    axs[0].legend(handles=h, loc="lower left", bbox_to_anchor=(-0.01, 1.22), ncol=3, fontsize=5.5, frameon=False, handletextpad=0.2,
+                  columnspacing=0.8, borderaxespad=0.0)
     N = M[M.type == NEITHER]
     Np = N[~N.producer]
     print(f"[ed_assembly] panel c: {NEITHER} {len(N)}, {CODE} {int(M.code_copier.sum())}; soup share among the {len(N)}: median "
           f"{N.executor_soup_produces_F.median():.4f}, max {N.executor_soup_produces_F.max():.3f}; without the producer {N[N.producer].seed.tolist()}: "
           f"max {Np.executor_soup_produces_F.max():.3f}, zero in {int((Np.executor_soup_produces_F == 0).sum())}; code copiers "
-          f"{M[M.code_copier].executor_soup_produces_F.min():.2f}-{M[M.code_copier].executor_soup_produces_F.max():.2f}, made by "
-          f"{M[M.code_copier].producer_made_by.map(MADE).value_counts().to_dict()}, {M[M.code_copier].producer_steps_before_F.min():.0f}-"
-          f"{M[M.code_copier].producer_steps_before_F.max():.0f} steps before; entered in the founding encounter {int(M.entered.sum())} of {len(M)} "
+          f"{M[M.code_copier].executor_soup_produces_F.min():.2f}-{M[M.code_copier].executor_soup_produces_F.max():.2f}; writers made by point "
+          f"mutation {M[M.producer_made_by == 'point mutation'].seed.tolist()}; entered in the founding encounter {int(M.entered.sum())} of {len(M)} "
           f"(code copiers {int(M[M.code_copier].entered.sum())}); copy of an open copier {M[M.F_copy_of_open_copier.astype(bool)].seed.tolist()}")
 
 
-def panel_events(ax, M):
-    """Event kinds on the chains before the founder (records strictly between the chain start and F) against the founding events."""
-    ev = pd.Series([e for x in M.chain_events.dropna() for e in x.split(";") if e]).map(KIND)
-    fe = M.F_kind_fd.map(MADE)
-    cats = ["rewrite", "partial overwrite", "point mutation", "copy", "copy of the partner"]
-    assert ev.notna().all() and fe.notna().all() and set(ev) <= set(cats) and set(fe) <= set(cats)
-    nc, nf = ev.value_counts(), fe.value_counts()
-    pc, pf = [nc.get(c, 0) / len(ev) for c in cats], [nf.get(c, 0) / len(fe) for c in cats]
-    y = np.arange(len(cats))
-    for yy, a, b in zip(y, pc, pf):
-        ax.plot([a, b], [yy, yy], color=RULE, lw=0.8, zorder=1)
-    ax.scatter(pc, y, s=13, marker="D", color=CHAIN_C, lw=0, zorder=3, label=f"events on the chains before the founder ({len(ev)})")
-    ax.scatter(pf, y, s=12, marker="s", color=RED, lw=0, zorder=3, label=f"founding events ({len(fe)})")
-    ax.text(1.06, -0.85, "chain / founding", fontsize=5.5, color=GREY, ha="left", va="center", gid="allow-outside")
-    for yy, c in zip(y, cats):
-        ax.text(1.06, yy, f"{nc.get(c, 0)} / {nf.get(c, 0)}", fontsize=5.5, color=GREY, ha="left", va="center", gid="allow-outside")
-    pm = nc.get("point mutation", 0) / len(ev)
-    P = (1 - pm) ** len(fe)
-    ax.annotate(f"0 of {len(fe)}: P = {P:.3f}", (pc[cats.index("point mutation")], cats.index("point mutation")), xytext=(6, 0),
-                textcoords="offset points", fontsize=5.5, color=INK, ha="left", va="center")
-    ax.set_yticks(y, cats)
-    ax.tick_params(axis="y", length=0)
-    ax.set_ylim(len(cats) - 0.4, -1.3)
-    ax.set_xlim(-0.03, 1.0)
-    ax.set_xticks([0, 0.5, 1], ["0", "0.5", "1"])
-    ax.spines["left"].set_visible(False)
-    fs.tidy(ax, "share of events", None)
-    ax.legend(loc="lower left", bbox_to_anchor=(-0.02, 1.0), ncol=1, fontsize=5.5, frameon=False, handletextpad=0.3, borderaxespad=0.0,
-              labelspacing=0.25)
-    print(f"[ed_assembly] panel d: chain events {len(ev)} {nc.to_dict()}; founding events {len(fe)} {nf.to_dict()}; point-mutation share "
-          f"{pm:.4f}; P(0 of {len(fe)}) = (1 - {pm:.4f})^{len(fe)} = {P:.4f}")
+def panel_reach(ax, M, shown):
+    """Hamming distance (best cyclic shift) from each founder to the tape its line held just before, against the one byte a
+    point mutation changes; the pooled reach of single-byte mutants as text."""
+    D, r = load_reach(M)
+    v = D.dist_to_line_parent.values.astype(int)
+    seen, pos = {}, {}
+    for i in sorted(range(len(D)), key=lambda i: (v[i], D.seed.values[i] not in shown, D.seed.values[i])):
+        k = seen.get(int(v[i]), 0)
+        seen[int(v[i])] = k + 1
+        pos[i] = (v[i], k + 1)
+        founder_marker(ax, [v[i]], [k + 1], D.entered.values[i])
+    for sd in shown:
+        ring(ax, *pos[int(np.where(D.seed.values == sd)[0][0])])
+    top = max(seen.values())
+    ax.axvline(1, color=GREY, lw=0.6, ls=(0, (1, 1.5)), zorder=1)
+    ax.text(1.35, top + 0.6, "one point\nmutation", fontsize=5.5, color=GREY, ha="left", va="center")
+    ax.set_xlim(0, L + 0.3)
+    ax.set_xticks([1, 4, 8, 12, 16], ["1", "4", "8", "12", "16"])
+    ax.set_ylim(0.3, top + 1.5)
+    ax.set_yticks([0, 2, 4] if top >= 4 else range(top + 1))
+    fs.tidy(ax, "bytes between the founder\nand the tape before it", "first founders")
+    note = (f"single-byte mutants that are\nconfined copiers: none for\n{r['n_tapes'] - r['n_reach']} of {r['n_tapes']} chain tapes, at most "
+            f"{r['max_share'] * 100:.1f}%\n\nexpected founders from the\n{r['n_mut']} recorded point mutations:\n{r['expected']:.3f}")
+    ax.text(1.08, 1.0, note, fontsize=5.5, color=INK, ha="left", va="top", transform=ax.transAxes, gid="allow-outside", linespacing=1.25)
+    print(f"[ed_assembly] panel d: distance median {np.median(v):.0f} (range {v.min()}-{v.max()}); counts {dict(sorted(seen.items()))}; "
+          f"reach {r}")
+    return r
 
 
 def _swarm(x, dx, dy):
@@ -394,18 +423,19 @@ def ed_assembly(out):
     axb = axmm(fig, x0, yb, w, hb)
     panel_line(axa, rows[0], _title(rows[0]), xr, yra, key=True)
     panel_line(axb, rows[1], _title(rows[1]), xr, yrb, key=False)
-    # c-e: every first founder
-    axc = axmm(fig, 118.0, 12.0, 60.0, 30.0)
-    axd = axmm(fig, 131.0, 69.0, 27.0, 26.0)
-    axe = axmm(fig, 118.0, 114.0, 58.0, 16.0)
-    panel_soup(axc, M, shown)
-    panel_events(axd, M)
+    # c: two strips, one per kind of executor; d: mutational reach; e: steps
+    axc1 = axmm(fig, 116.0, 14.0, 62.0, 13.0)
+    axc2 = axmm(fig, 116.0, 33.0, 62.0, 13.0)
+    axd = axmm(fig, 117.0, 72.0, 26.0, 18.0)
+    axe = axmm(fig, 116.0, 114.0, 60.0, 16.0)
+    panel_soup((axc1, axc2), M, shown)
+    panel_reach(axd, M, shown)
     panel_steps(axe, M, shown)
     letter(fig, 0.5, 1.0, "a")
     letter(fig, 0.5, yb - 1.5, "b")
     letter(fig, 110.0, 1.0, "c")
-    letter(fig, 110.0, 55.0, "d")
-    letter(fig, 110.0, 106.0, "e")
+    letter(fig, 110.0, 62.0, "d")
+    letter(fig, 110.0, 105.0, "e")
     save(fig, os.path.join(out, "ed_assembly"))
 
 
