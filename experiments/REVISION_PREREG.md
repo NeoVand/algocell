@@ -670,3 +670,51 @@ endpoint (a top-3 tape at ≥ 0.5% of cells) misses closed transmitter populatio
 (p = 1) are counted as unclosed, yet all their heritable random cells are confined (transmitters 1.00 and 0.875 of
 heritable cells). The DZ2 timing test is therefore biased against closure at high p; it is reported as registered, with
 this bias stated.
+
+## N1 — the toxic payload: do the bytes a transmitter never runs defend it? (written before any payload byte was inspected, 2026-10-09 night)
+Hypothesis (H_tox). A transmitter (core `XX 5e ed b0`, offset d = L) copies d − 4 payload bytes that its own pointer
+never fetches (its LDIR, BC = 0, runs to the end of the budget). An executor that falls through into it (fall-through
+enters B at its first byte, runs the core, and continues into the payload when its own BC lets the LDIR finish) is
+stopped by any byte that halts the pair: 0x76 (HALT) under both rules, 0x00 under lethal tar. Such bytes cost the owner
+nothing. H_tox: they are selected in payloads because they stop intruders. Rival (H_dam): zeros enter payloads by damage
+(executors push register contents, mostly zero, from the stack top, which is the END of the partner, `sp_init`); 0x76 is
+not written by damage. Rival (H_neu): payload bytes are neutral (founding payloads are uniform random bytes; mutation draws
+uniform bytes, `mutate_soup`).
+
+Data (no new runs): the final soups of the E runs (`runs/offset/offset/*_final.npy`; L = 16 and 32, benign and lethal,
+mutation on: 10 mix50 + 5 R_into_T + 5 T_into_R per cell; mutation off: 10 mix50 at L = 16 both tars and L = 32 benign)
+and the lethality-dial worlds (`runs/dial/dial/`, L = 16, p ∈ {0, 0.01, 0.03, 0.1, 0.3, 1}, ten per p, snapshot at 100k).
+Transmitter = `classify(...)` isT (L = 32: first byte 0x60 or 0xa0; L = 16: 0x50, 0x90, 0xb0; then `5e ed b0`); in the
+dial worlds, cores sit anywhere, so there a transmitter is any cyclic shift of a tape whose bytes 0–3 at that shift are
+`XX 5e ed b0` with XX mod 32 = 16 (L = 16). Payload = positions 4 … L − 1 after the core. A world enters a test only with
+≥ 100 transmitter cells. The unit of inference is the world.
+
+Statistics per world: Z = share of payload bytes equal to 0x00; H = share equal to 0x76; per-position profiles of both.
+Null under H_neu: 1/256 = 0.0039 for each value.
+
+Predictions of H_tox (registered):
+- **N1-1 (damage-free marker).** In mutation-on mix50 worlds at L = 32 under benign tar, H exceeds 3/256 in ≥ 6 of the
+  worlds that enter; same at L = 16. (Damage does not write 0x76; H_neu predicts 1/256.)
+- **N1-2 (tar).** Median Z in lethal mix50 worlds ≥ 3 × median Z in benign mix50 worlds, at L = 32 and at L = 16.
+- **N1-3 (position).** Hazard h_j = share of entering executors whose pointer fetches payload position j, measured by
+  tracing 16,384 encounters per condition (executors = random cells of the same final soups, hosts = the soup's own
+  transmitters as partner B, the soup's rule). H_tox: the per-position share of halting bytes (0x76; plus 0x00 under
+  lethal) correlates positively with h_j across positions (Spearman ρ > 0.3, pooled over worlds by position, per
+  condition). H_dam: zeros concentrate at the last payload positions (stack writes) rather than at high-hazard positions.
+- **N1-4 (dose).** In the dial worlds at 100k steps, Z of transmitter payloads rises with p (Spearman ρ > 0 over worlds
+  that enter, one-sided P < 0.05).
+- **N1-5 (decision).** Composition supports H_tox if N1-1 holds, or if N1-2 and N1-3 both hold. It supports H_dam if zeros
+  are enriched only at the stack-write tail and N1-1 fails. Anything else: composition undecided. Composition alone is
+  never taken as proof; N1-6 decides.
+- **N1-6 (causal, encounters).** Hosts: up to 400 transmitter tapes per condition, sampled from the final soups in
+  proportion to abundance. Variants: native; detox (every payload 0x00 and 0x76 replaced by a uniformly random byte
+  outside {0x00, 0x76}); sham (the same number of payload positions, chosen among the other payload bytes, re-drawn
+  outside {0x00, 0x76}). Each host is the partner B of 64 executors drawn from its own soup, under its soup's rule; also
+  each host executes as A against 64 partners (owner-side check). Outcome: the host keeps its class and its payload
+  (all positions except those its own variant changed) after the encounter. H_tox: under lethal tar, native − detox ≥
+  0.02 (bootstrap 95% CI over hosts excludes 0) and |native − sham| < 0.01; under benign tar the same holds for hosts that
+  carry 0x76. Owner-side: native and detox produce identical copies as A in every encounter (payload never executed).
+- **N1-7 (causal, population; registered here, launched only if N1-6 holds).** From the ten lethal L = 32 mix50 final
+  soups, two arms per soup with new seeds: detox every transmitter's payload, or sham; 100,000 steps, snapshots as in E.
+  H_tox: the transmitter share of core carriers in the detox arm falls below the sham arm by ≥ 0.10 at some snapshot in
+  ≥ 7 of 10 soups, and the payload Z of the detox arm climbs back towards the sham arm's.
