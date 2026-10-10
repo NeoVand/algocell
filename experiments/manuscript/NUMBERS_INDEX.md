@@ -77,8 +77,8 @@ with the Stage G L = 16 tables as the benign control (medians 46,250 vs 525).
 | first founders with the return-closer motif | 15 of 17 (1 LDIR block copier, 1 other) | `results/lod/PARTS_FIRST.md` |
 | later founders; with bytes from a confined copier | 15 in 10 worlds; 11 of 15 | `results/lod/FOUNDERS2.md` |
 | hypercubes: no heritable single-byte path | 3 of 4 (one six-step path); k = 12 or 16 | `results/lod/LANDSCAPE.md` (section "With heritability") |
-| R–T mutual copying equal | within 0.3% | `REVISION_PREREG.md`, outcome of N2 |
-| core-free cells | 11–16% of the soup | `results/n2/BACKGROUND.md`; `results/night/NIGHT_RESULTS_2026-10-09.md` (N2) |
+| R → T and T → R copies balance | within 0.1% (largest difference 0.0007 of R–T encounters) | `results/n2/MUTUAL.md` |
+| core-free cells in the starting soups | median 13% (5–24%) | `results/n2/COMPOSITION_START.md` (the night note's "11–16%" had no generated source and was wrong) |
 | regenerator destroyed if the intruder entered | 0.75–0.89 (0.7467–0.8889) | `results/n2/SCARS.md` (rows host R) |
 | backup cores: regenerator with a damaged first core copies itself | 0 of 4,096 | `REVISION_PREREG.md`, outcome of N2 (N2-2) |
 | zeros removed: protection kept | 88–94% | `REVISION_PREREG.md`, outcome of N4; `results/n2/SCARS.md` |

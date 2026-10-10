@@ -36,7 +36,7 @@ itself under either rule) and inherited zeros as a shield (N4: removing them kee
 - The rule, not the soup's composition, sets the direction: a benign soup moved to the lethal rule gains transmitters
   (+0.039 in 2,000 steps), a lethal soup moved to the benign rule loses them (−0.049).
 - Regenerators and transmitters copy each other at exactly balanced rates. Everything happens in their encounters with
-  the broken background (core-free cells, 11–16% of the soup):
+  the broken background (core-free cells; corrected 2026-10-10: a median 13% of the soup, 5–24%, `results/n2/COMPOSITION_START.md`; the "11–16%" first written here had no generated source):
   - a regenerator's body, eight copies of its core, is a trap: an intruder that runs into it is captured in the LDIR
     loop, destroys it (0.86–0.89 of entries) and is sometimes converted into a regenerator itself (≈ 3 × 10⁻⁴ per
     capita per step, under both rules);

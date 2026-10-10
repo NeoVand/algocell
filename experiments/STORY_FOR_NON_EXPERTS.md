@@ -426,8 +426,8 @@ Our first two pre-registered explanations of this were wrong (section 12). So th
 2,000 steps under each rule (40 runs), recorded every encounter, and did the bookkeeping: who copied whom, who was destroyed, who
 was converted. This is an after-the-fact (post hoc) description, not a tested prediction, but it is revealing.
 
-- Regenerators and transmitters copy *each other* at balanced rates (to within 0.3%). Head to head, neither has an edge.
-- The differences lie in their encounters with the **broken background**: the 11–16% of cells with no working core, the soup's
+- Regenerators and transmitters copy *each other* in balanced numbers (to within 0.1%). Head to head, neither has an edge.
+- The differences lie in their encounters with the **broken background**: the cells with no working core (a median 13% of the soup), the soup's
   debris.
   - A regenerator's body is its core repeated eight times. To a broken program whose finger wanders into it, this is a **trap**: the
     intruder starts running the copy loop with its own garbage settings, and in most such encounters (75–89%, depending on the
