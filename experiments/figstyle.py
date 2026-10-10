@@ -56,11 +56,122 @@ MARK = "#56616F"
 FILL_MID = "#8A95A1"
 FILL_LIGHT = "#D6DADF"
 CONCEPT = {"open": "#56616F", "closed": "#D55E00", "tar": "#999999", "intermediate": "#E69F00", "first": "#000000", "final": "#D55E00"}
-# BFF variants, fixed across the paper.
-BFF_VARIANT = {"std": "#56616F", "wrap": "#D55E00", "wraplit": "#0072B2", "wraplitnh": "#009E73", "lit": "#CC79A7"}
-BFF_VARIANT_LABEL = {"std": "BFF as published", "wrap": "wrapping pointer", "wraplit": "wrap + literal push", "wraplitnh": "wrap + literal, no halt", "lit": "literal push"}
-# Tape lengths, fixed across the paper (Okabe–Ito order).
-L_COLOR = {16: "#000000", 20: "#E69F00", 50: "#0072B2", 64: "#D55E00", 36: "#009E73", 100: "#CC79A7", 9: "#56B4E9", 25: "#F0E442"}
+# BFF variants, fixed across the paper (Fig. 5a-c; the headers of Supplementary Fig. 2). Rules (2026-10-10, critic round 4,
+# N2): no variant takes a class hue (vermilion = loop or closed, teal = transmitter, slate = open/pusher, purple = lethal
+# tar, orange = intermediate) or a length of LEN_COLOR. Checked with OKLab distances and the Machado (2009) protan/deutan
+# simulation (dE x 100): against those 19 colours every variant is >= 10.1 normal and >= 5.8 colour-blind (the worst:
+# green against the olive of L = 9, and burgundy against the dark brown of L = 12, neither of which shares a figure with
+# it); within the five, >= 16.9 normal and >= 8.7 colour-blind. Rose "as published" and burgundy "wrapping pointer" are the
+# loop-bearing machines, violet, indigo and green the three with the literal push; the curves stay solid (dashed means a
+# post hoc measure in this paper).
+BFF_VARIANT = {"std": "#A96464", "wrap": "#91123F", "lit": "#8843EA", "wraplit": "#2A25BB", "wraplitnh": "#3FAE6C"}
+BFF_VARIANT_LABEL = {"std": "BFF as published", "wrap": "wrapping pointer", "lit": "literal push", "wraplit": "wrap + literal push",
+                     "wraplitnh": "wrap + literal push, harmless brackets"}
+# Tape lengths: ONE palette for every figure in which colour encodes L (Figs 1b, 3d, 4e, 6c; Extended Data Fig. 2c).
+# Rules (2026-10-10, critic round 3, G2): a colour means one length everywhere, and no length reuses a class hue
+# (vermilion = loop or closed, teal = transmitter, slate = open/pusher, purple = lethal tar, orange = intermediate).
+# The lengths of the closure stages run light to dark in one blue (20 sky, 32 azure, 50 blue, 64 navy; L = 50 keeps the
+# blue of Fig. 4a/b's "L = 50 jump genome" group) with L = 16, the reference length, in black; the size-axis lengths take
+# hues of their own. Checked with OKLab distances and the Machado (2009) protan/deutan simulation (dE x 100): within each
+# figure's set of lengths the worst normal-vision pair is >= 12 and the worst colour-blind pair >= 12; against the class
+# hues drawn beside them >= 14 normal and >= 8 colour-blind (navy against Fig. 4e's dashed lethal-tar purple); any two
+# lengths differ by >= 9 (azure 32 against blue 50, which never share a figure). L = 10 was darkened (round 4) from pear
+# to green for contrast on white: >= 11 normal and >= 5.6 colour-blind from every other length (olive L = 9, never in the
+# same figure), >= 25 normal and >= 20 colour-blind from L = 8 and 12, the lengths it shares ED Fig. 2c with, >= 13.9 normal
+# from the class hues and >= 10 normal and colour-blind from the BFF variants.
+LEN_COLOR = {
+    8: "#8D78F5",    # periwinkle
+    9: "#999933",    # olive
+    10: "#4D8E16",   # green (was pear #BBCC33, 1.8:1 on white; now 4.0:1)
+    12: "#5C3A1A",   # dark brown
+    16: "#000000",   # black: the reference length
+    20: "#56B4E9",   # sky blue
+    32: "#2E8BD8",   # azure
+    36: "#CC79A7",   # reddish purple
+    50: "#0072B2",   # blue (= Fig. 4's L = 50 jump genome)
+    64: "#1B3A6B",   # navy
+    100: "#8C510A",  # brown
+}
+L_COLOR = LEN_COLOR   # old name, kept for the scripts that import it
+
+EXP_PT = 5.0       # exponent size of every power of ten in the figures: the Nature minimum
+EXP_RAISE = 0.4    # exponent baseline above the base's baseline, in em of the base
+EXP_GAP = 0.06     # gap between "10" and its exponent, in em of the base
+
+
+def _decade(v) -> bool:
+    import numpy as np
+    return bool(v > 0 and abs(np.log10(v) - round(np.log10(v))) < 1e-9)
+
+
+def _width_pt(fig, text, prop) -> float:
+    r = fig.canvas.get_renderer()
+    w, _, _ = r.get_text_width_height_descent(text, prop, ismath=False)
+    return w * 72.0 / r.dpi
+
+
+def _ascent_pt(fig, prop) -> float:
+    """Ascent of matplotlib's text layout box ("lp" metrics), so that two va="top" texts of different sizes can be
+    aligned on their baselines."""
+    r = fig.canvas.get_renderer()
+    _, h, d = r.get_text_width_height_descent("lp", prop, ismath=False)
+    return (h - d) * 72.0 / r.dpi
+
+
+def log10_ticks(ax, axis: str = "x") -> None:
+    """Decade tick labels 10^n with the exponent drawn as its own text at EXP_PT (5 pt), raised EXP_RAISE em.
+
+    mathtext sets a superscript at 70% of the label (3.5 pt at 5 pt labels), and the Unicode superscript glyphs print at
+    1.8-2.2 pt ink height in two weights in Helvetica; both fall below the 5 pt minimum. Here the base "10" stays the tick
+    label (so the axis label is laid out as usual) and is moved left so that "10" + exponent is centred on its tick (x axis)
+    or ends at the label pad (y axis); the exponent is an annotation anchored to that tick label. Call this after the
+    axis limits are final: figcheck reports an exponent whose tick has moved (exponent-tick)."""
+    import numpy as np
+    from matplotlib.ticker import FuncFormatter, LogLocator, NullFormatter
+    from matplotlib.transforms import ScaledTranslation
+    a = ax.xaxis if axis == "x" else ax.yaxis
+    a.set_major_locator(LogLocator(base=10))
+    a.set_major_formatter(FuncFormatter(lambda v, _: "10" if _decade(v) else ""))
+    a.set_minor_formatter(NullFormatter())
+    fig = ax.figure
+    store = ax.__dict__.setdefault("_fs_exponents", {})
+    for t in store.pop(axis, []):
+        t.remove()
+    locs = list(a.get_majorticklocs())
+    ticks = a.get_major_ticks(len(locs))
+    lo, hi = sorted(a.get_view_interval())
+    made = []
+    for tick, loc in zip(ticks, locs):
+        lab = tick.label1
+        if not hasattr(lab, "_fs_trans0"):
+            lab._fs_trans0 = lab.get_transform()
+        lab.set_transform(lab._fs_trans0)
+        if not (_decade(loc) and lo * (1 - 1e-9) <= loc <= hi * (1 + 1e-9)) or not lab.get_visible():
+            continue
+        e = str(int(round(np.log10(loc)))).replace("-", "\u2212")
+        size = lab.get_fontsize()
+        bprop = lab.get_fontproperties()
+        eprop = bprop.copy()
+        eprop.set_size(EXP_PT)
+        gap = EXP_GAP * size
+        w_e = _width_pt(fig, e, eprop)
+        shift = (gap + w_e) / 2.0 if axis == "x" else gap + w_e
+        lab.set_transform(lab._fs_trans0 + ScaledTranslation(-shift / 72.0, 0, fig.dpi_scale_trans))
+        dy = EXP_RAISE * size + _ascent_pt(fig, eprop) - _ascent_pt(fig, bprop)    # top-to-top offset for a baseline raise
+        t = ax.annotate(e, xy=(1, 1), xycoords=lab, xytext=(gap, dy), textcoords="offset points", ha="left", va="top",
+                        fontsize=EXP_PT, color=lab.get_color(), annotation_clip=False, gid="allow-outside")
+        t._fs_tick, t._fs_loc = tick, loc
+        made.append(t)
+    store[axis] = made
+
+
+def steps(n) -> str:
+    """A step count written out, as in the text ("300,000 steps", "a million steps", "ten million steps"): 300000 ->
+    "300,000", 1000000 -> "1 million", 10000000 -> "10 million"."""
+    n = int(round(n))
+    if n >= 1_000_000 and n % 1_000_000 == 0:
+        return f"{n // 1_000_000} million"
+    return f"{n:,}"
 
 
 def setup(profile: str = "nature") -> None:

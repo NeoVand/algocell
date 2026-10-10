@@ -10,14 +10,14 @@ import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "results", "branching")
-NAMES = {"pusher16": "pusher, L = 16", "pusher64": "pusher, L = 64", "ret16": "return closer (regenerator), L = 16",
-         "ldir32": "block-copy tiling (regenerator), L = 32", "genome20_s6003": "transmitter (world 6003), L = 20"}
+NAMES = {"pusher16": "pusher, L = 16", "pusher64": "pusher, L = 64", "ret16": "return closer, L = 16",
+         "ldir32": "block-copy tiling, L = 32", "genome20_s6003": "transmitter, L = 20"}
 
 
 def main():
     S = pd.read_csv(os.path.join(D, "branching_summary.csv"))
     M = pd.read_csv(os.path.join(D, "branching_mutants.csv.gz"))
-    rows = ["| genotype | partners | unmutated populations alive, g = 1 / 4 / 8 | transmissible sites, g = 1 / 2 / 4 / 8 | mutants with a population carrying their allele at g = 8 |",
+    rows = ["| genotype | partners | unmutated alive, g = 1 / 4 / 8 | sites, g = 1 / 2 / 4 / 8 | mutants carrying, g = 8 |",
             "|---|---|---|---|---|"]
     for (key, arm), d in S.groupby(["key", "arm"], sort=False):
         d = d.set_index("gen")

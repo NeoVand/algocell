@@ -7,6 +7,7 @@ Checks, all in display (pixel) coordinates after a draw:
   data-clipped   a line's data extends beyond the axes limits (part of the trace is cut off)
   type-size      a text smaller than MIN_PT points
   overlap-legend a legend box intersects a line or another text
+  exponent-tick  a drawn exponent (figstyle.log10_ticks) whose tick label no longer shows its decade
 
 Usage: report = figcheck.check(fig); figcheck.print_report(report)
 """
@@ -112,6 +113,11 @@ def _check_drawn(fig, exempt_gids) -> list[str]:
     rend = fig.canvas.get_renderer()
     problems: list[str] = []
     for ax in fig.axes:
+        for t in ax.texts:                       # exponents of figstyle.log10_ticks: still attached to their own decade?
+            if hasattr(t, "_fs_tick"):
+                tk = t._fs_tick
+                if abs(tk.get_loc() - t._fs_loc) > 1e-9 * abs(t._fs_loc) or tk.label1.get_text() != "10" or not tk.label1.get_visible():
+                    problems.append(f"exponent-tick exponent {t.get_text()} is attached to a tick at {tk.get_loc()!r} (drawn for {t._fs_loc!r})")
         all_ticklabels = {id(t) for axis in (ax.xaxis, ax.yaxis) for tick in axis.get_major_ticks() + axis.get_minor_ticks() for t in (tick.label1, tick.label2)}
         shown_ticklabels = {id(t) for t in _visible_tick_labels(ax)}
         texts = [t for t in ax.findobj(Text) if t.get_visible() and t.get_text().strip() and (id(t) not in all_ticklabels or id(t) in shown_ticklabels)]

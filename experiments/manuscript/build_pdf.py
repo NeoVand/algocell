@@ -63,7 +63,7 @@ SYM = {
     "∎": r"$\blacksquare$", "ℓ": r"$\ell$", "□": r"$\square$", "⊆": r"$\subseteq$", "∅": r"$\emptyset$",
     "∂": r"$\partial$", "′": r"$'$", "₂": r"$_2$", "₁": r"$_1$", "ₙ": r"$_n$", "∇": r"$\nabla$", "≫": r"$\gg$", "≪": r"$\ll$", "∪": r"$\cup$", "∩": r"$\cap$", "⊂": r"$\subset$", "𝒪": r"$\mathcal{O}$",
 }
-SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "−", "⁺": "+"}
+SUP = {"ᵏ": "k", "ᵐ": "m", "ⁿ": "n", "ˣ": "x", "ᵈ": "d", "⁽": "(", "⁾": ")", "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "−", "⁺": "+"}
 
 
 def esc(s: str) -> str:
@@ -89,10 +89,14 @@ def inline(s: str) -> str:
             out.append(r"\texttt{" + code + "}")
             continue
         t = esc(p)
+        t = re.sub(r"https?://[A-Za-z0-9./:\-]+[A-Za-z0-9/]", lambda m: r"\url{" + m.group(0) + "}", t)   # breakable URLs
+        t = re.sub(r"(?<=[A-Za-z′Σ])\\_([A-Za-z0-9]{1,8})(?![A-Za-z0-9])", r"\\textsubscript{\1}", t)   # s_j, t_rep → subscripts
         t = re.sub("[" + "".join(SUP) + "]+", lambda m: r"\textsuperscript{" + "".join(SUP[c] for c in m.group(0)) + "}", t)
         t = re.sub(r"\^([^^\s$\\]{1,12})\^", r"\\textsuperscript{\1}", t)
         t = re.sub(r"\^(-|\u2212)?([A-Za-z0-9]+)", r"\\textsuperscript{\1\2}", t)
         t = t.replace("^", r"\textasciicircum{}")
+        t = re.sub(r'(^|[\s(\[{\u2013\u2014/])"', r"\1``", t)       # straight quotes: opening after space or bracket
+        t = t.replace('"', "''")
         t = re.sub(r"\*\*([^*\n]+?)\*\*", r"\\textbf{\1}", t)
         t = re.sub(r"(?<![*\w])\*([^*\n]+?)\*(?![*\w])", r"\\emph{\1}", t)
         out.append(symbols(t))
@@ -113,12 +117,14 @@ def figure_block(files: list[str], legend_tex: str, out_dir: str, floating: bool
     if not present:
         body.append(r"\fbox{\parbox{0.9\textwidth}{\centering\vspace{20mm}\small figure file not built\vspace{20mm}}}\par\vspace{2mm}")
     if floating:
-        body += [r"{\small " + legend_tex + r"\par}", r"\end{figure}", ""]
+        body += [LEGEND_OPEN + legend_tex + r"\par}", r"\end{figure}", ""]
     else:
-        body += [r"\end{minipage}\par\vspace{3mm}", r"{\small " + legend_tex + r"\par}", r"\clearpage", ""]
+        body += [r"\end{minipage}\par\vspace{3mm}", LEGEND_OPEN + legend_tex + r"\par}", r"\clearpage", ""]
     return body
 
 
+# legends are set flush left and justified, not centred like the images above them
+LEGEND_OPEN = r"{\small\leftskip=0pt\rightskip=0pt\parfillskip=0pt plus 1fil\relax "
 COMPACT = [False]
 INLINE = [False]
 NOTE = [r"Review copy assembled DATE; author list and affiliations to be added."]
@@ -130,7 +136,7 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
     for l in lines:
         m = re.match(r"\*\*Fig\. (\d+) \| ", l)
         if m:
-            legends[m.group(1)] = l.strip()
+            legends[m.group(1)] = re.sub(r"\s*Sources?: .*$", "", l.strip())   # provenance stays in the Markdown
     body: list[str] = []
     title = "Manuscript"
     title_set = False
@@ -149,8 +155,8 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             return
         text = " ".join(x.strip() for x in para)
         para = []
-        if text.startswith(("**Extended Data", "**Supplementary")):
-            text = re.sub(r"\s*Source: .*$", "", text)       # provenance stays in the Markdown, not in the review copy
+        if text.startswith(("**Extended Data", "**Supplementary")) or re.match(r"\*\*Fig\. \d+ \| ", text):
+            text = re.sub(r"\s*Sources?: .*$", "", text)     # provenance stays in the Markdown, not in the review copy
         if text.startswith(("**Extended Data Table", "**Supplementary Table")):
             pending_table_legend.append(inline(text))       # kept with its table (see flush_table)
             return
@@ -201,11 +207,13 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             if max(len(r[k]) for r in data if k < len(r)) > 70:
                 aligns[k] = r">{\raggedright\arraybackslash}p{0.55\linewidth}"
         out = []
+        long_table = len(data) > 30                         # a long table breaks across pages instead of overflowing one
+        env = "longtable" if long_table else "tabular"
         if pending_table_legend:
-            out.append(r"\par\noindent\begin{minipage}{\linewidth}")
+            out.append(r"\par\noindent" + (r"\begin{minipage}{\linewidth}" if not long_table else ""))
             out.append(pending_table_legend.pop(0))
             out.append(r"\par\vspace{2pt}")
-        out += [r"{\footnotesize\setlength{\tabcolsep}{4pt}\begin{tabular}{" + "".join(aligns) + "}", r"\toprule"]
+        out += [r"{\footnotesize\setlength{\tabcolsep}{4pt}\begin{" + env + "}{" + "".join(aligns) + "}", r"\toprule"]
         for h in head:
             out.append(" & ".join(r"\textbf{" + inline(c) + "}" for c in h) + r" \\")
         if head:
@@ -213,7 +221,7 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
         for r in data:
             out.append(" & ".join(inline(c) for c in r) + r" \\")
         out.append(r"\bottomrule")
-        out.append(r"\end{tabular}\par}")
+        out.append(r"\end{" + env + r"}\par}")
         if out[0].startswith(r"\par\noindent\begin{minipage}"):
             out.append(r"\end{minipage}\par\vspace{4mm}")
         body.extend(out)
@@ -239,8 +247,8 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             section = line[3:].strip()
             if section.startswith("Figure legends") and INLINE[0] and set(legends) <= placed:
                 continue
-            if section.startswith("Figure legends") or leaving_figs:
-                body.append(r"\clearpage")
+            if section.startswith(("Figure legends", "References", "Supplementary")) or leaving_figs:
+                body.append(r"\clearpage")                   # flushes pending floats, so no list or heading is split by them
             body.append(r"\section*{" + inline(section) + "}")
             body.append("")
             continue
@@ -290,6 +298,11 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
 \setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
 \setmonofont{texgyrecursor}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,Scale=0.9]
 \usepackage{graphicx}
+\usepackage{flafter}
+\usepackage{longtable}
+\usepackage{xurl}
+\urlstyle{same}
+\emergencystretch=1.5em
 \usepackage{amssymb}
 \usepackage{enumitem}
 \usepackage{xcolor}

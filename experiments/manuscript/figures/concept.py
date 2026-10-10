@@ -48,7 +48,7 @@ def strip(ax, x0, y0, items, fill=TEAL_FILL, fills=None, w=1.0, h=1.0):
     """items: byte strings or '…' (drawn as a bordered cell with a centred ellipsis)."""
     for i, it in enumerate(items):
         f = fills[i] if fills else fill
-        cell(ax, x0 + i * w, y0, "···" if it == "…" else it, fill=f, w=w, h=h, fs=FS_BYTE if it != "…" else 7.5)
+        cell(ax, x0 + i * w, y0, "···" if it == "…" else it, fill=f, w=w, h=h, fs=FS_BYTE if it != "…" else 6.5)
     return x0 + len(items) * w
 
 
@@ -160,50 +160,54 @@ def fig1b(ax):
 
 # ------------------------------------------------------------------------------------------------------------ Fig. 2d
 def fig2d(ax):
+    """Fig. 3f: control flow of the open first replicator, three closed successors and, apart, the L = 50 jump genome.
+    Text at 5.5-6.5 pt like panels a-e; the open replicator's pointer is a straight arrow running on into the partner."""
     import pandas as pd
     g = pd.read_csv(os.path.join(EXP, "results", "stageG", "stageG", "stage_g_runs.csv"))
     f16 = g[g["L"] == 16]
     cop, dam = f16["first_copied"].median(), f16["first_damaged"].median()
-    fin = g[g["final_has_cf"] | g["final_has_block"]]
+    fin = g[(g["final_has_cf"] | g["final_has_block"]) & (g["L"] != 50)]    # the closed group; at L = 50 the offspring reopen
     fcop, fdam = fin["final_copied"].median(), fin["final_damaged"].median()
-    finish(ax, (-0.3, 33.2), (-7.1, 2.9))
-    # row 1: the open first replicator
-    ax.text(0, 1.9, "open · the first replicator", ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
+    T, LB, SM = 6.5, 6.0, 5.5                     # title (bold), label, caption sizes
+    finish(ax, (-0.3, 33.2), (-4.95, 1.85))
+    # row 1: the open first replicator; its pointer runs straight on through the organism into the partner
+    ax.text(0, 1.25, "open · the first replicator", ha="left", va="bottom", fontsize=T, color=INK, fontweight="bold")
     strip(ax, 0, 0, ["01", "c5", "…", "01", "c5"])
     ax.add_patch(Rectangle((5, 0), 3.6, 1, facecolor=GREY_FILL, edgecolor=INK, lw=0.5, zorder=2))
-    ax.text(5.9, 0.5, "···", ha="center", va="center", fontsize=8, color=INK, zorder=3)
-    ax.text(7.6, 0.5, "partner", ha="center", va="center", fontsize=FS_SMALL, color=INK, zorder=3)
-    arrow(ax, (4.5, 1.1), (5.9, 1.1), color=INK, lw=1.0, rad=-0.45, scale=6)
-    ax.text(9.6, 0.95, "executes partner code", ha="left", va="center", fontsize=FS_LABEL, color=INK)
-    ax.text(9.6, 0.2, f"copies {cop:.2f} of partners; damaged in {dam:.2f} of encounters (medians, 20 worlds)", ha="left", va="center", fontsize=FS_LABEL, color=GREY_TEXT)
-    # row 2: four closers, abbreviated to the instruction motif
+    ax.text(5.9, 0.5, "···", ha="center", va="center", fontsize=6.5, color=INK, zorder=3)
+    ax.text(7.6, 0.5, "partner", ha="center", va="center", fontsize=SM, color=INK, zorder=3)
+    arrow(ax, (0.2, -0.28), (7.0, -0.28), color=INK, lw=0.9, scale=6)
+    ax.text(9.6, 0.75, "executes partner code", ha="left", va="center", fontsize=LB, color=INK)
+    ax.text(9.6, 0.15, f"copies {cop:.2f} of partners; damaged in {dam:.2f} of encounters (medians, 20 worlds)", ha="left", va="center", fontsize=LB, color=GREY_TEXT)
+    # row 2: three closers, abbreviated to the instruction motif, and apart from them the L = 50 jump, whose final
+    # dominant is confined but whose offspring reopen (Fig. 3e), so the closed heading does not claim it
     closers = [
-        ("RET NZ · 16 bytes", ["…", "e3", "…", "c0"], [3], "its written bytes double\nas its return addresses"),
-        ("JR NZ · 50 bytes", ["…", "20", "f0", "…"], [1, 2], "a relative jump of 16 bytes back,\nthrough the address wrap"),
-        ("DJNZ · 20 bytes", ["…", "10", "e5", "…"], [1, 2], "a counted jump of 27 bytes back,\nthrough the address wrap"),
-        ("LDIR · 20 bytes", ["…", "ed", "b0", "…"], [1, 2], "the block copy repeats\nin place"),
+        ("RET NZ · 16 bytes", ["…", "e3", "…", "c0"], [3], "its written bytes double\nas its return addresses", 0.0),
+        ("DJNZ · 20 bytes", ["…", "10", "e5", "…"], [1, 2], "a counted jump of 27 bytes back,\nthrough the address wrap", 8.2),
+        ("LDIR · 20 bytes", ["…", "ed", "b0", "…"], [1, 2], "the block copy repeats\nin place", 16.4),
+        ("JR NZ · 50 bytes", ["…", "20", "f0", "…"], [1, 2], "a relative jump of 16 bytes back,\nthrough the address wrap", 25.4),
     ]
-    y0 = -3.3
-    for k, (title, items, hl, caption) in enumerate(closers):
-        x0 = k * 8.4
-        ax.text(x0, y0 + 1.95, title, ha="left", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
+    y0 = -2.85
+    for title, items, hl, caption, x0 in closers:
+        ax.text(x0, y0 + 1.8, title, ha="left", va="bottom", fontsize=T, color=INK, fontweight="bold")
         strip(ax, x0, y0, items, fills=[RED_PALE if i in hl else TEAL_FILL for i in range(4)])
         src = x0 + max(hl) + 0.5
         if title.startswith("LDIR"):
             # the block copy repeats in place: an arc from the end of the motif back to its start, same style as the jumps
-            arrow(ax, (x0 + 2.95, y0 + 1.1), (x0 + 1.05, y0 + 1.1), color=RED, lw=1.0, rad=0.5, scale=6)
+            arrow(ax, (x0 + 2.95, y0 + 1.1), (x0 + 1.05, y0 + 1.1), color=RED, lw=1.0, rad=0.45, scale=6)
         else:
-            arrow(ax, (src, y0 + 1.1), (x0 + 0.5, y0 + 1.1), color=RED, lw=1.0, rad=0.36, scale=6)
-        ax.text(x0, y0 - 0.25, caption, ha="left", va="top", fontsize=FS_SMALL, color=INK, linespacing=1.15)
-    ax.text(14.6, -5.95, f"closed: copies {fcop:.2f} of partners · {fdam:.2f} self-damage", ha="center", va="bottom", fontsize=FS_TITLE, color=INK, fontweight="bold")
-    ax.text(14.6, -6.2, "closure is a cycle in control flow, not a wall around the bytes", ha="center", va="top", fontsize=FS_LABEL, color=INK)
+            arrow(ax, (src, y0 + 1.1), (x0 + 0.5, y0 + 1.1), color=RED, lw=1.0, rad=0.3, scale=6)
+        ax.text(x0, y0 - 0.2, caption, ha="left", va="top", fontsize=SM, color=INK, linespacing=1.15)
+    ax.plot([24.5, 24.5], [y0 + 2.45, -4.85], color=GRID, lw=0.5, ls=(0, (2, 2)), zorder=1)
+    ax.text(11.7, y0 - 1.5, f"closed: copies {fcop:.2f} of partners · {fdam:.2f} self-damage", ha="center", va="top", fontsize=T, color=INK, fontweight="bold")
+    ax.text(25.4, y0 - 1.5, "confined, offspring reopen", ha="left", va="top", fontsize=T, color=INK, fontweight="bold")
 
 
 # ------------------------------------------------------------------------------------------------------------ Fig. 4d
 def fig4d(ax):
     W = 100.0
     x1, x2 = 25.0, 62.0
-    y_hdr, y_mid, y_bot = 21.0, 9.6, 0.0
+    y_hdr, y_mid, y_bot = 21.0, 8.7, 0.0
     H = 25.5
     for yy in (H, y_hdr, y_mid, y_bot):
         ax.plot([0, W], [yy, yy], color=GRID, lw=0.7, zorder=1)
@@ -218,14 +222,16 @@ def fig4d(ax):
     xa, xb = x1 + 2.0, x2 + 2.0
     FS_H, FS_C = 6.0, 5.5
     rows = [
-        (xa, 20.3, "Z80 and its 8080-like subset", True), (xa, 20.3 - L, "open, then closed · 47 of 80 worlds (Z80),", False), (xa, 20.3 - 2 * L, "20 of 20 (8080, L = 16)", False),
-        (xa, 20.3 - 3.15 * L, "BFF + literal push, harmless brackets", True), (xa, 20.3 - 4.15 * L, "open through 16,384 epochs · 12 of 12 soups;", False), (xa, 20.3 - 5.15 * L, "no closed design up to period 10", False),
-        (xb, 19.9, "BFF + literal push, lethal brackets", True), (xb, 19.9 - L, "open, then collapses to 0.2% · 12 of 12 soups", False),
-        (xb, 19.9 - 2.2 * L, "Z80, zero halts", True), (xb, 19.9 - 3.2 * L, "born closed, late · 10 of 10 worlds;", False), (xb, 19.9 - 4.2 * L, "the open beginning never happens", False),
-        (xa, 6.7, "BFF as published, harmless brackets", True), (xa, 6.7 - L, "born loop-bearing · 7 of 12 soups (5 confined,", False),
-        (xa, 6.7 - 2 * L, "1 partly, 1 open); lost again in 4", False),
-        (xb, 6.7, "BFF as published (and wrapping pointer)", True), (xb, 6.7 - L, "born loop-bearing · all 28 replicators of 48", False),
-        (xb, 6.7 - 2 * L, "soups; partner entered in at most 34%", False),
+        (xa, 20.3, "Z80 and its 8080 subset", True), (xa, 20.3 - L, "open, then closed · 47 of 80 worlds (Z80),", False), (xa, 20.3 - 2 * L, "20 of 20 (8080, L = 16)", False),
+        (xa, 20.3 - 3.15 * L, "wrap + literal push, harmless brackets", True), (xa, 20.3 - 4.15 * L, "open through 16,384 epochs · 12 of 12 soups;", False), (xa, 20.3 - 5.15 * L, "no closed design up to period 10", False),
+        # BFF variants named as in panel a; "literal push" (no wrapping pointer) has its own entry (critic round 4)
+        (xb, 20.3, "wrap + literal push", True), (xb, 20.3 - L, "open, then collapses below 1% · 12 of 12 soups", False),
+        (xb, 20.3 - 2.15 * L, "literal push", True), (xb, 20.3 - 3.15 * L, "open, then dies out · 12 of 12 soups", False),
+        (xb, 20.3 - 4.3 * L, "Z80, zero halts", True), (xb, 20.3 - 5.3 * L, "born closed, late · 10 of 10 worlds", False),
+        (xa, 6.0, "BFF, harmless brackets", True), (xa, 6.0 - L, "born loop-bearing · 7 of 12 soups (5 confined,", False),
+        (xa, 6.0 - 2 * L, "1 partly, 1 open); lost again in 4", False),
+        (xb, 6.0, "BFF as published (and wrapping pointer)", True), (xb, 6.0 - L, "born loop-bearing · all 28 replicators of 48", False),
+        (xb, 6.0 - 2 * L, "soups; partner entered in at most 34%", False),
     ]
     for x, y, text, bold in rows:
         ax.text(x, y, text, ha="left", va="top", fontsize=FS_C, color=INK, fontweight="bold" if bold else "normal")

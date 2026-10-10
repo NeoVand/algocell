@@ -26,16 +26,9 @@ EXP = mf.EXP
 OPEN_C, REGEN_C, TRANS_C = mf.OPEN_C, mf.REGEN_C, mf.TRANS_C
 
 
-SUP = str.maketrans("0123456789-", "⁰¹²³⁴⁵⁶⁷⁸⁹⁻")
-
-
 def _logfmt(ax, axis="x"):
-    from matplotlib.ticker import FuncFormatter, LogLocator, NullFormatter
-    f = FuncFormatter(lambda v, _: ("10" + str(int(round(np.log10(v)))).translate(SUP)) if v > 0 and abs(np.log10(v) - round(np.log10(v))) < 1e-9 else "")
-    a = ax.xaxis if axis == "x" else ax.yaxis
-    a.set_major_locator(LogLocator(base=10))
-    a.set_major_formatter(f)
-    a.set_minor_formatter(NullFormatter())
+    """Decade labels with the exponent drawn at 5 pt (figstyle.log10_ticks); call after the limits are final."""
+    fs.log10_ticks(ax, axis)
 
 
 def _letter(fig, ax, letter, y, dx=0.06, x=None):
@@ -46,7 +39,7 @@ def _letter(fig, ax, letter, y, dx=0.06, x=None):
 
 
 # ------------------------------------------------------------------------------------------------ Fig. 6 v5
-LC = {16: "#CC79A7", 20: "#56B4E9", 32: "#0072B2", 64: "#7B3294"}   # lengths in colour; the marker key stays neutral grey
+LC = {L: fs.LEN_COLOR[L] for L in (16, 20, 32, 64)}   # the paper's length palette; the marker key stays neutral grey
 
 
 def _theorem_panel(ax):
@@ -55,23 +48,23 @@ def _theorem_panel(ax):
     W = 1.25
     org = ["", "", "", "…", "", "", "", ""]
     ax.add_patch(mf.Rectangle((0.5, 11.25), 29.0, 1.05, facecolor="white", edgecolor=INK, lw=0.5, zorder=2))
-    ax.text(15.0, 11.77, "128 executions per encounter", ha="center", va="center", fontsize=6, color=INK, zorder=3)
+    ax.text(15.0, 11.77, "128 instructions per encounter", ha="center", va="center", fontsize=5.5, color=INK, zorder=3)
     ax.add_patch(mf.Rectangle((0.5, 9.95), 29.0 * 100 / 128, 1.05, facecolor=cp.TEAL_FILL, edgecolor=INK, lw=0.5, zorder=2))
-    ax.text(0.5 + 29.0 * 100 / 256, 10.47, "at most 100 cells of the organism", ha="center", va="center", fontsize=6, color=INK, zorder=3)
+    ax.text(0.5 + 29.0 * 100 / 256, 10.47, "at most 100 cells of the organism", ha="center", va="center", fontsize=5.5, color=INK, zorder=3)
     y = 6.0
-    cp.text_runs(ax, 0.5, y + 1.6, [("open", INK, True), (" · leaves its cells", INK, False)], fs=6.5)
+    cp.text_runs(ax, 0.5, y + 1.6, [("open", INK, True), (" · leaves its cells", INK, False)], fs=6.0)
     cp.strip(ax, 0.5, y, org, w=W, h=1.2)
     cp.strip(ax, 0.5 + W * len(org), y, ["", "", "", "…", "", ""], fill=cp.GREY_FILL, w=W, h=1.2)
     cp.arrow(ax, (0.9, y - 0.4), (0.5 + W * 13.7, y - 0.4), color=INK, lw=1.0)
-    ax.text(0.5 + W * 14 + 0.6, y + 0.6, "partner", ha="left", va="center", fontsize=6, color=INK)
+    ax.text(0.5 + W * 14 + 0.6, y + 0.6, "partner", ha="left", va="center", fontsize=5.5, color=INK)
     y = 1.6
-    cp.text_runs(ax, 0.5, y + 1.6, [("closed", RED, True), (" · revisits a cell", INK, False)], fs=6.5)
+    cp.text_runs(ax, 0.5, y + 1.6, [("closed", RED, True), (" · revisits a cell", INK, False)], fs=6.0)
     cp.strip(ax, 0.5, y, org, w=W, h=1.2)
     x_end = 0.5 + W * len(org)
     cp.arrow(ax, (0.9, y - 0.4), (x_end - 0.4, y - 0.4), color=INK, lw=1.0)
-    cp.arrow(ax, (x_end - 0.4, y - 0.6), (1.1, y - 0.6), color=RED, lw=1.0, rad=-0.18)
-    ax.text(x_end + 0.9, y + 0.8, "128 executions in L cells:", ha="left", va="bottom", fontsize=6, color=INK)
-    ax.text(x_end + 0.9, y + 0.6, "some address runs twice", ha="left", va="top", fontsize=6, color=INK)
+    cp.arrow(ax, (x_end - 0.4, y - 0.6), (1.1, y - 0.6), color=RED, lw=1.0, rad=-0.18).set_clip_on(False)   # its low point lies below the axes
+    ax.text(x_end + 0.9, y + 0.8, "128 instructions in L cells:", ha="left", va="bottom", fontsize=5.5, color=INK)
+    ax.text(x_end + 0.9, y + 0.6, "some address runs twice", ha="left", va="top", fontsize=5.5, color=INK)
 
 
 def _census_panel(ax):
@@ -95,34 +88,64 @@ def _census_panel(ax):
     ax.text(-0.45, 565, "closed", color=REGEN_C, fontsize=5.5, va="top")
 
 
+def _size_ms(n):
+    """Marker size (pt) for a group of n cells in Fig. 6c."""
+    return 2.0 + 1.1 * np.log10(n)
+
+
 def _copy_period_panel(ax):
-    """Transmissible sites against the copy offset d for every confined block-copy cell with d <= L (medians by group)."""
+    """Transmissible sites against the copy offset d for every confined block-copy cell with d <= L (medians by group).
+    The lengths present at an offset are drawn side by side, centred on the true d (a lone marker sits on its tick), so the
+    law d - 4 is drawn as a short bar across each offset's group (not as a curve, from which the dodged markers would seem
+    to stray)."""
     D = pd.read_csv(os.path.join(R, "offset", "offset_cells.csv"))
     D = D[D.offset <= D.L]
-    xs = np.geomspace(4, 67, 200)
-    ax.plot(xs, xs - 4, color=GREY, lw=0.6, ls=(0, (3, 2)), zorder=1)
-    ax.text(40, 30, "d − 4", color=GREY, fontsize=5.5, ha="left", va="top")
-    for (L, d), e in D.groupby(["L", "offset"]):
-        med = e.n_sites.median()
+    STEP = 1.14                 # neighbouring lengths at one offset sit a factor 1.14 apart (0.19 octave), in order of L
+    NUDGE = {(20, 5): 2.0}      # d = 5 (L = 20, median 1 site) is drawn 2 sites higher, clear of the d = 4 group (legend)
+    groups = list(D.groupby(["L", "offset"]))
+    present = {}
+    for (L, d), e in groups:
+        present.setdefault(int(d), []).append(int(L))
+    xpos = {}
+    for d, Ls in present.items():
+        Ls = sorted(Ls)
+        for k, L in enumerate(Ls):
+            xpos[(L, d)] = d * STEP ** (k - (len(Ls) - 1) / 2)
+    for (L, d), e in groups:     # no marker may stand right of d = L (the largest offset its length allows)
+        assert xpos[(int(L), int(d))] <= int(L) * (1 + 1e-9) or len(present[int(d)]) == 1, (L, d)
+    for d, Ls in present.items():                      # the law d - 4, one bar across the markers that obey it at offset d
+        xs = [xpos[(L, d)] for L in Ls if L % d == 0]
+        if xs:
+            y = d - 4 + max(NUDGE.get((L, d), 0.0) for L in Ls)
+            ax.plot([min(xs) / 1.1, max(xs) * 1.1], [y, y], color="#9AA2AC", lw=1.3, solid_capstyle="butt", zorder=1)
+    for (L, d), e in groups:
+        med = e.n_sites.median() + NUDGE.get((int(L), int(d)), 0.0)
         col = LC.get(int(L), GREY)
-        x = d * {16: 0.93, 20: 0.98, 32: 1.03, 64: 1.08}.get(int(L), 1.0)
+        x = xpos[(int(L), int(d))]
         if int(L) % int(d):
-            ax.plot(x, med, marker="x", ms=3.0, mec=col, mew=0.8, ls="none", zorder=3)
+            ax.plot(x, med, marker="x", ms=3.0, mec=col, mew=0.8, ls="none", zorder=4)
             continue
-        ms = 2.0 + 1.1 * np.log10(len(e))
-        ax.plot(x, med, marker="o", ms=ms, mfc=col if d == L else "white", mec=col, mew=0.7, zorder=3, ls="none")
+        ax.plot(x, med, marker="o", ms=_size_ms(len(e)), mfc=col if d == L else "white", mec=col, mew=0.7, zorder=3, ls="none")
     ax.set_xscale("log", base=2)
     ax.set_xticks([4, 8, 16, 32, 64], ["4", "8", "16", "32", "64"])
     ax.minorticks_off()
-    ax.set_xlim(3.3, 80)
+    ax.set_xlim(2.6, 84)
     ax.set_ylim(-3, 64)
     fs.tidy(ax, "copy offset d (bytes)", "transmissible sites")
-    for i, L in enumerate((16, 20, 32, 64)):
-        ax.text(3.6, 61 - 5.2 * i, f"L = {L}", color=LC[L], fontsize=5.2, va="center")
-    for yy, kw, txt in ((61, dict(marker="o", mfc="white"), "d < L, regenerates"), (55.8, dict(marker="o", mfc=GREY), "d = L, transmits"),
+    for i, L in enumerate((16, 20, 32, 64)):          # length key: a filled swatch in the length's colour, ink text
+        ax.plot([4.0], [61 - 5.2 * i], marker="o", ms=3.0, mfc=LC[L], mec=LC[L], ls="none")
+        ax.text(4.6, 61 - 5.2 * i, f"L = {L}", color=INK, fontsize=5.2, va="center")
+    for yy, kw, txt in ((61, dict(marker="o", mfc="white"), "d < L"), (55.8, dict(marker="o", mfc=GREY), "d = L"),
                         (50.6, dict(marker="x"), "d does not divide L")):
         ax.plot([11.5], [yy], ms=3.0, mec=GREY, mew=0.7, ls="none", **kw)
         ax.text(13.2, yy, txt, fontsize=5.2, va="center", color=INK)
+    ax.plot([10.4, 12.6], [45.4, 45.4], color="#9AA2AC", lw=1.3, solid_capstyle="butt")
+    ax.text(13.2, 45.4, "d − 4", fontsize=5.2, va="center", color=INK)
+    # marker-size key: cells per point
+    ax.text(3.6, 37.5, "cells", fontsize=5.2, va="center", ha="left", color=INK)
+    for xk, n in zip((9.5, 13.5, 19.0, 28.0), (1, 10, 100, 1000)):
+        ax.plot([xk], [37.5], marker="o", ms=_size_ms(n), mfc="white", mec=GREY, mew=0.7, ls="none")
+        ax.text(xk, 33.1, f"{n:,}", fontsize=5.0, ha="center", va="center", color=INK)
 
 
 def fig6v5(out):
@@ -166,6 +189,7 @@ def _aligned_panel(ax, L, legend=False):
         first = False
     ax.set_xscale("log")
     ax.set_xlim(8, 2.5e4)
+    fs.log10_ticks(ax)
     ax.set_ylim(-0.02, 1.02)
     fs.tidy(ax, "step", "share of cells (class)")
     name = "return closer" if L == 16 else "block-copy tiling"
@@ -197,6 +221,7 @@ def ed_invasions2(out):
 # ------------------------------------------------------------------------------------------------ ED Fig. 10
 START_C = {"R_into_T": REGEN_C, "T_into_R": TRANS_C, "mix50": "#6B7280"}
 START_LAB = {"R_into_T": "1% regenerators", "T_into_R": "1% transmitters", "mix50": "50:50"}
+START_X = {"R_into_T": "#8E2A12", "T_into_R": "#0B4F4F", "mix50": "#1C2733"}    # darker shades for the lost-core crosses
 
 
 def _traj(L, tar, mut):
@@ -211,7 +236,8 @@ def _traj(L, tar, mut):
 
 
 def _switch_panel(ax, L, tar, title, ylabel=True):
-    seen = set()
+    import matplotlib.patheffects as pe
+    seen, lost = set(), []
     for c, t in _traj(L, tar, "on"):
         t = t[t.step > 0].copy()
         raw = t["T"] / (t["R"] + t["T"]).replace(0, np.nan)
@@ -222,13 +248,41 @@ def _switch_panel(ax, L, tar, title, ylabel=True):
         sm[~ok] = np.nan
         lab = START_LAB[c["start"]] if c["start"] not in seen else None
         seen.add(c["start"])
-        ax.plot(t.step, sm, color=START_C[c["start"]], lw=0.55, alpha=0.85, label=lab)
-        if (~ok & (t.step > 20000)).any():
-            last = sm.last_valid_index()
-            ax.plot(t.step[last], sm[last], marker="x", ms=3.2, mew=0.8, color=START_C[c["start"]], zorder=4)
+        lost_core = bool((~ok & (t.step > 20000)).any())
+        ax.plot(t.step, sm, color=START_C[c["start"]], lw=0.55, alpha=0.85, label=lab, zorder=3 if lost_core else 2)   # lost worlds on top
+        if lost_core:
+            # the x sits where the drawn line ends: the last sample that is joined to the one before it (a lone valid
+            # sample after a gap draws no segment, so a mark there would float off its line)
+            v = sm.notna().values
+            joined = np.where(v[1:] & v[:-1])[0]
+            last = t.index[joined[-1] + 1] if len(joined) else sm.last_valid_index()
+            lost.append((t.step[last], sm[last], START_X[c["start"]]))
     ax.set_xscale("log")
     ax.set_xlim(40, 3.2e5)
     ax.set_ylim(-0.02, 1.02)
+    # the worlds that lost the core: on top of every line, darker, with a white halo. Crosses of one colour closer than a
+    # marker (3.6 pt) would print as one: they are drawn side by side, 1.3 markers apart, centred on their mean step, each at
+    # its own height (ED Fig. 6c, two of the 50:50 worlds near 120,000 steps; stated in the legend)
+    px = 3.6 * ax.figure.dpi / 72.0
+    groups = []
+    for x, y, col in sorted(lost, key=lambda t: t[0]):
+        p = ax.transData.transform((x, y))
+        for g in groups:
+            if g["col"] == col and np.hypot(*(p - g["p"][-1])) < px:
+                g["p"].append(p)
+                break
+        else:
+            groups.append({"col": col, "p": [p]})
+    inv = ax.transData.inverted()
+    for g in groups:
+        P = np.array(g["p"])
+        xm = P[:, 0].mean()
+        for k, (_, yd) in enumerate(P):
+            x, y = inv.transform((xm + (k - (len(P) - 1) / 2) * 1.3 * px, yd))
+            ax.plot(x, y, marker="x", ms=3.6, mew=1.0, color=g["col"], zorder=10,
+                    path_effects=[pe.Stroke(linewidth=1.8, foreground="white"), pe.Normal()])
+        if len(P) > 1:
+            print(f"  ed_switch: {len(P)} lost-core crosses drawn side by side near step {inv.transform((xm, P[0, 1]))[0]:,.0f}")
     fs.tidy(ax, "step", "transmitters among\ncore-carrying cells" if ylabel else None)
     _logfmt(ax)
     ax.text(0.02, 1.02, title, transform=ax.transAxes, fontsize=6, ha="left", va="bottom", gid="allow-outside")
@@ -297,7 +351,7 @@ def _ref22_panel(ax):
     ax.minorticks_off()
     ax.set_xlim(0.8, 10)
     ax.set_ylim(-0.03, 1.0)
-    fs.tidy(ax, "successive random mutations", "exact self-copy into the\nzero partner (ref. 22)")
+    fs.tidy(ax, "successive random mutations", "exact self-copy into\nthe zero partner")
     ax.text(1.1, 0.95, "transmitter", color=TRANS_C, fontsize=5.2, va="center")
     ax.text(1.1, 0.07, "regenerator", color=REGEN_C, fontsize=5.2, va="center")
 
@@ -313,14 +367,15 @@ def _randreg_panel(ax):
     D = pd.concat([pd.read_csv(os.path.join(R, "r4", f)) for f in ("r4_long.csv", "r4_rep.csv")])
     steps = sorted(D.step.unique())
     frac = [(D[D.step == st].confined_given_heritable > 0.5).mean() for st in steps]
-    ax.plot(steps, frac, marker="s", ms=2.2, color="#CC79A7", lw=0.6)
+    ax.plot(steps, frac, marker="s", ms=2.2, color=INK, lw=0.6)          # black: pink is a tape length (L = 36) in Fig. 1b
     ax.set_xscale("log")
     ax.set_xlim(300, 4e6)
     ax.set_ylim(-0.02, 1.05)
     fs.tidy(ax, "step", "fraction of worlds closed")
     _logfmt(ax)
-    ax.text(3.6e6, 0.86, "zero registers", color=fs.MARK, fontsize=5.2, ha="right", va="center")
-    ax.text(3.6e6, 0.45, "random registers\n(40 worlds)", color="#CC79A7", fontsize=5.2, ha="right", va="center")
+    n0 = int(g.seed.nunique())
+    ax.text(3.6e6, 0.86, f"zero registers\n({n0} worlds)", color=fs.MARK, fontsize=5.2, ha="right", va="center")
+    ax.text(3.6e6, 0.45, f"random registers\n({int(D.seed.nunique())} worlds)", color=INK, fontsize=5.2, ha="right", va="center")
 
 
 def ed_switch(out):
