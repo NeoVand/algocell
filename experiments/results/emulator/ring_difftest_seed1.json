@@ -1,0 +1,3262 @@
+{
+ "reference": "z80-emulator 2.3.0 (Lawrence Kesteloot, github.com/lkesteloot/trs80, MIT) via src/lib/dev/z80oracle.ts",
+ "core": "createZ80TestShader(L, P) from src/lib/gpu/shaders.ts around @neovand/zilion",
+ "steps": 128,
+ "seed": 1,
+ "sizes": {
+  "32": {
+   "P": 32,
+   "L": 16,
+   "spInit": "FFFF",
+   "seamOffset": 0,
+   "provenance": {
+    "layout": "square (16-byte tapes)",
+    "executorSha": "97008775e85fef0b",
+    "executorMemoryModel": true,
+    "exportedExecutor": true,
+    "soupShaderMemoryModel": true,
+    "exportedSoupShader": true
+   },
+   "random": 100000,
+   "targeted": 9000,
+   "real": 6616,
+   "realMem": 4432,
+   "benign": 29,
+   "targetedReal": 160,
+   "expectations": {
+    "checked": 6000,
+    "oracleFails": 0,
+    "gpuFails": 0,
+    "failures": []
+   },
+   "outcomes": {
+    "match-modulo-oracle-quirks": {
+     "random": 6459,
+     "targeted": 161
+    },
+    "zilion-deviation": {
+     "random": 24,
+     "targeted": 1
+    }
+   },
+   "events": {
+    "oracle:unhandled-dd-fd": {
+     "n": 46399,
+     "verified": 46399
+    },
+    "zilion:bit-mem-f3f5": {
+     "n": 192,
+     "verified": 192
+    },
+    "oracle:ld-a-r": {
+     "n": 70,
+     "verified": 70
+    },
+    "oracle:adc-sbc-hl-z": {
+     "n": 74,
+     "verified": 74
+    },
+    "oracle:ld-r-a": {
+     "n": 6,
+     "verified": 6
+    },
+    "oracle:in-f-c": {
+     "n": 11,
+     "verified": 11
+    }
+   },
+   "examples": {
+    "oracle:unhandled-dd-fd": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "FD D2 A8 16  FD ..",
+     "verified": true,
+     "diff": null,
+     "program": "FD D2 A8 16 37 EB F5 29 B0 0C 2D 6C 4B 22 01 A7 3C 1D FE 75 D6 F0 84 E7 54 AA 47 83 FE A0 C4 FA"
+    },
+    "zilion:bit-mem-f3f5": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "CB 6E 22 0E  BIT 5,(HL)",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "f",
+        "gpu": 92,
+        "cpu": 84
+       }
+      ]
+     },
+     "program": "CB 6E 22 0E 73 F4 99 7C 5D EC 02 EF 7C CF 8D D8 B6 83 7F AE B7 C7 F1 82 61 76 71 C5 1D 33 DD B2"
+    },
+    "oracle:ld-a-r": {
+     "step": 6,
+     "family": "random",
+     "pc": "000D",
+     "instruction": "ED 5F 63 3D  LD A,R",
+     "verified": true,
+     "diff": null,
+     "program": "CF 80 CE 2D 48 28 77 7D 19 5C BA C6 BF ED 5F 63 3D 35 D7 17 B2 88 33 A9 56 49 D5 0F ED C1 6E DF"
+    },
+    "oracle:adc-sbc-hl-z": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "ED 6A 22 54  ED $6A",
+     "verified": true,
+     "diff": null,
+     "program": "ED 6A 22 54 16 68 57 94 7D B5 E6 A4 FD 33 53 2B 3C 3F 4C 66 B0 23 A0 FE 4B C0 B4 DF 87 7F 20 2A"
+    },
+    "oracle:ld-r-a": {
+     "step": 7,
+     "family": "random",
+     "pc": "139C",
+     "instruction": "ED 4F 11 00  LD R,A",
+     "verified": true,
+     "diff": null,
+     "program": "D2 97 13 EC 30 AA E1 67 17 D3 70 35 69 1A 2A 02 55 FD D1 67 47 E4 72 F3 65 27 E3 0D ED 4F 11 F4"
+    },
+    "oracle:in-f-c": {
+     "step": 4,
+     "family": "random",
+     "pc": "0030",
+     "instruction": "ED 70 4B FA  ED $70",
+     "verified": true,
+     "diff": null,
+     "program": "94 17 F7 F5 CB 82 94 F5 43 46 E8 E9 28 00 D5 55 ED 70 4B FA 37 B4 8E 45 C2 A3 29 36 57 BF 56 72"
+    }
+   },
+   "seamCoverageRandom": {
+    "any": 63630,
+    "pc": 9683,
+    "sp": 38370,
+    "ptr": 37956
+   },
+   "families": {
+    "random": {
+     "n": 100000,
+     "real": 6456,
+     "benign": 27,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/open": {
+     "n": 200,
+     "real": 11,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/open": {
+     "n": 200,
+     "real": 6,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/open": {
+     "n": 200,
+     "real": 6,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/open": {
+     "n": 200,
+     "real": 17,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/open": {
+     "n": 200,
+     "real": 8,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/open": {
+     "n": 200,
+     "real": 14,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/open": {
+     "n": 200,
+     "real": 11,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/open": {
+     "n": 200,
+     "real": 5,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/open": {
+     "n": 200,
+     "real": 11,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/open": {
+     "n": 200,
+     "real": 13,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    }
+   },
+   "mutants": {
+    "pc-increment-unmasked": {
+     "sites": 1,
+     "cases": 29000,
+     "detected": 91,
+     "detectedInMemory": 0,
+     "detectedInMemoryByTargeted": 0
+    },
+    "pop-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 3732,
+     "detectedInMemory": 53,
+     "detectedInMemoryByTargeted": 9
+    },
+    "push-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2095,
+     "detectedInMemory": 37,
+     "detectedInMemoryByTargeted": 7
+    },
+    "rel-jump-unmasked": {
+     "sites": 3,
+     "cases": 29000,
+     "detected": 70,
+     "detectedInMemory": 0,
+     "detectedInMemoryByTargeted": 0
+    }
+   },
+   "seconds": 8.701
+  },
+  "38": {
+   "P": 38,
+   "L": 19,
+   "spInit": "FFE7",
+   "seamOffset": 24,
+   "provenance": {
+    "layout": "hex (19-byte tapes)",
+    "executorSha": "136021998580fdd9",
+    "executorMemoryModel": true,
+    "exportedExecutor": null,
+    "soupShaderMemoryModel": true,
+    "exportedSoupShader": true
+   },
+   "random": 100000,
+   "targeted": 9000,
+   "real": 7240,
+   "realMem": 5118,
+   "benign": 34,
+   "targetedReal": 185,
+   "expectations": {
+    "checked": 6000,
+    "oracleFails": 0,
+    "gpuFails": 0,
+    "failures": []
+   },
+   "outcomes": {
+    "match-modulo-oracle-quirks": {
+     "random": 7046,
+     "targeted": 186
+    },
+    "zilion-deviation": {
+     "random": 41,
+     "targeted": 1
+    }
+   },
+   "events": {
+    "oracle:unhandled-dd-fd": {
+     "n": 44657,
+     "verified": 44657
+    },
+    "oracle:ld-a-r": {
+     "n": 52,
+     "verified": 52
+    },
+    "oracle:adc-sbc-hl-z": {
+     "n": 73,
+     "verified": 73
+    },
+    "zilion:bit-mem-f3f5": {
+     "n": 245,
+     "verified": 245
+    },
+    "oracle:ld-r-a": {
+     "n": 27,
+     "verified": 27
+    },
+    "oracle:in-f-c": {
+     "n": 36,
+     "verified": 36
+    }
+   },
+   "examples": {
+    "oracle:unhandled-dd-fd": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "DD C9 FA 75  DD ..",
+     "verified": true,
+     "diff": null,
+     "program": "DD C9 FA 75 2D B4 34 18 7F F8 0D DE 9F 96 34 C8 B3 B6 33 9D C5 DE EA B0 8E E8 E0 71 BF 41 88 C4 24 86 67 A4 80 19"
+    },
+    "oracle:ld-a-r": {
+     "step": 3,
+     "family": "random",
+     "pc": "0002",
+     "instruction": "ED 5F FA 6E  LD A,R",
+     "verified": true,
+     "diff": null,
+     "program": "98 70 ED 5F FA 6E F5 B0 C8 A5 35 0D 3A DD A1 8C 19 1A 0A 09 25 DD E3 75 D6 9F 8A D6 86 FD 82 E6 CB 29 54 59 72 E4"
+    },
+    "oracle:adc-sbc-hl-z": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "ED 52 F3 B6  ED $52",
+     "verified": true,
+     "diff": null,
+     "program": "ED 52 F3 B6 FD 5A 47 79 87 53 A5 5D 05 E3 EF 74 8B E3 AA 95 DC 74 19 C8 76 B6 B7 5E F2 76 4A B3 9E 24 8B A3 FD AC"
+    },
+    "zilion:bit-mem-f3f5": {
+     "step": 3,
+     "family": "random",
+     "pc": "0002",
+     "instruction": "CB 4E 8A 9E  BIT 1,(HL)",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "f",
+        "gpu": 92,
+        "cpu": 84
+       }
+      ]
+     },
+     "program": "5C 5C CB 4E 8A 9E 11 41 77 9D E4 F8 B2 23 E2 D9 0D 82 9C B6 6E A5 B2 C4 F2 A8 D3 AC 36 C3 FF 13 3F 7D 6C 6E 21 67"
+    },
+    "oracle:ld-r-a": {
+     "step": 2,
+     "family": "random",
+     "pc": "E339",
+     "instruction": "ED 4F 45 B8  LD R,A",
+     "verified": true,
+     "diff": null,
+     "program": "F4 39 E3 DD 36 AF 05 4D 4F 61 AD 62 82 40 7E 8C 21 CB 06 0D 02 E8 07 86 98 60 96 96 78 ED 4F 45 B8 5D E0 66 69 31"
+    },
+    "oracle:in-f-c": {
+     "step": 2,
+     "family": "random",
+     "pc": "0010",
+     "instruction": "ED 70 E6 A5  ED $70",
+     "verified": true,
+     "diff": null,
+     "program": "D7 D9 3C 94 57 B5 E4 4D AA 0F 12 56 62 2A E8 7D ED 70 E6 A5 F9 09 50 CF 85 97 19 8B 75 2C 15 DD DA 63 92 DC 63 F6"
+    }
+   },
+   "seamCoverageRandom": {
+    "any": 49779,
+    "pc": 10437,
+    "sp": 8386,
+    "ptr": 41070
+   },
+   "families": {
+    "random": {
+     "n": 100000,
+     "real": 7055,
+     "benign": 32,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/open": {
+     "n": 200,
+     "real": 9,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/open": {
+     "n": 200,
+     "real": 14,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/open": {
+     "n": 200,
+     "real": 23,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/open": {
+     "n": 200,
+     "real": 11,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/open": {
+     "n": 200,
+     "real": 11,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/open": {
+     "n": 200,
+     "real": 11,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/open": {
+     "n": 200,
+     "real": 9,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/open": {
+     "n": 200,
+     "real": 18,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/open": {
+     "n": 200,
+     "real": 8,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    }
+   },
+   "mutants": {
+    "pc-increment-unmasked": {
+     "sites": 1,
+     "cases": 29000,
+     "detected": 974,
+     "detectedInMemory": 646,
+     "detectedInMemoryByTargeted": 422
+    },
+    "pop-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2684,
+     "detectedInMemory": 922,
+     "detectedInMemoryByTargeted": 628
+    },
+    "push-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2024,
+     "detectedInMemory": 2024,
+     "detectedInMemoryByTargeted": 1455
+    },
+    "rel-jump-unmasked": {
+     "sites": 3,
+     "cases": 29000,
+     "detected": 3653,
+     "detectedInMemory": 1847,
+     "detectedInMemoryByTargeted": 853
+    }
+   },
+   "seconds": 8.9
+  },
+  "40": {
+   "P": 40,
+   "L": 20,
+   "spInit": "FFEF",
+   "seamOffset": 16,
+   "provenance": {
+    "layout": "square (20-byte tapes)",
+    "executorSha": "e91b784b4ca9e8b8",
+    "executorMemoryModel": true,
+    "exportedExecutor": true,
+    "soupShaderMemoryModel": true,
+    "exportedSoupShader": true
+   },
+   "random": 100000,
+   "targeted": 9000,
+   "real": 7358,
+   "realMem": 5242,
+   "benign": 20,
+   "targetedReal": 211,
+   "expectations": {
+    "checked": 6000,
+    "oracleFails": 0,
+    "gpuFails": 0,
+    "failures": []
+   },
+   "outcomes": {
+    "match-modulo-oracle-quirks": {
+     "random": 7130,
+     "targeted": 211
+    },
+    "zilion-deviation": {
+     "random": 37,
+     "targeted": 0
+    }
+   },
+   "events": {
+    "oracle:unhandled-dd-fd": {
+     "n": 45940,
+     "verified": 45940
+    },
+    "oracle:ld-a-r": {
+     "n": 47,
+     "verified": 47
+    },
+    "zilion:bit-mem-f3f5": {
+     "n": 156,
+     "verified": 156
+    },
+    "oracle:in-f-c": {
+     "n": 48,
+     "verified": 48
+    },
+    "oracle:ld-r-a": {
+     "n": 14,
+     "verified": 14
+    },
+    "oracle:adc-sbc-hl-z": {
+     "n": 52,
+     "verified": 52
+    }
+   },
+   "examples": {
+    "oracle:unhandled-dd-fd": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "FD F5 91 0A  FD ..",
+     "verified": true,
+     "diff": null,
+     "program": "FD F5 91 0A 12 5E C3 D2 56 11 92 18 C3 AD CD 4C 35 88 C6 F4 DB BB 8B 27 C1 93 09 44 B5 40 18 E5 21 4C 95 42 9C 40 4D F8"
+    },
+    "oracle:ld-a-r": {
+     "step": 3,
+     "family": "random",
+     "pc": "0002",
+     "instruction": "ED 5F CB CD  LD A,R",
+     "verified": true,
+     "diff": null,
+     "program": "2C 57 ED 5F CB CD 20 CF CA 20 F6 0C 0B A7 A4 0E 69 37 B2 4A 56 E0 E1 AC DB 0F 47 16 F7 65 8F 69 21 AC 0C 85 8D C7 0F A5"
+    },
+    "zilion:bit-mem-f3f5": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "CB 5E F3 EC  BIT 3,(HL)",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "f",
+        "gpu": 24,
+        "cpu": 16
+       }
+      ]
+     },
+     "program": "CB 5E F3 EC 3B 9F 9B 5C 69 1D F7 47 EE 26 F7 6C A1 44 C5 69 D1 FB 63 70 C6 61 6F C2 C6 EB BA 0A 62 75 14 BD 5C 55 67 90"
+    },
+    "oracle:in-f-c": {
+     "step": 7,
+     "family": "random",
+     "pc": "0007",
+     "instruction": "ED 70 DD D2  ED $70",
+     "verified": true,
+     "diff": null,
+     "program": "CE 44 04 43 AB 9B 75 ED 70 DD D2 B5 86 FC 72 C8 90 E2 1A B7 EB C0 85 4D 1F 64 C2 89 99 30 4D 80 EA 08 BD 7A 61 55 C9 BF"
+    },
+    "oracle:ld-r-a": {
+     "step": 7,
+     "family": "random",
+     "pc": "000B",
+     "instruction": "ED 4F 58 55  LD R,A",
+     "verified": true,
+     "diff": null,
+     "program": "F6 E3 FD 97 C4 66 57 C1 D5 E6 D9 ED 4F 58 55 1F 07 ED 36 8C 74 8D 54 13 9A E8 27 AE 36 35 2B 1A 25 4F 88 B3 C1 10 E1 C0"
+    },
+    "oracle:adc-sbc-hl-z": {
+     "step": 2,
+     "family": "random",
+     "pc": "0001",
+     "instruction": "ED 52 48 12  ED $52",
+     "verified": true,
+     "diff": null,
+     "program": "BD ED 52 48 12 35 DD FF 77 31 30 67 A8 68 37 9F E1 C9 B2 07 AF 95 08 96 5F 2F 25 C5 25 52 32 6D BD 67 47 1F 96 63 FC 94"
+    }
+   },
+   "seamCoverageRandom": {
+    "any": 51331,
+    "pc": 10605,
+    "sp": 11038,
+    "ptr": 41357
+   },
+   "families": {
+    "random": {
+     "n": 100000,
+     "real": 7147,
+     "benign": 20,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/open": {
+     "n": 200,
+     "real": 19,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/open": {
+     "n": 200,
+     "real": 19,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/open": {
+     "n": 200,
+     "real": 13,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/open": {
+     "n": 200,
+     "real": 13,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/open": {
+     "n": 200,
+     "real": 9,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/open": {
+     "n": 200,
+     "real": 9,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/open": {
+     "n": 200,
+     "real": 14,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    }
+   },
+   "mutants": {
+    "pc-increment-unmasked": {
+     "sites": 1,
+     "cases": 29000,
+     "detected": 1006,
+     "detectedInMemory": 688,
+     "detectedInMemoryByTargeted": 432
+    },
+    "pop-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 3079,
+     "detectedInMemory": 1189,
+     "detectedInMemoryByTargeted": 609
+    },
+    "push-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 1116,
+     "detectedInMemory": 8,
+     "detectedInMemoryByTargeted": 6
+    },
+    "rel-jump-unmasked": {
+     "sites": 3,
+     "cases": 29000,
+     "detected": 1195,
+     "detectedInMemory": 422,
+     "detectedInMemoryByTargeted": 386
+    }
+   },
+   "seconds": 8.976
+  },
+  "64": {
+   "P": 64,
+   "L": 32,
+   "spInit": "FFFF",
+   "seamOffset": 0,
+   "provenance": {
+    "layout": "square (32-byte tapes)",
+    "executorSha": "69b5f23c9cfdf31d",
+    "executorMemoryModel": true,
+    "exportedExecutor": true,
+    "soupShaderMemoryModel": true,
+    "exportedSoupShader": true
+   },
+   "random": 100000,
+   "targeted": 9000,
+   "real": 8737,
+   "realMem": 6387,
+   "benign": 22,
+   "targetedReal": 214,
+   "expectations": {
+    "checked": 6000,
+    "oracleFails": 0,
+    "gpuFails": 0,
+    "failures": []
+   },
+   "outcomes": {
+    "match-modulo-oracle-quirks": {
+     "random": 8503,
+     "targeted": 214
+    },
+    "zilion-deviation": {
+     "random": 40,
+     "targeted": 2
+    }
+   },
+   "events": {
+    "oracle:unhandled-dd-fd": {
+     "n": 47093,
+     "verified": 47093
+    },
+    "oracle:adc-sbc-hl-z": {
+     "n": 128,
+     "verified": 128
+    },
+    "oracle:ld-a-r": {
+     "n": 127,
+     "verified": 127
+    },
+    "oracle:ld-r-a": {
+     "n": 19,
+     "verified": 19
+    },
+    "zilion:bit-mem-f3f5": {
+     "n": 165,
+     "verified": 165
+    },
+    "oracle:in-f-c": {
+     "n": 36,
+     "verified": 36
+    }
+   },
+   "examples": {
+    "oracle:unhandled-dd-fd": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "FD F6 C7 C2  FD ..",
+     "verified": true,
+     "diff": null,
+     "program": "FD F6 C7 C2 7D B6 D0 20 C6 D9 ED 2B D6 D8 57 8C A7 26 20 4B 1D D2 11 CB E4 80 2A C2 D7 6B 98 0C FD C6 54 A0 F6 34 A1 A1 74 E7 4F 68 F8 E5 91 8D 07 36 1E 45 BB 20 84 47 89 E6 32 17 A1 3E E7 11"
+    },
+    "oracle:adc-sbc-hl-z": {
+     "step": 2,
+     "family": "random",
+     "pc": "0001",
+     "instruction": "ED 62 7D 5E  ED $62",
+     "verified": true,
+     "diff": null,
+     "program": "BC ED 62 7D 5E 27 F0 F7 24 94 60 50 41 B1 52 C8 DA 42 47 89 E1 31 7E 68 EC A6 67 8E 3F AB B4 33 F5 51 84 7F 44 61 1B 56 FD EC AE F0 FF A3 C8 DE 52 D1 5F 4C 1D ED 84 04 36 C4 0F 7F 17 FC D0 7B"
+    },
+    "oracle:ld-a-r": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "ED 5F C7 64  LD A,R",
+     "verified": true,
+     "diff": null,
+     "program": "ED 5F C7 64 7D 59 36 D6 0F 27 AF BB AC DE 60 1E 79 D5 19 51 19 C5 D2 5F A8 7A 7F 00 6D 25 E8 F8 B2 2F 4E 0B 78 43 AD 74 9B 1E 47 09 82 05 2C 3D 2A EE 80 47 EB B5 D1 0F C2 8B E5 64 37 CD 49 13"
+    },
+    "oracle:ld-r-a": {
+     "step": 3,
+     "family": "random",
+     "pc": "0002",
+     "instruction": "ED 4F D0 0A  LD R,A",
+     "verified": true,
+     "diff": null,
+     "program": "B2 54 ED 4F D0 0A 3D 09 1E 06 E4 22 02 2F C1 04 2B BE 72 4A 27 74 8A BC 75 FD CC 80 22 BB 09 A3 CE B6 23 8F 3E 91 14 DD BF 5C D9 5B FB 96 CE A8 02 4E 5C 5F 78 1B E9 7F 73 20 72 C4 14 1F 3C 47"
+    },
+    "zilion:bit-mem-f3f5": {
+     "step": 2,
+     "family": "random",
+     "pc": "0028",
+     "instruction": "CB 66 28 1B  BIT 4,(HL)",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "f",
+        "gpu": 124,
+        "cpu": 84
+       }
+      ]
+     },
+     "program": "EF 88 AA E3 26 6D 7F A2 00 36 73 9B CB 3A EE 62 21 0A 37 C2 0E 5B 17 06 E0 C8 D6 0B 49 4F EF C0 26 BE 71 0A B1 B6 DE 2F CB 66 28 1B DC 64 7E 0E 9A EC 43 8A E9 47 60 E5 70 50 29 FE 86 94 92 F6"
+    },
+    "oracle:in-f-c": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "ED 70 1D 2F  ED $70",
+     "verified": true,
+     "diff": null,
+     "program": "ED 70 1D 2F D3 D5 BB 2B 72 4B DD F0 82 6E 28 86 78 23 11 B6 57 27 02 57 BC E7 36 DE 64 21 0C FA 30 73 D8 F4 2A C0 8B 62 75 C8 87 34 EA 59 2A 16 24 04 A5 28 5E C2 73 5C 43 BF 1E C1 7D E4 1D BA"
+    }
+   },
+   "seamCoverageRandom": {
+    "any": 68122,
+    "pc": 11776,
+    "sp": 41565,
+    "ptr": 43392
+   },
+   "families": {
+    "random": {
+     "n": 100000,
+     "real": 8523,
+     "benign": 20,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/open": {
+     "n": 200,
+     "real": 9,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/open": {
+     "n": 200,
+     "real": 20,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/open": {
+     "n": 200,
+     "real": 20,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/open": {
+     "n": 200,
+     "real": 9,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/open": {
+     "n": 200,
+     "real": 12,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/open": {
+     "n": 200,
+     "real": 14,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/open": {
+     "n": 200,
+     "real": 13,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/open": {
+     "n": 200,
+     "real": 17,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    }
+   },
+   "mutants": {
+    "pc-increment-unmasked": {
+     "sites": 1,
+     "cases": 29000,
+     "detected": 98,
+     "detectedInMemory": 0,
+     "detectedInMemoryByTargeted": 0
+    },
+    "pop-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 3072,
+     "detectedInMemory": 66,
+     "detectedInMemoryByTargeted": 13
+    },
+    "push-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2728,
+     "detectedInMemory": 55,
+     "detectedInMemoryByTargeted": 11
+    },
+    "rel-jump-unmasked": {
+     "sites": 3,
+     "cases": 29000,
+     "detected": 46,
+     "detectedInMemory": 0,
+     "detectedInMemoryByTargeted": 0
+    }
+   },
+   "seconds": 10.211
+  },
+  "100": {
+   "P": 100,
+   "L": 50,
+   "spInit": "FFDB",
+   "seamOffset": 36,
+   "provenance": {
+    "layout": "square (50-byte tapes)",
+    "executorSha": "ce022943d75e4eaa",
+    "executorMemoryModel": true,
+    "exportedExecutor": true,
+    "soupShaderMemoryModel": true,
+    "exportedSoupShader": true
+   },
+   "random": 100000,
+   "targeted": 9000,
+   "real": 10701,
+   "realMem": 8475,
+   "benign": 33,
+   "targetedReal": 263,
+   "expectations": {
+    "checked": 6000,
+    "oracleFails": 0,
+    "gpuFails": 0,
+    "failures": []
+   },
+   "outcomes": {
+    "match-modulo-oracle-quirks": {
+     "random": 10413,
+     "targeted": 261
+    },
+    "zilion-deviation": {
+     "random": 57,
+     "targeted": 3
+    }
+   },
+   "events": {
+    "oracle:unhandled-dd-fd": {
+     "n": 48400,
+     "verified": 48400
+    },
+    "zilion:bit-mem-f3f5": {
+     "n": 213,
+     "verified": 213
+    },
+    "oracle:in-f-c": {
+     "n": 23,
+     "verified": 23
+    },
+    "oracle:ld-r-a": {
+     "n": 23,
+     "verified": 23
+    },
+    "oracle:adc-sbc-hl-z": {
+     "n": 128,
+     "verified": 128
+    },
+    "zilion:wasted-prefix-r": {
+     "n": 1,
+     "verified": 1
+    },
+    "oracle:ld-a-r": {
+     "n": 67,
+     "verified": 67
+    }
+   },
+   "examples": {
+    "oracle:unhandled-dd-fd": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "FD 15 4E 19  FD ..",
+     "verified": true,
+     "diff": null,
+     "program": "FD 15 4E 19 C0 3E C9 F5 B4 C6 C2 EB 11 A7 1F 79 54 B2 AF A5 29 E1 BE F3 68 18 71 44 33 60 9D EE E1 42 5A 7C D8 38 BD F0 CE E6 38 08 7C E8 73 D1 CE 75 05 C4 89 73 E1 EF B3 03 A9 5F 32 FF B8 3D AA E9 11 E6 38 21 E0 B9 21 2A 39 39 BF 06 6D DA 68 E5 FF B4 1D 26 37 C5 22 71 88 41 CC 2C 23 E6 C0 6E B7 5D"
+    },
+    "zilion:bit-mem-f3f5": {
+     "step": 6,
+     "family": "random",
+     "pc": "002C",
+     "instruction": "CB 7E C6 7A  BIT 7,(HL)",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "f",
+        "gpu": 176,
+        "cpu": 144
+       }
+      ]
+     },
+     "program": "EF E1 B4 AD 03 2B 74 9E DA 17 64 E6 0A D2 B2 D4 05 98 BD A8 92 78 FA 86 02 24 CB 19 40 6D E7 30 BF 61 11 29 BF 4D ED 50 59 8E 2C 3C CB 7E C6 7A E5 58 13 E0 47 DF D4 B3 E8 E9 B8 4E 69 02 EF B0 8B CD 16 9A 96 03 00 57 DD 0B E1 A8 13 A1 EA 47 C9 D6 46 2D 6B 18 8B 8E 15 E9 E3 60 6A F7 50 CC 05 B2 90 A8"
+    },
+    "oracle:in-f-c": {
+     "step": 5,
+     "family": "random",
+     "pc": "0004",
+     "instruction": "ED 70 AA 90  ED $70",
+     "verified": true,
+     "diff": null,
+     "program": "4D 6F 8B 0C ED 70 AA 90 13 79 A2 35 57 13 28 08 08 FD CD 92 47 A9 39 E7 85 3E C2 3F C8 23 C4 20 E6 BE 1D 1B 0E D2 4C 5F 21 47 27 1F 9F 60 7D AA D3 70 8B 46 A7 18 56 7E A4 63 AA 72 24 AC 0F AA 37 91 B7 D6 C8 A3 62 FA 09 DB C3 9C 09 E6 DF 9E 17 95 12 E9 AF BB E3 1E F9 AD BA 97 46 CC 7C D3 AB C2 84 03"
+    },
+    "oracle:ld-r-a": {
+     "step": 4,
+     "family": "random",
+     "pc": "0003",
+     "instruction": "ED 4F DE CC  LD R,A",
+     "verified": true,
+     "diff": null,
+     "program": "C5 B2 07 ED 4F DE CC E6 C8 00 43 35 DF DA 4E 99 25 FA 50 BD 61 4A 50 C6 8C 06 0A 68 57 C6 B3 C6 31 10 08 FD 34 71 B4 7B 68 5E 93 C2 5E FD 58 2F 03 90 E8 44 97 4B 57 78 EE 90 20 BD CF D6 51 C7 AF BF 1D E7 52 4D 21 D7 03 5B 50 DA B8 76 99 09 6F A0 81 02 A2 EF 48 1D EF 8A AD 70 9E CB E2 4C A9 F3 B9 51"
+    },
+    "oracle:adc-sbc-hl-z": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "ED 62 A5 A5  ED $62",
+     "verified": true,
+     "diff": null,
+     "program": "ED 62 A5 A5 46 EF A7 B7 75 46 15 38 20 98 89 9F 89 EF 51 8B CB 6D 95 0E DC 67 D5 1C 21 7E D0 D8 B6 1F 32 EF 3A 1E EC 5E 9F 79 F6 FD 47 3C DE 81 70 14 A7 87 AF 89 E5 BF 23 7D 32 F8 DE 5C B0 26 85 EF B5 11 1C 2B 3C 44 FA 22 0F 97 42 92 14 DC 45 A7 5C 80 EC 01 7E 0E 90 59 47 F0 05 1D 7B F6 AA 6A 86 9C"
+    },
+    "zilion:wasted-prefix-r": {
+     "step": 21,
+     "family": "random",
+     "pc": "D37E",
+     "instruction": "ED 5F C8 CB  LD A,R",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "a",
+        "gpu": 24,
+        "cpu": 23
+       },
+       {
+        "name": "f",
+        "gpu": 8,
+        "cpu": 0
+       }
+      ]
+     },
+     "program": "F7 F5 44 14 04 4D 4C 53 92 E2 DE 61 7B C1 9A FF FE 1F 54 DA 25 90 87 72 44 C4 66 D3 E3 C4 A1 DA DE A2 5D C1 FD ED EC 64 2F 80 ED 5F C8 CB 77 DE C1 D0 2C 46 67 17 D8 E8 69 FF 1F B8 1F B6 86 7A 59 D0 64 A7 F6 8E 9C F2 BF 71 BE 4E D5 31 38 82 77 7C 80 B0 48 D8 8B 1E 3A E8 92 96 E5 92 45 F5 01 C3 91 5D"
+    },
+    "oracle:ld-a-r": {
+     "step": 7,
+     "family": "random",
+     "pc": "5F5D",
+     "instruction": "ED 5F 77 CA  LD A,R",
+     "verified": true,
+     "diff": null,
+     "program": "0C DF C5 A7 A2 58 2D 0C 30 3E 55 70 5C ED 5F 77 CA 84 11 48 26 BD 4A 69 9D 47 E2 5C 5F 98 EC 91 8D A6 E5 18 8E 10 C5 36 6F 26 BC E6 47 3A 50 A0 AC ED EB E6 B0 D4 0C 47 1D F5 40 5A 5C 97 C5 31 C2 F6 BF 51 DE 53 FE EE A9 E2 9D 0A 17 B6 CE AF 59 9E 50 41 58 A5 47 92 44 10 FF 5C 40 A6 6A 51 85 40 52 24"
+    }
+   },
+   "seamCoverageRandom": {
+    "any": 53800,
+    "pc": 13103,
+    "sp": 7039,
+    "ptr": 46201
+   },
+   "families": {
+    "random": {
+     "n": 100000,
+     "real": 10438,
+     "benign": 32,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/open": {
+     "n": 200,
+     "real": 20,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/open": {
+     "n": 200,
+     "real": 10,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/open": {
+     "n": 200,
+     "real": 25,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/open": {
+     "n": 200,
+     "real": 19,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/open": {
+     "n": 200,
+     "real": 7,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/open": {
+     "n": 200,
+     "real": 20,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/open": {
+     "n": 200,
+     "real": 18,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/open": {
+     "n": 200,
+     "real": 13,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/open": {
+     "n": 200,
+     "real": 22,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    }
+   },
+   "mutants": {
+    "pc-increment-unmasked": {
+     "sites": 1,
+     "cases": 29000,
+     "detected": 1041,
+     "detectedInMemory": 801,
+     "detectedInMemoryByTargeted": 483
+    },
+    "pop-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2203,
+     "detectedInMemory": 801,
+     "detectedInMemoryByTargeted": 702
+    },
+    "push-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2168,
+     "detectedInMemory": 2168,
+     "detectedInMemoryByTargeted": 1519
+    },
+    "rel-jump-unmasked": {
+     "sites": 3,
+     "cases": 29000,
+     "detected": 3935,
+     "detectedInMemory": 2251,
+     "detectedInMemoryByTargeted": 961
+    }
+   },
+   "seconds": 11.969
+  },
+  "128": {
+   "P": 128,
+   "L": 64,
+   "spInit": "FFFF",
+   "seamOffset": 0,
+   "provenance": {
+    "layout": "square (64-byte tapes)",
+    "executorSha": "360b650eb007aa78",
+    "executorMemoryModel": true,
+    "exportedExecutor": true,
+    "soupShaderMemoryModel": true,
+    "exportedSoupShader": true
+   },
+   "random": 100000,
+   "targeted": 9000,
+   "real": 11100,
+   "realMem": 8657,
+   "benign": 25,
+   "targetedReal": 306,
+   "expectations": {
+    "checked": 6000,
+    "oracleFails": 0,
+    "gpuFails": 0,
+    "failures": []
+   },
+   "outcomes": {
+    "match-modulo-oracle-quirks": {
+     "random": 10748,
+     "targeted": 302
+    },
+    "zilion-deviation": {
+     "random": 70,
+     "targeted": 5
+    }
+   },
+   "events": {
+    "oracle:unhandled-dd-fd": {
+     "n": 47102,
+     "verified": 47102
+    },
+    "oracle:adc-sbc-hl-z": {
+     "n": 201,
+     "verified": 201
+    },
+    "zilion:bit-mem-f3f5": {
+     "n": 233,
+     "verified": 233
+    },
+    "oracle:ld-a-r": {
+     "n": 129,
+     "verified": 129
+    },
+    "oracle:in-f-c": {
+     "n": 27,
+     "verified": 27
+    },
+    "oracle:ld-r-a": {
+     "n": 7,
+     "verified": 7
+    },
+    "zilion:wasted-prefix-r": {
+     "n": 2,
+     "verified": 2
+    }
+   },
+   "examples": {
+    "oracle:unhandled-dd-fd": {
+     "step": 1,
+     "family": "random",
+     "pc": "0000",
+     "instruction": "FD 30 28 F0  FD ..",
+     "verified": true,
+     "diff": null,
+     "program": "FD 30 28 F0 FB B0 07 AD 97 24 36 A3 2E 11 39 DE 0E C2 95 74 60 75 AE CA 69 95 DB 54 C0 9D 72 EE B3 E9 0D 63 A3 94 0C A9 C1 A4 19 78 FF 75 63 86 7C EA 95 0A 69 6C 8D 70 54 3E 7F 8F 58 15 5E 8B A9 92 58 02 55 23 24 E3 CA D7 DE E9 1A E5 09 E7 04 03 7C 6B A4 3D DE A4 8A D4 55 91 BC 84 AB 2E 4F 68 9C B4 9A 0F 3D 34 1B DB B3 1A 67 62 DE 89 F2 3B A7 A4 9E 24 F7 48 CF 91 55 D8 CD 18 25 A4"
+    },
+    "oracle:adc-sbc-hl-z": {
+     "step": 3,
+     "family": "random",
+     "pc": "0002",
+     "instruction": "ED 7A 0C 1E  ED $7A",
+     "verified": true,
+     "diff": null,
+     "program": "74 FD ED 7A 0C 1E D6 19 57 E5 4C 30 65 8F 65 D5 9E 18 4F 53 FC 3F 3A 22 AA B4 88 B6 C8 67 C8 54 FA 46 A3 E7 A8 44 A3 48 F2 A9 3B D1 87 1D DF B3 EB 2F AB 99 52 3E 2C F1 15 F7 FA 1F E0 16 74 43 01 4F 4C C5 43 32 B4 BB 41 EE C3 1D 9C B1 46 27 BC FD 7F 22 48 15 61 D7 5E AD 99 71 BF 95 D2 32 DD C1 AC 36 02 FD CD B6 E0 FA 3D FA 51 66 1C EA 1B 36 FE ED 36 D5 CA 73 73 59 A8 8A 80 D3 3D 8B"
+    },
+    "zilion:bit-mem-f3f5": {
+     "step": 3,
+     "family": "random",
+     "pc": "0003",
+     "instruction": "CB 4E 03 13  BIT 1,(HL)",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "f",
+        "gpu": 116,
+        "cpu": 84
+       }
+      ]
+     },
+     "program": "2E 24 BC CB 4E 03 13 9F CE 9C E2 97 2F A5 2D FE DF BE 36 4A 62 BE B2 8E C3 CA E7 DE 3D 54 70 58 BE 26 36 C6 71 80 83 7D 5D 3D 1B C5 73 7C 1D 1C E2 6C B2 6F 8A 8F 98 7A C0 7D 38 BB CE 91 DF 4B 48 4F E8 62 F3 61 7F 46 1C 14 9C 57 B4 70 91 60 B9 A2 8D 2E 16 28 BE DD BF D7 E9 27 5E A4 5A 74 66 6C 93 69 65 B7 8F 18 D4 80 61 CD EB 7E AE 4A 19 20 8F 28 62 22 7B 15 07 70 0C 55 79 F4 00 5D"
+    },
+    "oracle:ld-a-r": {
+     "step": 2,
+     "family": "random",
+     "pc": "0001",
+     "instruction": "ED 5F 53 E7  LD A,R",
+     "verified": true,
+     "diff": null,
+     "program": "A0 ED 5F 53 E7 39 4C AC 9A 92 B2 76 CA 67 B3 EC FE 58 8A 20 C1 E4 B9 99 15 E6 DE FD C6 E9 AF 55 C7 D3 93 66 E3 FA 2D B9 59 50 35 A4 6C AE F3 85 A9 C2 3B 28 54 BA A7 B4 AD 89 F7 32 83 03 D6 0E 06 BA 67 66 D4 DA 83 E0 62 60 C1 58 45 4B E3 9E FC 2D BC C6 4D CE 10 8C 33 13 F0 00 EC 6A 52 95 9B BB 34 C5 D3 42 DF 0F F5 F0 49 F6 5F 9B F6 17 A8 03 86 3B 33 92 01 A9 5B 8B E5 72 50 6E D7 D3"
+    },
+    "oracle:in-f-c": {
+     "step": 10,
+     "family": "random",
+     "pc": "000E",
+     "instruction": "ED 70 7C 92  ED $70",
+     "verified": true,
+     "diff": null,
+     "program": "2B 51 8E 8C 5E 21 49 AD 06 F7 DD FE E5 BF ED 70 7C 92 A5 12 A4 17 D8 85 00 05 70 F0 97 6E 3F C7 90 6F 9E 38 46 5C 01 E8 F9 AD 64 18 B9 15 C7 15 FD 1D F2 9D 45 D7 7F 7B B8 CA 8E B2 E6 F3 83 8E 8E 80 2A 9A 9A 75 34 D8 07 D0 EA 73 EE 17 BC 7E 6B C8 C2 5B DC 7E 96 23 EB 39 1D 99 DC 8D DF 69 67 D3 69 CE 66 76 10 36 EC C5 9A 5D 23 83 6D 9F 70 3C 6E AD 23 B1 ED 95 5E 2F 83 1D 60 5F 21 BD"
+    },
+    "oracle:ld-r-a": {
+     "step": 7,
+     "family": "random",
+     "pc": "000A",
+     "instruction": "ED 4F 6E F2  LD R,A",
+     "verified": true,
+     "diff": null,
+     "program": "0E 4F A0 1B DE A9 EC 93 3E 52 ED 4F 6E F2 18 81 1F FD 10 95 F0 05 D5 E1 A0 FB 14 AB 47 A2 79 97 E5 AB C9 45 28 D5 54 57 3D 62 93 E8 3B 09 63 19 63 C0 7A 23 E7 E6 84 55 98 62 86 12 96 EA 27 7D C2 EE E6 71 04 5F CF 87 9E 3A 57 E0 1F 8C FE 5F 52 A2 A0 67 D5 ED DE 0F 7E D2 48 0D 38 3D 3C AD D9 0D 57 52 5B BD 4A 94 45 32 37 B7 63 3C 63 BE 8F 7F 5B 9E B8 A0 62 63 E1 E4 26 15 3E 4C AE 8A"
+    },
+    "zilion:wasted-prefix-r": {
+     "step": 16,
+     "family": "random",
+     "pc": "0012",
+     "instruction": "ED 5F F0 DF  LD A,R",
+     "verified": true,
+     "diff": {
+      "memDiffBytes": [],
+      "regDiffs": [
+       {
+        "name": "a",
+        "gpu": 18,
+        "cpu": 17
+       }
+      ]
+     },
+     "program": "EB 3D AD 0B 32 A2 3B A0 93 D6 5C 5E B1 45 F1 04 84 DD ED 5F F0 DF 14 B2 BF CB 2A 77 53 23 0A 92 D5 26 07 35 AC D6 56 1A 1D 32 77 9E 73 71 1D 0E 16 54 81 3A 84 44 D1 D6 0A 83 8D D3 C6 C4 59 07 D0 8A 6D 99 6D 9A 1B 36 A3 BA BD A0 99 A7 0E C9 27 9D 42 34 37 6E 8A 84 08 D0 3F 9E 8A 7E CE DE FF 76 39 0B FE 2F 06 1D 6A 27 F0 E6 63 2D 11 66 AB D3 05 94 26 E3 73 B7 B8 05 11 47 A3 FF 6B F3"
+    }
+   },
+   "seamCoverageRandom": {
+    "any": 70541,
+    "pc": 13416,
+    "sp": 44346,
+    "ptr": 46442
+   },
+   "families": {
+    "random": {
+     "n": 100000,
+     "real": 10794,
+     "benign": 24,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-back/open": {
+     "n": 200,
+     "real": 23,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "jr-fwd/open": {
+     "n": 200,
+     "real": 23,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-back/open": {
+     "n": 200,
+     "real": 18,
+     "benign": 1,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "djnz-fwd/open": {
+     "n": 200,
+     "real": 13,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pc-seq/open": {
+     "n": 200,
+     "real": 17,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "push-wrap/open": {
+     "n": 200,
+     "real": 19,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-wrap/open": {
+     "n": 200,
+     "real": 27,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "pop-init-sp/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "call-wrap/open": {
+     "n": 200,
+     "real": 25,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ret-wrap/open": {
+     "n": 200,
+     "real": 27,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ex-sp-wrap/open": {
+     "n": 200,
+     "real": 23,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "ldir-wrap/open": {
+     "n": 200,
+     "real": 15,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "lddr-wrap/open": {
+     "n": 200,
+     "real": 16,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "idx-wrap/open": {
+     "n": 200,
+     "real": 21,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/halt-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/random-fill": {
+     "n": 200,
+     "real": 0,
+     "benign": 0,
+     "expectChecked": 200,
+     "oracleFails": 0,
+     "gpuFails": 0
+    },
+    "word-wrap/open": {
+     "n": 200,
+     "real": 18,
+     "benign": 0,
+     "expectChecked": 0,
+     "oracleFails": 0,
+     "gpuFails": 0
+    }
+   },
+   "mutants": {
+    "pc-increment-unmasked": {
+     "sites": 1,
+     "cases": 29000,
+     "detected": 94,
+     "detectedInMemory": 0,
+     "detectedInMemoryByTargeted": 0
+    },
+    "pop-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2844,
+     "detectedInMemory": 68,
+     "detectedInMemoryByTargeted": 8
+    },
+    "push-sp-unmasked": {
+     "sites": 2,
+     "cases": 29000,
+     "detected": 2935,
+     "detectedInMemory": 54,
+     "detectedInMemoryByTargeted": 9
+    },
+    "rel-jump-unmasked": {
+     "sites": 3,
+     "cases": 29000,
+     "detected": 50,
+     "detectedInMemory": 0,
+     "detectedInMemoryByTargeted": 0
+    }
+   },
+   "seconds": 12.049
+  }
+ },
+ "seconds": 60.807
+}

@@ -1120,3 +1120,12 @@ it noted that 48 of 64 overstates control survival by chance (about 0.62 with 2,
 arm K's survival is inflated by pool cells that already copy the parent, so arm K's survival is not cited. Mechanism from
 its traces: the pusher's bytes are both the words it writes and the opcodes it executes, so a mutant byte is soon run
 rather than copied, and the wild-type word is regenerated.
+
+### Outcome of N6 (2026-10-10; `n6_analyse.sh` at 84a889a, frozen scripts unchanged; `results/lod_n6/N6_SCORE.md`)
+All 20 worlds closed; replay validation held in every world (0 mismatches). N6-1 met (completed by a rewrite or a copy of
+the partner in 18 of 20, by a point mutation in 0; the other 2 by partial overwrite). N6-2 met (only non-copiers between
+the newest open copier and the founder in 20 of 20). N6-3 met (median executed-word share 0.00190, 7.9 × baseline).
+N6-4 not met (executor a whole-tape non-copier in 20 of 20, but a non-copier by executed bytes in 11 of 20 against 12
+required; abundance P = 0.062). N6-5′ met (0.0064 expected founders from 55 recorded point mutations). Kill not triggered.
+Registered decision applied: N6-1 and N6-2 met, so the founder result is stated as confirmed; the writer's kind by
+executed code is reported as not confirmed. X3 on the N6 worlds (confirmatory): X3-1 met, 20 of 20; X3-2 met.
