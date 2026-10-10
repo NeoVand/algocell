@@ -919,7 +919,7 @@ about 1,000 open-copier records follow C* on its line. The oldest confined recor
 lineage begins; the founder is identified by genotype at the start of the final confined stretch, on functional-parent
 lines (lod_v6).
 
-### Outcome of N3 on functional-parent lines (lod_v6; appended 2026-10-10 00:35; `results/lod/CHAIN_v6.md`, `chain_v6.csv`, `PARTS_v6.md`)
+### Outcome of N3 on functional-parent lines (lod_v6; appended 2026-10-10 00:35; `results/lod/founders_v6.csv` (the 32 distinct founders; every number below), `CHAIN_v6.md`, `PARTS_v6.md`)
 17 of 20 worlds closed within 80,000 steps (exact replay held in all 20: 0 mismatches). On the 64 sampled lines of each
 closed world, the founder F of the confined lineage (first confined copier, by genotype, after the last open copier
 before the final confined stretch) was found in all 17 worlds: 32 distinct founders.
@@ -931,7 +931,7 @@ before the final confined stretch) was found in all 17 worlds: 32 distinct found
   founders are not point mutants and wrong about the writers: the founders' bytes were written mostly by tapes that cannot
   copy themselves (64% of all founder bytes; 7% by open copiers, 8% by confined copiers, 20% kept from the last open
   copier, 0.6% by mutation; per founder, median 78%, IQR 38–94%; 21 of 32 founders got at least half their bytes from
-  non-copiers). Each founder's bytes came from a median of 4 distinct events (1–9), a median of 42 records and 248 steps
+  non-copiers). Each founder's bytes came from a median of 4 distinct events (1–9), a median of 42.5 records and 240.5 steps
   after the last open copier on its line.
 - *What was assembled.* In 16 of 17 worlds the founder is a return closer (`XX e3 21 e3 21 RET XX RET` × 2, the family
   of the paper's evolved L = 16 closer, made of the pusher's own load word `21` with EX (SP),HL and a return in place of
