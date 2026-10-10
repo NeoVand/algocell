@@ -35,17 +35,21 @@ ED_FILES = {
 # figures and two tables, numbered by first citation (detectors, census, atlas, confinement, closure stages, scan, BFF inflow, lethal tar).
 FIG_FILES_V4 = {"1": ["fig1.pdf"], "2": ["fig2.pdf"], "3": ["fig3.pdf"], "4": ["fig4v5.pdf"], "5": ["fig5v4.pdf"], "6": ["fig6v5.pdf"]}
 ED_FILES_V4 = {
+    # revision 3: ten Extended Data items, numbered by first citation; three former items moved to the Supplementary
     "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed12.pdf")],
-    "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
-    "3": [os.path.join(EXP, "manuscript", "figures", "out", "fig4.pdf")],
-    "4": [os.path.join(EXP, "manuscript", "figures", "out", "ed_confine.pdf")],
-    "5": [os.path.join(EXP, "manuscript", "figures", "out", "ed_closure.pdf")],
-    "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
-    "7": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
-    "8": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
-    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed_invasions2.pdf")],
-    "10": [os.path.join(EXP, "manuscript", "figures", "out", "ed_switch.pdf")],
-    "11": [os.path.join(EXP, "manuscript", "figures", "out", "ed_dial.pdf")],
+    "2": [os.path.join(EXP, "manuscript", "figures", "out", "fig4.pdf")],
+    "3": [os.path.join(EXP, "manuscript", "figures", "out", "ed_confine.pdf")],
+    "4": [os.path.join(EXP, "manuscript", "figures", "out", "ed_closure.pdf")],
+    "5": [os.path.join(EXP, "manuscript", "figures", "out", "ed_invasions2.pdf")],
+    "6": [os.path.join(EXP, "manuscript", "figures", "out", "ed_switch.pdf")],
+    "7": [os.path.join(EXP, "manuscript", "figures", "out", "ed_assembly.pdf")],
+    "8": [os.path.join(EXP, "manuscript", "figures", "out", "ed_dial.pdf")],
+    "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
+}
+SUP_FILES = {
+    "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
+    "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
+    "3": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
 }
 
 SYM = {
@@ -145,9 +149,9 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
             return
         text = " ".join(x.strip() for x in para)
         para = []
-        if text.startswith("**Extended Data"):
+        if text.startswith(("**Extended Data", "**Supplementary")):
             text = re.sub(r"\s*Source: .*$", "", text)       # provenance stays in the Markdown, not in the review copy
-        if text.startswith("**Extended Data Table"):
+        if text.startswith(("**Extended Data Table", "**Supplementary Table")):
             pending_table_legend.append(inline(text))       # kept with its table (see flush_table)
             return
         m = re.match(r"\*\*Fig\. (\d+) \| ", text)
@@ -161,14 +165,18 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
         if m and m.group(1) in ED_FILES and any(os.path.exists(f) for f in ED_FILES[m.group(1)]):
             body.extend(figure_block(ED_FILES[m.group(1)], inline(text), out_dir, floating=True))
             return
+        m = re.match(r"\*\*Supplementary Fig\. (\d+) \| ", text)
+        if m and m.group(1) in SUP_FILES and any(os.path.exists(f) for f in SUP_FILES[m.group(1)]):
+            body.extend(figure_block(SUP_FILES[m.group(1)], inline(text), out_dir, floating=True))
+            return
         if text.startswith("*") and text.endswith("*") and text.count("*") == 2:
             body.append(r"{\small\color{gray}" + inline(text) + "}")
             body.append("")
             return
         body.append(inline(text))
         body.append("")
-        if INLINE[0] and not section.startswith(("Figure legends", "Extended Data", "References")):
-            for n in re.findall(r"(?<!Extended Data )Fig\.\s*(\d)", text):
+        if INLINE[0] and not section.startswith(("Figure legends", "Extended Data", "References", "Supplementary")):
+            for n in re.findall(r"(?<!Extended Data )(?<!Supplementary )Fig\.\s*(\d)", text):
                 if n in legends and n not in placed:
                     body.extend(main_fig_block(n, floating=True))
                     placed.add(n)

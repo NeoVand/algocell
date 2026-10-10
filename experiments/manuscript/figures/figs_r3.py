@@ -71,7 +71,7 @@ def _theorem_panel(ax):
     cp.arrow(ax, (0.9, y - 0.4), (x_end - 0.4, y - 0.4), color=INK, lw=1.0)
     cp.arrow(ax, (x_end - 0.4, y - 0.6), (1.1, y - 0.6), color=RED, lw=1.0, rad=-0.18)
     ax.text(x_end + 0.9, y + 0.8, "128 executions in L cells:", ha="left", va="bottom", fontsize=6, color=INK)
-    ax.text(x_end + 0.9, y + 0.6, "some cell runs twice, a cycle", ha="left", va="top", fontsize=6, color=INK)
+    ax.text(x_end + 0.9, y + 0.6, "some address runs twice", ha="left", va="top", fontsize=6, color=INK)
 
 
 def _census_panel(ax):
