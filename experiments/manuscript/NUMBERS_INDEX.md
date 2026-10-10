@@ -71,7 +71,11 @@ with the Stage G L = 16 tables as the benign control (medians 46,250 vs 525).
 | base rate (open copier among ancestors within 2,000 steps) | median 1.0 | `REVISION_PREREG.md`, outcome of N3 under the registered rule |
 | first founder completed by rewrite / copy of partner / point mutation ("recombination" withdrawn: residual class) | 16 / 1 / 0 | `results/lod/FOUNDERS2.md` ("completed by: novel 16, copyA 1") |
 | founding executor a non-copier; side partner / own half | 17 of 17; 13 / 4 | `results/lod/FOUNDING.md` |
-| bytes of the founder in neither tape before | median 7 (1–13) | `results/lod/FOUNDING.md` |
+| bytes of the founder in neither tape before | median 2 (0–7) with each 8-byte half at its own shifts ("median 7" at shift 0 withdrawn) | `results/lod/FOUNDING.md` |
+| founding executor non-copier by whole tape / by executed bytes too | 17 / 12 of 17; confined executed-byte copiers 5 | `results/lod/FOUNDING.md` |
+| soup-partner production by the 12 | median 0.02, at most 0.46 (0.21, 0.46), open producer 1.00 | `results/lod/founding.csv` (executor_soup_produces_F) |
+| founding events that are point mutations | 0 of 17; chain events 54 of 212 (0.25); P = 0.0068 | `results/lod/FOUNDING.md` |
+| founder a copy of an open copier | 1 of 17 (31007) | `results/lod/FOUNDING.md` |
 | routes: open writer in that encounter / confined producer earlier / open producer | 11 / 5 / 1; producers 1–3 steps before F, by point mutation 3 (2 confined) and rewrite 3 | `results/lod/FOUNDING.md`, `founding.csv` |
 | in-encounter writers produce F with random partners | at most 0.19 | `results/lod/founding.csv` (executor_writes_F) |
 | steps since the newest open copier (median, range); records | 79 (1–360); 14 | `results/lod/FOUNDERS2.md`; `results/lod/founders2.csv` (steps_elapsed) |

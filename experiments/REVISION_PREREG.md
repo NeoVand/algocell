@@ -1011,3 +1011,17 @@ Added predictions, on the first founder of each closed world (`lod_founding.py`,
 - N6-5 (written, not inherited): no first founder is a point mutation of a copier (open or confined) in ≥ 0.9 n worlds.
 Reported regardless: side, producers on the chain and how they arose, bytes in neither parent. N6-1 is kept as registered,
 with "novel" read as *rewrite*.
+
+### Third correction to the outcome of N3 (2026-10-10, third critic report; `results/lod/FOUNDING.md` regenerated)
+"Written by a non-copier in 17 of 17" holds only under the whole-tape copy test. The 5 producers copy every byte they run
+(copier by executed bytes; one is one byte short of the whole-tape threshold) and are confined: by that criterion they are
+closers whose unexecuted half has not been rebuilt, made 1–3 steps before the founder by point mutation (2) or rewrite (3).
+Robust under both criteria: in 12 of 17 worlds the founder was written by a program that copies neither its tape nor the code
+it runs, as a rare outcome with soup partners (median 0.02, at most 0.46) except the open producer of 31005 (1.00); its
+pointer entered the partner in the founding encounter in 10 of the 12. No founding event is a point mutation (0 of 17,
+against 54 of 212 earlier chain events; P = 0.0068 under exchangeability). Founder 31007 is a copy of an open copier. Bytes
+in neither parent, letting each 8-byte half of the founder take its own shifts: median 2 (0–7), withdrawing "a median of 7".
+### Second amendment to N6 (2026-10-10, before any N6 world is run)
+N6-4 is restated with both criteria: the founding executor is a non-copier by the whole-tape test in ≥ 0.8 n worlds (as
+registered) and by executed bytes in ≥ 0.6 n worlds. N6-5 is restated as: no founding event is a point mutation in
+≥ 0.9 n worlds. The frozen pipeline now includes `lod_founding.py` as committed with this amendment.

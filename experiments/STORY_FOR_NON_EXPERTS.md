@@ -511,14 +511,13 @@ counted from the most recent ancestor that was still an open copier.
 - **The first founder was never a single-byte change to a working copier.** In none of the 17 worlds was it a **point mutation** (a
   random change of one byte) of a tape that could already copy itself. It appeared a median of 79 steps after its most recent
   open-copier ancestor (between 1 and 360 steps).
-- **It was written by a program that could not copy itself.** We replayed the exact encounter that made each founder. In all 17
-  worlds, the program that ran in that encounter was a **non-copier**: a tape that fails the copying test. It *wrote* the founder,
-  into its partner in 13 worlds and into its own half in 4; a median of 7 of the founder's 16 bytes were in neither tape before, so
-  this is writing, not splicing. There were two routes. In 11 worlds an open non-copier, its finger running into its partner, wrote
-  the closer in that one encounter; with other partners it almost never does (at most 19% of random partners). In 5 worlds a
-  *confined* program that writes the closer into any partner, and turns itself into the closer, had appeared one to three steps
-  earlier, made by a point mutation in two and a rewrite in three; it does not count as a copier only because it does not copy the
-  half of itself it never runs. (In one more world, the block copier, an open program did the same.)
+- **In most worlds it was written by a program that could not copy itself.** We replayed the exact encounter that made each
+  founder. In 12 of the 17 worlds, the program that ran in that encounter copies neither its whole tape nor even the code it runs:
+  it *wrote* the closer, usually as a rare accident of meeting that particular partner (with partners drawn from the soup it makes
+  the closer in a median of 2% of encounters). In the other 5 worlds, a *confined* program that copies the code it runs, but not
+  the half of itself it never runs, had appeared one to three steps earlier, by a point mutation in two worlds and a rewrite in
+  three; it is a closer in all but name, and it turned into one in a single encounter. In no world was the event that made the
+  founder a point mutation, although point mutations are a quarter of all the events on these lines.
 - **Its parts are the pusher's own words, slightly changed.** The pusher `21 e5` means "load register HL; push HL". Change one byte
   and you get `21 e3` ("load HL; *swap* HL with the top of the stack") or `21 e0` ("load HL; *return*, if a check passes"). Swapping
   with the stack lets a program pick up the bytes it has just written; returning sends the finger to them. Those are exactly the two
@@ -539,13 +538,15 @@ islands that single changes mostly cannot reach without passing through tapes th
 
 So, in one sentence:
 
-> **The first self-confined replicator in each of these worlds was not copied or mutated from a replicator. It was written, in one
-> encounter, by a program that could not copy itself, from words the sloppy open replicators keep in circulation.**
+> **The first self-confined replicators arose among programs that could not copy themselves, in most worlds as their product, in
+> a single encounter rather than by a mutation, from one-byte variants of the pusher's words.**
 
 A note on honesty. Our first version of this result said the founder was "assembled by recombination". An independent critic
-showed that the category we had called recombination simply meant "neither a copy nor mostly the old tape", and that in several
-worlds the founder's predecessor already wrote it. Replaying the founding encounters gave the more precise answer above, and we
-withdrew the first wording.
+showed that the category we had called recombination simply meant "neither a copy nor mostly the old tape". Our second version
+said "written by a non-copier in all 17 worlds"; a second critic showed that in 5 worlds the writer copies all the code it runs
+and fails our copying test only on the half it never runs. Each time we replayed the data, kept what holds under every reasonable
+definition, and withdrew the rest. That is the version above, and it is still exploratory until the pre-registered replication
+runs.
 
 ---
 
@@ -559,11 +560,11 @@ withdrew the first wording.
 2. **We can watch something like Woese's Darwinian threshold, byte by byte.** Woese's picture of a communal era giving way to
    individual lineages was a theory about ancient cells. Here there is a communal phase: sloppy copiers whose children depend on
    their neighbours, and, in the extreme case of Part IV, populations that carry heredity with no clone at all. There is a pool of
-   shared words kept in circulation by those copiers. And there is the moment when a program that cannot copy itself writes, from
-   that pool, the first copier whose children depend only on itself.
+   shared words kept in circulation by those copiers. And there is the moment when, usually, a program that cannot copy itself
+   writes from that pool the first copier whose children depend only on itself.
 3. **The first individual can be made by non-individuals.** We usually picture the first self-copier as a lucky mutant of an
-   earlier copier. Here it was written by programs that could not copy themselves, out of material the sloppy copiers had spread
-   around. The communal soup, with all its sideways traffic, is not just noise that individuality must overcome; it is where the
+   earlier copier. Here, in most worlds, it was written by programs that could not copy themselves, out of material the sloppy
+   copiers had spread around. The communal soup, with all its sideways traffic, is not just noise that individuality must overcome; it is where the
    first individual is made.
 4. **The path depends on the chemistry.** A cheap literal channel and harmless by-products give a communal, open beginning. Toxic
    by-products, or no literal channel, give a beginning with loops and self-contained replicators. Origin-of-life researchers argue

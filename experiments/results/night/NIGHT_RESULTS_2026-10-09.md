@@ -9,7 +9,9 @@ into the manuscript.
 record class reported as recombination is a residual. Replaying the founding encounters, every first founder was written by a
 non-copier executor (17 of 17), never a point mutation of a copier: by an open writer in that one encounter in 11 worlds, from a
 confined non-copying producer that arose 1–3 steps earlier in 5 (point mutation 2, rewrite 3), by an open producer in 1. The
-paragraph below is kept as first written.
+paragraph below is kept as first written. **Third correction (same day, third critic):** the 5 producers copy every byte
+they run (closers but for their unexecuted half), so "written by a non-copier" holds in 12 of 17 under both copier criteria;
+no founding event is a point mutation (0 of 17 against 0.25 of chain events, P = 0.007).
 **The first self-confined replicator in each world is born by recombination.** On the exact line of descent, the first
 confined copier of each of the 17 closed worlds was completed by a recombination (16) or a copy of the partner (1), never
 by a point mutation of a copier, a median of 79 steps after its line left the open-copier lineage, with only non-copying
