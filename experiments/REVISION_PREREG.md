@@ -718,3 +718,52 @@ Predictions of H_tox (registered):
   soups, two arms per soup with new seeds: detox every transmitter's payload, or sham; 100,000 steps, snapshots as in E.
   H_tox: the transmitter share of core carriers in the detox arm falls below the sham arm by ≥ 0.10 at some snapshot in
   ≥ 7 of 10 soups, and the payload Z of the detox arm climbs back towards the sham arm's.
+
+### Outcome of N1 (appended 2026-10-09 night; `results/toxin/COMPOSITION.md`, `CAUSAL.md`, `*.csv`; `payload_toxin.py`)
+H_tox is rejected; the composition favours H_dam (N1-5), and the causal test finds a real but negligible protection.
+N1-1 failed: 0x76 is not enriched in benign payloads (median H 0.0038 at L = 32, above 3/256 in 1 of 10 worlds; 0.0018
+at L = 16, 2 of 9). N1-2 failed at L = 32 (lethal median Z 0.052 against benign 0.067; ratio 0.77) and was below the
+registered factor at L = 16 (0.060 against 0.038; ratio 1.57). N1-3 failed: across payload positions the share of halting
+bytes does not rise with the intruders' hazard (ρ = −0.76, −0.04, +0.02, −0.03); zeros rise with position instead (ρ =
++0.66 to +0.86), to 0.32–0.38 at the second-last byte at L = 32 with an even–odd pattern, the footprint of words pushed
+from the stack top, which sits at the end of the partner. N1-4 failed at the registered snapshot (dial, 100k: ρ = −0.19,
+15 worlds); at 300k ρ = +0.39 (one-sided P = 0.04, 21 worlds), secondary. Mutation-off worlds carry no payload zeros at
+all (clonal survivors). N1-6 failed on its registered size: under lethal tar removing the halting bytes lowers the
+host's survival as an intact partner by 0.0009 (L = 32; 95% CI 0.0005–0.0013) and 0.0012 (L = 16), the sham changes
+nothing, and the owner never fetches its payload (0 of 25,600 encounters per variant) and copies exactly in all of them.
+*Reading:* payload zeros are scars of intrusions that transmitters inherit and regenerators erase; their protective value
+is about a thousandth per encounter. The environment's choice between regenerators and transmitters is not explained by
+a toxic payload. N1-7 is not launched.
+
+## N3 — the line of descent of the first self-confined replicators (written before the recorder was run, 2026-10-09 night)
+*Question.* Do the closed (execution-confined) replicators that take over a benign-tar world descend from the open
+replicators that came first, and by what event was the first confined copier made?
+*Method* (`lod.py`, no shader change). Every step of a world is recorded exactly: the pairs drawn and their active flag,
+each active pair's memories before execution (the soup before the step), after execution and before mutation
+(`read_pair_memory`), and the soup after mutation. Each changed cell gets a birth record: *copy* (its new tape is within
+Hamming L/4 of the executor A's tape at some cyclic shift, and closer to it than to its own old tape), *damage* (within
+L/4 of its own old tape), *novel* (neither; both tapes are parents, with per-position attribution), or *mutation* (a
+point mutation after the encounter; parent = its record before). Every copy event is re-run on the traced executor:
+the executor's record is flagged *confined copier* if its pointer fetched no partner byte, *open copier* otherwise.
+Records no living cell descends from are freed; the rest form the exact ancestry graph. The population measure of
+closure is the share of copy events whose executor stayed confined (per 500 steps).
+*Validation, before any registered run* (V1–V3 must all hold; otherwise no claim is made):
+- V1 (known ancestry): the return closer `ad e3 21 e3 21 c0 ad c0` × 2 seeded at 1% into a world of the pusher `01 c5`
+  × 8 (L = 16, Stage G dynamics, 5,000 steps): ≥ 99% of 64 sampled confined copiers at the end trace by their line of
+  descent (major parent at novel events) to a seeded closer; the pusher's copy events are open in ≥ 95%, the closer's
+  confined in ≥ 95%.
+- V2 (exact replay): re-running every active pair of the first 200 steps on the traced executor reproduces the recorded
+  post-execution memories byte for byte.
+- V3 (accounting): per step, cells changed outside active pairs number at most the mutation count.
+*Registered runs.* 20 new benign-tar worlds at L = 16, zero registers, Stage G dynamics (seeds 31001–31020), recorded
+from step 0 until the confined share of copy events has exceeded 0.5 for 2,000 consecutive steps, then 5,000 more steps
+(cap 80,000). At the end, 64 cells are sampled among those whose record was flagged confined in the last 500 steps, and
+each line of descent is walked back to step 0. C* = the earliest record on the line flagged confined.
+*Predictions.* N3-1 (descent): in ≥ 15 of the worlds that close, the line of descent of the majority of sampled confined
+copiers passes through a record flagged open copier before C*. N3-2 (the founding event, my prior, registered as a
+prior): C* is made in most worlds by an encounter in which an open copier wrote into a partner and the result keeps
+bytes of both (a *copy* or *novel* record whose executor parent is an open copier), not by a point mutation of an open
+copier's own tape. Reported regardless: the kind of each C* event, the executor's and partner's tapes, which positions of
+C* came from which parent, and the base rate (share of living cells at C*'s birth whose line of descent contains an open
+copier within 2,000 steps). *Decision.* N3-1 met: "closed replicators descend from the open ones" may be written.
+Independent origin is written only if in ≥ 15 worlds no open copier lies on the line. Otherwise mixed, reported as such.
