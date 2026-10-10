@@ -88,8 +88,8 @@ def founder_marker(ax, x, y, entered, s=10):
         ax.scatter(x, y, s=s * 0.8, marker="s", facecolor="white", edgecolor=RED, lw=0.7, zorder=3)
 
 
-def ring(ax, x, y):
-    ax.scatter([x], [y], s=36, marker="o", facecolor="none", edgecolor=INK, lw=0.6, zorder=4)
+def ring(ax, x, y, s=36):
+    ax.scatter([x], [y], s=s, marker="o", facecolor="none", edgecolor=INK, lw=0.6, zorder=4)
 
 
 # ------------------------------------------------------------------------------------------------------------- data
@@ -305,7 +305,7 @@ def panel_soup(axs, M, shown):
         top = max(seen.values()) - 1
         for i in idx:
             if M.F_copy_of_open_copier.values[i]:
-                ax.annotate("copy of an\nopen copier", pos[i], xytext=(-7, 0), textcoords="offset points", fontsize=5.5, color=GREY,
+                ax.annotate("copy of an open copier", pos[i], xytext=(-6, 9), textcoords="offset points", fontsize=5.5, color=GREY,
                             ha="right", va="center", arrowprops=dict(arrowstyle="-", lw=0.4, color=GREY, shrinkA=1.0, shrinkB=2.5))
             if t == NEITHER and M.producer.values[i]:
                 made = MADE[M.producer_made_by.values[i]]
@@ -313,7 +313,7 @@ def panel_soup(axs, M, shown):
                 ax.annotate(f"{kind} producer,\nmade by {made}", pos[i], xytext=(3, 10), textcoords="offset points", fontsize=5.5,
                             color=GREY, ha="right", va="center")
         ax.text(0.0, 1.0, f"{t} ({len(idx)})", fontsize=5.5, color=INK, ha="left", va="bottom", transform=ax.transAxes, gid="allow-outside")
-        ax.set_ylim(-1.4 if t == NEITHER else -0.7, max(top, 1) + 1.6)
+        ax.set_ylim(*((-1.4, max(top, 1) + 1.6) if t == NEITHER else (-0.7, top + 0.7)))
         ax.set_yticks([])
         ax.spines["left"].set_visible(False)
         _strip_x(ax, zero_x, lo_x, show=(t == CODE))
@@ -345,18 +345,19 @@ def panel_reach(ax, M, shown):
         pos[i] = (v[i], k + 1)
         founder_marker(ax, [v[i]], [k + 1], D.entered.values[i])
     for sd in shown:
-        ring(ax, *pos[int(np.where(D.seed.values == sd)[0][0])])
+        ring(ax, *pos[int(np.where(D.seed.values == sd)[0][0])], s=26)
     top = max(seen.values())
+    assert v.max() < 12
     ax.axvline(1, color=GREY, lw=0.6, ls=(0, (1, 1.5)), zorder=1)
     ax.text(1.35, top + 0.6, "one point\nmutation", fontsize=5.5, color=GREY, ha="left", va="center")
-    ax.set_xlim(0, L + 0.3)
-    ax.set_xticks([1, 4, 8, 12, 16], ["1", "4", "8", "12", "16"])
+    ax.set_xlim(0, 12)
+    ax.set_xticks([1, 4, 8, 12], ["1", "4", "8", "12"])
     ax.set_ylim(0.3, top + 1.5)
     ax.set_yticks([0, 2, 4] if top >= 4 else range(top + 1))
     fs.tidy(ax, "bytes between the founder\nand the tape before it", "first founders")
-    note = (f"single-byte mutants that are\nconfined copiers: none for\n{r['n_tapes'] - r['n_reach']} of {r['n_tapes']} chain tapes, at most "
-            f"{r['max_share'] * 100:.1f}%\n\nexpected founders from the\n{r['n_mut']} recorded point mutations:\n{r['expected']:.3f}")
-    ax.text(1.08, 1.0, note, fontsize=5.5, color=INK, ha="left", va="top", transform=ax.transAxes, gid="allow-outside", linespacing=1.25)
+    note = (f"single-byte mutants that are\nconfined copiers: none for\n{r['n_tapes'] - r['n_reach']} of {r['n_tapes']} chain tapes,\nat most "
+            f"{r['max_share'] * 100:.1f}%\n\nexpected founders from\nthe {r['n_mut']} recorded point\nmutations: {r['expected']:.3f}")
+    ax.text(1.06, 1.0, note, fontsize=5.0, color=INK, ha="left", va="top", transform=ax.transAxes, gid="allow-outside", linespacing=1.2)
     print(f"[ed_assembly] panel d: distance median {np.median(v):.0f} (range {v.min()}-{v.max()}); counts {dict(sorted(seen.items()))}; "
           f"reach {r}")
     return r
@@ -425,8 +426,8 @@ def ed_assembly(out):
     panel_line(axb, rows[1], _title(rows[1]), xr, yrb, key=False)
     # c: two strips, one per kind of executor; d: mutational reach; e: steps
     axc1 = axmm(fig, 116.0, 14.0, 62.0, 13.0)
-    axc2 = axmm(fig, 116.0, 33.0, 62.0, 13.0)
-    axd = axmm(fig, 117.0, 72.0, 26.0, 18.0)
+    axc2 = axmm(fig, 116.0, 32.0, 62.0, 10.0)
+    axd = axmm(fig, 117.0, 66.0, 34.0, 20.0)
     axe = axmm(fig, 116.0, 114.0, 60.0, 16.0)
     panel_soup((axc1, axc2), M, shown)
     panel_reach(axd, M, shown)
@@ -434,7 +435,7 @@ def ed_assembly(out):
     letter(fig, 0.5, 1.0, "a")
     letter(fig, 0.5, yb - 1.5, "b")
     letter(fig, 110.0, 1.0, "c")
-    letter(fig, 110.0, 62.0, "d")
+    letter(fig, 110.0, 57.0, "d")
     letter(fig, 110.0, 105.0, "e")
     save(fig, os.path.join(out, "ed_assembly"))
 
