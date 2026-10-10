@@ -88,3 +88,6 @@ with the Stage G L = 16 tables as the benign control (medians 46,250 vs 525).
 | zeros removed: protection kept | 88–94% | `REVISION_PREREG.md`, outcome of N4; `results/n2/SCARS.md` |
 | payload zeros as scars (benign vs lethal frequency) | 0.067 vs 0.052 at L = 32 | `results/toxin/COMPOSITION.md` |
 | BFF open literal: offspring carry 8 bits of the partner without wrap | 8 bits (ceiling) | Supplementary Fig. 3 (old ED Fig. 7); `results/biology/individuality/NUMBERS_INDIVIDUALITY.md` |
+| `21 e3` / `21 e0` carried before first founders (where executed) | median 0.24% (0.11–0.82%) / 2.4% (0.83–4.6%) | `results/lod/PARTS_FIRST.md` |
+| confined copiers already present before the founder | 2 of 17 worlds, at most 0.05% of cells | `results/lod/PARTS_FIRST.md`; `founders2.csv` (soup_confined) |
+| t_rep median with well-mixed pairing | 125 | `results/stageH/NUMBERS_H.md` |

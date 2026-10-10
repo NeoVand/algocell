@@ -31,7 +31,10 @@ def main():
           f"(random-tape baseline ≈ 0.00024; ratio ≈ {Q.share.median() / 0.00024:.1f})",
           f"- of carriers, share that are non-copiers (median over words): {carrier_nc:.2f}; non-copiers in the soup at the same "
           f"snapshot: {F1.soup_noncopier.min():.2f}–{F1.soup_noncopier.max():.2f} (open copiers {F1.soup_open.min():.2f}–{F1.soup_open.max():.2f})",
-          "- families of first founders: " + ", ".join(f"{k} {v}" for k, v in fam.value_counts().items()), ""]
+          "- families of first founders: " + ", ".join(f"{k} {v}" for k, v in fam.value_counts().items()),
+          *[f"- word `{w}` (where executed): carried by a median {Q[Q.word == w].share.median():.4f} of cells (range {Q[Q.word == w].share.min():.4f}–{Q[Q.word == w].share.max():.4f}; {int((Q.word == w).sum())} founders)"
+            for w in ("21 e3", "21 e0") if (Q.word == w).any()],
+          f"- first founders whose soup snapshot already held confined copiers: {int((F1.soup_confined > 0).sum())} of {len(F1)} (max share {F1.soup_confined.max():.4f})", ""]
     for r, f in zip(F1.itertuples(), fam):
         md.append(f"  - world {r.seed}: `{r.F_tape}` ({f})")
     open(os.path.join(OUT, "PARTS_FIRST.md"), "w").write("\n".join(md) + "\n")

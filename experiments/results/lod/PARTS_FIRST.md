@@ -4,6 +4,9 @@
 - median share of cells carrying an executed word, last snapshot before the founder: 0.00205 (random-tape baseline ≈ 0.00024; ratio ≈ 8.5)
 - of carriers, share that are non-copiers (median over words): 1.00; non-copiers in the soup at the same snapshot: 0.84–0.89 (open copiers 0.11–0.16)
 - families of first founders: return-closer motif 15, LDIR block copier 1, other 1
+- word `21 e3` (where executed): carried by a median 0.0024 of cells (range 0.0011–0.0082; 15 founders)
+- word `21 e0` (where executed): carried by a median 0.0236 of cells (range 0.0083–0.0460; 13 founders)
+- first founders whose soup snapshot already held confined copiers: 2 of 17 (max share 0.0005)
 
   - world 31001: `87 e3 21 e3 21 e0 87 e0 87 e3 21 e3 21 e0 87 e0` (return-closer motif)
   - world 31002: `3d e3 21 e3 21 e0 3d e0 3d e3 21 e3 21 e0 3d e0` (return-closer motif)

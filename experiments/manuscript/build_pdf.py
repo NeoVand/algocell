@@ -47,9 +47,9 @@ ED_FILES_V4 = {
     "9": [os.path.join(EXP, "manuscript", "figures", "out", "ed13.pdf")],
 }
 SUP_FILES = {
-    "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
-    "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
-    "3": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
+    "1": [os.path.join(EXP, "manuscript", "figures", "out", "ed14.pdf")],
+    "2": [os.path.join(EXP, "manuscript", "figures", "out", "ed_bffinflow.pdf")],
+    "3": [os.path.join(EXP, "manuscript", "figures", "out", "ed_census.pdf")],
 }
 
 SYM = {
