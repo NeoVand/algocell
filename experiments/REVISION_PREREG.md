@@ -1093,3 +1093,30 @@ an open copier. X3-2: in no world does a confined copier on a line precede that 
 the median founder delay (79 steps). *Reading.* X3-1 not met: "replication begins open" is restricted to the first
 replicator of each world and is not said of the ancestry of the closers. For lod_v6 this analysis is registered after
 the data exist but before this question was examined; for N6 it is confirmatory.
+
+### Outcome of X2 (2026-10-10; `inflow_insoup.py`, `results/inflow_insoup/INFLOW_INSOUP.md`, `per_world.csv`)
+X2-1 met: at L = 16 the median inflow against partners from the step-5,000 snapshot is 3.78 bits (every world above
+1 bit; 3.52 with step-10,000 partners; 3.86 against uniform partners). X2-2 met: the pointer enters the partner in every
+in-soup encounter for 80 of 80 first replicators. Medians against uniform and in-soup partners: L = 20, 6.17 and 4.52 bits;
+L = 50, 7.78 and 6.90; L = 64, 7.98 and 7.33. Caveat recorded with the outcome: partners were drawn uniformly from the
+whole soup, in which a median 15% of cells at L = 16 are ≥ 75% copies of the organism, whereas a pusher's lattice
+neighbour is within Hamming distance 2 of it in 57% of open-phase encounters (`kin_census.py`); inflow among lattice
+neighbours was not measured.
+
+### Outcome of X3 on lod_v6 (2026-10-10; `lod_openfirst.py`, `results/lod/OPEN_FIRST.md`, `open_first.csv`)
+X3-1 met: in 17 of 17 closed worlds the first copier on every sampled line is an open copier. X3-2 met: no line's first
+copier is confined. The lines of a world share their early ancestry (19 distinct first-copier records over 17 worlds), so
+the count of independent observations is 19, not 1,088. Two unregistered sensitivity checks (copy rate strictly above 0.5;
+at least one exact self-copy), labelled as such in the report, leave the result unchanged. N6 worlds will be scored when
+available.
+
+### Outcome of X1 (2026-10-10; `branching_transfer.py`, `results/branching/BRANCHING.md`, `SUPP_TABLE.md`)
+X1-1 met: 48 of 64 unmutated pusher16 populations alive at g = 8 (arm U). X1-2 not met: pusher16 has no
+branching-transmissible site at g = 8 in arm U or arm K, and no mutant population carries its allele at g = 8 (0 of 512 in
+each arm); the allele share falls from 0.10 at g = 1 to 0 by g = 5. X1-3 met: ret16 0, ldir32 0, genome20_s6003 9 sites
+(all never executed). Registered reading applied: the paper says that persistent heritable variation arrives with closed
+transmitters. An independent audit (re-run, independent re-implementation, alternative byte-presence scoring) found no bug;
+it noted that 48 of 64 overstates control survival by chance (about 0.62 with 2,048 populations, unregistered) and that
+arm K's survival is inflated by pool cells that already copy the parent, so arm K's survival is not cited. Mechanism from
+its traces: the pusher's bytes are both the words it writes and the opcodes it executes, so a mutant byte is soon run
+rather than copied, and the wild-type word is regenerated.

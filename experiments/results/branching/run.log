@@ -1,0 +1,92 @@
+         pusher16 arm U g1: ctrl alive 0.938 (size 1.6, copy/enc 0.734) | mut alive 0.684 | sites 1 | 4224 enc, 0.03 s
+         pusher16 arm U g2: ctrl alive 0.891 (size 2.1, copy/enc 0.633) | mut alive 0.547 | sites 0 | 3932 enc, 0.03 s
+         pusher16 arm U g3: ctrl alive 0.875 (size 2.6, copy/enc 0.622) | mut alive 0.476 | sites 0 | 4354 enc, 0.03 s
+         pusher16 arm U g4: ctrl alive 0.812 (size 3.6, copy/enc 0.625) | mut alive 0.435 | sites 0 | 5100 enc, 0.03 s
+         pusher16 arm U g5: ctrl alive 0.812 (size 4.3, copy/enc 0.600) | mut alive 0.415 | sites 0 | 6028 enc, 0.03 s
+         pusher16 arm U g6: ctrl alive 0.797 (size 4.9, copy/enc 0.565) | mut alive 0.401 | sites 0 | 7318 enc, 0.03 s
+         pusher16 arm U g7: ctrl alive 0.766 (size 6.0, copy/enc 0.586) | mut alive 0.389 | sites 0 | 8744 enc, 0.03 s
+         pusher16 arm U g8: ctrl alive 0.750 (size 7.1, copy/enc 0.577) | mut alive 0.383 | sites 0 | 10634 enc, 0.03 s
+pusher16 arm U: 0.2 s
+         pusher16 arm K g1: ctrl alive 0.984 (size 1.5, copy/enc 0.758) | mut alive 0.799 | sites 0 | 4224 enc, 0.03 s
+         pusher16 arm K g2: ctrl alive 0.953 (size 2.1, copy/enc 0.665) | mut alive 0.725 | sites 0 | 5084 enc, 0.03 s
+         pusher16 arm K g3: ctrl alive 0.891 (size 3.0, copy/enc 0.667) | mut alive 0.666 | sites 0 | 6790 enc, 0.03 s
+         pusher16 arm K g4: ctrl alive 0.875 (size 3.9, copy/enc 0.640) | mut alive 0.625 | sites 0 | 8622 enc, 0.03 s
+         pusher16 arm K g5: ctrl alive 0.844 (size 5.5, copy/enc 0.670) | mut alive 0.588 | sites 0 | 10980 enc, 0.03 s
+         pusher16 arm K g6: ctrl alive 0.812 (size 6.8, copy/enc 0.600) | mut alive 0.569 | sites 0 | 13666 enc, 0.04 s
+         pusher16 arm K g7: ctrl alive 0.766 (size 8.9, copy/enc 0.626) | mut alive 0.554 | sites 0 | 17002 enc, 0.04 s
+         pusher16 arm K g8: ctrl alive 0.750 (size 11.7, copy/enc 0.643) | mut alive 0.538 | sites 0 | 20898 enc, 0.04 s
+pusher16 arm K: 0.3 s
+         pusher64 arm U g1: ctrl alive 0.938 (size 1.6, copy/enc 0.758) | mut alive 0.903 | sites 29 | 16512 enc, 0.52 s
+         pusher64 arm U g2: ctrl alive 0.797 (size 2.3, copy/enc 0.608) | mut alive 0.761 | sites 21 | 23296 enc, 0.54 s
+         pusher64 arm U g3: ctrl alive 0.641 (size 2.6, copy/enc 0.458) | mut alive 0.527 | sites 6 | 25614 enc, 0.66 s
+         pusher64 arm U g4: ctrl alive 0.422 (size 2.8, copy/enc 0.347) | mut alive 0.322 | sites 0 | 18970 enc, 0.59 s
+         pusher64 arm U g5: ctrl alive 0.328 (size 2.6, copy/enc 0.367) | mut alive 0.206 | sites 0 | 12448 enc, 0.56 s
+         pusher64 arm U g6: ctrl alive 0.219 (size 2.6, copy/enc 0.327) | mut alive 0.138 | sites 0 | 8436 enc, 0.36 s
+         pusher64 arm U g7: ctrl alive 0.141 (size 2.8, copy/enc 0.347) | mut alive 0.090 | sites 0 | 5972 enc, 0.33 s
+         pusher64 arm U g8: ctrl alive 0.125 (size 2.5, copy/enc 0.400) | mut alive 0.064 | sites 0 | 4116 enc, 0.4 s
+pusher64 arm U: 4.0 s
+         pusher64 arm K g1: ctrl alive 1.000 (size 1.8, copy/enc 0.906) | mut alive 0.950 | sites 32 | 16512 enc, 0.45 s
+         pusher64 arm K g2: ctrl alive 0.938 (size 2.5, copy/enc 0.655) | mut alive 0.843 | sites 14 | 26534 enc, 0.69 s
+         pusher64 arm K g3: ctrl alive 0.844 (size 2.7, copy/enc 0.484) | mut alive 0.718 | sites 7 | 31762 enc, 0.65 s
+         pusher64 arm K g4: ctrl alive 0.703 (size 3.4, copy/enc 0.524) | mut alive 0.632 | sites 0 | 33340 enc, 0.58 s
+         pusher64 arm K g5: ctrl alive 0.609 (size 3.9, copy/enc 0.497) | mut alive 0.562 | sites 0 | 34406 enc, 0.56 s
+         pusher64 arm K g6: ctrl alive 0.500 (size 4.4, copy/enc 0.458) | mut alive 0.511 | sites 0 | 35524 enc, 0.54 s
+         pusher64 arm K g7: ctrl alive 0.469 (size 5.0, copy/enc 0.532) | mut alive 0.463 | sites 0 | 36642 enc, 0.64 s
+         pusher64 arm K g8: ctrl alive 0.438 (size 5.7, copy/enc 0.537) | mut alive 0.426 | sites 0 | 37436 enc, 0.64 s
+pusher64 arm K: 4.8 s
+            ret16 arm U g1: ctrl alive 1.000 (size 2.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 4224 enc, 0.02 s
+            ret16 arm U g2: ctrl alive 1.000 (size 4.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 5196 enc, 0.03 s
+            ret16 arm U g3: ctrl alive 1.000 (size 8.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 10392 enc, 0.03 s
+            ret16 arm U g4: ctrl alive 1.000 (size 16.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 20784 enc, 0.03 s
+            ret16 arm U g5: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 41568 enc, 0.04 s
+            ret16 arm U g6: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 83136 enc, 0.07 s
+            ret16 arm U g7: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 83712 enc, 0.07 s
+            ret16 arm U g8: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.607 | sites 0 | 83712 enc, 0.08 s
+ret16 arm U: 0.4 s
+           ldir32 arm U g1: ctrl alive 1.000 (size 2.0, copy/enc 1.000) | mut alive 0.889 | sites 0 | 8320 enc, 0.11 s
+           ldir32 arm U g2: ctrl alive 1.000 (size 4.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 14790 enc, 0.12 s
+           ldir32 arm U g3: ctrl alive 1.000 (size 8.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 29290 enc, 0.14 s
+           ldir32 arm U g4: ctrl alive 1.000 (size 16.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 58580 enc, 0.18 s
+           ldir32 arm U g5: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 117142 enc, 0.28 s
+           ldir32 arm U g6: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 234280 enc, 0.48 s
+           ldir32 arm U g7: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 234316 enc, 0.49 s
+           ldir32 arm U g8: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.879 | sites 0 | 234324 enc, 0.48 s
+ldir32 arm U: 2.3 s
+   genome20_s6003 arm U g1: ctrl alive 1.000 (size 2.0, copy/enc 1.000) | mut alive 0.762 | sites 9 | 5248 enc, 0.04 s
+   genome20_s6003 arm U g2: ctrl alive 1.000 (size 4.0, copy/enc 1.000) | mut alive 0.757 | sites 9 | 8048 enc, 0.04 s
+   genome20_s6003 arm U g3: ctrl alive 1.000 (size 8.0, copy/enc 1.000) | mut alive 0.754 | sites 9 | 15984 enc, 0.05 s
+   genome20_s6003 arm U g4: ctrl alive 1.000 (size 16.0, copy/enc 1.000) | mut alive 0.754 | sites 9 | 31838 enc, 0.06 s
+   genome20_s6003 arm U g5: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.754 | sites 9 | 63676 enc, 0.09 s
+   genome20_s6003 arm U g6: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.754 | sites 9 | 127352 enc, 0.14 s
+   genome20_s6003 arm U g7: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.754 | sites 9 | 127472 enc, 0.13 s
+   genome20_s6003 arm U g8: ctrl alive 1.000 (size 32.0, copy/enc 1.000) | mut alive 0.754 | sites 9 | 127520 enc, 0.14 s
+genome20_s6003 arm U: 0.7 s
+done in 14 s
+# X1 — branching transfer: predictions X1-1 to X1-3 against the data (generated by `branching_transfer.py --report`)
+
+Registration: `REVISION_PREREG.md`, "X1–X3 — three referee-driven tests", X1 (committed at 244616b, before this script).
+Parameters: 32 values per position, 4 populations per mutant, 64 control populations, k = 2 partners per member per generation, cap N = 32, G = 8; copy at >= 0.75 best cyclic shift; 128 instructions; seed 20261010. Registered values: **yes**.
+Runtime: total wall 13.9 s on Apple M4 (Metal, IntegratedGPU).
+
+| genotype | arm | L | identifiable | control alive g = 1 / 2 / 4 / 8 | mutant populations alive g = 1 / 2 / 4 / 8 | sites g = 1 / 2 / 4 / 8 (unexecuted at 8) | lost / erased / retained g = 8 | mean background g = 8 | control copy rate per encounter g = 1 | control size g = 8 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| pusher16 | K | 16 | 512 of 512 | 0.984 / 0.953 / 0.875 / 0.750 | 0.799 / 0.725 / 0.625 / 0.538 | 0 / 0 / 0 / 0 (0) | 0.46 / 0.54 / 0.00 | 0.000 | 0.758 | 11.7 |
+| pusher64 | K | 64 | 2048 of 2048 | 1.000 / 0.938 / 0.703 / 0.438 | 0.950 / 0.843 / 0.632 / 0.426 | 32 / 14 / 0 / 0 (0) | 0.57 / 0.42 / 0.00 | 0.001 | 0.906 | 5.7 |
+| pusher16 | U | 16 | 512 of 512 | 0.938 / 0.891 / 0.812 / 0.750 | 0.684 / 0.547 / 0.435 / 0.383 | 1 / 0 / 0 / 0 (0) | 0.62 / 0.38 / 0.00 | 0.000 | 0.734 | 7.1 |
+| pusher64 | U | 64 | 2048 of 2048 | 0.938 / 0.797 / 0.422 / 0.125 | 0.903 / 0.761 / 0.322 / 0.064 | 29 / 21 / 0 / 0 (0) | 0.94 / 0.06 / 0.00 | 0.003 | 0.758 | 2.5 |
+| ret16 | U | 16 | 512 of 512 | 1.000 / 1.000 / 1.000 / 1.000 | 0.607 / 0.607 / 0.607 / 0.607 | 0 / 0 / 0 / 0 (0) | 0.39 / 0.61 / 0.00 | 0.000 | 1.000 | 32.0 |
+| ldir32 | U | 32 | 1024 of 1024 | 1.000 / 1.000 / 1.000 / 1.000 | 0.889 / 0.879 / 0.879 / 0.879 | 0 / 0 / 0 / 0 (0) | 0.12 / 0.88 / 0.00 | 0.000 | 1.000 | 32.0 |
+| genome20_s6003 | U | 20 | 640 of 640 | 1.000 / 1.000 / 1.000 / 1.000 | 0.762 / 0.757 / 0.754 / 0.754 | 9 / 9 / 9 / 9 (9) | 0.25 / 0.28 / 0.47 | 0.000 | 1.000 | 32.0 |
+
+Sites: positions at which, for at least half of the identifiable values, the share of alive mutant populations carrying the allele exceeds the background by at least 0.5. *lost / erased / retained*: shares of all identifiable mutant populations that are extinct / alive without the allele / alive and carrying it.
+
+- **X1-1** (pusher16 control populations alive at g = 8 in arm U >= 0.5): **met** — 48 of 64 alive (0.750).
+- **X1-2** (decision; pusher16 has >= 1 branching-transmissible site at g = 8 in arm U): **NOT met** — 0 sites (share of identifiable mutants passing the threshold 0.000; mutant populations alive 0.383).
+- **X1-3** (ret16 and ldir32 <= 2 sites at g = 8, genome20_s6003 >= 5; arm U): **met** — ret16: 0; ldir32: 0; genome20_s6003: 9.
+- **Arm K** (partners from the open-phase Stage G soups, reported regardless): pusher16: control alive at g = 8 0.750, sites at g = 8 0, mutant populations alive 0.538, share of pool cells that already are >= 75% copies of the wild type 0.131; pusher64: control alive at g = 8 0.438, sites at g = 8 0, mutant populations alive 0.426, share of pool cells that already are >= 75% copies of the wild type 0.239.
+- **Reading.** X1-2 not met in both arms: the paper says that persistent heritable variation arrives with closed transmitters, and the summary and conclusions change accordingly (registered reading).
+
+Per-generation numbers: `branching_summary.csv`; per-site: `branching_sites.csv`; per-mutant: `branching_mutants.csv.gz`.
+real 14.16
+user 12.47
+sys 0.47
