@@ -866,3 +866,12 @@ are confined loops that never copy; the registered copy rule counted damage to n
 (ii) the base rate is 1.0 (median): by the time C* appears, every sampled living cell has an open copier within 2,000
 steps of its line, so the criterion could not fail. Whether closers descend from open copiers is decided on the founders
 of the final confined stretch, identified by genotype, under the amended rule (`lod_v5`).
+
+### Amendment to N3: functional parents (2026-10-09 night, after inspecting lod_v3 worlds 31011 and 31013)
+At a recombinant (novel) record the registered line follows the parent that supplied more bytes. When closers overwrite a
+pusher cell in several partial writes, the line therefore stays with the pusher cell's material and the "transition"
+jumps 12–16 bytes from a pusher to a complete closer (worlds 31011, 31013), so the line traces material, not function.
+Amended (`lod_v6`, same seeds, amended copy rule): at a novel record the line follows the parent that supplied more of
+the bytes the new tape fetches when it runs as A against a random partner (ties: more bytes overall); damage records now
+store the writer's tape as `other`. Re-validated (`runs/lod_v6/validate/validate.json`): V2 0 mismatches; V3 ≤ 342; V1
+ancestry 64 of 64 to the seeded closer. `lod_v5` (material parents) was stopped; `lod_v2`/`lod_v3` are kept and reported.

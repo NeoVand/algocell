@@ -87,6 +87,7 @@ class World:
         self.v2_checked = 0
         self.v3_max = 0
         self.tagc = {}            # executor root tag -> [confined copy events, open copy events]
+        self.rng = np.random.default_rng([seed, 7])
 
     def step(self, check_replay: bool = False):
         L, soup = self.L, self.soup
@@ -129,6 +130,18 @@ class World:
         copyA = chA & (simA >= THETA) & (gainA >= GAIN)       # the partner's tape copied into the executor's half
         damA = chA & ~copyA & (selfA >= THETA)
         novA = chA & ~copyA & ~damA
+        # positions each new tape fetches when it runs as A against a random partner (for the functional parent of novel
+        # records: the parent that supplied more of the bytes the new tape executes)
+        nvB, nvA = np.where(novB)[0], np.where(novA)[0]
+        fetB = fetA = None
+        if len(nvB) or len(nvA):
+            Rp = self.rng.integers(0, 256, (len(nvB) + len(nvA), L), dtype=np.uint8)
+            T = np.concatenate([B1[nvB], A1[nvA]])
+            _, mm = X.execute_pairs_traced(np.concatenate([T, Rp], 1), L, 128, zero_halts=self.zh)
+            fe = X.exec_positions(mm, 2 * L)[:, :L]
+            fetB, fetA = fe[:len(nvB)], fe[len(nvB):]
+        fB = {int(q): fetB[i] for i, q in enumerate(nvB)} if fetB is not None else {}
+        fA = {int(q): fetA[i] for i, q in enumerate(nvA)} if fetA is not None else {}
         # confinement of every copy event's executor
         ci = np.where(copyB)[0]
         conf = np.zeros(len(k), bool)
@@ -149,10 +162,13 @@ class World:
             if copyB[q]:
                 new[j] = Rec(t, j, "copy", B1[q].tobytes(), p1=old[i], other=B0[q].tobytes(), tag=old[i].tag, shift=int(shB[q]))
             elif damB[q]:
-                new[j] = Rec(t, j, "damage", B1[q].tobytes(), p1=old[j], other=B0[q].tobytes(), tag=old[j].tag)
+                new[j] = Rec(t, j, "damage", B1[q].tobytes(), p1=old[j], other=A0[q].tobytes(), tag=old[j].tag)
             else:
-                nown = int((B1[q] == B0[q]).sum())
-                nexe = int((B1[q] == np.roll(A0[q], shB[q])).sum())
+                fq = fB[int(q)]
+                nown = int(((B1[q] == B0[q]) & fq).sum())
+                nexe = int(((B1[q] == np.roll(A0[q], shB[q])) & fq).sum())
+                if nown == nexe:
+                    nown, nexe = int((B1[q] == B0[q]).sum()), int((B1[q] == np.roll(A0[q], shB[q])).sum())
                 maj, mnr = (old[j], old[i]) if nown >= nexe else (old[i], old[j])
                 new[j] = Rec(t, j, "novel", B1[q].tobytes(), p1=maj, p2=mnr, tag=maj.tag, shift=int(shB[q]), nown=nown, nexe=nexe)
         for q in np.where(chA)[0]:
@@ -160,10 +176,13 @@ class World:
             if copyA[q]:
                 new[i] = Rec(t, i, "copyA", A1[q].tobytes(), p1=old[j], other=A0[q].tobytes(), tag=old[j].tag, shift=int(shA[q]))
             elif damA[q]:
-                new[i] = Rec(t, i, "damage", A1[q].tobytes(), p1=old[i], other=A0[q].tobytes(), tag=old[i].tag)
+                new[i] = Rec(t, i, "damage", A1[q].tobytes(), p1=old[i], other=B0[q].tobytes(), tag=old[i].tag)
             else:
-                nown = int((A1[q] == A0[q]).sum())
-                nexe = int((A1[q] == np.roll(B0[q], shA[q])).sum())
+                fq = fA[int(q)]
+                nown = int(((A1[q] == A0[q]) & fq).sum())
+                nexe = int(((A1[q] == np.roll(B0[q], shA[q])) & fq).sum())
+                if nown == nexe:
+                    nown, nexe = int((A1[q] == A0[q]).sum()), int((A1[q] == np.roll(B0[q], shA[q])).sum())
                 maj, mnr = (old[i], old[j]) if nown >= nexe else (old[j], old[i])
                 new[i] = Rec(t, i, "novel", A1[q].tobytes(), p1=maj, p2=mnr, tag=maj.tag, shift=int(shA[q]), nown=nown, nexe=nexe)
         for c in mut_rows:
