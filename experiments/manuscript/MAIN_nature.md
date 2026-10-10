@@ -1,6 +1,6 @@
 # Heredity can precede individuality in a digital primordial soup
 
-*Review copy, 2026-10-09 (revision 2). Nature Article format: summary ≤ 200 words, main text ≈ 3,600 words, six figures, Methods, Extended Data legends and a Supplementary Information with the theorems and proofs. Every number is from a generated table of the project repository; every experiment reported is complete.*
+*Review copy, 2026-10-10 (revision 3). Nature Article format: summary 199 words, main text ≈ 4,350 words, six figures, Methods ≈ 3,000 words, ten Extended Data items, and Supplementary Information (Supplementary Methods, figures and tables, theorems and proofs). Every number is from a generated table of the project repository; every experiment reported is complete; the genealogies are exploratory, with their replication pre-registered.*
 
 ---
 
