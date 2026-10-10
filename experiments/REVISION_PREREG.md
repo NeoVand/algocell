@@ -767,3 +767,16 @@ copier's own tape. Reported regardless: the kind of each C* event, the executor'
 C* came from which parent, and the base rate (share of living cells at C*'s birth whose line of descent contains an open
 copier within 2,000 steps). *Decision.* N3-1 met: "closed replicators descend from the open ones" may be written.
 Independent origin is written only if in ≥ 15 worlds no open copier lies on the line. Otherwise mixed, reported as such.
+
+### Validation of N3 (appended before any registered world was run, 2026-10-09 night; `runs/lod/validate/validate.json`)
+V2 met: re-running every active pair of the first 200 steps (795,934 pairs) on the traced executor reproduces the recorded
+post-execution memories byte for byte (0 mismatches). V3 met: at most 339 cells per step change outside active pairs
+(mutation count 512). V1, ancestry, met: at 5,000 steps all 64 sampled confined copiers trace by their line of descent to
+a seeded closer. V1, flags, not met as registered: copy events whose executor descends from the seeded closer are
+confined in 0.922 (needed ≥ 0.95), and those whose executor descends from the pusher are open in 0.799 (needed ≥ 0.95).
+The registered flag criterion counted lineages, and lineages change: pusher-rooted lineages made 61,399 confined copies
+(recombinants, mostly of pusher material, that copy while confined), and closer-rooted mutants that enter the partner.
+*Amendment (post hoc, made before the registered worlds; stated as such).* The confinement classifier itself is checked
+on genotypes: the exact pusher enters the partner in 1.000 of 4,096 encounters against random, pusher and closer
+partners alike; the exact closer in 0.000 of each, and both copy exactly. The classifier is therefore exact; the
+lineage-level flag rates are a property of the dynamics and are reported, not used as a gate.
