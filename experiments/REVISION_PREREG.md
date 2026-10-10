@@ -911,3 +911,10 @@ at 500 steps, 0.002 at 2,000). The genotype table is informative: along the four
 after the first step (0.52 → 0.003 → 0.000) and the last two genotypes are not heritable by the culture test (gen2 0.25
 and 0.17, threshold 0.3). The exploratory "gradual path" of the landscape used a lenient copier criterion (≥ 0.75
 similar copies) and is withdrawn; it is re-tested with heritability.
+
+### Outcome of N3 under the amended copy rule (lod_v2; appended 2026-10-09 night; `results/lod/amended_rule/LOD.md`)
+19 of 20 worlds closed; N3-1 is met as written (19 of 19) and is again uninformative (base rate ≈ 1). C* remains a
+transient: of 25 distinct C* tapes, 7 copy themselves against random partners and 18 enter the partner; a median of
+about 1,000 open-copier records follow C* on its line. The oldest confined record on a line is not where the confined
+lineage begins; the founder is identified by genotype at the start of the final confined stretch, on functional-parent
+lines (lod_v6).
