@@ -1035,3 +1035,7 @@ recorded point mutations were expected to make 0.002 founders. That every foundi
 probability 0.076 under the soups' composition (non-copiers 84–89%). Point mutations made the writer in 3 worlds (31005,
 31006, 31019). Stated result: closers descend from the open lineage; the first one is out of reach of a single mutation of
 its ancestors and is written in one encounter, mostly by the non-copying tapes that fill the soup.
+### Third amendment to N6 (2026-10-10, before any N6 world is run)
+N6-5 is withdrawn (a founding event's kind is constrained by its distance from the tape before). Replaced by N6-5′
+(mutational reach, `lod_reach.py` frozen with this amendment): the recorded point mutations on the chains are expected to
+make fewer than 0.05 founders. N6-4 is reported with the abundance null of `lod_reach.py` and is not decisive alone.
