@@ -875,3 +875,21 @@ Amended (`lod_v6`, same seeds, amended copy rule): at a novel record the line fo
 the bytes the new tape fetches when it runs as A against a random partner (ties: more bytes overall); damage records now
 store the writer's tape as `other`. Re-validated (`runs/lod_v6/validate/validate.json`): V2 0 mismatches; V3 ≤ 342; V1
 ancestry 64 of 64 to the seeded closer. `lod_v5` (material parents) was stopped; `lod_v2`/`lod_v3` are kept and reported.
+
+## N5 — the stepwise path from the open pusher to a confined copier (written before the run, 2026-10-09 night)
+*Observation that prompted it (exploratory, `results/lod/LANDSCAPE.md`).* In the hypercube between the pusher `21 e5` × 8
+(or `01 c5` × 8) and the return closers found on the lines of descent, the shortest single-byte path through copiers to a
+confined copier is four steps, the same in all four cubes: PUSH → RET PO at position 5, then at 15, then PUSH → EX (SP),HL
+at 9, then at 1. Copy rate against random partners rises (0.59 → 0.64 → 0.97 → 1.00 → 1.00 for `21 e5`) while the share of
+encounters in which the pointer enters the partner falls (1.00, 1.00, 1.00, 0.62, 0.00).
+*Question.* Is each step favoured in the soup, so that the path is an adaptive walk from heredity without confinement to
+a confined copier?
+*Design* (`n5_path.py`, local GPU). For each family (`21 e5` with RET PO; `01 c5` with RET PO), genotypes G0 (pusher) … G4
+(confined). For each step k = 1 … 4: Gk seeded at 1% (random cells) into a world filled with G(k−1), and G(k−1) seeded at
+1% into a world filled with Gk; Stage G dynamics (L = 16, benign, zero registers), 5 seeds per direction, 20,000 steps.
+Shares by exact genotype class (Hamming ≤ 2 to the design at shift 0, nearest design wins) every 250 steps. Also, for each
+genotype: the culture test (32 partners), exact copy rate and entering rate against random partners.
+*Predictions.* N5-1: for each k, Gk exceeds 0.5 of cells at 20,000 steps in ≥ 4 of 5 seeds when seeded into G(k−1).
+N5-2: for each k, G(k−1) stays below 0.05 when seeded into Gk in ≥ 4 of 5 seeds. *Reading.* Both for every step: the
+path is an adaptive walk. A step that fails N5-1 is reported as neutral or deleterious, and the walk as requiring drift
+or recombination there.
