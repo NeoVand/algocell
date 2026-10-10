@@ -8,7 +8,7 @@ before any corpus is run under the fixed cores. Changes until then are dated her
 
 Every registered result ran on the Zilion 0.2.0 Z80 core. That core has now been checked against all 1,604,384
 SingleStepTests/z80 vectors (zilion `test/baselines/z80-v0.2.0.md`, ledger SHA-256 `6f959567b2e6507b…`). Every
-divergence falls in a documented class, and none is unexplained. Three of the classes can change a soup's bytes:
+divergence falls in a documented class, and none is unexplained. Four of the classes can change a soup's bytes:
 
 - **R after a wasted DD/FD prefix.** The core gives R + 2, where the hardware gives R + 1. R reaches a register
   through `LD A,R`, and from there it can be stored anywhere.
@@ -17,14 +17,20 @@ divergence falls in a documented class, and none is unexplained. Three of the cl
   - On a Zilog NMOS Z80 they are ((Q xor F) or A) & 0x28; Zilion 0.2.0 uses A & 0x28.
   - The difference is vendor-specific: it is Zilog NMOS behaviour, and the design keeps it as an opt-in variant.
   - The ring difftest's reference (Fuse lineage) uses Zilion's formula, so it could not see this class.
+- **F3/F5 of a repeating block instruction** (`LDIR`, `LDDR`, `CPIR`, `CPDR`, and the I/O repeats with H and P/V).
+  - On the hardware, an iteration that repeats takes X/Y from PC bits 13 and 11; Zilion 0.2.0 keeps its
+    non-repeating formula.
+  - Normally the next iteration overwrites F, so the difference vanishes.
+  - It survives when the repeat stops being executed. That happens if the instruction overwrites its own `ED B0`
+    bytes mid-repeat, as a self-copying `LDIR` can. The next fetch is then another instruction, which runs with the
+    iteration's F. (Note added 2026-10-10, from the Z80 fixes; an earlier version of this draft wrongly called this
+    class unobservable.)
 
 A flag difference reaches memory only through `PUSH AF`, or `EX AF,AF'` followed by `PUSH AF`. No conditional
 tests F3/F5, so control flow is never directly affected.
 
 The other classes cannot change a soup's bytes:
 
-- The block-repeat X/Y differences change only F at the moment the budget expires in the middle of a repeat, and
-  that F is discarded.
 - IM, MEMPTR itself, Q itself and the EI/P latches are internal, and a soup has no interrupts.
 - I/O is the environment's choice, not the CPU's: a soup has no device, so `IN` reads 0 in every core compared
   here. It is not compared.
@@ -34,7 +40,7 @@ The other classes cannot change a soup's bytes:
 | | Core | What differs from C0 |
 |---|---|---|
 | C0 | Zilion 0.2.0, as used: the `compat:'0.2'` machine, proven byte-identical to Algocell's shaders (zilion `check:bytes`, `test:algocell`) | — |
-| C1 | Zilion 0.3 default Z80 core | R + 1 per wasted prefix; MEMPTR, so `BIT n,(HL)` X/Y from WZ; IM; (block-repeat flags, if the fixed core models them) |
+| C1 | Zilion 0.3 default Z80 core (`compat:'0.3'`, classic) | R + 1 per wasted prefix; MEMPTR, so `BIT n,(HL)` X/Y from WZ; IM; block-repeat X/Y (and H, P/V for the I/O repeats) |
 | C2 | C1 with variant `zilog-nmos` | adds the Q latch: SCF/CCF X/Y = ((Q xor F) or A) & 0x28 |
 
 The world is the Algocell world of each condition, as registered:
@@ -68,7 +74,7 @@ Each core runs as a Zilion machine on the same GPU, with the same inputs.
   Clopper–Pearson interval. It is computed per corpus and condition, separately for C1 and C2.
 - **Attribution.** Each affected pair is attributed by `startMap` and a single-instruction replay to the first
   instruction where the cores' states diverge. That instruction is classed as wasted prefix + `LD A,R`,
-  `BIT n,(HL)`, `SCF`/`CCF`, or other. An "other" is a bug, and it stops the study.
+  `BIT n,(HL)`, `SCF`/`CCF`, a repeating block instruction, or other. An "other" is a bug, and it stops the study.
 - **Assay identity.** Whether every named tape's assay scores are identical under C0, C1 and C2.
 
 ## Decision rule (as in the design, §5.7)
