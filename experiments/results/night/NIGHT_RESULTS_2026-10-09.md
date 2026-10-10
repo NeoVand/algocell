@@ -50,3 +50,7 @@ Validation: exact replay of 795,934 recorded encounters (0 mismatches), accounti
 Direct check of the conversion term (`results/n2/CONVERT.md`, 65,536 encounters per row): a core-free executor that
 meets a regenerator becomes a regenerator in 0.5–0.9% of encounters (1.4–3.8% of those in which it enters the host); one
 that meets a transmitter becomes a transmitter in 0.1–0.3%.
+
+Methods note: the GPU soup is not bitwise deterministic (two identical local runs of 2,000 steps from the same seed
+differ, through the atomic collision claim of the pair draw), so worlds reproduce statistically, not exactly, and a
+world cannot be replayed to inspect an event after the fact. The N3 recorder therefore records every step as it happens.

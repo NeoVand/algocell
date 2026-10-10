@@ -849,3 +849,7 @@ shift, copies exactly); (ii) a second founding record is reported beside C*: C**
 the newest open-flagged record on the line (the start of the final confined stretch). Lines now store their full step,
 kind and flag arrays and sampled tapes (`lod_v3`, same seeds, amended copy rule). The registered N3-1 is evaluated on C*
 as registered; C** is reported as an addition.
+Implementation note (2026-10-09 night): memory grows with the ancestry graph (7.1 GB at 52,000 steps under the registered
+rule, near the container limit), so the minor parent of a novel record is kept as its tape and flag only (the line of
+descent follows major parents) and the container memory is raised (`lod_v4`, same seeds, amended copy rule, C**). No
+change to any rule or measure.

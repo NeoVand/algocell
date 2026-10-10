@@ -38,11 +38,14 @@ class Rec:
     previous record; novel: the larger contributor), p2 = minor parent (novel only). other = the overwritten tape
     (copy and damage: the cell's own previous tape; novel: None). flag: CONF / OPEN bits set when this record, as
     executor, made a copy; fstep = step of the last such flag."""
-    __slots__ = ("step", "cell", "kind", "tape", "p1", "p2", "other", "flag", "fstep", "tag", "shift", "nown", "nexe")
+    __slots__ = ("step", "cell", "kind", "tape", "p1", "p2_tape", "p2_flag", "other", "flag", "fstep", "tag", "shift", "nown", "nexe")
 
     def __init__(self, step, cell, kind, tape, p1=None, p2=None, other=None, tag=None, shift=0, nown=0, nexe=0):
         self.step, self.cell, self.kind, self.tape = step, cell, kind, tape
-        self.p1, self.p2, self.other, self.tag, self.shift = p1, p2, other, tag, shift
+        # the minor parent is kept as its tape and flag only, so its ancestry can be freed (the line follows p1)
+        self.p2_tape = p2.tape if p2 is not None else None
+        self.p2_flag = p2.flag if p2 is not None else None
+        self.p1, self.other, self.tag, self.shift = p1, other, tag, shift
         self.flag, self.fstep, self.nown, self.nexe = 0, -1, nown, nexe
 
 
@@ -206,7 +209,7 @@ def describe(r: Rec) -> dict:
     if r.other is not None:
         d["other"] = r.other.hex(" ")
     if r.kind == "novel":
-        d.update({"nown": r.nown, "nexe": r.nexe, "p2_tape": r.p2.tape.hex(" ") if r.p2 is not None else None, "p2_flag": r.p2.flag if r.p2 is not None else None})
+        d.update({"nown": r.nown, "nexe": r.nexe, "p2_tape": r.p2_tape.hex(" ") if r.p2_tape is not None else None, "p2_flag": r.p2_flag})
     if r.p1 is not None:
         d.update({"p1_tape": r.p1.tape.hex(" "), "p1_flag": r.p1.flag, "p1_kind": r.p1.kind, "p1_step": r.p1.step})
     return d

@@ -20,7 +20,7 @@ runs_volume = modal.Volume.from_name("algocell-atlas-runs", create_if_missing=Tr
 app = modal.App("algocell-lod")
 
 
-@app.function(image=image, gpu=["L4", "A10G", "L40S"], cpu=2.0, memory=8192, timeout=3 * 60 * 60, volumes={"/runs": runs_volume},
+@app.function(image=image, gpu=["L4", "A10G", "L40S"], cpu=2.0, memory=32768, timeout=3 * 60 * 60, volumes={"/runs": runs_volume},
               retries=modal.Retries(max_retries=1, initial_delay=10.0))
 def world(seed: int, cap: int = 80000, outdir: str = "lod") -> dict:
     import sys
