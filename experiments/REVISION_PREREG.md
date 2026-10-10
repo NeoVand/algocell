@@ -853,3 +853,7 @@ Implementation note (2026-10-09 night): memory grows with the ancestry graph (7.
 rule, near the container limit), so the minor parent of a novel record is kept as its tape and flag only (the line of
 descent follows major parents) and the container memory is raised (`lod_v4`, same seeds, amended copy rule, C**). No
 change to any rule or measure.
+Implementation note (2026-10-09 night): the sampled tapes stored per line skip the founding encounters (in world 31012 the
+sampled ancestors jump 10 bytes across the transition), so `lod_v5` (same seeds, amended rule, nothing else changed)
+also stores every record on the 64 sampled lines (step, kind, flag, tape, overwritten tape, minor parent's tape) and the
+soup every 2,000 steps. The redundant `lod_v4` was stopped.

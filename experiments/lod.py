@@ -236,6 +236,36 @@ def base_rate(w: World, n: int = 1000, window: int = 2000, seed: int = 0) -> dic
 KIND_CODE = {"init": 0, "copy": 1, "damage": 2, "novel": 3, "mut": 4, "copyA": 5}
 
 
+def record_table(w: World, cells) -> dict:
+    """De-duplicated table of every record on the lines of descent of `cells` (exact, all records), as arrays."""
+    idx, recs = {}, []
+    lines = []
+    for c in cells:
+        ids = []
+        r = w.recs[c]
+        while r is not None:
+            k = id(r)
+            if k not in idx:
+                idx[k] = len(recs)
+                recs.append(r)
+            ids.append(idx[k])
+            r = r.p1
+        lines.append(np.array(ids, np.int32))
+    L = w.L
+    z = np.zeros(L, np.uint8)
+    tb = lambda b: np.frombuffer(b, np.uint8) if b is not None else z  # noqa: E731
+    return {"step": np.array([r.step for r in recs], np.int32), "cell": np.array([r.cell for r in recs], np.int32),
+            "kind": np.array([KIND_CODE.get(r.kind, 9) for r in recs], np.int8), "flag": np.array([r.flag for r in recs], np.int8),
+            "fstep": np.array([r.fstep for r in recs], np.int32), "shift": np.array([r.shift for r in recs], np.int16),
+            "nown": np.array([r.nown for r in recs], np.int16), "nexe": np.array([r.nexe for r in recs], np.int16),
+            "p1": np.array([idx.get(id(r.p1), -1) if r.p1 is not None else -1 for r in recs], np.int32),
+            "tape": np.stack([tb(r.tape) for r in recs]), "other": np.stack([tb(r.other) for r in recs]),
+            "has_other": np.array([r.other is not None for r in recs]), "p2_tape": np.stack([tb(r.p2_tape) for r in recs]),
+            "has_p2": np.array([r.p2_tape is not None for r in recs]), "p2_flag": np.array([r.p2_flag if r.p2_flag is not None else -1 for r in recs], np.int8),
+            "line_cells": np.array(list(cells), np.int32), "line_lengths": np.array([len(x) for x in lines], np.int32),
+            "line_ids": np.concatenate(lines) if lines else np.zeros(0, np.int32)}
+
+
 def analyse_lines(w: World, n: int = 64, recent: int = 500, seed: int = 0, window_open: int = 2000) -> dict:
     """Sample n recent confined copiers; walk each line of descent back to step 0. C* = the oldest record flagged
     confined; C** = the oldest confined record newer than the newest open-flagged record (start of the final confined
@@ -315,7 +345,7 @@ def run(seed: int, out: str, L: int = 16, cap: int = 80000, hold: int = 2000, ex
     os.makedirs(d, exist_ok=True)
     w = World(L, seed)
     t0 = time.time()
-    above_since, t_close, snaps, rates = None, None, {}, []
+    above_since, t_close, snaps, rates, soups = None, None, {}, [], {0: w.cur.copy()}
     with open(os.path.join(d, "steps.jsonl"), "w") as f:
         f.write(json.dumps({"kind": "condition", "L": L, "seed": seed, "cap": cap, "hold": hold, "extra": extra}) + "\n")
         while w.t < cap:
@@ -332,11 +362,16 @@ def run(seed: int, out: str, L: int = 16, cap: int = 80000, hold: int = 2000, ex
                 f.flush()
             if w.t % 500 == 0:
                 rates.append(base_rate(w, seed=w.t))
+            if w.t % 2000 == 0:
+                soups[w.t] = w.cur.copy()
             if w.t in (5000, 20000, 40000) or (t_close is not None and w.t == t_close + hold):
                 snaps[w.t] = analyse_lines(w, 16, seed=w.t)
             if t_close is not None and w.t >= t_close + hold + extra:
                 break
     lines = analyse_lines(w, 64, seed=seed)
+    tbl = record_table(w, [ln["cell"] for ln in lines["lines"]])
+    np.savez_compressed(os.path.join(d, "line_records.npz"), **tbl)
+    np.savez_compressed(os.path.join(d, "soups.npz"), steps=np.array(sorted(soups)), soups=np.stack([soups[k] for k in sorted(soups)]))
     res = {"seed": seed, "L": L, "t_end": w.t, "t_close": t_close, "wall_s": round(time.time() - t0, 1), "V2_mismatches": w.v2_bad,
            "V2_checked_pairs": w.v2_checked, "V3_max_changed_outside_pairs": w.v3_max, "rss_mb": rss_mb()}
     json.dump({"result": res, "lines": lines, "snapshots": {str(k): v for k, v in snaps.items()}, "base_rates": rates}, open(os.path.join(d, "lod.json"), "w"), default=_js)
