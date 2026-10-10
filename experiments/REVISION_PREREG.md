@@ -893,3 +893,14 @@ genotype: the culture test (32 partners), exact copy rate and entering rate agai
 N5-2: for each k, G(k−1) stays below 0.05 when seeded into Gk in ≥ 4 of 5 seeds. *Reading.* Both for every step: the
 path is an adaptive walk. A step that fails N5-1 is reported as neutral or deleterious, and the walk as requiring drift
 or recombination there.
+*Amendment to N5 (2026-10-09 night, after 60 of 80 runs).* The registered class measure (Hamming ≤ 2 at shift 0) counts
+shifted copies as no class; pushers and return closers copy at cyclic shifts, so every design scored 0.000 at 20,000 steps
+in all 60 runs, invader and resident alike: the measure is uninformative and is not used. Re-run with the paper's
+convention (Hamming to each design at its best cyclic shift, ≤ 2, nearest design wins, ties to none); everything else as
+registered; final soups saved (`runs/n5/`).
+*Second amendment to N5 (2026-10-09 night, before any trajectory was inspected; only end-of-run shares had been printed).*
+At 20,000 steps the worlds have evolved away from both designs (the pusher world closes on its own, as Stage G worlds do),
+so resident and invader both read ≈ 0 and the registered endpoint confounds invasion with new evolution. Amended endpoint
+(trajectories are recorded every 250 steps): the invader's share at 2,000 steps, in runs where invader + resident hold
+≥ 0.5 of cells at that time; N5-1 and N5-2 are evaluated on it with the registered thresholds (≥ 0.5 in ≥ 4 of 5;
+< 0.05 in ≥ 4 of 5). Runs that fail the ≥ 0.5 condition are reported as evolved away.
