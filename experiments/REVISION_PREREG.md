@@ -1045,3 +1045,51 @@ A referee-style audit noted that N6-1 still says "recombination". The criterion 
 `copyA`), and `novel` was renamed *rewrite* in the second correction to N3: N6-1 reads "the completing event is a rewrite or
 a copy of the partner". No criterion, threshold, script or definition changes; the scoring script `n6_score.py` (84a889a)
 is unchanged.
+
+## X1–X3 — three referee-driven tests (written 2026-10-10, before any code for them was written or run)
+
+Prompted by an internal hostile review: (i) the serial transfer follows one offspring per transfer, so its loss of the
+pusher's lineages measures per-encounter copy success, not heredity in a branching population; (ii) inflow and openness
+were measured against uniform random partners, whereas in the soup a pusher meets mostly its own kind; (iii) "open first"
+was shown for the first replicator of a world, not along the lines of descent of the closed populations. All three run
+locally (no spend). Thresholds as in the serial-retention test (R2/S) unless stated.
+
+### X1 — branching transfer: does the open phase carry heritable variation?
+*Genotypes* (the serial-retention panel): pusher16, pusher64, ret16, ldir32 (regenerators) and genome20_s6003
+(transmitter). *Mutants:* every position, 32 seeded alternative values per position; 4 replicate populations per mutant;
+64 unmutated populations. *Branching:* each generation every member runs as organism (128 instructions, the genotype's
+own rule) against k = 2 fresh partners; every offspring that is a ≥ 75% copy of its parent at the best cyclic shift joins
+the next generation; a population larger than N = 32 is reduced to a uniform random subsample of 32; G = 8 generations.
+*Partner arms:* U, uniform random bytes (all genotypes); K, cells drawn uniformly from the open-phase snapshots (steps 5,000
+and 10,000) of the 20 Stage G worlds of the same length (pushers only). *Measures:* a population is alive at g if it has a
+member; it carries the allele if at least half of its members contain the mutant's 5-byte window (cyclic); background is
+the share of alive unmutated populations that carry the same window by chance; a position is branching-transmissible at g
+if, for at least half of its tested values, the share of alive mutant populations carrying the allele exceeds the
+background by at least 0.5.
+*Predictions.* X1-1: at least 0.5 of pusher16's unmutated populations are alive at g = 8 in arm U. X1-2 (decision): pusher16
+has at least one branching-transmissible site at g = 8 in arm U. X1-3: ret16 and ldir32 have at most two sites at g = 8,
+genome20_s6003 at least five.
+*Reading.* X1-2 met: the open replicator carries heritable variation through branching lineages, and the paper says
+heritable variation precedes closure. X1-2 not met in both arms: the paper says that persistent heritable variation arrives
+with closed transmitters, and the summary and conclusions change accordingly. If X1-1 fails, branching does not rescue the
+pusher's lineages and X1-2 is read as uninformative about alleles. Arm K is reported regardless.
+
+### X2 — inflow and openness against partners from the soup
+*Organisms:* the first heritable replicator of each of the 80 Stage G worlds. *Partners:* 256 cells drawn uniformly from
+the snapshot of the organism's own world at step 5,000 (L = 16 and 20) or the snapshot nearest 2 × t_rep (L = 50 and 64);
+also step 10,000 at L = 16. *Measures:* H(Y | X = x) over the 256 encounters (plug-in, bits) and the share of encounters
+in which the pointer fetches a partner byte; compared with the uniform-partner values already reported.
+*Predictions.* X2-1: at L = 16 the median in-soup inflow is at least 1 bit. X2-2: the pointer enters the partner in at least
+half of the in-soup encounters for at least 90% of first replicators. *Reading.* X2-1 not met: the text says that the
+partner dependence of the open replicator's offspring largely vanishes among its own kind, and the claim is restricted to
+random partners. X2-2 not met: "open" is restricted to random partners.
+
+### X3 — open first along the lines of descent
+*Data:* the line records of every closed lod_v6 world (17) and, when available, of every closed N6 world. *Method:* on
+each sampled line (the 64 lines per world of N3), every distinct tape from step 0 to the founder is classed against 64
+random partners as in N3 (`lod_traj.classify_tapes`); the first copier on each line is the earliest record whose tape is
+an open or confined copier. *Predictions.* X3-1: in at least 90% of closed worlds the first copier on every sampled line is
+an open copier. X3-2: in no world does a confined copier on a line precede that line's first open copier by more than
+the median founder delay (79 steps). *Reading.* X3-1 not met: "replication begins open" is restricted to the first
+replicator of each world and is not said of the ancestry of the closers. For lod_v6 this analysis is registered after
+the data exist but before this question was examined; for N6 it is confirmatory.
