@@ -780,3 +780,62 @@ The registered flag criterion counted lineages, and lineages change: pusher-root
 on genotypes: the exact pusher enters the partner in 1.000 of 4,096 encounters against random, pusher and closer
 partners alike; the exact closer in 0.000 of each, and both copy exactly. The classifier is therefore exact; the
 lineage-level flag rates are a property of the dynamics and are reported, not used as a gate.
+
+## N2 — in-situ demography of regenerators and transmitters (written before the run, 2026-10-09 night)
+*Question.* Isolated single mutants flow alike under both rules (E-mech), and one round of encounters barely moves the
+transmitter share (E-census), yet the equilibrium share differs threefold between tars. Which per-capita rate differs?
+*Design* (`n2_demography.py`, local GPU). The ten L = 32 mix50 mutation-on final soups of each tar are continued 2,000
+steps under their own rule and under the other rule (composition × rule, 40 runs), recording every step exactly (pairs,
+pre-execution, post-execution pre-mutation, post-mutation). Classes by the first four bytes: R, T (as in E), M (the core
+with another first byte), O (no core). Per class and per cell-step: births (an executor of the class converts a partner
+of another class to its class), conversions lost to each other class's executors, losses to O by encounter (damage) and
+by mutation, and gains by mutation. Per-capita net growth g_c; the decomposition of g_T − g_R into components.
+*Hypothesis H_backup (registered).* A regenerator's body is backup copies of its core; when its first core is damaged it
+can still copy by running on into a backup, which works when zeros are NOPs (benign rule) and fails when a zero halts
+(lethal rule). Predictions: N2-1, under the benign rule the per-capita rate at which R cells are lost to O (encounter
+damage plus mutation, net of mutational gains) is lower than T's, and under the lethal rule it is not lower, in both
+compositions (the rule, not the composition, sets the sign). N2-2 (direct test): among R and T mutants whose first core
+carries a zero at one of positions 0–3, the share that still copies itself exactly as executor against partners from the
+benign soups is higher for R than for T under the benign rule, and the R advantage shrinks under the lethal rule.
+*Alternatives reported regardless:* the component of g_T − g_R that changes most between rules, whatever it is.
+
+### Amendment to N3 (2026-10-09 night, after inspecting the founding event of the first finished registered world)
+The registered copy rule (new tape within L/4 of the executor's at some shift, and closer to it than to its own old tape,
+ties to copy) misclassifies damage as copying when the partner already resembles the executor: in world 31016 the event
+that flagged C* as a confined copier (step 3,516) wrote two zero bytes into the tail of a partner that was already 14/16
+identical. Amended rule: a copy must also make at least L/4 positions newly match the executor at the copy's shift
+(gain ≥ 0.25); everything else as registered. Re-validated (`runs/lod_v2/validate/validate.json`): V2 0 mismatches in
+808,114 pairs; V3 ≤ 339; V1 ancestry 64 of 64 to the seeded closer; pusher-rooted copy events open in 0.998 (341
+confined against 139,898; under the registered rule 61,399 confined); closer-rooted copy events confined in 0.934 (closer
+mutants that enter the partner). The 20 registered worlds are reported under the registered rule and re-run under the
+amended rule (same seeds, new output `lod_v2`); both are reported, and the amended rule is the one that measures copying.
+
+### Outcome of N2 (appended 2026-10-09 night; `results/n2/DEMOGRAPHY.md`, `BACKGROUND.md`, `BACKUP.md`)
+N2-2 failed: a regenerator with a zero at any of positions 0–3 never copies itself under either rule (0 of 4,096; its
+LDIR, BC = 0, consumes the budget before a backup core is reached); H_backup is rejected. N2-1 failed (R's net loss to O is
+not lower under the benign rule). The decomposition (post hoc, descriptive): direct R↔T copying is neutral in counts
+(within 0.3% in every condition). The background terms that differ are (i) destruction by core-free executors, lower for
+T than R (junk resists intruders), partly offset by recolonisation of the emptied cells; (ii) conversion of intruders,
+higher for R (an executor that runs into a tiled body of cores is turned into a regenerator; about 3 × 10⁻⁴ per capita
+under both rules); (iii) small mutational terms. The lethal rule reduces destruction of T by core-free executors by 9–13%
+and of R by 0–6%; summed, the terms predict the observed 2,000-step drift (benign soup under the lethal rule: predicted
++0.031, observed +0.039; lethal soup under the benign rule: predicted −0.059, observed −0.049; own rules ≈ 0).
+
+## N4 — do inherited payload zeros carry the lethal rule's protection of transmitters? (written before the run, 2026-10-09 night)
+*Design* (`n4_scars.py`, local). Executors: core-free cells (class O) of the final L = 32 mix50 soups of each tar.
+Hosts as partner B, drawn from the same soups: T native (as found), T detox (payload zeros replaced by random non-zero,
+non-0x76 bytes), T sham (as many other payload positions re-drawn), and R (as found). 65,536 encounters per host type ×
+rule × soup tar. Outcome: destruction = the host loses its class (first four bytes no longer its class).
+*Prediction N4-1:* the reduction in T destruction from the benign to the lethal rule is at least twice as large for
+native as for detox hosts (both soups). *N4-2:* sham behaves as native (within 25% of the native reduction).
+*Kill:* if detox shows ≥ 75% of the native reduction, payload zeros do not carry the rule's protection and the
+"scars become a shield" reading is withdrawn.
+
+### Outcome of N4 (appended 2026-10-09 night; `results/n2/SCARS.md`)
+Killed as registered: removing the payload zeros keeps 88–94% of the lethal rule's reduction in transmitter destruction
+(benign soups: native +0.055, detox +0.048, sham +0.054; lethal soups: +0.041, +0.039, +0.041), so inherited zeros do not
+carry the protection. Descriptive (post hoc): most destruction by core-free executors happens without entering (stack
+writes); among executors that enter, a regenerator is destroyed in 0.86–0.89 of encounters under either rule (the
+intruder runs the tiled LDIR to the end of the budget), a transmitter in 0.58 (benign rule) and 0.48 (lethal rule),
+because an intruder wandering through junk is halted by a zero under the lethal rule. The lethal rule lowers destruction
+more for transmitters (by 0.041–0.055) than for regenerators (0.028–0.036).

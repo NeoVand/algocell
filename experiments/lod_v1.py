@@ -27,7 +27,6 @@ from algocell_exp import exectrace as X  # noqa: E402
 from algocell_exp.soup import Soup  # noqa: E402
 
 THETA = 0.75
-GAIN = 0.25     # amendment (2026-10-09 night): a copy must make >= L/4 positions newly match the executor at the copy's shift
 PUSHER16 = np.array([0x01, 0xc5] * 8, np.uint8)
 CLOSER16 = np.array([0xad, 0xe3, 0x21, 0xe3, 0x21, 0xc0, 0xad, 0xc0] * 2, np.uint8)
 CONF, OPEN = 1, 2
@@ -114,16 +113,12 @@ class World:
         chA = (A1 != A0).any(1)
         simB, shB = best_shift(B1, A0)
         selfB = (B1 == B0).mean(1)
-        rA = np.stack([np.roll(A0[q], shB[q]) for q in range(len(k))]) if len(k) else A0
-        gainB = simB - (B0 == rA).mean(1)
-        copyB = chB & (simB >= THETA) & (gainB >= GAIN)
+        copyB = chB & (simB >= THETA) & (simB >= selfB)
         damB = chB & ~copyB & (selfB >= THETA)
         novB = chB & ~copyB & ~damB
         simA, shA = best_shift(A1, B0)
         selfA = (A1 == A0).mean(1)
-        rB = np.stack([np.roll(B0[q], shA[q]) for q in range(len(k))]) if len(k) else B0
-        gainA = simA - (A0 == rB).mean(1)
-        copyA = chA & (simA >= THETA) & (gainA >= GAIN)       # the partner's tape copied into the executor's half
+        copyA = chA & (simA >= THETA) & (simA >= selfA)       # the partner's tape copied into the executor's half
         damA = chA & ~copyA & (selfA >= THETA)
         novA = chA & ~copyA & ~damA
         # confinement of every copy event's executor
