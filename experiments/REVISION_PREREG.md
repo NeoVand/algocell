@@ -962,3 +962,30 @@ copier. The parts the founders execute are words such as `21 e3` and `21 e0`, wh
 one byte (two bits): point mutation made the parts, recombination joined them. *Later founders (15 in 10 worlds):*
 mostly conversions (12 by partial overwrite, 3 by recombination; 11 with bytes from a confined copier). The descent
 statement stands: every founder's line runs back to open pushers.
+
+## N6 — confirmatory replication of the founder result (written 2026-10-10, before any N6 world is run; awaiting spend approval)
+*Why.* The N3 founder analysis (assembled by recombination, not point mutation) used definitions fixed after the N3 data
+were inspected (copy-gain rule, genotype-defined founder, functional parents, chain start at the newest open copier, first
+founders separated). It is therefore exploratory. N6 runs the frozen pipeline on new worlds.
+*Frozen pipeline.* `lod.py`, `modal_lod.py`, `lod_traj.py`, `lod_chain.py` (chain start at the newest open copier older than
+the founder), `lod_founders2.py` and `lod_parts_first.py` as committed at 8b492ae / 24ec712; no change to any definition
+(GAIN = 0.25; functional parents; tape classes against 64 random partners; founder = first confined copier after the newest
+open copier older than the final ≥ 90%-confined stretch; first founder = the earliest founder in its world).
+*Runs.* 20 new benign-tar worlds at L = 16, zero registers, Stage G dynamics, seeds 32001–32020, recorded from step 0 with
+the N3 stopping rule (confined share of copy events > 0.5 for 2,000 steps, then 5,000 more; cap 80,000). Modal, one world
+per container (≈ 29 GPU-hours for N3's 20 worlds; estimate $25–35).
+*Predictions* (on the first founder of each world that closes; n = number of closed worlds):
+- N6-1 (how made): the completing event is a recombination or a copy of the partner (records `novel` or `copyA`) in
+  ≥ 0.8 n worlds, and a point mutation (`mut`) in ≤ 0.1 n.
+- N6-2 (through non-copiers): only non-copiers lie between the newest open copier and the founder in ≥ 0.75 n worlds.
+- N6-3 (parts in circulation): the median share of cells carrying the founder's executed two-byte words, in the last
+  snapshot before the founder, is ≥ 5 × the random-tape baseline (0.00024).
+- Reported regardless: the median and range of steps and records since the newest open copier, contributing events,
+  founder families, the base rate, and later founders separately.
+*Kill.* If point mutations complete ≥ 0.25 n first founders, the claim "the first confined copier is assembled, not
+point-mutated" is withdrawn from the paper. If fewer than 10 worlds close, N6 is uninformative and the claim stays
+exploratory.
+*Decision.* N6-1 and N6-2 met: the founder result may be stated as confirmed. N6-1 met alone: "assembled" may be stated
+as confirmed, "through non-copiers" stays exploratory. N6-3 is descriptive support only.
+*Not registered here.* A lethal-tar arm needs `lod.run` to pass `zero_halts` and the classifier to use the lethal executor;
+that code change will be reviewed and tested before it is registered or run.
