@@ -9,7 +9,7 @@ import os
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "results", "lod")
+OUT = os.environ.get("LOD_OUT", os.path.join(HERE, "results", "lod"))   # path only (N6 replication)
 
 
 def main():

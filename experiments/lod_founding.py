@@ -26,8 +26,8 @@ from algocell_exp import exectrace as X  # noqa: E402
 from lod_traj import classify_tapes  # noqa: E402
 
 L = 16
-IND = os.path.join(HERE, "runs", "lod_v6_modal", "lod_v6")
-OUT = os.path.join(HERE, "results", "lod")
+IND = os.environ.get("LOD_IND", os.path.join(HERE, "runs", "lod_v6_modal", "lod_v6"))   # paths only (N6 replication)
+OUT = os.environ.get("LOD_OUT", os.path.join(HERE, "results", "lod"))
 K = {0: "init", 1: "copy", 2: "damage", 3: "novel", 4: "mut", 5: "copyA"}
 NAME = {"novel": "rewrite (neither copy nor ≥ 75% own)", "copyA": "copy of the partner", "copy": "copy", "damage": "partial overwrite", "mut": "point mutation"}
 P = np.random.default_rng(7).integers(0, 256, (64, L), dtype=np.uint8)

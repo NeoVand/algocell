@@ -10,14 +10,16 @@ import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+IND = os.environ.get("LOD_IND", os.path.join(HERE, "runs", "lod_v6_modal", "lod_v6"))   # paths only (N6 replication); definitions unchanged
+OUTD = os.environ.get("LOD_OUT", os.path.join(HERE, "results", "lod"))
 from lod_traj import classify_tapes  # noqa: E402
 
-D = pd.read_csv(os.path.join(HERE, "results", "lod", "chain_v6b.csv")).drop_duplicates(["seed", "F_step", "F_tape"]).copy()
+D = pd.read_csv(os.path.join(OUTD, "chain_v6b.csv")).drop_duplicates(["seed", "F_step", "F_tape"]).copy()
 D["first"] = D.groupby("seed").F_step.transform("min") == D.F_step
 rng = np.random.default_rng(3)
 comp = {}
 for r in D.itertuples():
-    z = np.load(os.path.join(HERE, "runs", "lod_v6_modal", "lod_v6", f"L16_benign_s{r.seed}", "soups.npz"))
+    z = np.load(os.path.join(IND, f"L16_benign_s{r.seed}", "soups.npz"))
     k = np.where(z["steps"] < r.F_step)[0].max()
     key = (r.seed, int(z["steps"][k]))
     if key not in comp:
@@ -56,6 +58,6 @@ for name, E in (("first founders", D[D["first"]]), ("later founders", D[~D["firs
               f"- byte sources (share of {n} bytes): {a}",
               f"- per founder, share of bytes from non-copiers: median {nc.median():.2f}; soup share of non-copiers at the snapshot before: median {E.soup_noncopier.median():.2f}",
               f"- founders with a byte source in a confined copier: {int(E.source_classes.apply(lambda s: ast.literal_eval(s).get('confined copier', 0) > 0).sum())} of {len(E)}", ""]
-open(os.path.join(HERE, "results", "lod", "FOUNDERS2.md"), "w").write("\n".join(lines) + "\n")
-D.to_csv(os.path.join(HERE, "results", "lod", "founders2.csv"), index=False)
+open(os.path.join(OUTD, "FOUNDERS2.md"), "w").write("\n".join(lines) + "\n")
+D.to_csv(os.path.join(OUTD, "founders2.csv"), index=False)
 print("\n".join(lines))
