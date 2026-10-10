@@ -35,6 +35,21 @@ captures intruders, a transmitter's junk loses them, and lethal by-products deci
 Validation: exact replay of 795,934 recorded encounters (0 mismatches), accounting within the mutation count, and all
 64 sampled confined copiers in a seeded world traced to the seeded closer. `runs/lod/validate/validate.json`.
 
+Two measurement problems found and fixed on the way (both documented in REVISION_PREREG.md):
+- The registered copy rule counted damage as copying in soups of near-identical tapes, so its founding events (C*) were
+  confined loops that never copy, or open copiers (tested directly: copy rate 0.00–0.11 against random partners). The
+  amended rule requires that a copy make at least L/4 bytes newly match the executor.
+- Even under the amended rule the oldest confined record is a transient: confinement of pusher–return hybrids depends on
+  the partner. The founder is now located by genotype (every ancestor classified against random partners) at the start of
+  the final confined stretch.
+First amended-rule world with the full analysis (31012): every line of descent of the closed population passes through
+open copiers (pushers `01 c5` × 8, `21 e5` × 8). The first confined copiers on the line, `01 ed b0 58 01 ed b0 ed b0 ed b0
+c5 01 43 01 c5`, copy with an LDIR at position 7 that is absent from the sampled open ancestors (10 bytes change between
+sampled ancestors, so the founding encounter is not in the sample); a later confined form, `01 ed b0 58 f9 f0 …`,
+returns into the operand of its own first instruction (`01 ed b0`, LD BC,0xb0ed) and executes those two bytes as LDIR
+(instruction starts at 0, 1, 3, 4, 5: the code overlaps itself). The complete record of every ancestor (`lod_v5`) is
+running so that the founding encounters can be read exactly.
+
 ## Literature check (`lit_review/VERIFICATION.md`, primary sources)
 - Cicala et al. 2026 (arXiv:2607.09211, v2 2 Sep) report the Load–Push → LDIR takeover in Z80 soups, also without task
   pressure, and explain it by mutational robustness. Their v2 appendix lists our `XX 5e … ed b0` motif with byte 0 as
@@ -54,3 +69,34 @@ that meets a transmitter becomes a transmitter in 0.1–0.3%.
 Methods note: the GPU soup is not bitwise deterministic (two identical local runs of 2,000 steps from the same seed
 differ, through the atomic collision claim of the pair draw), so worlds reproduce statistically, not exactly, and a
 world cannot be replayed to inspect an event after the fact. The N3 recorder therefore records every step as it happens.
+
+### N3, functional parents (lod_v6) — first world (31002), provisional
+The line now follows, at each recombination, the parent that supplied the bytes the new tape executes. In world 31002
+all 64 sampled lines share one founder F, the return closer `3d e3 21 e3 21 e0 3d e0` × 2, made at step 2,457, 117 steps
+after the last open copier on the line (the pusher `21 e5` × 8). Between them, 32 records: the line leaves the pusher
+lineage into a cell that is written over again and again by many different neighbours (11 copies, 13 damage writes, 7
+recombinations, 1 mutation); its writers carry `21 e3` (EX (SP),HL) and `21 e0` (RET PO) words and zeros. F's 16 bytes
+come from 7 distinct events, 15 of them written by tapes that cannot copy themselves. The first self-confined copier was
+assembled in a non-replicating cell from words circulating among pusher variants, not by point mutations within one
+lineage. (`results/lod/CHAIN*.md`; to be checked on all 20 worlds.)
+
+Exploratory landscape (`results/lod/LANDSCAPE.md`): a gradual route also exists in principle. Four point mutations
+(PUSH → RET PO at positions 5 and 15, PUSH → EX (SP),HL at 9 and 1) lead from the pusher to a confined copier through
+copiers only, with copying fidelity rising (0.59 → 1.00) and the pointer's entry into the partner falling (1.00 → 0.62 →
+0.00). Whether each step is favoured is being tested (N5).
+
+### N3, functional parents — five founders in three worlds (provisional; `results/lod/CHAIN_v6.md`, `PARTS_v6.md`)
+- Every founder of a confined lineage was completed by a recombination (5 of 5), after a median of 48 records and 253
+  steps since the last open copier on its line; its 16 bytes came from a median of 5 distinct events (2–7), mostly
+  written by tapes that cannot copy themselves.
+- Two families of founders: return closers (`XX e3 21 e3 21 e0 XX e0` × 2, the family of the paper's evolved return
+  closer) and LDIR block copiers (`… 1e b0 … ed b0 …`).
+- For the return closers, the words they execute (`21 e3`, EX (SP),HL; `21 e0`, RET PO) were already in 0.2–4.6% of all
+  cells before the founder appeared (10–200 times a random tape), almost all of them in non-copiers. No cell carried the
+  founder's whole program before it was assembled.
+- Where the words come from (direct test): a pusher with one mutated operand byte (`21 e3` instead of `21 e5`) writes the
+  new word into its partners about once per encounter, as data, among its own pusher words; its offspring are the pusher
+  or variants carrying the new word, many of them non-copiers. Sloppy open copiers keep a communal pool of words; the
+  first confined copiers were assembled from that pool by recombination in a cell that could not copy itself.
+- Exploratory landscape with heritability: in 3 of 4 cubes between the pusher and a return closer, no single-byte path
+  through heritable genotypes reaches a heritable confined genotype (43–163 exist per cube); in one, a 6-step path does.
