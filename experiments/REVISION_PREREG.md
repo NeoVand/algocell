@@ -1039,3 +1039,9 @@ its ancestors and is written in one encounter, mostly by the non-copying tapes t
 N6-5 is withdrawn (a founding event's kind is constrained by its distance from the tape before). Replaced by N6-5′
 (mutational reach, `lod_reach.py` frozen with this amendment): the recorded point mutations on the chains are expected to
 make fewer than 0.05 founders. N6-4 is reported with the abundance null of `lod_reach.py` and is not decisive alone.
+
+### Wording note to N6 (2026-10-10, during N6, before any N6 world was downloaded or inspected)
+A referee-style audit noted that N6-1 still says "recombination". The criterion is defined by record classes (`novel` or
+`copyA`), and `novel` was renamed *rewrite* in the second correction to N3: N6-1 reads "the completing event is a rewrite or
+a copy of the partner". No criterion, threshold, script or definition changes; the scoring script `n6_score.py` (84a889a)
+is unchanged.
