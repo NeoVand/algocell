@@ -839,3 +839,13 @@ writes); among executors that enter, a regenerator is destroyed in 0.86–0.89 o
 intruder runs the tiled LDIR to the end of the budget), a transmitter in 0.58 (benign rule) and 0.48 (lethal rule),
 because an intruder wandering through junk is halted by a zero under the lethal rule. The lethal rule lowers destruction
 more for transmitters (by 0.041–0.055) than for regenerators (0.028–0.036).
+
+### Addition to N3 (2026-10-09 night, before any amended-rule world was inspected)
+Under the registered copy rule, the C* events of the first six worlds are artefacts: none copies itself against random
+partners (copy rate 0.00–0.11; three are confined loops that never copy, three enter the partner), and hundreds to
+thousands of open-copier records lie on each line after C*. Two changes, made before any amended-rule result was seen:
+(i) the founding tape of every C* is now tested directly (64 random partners: enters the partner, copies ≥ 0.75 at best
+shift, copies exactly); (ii) a second founding record is reported beside C*: C** = the oldest confined record newer than
+the newest open-flagged record on the line (the start of the final confined stretch). Lines now store their full step,
+kind and flag arrays and sampled tapes (`lod_v3`, same seeds, amended copy rule). The registered N3-1 is evaluated on C*
+as registered; C** is reported as an addition.

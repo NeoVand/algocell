@@ -56,8 +56,12 @@ def executed_positions(tape: np.ndarray, L: int, n: int = 64, seed: int = 0) -> 
     """Positions of `tape` fetched as instruction stream when it executes as A against n random partners (union)."""
     rng = np.random.default_rng(seed)
     P = rng.integers(0, 256, (n, L), dtype=np.uint8)
-    _, m = X.execute_pairs_traced(np.concatenate([np.tile(tape, (n, 1)), P], 1), L, 128)
+    res, m = X.execute_pairs_traced(np.concatenate([np.tile(tape, (n, 1)), P], 1), L, 128)
     ex = X.exec_positions(m, 2 * L)
+    B = res[:, L:]
+    sim = np.max(np.stack([(B == np.roll(tape, s)).mean(1) for s in range(L)]), 0)
+    executed_positions.copy_rate = float((sim >= 0.75).mean())
+    executed_positions.exact_rate = float((B == tape).all(1).mean())
     return ex[:, :L].any(0), ex[:, L:].any(1).mean()
 
 
@@ -98,7 +102,8 @@ def founding(ev: dict, L: int):
     out.update({"copier_tape": None if src is None else src.tobytes().hex(" "), "old_tape": old.tobytes().hex(" "), "sources": "".join(c[0] for c in cats),
                 "n_copier": cats.count("copier"), "n_kept": cats.count("kept"), "n_both": cats.count("both"), "n_new": cats.count("new"),
                 "core_positions": core, "core_copier": sum(cats[i] == "copier" for i in core), "core_kept": sum(cats[i] == "kept" for i in core),
-                "core_both": sum(cats[i] == "both" for i in core), "core_new": sum(cats[i] == "new" for i in core), "cstar_enters_partner": float(ent)})
+                "core_both": sum(cats[i] == "both" for i in core), "core_new": sum(cats[i] == "new" for i in core), "cstar_enters_partner": float(ent),
+                "cstar_copy_rate": executed_positions.copy_rate, "cstar_exact_rate": executed_positions.exact_rate})
     return out
 
 
@@ -127,6 +132,8 @@ def main():
             fd = founding(ev, L)
             br = rates.iloc[(rates.t - k[0]).abs().argmin()] if len(rates) else None
             E.append({"seed": R["seed"], "cstar_step": k[0], "cstar_cell": k[1], "n_lines": len(lns), "kind": ev["cstar"]["kind"],
+                      "open_after_cstar_median": float(np.median([ln["n_open_records"] - ln["open_before_cstar"] for ln in lns])),
+                      "line_len_median": float(np.median([ln["line_len"] for ln in lns])),
                       "executor_flag": ev["cstar"].get("p1_flag"), "open_before": ev["open_before_cstar"], "open_within_2000": ev["open_within_window"],
                       "base_rate_open_within_2000": float(br["open_within"]) if br is not None else np.nan,
                       **{f"f_{kk}": (json.dumps(vv) if isinstance(vv, (list, dict)) else vv) for kk, vv in fd.items()}})
@@ -145,11 +152,11 @@ def main():
     for r in Wd.itertuples():
         lines.append(f"| {r.seed} | {r.t_close} | {r.t_end} | {r.lines} | {r.lines_with_cstar} | {r.descent_lines} | {r.descent_within_2000} | {r.distinct_cstar} |")
     lines += ["", "## Founding events C* (one row per distinct C*; lines that share it are counted)", "",
-              "| seed | step | lines | kind | executor flag | open copiers before | base rate | bytes copier / kept / both / new | core (executed) copier / kept / both / new | sources by position | tape |",
-              "|---|---|---|---|---|---|---|---|---|---|---|"]
+              "| seed | step | lines | kind | executor flag | open copiers before | open copiers after (median) | base rate | C* vs random partners: enters / copies ≥ 0.75 / exact | bytes copier / kept / both / new | core (executed) copier / kept / both / new | sources by position | tape |",
+              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in (Ed.sort_values(["seed", "n_lines"], ascending=[True, False]).itertuples() if len(Ed) else []):
         g = lambda k: getattr(r, k, "")  # noqa: E731
-        lines.append(f"| {r.seed} | {r.cstar_step} | {r.n_lines} | {r.kind} | {r.executor_flag} | {r.open_before} | {r.base_rate_open_within_2000:.2f} | "
+        lines.append(f"| {r.seed} | {r.cstar_step} | {r.n_lines} | {r.kind} | {r.executor_flag} | {r.open_before} | {r.open_after_cstar_median:.0f} | {r.base_rate_open_within_2000:.2f} | {g('f_cstar_enters_partner')} / {g('f_cstar_copy_rate')} / {g('f_cstar_exact_rate')} | "
                      f"{g('f_n_copier')} / {g('f_n_kept')} / {g('f_n_both')} / {g('f_n_new')} | {g('f_core_copier')} / {g('f_core_kept')} / {g('f_core_both')} / {g('f_core_new')} | `{g('f_sources')}` | `{r.f_tape}` |")
     open(os.path.join(a.out, "LOD.md"), "w").write("\n".join(lines) + "\n")
     print("\n".join(lines))

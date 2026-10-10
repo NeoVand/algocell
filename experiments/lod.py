@@ -230,7 +230,13 @@ def base_rate(w: World, n: int = 1000, window: int = 2000, seed: int = 0) -> dic
     return {"t": w.t, "n": n, "open_within": has_open / n, "conf_within": has_conf / n}
 
 
+KIND_CODE = {"init": 0, "copy": 1, "damage": 2, "novel": 3, "mut": 4, "copyA": 5}
+
+
 def analyse_lines(w: World, n: int = 64, recent: int = 500, seed: int = 0, window_open: int = 2000) -> dict:
+    """Sample n recent confined copiers; walk each line of descent back to step 0. C* = the oldest record flagged
+    confined; C** = the oldest confined record newer than the newest open-flagged record (start of the final confined
+    stretch). Stores compact per-line arrays and the tapes needed for figures."""
     rng = np.random.default_rng(seed)
     cand = [c for c, r in enumerate(w.recs) if (r.flag & CONF) and r.fstep >= w.t - recent]
     if not cand:
@@ -243,18 +249,28 @@ def analyse_lines(w: World, n: int = 64, recent: int = 500, seed: int = 0, windo
         steps = np.array([r.step for r in line])
         kinds = [r.kind for r in line]
         conf_idx = np.where(flags & CONF)[0]
-        cstar = int(conf_idx.max()) if len(conf_idx) else None          # earliest (oldest) confined record on the line
+        open_idx = np.where(flags & OPEN)[0]
+        cstar = int(conf_idx.max()) if len(conf_idx) else None
+        newest_open = int(open_idx.min()) if len(open_idx) else None
+        cands = conf_idx[conf_idx < newest_open] if newest_open is not None else conf_idx
+        css = int(cands.max()) if len(cands) else None
         before = range(cstar + 1, len(line)) if cstar is not None else range(0)
         open_before = [q for q in before if line[q].flag & OPEN]
         open_recent = [q for q in open_before if steps[cstar] - steps[q] <= window_open] if cstar is not None else []
+        keep = sorted(set(range(0, len(line), max(1, len(line) // 300))) | set(range(max(0, (css or 0) - 8), min(len(line), (css or 0) + 12))))
         ev = {"cell": int(c), "line_len": len(line), "root_kind": kinds[-1], "root_tag": line[-1].tag, "root_tape": line[-1].tape.hex(" "),
-              "n_conf_records": int(len(conf_idx)), "n_open_records": int(((flags & OPEN) > 0).sum()),
-              "kinds": {k: kinds.count(k) for k in set(kinds)}}
+              "n_conf_records": int(len(conf_idx)), "n_open_records": int(len(open_idx)), "kinds": {k: kinds.count(k) for k in set(kinds)},
+              "steps": steps.tolist(), "kcode": [KIND_CODE.get(k, 9) for k in kinds], "flags": flags.tolist(),
+              "tapes": {str(q): line[q].tape.hex(" ") for q in keep}}
         if cstar is not None:
-            cs = line[cstar]
-            ev.update({"cstar": describe(cs), "cstar_index": cstar, "open_before_cstar": len(open_before), "open_within_window": len(open_recent),
+            ev.update({"cstar": describe(line[cstar]), "cstar_index": cstar, "open_before_cstar": len(open_before), "open_within_window": len(open_recent),
                        "last_open_before": describe(line[open_before[0]]) if open_before else None,
                        "context": [describe(line[q]) for q in range(max(0, cstar - 3), min(len(line), cstar + 6))]})
+        if css is not None:
+            ev.update({"cstarstar": describe(line[css]), "cstarstar_index": css,
+                       "newest_open": describe(line[newest_open]) if newest_open is not None else None,
+                       "open_before_cstarstar": int(sum(1 for q in range(css + 1, len(line)) if line[q].flag & OPEN)),
+                       "context2": [describe(line[q]) for q in range(max(0, css - 3), min(len(line), css + 8))]})
         lines.append(ev)
     return {"t": w.t, "n_candidates": len(cand), "lines": lines}
 
