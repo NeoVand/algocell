@@ -989,3 +989,25 @@ exploratory.
 as confirmed, "through non-copiers" stays exploratory. N6-3 is descriptive support only.
 *Not registered here.* A lethal-tar arm needs `lod.run` to pass `zero_halts` and the classifier to use the lethal executor;
 that code change will be reviewed and tested before it is registered or run.
+
+### Second correction to the outcome of N3 (2026-10-10, after the second independent figure critic; `results/lod/FOUNDING.md`, `founding.csv`, `lod_founding.py`)
+The critic found that the record class "novel", reported as "recombination", is a residual class (the new tape is neither
+a ≥ 75% copy of its partner nor ≥ 75% its own former bytes), not evidence that two parents' bytes were spliced, and that in
+6 of 17 worlds the line record just before the founder already writes the founder into every random partner. Replaying
+every founding encounter: the executor was a non-copier in 17 of 17 worlds; the founder was written into the partner's half
+in 13 and the executor's own half in 4; a median of 7 of its 16 bytes (1–13) were in neither tape before. In 11 worlds the
+executor's pointer ran into its partner and it wrote the founder only with that partner (0–19% of random partners); in 5,
+a confined non-copier that writes the founder into every partner and turns itself into it had arisen 1–3 steps earlier (by
+a point mutation in 2, a rewrite in 3); in 1 (the block copier), an open producer arose by point mutation one step before.
+"Completed by recombination" and "recombination joined the parts" are withdrawn; the record class is renamed *rewrite*.
+What stands: no first founder was a point mutation of a copier; every founding executor was a non-copier; the founder
+appeared a median of 79 steps after the newest open copier; the words founders execute are one-byte variants of the
+pusher's words, carried by about eight times the random-tape share of cells. The "contributing events" measure attributes
+bytes along the chain and is not used, since the founding encounter writes most of the founder.
+
+### Amendment to N6 (2026-10-10, before any N6 world is run)
+Added predictions, on the first founder of each closed world (`lod_founding.py`, frozen as committed with this amendment):
+- N6-4 (the maker): the founding executor is a non-copier in ≥ 0.8 n worlds.
+- N6-5 (written, not inherited): no first founder is a point mutation of a copier (open or confined) in ≥ 0.9 n worlds.
+Reported regardless: side, producers on the chain and how they arose, bytes in neither parent. N6-1 is kept as registered,
+with "novel" read as *rewrite*.
