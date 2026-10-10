@@ -46,3 +46,7 @@ Validation: exact replay of 795,934 recorded encounters (0 mismatches), accounti
 - 8080 aliases (CB = JMP, D9 = RET, DD/ED/FD = CALL) confirmed from a die-reconstructed decoder and MAME; Intel's manual
   lists them as undefined. Our ablation should be called "8080-like" unless it implements them.
 - New: Jha et al. 2026 (arXiv:2609.10817), a Z80 soup with an energy budget; no replicator taxonomy.
+
+Direct check of the conversion term (`results/n2/CONVERT.md`, 65,536 encounters per row): a core-free executor that
+meets a regenerator becomes a regenerator in 0.5–0.9% of encounters (1.4–3.8% of those in which it enters the host); one
+that meets a transmitter becomes a transmitter in 0.1–0.3%.
