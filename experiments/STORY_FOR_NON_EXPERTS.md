@@ -516,8 +516,9 @@ counted from the most recent ancestor that was still an open copier.
   it *wrote* the closer, usually as a rare accident of meeting that particular partner (with partners drawn from the soup it makes
   the closer in a median of 2% of encounters). In the other 5 worlds, a *confined* program that copies the code it runs, but not
   the half of itself it never runs, had appeared one to three steps earlier, by a point mutation in two worlds and a rewrite in
-  three; it is a closer in all but name, and it turned into one in a single encounter. In no world was the event that made the
-  founder a point mutation, although point mutations are a quarter of all the events on these lines.
+  three; it is a closer in all but name, and it turned into one in a single encounter. And no founder could have been a single
+  point mutation of the tape before it: each differs from it in 4 to 10 bytes, and almost none of the tapes on these lines has any
+  one-byte mutant that is a closer.
 - **Its parts are the pusher's own words, slightly changed.** The pusher `21 e5` means "load register HL; push HL". Change one byte
   and you get `21 e3` ("load HL; *swap* HL with the top of the stack") or `21 e0` ("load HL; *return*, if a check passes"). Swapping
   with the stack lets a program pick up the bytes it has just written; returning sends the finger to them. Those are exactly the two
@@ -538,8 +539,8 @@ islands that single changes mostly cannot reach without passing through tapes th
 
 So, in one sentence:
 
-> **The first self-confined replicators arose among programs that could not copy themselves, in most worlds as their product, in
-> a single encounter rather than by a mutation, from one-byte variants of the pusher's words.**
+> **The first self-confined replicators descend from the open ones, but none is a mutant of its ancestor: each was written in one
+> encounter, mostly by programs that copy nothing of themselves, from one-byte variants of the pusher's words.**
 
 A note on honesty. Our first version of this result said the founder was "assembled by recombination". An independent critic
 showed that the category we had called recombination simply meant "neither a copy nor mostly the old tape". Our second version

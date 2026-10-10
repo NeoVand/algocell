@@ -1025,3 +1025,13 @@ in neither parent, letting each 8-byte half of the founder take its own shifts: 
 N6-4 is restated with both criteria: the founding executor is a non-copier by the whole-tape test in ≥ 0.8 n worlds (as
 registered) and by executed bytes in ≥ 0.6 n worlds. N6-5 is restated as: no founding event is a point mutation in
 ≥ 0.9 n worlds. The frozen pipeline now includes `lod_founding.py` as committed with this amendment.
+
+### Fourth correction to the outcome of N3 (2026-10-10, third critic report on the figure; `results/lod/REACH.md`, `lod_reach.py`)
+The comparison "0 of 17 founding events are point mutations against 54 of 212 chain events (P = 0.007)" is withdrawn as a
+test: record kinds are defined by how many bytes change, and every founder is 4–10 bytes (median 8, best shift) from the tape
+its line held before, so the zero follows from the definitions. The fair null is mutational reach: only 14 of the 209
+distinct chain tapes have any single-byte mutant that is a confined copier (at most 0.6% of their mutants), and the 54
+recorded point mutations were expected to make 0.002 founders. That every founding executor is a whole-tape non-copier has
+probability 0.076 under the soups' composition (non-copiers 84–89%). Point mutations made the writer in 3 worlds (31005,
+31006, 31019). Stated result: closers descend from the open lineage; the first one is out of reach of a single mutation of
+its ancestors and is written in one encounter, mostly by the non-copying tapes that fill the soup.

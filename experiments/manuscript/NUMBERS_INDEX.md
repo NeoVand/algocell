@@ -74,7 +74,11 @@ with the Stage G L = 16 tables as the benign control (medians 46,250 vs 525).
 | bytes of the founder in neither tape before | median 2 (0–7) with each 8-byte half at its own shifts ("median 7" at shift 0 withdrawn) | `results/lod/FOUNDING.md` |
 | founding executor non-copier by whole tape / by executed bytes too | 17 / 12 of 17; confined executed-byte copiers 5 | `results/lod/FOUNDING.md` |
 | soup-partner production by the 12 | median 0.02, at most 0.46 (0.21, 0.46), open producer 1.00 | `results/lod/founding.csv` (executor_soup_produces_F) |
-| founding events that are point mutations | 0 of 17; chain events 54 of 212 (0.25); P = 0.0068 | `results/lod/FOUNDING.md` |
+| founding events that are point mutations | 0 of 17 (the exchangeability P = 0.0068 withdrawn as a test) | `results/lod/FOUNDING.md` |
+| mutational reach: chain tapes with a confined-copier single mutant; expected founders from 54 mutations | 14 of 209 (≤ 0.61%); 0.0020 | `results/lod/REACH.md` |
+| founder's distance to the tape before (best shift) | median 8 (4–10) | `results/lod/REACH.md` |
+| abundance null: all 17 executors whole-tape non-copiers | P = 0.076 | `results/lod/REACH.md` |
+| soup-partner production by the 12 (FOUNDING_SUMMARY) | median 0.0186; 0 in 5; max 0.459 excluding the producer 31005 | `results/lod/FOUNDING_SUMMARY.md` |
 | founder a copy of an open copier | 1 of 17 (31007) | `results/lod/FOUNDING.md` |
 | routes: open writer in that encounter / confined producer earlier / open producer | 11 / 5 / 1; producers 1–3 steps before F, by point mutation 3 (2 confined) and rewrite 3 | `results/lod/FOUNDING.md`, `founding.csv` |
 | in-encounter writers produce F with random partners | at most 0.19 | `results/lod/founding.csv` (executor_writes_F) |
