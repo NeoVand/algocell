@@ -3,6 +3,27 @@
 Each item gives the pre-registration (REVISION_PREREG.md), the outcome and the source table. Nothing here has been put
 into the manuscript.
 
+## Headline (N3, 20 worlds recorded exactly, 17 closed)
+**The first self-confined replicators were assembled, not evolved by point mutation.** On the exact line of descent of
+every closed world, the founder of the confined lineage was completed by a recombination (19 of 32 founders) or by a
+partial overwrite from a neighbour (12), once by a copy of the partner, and never by a point mutation. Its bytes were
+written mostly by tapes that cannot copy themselves (64% of all founder bytes; per founder, median 78%), in a median of 4
+separate events over a median of 240 steps after the last open copier on its line. In 16 of 17 worlds the founder is a
+return closer built from the pusher's own vocabulary (`21` loads with EX (SP),HL and a return in place of PUSH), and the
+words it executes were already circulating, about 10 times more often than in random tapes, 98% of them in non-copiers;
+sloppy pushers spread such words as data (a mutated operand is pushed into partners about once per encounter). Every
+founder's line runs back to the open pushers. Source: `results/lod/founders_v6.csv`, `CHAIN_v6.md`, `PARTS_v6.md`;
+draft figure `manuscript/figures/out/fig_assembly.png` (critic review pending).
+Why it matters for the paper: it answers the question the round-2 reviewers and Cicala et al. (2026) leave open
+(descent versus displacement), and it gives the "heredity before individuality" thesis a mechanism: individuality is
+assembled from a pool of words kept by non-individual replicators, by horizontal transfer — the Woese picture, observed
+byte by byte.
+
+## Spend
+Modal tonight: $52.96 through 00:00 CDT (algocell-lod), about $55 in all. With the previous night's revision runs
+(≈ $93, 9 Oct UTC) the revision has used about $150 of the $300 authorised. October's metered total for all algocell
+apps is $441 (it includes the 7–8 Oct atlas and BFF stages).
+
 ## N1 — the toxic payload (rejected)
 *Hypothesis:* bytes a transmitter never runs are selected to halt intruders (0x00 under lethal tar, 0x76 under both).
 *Outcome:* rejected. Payload zeros are inherited scars of stack damage: they rise towards the end of the payload (to
