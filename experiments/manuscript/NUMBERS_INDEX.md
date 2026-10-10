@@ -61,3 +61,26 @@ classes `21 e5` 984 tapes, `01 c5` 568); old Fig. 2a,b,c,d,e → Fig. 3a,b,d,f,e
 old Fig. 4 → Fig. 5; old Fig. 5a → Fig. 6. ED 12 and ED 13 are now drawn by `make_figures.ed12`/`ed13` from
 `results/biology/assembly/{per_sample,per_world,auc}.csv` and `results/stageI/{c4/functional.csv,stageI/stage_g_runs.csv}`
 with the Stage G L = 16 tables as the benign control (medians 46,250 vs 525).
+
+## Revision 3 (2026-10-10): numbers added to the main text and Methods
+
+| statement | value(s) | source table / file |
+|---|---|---|
+| genealogy worlds recorded / closed | 20 / 17 | `results/lod/FOUNDERS2.md` (first founders: 17 in 17 worlds); `REVISION_PREREG.md` N3 outcome (lod_v6) |
+| replay validation | 795,934 encounters, 0 mismatches; 64 of 64 sampled confined copiers traced to the seeded closer | `runs/lod/validate/validate.json`; `results/night/NIGHT_RESULTS_2026-10-09.md` |
+| base rate (open copier among ancestors within 2,000 steps) | median 1.0 | `REVISION_PREREG.md`, outcome of N3 under the registered rule |
+| first founder completed by recombination / copy of partner / point mutation | 16 / 1 / 0 | `results/lod/FOUNDERS2.md` ("completed by: novel 16, copyA 1") |
+| steps since the newest open copier (median, range); records | 79 (1–360); 14 | `results/lod/FOUNDERS2.md`; `results/lod/founders2.csv` (steps_elapsed) |
+| only non-copiers between | 16 of 17 | `results/lod/FOUNDERS2.md` |
+| contributing events | median 3 (1–6) | `results/lod/FOUNDERS2.md` |
+| executed words carried before the founder | median 0.205% of cells; baseline ≈ 0.024%; ratio ≈ 8.5 | `results/lod/PARTS_FIRST.md` |
+| first founders with the return-closer motif | 15 of 17 (1 LDIR block copier, 1 other) | `results/lod/PARTS_FIRST.md` |
+| later founders; with bytes from a confined copier | 15 in 10 worlds; 11 of 15 | `results/lod/FOUNDERS2.md` |
+| hypercubes: no heritable single-byte path | 3 of 4 (one six-step path); k = 12 or 16 | `results/lod/LANDSCAPE.md` (section "With heritability") |
+| R–T mutual copying equal | within 0.3% | `REVISION_PREREG.md`, outcome of N2 |
+| core-free cells | 11–16% of the soup | `results/n2/BACKGROUND.md`; `results/night/NIGHT_RESULTS_2026-10-09.md` (N2) |
+| regenerator destroyed if the intruder entered | 0.75–0.89 (0.7467–0.8889) | `results/n2/SCARS.md` (rows host R) |
+| backup cores: regenerator with a damaged first core copies itself | 0 of 4,096 | `REVISION_PREREG.md`, outcome of N2 (N2-2) |
+| zeros removed: protection kept | 88–94% | `REVISION_PREREG.md`, outcome of N4; `results/n2/SCARS.md` |
+| payload zeros as scars (benign vs lethal frequency) | 0.067 vs 0.052 at L = 32 | `results/toxin/COMPOSITION.md` |
+| BFF open literal: offspring carry 8 bits of the partner without wrap | 8 bits (ceiling) | Supplementary Fig. 3 (old ED Fig. 7); `results/biology/individuality/NUMBERS_INDIVIDUALITY.md` |
