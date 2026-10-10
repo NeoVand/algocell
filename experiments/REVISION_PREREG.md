@@ -857,3 +857,12 @@ Implementation note (2026-10-09 night): the sampled tapes stored per line skip t
 sampled ancestors jump 10 bytes across the transition), so `lod_v5` (same seeds, amended rule, nothing else changed)
 also stores every record on the 64 sampled lines (step, kind, flag, tape, overwritten tape, minor parent's tape) and the
 soup every 2,000 steps. The redundant `lod_v4` was stopped.
+
+### Outcome of N3 under the registered copy rule (appended 2026-10-09 night; `results/lod/registered_rule/LOD.md`)
+18 of 20 worlds closed by the registered measure (31006 and 31017 reached the 80,000-step cap), and in all 18 the
+sampled lines pass through open copiers before C*: N3-1 is met as written. It is uninformative, and is not used as
+evidence: (i) only 1 of the 24 distinct C* tapes copies itself against random partners (12 enter the partner, the rest
+are confined loops that never copy; the registered copy rule counted damage to near-identical partners as copying), and
+(ii) the base rate is 1.0 (median): by the time C* appears, every sampled living cell has an open copier within 2,000
+steps of its line, so the criterion could not fail. Whether closers descend from open copiers is decided on the founders
+of the final confined stretch, identified by genotype, under the amended rule (`lod_v5`).
