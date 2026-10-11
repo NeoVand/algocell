@@ -25,11 +25,9 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "manuscript", "figures"))
-import soup_stills as ss  # noqa: E402
 from algocell_exp import assay as A  # noqa: E402
 from algocell_exp import exectrace as X  # noqa: E402
 from mutscan import scan_tape, summarise  # noqa: E402
-from population_sample import STAGES  # noqa: E402
 
 R = os.path.join(HERE, "results")
 NCELL, NP_TRACE, NSCAN = 64, 16, 16
@@ -41,12 +39,13 @@ def cls(conf: bool, sites: int) -> str:
     return "regenerator" if sites <= 2 else ("transmitter" if sites >= 5 else "intermediate")
 
 
-def classify(soup: np.ndarray, L: int, sup: list, zh: bool, rng) -> tuple[dict, list[dict]]:
+def classify(soup: np.ndarray, L: int, sup: list, zh: bool, rng, *, steps: int = 128,
+             include_offsets: bool = False) -> tuple[dict, list[dict]]:
     cells = soup[rng.choice(len(soup), size=min(NCELL, len(soup)), replace=False)]
-    res = A.assay_many(cells, z80_steps=128, suppress=sup, n=32, seed=int(rng.integers(1 << 31)), zero_halts=zh)
+    res = A.assay_many(cells, z80_steps=steps, suppress=sup, n=32, seed=int(rng.integers(1 << 31)), zero_halts=zh)
     herit = np.array([r["is_replicator"] for r in res])
     P = rng.integers(0, 256, size=(len(cells) * NP_TRACE, L), dtype=np.uint8)
-    _, masks = X.execute_pairs_traced(np.concatenate([np.repeat(cells, NP_TRACE, 0), P], 1), L, 128, suppress=sup, zero_halts=zh)
+    _, masks = X.execute_pairs_traced(np.concatenate([np.repeat(cells, NP_TRACE, 0), P], 1), L, steps, suppress=sup, zero_halts=zh)
     ex = X.exec_positions(masks, 2 * L).reshape(len(cells), NP_TRACE, 2 * L)
     conf = ~ex[:, :, L:].any(axis=(1, 2))
     union = ex[:, :, :L].any(axis=1)
@@ -54,11 +53,17 @@ def classify(soup: np.ndarray, L: int, sup: list, zh: bool, rng) -> tuple[dict, 
     hidx = np.flatnonzero(herit)
     scanned = rng.permutation(hidx)[:NSCAN]
     for j in scanned:
-        d = scan_tape(cells[j], 16, 16, 128, seed=int(rng.integers(1 << 31)), zero_halts=zh, suppress=tuple(sup))
+        d = scan_tape(cells[j], 16, 16, steps, seed=int(rng.integers(1 << 31)), zero_halts=zh, suppress=tuple(sup))
         row, site = summarise(d, L)
         tr = site["transmissible"].values.astype(bool)
         out_cells.append({"cell": int(j), "tape": " ".join(f"{b:02x}" for b in cells[j]), "confined": bool(conf[j]), "n_sites": int(row["n_sites"]),
                           "n_sites_unexecuted": int((tr & ~union[j]).sum()), "n_executed": int(union[j].sum()), "class": cls(bool(conf[j]), int(row["n_sites"]))})
+        if include_offsets:
+            offset = res[j]["copy_offset"]
+            measured = offset is not None and bool(np.isfinite(offset))
+            out_cells[-1].update({"copy_offset": int(offset) if measured else None,
+                                  "sites_equals_d_minus6": (int(row["n_sites"]) == int(offset) - 6)
+                                  if conf[j] and measured else None})
     nh = int(herit.sum())
     nopen = int((herit & ~conf).sum())
     nconf = nh - nopen
@@ -76,6 +81,8 @@ def classify(soup: np.ndarray, L: int, sup: list, zh: bool, rng) -> tuple[dict, 
 
 
 def run_stages(a) -> None:
+    import soup_stills as ss
+    from population_sample import STAGES
     from make_conds import ABLATIONS
     os.makedirs(a.out, exist_ok=True)
     srows, crows = [], []

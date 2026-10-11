@@ -1,0 +1,11 @@
+t_rep,t_closed,first_tape,first_open,first_confined,first_loop,first_entered,p2_violation,p2_first_step,world,arm,seed,horizon,L,budget,machine,snapshot_step,n_cells,frac_heritable,frac_open_of_heritable,frac_confined_of_heritable,n_scanned,n_scanned_confined,frac_regenerator_of_heritable,frac_intermediate_of_heritable,frac_transmitter_of_heritable,median_unexec_sites_transmitters,median_sites_confined_scanned
+250,72500,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9001,DZ,9001,300000,16,128,z80c02_assay_L16,300000,64,0.953125,0.0,1.0,16,16,0.0,0.125,0.875,9.0,10.0
+1650,14750,21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5,True,False,True,16,False,,lp0_s9002,DZ,9002,300000,16,128,z80c02_assay_L16,300000,64,0.90625,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+150,50000,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9003,DZ,9003,300000,16,128,z80c02_assay_L16,300000,64,0.875,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+1000,32500,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9004,DZ,9004,300000,16,128,z80c02_assay_L16,300000,64,0.859375,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+100,1300,21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5,True,False,True,16,False,,lp0_s9005,DZ,9005,300000,16,128,z80c02_assay_L16,300000,64,0.90625,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+400,100000,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9006,DZ,9006,300000,16,128,z80c02_assay_L16,300000,64,0.90625,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+3000,16250,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9007,DZ,9007,300000,16,128,z80c02_assay_L16,300000,64,0.96875,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+550,18000,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9008,DZ,9008,300000,16,128,z80c02_assay_L16,300000,64,0.890625,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+400,30000,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9009,DZ,9009,300000,16,128,z80c02_assay_L16,300000,64,0.8125,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
+150,7750,01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5,True,False,True,16,False,,lp0_s9010,DZ,9010,300000,16,128,z80c02_assay_L16,300000,64,0.84375,0.0,1.0,16,16,1.0,0.0,0.0,,0.0
