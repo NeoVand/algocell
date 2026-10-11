@@ -1,0 +1,403 @@
+{
+  "schema": "s1-score/1",
+  "world": {
+    "t_rep": 1650,
+    "t_closed": 14750,
+    "first_tape": "21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5",
+    "first_open": true,
+    "first_confined": false,
+    "first_loop": true,
+    "first_entered": 16,
+    "p2_violation": false,
+    "p2_first_step": null,
+    "world": "lp0_s9002",
+    "arm": "DZ",
+    "seed": 9002,
+    "horizon": 300000,
+    "L": 16,
+    "budget": 128,
+    "machine": "z80c02_assay_L16",
+    "snapshot_step": 300000,
+    "n_cells": 64,
+    "frac_heritable": 0.90625,
+    "frac_open_of_heritable": 0.0,
+    "frac_confined_of_heritable": 1.0,
+    "n_scanned": 16,
+    "n_scanned_confined": 16,
+    "frac_regenerator_of_heritable": 1.0,
+    "frac_intermediate_of_heritable": 0.0,
+    "frac_transmitter_of_heritable": 0.0,
+    "median_unexec_sites_transmitters": null,
+    "median_sites_confined_scanned": 0.0
+  },
+  "cells": [
+    {
+      "cell": 38,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 49,
+      "tape": "8d e3 21 e3 21 c0 8d c0 8d e3 21 e3 21 c0 8d c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 48,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 15,
+      "tape": "ac e3 21 e3 21 c0 ac c0 ac e3 21 e3 21 c0 ac c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 5,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 19,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 46,
+      "tape": "ac e3 21 e3 21 c0 ac c0 ac e3 21 e3 21 c0 ac c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 45,
+      "tape": "ac e3 21 e3 21 c0 ac c0 ac e3 21 e3 21 c0 ac c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 11,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 17,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 41,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad 00",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 33,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 23,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 61,
+      "tape": "5b e3 21 e3 21 c0 5b c0 5b e3 21 e3 21 c0 5b c0",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 52,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 20,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    }
+  ],
+  "p2_tapes": [],
+  "judged_tapes": [
+    {
+      "tape": "00 41 00 41 00 41 00 41 00 41 00 41 00 41 00 41",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.1029296875
+    },
+    {
+      "tape": "00 41 00 41 00 41 00 41 00 41 00 41 00 01 00 41",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.09908854166666667
+    },
+    {
+      "tape": "21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5",
+      "heritable": true,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 0.48691406249999997
+    },
+    {
+      "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+      "heritable": true,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 0.5946614583333333
+    },
+    {
+      "tape": "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.011653645833333334
+    },
+    {
+      "tape": "21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": -0.0011067708333333333
+    },
+    {
+      "tape": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.13216145833333331
+    },
+    {
+      "tape": "01 21 01 21 01 21 01 21 01 21 01 21 01 21 01 21",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.0018880208333333333
+    },
+    {
+      "tape": "21 01 21 01 21 01 21 01 21 01 21 01 21 01 21 01",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": 0,
+      "gen2": 0.011588541666666667
+    },
+    {
+      "tape": "11 d5 11 d5 11 d5 11 d5 11 d5 11 d5 11 d5 11 d5",
+      "heritable": true,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 0.5329985119047619
+    },
+    {
+      "tape": "00 e3 21 e3 21 c0 00 c0 00 e3 21 e3 21 c0 00 c0",
+      "heritable": true,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 1.0
+    }
+  ],
+  "input_sha256": "3357652c6f5a11974876f95f85c5a10765ee301dbf175a3b7162f9acd8760508",
+  "code_sha256": {
+    "score6502.py": "5ac2c539d97ffd3609a765aa6345637c6b73516eab5e93ddeedddb8fe0369f9f",
+    "population_classes.py": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "dial_soups.py": "1a03265e9bbac503cf628b06e50aad56691406171fc7b4574495919c5de7fa7c",
+    "algocell_exp/executor.py": "95ca025c38c65bcb05fa3740b22cec2fb52dc75e717143ca2c1f23f92d77e737",
+    "algocell_exp/assay.py": "ce809ff0e5046c80d60570ba42fa59f14429c245cf07357121a31959f9aedc64",
+    "algocell_exp/exectrace.py": "ca1462f82e5ae2d9ec7e949bf80096c0059cd7c82d400c455e81b3c2f32aa6cd",
+    "algocell_exp/zmachine.py": "5197b3cb542c9d4fa7e8340d515103e3db03807c77bf03cb1be203509a439f68"
+  },
+  "executor": {
+    "z80c02_assay_L16": {
+      "machine": "z80c02_assay_L16",
+      "zilion": "0.3.0-dev",
+      "core": "z80 0.2.0 (stable; variant classic; compat 0.2; hooks fetch,instructionStart)",
+      "sha256_core": "e6795a6a5718f9330f7a1fe3cb6373abd837121fb51c2068cff185579ec56e9a",
+      "sha256_world": "36556772d1b61eaf6e55e4fafc5065f1c515e598c9ce5c0c4d1315bfe8f8be9d",
+      "sha256_wgsl": "b3b1d4ab4b9c62a9e7293a8cf96c93f99043721d3faa02e0a2c8cc7ed4f72088",
+      "ring": 32,
+      "segments": [
+        [
+          "A",
+          16
+        ],
+        [
+          "B",
+          16
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 25,
+        "stack": {
+          "convention": {
+            "kind": "topAliases",
+            "position": 31,
+            "values": {
+              "sp": 65535
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": null,
+      "ablation": "coarse"
+    }
+  },
+  "usage": {
+    "shader": {},
+    "machine": {
+      "z80c02_assay_L16": 138288,
+      "z80c02_assay_L16 (pc prefix replay)": 8256
+    }
+  },
+  "modal": {
+    "scorer_commit": "14bc2ec39bef7bf15071103b22e25a9f6a14759e",
+    "app_id": "ap-4sL3Bteh9uTSnRIM9Yprpi",
+    "input_prefix": "s6502_scorer_test/11ada90cb0cc4c12b874823546751e96",
+    "result_path": "s6502_scorer_test/11ada90cb0cc4c12b874823546751e96/scored/DZ/lp0_s9002.json",
+    "wall_s": 5.2,
+    "adapter": {
+      "vendor": "llvmpipe",
+      "architecture": "",
+      "device": "llvmpipe (LLVM 15.0.6, 256 bits)",
+      "description": "Mesa 22.3.6 (LLVM 15.0.6)",
+      "stackgroup_min_size": 4,
+      "stackgroup_max_size": 128,
+      "vendor_id": 65541,
+      "device_id": 0,
+      "adapter_type": "CPU",
+      "backend_type": "Vulkan"
+    },
+    "software_vulkan": true
+  }
+}

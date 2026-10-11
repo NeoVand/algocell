@@ -1,0 +1,20 @@
+{
+  "arms": [
+    {
+      "arm": "DZ",
+      "worlds": 10,
+      "with_rep": 10,
+      "with_closed": 10,
+      "first_confined_loop": 0,
+      "first_open_straight": 0,
+      "p2_worlds": 0,
+      "km_t_rep": 400.0,
+      "km_t_closed": 18000.0,
+      "transmitter": 14,
+      "regenerator": 144,
+      "offset_eligible": 0,
+      "offset_equal": 0,
+      "status": "descriptive"
+    }
+  ]
+}

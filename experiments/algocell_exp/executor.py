@@ -122,12 +122,13 @@ class ZilionExecutor:
     `budget_delta` adds to every budget; it exists for negative controls only (a machine one instruction short must
     not reproduce the shaders) and is 0 for every real use."""
 
-    def __init__(self, spec: str, machines_dir=None, budget_delta: int = 0) -> None:
+    def __init__(self, spec: str, machines_dir=None, budget_delta: int = 0, *, device=None) -> None:
         from . import zmachine
 
         self.spec = spec
         self.machines_dir = machines_dir or zmachine.MACHINES_DIR
         self.budget_delta = int(budget_delta)
+        self.device = device  # explicit test device; None retains the production GPU-only selection
         names = zmachine.available(self.machines_dir)
         self.exact = spec in names
         # a set is the machines named <spec>[_lethal]_L<L>[_P<P>], nothing else that merely shares the prefix
@@ -172,13 +173,14 @@ class ZilionExecutor:
 
         P = int(mem_length) if mem_length else 2 * L
         name = self.machine_name(L, P, bool(zero_halts))
-        key = (name, maps)
+        # Exact-name executors also need to validate each requested ring/rule.
+        key = (name, (L, P, bool(zero_halts), maps))
         if key in self._cache:
             return self._cache[key]
         if name not in self.members:
             raise ValueError(f"machine set {self.spec!r} has no machine for L = {L}, ring {P}, {'lethal tar' if zero_halts else 'plain rule'} "
                              f"(expected {name!r}); vendor it (machines/worlds_*.json) and prove it against the shader first")
-        m = zmachine.load_machine(name, self.machines_dir)
+        m = zmachine.load_machine(name, self.machines_dir, device=self.device)
         man, world = m.m, m.m["world"]
         why = []
         segs = [(s["name"], int(s["bytes"])) for s in m.segments]
@@ -189,7 +191,12 @@ class ZilionExecutor:
         lethal = (world.get("halting") or {}).get("lethal")
         if bool(zero_halts) != (lethal is not None) or (lethal is not None and lethal != {"firstUnit": 0}):
             why.append(f"halting.lethal {lethal!r} does not match zero_halts={bool(zero_halts)} (Algocell's rule is {{'firstUnit': 0}})")
-        if set(world.get("halting") or {}) - {"lethal"}:
+        # The registered NMOS worlds explicitly retain the core's JAM behaviour.
+        # This is the same as the default core, not an additional host halt rule.
+        allowed_halting = {"lethal"}
+        if man["core"]["id"] == "m6502" and (world.get("halting") or {}).get("traps") == {"illegal": "as-chip"}:
+            allowed_halting.add("traps")
+        if set(world.get("halting") or {}) - allowed_halting:
             why.append(f"halting rules {sorted(set(world['halting']) - {'lethal'})} that no Algocell executor has")
         if world.get("hooks"):
             why.append("raw hooks (the dial worlds are not covered here)")
@@ -249,6 +256,32 @@ class ZilionExecutor:
     def describe(self) -> dict:
         """Provenance of every machine of the set that this process used."""
         return {name: m.describe() for (name, _), m in self._cache.items()}
+
+    def pc_trace(self, pairs: np.ndarray, L: int, steps: int, *, zero_halts: bool = False) -> np.ndarray:
+        """PC at reset and after each single step, replaying identical initial pairs.
+
+        Prefix budgets 0..steps are independent deterministic replays of the same
+        machine. Per-lane budgets batch them into one dispatch; uniform-budget
+        machines use one dispatch per prefix. No ISA or state-layout assumptions
+        are made beyond a state field named pc. Halted lanes retain their last PC.
+        """
+        pairs = np.ascontiguousarray(pairs, dtype=np.uint8)
+        if pairs.ndim != 2 or pairs.shape[1] != 2 * L or steps < 0:
+            raise ValueError("invalid pairs or step budget")
+        m = self.machine_for(L, zero_halts=zero_halts)
+        if "pc" not in m.fields.get("state", {}).get("items", []):
+            raise ValueError(f"{m.name}: the state record has no pc field")
+        n = len(pairs)
+        if not n:
+            return np.empty((0, steps + 1), dtype=np.uint16)
+        if m.budget_per_lane:
+            r = m.run(np.repeat(pairs, steps + 1, axis=0),
+                      budget=np.tile(np.arange(steps + 1), n))
+            pc = r.reg("pc").reshape(n, steps + 1)
+        else:
+            pc = np.stack([m.run(pairs, budget=k).reg("pc") for k in range(steps + 1)], axis=1)
+        _USAGE[("machine", m.name + " (pc prefix replay)")] += n * (steps + 1)
+        return (pc & 0xFFFF).astype(np.uint16)
 
 
 # ── selection ───────────────────────────────────────────────────────────────────────────────────────────────────────
