@@ -1,0 +1,340 @@
+{
+ "revision": "3fb0a52bcc15ffa3e4fc31f5d46dd5f2b1ce6093",
+ "jobs": {
+  "assay_batch_I": {
+   "a": {
+    "wall_s": 1.7,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 56512
+     },
+     "machine": {}
+    },
+    "files": {
+     "stageI/analysis/assays.csv": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 2.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 56512
+     }
+    },
+    "files": {
+     "stageI/analysis/assays.csv": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  },
+  "c4_I": {
+   "a": {
+    "wall_s": 3.7,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 235520
+     },
+     "machine": {}
+    },
+    "files": {
+     "stageI/analysis/c4/functional.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "stageI/analysis/c4/functional_fixed_steps.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "stageI/analysis/c4/NUMBERS_C4.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 4.5,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 235520
+     }
+    },
+    "files": {
+     "stageI/analysis/c4/functional.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "stageI/analysis/c4/functional_fixed_steps.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "stageI/analysis/c4/NUMBERS_C4.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  },
+  "stage_g_I": {
+   "a": {
+    "wall_s": 1.9,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 5120
+     },
+     "machine": {}
+    },
+    "files": {
+     "stageI/analysis/stageI/stage_g_runs.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "stageI/analysis/stageI/NUMBERS_G.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 2.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 5120
+     }
+    },
+    "files": {
+     "stageI/analysis/stageI/stage_g_runs.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "stageI/analysis/stageI/NUMBERS_G.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  },
+  "exec_trace": {
+   "a": {
+    "wall_s": 2.0,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 10240,
+      "trace(z80_test_L20.wgsl)": 10240,
+      "trace(z80_test_L32.wgsl)": 10240,
+      "trace(z80_test_L50.wgsl)": 10240,
+      "trace(z80_test_L64.wgsl)": 10240,
+      "trace(z80_test_lethal_L16.wgsl)": 5120
+     },
+     "machine": {}
+    },
+    "files": {
+     "exectrace/per_replicator.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "exectrace/AGREEMENT.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 2.0,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 10240,
+      "z80c02_assay_L20": 10240,
+      "z80c02_assay_L32": 10240,
+      "z80c02_assay_L50": 10240,
+      "z80c02_assay_L64": 10240,
+      "z80c02_assay_lethal_L16": 5120
+     }
+    },
+    "files": {
+     "exectrace/per_replicator.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "exectrace/AGREEMENT.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  },
+  "inflow_insoup": {
+   "a": {
+    "wall_s": 2.9,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 20480,
+      "trace(z80_test_L20.wgsl)": 15360,
+      "trace(z80_test_L50.wgsl)": 17152,
+      "trace(z80_test_L64.wgsl)": 16640
+     },
+     "machine": {}
+    },
+    "files": {
+     "inflow_insoup/per_world.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "inflow_insoup/sensitivity.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "inflow_insoup/INFLOW_INSOUP.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 2.9,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 20480,
+      "z80c02_assay_L20": 15360,
+      "z80c02_assay_L50": 17152,
+      "z80c02_assay_L64": 16640
+     }
+    },
+    "files": {
+     "inflow_insoup/per_world.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "inflow_insoup/sensitivity.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "inflow_insoup/INFLOW_INSOUP.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  },
+  "individuality": {
+   "a": {
+    "wall_s": 2.1,
+    "usage": {
+     "shader": {
+      "z80_test_L16.wgsl": 10240,
+      "z80_test_L20.wgsl": 10240,
+      "z80_test_L50.wgsl": 10240,
+      "z80_test_L64.wgsl": 10240
+     },
+     "machine": {}
+    },
+    "files": {
+     "individuality/per_replicator.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "individuality/summary.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "individuality/predictions.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "individuality/offspring_hist.json": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 2.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 10240,
+      "z80c02_assay_L20": 10240,
+      "z80c02_assay_L50": 10240,
+      "z80c02_assay_L64": 10240
+     }
+    },
+    "files": {
+     "individuality/per_replicator.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "individuality/summary.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "individuality/predictions.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "individuality/offspring_hist.json": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  },
+  "population_sample_I": {
+   "a": {
+    "wall_s": 2.6,
+    "usage": {
+     "shader": {
+      "trace(z80_test_lethal_L16.wgsl)": 41120,
+      "z80_test_lethal_L16.wgsl": 821760
+     },
+     "machine": {}
+    },
+    "files": {
+     "population_q_I/population_worlds.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "population_q_I/population_cells.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "population_q_I/REPORT.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   },
+   "b": {
+    "wall_s": 3.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 862880
+     }
+    },
+    "files": {
+     "population_q_I/population_worlds.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "population_q_I/population_cells.csv": {
+      "status": "identical",
+      "detail": ""
+     },
+     "population_q_I/REPORT.md": {
+      "status": "identical",
+      "detail": ""
+     }
+    }
+   }
+  }
+ }
+}

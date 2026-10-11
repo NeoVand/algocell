@@ -233,6 +233,29 @@ Commands: `population_sample.py --yes --stages I --out {w}/population_q_I` (path
 | `population_q_I/population_cells.csv` | `42bafc5e3303986d` | `42bafc5e3303986d` | **identical** | `results/population/population_cells.csv`: **identical**: committed rows where stage == 'I' (cell for cell) | **DIFFERENT**: 18 of 80 rows differ in 4 columns (e.g. cell, tape, hamming_to_modal, n_sites) |
 | `population_q_I/REPORT.md` | `77f1e1d47e114ce4` | `77f1e1d47e114ce4` | **identical** | – | **DIFFERENT**: 1 lines differ |
 
+## Provenance
+
+Comparisons computed at revision d6f3c2f3e6970d0e4b0cc26e568cfc54a1ab03c6. The runs were made from the working tree on branch `feat/assays` before commit f61cf45: the first `regress` run stopped at `branching` path (b) (`branching_table.py`, which executes nothing, was given `--machine`); `serial_retention`, `branching`, `population_classes_I`, `population_classes_M` and `population_sample_I` were then run again with `--only`, after the last two code edits before that commit (a refusal added to `executor.ZilionExecutor.machine_for`; `serial_retention.run_genotype`'s `rule` label taken from the executor's ISA). Neither edit changes an output of path (a) or (b).
+
+Confirmation at revision 3fb0a52bcc15ffa3e4fc31f5d46dd5f2b1ce6093: the short jobs rerun, paths (a) and (b), into a fresh directory (`assays_any_isa.py confirm`), each output compared with the recorded run:
+
+| job | path | files identical to the recorded run | pairs (shader / machine) |
+|---|---|---|---|
+| `assay_batch_I` | (a) | 1 of 1 | 56,512 / 0 |
+| `assay_batch_I` | (b) | 1 of 1 | 0 / 56,512 |
+| `c4_I` | (a) | 3 of 3 | 235,520 / 0 |
+| `c4_I` | (b) | 3 of 3 | 0 / 235,520 |
+| `stage_g_I` | (a) | 2 of 2 | 5,120 / 0 |
+| `stage_g_I` | (b) | 2 of 2 | 0 / 5,120 |
+| `exec_trace` | (a) | 2 of 2 | 56,320 / 0 |
+| `exec_trace` | (b) | 2 of 2 | 0 / 56,320 |
+| `inflow_insoup` | (a) | 3 of 3 | 69,632 / 0 |
+| `inflow_insoup` | (b) | 3 of 3 | 0 / 69,632 |
+| `individuality` | (a) | 4 of 4 | 40,960 / 0 |
+| `individuality` | (b) | 4 of 4 | 0 / 40,960 |
+| `population_sample_I` | (a) | 3 of 3 | 862,880 / 0 |
+| `population_sample_I` | (b) | 3 of 3 | 0 / 862,880 |
+
 ## Not regenerated here
 
 Frozen tables of the same assay families that were not regenerated, and why:
@@ -242,7 +265,8 @@ Frozen tables of the same assay families that were not regenerated, and why:
 - `stage_g.py` on Stages H, K, L and M: the same partner test as Stages G and I above.
 - `population_classes.py` on Stages G, K and L, and its non-final snapshots of M; `population_sample.py` on Stages G, K, L and M: the same code as Stages I and M above, left out to keep the GPU load modest.
 - `pe_matrix.py`, `r4_*.py`, `conv_soups.py`, `dial_soups.py` (randreg/randsp conventions and lethality dials): no machine vendored; their executor (`conv.py`) refuses a selected machine.
-- `lod_*.py`, `offset_*.py`, `n2_*.py`, `invasion*.py`, `payload_toxin.py` and the other analyses that call the executor: no `--machine` flag; they route through the interface when a machine is selected in-process, untested here.
+- Scripts that run assays through `assay`, `exectrace` or `optrace` but have no `--machine` flag (they route through the interface only when a machine is selected in-process, untested here): `stage_c.py`, `stage_e.py`, `stage_f.py`, `capacity_over_time.py`, `threshold_grid.py`, `first_closure.py`, `exact_copy.py`, `robust_ref22.py`, `census_period.py`, `two_byte_census.py`, `check_8080_closer.py`, `landscape.py`, `marker_check.py`, `sr_kin.py`, `sr_posthoc.py`, `stats_ci.py`, `l50_lineage.py`, `lineage_examples.py`, `invasion.py`, `invasion_aligned.py`, `invasion_pair.py`, `lod.py`, `lod_v1.py`, `lod_analyse.py`, `lod_founding.py`, `lod_origin.py`, `lod_traj.py`, `n2_composition.py`, `n2_convert.py`, `n2_demography.py`, `n4_scars.py`, `n5_path.py`, `offset_census.py`, `offset_census_enc.py`, `offset_encounter.py`, `offset_flow.py`, `offset_intruder.py`, `offset_switch.py`, `payload_toxin.py`, `r4_analyse.py`. `z80_ring_gpu.py` (the ring difftest) compiles its own executor.
+- `mutscan.py` also writes per-mutant arrays to `runs/mutscan/*.npz` whatever `--out` says; the three paths overwrote one another's there and these arrays were not compared (they were deleted afterwards).
 
 ## Machines
 
