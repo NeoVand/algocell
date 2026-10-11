@@ -1,0 +1,39 @@
+[
+  {
+    "kind": "launch",
+    "app_id": "ap-6dyE1zpZSEbaRZr7NbHjha",
+    "git_commit": "948ac2b5cfef2b96840681036739181bbb8db37e",
+    "time": "2026-10-11T07:32:06.505434+00:00",
+    "smoke": true,
+    "worlds": 4,
+    "timeout_s": 21600
+  },
+  {
+    "kind": "spawn",
+    "app_id": "ap-6dyE1zpZSEbaRZr7NbHjha",
+    "arm": "A",
+    "seed": 999,
+    "call_id": "fc-01M4MY0HRZD9E7XGB176KA41CT"
+  },
+  {
+    "kind": "spawn",
+    "app_id": "ap-6dyE1zpZSEbaRZr7NbHjha",
+    "arm": "B",
+    "seed": 999,
+    "call_id": "fc-01M4MY0HWDV881Q9HNJWATSKTS"
+  },
+  {
+    "kind": "spawn",
+    "app_id": "ap-6dyE1zpZSEbaRZr7NbHjha",
+    "arm": "C",
+    "seed": 999,
+    "call_id": "fc-01M4MY0HZS17NQZ1D254E7SNS5"
+  },
+  {
+    "kind": "spawn",
+    "app_id": "ap-6dyE1zpZSEbaRZr7NbHjha",
+    "arm": "D",
+    "seed": 999,
+    "call_id": "fc-01M4MY0J2QJBVRP8E7B1AP00V6"
+  }
+]
