@@ -1287,3 +1287,17 @@ earlier organism byte through a higher alias (a jump or return to an address ≥
 ring position), or through a BRK vector cycle. The registered criterion cannot see either on a ring. Arm D, where BRK
 halts, has loops in 17 of 18. Whatever this examination finds is reported as exploratory and does not change the
 registered P1 verdict.
+
+**Exploratory result of the declared follow-up** (2026-10-11; not registered; `results/s6502/EXPLORATORY.md`)
+
+- **The hypothesis holds for all 6.** Each of the six arm-A first replicators without a program-counter decrease
+  returns to an earlier organism byte in every one of its 16 traced encounters. It does so through a forward
+  conditional branch whose target lies a ring length or more ahead, so it lands on a lower ring position, for example
+  `BCS +56` from `$0008` to `$0042`, which is ring position 2 at P = 32. No BRK cycle occurs.
+- **20 of 20 confined and looping in position space.** Read exploratorily, every arm-A first replicator is confined
+  and loops in ring-position space.
+- **P1 stays not supported.** The registered criterion, a 16-bit PC decrease, cannot see a loop that wraps the ring
+  forwards. That is a defect of the criterion, stated as such, and the registered verdict stands.
+- **P3.** `copy_offset` gave d = 0 for every eligible arm-A cell, with 16 undefined. On these copiers it measures the
+  alignment of the copy in the partner, not the copy period of the d − 6 law. P3 was therefore untestable as
+  operationalised, and remains not tested.
