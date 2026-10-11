@@ -1,0 +1,17 @@
+BRK,tile,disassembly,budget,exact (of 64),≥75% (of 64),pointer in partner (of 64)
+faithful,b50f48ca,"LDA $0F,X; PHA; DEX",128,0,2,64
+faithful,b50f48ca,"LDA $0F,X; PHA; DEX",512,0,0,64
+faithful,b50b48ca,"LDA $0B,X; PHA; DEX",128,0,2,64
+faithful,b50b48ca,"LDA $0B,X; PHA; DEX",512,0,0,64
+faithful,b51348ca,"LDA $13,X; PHA; DEX",128,0,0,64
+faithful,b51348ca,"LDA $13,X; PHA; DEX",512,0,0,64
+faithful,bd0f0048,"LDA $000F,X; PHA",128,0,0,64
+faithful,bd0f0048,"LDA $000F,X; PHA",512,0,0,64
+halt,b50f48ca,"LDA $0F,X; PHA; DEX",128,0,0,64
+halt,b50f48ca,"LDA $0F,X; PHA; DEX",512,0,0,64
+halt,b50b48ca,"LDA $0B,X; PHA; DEX",128,0,0,64
+halt,b50b48ca,"LDA $0B,X; PHA; DEX",512,0,0,64
+halt,b51348ca,"LDA $13,X; PHA; DEX",128,0,1,64
+halt,b51348ca,"LDA $13,X; PHA; DEX",512,0,0,64
+halt,bd0f0048,"LDA $000F,X; PHA",128,0,0,64
+halt,bd0f0048,"LDA $000F,X; PHA",512,0,0,64

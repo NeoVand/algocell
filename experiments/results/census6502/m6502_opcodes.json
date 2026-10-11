@@ -1,0 +1,1045 @@
+{
+"opcodes": [
+{
+"mnemonic": "BRK",
+"mode": "imm"
+},
+{
+"mnemonic": "ORA",
+"mode": "izx"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "SLO",
+"mode": "izx"
+},
+{
+"mnemonic": "NOP",
+"mode": "zp"
+},
+{
+"mnemonic": "ORA",
+"mode": "zp"
+},
+{
+"mnemonic": "ASL",
+"mode": "zp"
+},
+{
+"mnemonic": "SLO",
+"mode": "zp"
+},
+{
+"mnemonic": "PHP",
+"mode": "imp"
+},
+{
+"mnemonic": "ORA",
+"mode": "imm"
+},
+{
+"mnemonic": "ASL",
+"mode": "acc"
+},
+{
+"mnemonic": "ANC",
+"mode": "imm"
+},
+{
+"mnemonic": "NOP",
+"mode": "abs"
+},
+{
+"mnemonic": "ORA",
+"mode": "abs"
+},
+{
+"mnemonic": "ASL",
+"mode": "abs"
+},
+{
+"mnemonic": "SLO",
+"mode": "abs"
+},
+{
+"mnemonic": "BPL",
+"mode": "rel"
+},
+{
+"mnemonic": "ORA",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "SLO",
+"mode": "izy"
+},
+{
+"mnemonic": "NOP",
+"mode": "zpx"
+},
+{
+"mnemonic": "ORA",
+"mode": "zpx"
+},
+{
+"mnemonic": "ASL",
+"mode": "zpx"
+},
+{
+"mnemonic": "SLO",
+"mode": "zpx"
+},
+{
+"mnemonic": "CLC",
+"mode": "imp"
+},
+{
+"mnemonic": "ORA",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "SLO",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "abx"
+},
+{
+"mnemonic": "ORA",
+"mode": "abx"
+},
+{
+"mnemonic": "ASL",
+"mode": "abx"
+},
+{
+"mnemonic": "SLO",
+"mode": "abx"
+},
+{
+"mnemonic": "JSR",
+"mode": "abs"
+},
+{
+"mnemonic": "AND",
+"mode": "izx"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "RLA",
+"mode": "izx"
+},
+{
+"mnemonic": "BIT",
+"mode": "zp"
+},
+{
+"mnemonic": "AND",
+"mode": "zp"
+},
+{
+"mnemonic": "ROL",
+"mode": "zp"
+},
+{
+"mnemonic": "RLA",
+"mode": "zp"
+},
+{
+"mnemonic": "PLP",
+"mode": "imp"
+},
+{
+"mnemonic": "AND",
+"mode": "imm"
+},
+{
+"mnemonic": "ROL",
+"mode": "acc"
+},
+{
+"mnemonic": "ANC",
+"mode": "imm"
+},
+{
+"mnemonic": "BIT",
+"mode": "abs"
+},
+{
+"mnemonic": "AND",
+"mode": "abs"
+},
+{
+"mnemonic": "ROL",
+"mode": "abs"
+},
+{
+"mnemonic": "RLA",
+"mode": "abs"
+},
+{
+"mnemonic": "BMI",
+"mode": "rel"
+},
+{
+"mnemonic": "AND",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "RLA",
+"mode": "izy"
+},
+{
+"mnemonic": "NOP",
+"mode": "zpx"
+},
+{
+"mnemonic": "AND",
+"mode": "zpx"
+},
+{
+"mnemonic": "ROL",
+"mode": "zpx"
+},
+{
+"mnemonic": "RLA",
+"mode": "zpx"
+},
+{
+"mnemonic": "SEC",
+"mode": "imp"
+},
+{
+"mnemonic": "AND",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "RLA",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "abx"
+},
+{
+"mnemonic": "AND",
+"mode": "abx"
+},
+{
+"mnemonic": "ROL",
+"mode": "abx"
+},
+{
+"mnemonic": "RLA",
+"mode": "abx"
+},
+{
+"mnemonic": "RTI",
+"mode": "imp"
+},
+{
+"mnemonic": "EOR",
+"mode": "izx"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "SRE",
+"mode": "izx"
+},
+{
+"mnemonic": "NOP",
+"mode": "zp"
+},
+{
+"mnemonic": "EOR",
+"mode": "zp"
+},
+{
+"mnemonic": "LSR",
+"mode": "zp"
+},
+{
+"mnemonic": "SRE",
+"mode": "zp"
+},
+{
+"mnemonic": "PHA",
+"mode": "imp"
+},
+{
+"mnemonic": "EOR",
+"mode": "imm"
+},
+{
+"mnemonic": "LSR",
+"mode": "acc"
+},
+{
+"mnemonic": "ALR",
+"mode": "imm"
+},
+{
+"mnemonic": "JMP",
+"mode": "abs"
+},
+{
+"mnemonic": "EOR",
+"mode": "abs"
+},
+{
+"mnemonic": "LSR",
+"mode": "abs"
+},
+{
+"mnemonic": "SRE",
+"mode": "abs"
+},
+{
+"mnemonic": "BVC",
+"mode": "rel"
+},
+{
+"mnemonic": "EOR",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "SRE",
+"mode": "izy"
+},
+{
+"mnemonic": "NOP",
+"mode": "zpx"
+},
+{
+"mnemonic": "EOR",
+"mode": "zpx"
+},
+{
+"mnemonic": "LSR",
+"mode": "zpx"
+},
+{
+"mnemonic": "SRE",
+"mode": "zpx"
+},
+{
+"mnemonic": "CLI",
+"mode": "imp"
+},
+{
+"mnemonic": "EOR",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "SRE",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "abx"
+},
+{
+"mnemonic": "EOR",
+"mode": "abx"
+},
+{
+"mnemonic": "LSR",
+"mode": "abx"
+},
+{
+"mnemonic": "SRE",
+"mode": "abx"
+},
+{
+"mnemonic": "RTS",
+"mode": "imp"
+},
+{
+"mnemonic": "ADC",
+"mode": "izx"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "RRA",
+"mode": "izx"
+},
+{
+"mnemonic": "NOP",
+"mode": "zp"
+},
+{
+"mnemonic": "ADC",
+"mode": "zp"
+},
+{
+"mnemonic": "ROR",
+"mode": "zp"
+},
+{
+"mnemonic": "RRA",
+"mode": "zp"
+},
+{
+"mnemonic": "PLA",
+"mode": "imp"
+},
+{
+"mnemonic": "ADC",
+"mode": "imm"
+},
+{
+"mnemonic": "ROR",
+"mode": "acc"
+},
+{
+"mnemonic": "ARR",
+"mode": "imm"
+},
+{
+"mnemonic": "JMP",
+"mode": "ind"
+},
+{
+"mnemonic": "ADC",
+"mode": "abs"
+},
+{
+"mnemonic": "ROR",
+"mode": "abs"
+},
+{
+"mnemonic": "RRA",
+"mode": "abs"
+},
+{
+"mnemonic": "BVS",
+"mode": "rel"
+},
+{
+"mnemonic": "ADC",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "RRA",
+"mode": "izy"
+},
+{
+"mnemonic": "NOP",
+"mode": "zpx"
+},
+{
+"mnemonic": "ADC",
+"mode": "zpx"
+},
+{
+"mnemonic": "ROR",
+"mode": "zpx"
+},
+{
+"mnemonic": "RRA",
+"mode": "zpx"
+},
+{
+"mnemonic": "SEI",
+"mode": "imp"
+},
+{
+"mnemonic": "ADC",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "RRA",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "abx"
+},
+{
+"mnemonic": "ADC",
+"mode": "abx"
+},
+{
+"mnemonic": "ROR",
+"mode": "abx"
+},
+{
+"mnemonic": "RRA",
+"mode": "abx"
+},
+{
+"mnemonic": "NOP",
+"mode": "imm"
+},
+{
+"mnemonic": "STA",
+"mode": "izx"
+},
+{
+"mnemonic": "NOP",
+"mode": "imm"
+},
+{
+"mnemonic": "SAX",
+"mode": "izx"
+},
+{
+"mnemonic": "STY",
+"mode": "zp"
+},
+{
+"mnemonic": "STA",
+"mode": "zp"
+},
+{
+"mnemonic": "STX",
+"mode": "zp"
+},
+{
+"mnemonic": "SAX",
+"mode": "zp"
+},
+{
+"mnemonic": "DEY",
+"mode": "imp"
+},
+{
+"mnemonic": "NOP",
+"mode": "imm"
+},
+{
+"mnemonic": "TXA",
+"mode": "imp"
+},
+{
+"mnemonic": "ANE",
+"mode": "imm"
+},
+{
+"mnemonic": "STY",
+"mode": "abs"
+},
+{
+"mnemonic": "STA",
+"mode": "abs"
+},
+{
+"mnemonic": "STX",
+"mode": "abs"
+},
+{
+"mnemonic": "SAX",
+"mode": "abs"
+},
+{
+"mnemonic": "BCC",
+"mode": "rel"
+},
+{
+"mnemonic": "STA",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "SHA",
+"mode": "izy"
+},
+{
+"mnemonic": "STY",
+"mode": "zpx"
+},
+{
+"mnemonic": "STA",
+"mode": "zpx"
+},
+{
+"mnemonic": "STX",
+"mode": "zpy"
+},
+{
+"mnemonic": "SAX",
+"mode": "zpy"
+},
+{
+"mnemonic": "TYA",
+"mode": "imp"
+},
+{
+"mnemonic": "STA",
+"mode": "aby"
+},
+{
+"mnemonic": "TXS",
+"mode": "imp"
+},
+{
+"mnemonic": "TAS",
+"mode": "aby"
+},
+{
+"mnemonic": "SHY",
+"mode": "abx"
+},
+{
+"mnemonic": "STA",
+"mode": "abx"
+},
+{
+"mnemonic": "SHX",
+"mode": "aby"
+},
+{
+"mnemonic": "SHA",
+"mode": "aby"
+},
+{
+"mnemonic": "LDY",
+"mode": "imm"
+},
+{
+"mnemonic": "LDA",
+"mode": "izx"
+},
+{
+"mnemonic": "LDX",
+"mode": "imm"
+},
+{
+"mnemonic": "LAX",
+"mode": "izx"
+},
+{
+"mnemonic": "LDY",
+"mode": "zp"
+},
+{
+"mnemonic": "LDA",
+"mode": "zp"
+},
+{
+"mnemonic": "LDX",
+"mode": "zp"
+},
+{
+"mnemonic": "LAX",
+"mode": "zp"
+},
+{
+"mnemonic": "TAY",
+"mode": "imp"
+},
+{
+"mnemonic": "LDA",
+"mode": "imm"
+},
+{
+"mnemonic": "TAX",
+"mode": "imp"
+},
+{
+"mnemonic": "LXA",
+"mode": "imm"
+},
+{
+"mnemonic": "LDY",
+"mode": "abs"
+},
+{
+"mnemonic": "LDA",
+"mode": "abs"
+},
+{
+"mnemonic": "LDX",
+"mode": "abs"
+},
+{
+"mnemonic": "LAX",
+"mode": "abs"
+},
+{
+"mnemonic": "BCS",
+"mode": "rel"
+},
+{
+"mnemonic": "LDA",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "LAX",
+"mode": "izy"
+},
+{
+"mnemonic": "LDY",
+"mode": "zpx"
+},
+{
+"mnemonic": "LDA",
+"mode": "zpx"
+},
+{
+"mnemonic": "LDX",
+"mode": "zpy"
+},
+{
+"mnemonic": "LAX",
+"mode": "zpy"
+},
+{
+"mnemonic": "CLV",
+"mode": "imp"
+},
+{
+"mnemonic": "LDA",
+"mode": "aby"
+},
+{
+"mnemonic": "TSX",
+"mode": "imp"
+},
+{
+"mnemonic": "LAS",
+"mode": "aby"
+},
+{
+"mnemonic": "LDY",
+"mode": "abx"
+},
+{
+"mnemonic": "LDA",
+"mode": "abx"
+},
+{
+"mnemonic": "LDX",
+"mode": "aby"
+},
+{
+"mnemonic": "LAX",
+"mode": "aby"
+},
+{
+"mnemonic": "CPY",
+"mode": "imm"
+},
+{
+"mnemonic": "CMP",
+"mode": "izx"
+},
+{
+"mnemonic": "NOP",
+"mode": "imm"
+},
+{
+"mnemonic": "DCP",
+"mode": "izx"
+},
+{
+"mnemonic": "CPY",
+"mode": "zp"
+},
+{
+"mnemonic": "CMP",
+"mode": "zp"
+},
+{
+"mnemonic": "DEC",
+"mode": "zp"
+},
+{
+"mnemonic": "DCP",
+"mode": "zp"
+},
+{
+"mnemonic": "INY",
+"mode": "imp"
+},
+{
+"mnemonic": "CMP",
+"mode": "imm"
+},
+{
+"mnemonic": "DEX",
+"mode": "imp"
+},
+{
+"mnemonic": "SBX",
+"mode": "imm"
+},
+{
+"mnemonic": "CPY",
+"mode": "abs"
+},
+{
+"mnemonic": "CMP",
+"mode": "abs"
+},
+{
+"mnemonic": "DEC",
+"mode": "abs"
+},
+{
+"mnemonic": "DCP",
+"mode": "abs"
+},
+{
+"mnemonic": "BNE",
+"mode": "rel"
+},
+{
+"mnemonic": "CMP",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "DCP",
+"mode": "izy"
+},
+{
+"mnemonic": "NOP",
+"mode": "zpx"
+},
+{
+"mnemonic": "CMP",
+"mode": "zpx"
+},
+{
+"mnemonic": "DEC",
+"mode": "zpx"
+},
+{
+"mnemonic": "DCP",
+"mode": "zpx"
+},
+{
+"mnemonic": "CLD",
+"mode": "imp"
+},
+{
+"mnemonic": "CMP",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "DCP",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "abx"
+},
+{
+"mnemonic": "CMP",
+"mode": "abx"
+},
+{
+"mnemonic": "DEC",
+"mode": "abx"
+},
+{
+"mnemonic": "DCP",
+"mode": "abx"
+},
+{
+"mnemonic": "CPX",
+"mode": "imm"
+},
+{
+"mnemonic": "SBC",
+"mode": "izx"
+},
+{
+"mnemonic": "NOP",
+"mode": "imm"
+},
+{
+"mnemonic": "ISC",
+"mode": "izx"
+},
+{
+"mnemonic": "CPX",
+"mode": "zp"
+},
+{
+"mnemonic": "SBC",
+"mode": "zp"
+},
+{
+"mnemonic": "INC",
+"mode": "zp"
+},
+{
+"mnemonic": "ISC",
+"mode": "zp"
+},
+{
+"mnemonic": "INX",
+"mode": "imp"
+},
+{
+"mnemonic": "SBC",
+"mode": "imm"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "SBC",
+"mode": "imm"
+},
+{
+"mnemonic": "CPX",
+"mode": "abs"
+},
+{
+"mnemonic": "SBC",
+"mode": "abs"
+},
+{
+"mnemonic": "INC",
+"mode": "abs"
+},
+{
+"mnemonic": "ISC",
+"mode": "abs"
+},
+{
+"mnemonic": "BEQ",
+"mode": "rel"
+},
+{
+"mnemonic": "SBC",
+"mode": "izy"
+},
+{
+"mnemonic": "JAM",
+"mode": "imp"
+},
+{
+"mnemonic": "ISC",
+"mode": "izy"
+},
+{
+"mnemonic": "NOP",
+"mode": "zpx"
+},
+{
+"mnemonic": "SBC",
+"mode": "zpx"
+},
+{
+"mnemonic": "INC",
+"mode": "zpx"
+},
+{
+"mnemonic": "ISC",
+"mode": "zpx"
+},
+{
+"mnemonic": "SED",
+"mode": "imp"
+},
+{
+"mnemonic": "SBC",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "imp"
+},
+{
+"mnemonic": "ISC",
+"mode": "aby"
+},
+{
+"mnemonic": "NOP",
+"mode": "abx"
+},
+{
+"mnemonic": "SBC",
+"mode": "abx"
+},
+{
+"mnemonic": "INC",
+"mode": "abx"
+},
+{
+"mnemonic": "ISC",
+"mode": "abx"
+}
+],
+"jam": [
+2,
+18,
+34,
+50,
+66,
+82,
+98,
+114,
+146,
+178,
+210,
+242
+],
+"core_sha256": "e0c2ad55735b05ba0c6662bc1445d5fab74c4ff2f010e9de098421501e222960",
+"zilion_commit": "ed93b7c3aecdfe6a0cedf6dcb3f63aebb78bac8d",
+"matches_vendored_core": true
+}

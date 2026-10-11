@@ -8,7 +8,7 @@
 (c) the vendored machines are what build_machines.mjs generates from the Zilion checkout (skipped without one);
 (d) ZSoup has Soup's public API with the same signatures, the same initial soup, readbacks and write_soup;
 (e) ZSoup's own pipeline: after each step its pair memory, write counts and lane records equal a direct run of the
-    machine on the pairs the step drew (Z80 and the 6502 skeleton);
+    machine on the pairs the step drew (Z80 and the full 6502);
 (f) the step-locked harness: 0 mismatches over 300 steps (plain and lethal), CPU recount = comparator, and a
     one-instruction budget difference is detected;
 (g) refusals: suppression masks on a machine without an ablation table, a non-square grid, run.py disagreements;
@@ -209,7 +209,7 @@ def test_zsoup_draws_the_same_pairs_as_soup(machine, L, lethal):
 
 
 # ── (e) ZSoup's pipeline ────────────────────────────────────────────────────────────────────────────────────────────
-@pytest.mark.parametrize("machine", ["z80c02_pair_L16", "z80c02_lethal_L16", "m6502skel_pair_L16"])
+@pytest.mark.parametrize("machine", ["z80c02_pair_L16", "z80c02_lethal_L16", "m6502_pair_L16"])
 def test_zsoup_step_equals_direct_run(machine):
     r = C.plumbing_check(machine, steps=15)
     assert r["active_pairs"] > 15 * 3000
@@ -236,8 +236,8 @@ def test_lockstep_detects_a_one_instruction_difference():
 # ── (g) refusals and run.py ─────────────────────────────────────────────────────────────────────────────────────────
 def test_refusals():
     with pytest.raises(ValueError):
-        ZSoup("m6502skel_pair_L16", suppress="family:block-copy")
-    z = ZSoup("m6502skel_pair_L16")
+        ZSoup("m6502_pair_L16", suppress="family:block-copy")
+    z = ZSoup("m6502_pair_L16")
     with pytest.raises(ValueError):
         z.set_suppress("PUSH")
     assert z.patterns == [] and not z.masks.any()   # a refused set leaves the soup unchanged
@@ -251,7 +251,7 @@ def test_refusals():
     with pytest.raises(ValueError):
         run(machine="z80c02_pair_L16", zero_halts=True, horizon=1, quiet=True)
     with pytest.raises(ValueError):
-        run(machine="m6502skel_pair_L16", horizon=1, quiet=True)   # run.py's analyses are Z80 disassembly
+        run(machine="m6502_pair_L16", horizon=1, quiet=True)   # run.py's analyses are Z80 disassembly
 
 
 def test_ablation_mapping():

@@ -480,7 +480,7 @@ def plumbing_check(machine: str, steps: int = 200, seed: int = 7) -> dict:
     """ZSoup on `machine` for `steps` steps; after each, the soup's pair memory, write counts and the machine's lane
     records must equal a direct ZMachine.run of the same machine on the pairs the step drew, read from the soup before
     the step (all pair_count lanes, inactive ones with budget 0, with the step's batch seed, so lane indices and seeds
-    match). Works for any pair-world machine (used on the 6502 skeleton to show the plumbing on a second ISA)."""
+    match). Works for any pair-world machine (used on the full 6502 to show the plumbing on a second ISA)."""
     from .prng import SplitMix64
     from .zsoup import ZSoup
 

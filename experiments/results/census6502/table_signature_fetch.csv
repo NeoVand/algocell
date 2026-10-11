@@ -1,0 +1,3 @@
+word,BRK,zero partner: entered (exploratory / Zilion),Zilion: halt,PC at halt (ring position),byte there,signature byte position,signature byte in B
+ba 95 70 17,halt,1 / 0,host (BRK),15,00,16,True
+c7 4c 48 a7,halt,1 / 0,host (BRK),15,00,16,True

@@ -1,0 +1,25 @@
+L,BRK,closer,budget,zz exact in every encounter,encounters each,pointer in partner (those zz),"zz confined (no partner fetch, all encounters)"
+16,faithful,B5 zz 48 CA 50 FA,128,0f 2f 4f 6f 8f af cf ef,192,0,31
+16,faithful,B5 zz 48 CA 50 FA,512,0f 2f 4f 6f 8f af cf ef,192,0,31
+16,faithful,BA B5 zz 48 50 FA,128,10 30 50 70 90 b0 d0 f0,192,0,38
+16,faithful,BA B5 zz 48 50 FA,512,10 30 50 70 90 b0 d0 f0,192,0,24
+16,halt,B5 zz 48 CA 50 FA,128,0f 2f 4f 6f 8f af cf ef,192,0,31
+16,halt,B5 zz 48 CA 50 FA,512,0f 2f 4f 6f 8f af cf ef,192,0,31
+16,halt,BA B5 zz 48 50 FA,128,10 30 50 70 90 b0 d0 f0,192,0,32
+16,halt,BA B5 zz 48 50 FA,512,10 30 50 70 90 b0 d0 f0,192,0,25
+20,faithful,B5 zz 48 CA 50 FA,128,13 3b 63 8b b3 db,192,0,256
+20,faithful,B5 zz 48 CA 50 FA,512,8b b3 db,192,0,35
+20,faithful,BA B5 zz 48 50 FA,128,34 5c 84 ac d4 fc,192,0,256
+20,faithful,BA B5 zz 48 50 FA,512,ac d4 fc,192,0,20
+20,halt,B5 zz 48 CA 50 FA,128,13 3b 63 8b b3 db,192,0,256
+20,halt,B5 zz 48 CA 50 FA,512,8b b3 db,192,0,28
+20,halt,BA B5 zz 48 50 FA,128,34 5c 84 ac d4 fc,192,0,256
+20,halt,BA B5 zz 48 50 FA,512,ac d4 fc,192,0,20
+32,faithful,B5 zz 48 CA 50 FA,128,1f 5f 9f df,192,0,256
+32,faithful,B5 zz 48 CA 50 FA,512,1f 5f 9f df,192,0,32
+32,faithful,BA B5 zz 48 50 FA,128,20 60 a0 e0,192,0,256
+32,faithful,BA B5 zz 48 50 FA,512,20 60 a0 e0,192,0,16
+32,halt,B5 zz 48 CA 50 FA,128,1f 5f 9f df,192,0,256
+32,halt,B5 zz 48 CA 50 FA,512,1f 5f 9f df,192,0,32
+32,halt,BA B5 zz 48 50 FA,128,20 60 a0 e0,192,0,256
+32,halt,BA B5 zz 48 50 FA,512,20 60 a0 e0,192,0,20

@@ -1,0 +1,825 @@
+L,BRK,budget,k,census,word,"disassembly (tiled, from 0)",columns,zero-partner match,exact partners,≥ 75% partners,best random match,closed,partner entered (of 17),zero partner: halt / steps
+16,faithful,128,2,complete,74 74,"NOP $74,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,512,2,complete,4f 20,SRE $4F20; JSR $204F,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 37
+16,faithful,512,2,complete,74 74,"NOP $74,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,128,3,complete,d0 ba 68,BNE -70; PLA,"exact, ≥ 1 random partner (phase score only)",0,0,1,15,False,17,running / 128
+16,faithful,512,3,complete,d0 ba 68,BNE -70; PLA,"exact, ≥ 1 random partner (phase score only)",0,0,1,15,False,17,running / 512
+16,faithful,128,4,complete,04 48 ba b5,"NOP $48; TSX; LDA $04,X; PHA; TSX; LDA $04,X; PHA; TSX; LDA $04,X | …","exact, ≥ 1 random partner",3,2,3,16,False,17,trap / 14
+16,faithful,128,4,complete,11 48 88 b1,"ORA ($48),Y; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 75
+16,faithful,128,4,complete,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 28
+16,faithful,128,4,complete,20 0c 20 1f,"JSR $200C; SLO $0C20,X; JSR $201F; NOP $1F20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,20 24 20 33,"JSR $2024; RLA ($20),Y; BIT $20; RLA ($20),Y; BIT $20; RLA ($20),Y | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,20 26 20 a4,JSR $2026; LDY $20; ROL $20; LDY $20; ROL $20; LDY $20 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,running / 128
+16,faithful,128,4,complete,20 2c 20 3f,"JSR $202C; RLA $2C20,X; JSR $203F; BIT $3F20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,20 70 20 8e,JSR $2070; STX $7020; JSR $208E; BVS +32; STX $7020 | …,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,20 ac 20 bf,"JSR $20AC; LAX $AC20,Y; JSR $20BF; LDY $BF20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,20 cc 20 df,"JSR $20CC; DCP $CC20,X; JSR $20DF; CPY $DF20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,20 ec 20 ff,"JSR $20EC; ISC $EC20,X; JSR $20FF; CPX $FF20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,21 48 88 b1,"AND ($48,X); DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,24 ba b5 c4,"BIT $BA; LDA $C4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,43 04 20 04,"SRE ($04,X); JSR $4304; NOP $20; NOP $43; NOP $20; NOP $43 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,faithful,128,4,complete,44 48 ba b5,"NOP $48; TSX; LDA $44,X; PHA; TSX; LDA $44,X; PHA; TSX; LDA $44,X | …","exact, ≥ 1 random partner",3,2,6,16,False,17,trap / 14
+16,faithful,128,4,complete,48 88 b7 13,"PHA; DEY; LAX $13,Y","exact, ≥ 1 random partner",4,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,48 b5 d3 ba,"PHA; LDA $D3,X; TSX","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 63
+16,faithful,128,4,complete,48 ba b5 a8,"PHA; TSX; LDA $A8,X","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,48 ca b5 d3,"PHA; DEX; LDA $D3,X","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 57
+16,faithful,128,4,complete,50 48 88 b1,"BVC +72; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 117
+16,faithful,128,4,complete,50 96 bf c8,"BVC -106; LAX $50C8,Y; STX $BF,Y; INY","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 103
+16,faithful,128,4,complete,63 04 20 04,"RRA ($04,X); JSR $6304; NOP $20; NOP $63; NOP $20; NOP $63 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,faithful,128,4,complete,65 88 4b 4c,ADC $88; ALR #$4C,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,68 48 ba b5,"PLA; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,trap / 15
+16,faithful,128,4,complete,68 68 ba 95,"PLA; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X | …","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,68 91 4c bf,"PLA; STA ($4C),Y; LAX $9168,Y; JMP $68BF; STA ($4C),Y; LAX $9168,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 11
+16,faithful,128,4,complete,68 95 35 ba,"PLA; STA $35,X; TSX","exact, ≥ 1 random partner",3,1,1,16,False,17,trap / 18
+16,faithful,128,4,complete,68 95 4c bd,"PLA; STA $4C,X; LDA $9568,X; JMP $68BD; STA $4C,X; LDA $9568,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 11
+16,faithful,128,4,complete,68 95 d8 e8,"PLA; STA $D8,X; INX","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 18
+16,faithful,128,4,complete,68 ba 95 d8,"PLA; TSX; STA $D8,X","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 18
+16,faithful,128,4,complete,68 d0 f8 c8,PLA; BNE -8; INY,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 9
+16,faithful,128,4,complete,68 e8 95 57,"PLA; INX; STA $57,X","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 18
+16,faithful,128,4,complete,70 48 ba b5,"BVS +72; TSX; LDA $70,X; PHA; TSX; LDA $70,X; PHA; TSX; LDA $70,X | …","exact, ≥ 1 random partner",3,1,4,16,False,17,trap / 14
+16,faithful,128,4,complete,71 20 5e 20,"ADC ($20),Y; LSR $7120,X; JSR $205E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,80 b6 88 96,"NOP #$B6; DEY; STX $80,Y; LDX $88,Y; STX $80,Y; LDX $88,Y; STX $80,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 50 bf 48,DEY; BVC -65; PHA,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 18
+16,faithful,128,4,complete,88 b1 20 90,"DEY; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 63
+16,faithful,128,4,complete,88 b1 24 48,"DEY; LDA ($24),Y; PHA","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b1 2c 48,"DEY; LDA ($2C),Y; PHA","exact, ≥ 1 random partner",6,1,2,16,False,17,trap / 26
+16,faithful,128,4,complete,88 b1 30 48,"DEY; LDA ($30),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 39
+16,faithful,128,4,complete,88 b1 3c 48,"DEY; LDA ($3C),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 47
+16,faithful,128,4,complete,88 b1 67 48,"DEY; LDA ($67),Y; PHA","exact, ≥ 1 random partner",8,1,2,16,False,17,running / 128
+16,faithful,128,4,complete,88 b1 68 48,"DEY; LDA ($68),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b1 6b 48,"DEY; LDA ($6B),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b1 6c 48,"DEY; LDA ($6C),Y; PHA","exact, ≥ 1 random partner",6,1,3,16,False,17,trap / 26
+16,faithful,128,4,complete,88 b1 84 48,"DEY; LDA ($84),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b1 87 48,"DEY; LDA ($87),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b1 a3 48,"DEY; LDA ($A3),Y; PHA","exact, ≥ 1 random partner",10,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b1 cb 48,"DEY; LDA ($CB),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b1 cc 48,"DEY; LDA ($CC),Y; PHA","exact, ≥ 1 random partner",6,1,2,16,False,17,trap / 26
+16,faithful,128,4,complete,88 b1 e8 48,"DEY; LDA ($E8),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b3 27 48,"DEY; LAX ($27),Y; PHA","exact, ≥ 1 random partner",10,1,2,16,False,17,trap / 61
+16,faithful,128,4,complete,88 b3 28 48,"DEY; LAX ($28),Y; PHA","exact, ≥ 1 random partner",4,2,3,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b3 2b 48,"DEY; LAX ($2B),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b3 47 48,"DEY; LAX ($47),Y; PHA","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b3 4b 48,"DEY; LAX ($4B),Y; PHA","exact, ≥ 1 random partner",0,1,2,16,False,17,running / 128
+16,faithful,128,4,complete,88 b3 60 48,"DEY; LAX ($60),Y; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 68
+16,faithful,128,4,complete,88 b3 6c 48,"DEY; LAX ($6C),Y; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 26
+16,faithful,128,4,complete,88 b3 a3 48,"DEY; LAX ($A3),Y; PHA","exact, ≥ 1 random partner",10,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b3 b0 48,"DEY; LAX ($B0),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 39
+16,faithful,128,4,complete,88 b3 c4 48,"DEY; LAX ($C4),Y; PHA","exact, ≥ 1 random partner",0,1,2,16,False,17,running / 128
+16,faithful,128,4,complete,88 b3 e0 48,"DEY; LAX ($E0),Y; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 68
+16,faithful,128,4,complete,88 b6 cc 96,"DEY; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,88 b7 08 48,"DEY; LAX $08,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b7 0c 48,"DEY; LAX $0C,Y; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 26
+16,faithful,128,4,complete,88 b7 10 48,"DEY; LAX $10,Y; PHA","exact, ≥ 1 random partner",2,1,2,16,False,17,trap / 41
+16,faithful,128,4,complete,88 b7 24 48,"DEY; LAX $24,Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,trap / 33
+16,faithful,128,4,complete,88 b7 2c 48,"DEY; LAX $2C,Y; PHA","exact, ≥ 1 random partner",6,2,2,16,False,17,trap / 26
+16,faithful,128,4,complete,88 b7 54 48,"DEY; LAX $54,Y; PHA","exact, ≥ 1 random partner",0,1,2,16,False,17,trap / 118
+16,faithful,128,4,complete,88 b7 b0 48,"DEY; LAX $B0,Y; PHA","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 41
+16,faithful,128,4,complete,88 b7 c4 48,"DEY; LAX $C4,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,128,4,complete,88 b7 c8 48,"DEY; LAX $C8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,88 b7 e8 48,"DEY; LAX $E8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,91 20 5e 20,"STA ($20),Y; LSR $9120,X; JSR $205E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,91 4c c8 b1,"STA ($4C),Y; INY; LDA ($91),Y; JMP $B1C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 128
+16,faithful,128,4,complete,91 4c c8 b3,"STA ($4C),Y; INY; LAX ($91),Y; JMP $B3C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 128
+16,faithful,128,4,complete,95 55 ba 68,"STA $55,X; TSX; PLA","exact, ≥ 1 random partner",3,1,1,16,False,17,trap / 15
+16,faithful,128,4,complete,99 88 b9 90,"STA $B988,Y; BCC -103; DEY; LDA $9990,Y; DEY; LDA $9990,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,9b 20 a3 20,"TAS $A320,Y; JSR $209B; LAX ($20,X)",≥ 75% in ≥ 8 of 16,0,0,8,12,False,17,trap / 14
+16,faithful,128,4,complete,a0 48 88 b1,"LDY #$48; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y | …","exact, ≥ 1 random partner",4,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,a3 01 48 6a,"LAX ($01,X); PHA; ROR A","exact, ≥ 1 random partner",5,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,a3 0c 99 bf,"LAX ($0C,X); STA $A3BF,Y; NOP $BF99","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 124
+16,faithful,128,4,complete,a3 21 48 6a,"LAX ($21,X); PHA; ROR A","exact, ≥ 1 random partner",5,1,2,16,False,17,running / 128
+16,faithful,128,4,complete,a3 25 48 6a,"LAX ($25,X); PHA; ROR A","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,a3 65 48 0a,"LAX ($65,X); PHA; ASL A","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 74
+16,faithful,128,4,complete,a3 c5 48 6a,"LAX ($C5,X); PHA; ROR A","exact, ≥ 1 random partner",4,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,a3 e1 48 0a,"LAX ($E1,X); PHA; ASL A","exact, ≥ 1 random partner",5,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,a3 e5 48 4a,"LAX ($E5,X); PHA; LSR A","exact, ≥ 1 random partner",5,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,ab 48 48 48,LXA #$48; PHA; PHA,≥ 75% in ≥ 8 of 16,12,0,10,12,False,17,running / 128
+16,faithful,128,4,complete,ad a5 d7 5b,"LDA $D7A5; SRE $A5AD,Y; DCP $5B,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,b0 48 ca b5,"BCS +72; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X | …","exact, ≥ 1 random partner",4,1,2,16,False,17,trap / 36
+16,faithful,128,4,complete,b1 af 48 88,"LDA ($AF),Y; PHA; DEY","exact, ≥ 1 random partner",4,1,2,16,False,17,trap / 33
+16,faithful,128,4,complete,b3 38 48 88,"LAX ($38),Y; PHA; DEY","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 54
+16,faithful,128,4,complete,b3 7c 88 48,"LAX ($7C),Y; DEY; PHA","exact, ≥ 1 random partner",2,1,2,16,False,17,trap / 54
+16,faithful,128,4,complete,b3 97 80 88,"LAX ($97),Y; NOP #$88","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,b3 ac 88 48,"LAX ($AC),Y; DEY; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 97
+16,faithful,128,4,complete,b3 dc 48 88,"LAX ($DC),Y; PHA; DEY","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 54
+16,faithful,128,4,complete,b5 0b ca 48,"LDA $0B,X; DEX; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 30
+16,faithful,128,4,complete,b5 0f 48 ca,"LDA $0F,X; PHA; DEX","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,b5 43 ba 48,"LDA $43,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 14
+16,faithful,128,4,complete,b5 43 ca 48,"LDA $43,X; DEX; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 30
+16,faithful,128,4,complete,b5 8b ba 48,"LDA $8B,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 14
+16,faithful,128,4,complete,b7 47 48 88,"LAX $47,Y; PHA; DEY","exact, ≥ 1 random partner",5,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,b7 57 48 88,"LAX $57,Y; PHA; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 124
+16,faithful,128,4,complete,b7 8f 48 88,"LAX $8F,Y; PHA; DEY","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 74
+16,faithful,128,4,complete,b7 8f 88 48,"LAX $8F,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 51
+16,faithful,128,4,complete,b7 a5 c8 90,"LAX $A5,Y; INY; BCC -73; LDA $C8; BCC -73; LDA $C8; BCC -73 | …","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,b7 af 88 48,"LAX $AF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,trap / 51
+16,faithful,128,4,complete,b7 ef 88 48,"LAX $EF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 51
+16,faithful,128,4,complete,ba 68 95 75,"TSX; PLA; STA $75,X","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,ba 95 14 68,"TSX; STA $14,X; PLA","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,ba 95 f8 68,"TSX; STA $F8,X; PLA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,ba b5 10 48,"TSX; LDA $10,X; PHA","exact, ≥ 1 random partner",2,1,5,16,False,17,trap / 41
+16,faithful,128,4,complete,ba b5 24 48,"TSX; LDA $24,X; PHA","exact, ≥ 1 random partner",5,1,4,16,False,17,trap / 33
+16,faithful,128,4,complete,ba b5 28 48,"TSX; LDA $28,X; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 35
+16,faithful,128,4,complete,ba b5 2c 48,"TSX; LDA $2C,X; PHA","exact, ≥ 1 random partner",1,1,6,16,False,17,running / 128
+16,faithful,128,4,complete,ba b5 48 48,"TSX; LDA $48,X; PHA","exact, ≥ 1 random partner",7,1,4,16,False,17,trap / 35
+16,faithful,128,4,complete,ba b5 68 48,"TSX; LDA $68,X; PHA","exact, ≥ 1 random partner",6,1,5,16,False,17,trap / 35
+16,faithful,128,4,complete,ba b5 6c 48,"TSX; LDA $6C,X; PHA","exact, ≥ 1 random partner",2,1,4,16,False,17,running / 128
+16,faithful,128,4,complete,ba b5 70 48,"TSX; LDA $70,X; PHA","exact, ≥ 1 random partner",2,2,5,16,False,17,trap / 41
+16,faithful,128,4,complete,ba b5 84 48,"TSX; LDA $84,X; PHA","exact, ≥ 1 random partner",5,1,2,16,False,17,trap / 33
+16,faithful,128,4,complete,ba b5 8c 48,"TSX; LDA $8C,X; PHA","exact, ≥ 1 random partner",9,1,2,16,False,17,trap / 41
+16,faithful,128,4,complete,ba b5 a4 48,"TSX; LDA $A4,X; PHA","exact, ≥ 1 random partner",5,2,3,16,False,17,trap / 33
+16,faithful,128,4,complete,ba b5 c4 48,"TSX; LDA $C4,X; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 33
+16,faithful,128,4,complete,ba b5 cc 48,"TSX; LDA $CC,X; PHA","exact, ≥ 1 random partner",5,1,4,16,False,17,running / 128
+16,faithful,128,4,complete,ba bd 24 48,"TSX; LDA $4824,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,ba bd ac 41,"TSX; LDA $41AC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,bd 48 e5 ba,"LDA $E548,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,128,4,complete,be 88 96 a1,"LDX $9688,Y; LDA ($BE,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,be 88 96 e1,"LDX $9688,Y; SBC ($BE,X); DEY; STX $E1,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,bf 88 96 a1,"LAX $9688,Y; LDA ($BF,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",0,1,2,16,False,17,running / 128
+16,faithful,128,4,complete,bf c8 6c 91,"LAX $6CC8,Y; STA ($BF),Y; INY; JMP ($BF91); INY; JMP ($BF91) | …","exact, ≥ 1 random partner",8,1,1,16,False,14,running / 128
+16,faithful,128,4,complete,c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,c3 49 50 b5,"DCP ($49,X); BVC -75","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,c7 4c 48 a5,DCP $4C; PHA; LDA $C7; JMP $A548,≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,running / 128
+16,faithful,128,4,complete,c7 4c 48 b5,"DCP $4C; PHA; LDA $C7,X; JMP $B548",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,faithful,128,4,complete,c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,c9 48 88 b3,"CMP #$48; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,c9 90 3a 68,CMP #$90; NOP; PLA,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 15
+16,faithful,128,4,complete,ca b4 4c 68,"DEX; LDY $4C,X; PLA","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,ca b5 08 48,"DEX; LDA $08,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,128,4,complete,ca b5 64 48,"DEX; LDA $64,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,128,4,complete,ca b5 d0 48,"DEX; LDA $D0,X; PHA","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 41
+16,faithful,128,4,complete,ca b5 e4 48,"DEX; LDA $E4,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,128,4,complete,ca bc 4a 26,"DEX; LDY $264A,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,cf 0c 48 b7,"DCP $480C; LAX $CF,Y; NOP $B748","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,d0 48 ba b5,"BNE +72; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X | …","exact, ≥ 1 random partner",7,2,3,16,False,17,trap / 67
+16,faithful,128,4,complete,d0 99 a5 5e,BNE -103; LDA $5E,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,e8 68 95 37,"INX; PLA; STA $37,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 71
+16,faithful,128,4,complete,e8 68 95 77,"INX; PLA; STA $77,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 71
+16,faithful,128,4,complete,f1 48 88 b1,"SBC ($48),Y; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 128
+16,faithful,128,4,complete,f3 4c 68 91,"ISC ($4C),Y; PLA; STA ($F3),Y; JMP $9168","exact, ≥ 1 random partner",0,1,1,16,False,11,running / 128
+16,faithful,128,4,complete,f9 48 88 b3,"SBC $8848,Y; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 128
+16,faithful,512,4,complete,03 a5 c4 b9,"SLO ($A5,X); CPY $B9","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,04 48 ba b5,"NOP $48; TSX; LDA $04,X; PHA; TSX; LDA $04,X; PHA; TSX; LDA $04,X | …","exact, ≥ 1 random partner",3,2,3,16,False,17,trap / 14
+16,faithful,512,4,complete,0f 14 50 b7,"SLO $5014; LAX $0F,Y; NOP $50,X; LAX $0F,Y; NOP $50,X; LAX $0F,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,11 48 88 b1,"ORA ($48),Y; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 75
+16,faithful,512,4,complete,14 88 b1 19,"NOP $88,X; LDA ($19),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,14 94 7c b4,"NOP $94,X; NOP $14B4,X; STY $7C,X; LDY $14,X; STY $7C,X; LDY $14,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 247
+16,faithful,512,4,complete,15 88 b1 eb,"ORA $88,X; LDA ($EB),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 28
+16,faithful,512,4,complete,20 04 20 49,JSR $2004; EOR #$20; NOP $20; EOR #$20; NOP $20; EOR #$20 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 08 20 4b,JSR $2008; ALR #$20; PHP; JSR $204B; PHP; JSR $204B | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 24 20 67,JSR $2024; RRA $20; BIT $20; RRA $20; BIT $20; RRA $20 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 28 20 6b,JSR $2028; ARR #$20; PLP; JSR $206B; PLP; JSR $206B | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 48 20 8b,JSR $2048; ANE #$20; PHA; JSR $208B; PHA; JSR $208B | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 4c 20 93,"JSR $204C; SHA ($20),Y; JMP $9320",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 68 20 ab,JSR $2068; LXA #$20; PLA; JSR $20AB; PLA; JSR $20AB | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 6c 20 b3,"JSR $206C; LAX ($20),Y; JMP ($B320)",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 88 20 cb,JSR $2088; SBX #$20; DEY; JSR $20CB; DEY; JSR $20CB | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,20 a8 20 eb,JSR $20A8; SBC #$20; TAY; JSR $20EB; TAY; JSR $20EB | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,21 48 88 b1,"AND ($48,X); DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,trap / 147
+16,faithful,512,4,complete,24 ba b5 c4,"BIT $BA; LDA $C4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,24 e5 ba bd,"BIT $E5; TSX; LDA $E524,X; TSX; LDA $E524,X; TSX; LDA $E524,X | …","exact, ≥ 1 random partner",1,1,1,16,False,17,trap / 156
+16,faithful,512,4,complete,3a b5 f0 ba,"NOP; LDA $F0,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 130
+16,faithful,512,4,complete,43 04 20 04,"SRE ($04,X); JSR $4304; NOP $20; NOP $43; NOP $20; NOP $43 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,faithful,512,4,complete,44 48 ba b5,"NOP $48; TSX; LDA $44,X; PHA; TSX; LDA $44,X; PHA; TSX; LDA $44,X | …","exact, ≥ 1 random partner",3,3,4,16,False,17,trap / 14
+16,faithful,512,4,complete,45 af 69 68,EOR $AF; ADC #$68,"exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,48 48 a7 48,PHA; PHA; LAX $48,≥ 75% in ≥ 8 of 16,12,0,8,12,False,17,running / 512
+16,faithful,512,4,complete,48 a3 45 4c,"PHA; LAX ($45,X); JMP $A348; EOR $4C","exact, ≥ 1 random partner",4,1,1,16,False,15,running / 512
+16,faithful,512,4,complete,48 a3 c5 6c,"PHA; LAX ($C5,X); JMP ($A348); CMP $6C","exact, ≥ 1 random partner",4,1,3,16,False,9,running / 512
+16,faithful,512,4,complete,48 a3 e5 6c,"PHA; LAX ($E5,X); JMP ($A348); SBC $6C","exact, ≥ 1 random partner",4,1,6,16,False,7,running / 512
+16,faithful,512,4,complete,48 a6 ba bd,"PHA; LDX $BA; LDA $A648,X; TSX; LDA $A648,X; TSX; LDA $A648,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 145
+16,faithful,512,4,complete,48 ba b5 a4,"PHA; TSX; LDA $A4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,48 ba b5 a8,"PHA; TSX; LDA $A8,X","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,48 ba bd 18,"PHA; TSX; LDA $4818,X; TSX; LDA $4818,X; TSX; LDA $4818,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 166
+16,faithful,512,4,complete,4d 20 09 20,EOR $0920; JSR $204D; ORA #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,50 48 88 b1,"BVC +72; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 117
+16,faithful,512,4,complete,50 96 bf c8,"BVC -106; LAX $50C8,Y; STX $BF,Y; INY","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 103
+16,faithful,512,4,complete,51 20 0d 20,"EOR ($20),Y; ORA $5120; JSR $200D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,61 d5 99 b9,"ADC ($D5,X); STA $61B9,Y; CMP $99,X; LDA $D561,Y; STA $61B9,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 55
+16,faithful,512,4,complete,63 04 20 04,"RRA ($04,X); JSR $6304; NOP $20; NOP $63; NOP $20; NOP $63 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,faithful,512,4,complete,65 88 4b 4c,ADC $88; ALR #$4C,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 140
+16,faithful,512,4,complete,68 20 29 20,PLA; JSR $2029,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,68 48 88 b1,"PLA; PHA; DEY; LDA ($68),Y; PHA; DEY; LDA ($68),Y; PHA; DEY; LDA ($68),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 248
+16,faithful,512,4,complete,68 48 ba b5,"PLA; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,trap / 15
+16,faithful,512,4,complete,68 68 ba 95,"PLA; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X | …","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,68 91 4c bf,"PLA; STA ($4C),Y; LAX $9168,Y; JMP $68BF; STA ($4C),Y; LAX $9168,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 11
+16,faithful,512,4,complete,68 95 4c bd,"PLA; STA $4C,X; LDA $9568,X; JMP $68BD; STA $4C,X; LDA $9568,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 11
+16,faithful,512,4,complete,68 95 d8 e8,"PLA; STA $D8,X; INX","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 18
+16,faithful,512,4,complete,68 95 f2 e8,"PLA; STA $F2,X; INX","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 18
+16,faithful,512,4,complete,68 ba 95 1c,"PLA; TSX; STA $1C,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 94
+16,faithful,512,4,complete,68 ba 95 cc,"PLA; TSX; STA $CC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 18
+16,faithful,512,4,complete,68 d0 f8 c8,PLA; BNE -8; INY,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 9
+16,faithful,512,4,complete,6b 3d b1 ab,"ARR #$3D; LDA ($AB),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,6d 20 29 20,ADC $2920; JSR $206D; AND #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,70 48 ba b5,"BVS +72; TSX; LDA $70,X; PHA; TSX; LDA $70,X; PHA; TSX; LDA $70,X | …","exact, ≥ 1 random partner",3,1,2,16,False,17,trap / 14
+16,faithful,512,4,complete,71 20 2d 20,"ADC ($20),Y; AND $7120; JSR $202D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,78 ba b5 70,"SEI; TSX; LDA $70,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,7f 4b 6c 68,"RRA $6C4B,X; PLA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,80 b6 88 96,"NOP #$B6; DEY; STX $80,Y; LDX $88,Y; STX $80,Y; LDX $88,Y; STX $80,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 4b 44 b6,"DEY; ALR #$44; LDX $88,Y; ALR #$44; LDX $88,Y; ALR #$44; LDX $88,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 149
+16,faithful,512,4,complete,88 50 bf 48,DEY; BVC -65; PHA,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 18
+16,faithful,512,4,complete,88 b1 20 90,"DEY; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 63
+16,faithful,512,4,complete,88 b1 24 48,"DEY; LDA ($24),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b1 2c 48,"DEY; LDA ($2C),Y; PHA","exact, ≥ 1 random partner",6,1,2,16,False,17,trap / 26
+16,faithful,512,4,complete,88 b1 30 48,"DEY; LDA ($30),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 39
+16,faithful,512,4,complete,88 b1 3c 48,"DEY; LDA ($3C),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 47
+16,faithful,512,4,complete,88 b1 54 48,"DEY; LDA ($54),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 47
+16,faithful,512,4,complete,88 b1 68 48,"DEY; LDA ($68),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b1 6b 48,"DEY; LDA ($6B),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b1 6c 48,"DEY; LDA ($6C),Y; PHA","exact, ≥ 1 random partner",6,1,3,16,False,17,trap / 26
+16,faithful,512,4,complete,88 b1 84 48,"DEY; LDA ($84),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b1 87 48,"DEY; LDA ($87),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b1 a3 48,"DEY; LDA ($A3),Y; PHA","exact, ≥ 1 random partner",10,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b1 cb 48,"DEY; LDA ($CB),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b1 cc 48,"DEY; LDA ($CC),Y; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 26
+16,faithful,512,4,complete,88 b1 e8 48,"DEY; LDA ($E8),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b3 27 48,"DEY; LAX ($27),Y; PHA","exact, ≥ 1 random partner",10,1,1,16,False,17,trap / 61
+16,faithful,512,4,complete,88 b3 28 48,"DEY; LAX ($28),Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b3 2b 48,"DEY; LAX ($2B),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b3 47 48,"DEY; LAX ($47),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b3 4b 48,"DEY; LAX ($4B),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b3 60 48,"DEY; LAX ($60),Y; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 68
+16,faithful,512,4,complete,88 b3 6c 48,"DEY; LAX ($6C),Y; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 26
+16,faithful,512,4,complete,88 b3 a3 48,"DEY; LAX ($A3),Y; PHA","exact, ≥ 1 random partner",10,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b3 b0 48,"DEY; LAX ($B0),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 39
+16,faithful,512,4,complete,88 b3 c4 48,"DEY; LAX ($C4),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b3 e0 48,"DEY; LAX ($E0),Y; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 68
+16,faithful,512,4,complete,88 b6 2c 96,"DEY; LDX $2C,Y; STX $88,Y; LDX $2C,Y; STX $88,Y; LDX $2C,Y; STX $88,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b6 cc 96,"DEY; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,88 b7 08 48,"DEY; LAX $08,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b7 0c 48,"DEY; LAX $0C,Y; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 26
+16,faithful,512,4,complete,88 b7 10 48,"DEY; LAX $10,Y; PHA","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 41
+16,faithful,512,4,complete,88 b7 24 48,"DEY; LAX $24,Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,trap / 33
+16,faithful,512,4,complete,88 b7 2c 48,"DEY; LAX $2C,Y; PHA","exact, ≥ 1 random partner",6,2,2,16,False,17,trap / 26
+16,faithful,512,4,complete,88 b7 54 48,"DEY; LAX $54,Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 118
+16,faithful,512,4,complete,88 b7 9c 48,"DEY; LAX $9C,Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 38
+16,faithful,512,4,complete,88 b7 b0 48,"DEY; LAX $B0,Y; PHA","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 41
+16,faithful,512,4,complete,88 b7 c4 48,"DEY; LAX $C4,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,512,4,complete,88 b7 c8 48,"DEY; LAX $C8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,88 b7 e8 48,"DEY; LAX $E8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,8a ba b5 f8,"TXA; TSX; LDA $F8,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 130
+16,faithful,512,4,complete,8d 20 49 20,STA $4920; JSR $208D; EOR #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,8f 20 8f 20,SAX $8F20; JSR $208F; SAX $8F20; JSR $208F,"exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 356
+16,faithful,512,4,complete,91 20 4d 20,"STA ($20),Y; EOR $9120; JSR $204D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,91 4c c8 b1,"STA ($4C),Y; INY; LDA ($91),Y; JMP $B1C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 512
+16,faithful,512,4,complete,91 4c c8 b3,"STA ($4C),Y; INY; LAX ($91),Y; JMP $B3C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 512
+16,faithful,512,4,complete,91 50 bf 88,"STA ($50),Y; LAX $9188,Y; BVC -65; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 30
+16,faithful,512,4,complete,91 bf 40 68,"STA ($BF),Y; RTI; PLA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 317
+16,faithful,512,4,complete,94 b4 fc 98,"STY $B4,X; NOP $9498,X; LDY $FC,X; TYA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,94 bc 30 bd,"STY $BC,X; BMI -67","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,95 50 58 b5,"STA $50,X; CLI; LDA $95,X; BVC +88; LDA $95,X; BVC +88; LDA $95,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 79
+16,faithful,512,4,complete,96 15 be d0,"STX $15,Y; LDX $96D0,Y; ORA $BE,X; BNE -106; ORA $BE,X; BNE -106 | …","exact, ≥ 1 random partner",1,1,1,16,False,17,trap / 61
+16,faithful,512,4,complete,96 fc b7 a4,"STX $FC,Y; LAX $A4,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,99 88 b9 90,"STA $B988,Y; BCC -103; DEY; LDA $9990,Y; DEY; LDA $9990,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,9b 20 a3 20,"TAS $A320,Y; JSR $209B; LAX ($20,X)",≥ 75% in ≥ 8 of 16,0,0,8,12,False,17,trap / 14
+16,faithful,512,4,complete,a3 0c 99 bf,"LAX ($0C,X); STA $A3BF,Y; NOP $BF99","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 124
+16,faithful,512,4,complete,a4 48 ba b5,"LDY $48; TSX; LDA $A4,X; PHA; TSX; LDA $A4,X; PHA; TSX; LDA $A4,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,trap / 14
+16,faithful,512,4,complete,a5 20 5e 20,"LDA $20; LSR $A520,X; JSR $205E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,a5 20 60 20,LDA $20; RTS; JSR $20A5; RTS; JSR $20A5; RTS; JSR $20A5 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,a8 ba b5 e4,"TAY; TSX; LDA $E4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 130
+16,faithful,512,4,complete,a9 48 48 48,LDA #$48; PHA; PHA,≥ 75% in ≥ 8 of 16,12,0,8,12,False,17,running / 512
+16,faithful,512,4,complete,aa 10 d7 41,"TAX; BPL -41; EOR ($AA,X); BPL -41; EOR ($AA,X); BPL -41; EOR ($AA,X) | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ab 48 48 48,LXA #$48; PHA; PHA,≥ 75% in ≥ 8 of 16,12,0,10,12,False,17,running / 512
+16,faithful,512,4,complete,ad 20 69 20,LDA $6920; JSR $20AD; ADC #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,ad a5 d7 5b,"LDA $D7A5; SRE $A5AD,Y; DCP $5B,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b0 48 ca b5,"BCS +72; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X | …","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 36
+16,faithful,512,4,complete,b1 20 6d 20,"LDA ($20),Y; ADC $B120; JSR $206D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,b3 38 48 88,"LAX ($38),Y; PHA; DEY","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 54
+16,faithful,512,4,complete,b3 6d 96 61,"LAX ($6D),Y; STX $61,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b3 7c 88 48,"LAX ($7C),Y; DEY; PHA","exact, ≥ 1 random partner",2,1,2,16,False,17,trap / 54
+16,faithful,512,4,complete,b3 97 80 88,"LAX ($97),Y; NOP #$88","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 138
+16,faithful,512,4,complete,b3 eb 99 44,"LAX ($EB),Y; STA $B344,Y; SBC #$99; NOP $B3; SBC #$99; NOP $B3 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 99
+16,faithful,512,4,complete,b4 0c 94 88,"LDY $0C,X; STY $88,X","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b4 50 38 94,"LDY $50,X; SEC; STY $B4,X; BVC +56; STY $B4,X; BVC +56; STY $B4,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b4 d0 94 14,"LDY $D0,X; STY $14,X","exact, ≥ 1 random partner",1,1,1,16,False,17,trap / 24
+16,faithful,512,4,complete,b5 0b ca 48,"LDA $0B,X; DEX; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 30
+16,faithful,512,4,complete,b5 0f 48 ca,"LDA $0F,X; PHA; DEX","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b5 13 f0 0e,"LDA $13,X; BEQ +14","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 90
+16,faithful,512,4,complete,b5 29 ba ca,"LDA $29,X; TSX; DEX","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b5 2b 95 df,"LDA $2B,X; STA $DF,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b5 2d 95 89,"LDA $2D,X; STA $89,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b5 43 ba 48,"LDA $43,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 14
+16,faithful,512,4,complete,b5 43 ca 48,"LDA $43,X; DEX; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 30
+16,faithful,512,4,complete,b5 6c ba f8,"LDA $6C,X; TSX; SED","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 23
+16,faithful,512,4,complete,b5 88 49 ba,"LDA $88,X; EOR #$BA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b5 8b ba 48,"LDA $8B,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 14
+16,faithful,512,4,complete,b5 96 b0 c8,"LDA $96,X; BCS -56","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 24
+16,faithful,512,4,complete,b5 b0 c8 ba,"LDA $B0,X; INY; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 130
+16,faithful,512,4,complete,b5 c5 ba ca,"LDA $C5,X; TSX; DEX","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b5 c8 ba 38,"LDA $C8,X; TSX; SEC","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b7 14 48 88,"LAX $14,Y; PHA; DEY","exact, ≥ 1 random partner",3,1,1,16,False,17,trap / 41
+16,faithful,512,4,complete,b7 3b 88 48,"LAX $3B,Y; DEY; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 38
+16,faithful,512,4,complete,b7 47 48 88,"LAX $47,Y; PHA; DEY","exact, ≥ 1 random partner",5,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b7 57 48 88,"LAX $57,Y; PHA; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 124
+16,faithful,512,4,complete,b7 80 99 c8,"LAX $80,Y; STA $B7C8,Y; NOP #$99; INY","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b7 88 97 44,"LAX $88,Y; SAX $44,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 150
+16,faithful,512,4,complete,b7 8f 48 88,"LAX $8F,Y; PHA; DEY","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 74
+16,faithful,512,4,complete,b7 8f 88 48,"LAX $8F,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 51
+16,faithful,512,4,complete,b7 a2 96 3a,"LAX $A2,Y; STX $3A,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b7 a5 c8 90,"LAX $A5,Y; INY; BCC -73; LDA $C8; BCC -73; LDA $C8; BCC -73 | …","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b7 af 88 48,"LAX $AF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 51
+16,faithful,512,4,complete,b7 b3 88 48,"LAX $B3,Y; DEY; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,b7 ef 88 48,"LAX $EF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 51
+16,faithful,512,4,complete,ba 48 b5 9b,"TSX; PHA; LDA $9B,X","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba 68 95 73,"TSX; PLA; STA $73,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba 8a b5 48,"TSX; TXA; LDA $48,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba 98 55 48,"TSX; TYA; EOR $48,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba 98 75 2c,"TSX; TYA; ADC $2C,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba 9d 78 68,"TSX; STA $6878,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,ba b5 10 48,"TSX; LDA $10,X; PHA","exact, ≥ 1 random partner",2,1,3,16,False,17,trap / 41
+16,faithful,512,4,complete,ba b5 24 48,"TSX; LDA $24,X; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 33
+16,faithful,512,4,complete,ba b5 28 48,"TSX; LDA $28,X; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 35
+16,faithful,512,4,complete,ba b5 2c 48,"TSX; LDA $2C,X; PHA","exact, ≥ 1 random partner",1,1,4,16,False,17,running / 512
+16,faithful,512,4,complete,ba b5 30 58,"TSX; LDA $30,X; CLI","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba b5 34 48,"TSX; LDA $34,X; PHA","exact, ≥ 1 random partner",6,1,1,16,False,17,trap / 41
+16,faithful,512,4,complete,ba b5 48 48,"TSX; LDA $48,X; PHA","exact, ≥ 1 random partner",7,1,4,16,False,17,trap / 35
+16,faithful,512,4,complete,ba b5 68 48,"TSX; LDA $68,X; PHA","exact, ≥ 1 random partner",6,2,4,16,False,17,trap / 35
+16,faithful,512,4,complete,ba b5 6c 48,"TSX; LDA $6C,X; PHA","exact, ≥ 1 random partner",0,1,4,16,False,17,trap / 243
+16,faithful,512,4,complete,ba b5 70 48,"TSX; LDA $70,X; PHA","exact, ≥ 1 random partner",2,2,4,16,False,17,trap / 41
+16,faithful,512,4,complete,ba b5 7c 48,"TSX; LDA $7C,X; PHA","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 41
+16,faithful,512,4,complete,ba b5 84 48,"TSX; LDA $84,X; PHA","exact, ≥ 1 random partner",5,2,2,16,False,17,trap / 33
+16,faithful,512,4,complete,ba b5 88 48,"TSX; LDA $88,X; PHA","exact, ≥ 1 random partner",6,1,3,16,False,17,trap / 35
+16,faithful,512,4,complete,ba b5 88 7a,"TSX; LDA $88,X; NOP","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba b5 8c 48,"TSX; LDA $8C,X; PHA","exact, ≥ 1 random partner",9,1,2,16,False,17,trap / 41
+16,faithful,512,4,complete,ba b5 a4 48,"TSX; LDA $A4,X; PHA","exact, ≥ 1 random partner",5,2,3,16,False,17,trap / 33
+16,faithful,512,4,complete,ba b5 c4 48,"TSX; LDA $C4,X; PHA","exact, ≥ 1 random partner",5,1,1,16,False,17,trap / 33
+16,faithful,512,4,complete,ba b5 cc 48,"TSX; LDA $CC,X; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,running / 512
+16,faithful,512,4,complete,ba b5 e8 88,"TSX; LDA $E8,X; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 130
+16,faithful,512,4,complete,ba b5 ec 58,"TSX; LDA $EC,X; CLI","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd 24 48,"TSX; LDA $4824,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd 24 8b,"TSX; LDA $8B24,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,ba bd 44 43,"TSX; LDA $4344,X","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd 44 a2,"TSX; LDA $A244,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,ba bd 48 4a,"TSX; LDA $4A48,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd 48 70,"TSX; LDA $7048,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd 64 64,"TSX; LDA $6464,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd a4 eb,"TSX; LDA $EBA4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,ba bd ac 41,"TSX; LDA $41AC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd e4 23,"TSX; LDA $23E4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ba bd e8 c0,"TSX; LDA $C0E8,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,ba da b5 6c,"TSX; NOP; LDA $6C,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,bc 48 ba b5,"LDY $BA48,X; LDA $BC,X; PHA; TSX; LDA $BC,X; PHA; TSX; LDA $BC,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,bc 52 d6 ca,"LDY $D652,X; DEX","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,bc b0 18 ca,"LDY $18B0,X; DEX","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,bd 0c af ba,"LDA $AF0C,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 24 6a ba,"LDA $6A24,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 24 e9 ba,"LDA $E924,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 24 ee ba,"LDA $EE24,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 34 48 ba,"LDA $4834,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 48 e5 ba,"LDA $E548,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 65 b4 ba,"LDA $B465,X; TSX","exact, ≥ 1 random partner",1,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd 6c 7a ba,"LDA $7A6C,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd a8 ca ba,"LDA $CAA8,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd d0 61 ba,"LDA $61D0,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,bd f0 09 ba,"LDA $09F0,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 126
+16,faithful,512,4,complete,be 88 96 a1,"LDX $9688,Y; LDA ($BE,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,be 88 96 e1,"LDX $9688,Y; SBC ($BE,X); DEY; STX $E1,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,bf 27 e5 99,"LAX $E527,Y; STA $27BF,Y; SBC $99","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 100
+16,faithful,512,4,complete,bf 88 96 a1,"LAX $9688,Y; LDA ($BF,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",0,1,2,16,False,17,running / 512
+16,faithful,512,4,complete,bf 8b 91 ec,"LAX $918B,Y; CPX $8BBF; STA ($EC),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 114
+16,faithful,512,4,complete,bf c8 6c 91,"LAX $6CC8,Y; STA ($BF),Y; INY; JMP ($BF91); INY; JMP ($BF91) | …","exact, ≥ 1 random partner",8,1,1,16,False,14,running / 512
+16,faithful,512,4,complete,c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,c5 20 7e 20,"CMP $20; ROR $C520,X; JSR $207E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,c7 4c 48 b5,"DCP $4C; PHA; LDA $C7,X; JMP $B548",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,c9 48 88 b3,"CMP #$48; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ca b4 4c 68,"DEX; LDY $4C,X; PLA","exact, ≥ 1 random partner",3,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ca b4 94 70,"DEX; LDY $94,X; BVS -54; LDY $94,X; BVS -54; LDY $94,X; BVS -54 | …","exact, ≥ 1 random partner",1,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ca b5 04 48,"DEX; LDA $04,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,512,4,complete,ca b5 08 48,"DEX; LDA $08,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 37
+16,faithful,512,4,complete,ca b5 64 48,"DEX; LDA $64,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,512,4,complete,ca b5 d0 48,"DEX; LDA $D0,X; PHA","exact, ≥ 1 random partner",2,1,1,16,False,17,trap / 41
+16,faithful,512,4,complete,ca b5 e4 48,"DEX; LDA $E4,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,trap / 33
+16,faithful,512,4,complete,ca ba b5 30,"DEX; TSX; LDA $30,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,ca bc 4a 26,"DEX; LDY $264A,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,cb 69 b7 88,"SBX #$69; LAX $88,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 51
+16,faithful,512,4,complete,cd 20 89 20,CMP $8920; JSR $20CD; NOP #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,cf 0c 48 b7,"DCP $480C; LAX $CF,Y; NOP $B748","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,d0 48 ba b5,"BNE +72; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X | …","exact, ≥ 1 random partner",7,2,3,16,False,17,trap / 67
+16,faithful,512,4,complete,d0 99 a5 5e,BNE -103; LDA $5E,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,d0 dd 94 bc,"BNE -35; STY $BC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 69
+16,faithful,512,4,complete,d1 20 8d 20,"CMP ($20),Y; STA $D120; JSR $208D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,d8 88 90 36,CLD; DEY; BCC +54,"exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,d8 ca b4 98,"CLD; DEX; LDY $98,X","exact, ≥ 1 random partner",2,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,e8 68 95 77,"INX; PLA; STA $77,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 71
+16,faithful,512,4,complete,e8 ba b5 24,"INX; TSX; LDA $24,X","exact, ≥ 1 random partner",0,1,1,16,False,17,running / 512
+16,faithful,512,4,complete,e9 88 b3 8b,"SBC #$88; LAX ($8B),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 51
+16,faithful,512,4,complete,ea ba b5 e4,"NOP; TSX; LDA $E4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 130
+16,faithful,512,4,complete,ed 20 a9 20,SBC $A920; JSR $20ED; LDA #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,f1 20 ad 20,"SBC ($20),Y; LDA $F120; JSR $20AD",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,faithful,512,4,complete,f1 48 88 b1,"SBC ($48),Y; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 256
+16,faithful,512,4,complete,f6 ba bd 64,"INC $BA,X; LDA $F664,X; TSX; LDA $F664,X; TSX; LDA $F664,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,trap / 241
+16,halt,512,2,complete,4f 20,SRE $4F20; JSR $204F,"exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 24
+16,halt,128,3,complete,d0 ba 68,BNE -70; PLA,"exact, ≥ 1 random partner (phase score only)",0,0,1,15,False,17,host (BRK) / 2
+16,halt,512,3,complete,d0 ba 68,BNE -70; PLA,"exact, ≥ 1 random partner (phase score only)",0,0,1,15,False,17,host (BRK) / 2
+16,halt,128,4,complete,04 48 ba b5,"NOP $48; TSX; LDA $04,X; PHA; TSX; LDA $04,X; PHA; TSX; LDA $04,X | …","exact, ≥ 1 random partner",3,2,3,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,11 48 88 b1,"ORA ($48),Y; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 28
+16,halt,128,4,complete,20 0c 20 1f,"JSR $200C; SLO $0C20,X; JSR $201F; NOP $1F20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,20 24 20 33,"JSR $2024; RLA ($20),Y; BIT $20; RLA ($20),Y; BIT $20; RLA ($20),Y | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,20 26 20 a4,JSR $2026; LDY $20; ROL $20; LDY $20; ROL $20; LDY $20 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,running / 128
+16,halt,128,4,complete,20 2c 20 3f,"JSR $202C; RLA $2C20,X; JSR $203F; BIT $3F20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,20 ac 20 bf,"JSR $20AC; LAX $AC20,Y; JSR $20BF; LDY $BF20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,20 cc 20 df,"JSR $20CC; DCP $CC20,X; JSR $20DF; CPY $DF20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,20 ec 20 ff,"JSR $20EC; ISC $EC20,X; JSR $20FF; CPX $FF20",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,21 48 88 b1,"AND ($48,X); DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y | …","exact, ≥ 1 random partner",3,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,24 ba b5 c4,"BIT $BA; LDA $C4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,28 20 28 28,PLP; JSR $2828,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,host (BRK) / 67
+16,halt,128,4,complete,43 04 20 04,"SRE ($04,X); JSR $4304; NOP $20; NOP $43; NOP $20; NOP $43 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,halt,128,4,complete,44 48 ba b5,"NOP $48; TSX; LDA $44,X; PHA; TSX; LDA $44,X; PHA; TSX; LDA $44,X | …","exact, ≥ 1 random partner",3,2,6,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,48 88 b7 13,"PHA; DEY; LAX $13,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,48 b5 d3 ba,"PHA; LDA $D3,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,48 ba b5 a8,"PHA; TSX; LDA $A8,X","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,48 ca b5 d3,"PHA; DEX; LDA $D3,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,50 48 88 b1,"BVC +72; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 7
+16,halt,128,4,complete,50 96 bf c8,"BVC -106; LAX $50C8,Y; STX $BF,Y; INY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 2
+16,halt,128,4,complete,63 04 20 04,"RRA ($04,X); JSR $6304; NOP $20; NOP $63; NOP $20; NOP $63 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,halt,128,4,complete,65 88 4b 4c,ADC $88; ALR #$4C,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,68 20 68 68,PLA; JSR $6868,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,host (BRK) / 67
+16,halt,128,4,complete,68 48 ba b5,"PLA; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 14
+16,halt,128,4,complete,68 68 ba 95,"PLA; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 14
+16,halt,128,4,complete,68 91 4c bf,"PLA; STA ($4C),Y; LAX $9168,Y; JMP $68BF; STA ($4C),Y; LAX $9168,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 5
+16,halt,128,4,complete,68 95 35 ba,"PLA; STA $35,X; TSX","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,68 95 4c bd,"PLA; STA $4C,X; LDA $9568,X; JMP $68BD; STA $4C,X; LDA $9568,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 5
+16,halt,128,4,complete,68 95 d8 e8,"PLA; STA $D8,X; INX","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,68 ba 95 d8,"PLA; TSX; STA $D8,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,68 d0 f8 c8,PLA; BNE -8; INY,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,128,4,complete,68 e8 95 57,"PLA; INX; STA $57,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,70 48 ba b5,"BVS +72; TSX; LDA $70,X; PHA; TSX; LDA $70,X; PHA; TSX; LDA $70,X | …","exact, ≥ 1 random partner",3,1,4,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,71 20 5e 20,"ADC ($20),Y; LSR $7120,X; JSR $205E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,80 b6 88 96,"NOP #$B6; DEY; STX $80,Y; LDX $88,Y; STX $80,Y; LDX $88,Y; STX $80,Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 10
+16,halt,128,4,complete,83 04 20 04,"SAX ($04,X); JSR $8304; NOP $20; NOP $83; NOP $20; NOP $83 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,host (BRK) / 33
+16,halt,128,4,complete,88 50 bf 48,DEY; BVC -65; PHA,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 10
+16,halt,128,4,complete,88 b1 20 90,"DEY; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 6
+16,halt,128,4,complete,88 b1 24 48,"DEY; LDA ($24),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 2c 48,"DEY; LDA ($2C),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 30 48,"DEY; LDA ($30),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 3c 48,"DEY; LDA ($3C),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 67 48,"DEY; LDA ($67),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 68 48,"DEY; LDA ($68),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 6b 48,"DEY; LDA ($6B),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 6c 48,"DEY; LDA ($6C),Y; PHA","exact, ≥ 1 random partner",4,1,3,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 84 48,"DEY; LDA ($84),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 87 48,"DEY; LDA ($87),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 a3 48,"DEY; LDA ($A3),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 cb 48,"DEY; LDA ($CB),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 cc 48,"DEY; LDA ($CC),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b1 e8 48,"DEY; LDA ($E8),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 27 48,"DEY; LAX ($27),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 28 48,"DEY; LAX ($28),Y; PHA","exact, ≥ 1 random partner",4,2,3,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 2b 48,"DEY; LAX ($2B),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 47 48,"DEY; LAX ($47),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 4b 48,"DEY; LAX ($4B),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 60 48,"DEY; LAX ($60),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 6c 48,"DEY; LAX ($6C),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 a3 48,"DEY; LAX ($A3),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 b0 48,"DEY; LAX ($B0),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 c4 48,"DEY; LAX ($C4),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b3 e0 48,"DEY; LAX ($E0),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b6 cc 96,"DEY; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 10
+16,halt,128,4,complete,88 b7 08 48,"DEY; LAX $08,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 0c 48,"DEY; LAX $0C,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 10 48,"DEY; LAX $10,Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 24 48,"DEY; LAX $24,Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 2c 48,"DEY; LAX $2C,Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 54 48,"DEY; LAX $54,Y; PHA","exact, ≥ 1 random partner",0,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 b0 48,"DEY; LAX $B0,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 c4 48,"DEY; LAX $C4,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 c8 48,"DEY; LAX $C8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,88 b7 e8 48,"DEY; LAX $E8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,91 20 5e 20,"STA ($20),Y; LSR $9120,X; JSR $205E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,91 4c c8 b1,"STA ($4C),Y; INY; LDA ($91),Y; JMP $B1C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 128
+16,halt,128,4,complete,91 4c c8 b3,"STA ($4C),Y; INY; LAX ($91),Y; JMP $B3C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 128
+16,halt,128,4,complete,95 55 ba 68,"STA $55,X; TSX; PLA","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,99 88 b9 90,"STA $B988,Y; BCC -103; DEY; LDA $9990,Y; DEY; LDA $9990,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,128,4,complete,9b 20 a3 20,"TAS $A320,Y; JSR $209B; LAX ($20,X)",≥ 75% in ≥ 8 of 16,0,0,8,12,False,17,host (BRK) / 3
+16,halt,128,4,complete,a0 48 88 b1,"LDY #$48; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 01 48 6a,"LAX ($01,X); PHA; ROR A","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 0c 99 bf,"LAX ($0C,X); STA $A3BF,Y; NOP $BF99","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 7
+16,halt,128,4,complete,a3 21 48 6a,"LAX ($21,X); PHA; ROR A","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 25 48 6a,"LAX ($25,X); PHA; ROR A","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 65 48 0a,"LAX ($65,X); PHA; ASL A","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 c5 48 6a,"LAX ($C5,X); PHA; ROR A","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 e1 48 0a,"LAX ($E1,X); PHA; ASL A","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,a3 e5 48 4a,"LAX ($E5,X); PHA; LSR A","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ab 48 48 48,LXA #$48; PHA; PHA,≥ 75% in ≥ 8 of 16,6,0,9,12,False,17,host (BRK) / 13
+16,halt,128,4,complete,ad a5 d7 5b,"LDA $D7A5; SRE $A5AD,Y; DCP $5B,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 7
+16,halt,128,4,complete,b0 48 ca b5,"BCS +72; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X | …","exact, ≥ 1 random partner",3,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b1 af 48 88,"LDA ($AF),Y; PHA; DEY","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b3 38 48 88,"LAX ($38),Y; PHA; DEY","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b3 7c 88 48,"LAX ($7C),Y; DEY; PHA","exact, ≥ 1 random partner",1,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b3 97 80 88,"LAX ($97),Y; NOP #$88","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,b3 ac 88 48,"LAX ($AC),Y; DEY; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b3 dc 48 88,"LAX ($DC),Y; PHA; DEY","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b5 0b ca 48,"LDA $0B,X; DEX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b5 0f 48 ca,"LDA $0F,X; PHA; DEX","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b5 43 ba 48,"LDA $43,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b5 43 ca 48,"LDA $43,X; DEX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b5 8b ba 48,"LDA $8B,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b7 47 48 88,"LAX $47,Y; PHA; DEY","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b7 57 48 88,"LAX $57,Y; PHA; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b7 8f 48 88,"LAX $8F,Y; PHA; DEY","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b7 8f 88 48,"LAX $8F,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b7 a5 c8 90,"LAX $A5,Y; INY; BCC -73; LDA $C8; BCC -73; LDA $C8; BCC -73 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 4
+16,halt,128,4,complete,b7 af 88 48,"LAX $AF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,b7 ef 88 48,"LAX $EF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba 68 95 75,"TSX; PLA; STA $75,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba 95 14 68,"TSX; STA $14,X; PLA","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba 95 f8 68,"TSX; STA $F8,X; PLA","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 10 48,"TSX; LDA $10,X; PHA","exact, ≥ 1 random partner",4,1,5,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 24 48,"TSX; LDA $24,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 28 48,"TSX; LDA $28,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 2c 48,"TSX; LDA $2C,X; PHA","exact, ≥ 1 random partner",4,1,6,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 48 48,"TSX; LDA $48,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 68 48,"TSX; LDA $68,X; PHA","exact, ≥ 1 random partner",4,1,5,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 6c 48,"TSX; LDA $6C,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 70 48,"TSX; LDA $70,X; PHA","exact, ≥ 1 random partner",4,2,5,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 84 48,"TSX; LDA $84,X; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 8c 48,"TSX; LDA $8C,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 a4 48,"TSX; LDA $A4,X; PHA","exact, ≥ 1 random partner",4,2,3,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 c4 48,"TSX; LDA $C4,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba b5 cc 48,"TSX; LDA $CC,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ba bd 24 48,"TSX; LDA $4824,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,ba bd ac 41,"TSX; LDA $41AC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,bd 48 e5 ba,"LDA $E548,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,be 88 96 a1,"LDX $9688,Y; LDA ($BE,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,be 88 96 e1,"LDX $9688,Y; SBC ($BE,X); DEY; STX $E1,Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,bf 88 96 a1,"LAX $9688,Y; LDA ($BF,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",1,1,2,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,bf c8 6c 91,"LAX $6CC8,Y; STA ($BF),Y; INY; JMP ($BF91); INY; JMP ($BF91) | …","exact, ≥ 1 random partner",8,1,1,16,False,14,running / 128
+16,halt,128,4,complete,c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,c3 49 50 b5,"DCP ($49,X); BVC -75","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,128,4,complete,c3 4c 48 b1,"DCP ($4C,X); PHA; LDA ($C3),Y; JMP $B148",≥ 75% in ≥ 8 of 16,13,0,16,13,True,0,host (BRK) / 80
+16,halt,128,4,complete,c7 4c 48 a5,DCP $4C; PHA; LDA $C7; JMP $A548,≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,running / 128
+16,halt,128,4,complete,c7 4c 48 a7,DCP $4C; PHA; LAX $C7; JMP $A748,≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,host (BRK) / 79
+16,halt,128,4,complete,c7 4c 48 b5,"DCP $4C; PHA; LDA $C7,X; JMP $B548",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 128
+16,halt,128,4,complete,c7 4c 48 b7,"DCP $4C; PHA; LAX $C7,Y; JMP $B748",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,host (BRK) / 73
+16,halt,128,4,complete,c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,128,4,complete,c9 48 88 b3,"CMP #$48; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,c9 90 3a 68,CMP #$90; NOP; PLA,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ca b4 4c 68,"DEX; LDY $4C,X; PLA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ca b5 08 48,"DEX; LDA $08,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ca b5 64 48,"DEX; LDA $64,X; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ca b5 d0 48,"DEX; LDA $D0,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ca b5 e4 48,"DEX; LDA $E4,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,ca bc 4a 26,"DEX; LDY $264A,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,128,4,complete,cf 0c 48 b7,"DCP $480C; LAX $CF,Y; NOP $B748","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 7
+16,halt,128,4,complete,d0 48 ba b5,"BNE +72; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X | …","exact, ≥ 1 random partner",1,2,3,16,False,17,host (BRK) / 7
+16,halt,128,4,complete,d0 99 a5 5e,BNE -103; LDA $5E,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 2
+16,halt,128,4,complete,e8 68 95 37,"INX; PLA; STA $37,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,e8 68 95 77,"INX; PLA; STA $77,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,f1 48 88 b1,"SBC ($48),Y; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,128,4,complete,f3 4c 68 91,"ISC ($4C),Y; PLA; STA ($F3),Y; JMP $9168","exact, ≥ 1 random partner",0,1,1,16,False,11,host (BRK) / 54
+16,halt,128,4,complete,f9 48 88 b3,"SBC $8848,Y; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 12
+16,halt,512,4,complete,03 a5 c4 b9,"SLO ($A5,X); CPY $B9","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,04 48 ba b5,"NOP $48; TSX; LDA $04,X; PHA; TSX; LDA $04,X; PHA; TSX; LDA $04,X | …","exact, ≥ 1 random partner",3,2,3,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,0f 14 50 b7,"SLO $5014; LAX $0F,Y; NOP $50,X; LAX $0F,Y; NOP $50,X; LAX $0F,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,11 48 88 b1,"ORA ($48),Y; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,14 88 b1 19,"NOP $88,X; LDA ($19),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,14 94 7c b4,"NOP $94,X; NOP $14B4,X; STY $7C,X; LDY $14,X; STY $7C,X; LDY $14,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,15 88 b1 eb,"ORA $88,X; LDA ($EB),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 28
+16,halt,512,4,complete,20 04 20 49,JSR $2004; EOR #$20; NOP $20; EOR #$20; NOP $20; EOR #$20 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 08 20 4b,JSR $2008; ALR #$20; PHP; JSR $204B; PHP; JSR $204B | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 24 20 67,JSR $2024; RRA $20; BIT $20; RRA $20; BIT $20; RRA $20 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 28 20 6b,JSR $2028; ARR #$20; PLP; JSR $206B; PLP; JSR $206B | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 48 20 8b,JSR $2048; ANE #$20; PHA; JSR $208B; PHA; JSR $208B | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 4c 20 93,"JSR $204C; SHA ($20),Y; JMP $9320",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 68 20 ab,JSR $2068; LXA #$20; PLA; JSR $20AB; PLA; JSR $20AB | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 6c 20 b3,"JSR $206C; LAX ($20),Y; JMP ($B320)",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 88 20 cb,JSR $2088; SBX #$20; DEY; JSR $20CB; DEY; JSR $20CB | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,20 a8 20 eb,JSR $20A8; SBC #$20; TAY; JSR $20EB; TAY; JSR $20EB | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,21 48 88 b1,"AND ($48,X); DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y | …","exact, ≥ 1 random partner",3,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,24 ba b5 c4,"BIT $BA; LDA $C4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,24 e5 ba bd,"BIT $E5; TSX; LDA $E524,X; TSX; LDA $E524,X; TSX; LDA $E524,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,28 20 28 28,PLP; JSR $2828,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,host (BRK) / 67
+16,halt,512,4,complete,3a b5 f0 ba,"NOP; LDA $F0,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,43 04 20 04,"SRE ($04,X); JSR $4304; NOP $20; NOP $43; NOP $20; NOP $43 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,halt,512,4,complete,44 48 ba b5,"NOP $48; TSX; LDA $44,X; PHA; TSX; LDA $44,X; PHA; TSX; LDA $44,X | …","exact, ≥ 1 random partner",3,3,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,45 af 69 68,EOR $AF; ADC #$68,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,48 a3 45 4c,"PHA; LAX ($45,X); JMP $A348; EOR $4C","exact, ≥ 1 random partner",4,1,1,16,False,15,running / 512
+16,halt,512,4,complete,48 a3 c5 6c,"PHA; LAX ($C5,X); JMP ($A348); CMP $6C","exact, ≥ 1 random partner",4,1,3,16,False,9,running / 512
+16,halt,512,4,complete,48 a3 e5 6c,"PHA; LAX ($E5,X); JMP ($A348); SBC $6C","exact, ≥ 1 random partner",4,1,6,16,False,7,running / 512
+16,halt,512,4,complete,48 a6 ba bd,"PHA; LDX $BA; LDA $A648,X; TSX; LDA $A648,X; TSX; LDA $A648,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,48 ba b5 a4,"PHA; TSX; LDA $A4,X","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,48 ba b5 a8,"PHA; TSX; LDA $A8,X","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,48 ba bd 18,"PHA; TSX; LDA $4818,X; TSX; LDA $4818,X; TSX; LDA $4818,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,4d 20 09 20,EOR $0920; JSR $204D; ORA #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,50 48 88 b1,"BVC +72; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,50 96 bf c8,"BVC -106; LAX $50C8,Y; STX $BF,Y; INY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 2
+16,halt,512,4,complete,51 20 0d 20,"EOR ($20),Y; ORA $5120; JSR $200D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,61 d5 99 b9,"ADC ($D5,X); STA $61B9,Y; CMP $99,X; LDA $D561,Y; STA $61B9,Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 8
+16,halt,512,4,complete,63 04 20 04,"RRA ($04,X); JSR $6304; NOP $20; NOP $63; NOP $20; NOP $63 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,trap / 34
+16,halt,512,4,complete,65 88 4b 4c,ADC $88; ALR #$4C,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,68 20 29 20,PLA; JSR $2029,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,68 20 68 68,PLA; JSR $6868,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,host (BRK) / 67
+16,halt,512,4,complete,68 48 88 b1,"PLA; PHA; DEY; LDA ($68),Y; PHA; DEY; LDA ($68),Y; PHA; DEY; LDA ($68),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 14
+16,halt,512,4,complete,68 48 ba b5,"PLA; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 14
+16,halt,512,4,complete,68 68 ba 95,"PLA; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 14
+16,halt,512,4,complete,68 91 4c bf,"PLA; STA ($4C),Y; LAX $9168,Y; JMP $68BF; STA ($4C),Y; LAX $9168,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 5
+16,halt,512,4,complete,68 95 4c bd,"PLA; STA $4C,X; LDA $9568,X; JMP $68BD; STA $4C,X; LDA $9568,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 5
+16,halt,512,4,complete,68 95 d8 e8,"PLA; STA $D8,X; INX","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,68 95 f2 e8,"PLA; STA $F2,X; INX","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,68 ba 95 1c,"PLA; TSX; STA $1C,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,68 ba 95 cc,"PLA; TSX; STA $CC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,68 d0 f8 c8,PLA; BNE -8; INY,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,512,4,complete,6b 3d b1 ab,"ARR #$3D; LDA ($AB),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,6d 20 29 20,ADC $2920; JSR $206D; AND #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,70 48 ba b5,"BVS +72; TSX; LDA $70,X; PHA; TSX; LDA $70,X; PHA; TSX; LDA $70,X | …","exact, ≥ 1 random partner",3,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,71 20 2d 20,"ADC ($20),Y; AND $7120; JSR $202D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,78 ba b5 70,"SEI; TSX; LDA $70,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,80 b6 88 96,"NOP #$B6; DEY; STX $80,Y; LDX $88,Y; STX $80,Y; LDX $88,Y; STX $80,Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,83 04 20 04,"SAX ($04,X); JSR $8304; NOP $20; NOP $83; NOP $20; NOP $83 | …",≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,host (BRK) / 33
+16,halt,512,4,complete,88 50 bf 48,DEY; BVC -65; PHA,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,88 b1 20 90,"DEY; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 6
+16,halt,512,4,complete,88 b1 24 48,"DEY; LDA ($24),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 2c 48,"DEY; LDA ($2C),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 30 48,"DEY; LDA ($30),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 3c 48,"DEY; LDA ($3C),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 54 48,"DEY; LDA ($54),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 68 48,"DEY; LDA ($68),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 6b 48,"DEY; LDA ($6B),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 6c 48,"DEY; LDA ($6C),Y; PHA","exact, ≥ 1 random partner",4,1,3,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 84 48,"DEY; LDA ($84),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 87 48,"DEY; LDA ($87),Y; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 a3 48,"DEY; LDA ($A3),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 cb 48,"DEY; LDA ($CB),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 cc 48,"DEY; LDA ($CC),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b1 e8 48,"DEY; LDA ($E8),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 27 48,"DEY; LAX ($27),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 28 48,"DEY; LAX ($28),Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 2b 48,"DEY; LAX ($2B),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 47 48,"DEY; LAX ($47),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 4b 48,"DEY; LAX ($4B),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 60 48,"DEY; LAX ($60),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 6c 48,"DEY; LAX ($6C),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 a3 48,"DEY; LAX ($A3),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 b0 48,"DEY; LAX ($B0),Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 c4 48,"DEY; LAX ($C4),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b3 e0 48,"DEY; LAX ($E0),Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b6 2c 96,"DEY; LDX $2C,Y; STX $88,Y; LDX $2C,Y; STX $88,Y; LDX $2C,Y; STX $88,Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,88 b6 cc 96,"DEY; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y | …","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,88 b7 08 48,"DEY; LAX $08,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 0c 48,"DEY; LAX $0C,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 10 48,"DEY; LAX $10,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 24 48,"DEY; LAX $24,Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 2c 48,"DEY; LAX $2C,Y; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 54 48,"DEY; LAX $54,Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 9c 48,"DEY; LAX $9C,Y; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 b0 48,"DEY; LAX $B0,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 c4 48,"DEY; LAX $C4,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 c8 48,"DEY; LAX $C8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,88 b7 e8 48,"DEY; LAX $E8,Y; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,8a ba b5 f8,"TXA; TSX; LDA $F8,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,8d 20 49 20,STA $4920; JSR $208D; EOR #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,8f 20 8f 20,SAX $8F20; JSR $208F; SAX $8F20; JSR $208F,"exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 4
+16,halt,512,4,complete,91 20 4d 20,"STA ($20),Y; EOR $9120; JSR $204D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,91 4c c8 b1,"STA ($4C),Y; INY; LDA ($91),Y; JMP $B1C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 512
+16,halt,512,4,complete,91 4c c8 b3,"STA ($4C),Y; INY; LAX ($91),Y; JMP $B3C8",≥ 75% in ≥ 8 of 16,14,0,16,14,True,0,running / 512
+16,halt,512,4,complete,91 bf 40 68,"STA ($BF),Y; RTI; PLA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,512,4,complete,94 b4 fc 98,"STY $B4,X; NOP $9498,X; LDY $FC,X; TYA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,95 50 58 b5,"STA $50,X; CLI; LDA $95,X; BVC +88; LDA $95,X; BVC +88; LDA $95,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 5
+16,halt,512,4,complete,96 15 be d0,"STX $15,Y; LDX $96D0,Y; ORA $BE,X; BNE -106; ORA $BE,X; BNE -106 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,96 fc b7 a4,"STX $FC,Y; LAX $A4,Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,99 88 b9 90,"STA $B988,Y; BCC -103; DEY; LDA $9990,Y; DEY; LDA $9990,Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,512,4,complete,9b 20 a3 20,"TAS $A320,Y; JSR $209B; LAX ($20,X)",≥ 75% in ≥ 8 of 16,0,0,8,12,False,17,host (BRK) / 3
+16,halt,512,4,complete,a3 0c 99 bf,"LAX ($0C,X); STA $A3BF,Y; NOP $BF99","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,a4 48 ba b5,"LDY $48; TSX; LDA $A4,X; PHA; TSX; LDA $A4,X; PHA; TSX; LDA $A4,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,a5 20 5e 20,"LDA $20; LSR $A520,X; JSR $205E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,a5 20 60 20,LDA $20; RTS; JSR $20A5; RTS; JSR $20A5; RTS; JSR $20A5 | …,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,a8 ba b5 e4,"TAY; TSX; LDA $E4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,aa 10 d7 41,"TAX; BPL -41; EOR ($AA,X); BPL -41; EOR ($AA,X); BPL -41; EOR ($AA,X) | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,512,4,complete,ab 48 48 48,LXA #$48; PHA; PHA,≥ 75% in ≥ 8 of 16,6,0,9,12,False,17,host (BRK) / 13
+16,halt,512,4,complete,ad 20 69 20,LDA $6920; JSR $20AD; ADC #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,ad a5 d7 5b,"LDA $D7A5; SRE $A5AD,Y; DCP $5B,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,b0 48 ca b5,"BCS +72; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b1 20 6d 20,"LDA ($20),Y; ADC $B120; JSR $206D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,b3 38 48 88,"LAX ($38),Y; PHA; DEY","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b3 6d 96 61,"LAX ($6D),Y; STX $61,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b3 7c 88 48,"LAX ($7C),Y; DEY; PHA","exact, ≥ 1 random partner",1,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b3 97 80 88,"LAX ($97),Y; NOP #$88","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b3 eb 99 44,"LAX ($EB),Y; STA $B344,Y; SBC #$99; NOP $B3; SBC #$99; NOP $B3 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b4 0c 94 88,"LDY $0C,X; STY $88,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b4 50 38 94,"LDY $50,X; SEC; STY $B4,X; BVC +56; STY $B4,X; BVC +56; STY $B4,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 5
+16,halt,512,4,complete,b4 d0 94 14,"LDY $D0,X; STY $14,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b5 0b ca 48,"LDA $0B,X; DEX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 0f 48 ca,"LDA $0F,X; PHA; DEX","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 13 f0 0e,"LDA $13,X; BEQ +14","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,512,4,complete,b5 29 ba ca,"LDA $29,X; TSX; DEX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 2b 95 df,"LDA $2B,X; STA $DF,X","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b5 2d 95 89,"LDA $2D,X; STA $89,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b5 43 ba 48,"LDA $43,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 43 ca 48,"LDA $43,X; DEX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 6c ba f8,"LDA $6C,X; TSX; SED","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 88 49 ba,"LDA $88,X; EOR #$BA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b5 8b ba 48,"LDA $8B,X; TSX; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 96 b0 c8,"LDA $96,X; BCS -56","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b5 b0 c8 ba,"LDA $B0,X; INY; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 c5 ba ca,"LDA $C5,X; TSX; DEX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b5 c8 ba 38,"LDA $C8,X; TSX; SEC","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 14 48 88,"LAX $14,Y; PHA; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 3b 88 48,"LAX $3B,Y; DEY; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 47 48 88,"LAX $47,Y; PHA; DEY","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 57 48 88,"LAX $57,Y; PHA; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 80 99 c8,"LAX $80,Y; STA $B7C8,Y; NOP #$99; INY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b7 88 97 44,"LAX $88,Y; SAX $44,Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b7 8f 48 88,"LAX $8F,Y; PHA; DEY","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 8f 88 48,"LAX $8F,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 a2 96 3a,"LAX $A2,Y; STX $3A,Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,b7 a5 c8 90,"LAX $A5,Y; INY; BCC -73; LDA $C8; BCC -73; LDA $C8; BCC -73 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 4
+16,halt,512,4,complete,b7 af 88 48,"LAX $AF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 b3 88 48,"LAX $B3,Y; DEY; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,b7 ef 88 48,"LAX $EF,Y; DEY; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba 68 95 73,"TSX; PLA; STA $73,X","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba 8a b5 48,"TSX; TXA; LDA $48,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba 98 55 48,"TSX; TYA; EOR $48,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba 98 75 2c,"TSX; TYA; ADC $2C,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba 9d 78 68,"TSX; STA $6878,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba b5 10 48,"TSX; LDA $10,X; PHA","exact, ≥ 1 random partner",4,1,3,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 24 48,"TSX; LDA $24,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 28 48,"TSX; LDA $28,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 2c 48,"TSX; LDA $2C,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 30 58,"TSX; LDA $30,X; CLI","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 34 48,"TSX; LDA $34,X; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 48 48,"TSX; LDA $48,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 68 48,"TSX; LDA $68,X; PHA","exact, ≥ 1 random partner",4,2,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 6c 48,"TSX; LDA $6C,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 70 48,"TSX; LDA $70,X; PHA","exact, ≥ 1 random partner",4,2,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 7c 48,"TSX; LDA $7C,X; PHA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 84 48,"TSX; LDA $84,X; PHA","exact, ≥ 1 random partner",4,2,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 88 48,"TSX; LDA $88,X; PHA","exact, ≥ 1 random partner",4,1,3,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 88 7a,"TSX; LDA $88,X; NOP","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 8c 48,"TSX; LDA $8C,X; PHA","exact, ≥ 1 random partner",4,1,4,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 a4 48,"TSX; LDA $A4,X; PHA","exact, ≥ 1 random partner",4,2,3,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 c4 48,"TSX; LDA $C4,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 cc 48,"TSX; LDA $CC,X; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 e8 88,"TSX; LDA $E8,X; DEY","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba b5 ec 58,"TSX; LDA $EC,X; CLI","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ba bd 24 48,"TSX; LDA $4824,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd 24 8b,"TSX; LDA $8B24,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd 44 43,"TSX; LDA $4344,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd 44 a2,"TSX; LDA $A244,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd 48 4a,"TSX; LDA $4A48,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd 48 70,"TSX; LDA $7048,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd 64 64,"TSX; LDA $6464,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd a4 eb,"TSX; LDA $EBA4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd ac 41,"TSX; LDA $41AC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd e4 23,"TSX; LDA $23E4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba bd e8 c0,"TSX; LDA $C0E8,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ba da b5 6c,"TSX; NOP; LDA $6C,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,bc 48 ba b5,"LDY $BA48,X; LDA $BC,X; PHA; TSX; LDA $BC,X; PHA; TSX; LDA $BC,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 12
+16,halt,512,4,complete,bc b0 18 ca,"LDY $18B0,X; DEX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 0c af ba,"LDA $AF0C,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 24 6a ba,"LDA $6A24,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 24 e9 ba,"LDA $E924,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 24 ee ba,"LDA $EE24,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 34 48 ba,"LDA $4834,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 48 e5 ba,"LDA $E548,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 65 b4 ba,"LDA $B465,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd 6c 7a ba,"LDA $7A6C,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd a8 ca ba,"LDA $CAA8,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd d0 61 ba,"LDA $61D0,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bd f0 09 ba,"LDA $09F0,X; TSX","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,be 88 96 a1,"LDX $9688,Y; LDA ($BE,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,be 88 96 e1,"LDX $9688,Y; SBC ($BE,X); DEY; STX $E1,Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bf 27 e5 99,"LAX $E527,Y; STA $27BF,Y; SBC $99","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,bf 88 96 a1,"LAX $9688,Y; LDA ($BF,X); DEY; STX $A1,Y","exact, ≥ 1 random partner",1,1,2,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,bf 8b 91 ec,"LAX $918B,Y; CPX $8BBF; STA ($EC),Y","exact, ≥ 1 random partner",1,1,1,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,bf c8 6c 91,"LAX $6CC8,Y; STA ($BF),Y; INY; JMP ($BF91); INY; JMP ($BF91) | …","exact, ≥ 1 random partner",8,1,1,16,False,14,running / 512
+16,halt,512,4,complete,c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,c3 4c 48 b1,"DCP ($4C,X); PHA; LDA ($C3),Y; JMP $B148",≥ 75% in ≥ 8 of 16,13,0,16,13,True,0,host (BRK) / 80
+16,halt,512,4,complete,c5 20 7e 20,"CMP $20; ROR $C520,X; JSR $207E",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,c7 4c 48 a7,DCP $4C; PHA; LAX $C7; JMP $A748,≥ 75% in ≥ 8 of 16,12,0,16,12,True,0,host (BRK) / 79
+16,halt,512,4,complete,c7 4c 48 b5,"DCP $4C; PHA; LDA $C7,X; JMP $B548",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,c7 4c 48 b7,"DCP $4C; PHA; LAX $C7,Y; JMP $B748",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,host (BRK) / 73
+16,halt,512,4,complete,c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 3
+16,halt,512,4,complete,c9 48 88 b3,"CMP #$48; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y | …","exact, ≥ 1 random partner",3,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca b4 4c 68,"DEX; LDY $4C,X; PLA","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca b4 94 70,"DEX; LDY $94,X; BVS -54; LDY $94,X; BVS -54; LDY $94,X; BVS -54 | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 10
+16,halt,512,4,complete,ca b5 04 48,"DEX; LDA $04,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca b5 08 48,"DEX; LDA $08,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca b5 64 48,"DEX; LDA $64,X; PHA","exact, ≥ 1 random partner",4,1,2,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca b5 d0 48,"DEX; LDA $D0,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca b5 e4 48,"DEX; LDA $E4,X; PHA","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca ba b5 30,"DEX; TSX; LDA $30,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ca bc 4a 26,"DEX; LDY $264A,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,cd 20 89 20,CMP $8920; JSR $20CD; NOP #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,cf 0c 48 b7,"DCP $480C; LAX $CF,Y; NOP $B748","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,d0 48 ba b5,"BNE +72; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X | …","exact, ≥ 1 random partner",1,2,3,16,False,17,host (BRK) / 7
+16,halt,512,4,complete,d0 99 a5 5e,BNE -103; LDA $5E,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 2
+16,halt,512,4,complete,d0 dd 94 bc,"BNE -35; STY $BC,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 2
+16,halt,512,4,complete,d1 20 8d 20,"CMP ($20),Y; STA $D120; JSR $208D",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,d8 88 90 36,CLD; DEY; BCC +54,"exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 4
+16,halt,512,4,complete,d8 ca b4 98,"CLD; DEX; LDY $98,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,e8 68 95 77,"INX; PLA; STA $77,X","exact, ≥ 1 random partner",4,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,e8 ba b5 24,"INX; TSX; LDA $24,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,e9 88 b3 8b,"SBC #$88; LAX ($8B),Y","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+16,halt,512,4,complete,ea ba b5 e4,"NOP; TSX; LDA $E4,X","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,ed 20 a9 20,SBC $A920; JSR $20ED; LDA #$20,≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,f1 20 ad 20,"SBC ($20),Y; LDA $F120; JSR $20AD",≥ 75% in ≥ 8 of 16,12,0,16,12,False,17,running / 512
+16,halt,512,4,complete,f1 48 88 b1,"SBC ($48),Y; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 13
+16,halt,512,4,complete,f6 ba bd 64,"INC $BA,X; LDA $F664,X; TSX; LDA $F664,X; TSX; LDA $F664,X | …","exact, ≥ 1 random partner",0,1,1,16,False,17,host (BRK) / 9
+20,faithful,128,2,complete,80 02,NOP #$02,"exact, ≥ 1 random partner",3,1,1,20,False,17,trap / 90
+20,faithful,512,2,complete,80 02,NOP #$02,"exact, ≥ 1 random partner",3,1,1,20,False,17,trap / 90
+20,faithful,128,3,complete,78 34 a3,"SEI; NOP $A3,X","exact, ≥ 1 random partner",12,1,1,20,False,17,running / 128
+20,faithful,512,3,complete,78 34 a3,"SEI; NOP $A3,X","exact, ≥ 1 random partner",12,1,1,20,False,17,running / 512
+20,halt,128,2,complete,80 02,NOP #$02,"exact, ≥ 1 random partner",0,1,1,20,False,17,host (BRK) / 11
+20,halt,512,2,complete,80 02,NOP #$02,"exact, ≥ 1 random partner",0,1,1,20,False,17,host (BRK) / 11

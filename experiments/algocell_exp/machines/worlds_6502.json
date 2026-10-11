@@ -1,0 +1,68 @@
+{
+ "m6502_pair_maps_L16": {
+  "note": "The 6502 study's pair world at L = 16 (tapes A, B of 16 bytes on a ring of 32) on the full NMOS 6502 core: A = X = Y = 0 and P = 0x20 (init.set), PC = 0, the first push on the last byte of B (S from the convention), a per-lane step budget, JAM halting as on the chip (trap 'illegal', as-chip), BRK faithful (it pushes PC + 2 and P and jumps through 0xFFFE/0xFFFF, ring positions 65534 and 65535 mod P); write counts per tape, and the fetch and start maps.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "a": 0, "x": 0, "y": 0, "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "traps": { "illegal": "as-chip" } },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502_pair_maps_L20": {
+  "note": "The 6502 study's pair world at L = 20 (tapes A, B of 20 bytes on a ring of 40) on the full NMOS 6502 core: A = X = Y = 0 and P = 0x20 (init.set), PC = 0, the first push on the last byte of B (S from the convention), a per-lane step budget, JAM halting as on the chip (trap 'illegal', as-chip), BRK faithful (it pushes PC + 2 and P and jumps through 0xFFFE/0xFFFF, ring positions 65534 and 65535 mod P); write counts per tape, and the fetch and start maps.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 20, "name": "A" }, { "bytes": 20, "name": "B" }], "ring": 40 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "a": 0, "x": 0, "y": 0, "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "traps": { "illegal": "as-chip" } },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502_pair_maps_L32": {
+  "note": "The 6502 study's pair world at L = 32 (tapes A, B of 32 bytes on a ring of 64) on the full NMOS 6502 core: A = X = Y = 0 and P = 0x20 (init.set), PC = 0, the first push on the last byte of B (S from the convention), a per-lane step budget, JAM halting as on the chip (trap 'illegal', as-chip), BRK faithful (it pushes PC + 2 and P and jumps through 0xFFFE/0xFFFF, ring positions 65534 and 65535 mod P); write counts per tape, and the fetch and start maps.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 32, "name": "A" }, { "bytes": 32, "name": "B" }], "ring": 64 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "a": 0, "x": 0, "y": 0, "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "traps": { "illegal": "as-chip" } },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502_brkhalt_maps_L16": {
+  "note": "The 6502 study's pair world at L = 16 (tapes A, B of 16 bytes on a ring of 32) on the full NMOS 6502 core: A = X = Y = 0 and P = 0x20 (init.set), PC = 0, the first push on the last byte of B (S from the convention), a per-lane step budget, JAM halting as on the chip (trap 'illegal', as-chip), BRK HALTING: an instruction whose opcode byte is 0x00 halts the lane before it executes (halting.lethal firstUnit 0, the analogue of Stage I's lethal tar); write counts per tape, and the fetch and start maps.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "a": 0, "x": 0, "y": 0, "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 }, "traps": { "illegal": "as-chip" } },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502_brkhalt_maps_L20": {
+  "note": "The 6502 study's pair world at L = 20 (tapes A, B of 20 bytes on a ring of 40) on the full NMOS 6502 core: A = X = Y = 0 and P = 0x20 (init.set), PC = 0, the first push on the last byte of B (S from the convention), a per-lane step budget, JAM halting as on the chip (trap 'illegal', as-chip), BRK HALTING: an instruction whose opcode byte is 0x00 halts the lane before it executes (halting.lethal firstUnit 0, the analogue of Stage I's lethal tar); write counts per tape, and the fetch and start maps.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 20, "name": "A" }, { "bytes": 20, "name": "B" }], "ring": 40 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "a": 0, "x": 0, "y": 0, "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 }, "traps": { "illegal": "as-chip" } },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502_brkhalt_maps_L32": {
+  "note": "The 6502 study's pair world at L = 32 (tapes A, B of 32 bytes on a ring of 64) on the full NMOS 6502 core: A = X = Y = 0 and P = 0x20 (init.set), PC = 0, the first push on the last byte of B (S from the convention), a per-lane step budget, JAM halting as on the chip (trap 'illegal', as-chip), BRK HALTING: an instruction whose opcode byte is 0x00 halts the lane before it executes (halting.lethal firstUnit 0, the analogue of Stage I's lethal tar); write counts per tape, and the fetch and start maps.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 32, "name": "A" }, { "bytes": 32, "name": "B" }], "ring": 64 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "a": 0, "x": 0, "y": 0, "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 }, "traps": { "illegal": "as-chip" } },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ }
+}
