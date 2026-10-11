@@ -1,0 +1,39 @@
+check,status,evidence
+loop definition wraps L16,PASS,JMP $FFFE; 3-byte NOP -> PC 1; literal registered definition calls the sequential wrap a loop
+loop definition wraps L20,PASS,JMP $FFFE; 3-byte NOP -> PC 1; literal registered definition calls the sequential wrap a loop
+loop definition wraps L32,PASS,JMP $FFFE; 3-byte NOP -> PC 1; literal registered definition calls the sequential wrap a loop
+hand CPU probes,PASS,40 memory/state/map cases
+65002 hand copying,PASS,"first two writes preserve A[1],A[0], then B[15..0]; complete B by instruction 89"
+65002 culture and fetch confinement,PASS,"gen2=1.0, copy_offset=0; fetches only organism positions"
+world params A,PASS,160x125; 8192 pairs; 512 byte-replacement attempts; budget 128; Soup._params identical
+verbatim soup kernels A,PASS,sim_square_L16.wgsl; 22 original declarations; no CPU executor retained
+inactive and writeback A,PASS,"3982 active disjoint pairs; inactive budget/steps/writes 0, sentinel unchanged; exact B writeback"
+effective bridge budget A,PASS,"INX/JMP active records all steps=128, X=64"
+world params B,PASS,160x125; 8192 pairs; 512 byte-replacement attempts; budget 128; Soup._params identical
+verbatim soup kernels B,PASS,sim_square_L32.wgsl; 22 original declarations; no CPU executor retained
+inactive and writeback B,PASS,"4002 active disjoint pairs; inactive budget/steps/writes 0, sentinel unchanged; exact B writeback"
+effective bridge budget B,PASS,"INX/JMP active records all steps=128, X=64"
+world params C,PASS,160x125; 8192 pairs; 512 byte-replacement attempts; budget 512; Soup._params identical
+verbatim soup kernels C,PASS,sim_square_L16.wgsl; 22 original declarations; no CPU executor retained
+inactive and writeback C,PASS,"3965 active disjoint pairs; inactive budget/steps/writes 0, sentinel unchanged; exact B writeback"
+effective bridge budget C,PASS,"INX/JMP active records all steps=512, X=0"
+world params D,PASS,160x125; 8192 pairs; 512 byte-replacement attempts; budget 128; Soup._params identical
+verbatim soup kernels D,PASS,sim_square_L16.wgsl; 22 original declarations; no CPU executor retained
+inactive and writeback D,PASS,"3980 active disjoint pairs; inactive budget/steps/writes 0, sentinel unchanged; exact B writeback"
+effective bridge budget D,PASS,"INX/JMP active records all steps=128, X=64"
+runner sample schedule,PASS,864 steps derived independently from four registered intervals
+exact tapes ignore hash collisions,PASS,four distinct 16-byte rows with identical GPU hash remain four species; no padding in S1 L16/L32
+arm/seed coverage,PASS,80 distinct scored worlds; seeds 65001-65020 in each arm as registered
+independent arm-A KM,PASS,exact-rational KM survival reaches 1/2 at 1125000; all 20 events uncensored
+scored-source hashes,PASS,"all 80 recorded hashes match scorer commit; only current dial_soups changed, imported hx/KM ASTs identical"
+world CSV/JSON consistency,PASS,all 80 endpoint/tape/loop/initial-condition rows agree
+raw metadata A,PASS,"s6502_A_s65002.jsonl: 864 samples, five snapshots, full horizon, input/runner/machine hashes checked"
+final raw soup counts,PASS,"A/65002 320000 bytes, checksum, full-byte Counter top3 shares and histogram match"
+raw A/65002 endpoints replay,PASS,4 cached tape judgments; t_rep=t_closed=70000; draws and flags match
+raw metadata B,PASS,"s6502_B_s65001.jsonl: 864 samples, five snapshots, full horizon, input/runner/machine hashes checked"
+raw metadata C,PASS,"s6502_C_s65001.jsonl: 864 samples, five snapshots, full horizon, input/runner/machine hashes checked"
+raw metadata D,PASS,"s6502_D_s65001.jsonl: 864 samples, five snapshots, full horizon, input/runner/machine hashes checked"
+exploratory position classification,PASS,"independently regrouped 41280 prefixes, 320 encounters; six no-PC-decrease seeds [65002, 65004, 65006, 65009, 65013, 65018] all return in position space"
+exploratory final replay,PASS,320 saved initial pairs rerun; final memory/PC/fetch/start maps match saved prefixes
+saved scanned-cell culture reconstruction,PASS,all 320 saved scanned arm-A cells remain heritable under original 32-partner culture draws
+foreground runtime,PASS,"1.637s including CPU, IO, shader compilation; Apple M4 (Metal, IntegratedGPU)"
