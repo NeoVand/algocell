@@ -1,0 +1,302 @@
+k,L,BRK,column,word,disassembly,in this census,in the exploratory,this census: exact / ≥ 75% partners,exploratory: exact / ≥ 75% partners,passes its screen
+2,16,faithful,"exact, ≥ 1 random partner",74 74,"NOP $74,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",04 48 ba b5,"NOP $48; TSX; LDA $04,X; PHA; TSX; LDA $04,X; PHA; TSX; LDA $04,X | …",True,False,2 / 3,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",11 48 88 b1,"ORA ($48),Y; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",20 70 20 8e,JSR $2070; STX $7020; JSR $208E; BVS +32; STX $7020 | …,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",21 48 88 b1,"AND ($48,X); DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",24 ba b5 c4,"BIT $BA; LDA $C4,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",44 48 ba b5,"NOP $48; TSX; LDA $44,X; PHA; TSX; LDA $44,X; PHA; TSX; LDA $44,X | …",True,False,2 / 6,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",48 88 b7 13,"PHA; DEY; LAX $13,Y",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",48 b5 d3 ba,"PHA; LDA $D3,X; TSX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",48 ba b5 a8,"PHA; TSX; LDA $A8,X",True,False,1 / 1,0 / 1,True
+4,16,faithful,"exact, ≥ 1 random partner",48 ca b5 d3,"PHA; DEX; LDA $D3,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",50 48 88 b1,"BVC +72; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y | …",True,False,1 / 1,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",50 96 bf c8,"BVC -106; LAX $50C8,Y; STX $BF,Y; INY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",65 88 4b 4c,ADC $88; ALR #$4C,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 48 ba b5,"PLA; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X | …",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 68 ba 95,"PLA; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 91 4c bf,"PLA; STA ($4C),Y; LAX $9168,Y; JMP $68BF; STA ($4C),Y; LAX $9168,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 95 35 ba,"PLA; STA $35,X; TSX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 95 4c bd,"PLA; STA $4C,X; LDA $9568,X; JMP $68BD; STA $4C,X; LDA $9568,X | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 95 d8 e8,"PLA; STA $D8,X; INX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 ba 95 d8,"PLA; TSX; STA $D8,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 d0 f8 c8,PLA; BNE -8; INY,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",68 e8 95 57,"PLA; INX; STA $57,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",70 48 ba b5,"BVS +72; TSX; LDA $70,X; PHA; TSX; LDA $70,X; PHA; TSX; LDA $70,X | …",True,False,1 / 4,0 / 3 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",80 b6 88 96,"NOP #$B6; DEY; STX $80,Y; LDX $88,Y; STX $80,Y; LDX $88,Y; STX $80,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 50 bf 48,DEY; BVC -65; PHA,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 20 90,"DEY; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120 | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 24 48,"DEY; LDA ($24),Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 2c 48,"DEY; LDA ($2C),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 30 48,"DEY; LDA ($30),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 3c 48,"DEY; LDA ($3C),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 67 48,"DEY; LDA ($67),Y; PHA",True,False,1 / 2,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 68 48,"DEY; LDA ($68),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 6b 48,"DEY; LDA ($6B),Y; PHA",True,False,1 / 1,0 / 0,True
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 6c 48,"DEY; LDA ($6C),Y; PHA",True,False,1 / 3,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 84 48,"DEY; LDA ($84),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 87 48,"DEY; LDA ($87),Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 a3 48,"DEY; LDA ($A3),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 cb 48,"DEY; LDA ($CB),Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 cc 48,"DEY; LDA ($CC),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b1 e8 48,"DEY; LDA ($E8),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 27 48,"DEY; LAX ($27),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 28 48,"DEY; LAX ($28),Y; PHA",True,False,2 / 3,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 2b 48,"DEY; LAX ($2B),Y; PHA",True,False,1 / 1,1 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 47 48,"DEY; LAX ($47),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 4b 48,"DEY; LAX ($4B),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 60 48,"DEY; LAX ($60),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 6c 48,"DEY; LAX ($6C),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 a3 48,"DEY; LAX ($A3),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 b0 48,"DEY; LAX ($B0),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 c4 48,"DEY; LAX ($C4),Y; PHA",True,False,1 / 2,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b3 e0 48,"DEY; LAX ($E0),Y; PHA",True,False,1 / 1,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b6 cc 96,"DEY; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 08 48,"DEY; LAX $08,Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 0c 48,"DEY; LAX $0C,Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 10 48,"DEY; LAX $10,Y; PHA",True,False,1 / 2,0 / 0,True
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 24 48,"DEY; LAX $24,Y; PHA",True,False,2 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 2c 48,"DEY; LAX $2C,Y; PHA",True,False,2 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 54 48,"DEY; LAX $54,Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 b0 48,"DEY; LAX $B0,Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 c4 48,"DEY; LAX $C4,Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 c8 48,"DEY; LAX $C8,Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",88 b7 e8 48,"DEY; LAX $E8,Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",95 55 ba 68,"STA $55,X; TSX; PLA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",99 88 b9 90,"STA $B988,Y; BCC -103; DEY; LDA $9990,Y; DEY; LDA $9990,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a0 48 88 b1,"LDY #$48; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 01 48 6a,"LAX ($01,X); PHA; ROR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 0c 99 bf,"LAX ($0C,X); STA $A3BF,Y; NOP $BF99",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 21 48 6a,"LAX ($21,X); PHA; ROR A",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 25 48 6a,"LAX ($25,X); PHA; ROR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 65 48 0a,"LAX ($65,X); PHA; ASL A",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 c5 48 6a,"LAX ($C5,X); PHA; ROR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 e1 48 0a,"LAX ($E1,X); PHA; ASL A",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",a3 e5 48 4a,"LAX ($E5,X); PHA; LSR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ad a5 d7 5b,"LDA $D7A5; SRE $A5AD,Y; DCP $5B,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b0 48 ca b5,"BCS +72; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X | …",True,False,1 / 2,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b1 af 48 88,"LDA ($AF),Y; PHA; DEY",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b3 38 48 88,"LAX ($38),Y; PHA; DEY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b3 7c 88 48,"LAX ($7C),Y; DEY; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b3 97 80 88,"LAX ($97),Y; NOP #$88",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b3 ac 88 48,"LAX ($AC),Y; DEY; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b3 dc 48 88,"LAX ($DC),Y; PHA; DEY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b5 0b ca 48,"LDA $0B,X; DEX; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b5 0f 48 ca,"LDA $0F,X; PHA; DEX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b5 43 ba 48,"LDA $43,X; TSX; PHA",True,False,1 / 1,1 / 3 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b5 43 ca 48,"LDA $43,X; DEX; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b5 8b ba 48,"LDA $8B,X; TSX; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b7 47 48 88,"LAX $47,Y; PHA; DEY",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b7 57 48 88,"LAX $57,Y; PHA; DEY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b7 8f 48 88,"LAX $8F,Y; PHA; DEY",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b7 8f 88 48,"LAX $8F,Y; DEY; PHA",True,True,1 / 1,1 / 1,True
+4,16,faithful,"exact, ≥ 1 random partner",b7 a5 c8 90,"LAX $A5,Y; INY; BCC -73; LDA $C8; BCC -73; LDA $C8; BCC -73 | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b7 af 88 48,"LAX $AF,Y; DEY; PHA",True,False,1 / 2,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",b7 ef 88 48,"LAX $EF,Y; DEY; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba 68 95 75,"TSX; PLA; STA $75,X",True,False,1 / 1,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba 95 14 68,"TSX; STA $14,X; PLA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba 95 f8 68,"TSX; STA $F8,X; PLA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 0c 48,"TSX; LDA $0C,X; PHA",False,True,0 / 3,1 / 4,True
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 10 48,"TSX; LDA $10,X; PHA",True,False,1 / 5,0 / 7 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 24 48,"TSX; LDA $24,X; PHA",True,False,1 / 4,0 / 4 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 28 48,"TSX; LDA $28,X; PHA",True,False,1 / 1,0 / 4 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 2c 48,"TSX; LDA $2C,X; PHA",True,False,1 / 6,1 / 4 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 48 48,"TSX; LDA $48,X; PHA",True,False,1 / 4,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 68 48,"TSX; LDA $68,X; PHA",True,False,1 / 5,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 6c 48,"TSX; LDA $6C,X; PHA",True,False,1 / 4,0 / 6 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 70 48,"TSX; LDA $70,X; PHA",True,False,2 / 5,1 / 4 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 84 48,"TSX; LDA $84,X; PHA",True,False,1 / 2,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 8c 48,"TSX; LDA $8C,X; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 a4 48,"TSX; LDA $A4,X; PHA",True,False,2 / 3,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 c4 48,"TSX; LDA $C4,X; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba b5 cc 48,"TSX; LDA $CC,X; PHA",True,False,1 / 4,0 / 4 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba bd 24 48,"TSX; LDA $4824,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ba bd ac 41,"TSX; LDA $41AC,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",bd 48 e5 ba,"LDA $E548,X; TSX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",be 88 96 a1,"LDX $9688,Y; LDA ($BE,X); DEY; STX $A1,Y",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",be 88 96 e1,"LDX $9688,Y; SBC ($BE,X); DEY; STX $E1,Y",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",bf 88 96 a1,"LAX $9688,Y; LDA ($BF,X); DEY; STX $A1,Y",True,False,1 / 2,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",bf c8 6c 91,"LAX $6CC8,Y; STA ($BF),Y; INY; JMP ($BF91); INY; JMP ($BF91) | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",c3 49 50 b5,"DCP ($49,X); BVC -75",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",c9 48 88 b3,"CMP #$48; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",c9 90 3a 68,CMP #$90; NOP; PLA,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ca b4 4c 68,"DEX; LDY $4C,X; PLA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ca b5 08 48,"DEX; LDA $08,X; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ca b5 64 48,"DEX; LDA $64,X; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ca b5 d0 48,"DEX; LDA $D0,X; PHA",True,False,1 / 1,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ca b5 e4 48,"DEX; LDA $E4,X; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",ca bc 4a 26,"DEX; LDY $264A,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",cf 0c 48 b7,"DCP $480C; LAX $CF,Y; NOP $B748",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",d0 48 ba b5,"BNE +72; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X | …",True,False,2 / 3,0 / 2 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",d0 99 a5 5e,BNE -103; LDA $5E,True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",e8 68 95 37,"INX; PLA; STA $37,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",e8 68 95 77,"INX; PLA; STA $77,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",f1 48 88 b1,"SBC ($48),Y; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y | …",True,False,1 / 1,1 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",f3 4c 68 91,"ISC ($4C),Y; PLA; STA ($F3),Y; JMP $9168",True,False,1 / 1,0 / 1 (re-run),False
+4,16,faithful,"exact, ≥ 1 random partner",f9 48 88 b3,"SBC $8848,Y; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 0c 20 1f,"JSR $200C; SLO $0C20,X; JSR $201F; NOP $1F20",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 24 20 33,"JSR $2024; RLA ($20),Y; BIT $20; RLA ($20),Y; BIT $20; RLA ($20),Y | …",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 26 20 a4,JSR $2026; LDY $20; ROL $20; LDY $20; ROL $20; LDY $20 | …,True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 2c 20 3f,"JSR $202C; RLA $2C20,X; JSR $203F; BIT $3F20",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 ac 20 bf,"JSR $20AC; LAX $AC20,Y; JSR $20BF; LDY $BF20",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 cc 20 df,"JSR $20CC; DCP $CC20,X; JSR $20DF; CPY $DF20",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,20 ec 20 ff,"JSR $20EC; ISC $EC20,X; JSR $20FF; CPX $FF20",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,43 04 20 04,"SRE ($04,X); JSR $4304; NOP $20; NOP $43; NOP $20; NOP $43 | …",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,63 04 20 04,"RRA ($04,X); JSR $6304; NOP $20; NOP $63; NOP $20; NOP $63 | …",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,71 20 5e 20,"ADC ($20),Y; LSR $7120,X; JSR $205E",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,91 20 5e 20,"STA ($20),Y; LSR $9120,X; JSR $205E",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,91 4c c8 b1,"STA ($4C),Y; INY; LDA ($91),Y; JMP $B1C8",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,91 4c c8 b3,"STA ($4C),Y; INY; LAX ($91),Y; JMP $B3C8",True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,9b 20 a3 20,"TAS $A320,Y; JSR $209B; LAX ($20,X)",True,False,0 / 8,0 / 6,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,ab 48 48 48,LXA #$48; PHA; PHA,True,False,0 / 10,0 / 6,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,c7 4c 48 a5,DCP $4C; PHA; LDA $C7; JMP $A548,True,True,0 / 16,0 / 16,True
+4,16,faithful,≥ 75% in ≥ 8 of 16,c7 4c 48 b5,"DCP $4C; PHA; LDA $C7,X; JMP $B548",True,True,0 / 16,0 / 16,True
+4,16,halt,"exact, ≥ 1 random partner",04 48 ba b5,"NOP $48; TSX; LDA $04,X; PHA; TSX; LDA $04,X; PHA; TSX; LDA $04,X | …",True,False,2 / 3,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",11 48 88 b1,"ORA ($48),Y; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y; PHA; DEY; LDA ($11),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",21 48 88 b1,"AND ($48,X); DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y; PHA; DEY; LDA ($21),Y | …",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",24 ba b5 c4,"BIT $BA; LDA $C4,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",44 48 ba b5,"NOP $48; TSX; LDA $44,X; PHA; TSX; LDA $44,X; PHA; TSX; LDA $44,X | …",True,False,2 / 6,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",48 88 b7 13,"PHA; DEY; LAX $13,Y",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",48 b5 d3 ba,"PHA; LDA $D3,X; TSX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",48 ba b5 a8,"PHA; TSX; LDA $A8,X",True,False,1 / 1,0 / 1,True
+4,16,halt,"exact, ≥ 1 random partner",48 ca b5 d3,"PHA; DEX; LDA $D3,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",50 48 88 b1,"BVC +72; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y; PHA; DEY; LDA ($50),Y | …",True,False,1 / 1,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",50 96 bf c8,"BVC -106; LAX $50C8,Y; STX $BF,Y; INY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",65 88 4b 4c,ADC $88; ALR #$4C,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 48 ba b5,"PLA; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X; PHA; TSX; LDA $68,X | …",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 68 ba 95,"PLA; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X; PLA; TSX; STA $68,X | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 91 4c bf,"PLA; STA ($4C),Y; LAX $9168,Y; JMP $68BF; STA ($4C),Y; LAX $9168,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 95 35 ba,"PLA; STA $35,X; TSX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 95 4c bd,"PLA; STA $4C,X; LDA $9568,X; JMP $68BD; STA $4C,X; LDA $9568,X | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 95 d8 e8,"PLA; STA $D8,X; INX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 ba 95 d8,"PLA; TSX; STA $D8,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 d0 f8 c8,PLA; BNE -8; INY,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",68 e8 95 57,"PLA; INX; STA $57,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",70 48 ba b5,"BVS +72; TSX; LDA $70,X; PHA; TSX; LDA $70,X; PHA; TSX; LDA $70,X | …",True,False,1 / 4,0 / 3 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",80 b6 88 96,"NOP #$B6; DEY; STX $80,Y; LDX $88,Y; STX $80,Y; LDX $88,Y; STX $80,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 50 bf 48,DEY; BVC -65; PHA,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 20 90,"DEY; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120; LDA ($20),Y; BCC -120 | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 24 48,"DEY; LDA ($24),Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 2c 48,"DEY; LDA ($2C),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 30 48,"DEY; LDA ($30),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 3c 48,"DEY; LDA ($3C),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 67 48,"DEY; LDA ($67),Y; PHA",True,False,1 / 2,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 68 48,"DEY; LDA ($68),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 6b 48,"DEY; LDA ($6B),Y; PHA",True,False,1 / 1,0 / 0,True
+4,16,halt,"exact, ≥ 1 random partner",88 b1 6c 48,"DEY; LDA ($6C),Y; PHA",True,False,1 / 3,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 84 48,"DEY; LDA ($84),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 87 48,"DEY; LDA ($87),Y; PHA",True,False,1 / 2,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 a3 48,"DEY; LDA ($A3),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 cb 48,"DEY; LDA ($CB),Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 cc 48,"DEY; LDA ($CC),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b1 e8 48,"DEY; LDA ($E8),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 27 48,"DEY; LAX ($27),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 28 48,"DEY; LAX ($28),Y; PHA",True,False,2 / 3,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 2b 48,"DEY; LAX ($2B),Y; PHA",True,False,1 / 1,1 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 47 48,"DEY; LAX ($47),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 4b 48,"DEY; LAX ($4B),Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 60 48,"DEY; LAX ($60),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 6c 48,"DEY; LAX ($6C),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 a3 48,"DEY; LAX ($A3),Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 b0 48,"DEY; LAX ($B0),Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 c4 48,"DEY; LAX ($C4),Y; PHA",True,False,1 / 2,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b3 e0 48,"DEY; LAX ($E0),Y; PHA",True,False,1 / 1,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b6 cc 96,"DEY; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y; LDX $CC,Y; STX $88,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 08 48,"DEY; LAX $08,Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 0c 48,"DEY; LAX $0C,Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 10 48,"DEY; LAX $10,Y; PHA",True,False,1 / 2,0 / 0,True
+4,16,halt,"exact, ≥ 1 random partner",88 b7 24 48,"DEY; LAX $24,Y; PHA",True,False,2 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 2c 48,"DEY; LAX $2C,Y; PHA",True,False,2 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 54 48,"DEY; LAX $54,Y; PHA",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 b0 48,"DEY; LAX $B0,Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 c4 48,"DEY; LAX $C4,Y; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 c8 48,"DEY; LAX $C8,Y; PHA",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",88 b7 e8 48,"DEY; LAX $E8,Y; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",95 55 ba 68,"STA $55,X; TSX; PLA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",99 88 b9 90,"STA $B988,Y; BCC -103; DEY; LDA $9990,Y; DEY; LDA $9990,Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a0 48 88 b1,"LDY #$48; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y; PHA; DEY; LDA ($A0),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 01 48 6a,"LAX ($01,X); PHA; ROR A",True,False,1 / 1,0 / 0,True
+4,16,halt,"exact, ≥ 1 random partner",a3 0c 99 bf,"LAX ($0C,X); STA $A3BF,Y; NOP $BF99",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 21 48 6a,"LAX ($21,X); PHA; ROR A",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 25 48 6a,"LAX ($25,X); PHA; ROR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 65 48 0a,"LAX ($65,X); PHA; ASL A",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 c5 48 6a,"LAX ($C5,X); PHA; ROR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 e1 48 0a,"LAX ($E1,X); PHA; ASL A",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",a3 e5 48 4a,"LAX ($E5,X); PHA; LSR A",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ad a5 d7 5b,"LDA $D7A5; SRE $A5AD,Y; DCP $5B,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b0 48 ca b5,"BCS +72; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X; PHA; DEX; LDA $B0,X | …",True,False,1 / 2,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b1 af 48 88,"LDA ($AF),Y; PHA; DEY",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b3 38 48 88,"LAX ($38),Y; PHA; DEY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b3 7c 88 48,"LAX ($7C),Y; DEY; PHA",True,False,1 / 2,0 / 0,True
+4,16,halt,"exact, ≥ 1 random partner",b3 97 80 88,"LAX ($97),Y; NOP #$88",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b3 ac 88 48,"LAX ($AC),Y; DEY; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b3 dc 48 88,"LAX ($DC),Y; PHA; DEY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b5 0b ca 48,"LDA $0B,X; DEX; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b5 0f 48 ca,"LDA $0F,X; PHA; DEX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b5 43 ba 48,"LDA $43,X; TSX; PHA",True,False,1 / 1,1 / 3 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b5 43 ca 48,"LDA $43,X; DEX; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b5 8b ba 48,"LDA $8B,X; TSX; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b7 47 48 88,"LAX $47,Y; PHA; DEY",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b7 57 48 88,"LAX $57,Y; PHA; DEY",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b7 8f 48 88,"LAX $8F,Y; PHA; DEY",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b7 8f 88 48,"LAX $8F,Y; DEY; PHA",True,True,1 / 1,1 / 2,True
+4,16,halt,"exact, ≥ 1 random partner",b7 a5 c8 90,"LAX $A5,Y; INY; BCC -73; LDA $C8; BCC -73; LDA $C8; BCC -73 | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b7 af 88 48,"LAX $AF,Y; DEY; PHA",True,False,1 / 2,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",b7 ef 88 48,"LAX $EF,Y; DEY; PHA",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba 68 95 75,"TSX; PLA; STA $75,X",True,False,1 / 1,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba 95 14 68,"TSX; STA $14,X; PLA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba 95 f8 68,"TSX; STA $F8,X; PLA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 0c 48,"TSX; LDA $0C,X; PHA",False,True,0 / 3,1 / 4,True
+4,16,halt,"exact, ≥ 1 random partner",ba b5 10 48,"TSX; LDA $10,X; PHA",True,False,1 / 5,0 / 7 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 24 48,"TSX; LDA $24,X; PHA",True,False,1 / 4,0 / 4 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 28 48,"TSX; LDA $28,X; PHA",True,False,1 / 1,0 / 4 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 2c 48,"TSX; LDA $2C,X; PHA",True,False,1 / 6,1 / 4 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 48 48,"TSX; LDA $48,X; PHA",True,False,1 / 4,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 68 48,"TSX; LDA $68,X; PHA",True,False,1 / 5,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 6c 48,"TSX; LDA $6C,X; PHA",True,False,1 / 4,0 / 6 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 70 48,"TSX; LDA $70,X; PHA",True,False,2 / 5,1 / 4 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 84 48,"TSX; LDA $84,X; PHA",True,False,1 / 2,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 8c 48,"TSX; LDA $8C,X; PHA",True,False,1 / 4,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 a4 48,"TSX; LDA $A4,X; PHA",True,False,2 / 3,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 c4 48,"TSX; LDA $C4,X; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba b5 cc 48,"TSX; LDA $CC,X; PHA",True,False,1 / 4,0 / 4 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba bd 24 48,"TSX; LDA $4824,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ba bd ac 41,"TSX; LDA $41AC,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",bd 48 e5 ba,"LDA $E548,X; TSX",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",be 88 96 a1,"LDX $9688,Y; LDA ($BE,X); DEY; STX $A1,Y",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",be 88 96 e1,"LDX $9688,Y; SBC ($BE,X); DEY; STX $E1,Y",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",bf 88 96 a1,"LAX $9688,Y; LDA ($BF,X); DEY; STX $A1,Y",True,False,1 / 2,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",bf c8 6c 91,"LAX $6CC8,Y; STA ($BF),Y; INY; JMP ($BF91); INY; JMP ($BF91) | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",c3 49 50 b5,"DCP ($49,X); BVC -75",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,≥ 75% in ≥ 8 of 16,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 0c 20 1f,"JSR $200C; SLO $0C20,X; JSR $201F; NOP $1F20",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 24 20 33,"JSR $2024; RLA ($20),Y; BIT $20; RLA ($20),Y; BIT $20; RLA ($20),Y | …",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 26 20 a4,JSR $2026; LDY $20; ROL $20; LDY $20; ROL $20; LDY $20 | …,True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 2c 20 3f,"JSR $202C; RLA $2C20,X; JSR $203F; BIT $3F20",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 ac 20 bf,"JSR $20AC; LAX $AC20,Y; JSR $20BF; LDY $BF20",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 cc 20 df,"JSR $20CC; DCP $CC20,X; JSR $20DF; CPY $DF20",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,20 ec 20 ff,"JSR $20EC; ISC $EC20,X; JSR $20FF; CPX $FF20",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,28 20 28 28,PLP; JSR $2828,True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,43 04 20 04,"SRE ($04,X); JSR $4304; NOP $20; NOP $43; NOP $20; NOP $43 | …",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,63 04 20 04,"RRA ($04,X); JSR $6304; NOP $20; NOP $63; NOP $20; NOP $63 | …",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,68 20 68 68,PLA; JSR $6868,True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,71 20 5e 20,"ADC ($20),Y; LSR $7120,X; JSR $205E",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,83 04 20 04,"SAX ($04,X); JSR $8304; NOP $20; NOP $83; NOP $20; NOP $83 | …",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,91 20 5e 20,"STA ($20),Y; LSR $9120,X; JSR $205E",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,91 4c c8 b1,"STA ($4C),Y; INY; LDA ($91),Y; JMP $B1C8",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,91 4c c8 b3,"STA ($4C),Y; INY; LAX ($91),Y; JMP $B3C8",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,9b 20 a3 20,"TAS $A320,Y; JSR $209B; LAX ($20,X)",True,False,0 / 8,0 / 6,True
+4,16,halt,≥ 75% in ≥ 8 of 16,ab 48 48 48,LXA #$48; PHA; PHA,True,False,0 / 9,0 / 5 (re-run),False
+4,16,halt,≥ 75% in ≥ 8 of 16,c3 4c 48 b1,"DCP ($4C,X); PHA; LDA ($C3),Y; JMP $B148",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,c7 4c 48 a5,DCP $4C; PHA; LDA $C7; JMP $A548,True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,c7 4c 48 a7,DCP $4C; PHA; LAX $C7; JMP $A748,True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,c7 4c 48 b5,"DCP $4C; PHA; LDA $C7,X; JMP $B548",True,True,0 / 16,0 / 16,True
+4,16,halt,≥ 75% in ≥ 8 of 16,c7 4c 48 b7,"DCP $4C; PHA; LAX $C7,Y; JMP $B748",True,True,0 / 16,0 / 16,True
+2,20,faithful,"exact, ≥ 1 random partner",80 02,NOP #$02,True,False,1 / 1,0 / 0 (re-run),False
+3,20,faithful,"exact, ≥ 1 random partner",78 34 a3,"SEI; NOP $A3,X",True,False,1 / 1,0 / 0 (re-run),False
+2,20,halt,"exact, ≥ 1 random partner",80 02,NOP #$02,True,False,1 / 1,0 / 0 (re-run),False

@@ -4,7 +4,9 @@
     python census6502.py control                    # Z80 compat 0.2: reproduce the paper's census (periods 1-4, L = 16)
     python census6502.py planted                    # 6502: the harness finds two seeded closed copiers tiled at period 6
     python census6502.py census --L 16 --k 1 2 3    # 6502 census, both BRK arms, budgets 128 and 512 (checkpointed)
-    python census6502.py census --L 16 --k 4 --max-minutes 30   # the 4.29e9 period-4 tilings, resumable, in slices
+    python census6502.py census --L 16 --k 4                    # the 4.29e9 period-4 tilings: resumes from the checkpoint,
+                                                                # pauses as long as each chunk took, then rewrites CENSUS.md
+    python census6502.py census --L 16 --k 4 --pause 0          # the same on an idle machine
     python census6502.py closers                    # seeded closers of ISA_RESEARCH §4.2 on the validated core
     python census6502.py explore                    # the exploratory census's candidates re-run on Zilion (same encounters)
     python census6502.py report                     # CENSUS.md and its tables from everything above
@@ -22,8 +24,6 @@ from __future__ import annotations
 import argparse
 import base64
 import csv
-import hashlib
-import io
 import json
 import os
 import subprocess
@@ -36,8 +36,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from algocell_exp.zcensus import (FLAG_NAMES, HIT_WORDS, SEED, TileCensus, evaluate, n_primitive, primitive_period,  # noqa: E402
-                                  tile_bytes, tile_tapes)
+from algocell_exp.zcensus import HIT_WORDS, TileCensus, evaluate, primitive_period, tile_bytes, tile_tapes  # noqa: E402
 from algocell_exp.zmachine import load_machine  # noqa: E402
 
 OUT = HERE / "results" / "census6502"
@@ -76,14 +75,16 @@ def _unpack(s: str) -> np.ndarray:
 
 
 def run_census(machine: str, k: int, nrand: int = NRAND, budgets=BUDGETS, seg: int = SEGMENT, chunk_bits: int = 24,
-               max_minutes: float | None = None, pause: float = 0.0) -> Path:
+               max_minutes: float | None = None, pause: float = -1.0) -> Path:
     """Run (or continue) the census of period k on `machine`, one checkpoint line per chunk of 2^chunk_bits tiles.
     Each chunk's records (hits and the hash-chosen sample) are re-run through ZMachine.run at every budget before the
-    chunk is written. Stops cleanly after max_minutes; a later call continues from the checkpoint."""
+    chunk is written. Stops cleanly after max_minutes; a later call continues from the checkpoint (same chunk size).
+    The GPU is shared: after each chunk (one burst, about 30-60 s at period 4) the run sleeps `pause` seconds, by
+    default (pause < 0) as long as the chunk took."""
     CKPT.mkdir(parents=True, exist_ok=True)
     c = TileCensus(machine, k=k, nrand=nrand, budgets=budgets, seg=seg, sample_bits=sample_bits_for(k), panel=False, variant_major=True)
     path = ckpt_path(machine, k, nrand, c.budgets)
-    head = {"type": "header", **c.describe(), "counter_names": c.counter_names, "hit_words": HIT_WORDS}
+    head = json.loads(json.dumps({"type": "header", **c.describe(), "counter_names": c.counter_names, "hit_words": HIT_WORDS}))   # as stored
     done = set()
     if path.exists():
         lines = [json.loads(x) for x in path.read_text().splitlines() if x.strip()]
@@ -91,17 +92,22 @@ def run_census(machine: str, k: int, nrand: int = NRAND, budgets=BUDGETS, seg: i
         for key in ("machine", "k", "L", "nrand", "budgets", "segment", "seed", "panel", "variant_major", "sample_mask", "harness_wgsl_sha256", "counter_names"):
             if h0.get(key) != head.get(key):
                 raise RuntimeError(f"{path.name}: checkpoint header differs in {key!r}; move it away to start again")
-        done = {x["i"] for x in lines[1:] if x["type"] == "chunk"}
+        chunks = [x for x in lines[1:] if x["type"] == "chunk"]
+        done = {x["i"] for x in chunks}
+        sizes = {x["t1"] - x["t0"] for x in chunks if x["t1"] < 256 ** k}
+        if sizes and sizes != {min(256 ** k, 1 << chunk_bits)}:
+            raise RuntimeError(f"{path.name}: the checkpoint's chunks hold {sizes} words; resume with the same --chunk-bits")
     else:
         path.write_text(json.dumps(head) + "\n")
     total = 256 ** k
     chunk = min(total, 1 << chunk_bits)
     nchunks = -(-total // chunk)
     t_start = time.time()
+    ran = 0
     for ci in range(nchunks):
         if ci in done:
             continue
-        if max_minutes is not None and time.time() - t_start > 60 * max_minutes:
+        if max_minutes is not None and ran and time.time() - t_start > 60 * max_minutes:   # at least one chunk per call
             log(f"{path.name}: stopping after {max_minutes} min ({len(done)}/{nchunks} chunks done)")
             break
         t0, t1 = ci * chunk, min(total, (ci + 1) * chunk)
@@ -118,11 +124,13 @@ def run_census(machine: str, k: int, nrand: int = NRAND, budgets=BUDGETS, seg: i
         with open(path, "a") as f:
             f.write(json.dumps(rec) + "\n")
         done.add(ci)
+        ran += 1
         C = out[c.budgets[-1]]["counters"]
         log(f"{path.name}: chunk {ci + 1}/{nchunks} [{t0:#x}, {t1:#x}) {secs:.1f} s; at {c.budgets[-1]}: zero-exact {C['tiles_zero_exact']}, "
             f"rand-exact {C['tiles_rand_exact_any']}, rand75≥8 {C['tiles_rand75_ge8']}; records {sum(len(out[b]['hits']) for b in c.budgets)}")
-        if pause:
-            time.sleep(pause)
+        wait = secs if pause < 0 else pause
+        if wait and len(done) < nchunks:
+            time.sleep(wait)
     return path
 
 
@@ -144,7 +152,15 @@ def load_census(path: Path) -> dict:
         per[b] = {"counters": dict(zip(names, map(int, tot))), "hits": np.concatenate(H) if H else np.zeros((0, HIT_WORDS), np.uint32), "recheck": rc}
     total = 256 ** head["k"]
     n_done = sum(x["t1"] - x["t0"] for x in chunks)
-    return {"head": head, "budgets": per, "tiles_done": n_done, "complete": n_done == total, "secs": sum(x["secs"] for x in chunks)}
+    size = max((x["t1"] - x["t0"] for x in chunks), default=0)
+    return {"head": head, "budgets": per, "tiles_done": n_done, "complete": n_done == total, "secs": sum(x["secs"] for x in chunks),
+            "chunks_done": len(chunks), "chunks_total": -(-total // size) if size else None,
+            "ranges": sorted((x["t0"], x["t1"]) for x in chunks)}
+
+
+def tile_done(R: dict, t: int) -> bool:
+    """Whether word index t has been run in this checkpoint."""
+    return any(t0 <= t < t1 for t0, t1 in R["ranges"])
 
 
 def census_obj(head: dict) -> TileCensus:
@@ -237,12 +253,12 @@ def cmd_control(a) -> None:
     from algocell_exp import exectrace as X
 
     m = "z80c02_pair_maps_L16"
-    for k in (1, 2, 3, 4):
-        run_census(m, k, nrand=(NRAND if k < 4 else 0), budgets=(128,), seg=128, chunk_bits=26)
+    for k in (1, 2, 3, 4):   # the 6502 census's settings (budgets 128 and 512 in one pass, segments of 128); period 4 without random partners
+        run_census(m, k, nrand=(NRAND if k < 4 else 0), budgets=BUDGETS, seg=SEGMENT, chunk_bits=26)
     mach = load_machine(m)
     rows, words_rows = [], []
     for k in (1, 2, 3, 4):
-        R = load_census(ckpt_path(m, k, NRAND if k < 4 else 0, (128,)))
+        R = load_census(ckpt_path(m, k, NRAND if k < 4 else 0, BUDGETS))
         c = census_obj(R["head"])
         d = c.decode_hits(R["budgets"][128]["hits"])
         ex = d["t"][(d["flags"] & 1) != 0]
@@ -289,8 +305,9 @@ def cmd_control(a) -> None:
                "word_sets_equal": (mine == pw) if paper.exists() else "n/a",
                "closed_flags_equal": (all(pclosed.get(bytes(w).hex()) == bool(cz) for w, cz in zip(words, closed_z))) if paper.exists() else "n/a",
                "rand_exact_any": Cn["tiles_rand_exact_any"] if R["head"]["nrand"] else "-", "rand75_ge8": Cn["tiles_rand75_ge8"] if R["head"]["nrand"] else "-",
-               "recheck_tiles": R["budgets"][128]["recheck"].get("tiles", 0),
-               "recheck_mismatches": sum(v for kk, v in R["budgets"][128]["recheck"].items() if kk.startswith("mismatch")),
+               "recheck_tiles": sum(R["budgets"][b]["recheck"].get("tiles", 0) for b in BUDGETS),
+               "recheck_mismatches": sum(v for b in BUDGETS for kk, v in R["budgets"][b]["recheck"].items() if kk.startswith("mismatch")),
+               "self_writers_512": _self_writers(c, R, 512),
                "gpu_minutes": round(R["secs"] / 60, 1)}
         rows.append(row)
         for w, q, cz, ca, ch in zip(words, prim, closed_z, closed_a, closed_h):
@@ -300,6 +317,11 @@ def cmd_control(a) -> None:
     write_csv("control_z80.csv", rows)
     write_csv("control_z80_words.csv", words_rows)
     log("control written")
+
+
+def _self_writers(c: TileCensus, R: dict, b: int) -> int:
+    d = c.decode_hits(R["budgets"][b]["hits"])
+    return int((((d["flags"] & 1) != 0) & (d["t"] != 0)).sum())
 
 
 # ── 6502 planted positive control ──────────────────────────────────────────────────────────────────────────────────
@@ -335,10 +357,16 @@ def cmd_planted(a) -> None:
 
 # ── the 6502 census ─────────────────────────────────────────────────────────────────────────────────────────────────
 def cmd_census(a) -> None:
+    """Run or resume the census for each period and BRK arm, then regenerate the report (CENSUS.md)."""
+    pause = -1.0 if a.pause == "auto" else float(a.pause)
     for k in a.k:
         for brk in a.brk:
             run_census(machine_name(a.L, brk), k, nrand=NRAND, budgets=BUDGETS, seg=SEGMENT, chunk_bits=a.chunk_bits,
-                       max_minutes=a.max_minutes, pause=a.pause)
+                       max_minutes=a.max_minutes, pause=pause)
+    if not a.no_report:
+        from census6502_report import report
+
+        report()
 
 
 # ── seeded closers (ISA_RESEARCH §4.2) ──────────────────────────────────────────────────────────────────────────────
@@ -484,6 +512,7 @@ def cmd_explore(a) -> None:
                          "expl_rand_75": int(d["rand_75"].split("/")[0]), "zil_rand_75": int(e["n75"][i]),
                          "expl_entered_any": int(d["entered_any"]), "zil_entered_any": int(ent[i, [0, *range(2, 18)]].any()),
                          "expl_rand_halted": int(d["rand_halted"]), "zil_rand_halted": int(halted[i, 2:].sum()),
+                         "expl_rand_meanmatch": d["rand_meanmatch"], "zil_rand_meanmatch": f"{phase[i, 2:].sum() / (16 * L):.3f}",
                          "zil_screen_match": int(phase[i, 1])})
         log(k, L, bh, len(ds))
     write_csv("exploratory_rerun.csv", rows)
@@ -510,7 +539,8 @@ def main() -> None:
     p.add_argument("--brk", nargs="+", default=["faithful", "halt"], choices=["faithful", "halt"])
     p.add_argument("--chunk-bits", type=int, default=24)
     p.add_argument("--max-minutes", type=float, default=None)
-    p.add_argument("--pause", type=float, default=0.0, help="seconds to sleep between chunks (GPU sharing)")
+    p.add_argument("--pause", default="auto", help="seconds to sleep between chunks; 'auto' (default): as long as the chunk took (the GPU is shared)")
+    p.add_argument("--no-report", action="store_true", help="do not regenerate CENSUS.md afterwards")
     sub.add_parser("closers")
     sub.add_parser("explore")
     sub.add_parser("report")

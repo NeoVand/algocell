@@ -7,7 +7,8 @@
 (c) compacted, resumed segments (32 steps) give, at 128 and at 512 steps, what one direct ZMachine.run gives, on
     every recorded tile (records include a hash-chosen sample), on both 6502 arms;
 (d) the generator's tile placement and partners: tape A is the tiled word, B the zero or hash partner (numpy mirror);
-(e) counters: every lane and tile is counted once.
+(e) counters: every lane and tile is counted once;
+(f) census6502.run_census: a run stopped after one chunk and resumed equals one uninterrupted run.
 """
 
 from __future__ import annotations
@@ -76,3 +77,25 @@ def test_generator_placement():
     assert C["zero_b_changed"] == 0 and C["rand_b_changed"] == 0 and C["zero_steps_budget"] == 1 and C["rand_steps_budget"] == 4
     d = c.decode_hits(out[128]["hits"])
     assert d["rot"][0, 0] == 8 and not d["entered"].any()   # the untouched zero partner matches A's eight zero bytes
+
+
+def test_checkpoint_resume(tmp_path, monkeypatch):
+    """census6502.run_census stopped after its first chunk and resumed gives the same totals and records as one
+    uninterrupted run (and refuses a different chunk size)."""
+    import census6502 as C6
+
+    monkeypatch.setattr(C6, "CKPT", tmp_path / "a")
+    p = C6.run_census("m6502_brkhalt_maps_L16", 2, chunk_bits=12, max_minutes=1e-9, pause=0)
+    part = C6.load_census(p)
+    assert part["chunks_done"] == 1 and not part["complete"]
+    with pytest.raises(RuntimeError):
+        C6.run_census("m6502_brkhalt_maps_L16", 2, chunk_bits=13, pause=0)
+    C6.run_census("m6502_brkhalt_maps_L16", 2, chunk_bits=12, pause=0)
+    resumed = C6.load_census(p)
+    monkeypatch.setattr(C6, "CKPT", tmp_path / "b")
+    whole = C6.load_census(C6.run_census("m6502_brkhalt_maps_L16", 2, chunk_bits=12, pause=0))
+    assert resumed["complete"] and resumed["chunks_done"] == 16
+    for b in (128, 512):
+        assert resumed["budgets"][b]["counters"] == whole["budgets"][b]["counters"]
+        key = lambda H: sorted(map(tuple, H.tolist()))  # noqa: E731
+        assert key(resumed["budgets"][b]["hits"]) == key(whole["budgets"][b]["hits"])

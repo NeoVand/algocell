@@ -170,6 +170,9 @@ class TileCensus:
             raise ValueError(f"{m.name}: the census resumes lanes; the machine is not resumable")
         if "fetchMap" not in m.fields:
             raise ValueError(f"{m.name}: the census needs the fetch map (open/closed)")
+        if m.workgroup_size != 64 or m.lanes_per_invocation != 1:
+            raise ValueError(f"{m.name}: the harness dispatches 64 lanes per workgroup, one lane per invocation "
+                             f"(the machine has {m.workgroup_size} and {m.lanes_per_invocation})")
         if not (1 <= k <= 8):
             raise ValueError("period k must be 1..8")
         self.budgets = tuple(sorted(int(b) for b in budgets))

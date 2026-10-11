@@ -1,0 +1,12 @@
+k,L,BRK,tiles (primitive),screened candidates,"exact, zero partner","exact, zero partner (non-zero tiles)","exact, ≥ 1 random partner",≥ 75% in ≥ 8 of 16
+1,16,halt,256,1,1,0,0,0
+1,20,faithful,256,0,0,0,0,0
+1,32,faithful,256,0,0,0,0,0
+2,20,faithful,65280,2,0,0,0,0
+2,32,faithful,65280,0,0,0,0,0
+3,16,faithful,16776960,5,0,0,0,0
+3,16,halt,16776960,0,0,0,0,0
+3,20,faithful,16776960,10,0,0,0,0
+3,32,faithful,16776960,0,0,0,0,0
+4,16,faithful,4294901760,351,0,0,2,16
+4,16,halt,4294901760,1288,0,0,2,22

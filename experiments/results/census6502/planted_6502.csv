@@ -1,0 +1,9 @@
+BRK,budget,scan,closer,what,closer recorded,closer exact into zero partner,closer exact into random partners (of 16),closer closed (17 encounters),words exact into zero partner in the scan,recheck tiles,recheck mismatches
+faithful,128,b50f48ca0000..b50f48caffff,b50f48ca50fa,"LDA $0F,X; PHA; DEX; BVC -6",True,True,16,True,56,1536,0
+faithful,512,b50f48ca0000..b50f48caffff,b50f48ca50fa,"LDA $0F,X; PHA; DEX; BVC -6",True,True,16,True,57,1501,0
+faithful,128,bab510480000..bab51048ffff,bab5104850fa,"TSX; LDA $10,X; PHA; BVC -6",True,True,16,True,56,2863,0
+faithful,512,bab510480000..bab51048ffff,bab5104850fa,"TSX; LDA $10,X; PHA; BVC -6",True,True,16,True,56,2872,0
+halt,128,b50f48ca0000..b50f48caffff,b50f48ca50fa,"LDA $0F,X; PHA; DEX; BVC -6",True,True,16,True,56,1535,0
+halt,512,b50f48ca0000..b50f48caffff,b50f48ca50fa,"LDA $0F,X; PHA; DEX; BVC -6",True,True,16,True,56,1501,0
+halt,128,bab510480000..bab51048ffff,bab5104850fa,"TSX; LDA $10,X; PHA; BVC -6",True,True,16,True,56,2864,0
+halt,512,bab510480000..bab51048ffff,bab5104850fa,"TSX; LDA $10,X; PHA; BVC -6",True,True,16,True,56,2871,0
