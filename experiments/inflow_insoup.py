@@ -126,7 +126,10 @@ def main():
     ap.add_argument("--n", type=int, default=256, help="in-soup partners per organism (registered: 256)")
     ap.add_argument("--only", default=None, help="L:seed, e.g. 16:2001 (smoke test)")
     ap.add_argument("--yes", action="store_true")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its organisms are the Stage G first replicators")
     if not a.yes:
         sys.exit("refusing to run: pass --yes after pausing the browser simulation (local GPU)")
     os.makedirs(a.out, exist_ok=True)

@@ -9,6 +9,7 @@ from __future__ import annotations
 import numpy as np
 
 from . import assay as A
+from . import executor as _ex
 from .gen_trace_shader import ensure
 
 ANCHOR_OP = "    var op = z80_fetch();\n    r_inc(); // M1: opcode (or prefix) fetch\n"
@@ -32,6 +33,7 @@ def _source(L: int, zero_halts: bool) -> str:
 
 def _pipeline(L: int, zero_halts: bool):
     key = (L, bool(zero_halts))
+    _ex.shader_guard("optrace._pipeline")
     if key not in _PIPE:
         dev = A.get_device()
         module = dev.create_shader_module(code=_source(L, zero_halts))
@@ -46,6 +48,16 @@ def _pipeline(L: int, zero_halts: bool):
 
 
 def execute_pairs_optrace(pairs: np.ndarray, L: int, steps: int = 128, zero_halts: bool = False):
+    if _ex.active() is not None:
+        r = _ex.active().run(pairs, L, steps, (), zero_halts=zero_halts, fetch_map=True, start_map=True)
+        return r.memory, r.fetch_map[:, : 2 * L], r.start_map[:, : 2 * L]
+    _ex.count_shader("optrace(" + A._executor_path(L, None, bool(zero_halts)).name + ")", pairs.shape[0])
+    return _shader_execute_pairs_optrace(pairs, L, steps, zero_halts)
+
+
+def _shader_execute_pairs_optrace(pairs: np.ndarray, L: int, steps: int = 128, zero_halts: bool = False, return_regs: bool = False):
+    """execute_pairs_optrace on Algocell's op-traced executor (path (a) of algocell_exp.executor); with `return_regs`,
+    also the (N, 28) register words."""
     N = pairs.shape[0]
     dev = A.get_device()
     pipe, layout = _pipeline(L, zero_halts)
@@ -82,4 +94,6 @@ def execute_pairs_optrace(pairs: np.ndarray, L: int, steps: int = 128, zero_halt
     unpack = lambda w: np.unpackbits(np.ascontiguousarray(w).view(np.uint8), axis=1, bitorder="little")[:, : 2 * L].astype(bool)  # noqa: E731
     for b in (io_buf, regs_buf, p_buf):
         b.destroy()
+    if return_regs:
+        return res, unpack(regs[:, 12:20]), unpack(regs[:, 20:28]), regs.copy()
     return res, unpack(regs[:, 12:20]), unpack(regs[:, 20:28])

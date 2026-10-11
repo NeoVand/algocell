@@ -53,7 +53,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runs/closure")
     ap.add_argument("--stages", default="stageB,stageC,stageE")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its control-flow labels are Z80 disassembly")
     os.makedirs(a.out, exist_ok=True)
     runs = []
     for stage in a.stages.split(","):

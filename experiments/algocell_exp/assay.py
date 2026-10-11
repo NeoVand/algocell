@@ -35,6 +35,7 @@ from pathlib import Path
 import numpy as np
 import wgpu
 
+from . import executor as _ex
 from .isa import masks as make_masks
 from .isa import resolve
 from .soup import SHADER_DIR, get_device
@@ -60,7 +61,10 @@ def _executor_path(tape_length: int, mem_length: int | None, zero_halts: bool) -
 
 
 def executor_file(tape_length: int = 16, mem_length: int | None = None, zero_halts: bool = False) -> str:
-    """Name of the executor shader the assays run on (provenance for analysis tables and logs)."""
+    """Name of the executor shader the assays run on (provenance for analysis tables and logs); with a Zilion machine
+    selected (algocell_exp.executor), the name of the machine that runs this (L, ring, rule)."""
+    if _ex.active() is not None:
+        return _ex.active().file(tape_length, mem_length, bool(zero_halts))
     return _executor_path(tape_length, mem_length, bool(zero_halts)).name
 
 
@@ -69,6 +73,7 @@ def _pipeline(tape_length: int = 16, mem_length: int | None = None, zero_halts: 
     lethal-tar rule (`zero_halts`); cached per (L, P, rule)."""
     P = int(mem_length) if mem_length else 2 * tape_length
     key = (tape_length, P, bool(zero_halts))
+    _ex.shader_guard("assay._pipeline")
     if key not in _PIPE:
         dev = get_device()
         path = _executor_path(tape_length, mem_length, bool(zero_halts))
@@ -90,7 +95,17 @@ def _pipeline(tape_length: int = 16, mem_length: int | None = None, zero_halts: 
 
 def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=(), mem_length: int | None = None, zero_halts: bool = False) -> np.ndarray:
     """Run many (A,B) pairs independently. pairs: (N, 2L) uint8 → final memories (N, 2L). `zero_halts` runs them under
-    the lethal-tar rule (derived executor), otherwise the normal rule."""
+    the lethal-tar rule (derived executor), otherwise the normal rule. Runs on Algocell's executor shader (the default)
+    or, when one is selected (algocell_exp.executor.select / --machine), on a vendored Zilion machine."""
+    if _ex.active() is not None:
+        return _ex.active().run(pairs, tape_length, z80_steps, suppress, mem_length=mem_length, zero_halts=zero_halts).memory
+    _ex.count_shader(_executor_path(tape_length, mem_length, bool(zero_halts)).name, pairs.shape[0])
+    return _shader_execute_pairs(pairs, tape_length, z80_steps, suppress, mem_length, zero_halts)
+
+
+def _shader_execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=(), mem_length: int | None = None, zero_halts: bool = False, return_regs: bool = False):
+    """execute_pairs on Algocell's executor shader (path (a) of algocell_exp.executor). With `return_regs`, also the
+    register words the shader writes per pair, (N, 12): a f b c d e h l sp pc writes_a writes_b."""
     N = pairs.shape[0]
     L = tape_length
     assert pairs.shape[1] == 2 * L
@@ -129,8 +144,11 @@ def execute_pairs(pairs: np.ndarray, tape_length: int, z80_steps: int, suppress=
     res = np.empty((N, 2 * L), dtype=np.uint8)
     res[:, :L] = out[:, :L]
     res[:, L:] = out[:, 4 * wpc : 4 * wpc + L]
+    regs = np.frombuffer(dev.queue.read_buffer(regs_buf), dtype=np.uint32).reshape(N, 12).copy() if return_regs else None
     for b in (io_buf, regs_buf, p_buf):
         b.destroy()
+    if return_regs:
+        return res, regs
     return res
 
 

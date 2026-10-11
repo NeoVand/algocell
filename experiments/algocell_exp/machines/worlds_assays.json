@@ -1,0 +1,91 @@
+{
+ "z80c02_assay_L16": {
+  "note": "Algocell's assay executor (z80_test_L16.wgsl and its traced and op-traced derivations) as a Zilion machine: the Zilion 0.2.0 Z80 (compat '0.2'), tapes A, B of 16 bytes on a ring of 32, SP aliasing the last byte of B, a per-lane step budget, the opcode-suppression table in the uniform (Algocell's params.suppress layout), writes per tape, and the fetch and start maps.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "z80c02_assay_L20": {
+  "note": "Algocell's assay executor (z80_test_L20.wgsl and its traced and op-traced derivations) as a Zilion machine: the Zilion 0.2.0 Z80 (compat '0.2'), tapes A, B of 20 bytes on a ring of 40, SP aliasing the last byte of B, a per-lane step budget, the opcode-suppression table in the uniform (Algocell's params.suppress layout), writes per tape, and the fetch and start maps.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 20, "name": "A" }, { "bytes": 20, "name": "B" }], "ring": 40 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "z80c02_assay_L32": {
+  "note": "Algocell's assay executor (z80_test_L32.wgsl and its traced and op-traced derivations) as a Zilion machine: the Zilion 0.2.0 Z80 (compat '0.2'), tapes A, B of 32 bytes on a ring of 64, SP aliasing the last byte of B, a per-lane step budget, the opcode-suppression table in the uniform (Algocell's params.suppress layout), writes per tape, and the fetch and start maps.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 32, "name": "A" }, { "bytes": 32, "name": "B" }], "ring": 64 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "z80c02_assay_L50": {
+  "note": "Algocell's assay executor (z80_test_L50.wgsl and its traced and op-traced derivations) as a Zilion machine: the Zilion 0.2.0 Z80 (compat '0.2'), tapes A, B of 50 bytes on a ring of 100, SP aliasing the last byte of B, a per-lane step budget, the opcode-suppression table in the uniform (Algocell's params.suppress layout), writes per tape, and the fetch and start maps.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 50, "name": "A" }, { "bytes": 50, "name": "B" }], "ring": 100 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "z80c02_assay_L64": {
+  "note": "Algocell's assay executor (z80_test_L64.wgsl and its traced and op-traced derivations) as a Zilion machine: the Zilion 0.2.0 Z80 (compat '0.2'), tapes A, B of 64 bytes on a ring of 128, SP aliasing the last byte of B, a per-lane step budget, the opcode-suppression table in the uniform (Algocell's params.suppress layout), writes per tape, and the fetch and start maps.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 64, "name": "A" }, { "bytes": 64, "name": "B" }], "ring": 128 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "z80c02_assay_lethal_L16": {
+  "note": "z80c02_assay_L16 under the lethal-tar rule (Stage I; z80_test_lethal_L16.wgsl): a zero byte fetched as the first byte of an instruction halts the lane.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 } },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "z80c02_assay_lethal_L32": {
+  "note": "z80c02_assay_L32 under the lethal-tar rule (Stage I; z80_test_lethal_L32.wgsl): a zero byte fetched as the first byte of an instruction halts the lane.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 32, "name": "A" }, { "bytes": 32, "name": "B" }], "ring": 64 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 } },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502_assay_L16": {
+  "note": "The NMOS 6502 of zilion next (validated per instruction against SingleStepTests 6502/v1; experimental status) in the assay world: tapes A, B of 16 bytes on a ring of 32, the first push landing on the last byte of B (S = 0xFF), P = 0x20, every other register zero, PC = 0, a per-lane step budget, writes per tape, and the fetch and start maps. No ablation table (Algocell's suppression masks are Z80 opcode pages). For the assay plumbing; no 6502 result may be drawn from it before the 6502 pre-registration.",
+  "core": { "isa": "m6502", "compat": "0.3" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "firstPushAt": "lastByte" }, "set": { "p": 32 } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ }
+}

@@ -1,0 +1,90 @@
+machine,source,L,zero_halts,steps,suppress,worlds,pairs,distinct,changed,entered,mm_memory,mm_writes,mm_fetch,mm_start
+z80c02_assay_L16,archived,16,False,128,"EX (SP),HL",20,10000,9485,4089,5398,0,0,0,
+z80c02_assay_L16,archived,16,False,128,"POP;RET;EX DE,HL;EXX;EX AF,AF'",10,10000,9312,5942,742,0,0,0,
+z80c02_assay_L16,archived,16,False,128,"PUSH;EX (SP),HL;CALL;RST N",50,10000,9580,5781,683,0,0,0,
+z80c02_assay_L16,archived,16,False,128,ed:43;ed:53;ed:63;ed:73;ed:4B;ed:5B;ed:6B;ed:7B,20,10000,6592,3532,4422,0,0,0,
+z80c02_assay_L16,archived,16,False,128,"family:bit;family:bit-set;family:bit-set-mem;family:rotate;family:rotate-mem;EX AF,AF';DJNZ;JR;EXX;ed:40;ed:41;ed:42;ed:43;ed:44;ed:45;ed:46;ed:47;ed:48;ed:49;ed:4a;ed:4b;ed:4c;ed:4d;ed:4e;ed:4f;ed:50;ed:51;ed:52;ed:53;ed:54;ed:55;ed:56;ed:57;ed:58;ed:59;ed:5a;ed:5b;ed:5c;ed:5d;ed:5e;ed:5f;ed:60;ed:61;ed:62;ed:63;ed:64;ed:65;ed:66;ed:67;ed:68;ed:69;ed:6a;ed:6b;ed:6c;ed:6d;ed:6e;ed:6f;ed:70;ed:71;ed:72;ed:73;ed:74;ed:75;ed:76;ed:78;ed:79;ed:7a;ed:7b;ed:7c;ed:7d;ed:7e;ed:a0;ed:a1;ed:a2;ed:a3;ed:a8;ed:a9;ed:aa;ed:ab;ed:b0;ed:b1;ed:b2;ed:b3;ed:b8;ed:b9;ed:ba;ed:bb",20,10000,2777,3659,877,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:block-copy,90,10000,7141,3719,6094,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:call-ret;family:rst,20,10000,9476,4120,4856,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:ld8;family:ld-special,20,10000,7595,3973,4325,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special,50,10000,9947,1824,7640,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,50,10000,9974,710,8931,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:ld8-imm;family:ld16-imm,20,10000,9824,2391,7449,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:ld8-mem;family:ld16-mem,90,10000,7243,3705,4083,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:rotate;family:rotate-mem;family:bit;family:bit-set;family:bit-set-mem;-RLD;-RRD,20,10000,6204,3503,4661,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:stack;family:ex;family:call-ret;family:rst,50,10000,9705,5731,986,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:stack,20,10000,9855,2995,5730,0,0,0,
+z80c02_assay_L16,archived,16,False,128,family:writes-mem;-family:incdec-mem;-family:rotate-mem;-family:bit-set-mem,50,10000,9988,662,7709,0,0,0,
+z80c02_assay_L16,archived,16,False,128,-,187,10000,6146,4283,2849,0,0,0,0.0
+z80c02_assay_L16,archived,16,False,32,"EX (SP),HL",20,10000,9912,5764,5068,0,0,0,
+z80c02_assay_L16,archived,16,False,32,"POP;RET;EX DE,HL;EXX;EX AF,AF'",10,10000,9822,7161,2101,0,0,0,
+z80c02_assay_L16,archived,16,False,32,"PUSH;EX (SP),HL;CALL;RST N",10,10000,9809,6822,1921,0,0,0,
+z80c02_assay_L16,archived,16,False,32,ed:43;ed:53;ed:63;ed:73;ed:4B;ed:5B;ed:6B;ed:7B,20,10000,9944,5726,5364,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:block-copy,50,10000,9885,4504,8574,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:call-ret;family:rst,20,10000,9794,5258,4822,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:ld8;family:ld-special,20,10000,9932,5672,5246,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special,50,10000,9890,4131,6153,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,50,10000,9990,2362,8452,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:ld8-imm;family:ld16-imm,20,10000,9927,5830,5322,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:ld8-mem;family:ld16-mem,30,10000,9173,5534,3494,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:rotate;family:rotate-mem;family:bit;family:bit-set;family:bit-set-mem;-RLD;-RRD,20,10000,9933,5555,5697,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:stack;family:ex;family:call-ret;family:rst,40,10000,9483,6080,1206,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:stack,20,10000,9945,5326,5406,0,0,0,
+z80c02_assay_L16,archived,16,False,32,family:writes-mem;-family:incdec-mem;-family:rotate-mem;-family:bit-set-mem,50,10000,9990,914,8129,0,0,0,
+z80c02_assay_L16,archived,16,False,32,-,60,10000,9857,6504,2775,0,0,0,0.0
+z80c02_assay_L16,archived,16,False,512,family:block-copy,90,10000,7151,3719,6932,0,0,0,
+z80c02_assay_L16,archived,16,False,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special,30,10000,9925,1279,7476,0,0,0,
+z80c02_assay_L16,archived,16,False,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,30,10000,9981,318,8668,0,0,0,
+z80c02_assay_L16,archived,16,False,512,family:ld8-mem;family:ld16-mem,90,10000,7094,3535,5725,0,0,0,
+z80c02_assay_L16,archived,16,False,512,family:stack;family:ex;family:call-ret;family:rst,30,10000,9624,5819,1154,0,0,0,
+z80c02_assay_L16,archived,16,False,512,family:writes-mem;-family:incdec-mem;-family:rotate-mem;-family:bit-set-mem,30,10000,9974,523,7422,0,0,0,
+z80c02_assay_L16,archived,16,False,512,-,90,10000,7463,3912,6404,0,0,0,0.0
+z80c02_assay_L16,random,16,False,128,-,0,10000,10000,8669,8885,0,0,0,0.0
+z80c02_assay_L16,random,16,False,128,family:io;family:ld8,0,10000,10000,8725,8931,0,0,0,
+z80c02_assay_L16,random,16,False,128,family:ld8-mem;family:control,0,10000,10000,7939,9088,0,0,0,
+z80c02_assay_L16,random,16,False,128,family:control;family:alu16,0,10000,10000,8801,9130,0,0,0,
+z80c02_assay_L20,archived,20,False,128,"PUSH;EX (SP),HL;CALL;RST N",10,10000,3562,4148,326,0,0,0,
+z80c02_assay_L20,archived,20,False,128,-,40,10000,6397,4682,2791,0,0,0,0.0
+z80c02_assay_L20,random,20,False,128,-,0,10000,10000,8905,8650,0,0,0,0.0
+z80c02_assay_L20,random,20,False,128,family:bit-set-mem;family:io,0,10000,10000,8929,8686,0,0,0,
+z80c02_assay_L20,random,20,False,128,family:rst;family:block-cmp,0,10000,10000,8370,8743,0,0,0,
+z80c02_assay_L20,random,20,False,128,family:block-copy;family:ld16-mem,0,10000,10000,8825,8650,0,0,0,
+z80c02_assay_L32,archived,32,False,128,"PUSH;EX (SP),HL;CALL;RST N",10,10000,6267,4844,221,0,0,0,
+z80c02_assay_L32,archived,32,False,128,"family:bit;family:bit-set;family:bit-set-mem;family:rotate;family:rotate-mem;EX AF,AF';DJNZ;JR;EXX;ed:40;ed:41;ed:42;ed:43;ed:44;ed:45;ed:46;ed:47;ed:48;ed:49;ed:4a;ed:4b;ed:4c;ed:4d;ed:4e;ed:4f;ed:50;ed:51;ed:52;ed:53;ed:54;ed:55;ed:56;ed:57;ed:58;ed:59;ed:5a;ed:5b;ed:5c;ed:5d;ed:5e;ed:5f;ed:60;ed:61;ed:62;ed:63;ed:64;ed:65;ed:66;ed:67;ed:68;ed:69;ed:6a;ed:6b;ed:6c;ed:6d;ed:6e;ed:6f;ed:70;ed:71;ed:72;ed:73;ed:74;ed:75;ed:76;ed:78;ed:79;ed:7a;ed:7b;ed:7c;ed:7d;ed:7e;ed:a0;ed:a1;ed:a2;ed:a3;ed:a8;ed:a9;ed:aa;ed:ab;ed:b0;ed:b1;ed:b2;ed:b3;ed:b8;ed:b9;ed:ba;ed:bb",20,10000,8733,7924,9551,0,0,0,
+z80c02_assay_L32,archived,32,False,128,-,30,10000,7733,5955,5542,0,0,0,0.0
+z80c02_assay_L32,random,32,False,128,-,0,10000,10000,9047,8098,0,0,0,0.0
+z80c02_assay_L32,random,32,False,128,family:incdec8;family:ld-special,0,10000,10000,9052,8155,0,0,0,
+z80c02_assay_L32,random,32,False,128,family:bit;family:call-ret,0,10000,10000,8754,7744,0,0,0,
+z80c02_assay_L32,random,32,False,128,family:rotate;family:io,0,10000,10000,9090,8198,0,0,0,
+z80c02_assay_L50,archived,50,False,128,"PUSH;EX (SP),HL;CALL;RST N",10,10000,6544,4913,73,0,0,0,
+z80c02_assay_L50,archived,50,False,128,-,30,10000,9132,9483,7690,0,0,0,0.0
+z80c02_assay_L50,random,50,False,128,-,0,10000,10000,9262,7707,0,0,0,0.0
+z80c02_assay_L50,random,50,False,128,family:bit;family:bit-set,0,10000,10000,9249,7648,0,0,0,
+z80c02_assay_L50,random,50,False,128,family:ld16-imm;family:block-copy,0,10000,10000,9271,7655,0,0,0,
+z80c02_assay_L50,random,50,False,128,family:incdec-mem;family:call-ret,0,10000,10000,8938,6691,0,0,0,
+z80c02_assay_L64,archived,64,False,128,"PUSH;EX (SP),HL;CALL;RST N",30,10000,7192,5416,144,0,0,0,
+z80c02_assay_L64,archived,64,False,128,family:block-copy,10,10000,9657,8547,8950,0,0,0,
+z80c02_assay_L64,archived,64,False,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,10,10000,9950,3747,7116,0,0,0,
+z80c02_assay_L64,archived,64,False,128,family:stack;family:ex;family:call-ret;family:rst,10,10000,6651,4832,73,0,0,0,
+z80c02_assay_L64,archived,64,False,128,-,60,10000,9217,7753,6750,0,0,0,0.0
+z80c02_assay_L64,archived,64,False,512,"PUSH;EX (SP),HL;CALL;RST N",10,10000,8533,5568,242,0,0,0,
+z80c02_assay_L64,archived,64,False,512,family:block-copy,10,10000,8686,8303,8861,0,0,0,
+z80c02_assay_L64,archived,64,False,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,10,10000,9954,1783,8019,0,0,0,
+z80c02_assay_L64,archived,64,False,512,family:stack;family:ex;family:call-ret;family:rst,10,10000,7346,5035,122,0,0,0,
+z80c02_assay_L64,archived,64,False,512,-,20,10000,8334,7972,7824,0,0,0,0.0
+z80c02_assay_L64,random,64,False,128,-,0,10000,10000,9269,7169,0,0,0,0.0
+z80c02_assay_L64,random,64,False,128,family:ld16-imm;family:rst,0,10000,10000,9005,7956,0,0,0,
+z80c02_assay_L64,random,64,False,128,family:block-copy;family:ld16-mem,0,10000,10000,9250,7100,0,0,0,
+z80c02_assay_L64,random,64,False,128,family:alu8;family:incdec-mem,0,10000,10000,9236,7030,0,0,0,
+z80c02_assay_lethal_L16,archived,16,True,128,-,11,10000,9512,5528,491,0,0,0,0.0
+z80c02_assay_lethal_L16,random,16,True,128,-,0,10000,10000,8428,7822,0,0,0,0.0
+z80c02_assay_lethal_L16,random,16,True,128,family:block-copy;family:ld16-mem,0,10000,10000,8413,7789,0,0,0,
+z80c02_assay_lethal_L16,random,16,True,128,family:stack;family:jump-rel,0,10000,10000,8477,7872,0,0,0,
+z80c02_assay_lethal_L16,random,16,True,128,family:block-cmp;family:block-io,0,10000,10000,8400,7799,0,0,0,
+z80c02_assay_lethal_L32,arch-plain,32,True,128,"PUSH;EX (SP),HL;CALL;RST N",10,10000,6187,4664,211,0,0,0,
+z80c02_assay_lethal_L32,arch-plain,32,True,128,"family:bit;family:bit-set;family:bit-set-mem;family:rotate;family:rotate-mem;EX AF,AF';DJNZ;JR;EXX;ed:40;ed:41;ed:42;ed:43;ed:44;ed:45;ed:46;ed:47;ed:48;ed:49;ed:4a;ed:4b;ed:4c;ed:4d;ed:4e;ed:4f;ed:50;ed:51;ed:52;ed:53;ed:54;ed:55;ed:56;ed:57;ed:58;ed:59;ed:5a;ed:5b;ed:5c;ed:5d;ed:5e;ed:5f;ed:60;ed:61;ed:62;ed:63;ed:64;ed:65;ed:66;ed:67;ed:68;ed:69;ed:6a;ed:6b;ed:6c;ed:6d;ed:6e;ed:6f;ed:70;ed:71;ed:72;ed:73;ed:74;ed:75;ed:76;ed:78;ed:79;ed:7a;ed:7b;ed:7c;ed:7d;ed:7e;ed:a0;ed:a1;ed:a2;ed:a3;ed:a8;ed:a9;ed:aa;ed:ab;ed:b0;ed:b1;ed:b2;ed:b3;ed:b8;ed:b9;ed:ba;ed:bb",20,10000,8703,5774,6177,0,0,0,
+z80c02_assay_lethal_L32,arch-plain,32,True,128,-,30,10000,7828,5129,4297,0,0,0,0.0
+z80c02_assay_lethal_L32,random,32,True,128,-,0,10000,10000,8836,7420,0,0,0,0.0
+z80c02_assay_lethal_L32,random,32,True,128,family:ex;family:ld8-imm,0,10000,10000,8816,7303,0,0,0,
+z80c02_assay_lethal_L32,random,32,True,128,family:call-ret;family:stack,0,10000,10000,8101,6761,0,0,0,
+z80c02_assay_lethal_L32,random,32,True,128,family:ld8-mem;family:ld16-imm,0,10000,10000,8284,7491,0,0,0,

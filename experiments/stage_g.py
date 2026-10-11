@@ -41,7 +41,10 @@ def main():
     ap.add_argument("--dir", default="runs/stageG")
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-verdicts", action="store_true", help="skip the Stage G pre-registered verdicts (thresholds for 20 worlds per L), e.g. for runs/stageH")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its control-flow and block-repeat labels are Z80 disassembly")
     out = a.out or os.path.join(a.dir, "analysis", "stageG")
     os.makedirs(out, exist_ok=True)
     d = pd.read_csv(os.path.join(a.dir, "analysis", "assays.csv"))

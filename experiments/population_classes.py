@@ -173,7 +173,12 @@ def main():
     ap.add_argument("--out", default=os.path.join(R, "population"))
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--yes", action="store_true")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    # --soups classifies any soup with ISA-neutral logic (culture test, fetch-map confinement, single-mutant scan); the
+    # Stage tables are Z80 worlds (some under the Z80 i8080 suppression)
+    E.from_args(a, isas=None if a.soups else ("z80",), why="its stages are Z80 worlds (use --soups for another ISA)")
     if a.report:
         report(a.out)
         return

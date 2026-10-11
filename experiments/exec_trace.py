@@ -44,7 +44,10 @@ def main():
     ap.add_argument("--out", default=os.path.join(R, "exectrace"))
     ap.add_argument("--n", type=int, default=256)
     ap.add_argument("--yes", action="store_true")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its organisms are Stage G, K and I tapes with Z80 loop labels")
     if not a.yes:
         sys.exit("refusing to run: pass --yes after pausing the browser simulation (local GPU)")
     os.makedirs(a.out, exist_ok=True)
