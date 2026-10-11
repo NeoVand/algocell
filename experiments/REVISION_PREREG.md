@@ -1301,3 +1301,37 @@ registered P1 verdict.
 - **P3.** `copy_offset` gave d = 0 for every eligible arm-A cell, with 16 undefined. On these copiers it measures the
   alignment of the copy in the partner, not the copy period of the d − 6 law. P3 was therefore untestable as
   operationalised, and remains not tested.
+
+## I1-T2 — the impact study's second tier (registered 2026-10-11, before any tier-2 world is run; spend approved by the user, cap $40)
+
+**What is registered.**
+- The design, hashes, scoring commands and 36-component verdict ledger of `results/tier2/REGISTRATION_DRAFT.md`,
+  with its `INVENTORY.md`, `PUBLISHED_VERDICTS.csv` and `COST.md`, as merged at dbd608c, under the decisions below.
+- The experiments are the flagged claim-bearing ones: DZ, E, Stage L, R4 and Stage F.
+- Each re-runs its original design and seeds under C1 (compat '0.3' classic) and is re-scored by its own frozen
+  scorer, with assays under C1.
+- **A claim stands under C1** if every one of its registered verdicts (met or not met) equals the published verdict.
+  Otherwise the change is reported.
+
+**Decisions.**
+1. **DZ3 is included,** because ED Fig. 8d depends on it.
+2. **Coverage.** Both Stage L lengths, every E arm including E-L32L, and the complete serial and branching panels are
+   included, as drafted.
+3. **R4.** C4b's components are frozen as separate verdicts:
+   - the SI13 motif-majority component, published as not met (0 of 5 worlds);
+   - the confinement and reverse-pusher-suppression components, published as met (5 of 5).
+
+   The published reading, that closed descendants displace the pusher, is reported descriptively and is not turned
+   into a test. C4c registered no direction, so its tables are compared descriptively.
+4. **Frozen scripts and literal components are reported separately** wherever they differ, as listed in the draft:
+   DZ's KM reversal, E2's below-start count, the E-L32L threshold, and Stage L's L2 site rule. The frozen formulas are
+   not changed, and the published baseline for each is fixed in `PUBLISHED_VERDICTS.csv` before any C1 data.
+5. **F4c** is cited from its actual registration, `PLAN.md` lines 260–277.
+6. **Stage E nominal L10 emergence** (Extended Data Fig. 2b) is added: its ten original worlds under C1, reported
+   descriptively with its frozen tables. No new direction is registered.
+7. **Execution.**
+   - NVIDIA L4, as costed: $34.99 with reserves.
+   - A running spend ledger. If the remaining required work would exceed $40, dispatch stops and the registration is
+     amended; horizons, seeds and p levels are never truncated, and an incomplete test is never scored.
+   - Hardware differs from the original runs. The equivalence claim is execution on identical pairs (proved for C0);
+     whole-soup trajectories were never deterministic.
