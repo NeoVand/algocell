@@ -49,3 +49,38 @@ theory predicts a loop-bearing, closed beginning, if replication begins at all.
 3. Local pilot: 4 worlds × 100,000 steps at L = 16 and 32 to size the horizon and the spend; the pilot is reported
    and its worlds excluded.
 4. Spend estimate and approval before any Modal sweep.
+
+## Predictions locked (2026-10-11, before any 6502 soup was run)
+
+**Census basis.** The census is now recomputed on the validated core: `results/census6502/CENSUS.md`, merged at
+b5fe4f7. Its period-4 BRK-halt tail ran on Modal after a cross-platform identity check (`MODAL_TAIL.md`). Findings:
+
+- **Same harness, positive control.** On the Z80 it reproduces the paper's census word for word: 0, 5, 1 and 646 at
+  periods 1–4, L = 16.
+- **No straight-line self-writer on the 6502.** At periods 1–4 (L = 16) and periods 1–3 (L = 20 and 32) there are 0,
+  in all four arms: BRK faithful or halting, 128 or 512 instructions.
+- **Open stack copiers are weak.** They copy exactly into a minority of random partners: a median of 1 in 1,024 fresh
+  partners, at best 36 (BRK faithful) or 55 (BRK halting).
+- **No closed period-4 word copies exactly.** The best reach 87.5% (14 of 16 bytes).
+- **Seeded closed copy loops copy exactly.** Their class follows the copy-offset operand: the d − 6 law holds in
+  296 of 296 qualifying cases.
+
+**P1–P4, the null outcome and the kill rule stand as written above.** Two clarifications fix them before any soup
+exists:
+
+- (a) An "open straight-line replicator" in P2 and the kill rule is a heritable replicator (by the frozen culture
+  test) for which both hold: its traced execution never transfers control backwards into its own bytes, and its
+  pointer enters the partner in at least one traced encounter. The census's open stack copiers count if they become
+  heritable replicators in a soup.
+- (b) These predictions were fixed from the census alone. No 6502 soup had been run when they were written.
+
+**The pilot sizes the design; it cannot touch the predictions.**
+
+- The pilot is 4 worlds per length (8 in all), each 100,000 steps, at L = 16 and 32, with 128 instructions.
+  `pilot6502.py` runs it; it ran on Modal.
+- It sets only the horizon and the spend estimate. It cannot change P1–P4, the null outcome, the kill rule or the
+  analysis.
+- Its report holds only steps per second and population-concentration trajectories: the share of the most common
+  tape and the quasispecies share.
+- No replicator classification (open/closed, loops, heredity) is run on pilot soups.
+- The pilot worlds are excluded from the registered test.
