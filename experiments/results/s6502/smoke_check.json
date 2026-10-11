@@ -1,0 +1,97 @@
+{
+  "checks": "passed",
+  "seed": 999,
+  "steps": 30000,
+  "arms": [
+    {
+      "arm": "A",
+      "checks": "passed",
+      "samples": 116,
+      "snapshot_steps": [
+        20000,
+        30000
+      ],
+      "steps_per_s": 2173.41,
+      "smoke_wall_s": 13.803,
+      "sample_steps_per_s_min": 212.19,
+      "sample_steps_per_s_max": 6131.56,
+      "git_commit": "948ac2b5cfef2b96840681036739181bbb8db37e",
+      "adapter": "NVIDIA L40S (Vulkan, DiscreteGPU)",
+      "execution_steps_per_s": 4842.705094614518,
+      "sample_overhead_s": 0.021407461774897406,
+      "startup_s": 2.48295466650636,
+      "checkpoint_allowance_s": 1.4960000000000004,
+      "projected_world_hours": 0.5815057192073082
+    },
+    {
+      "arm": "B",
+      "checks": "passed",
+      "samples": 116,
+      "snapshot_steps": [
+        20000,
+        30000
+      ],
+      "steps_per_s": 1785.31,
+      "smoke_wall_s": 16.804,
+      "sample_steps_per_s_min": 237.24,
+      "sample_steps_per_s_max": 6282.75,
+      "git_commit": "948ac2b5cfef2b96840681036739181bbb8db37e",
+      "adapter": "NVIDIA L40S (Vulkan, DiscreteGPU)",
+      "execution_steps_per_s": 4623.173089328536,
+      "sample_overhead_s": 0.03896917960746696,
+      "startup_s": 2.707273781107421,
+      "checkpoint_allowance_s": 2.1266725412391225,
+      "projected_world_hours": 0.6138962716828957
+    },
+    {
+      "arm": "C",
+      "checks": "passed",
+      "samples": 116,
+      "snapshot_steps": [
+        20000,
+        30000
+      ],
+      "steps_per_s": 1586.43,
+      "smoke_wall_s": 18.91,
+      "sample_steps_per_s_min": 235.8,
+      "sample_steps_per_s_max": 3006.03,
+      "git_commit": "948ac2b5cfef2b96840681036739181bbb8db37e",
+      "adapter": "NVIDIA L40S (Vulkan, DiscreteGPU)",
+      "execution_steps_per_s": 2678.258725553756,
+      "sample_overhead_s": 0.020613763313645485,
+      "startup_s": 3.1083421315124786,
+      "checkpoint_allowance_s": 1.093,
+      "projected_world_hours": 1.044486904547698
+    },
+    {
+      "arm": "D",
+      "checks": "passed",
+      "samples": 116,
+      "snapshot_steps": [
+        20000,
+        30000
+      ],
+      "steps_per_s": 2156.59,
+      "smoke_wall_s": 13.911,
+      "sample_steps_per_s_min": 225.71,
+      "sample_steps_per_s_max": 5997.84,
+      "git_commit": "948ac2b5cfef2b96840681036739181bbb8db37e",
+      "adapter": "NVIDIA L40S (Vulkan, DiscreteGPU)",
+      "execution_steps_per_s": 4987.602937582143,
+      "sample_overhead_s": 0.018176708802521545,
+      "startup_s": 3.3003000977191213,
+      "checkpoint_allowance_s": 1.5470855978224503,
+      "projected_world_hours": 0.5643643208310999
+    }
+  ],
+  "registered_worlds": 80,
+  "l40s_usd_per_hour": 1.95,
+  "estimated_gpu_hours": 56.08506432538004,
+  "estimated_gpu_usd": 109.36587543449107,
+  "cpu_memory_allowance_usd": 3.1015040571935164,
+  "wall_time_margin": 1.25,
+  "estimated_usd": 140.58422436460575,
+  "cost_limit_usd": 160,
+  "launch_permitted": true,
+  "basis": "10M / aggregate measured execution steps/s + 864 sample overheads + 5 checkpoint allowances + startup once; 20 worlds per arm, CPU/memory allowance, then 25% time margin"
+}

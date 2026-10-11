@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 import modal_s6502 as M
+import check_s6502_smoke as C
 import run6502 as R
 
 
@@ -19,6 +20,21 @@ def test_schedule_boundaries_and_count():
     assert len(expected) == 864 and len(set(expected)) == 864
     assert R.sample_steps(30000) == expected[:116]
     assert R.sample_steps(51) == [50]
+
+
+def test_cost_projection_charges_fixed_overhead_once():
+    elapsed = 2.0
+    samples = []
+    previous_step = 0
+    for step in R.sample_steps(30000):
+        if previous_step == 20000:
+            elapsed += 0.5
+        elapsed += (step - previous_step) / 1000 + 0.02
+        samples.append({"step": step, "steps_per_s": 1000, "elapsed_s": elapsed})
+        previous_step = step
+    projection = C.timing_projection(samples, {"steps_run": 30000, "wall_s": elapsed + 0.5})
+    assert projection["execution_steps_per_s"] == pytest.approx(1000)
+    assert projection["projected_world_hours"] * 3600 == pytest.approx(10000 + 864 * 0.02 + 5 * 0.5 + 2)
 
 
 def test_exact_top3_keeps_hash_collisions_separate():

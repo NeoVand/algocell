@@ -2,8 +2,9 @@
 
     python check_s6502_smoke.py results/s6502/smoke --report results/s6502/smoke_check.json
 
-The cost gate uses total smoke wall time, including initialization, readbacks,
-compression and volume commits before the summary, at the requested $1.95/h.
+Project simulation time from measured interval steps/s, then add the registered
+864 readbacks, five checkpoints and startup once. Total smoke wall throughput is
+also reported. The cost gate includes a 25% time margin and CPU/memory allowance.
 """
 
 from __future__ import annotations
@@ -12,11 +13,34 @@ import argparse
 import hashlib
 import json
 import math
+import statistics
 from pathlib import Path
 
 import brotli
 
 import run6502 as R
+
+
+def timing_projection(samples: list[dict], summary: dict) -> dict:
+    """Use timing metadata only; fixed smoke overhead must not scale with steps."""
+    previous_step = 0
+    durations = []
+    sample_overhead = []
+    for i, sample in enumerate(samples):
+        durations.append((sample["step"] - previous_step) / sample["steps_per_s"])
+        if i and samples[i - 1]["step"] != 20000:
+            sample_overhead.append(sample["elapsed_s"] - samples[i - 1]["elapsed_s"] - durations[-1])
+        previous_step = sample["step"]
+    overhead = max(0.0, statistics.median(sample_overhead))
+    setup = max(0.0, samples[0]["elapsed_s"] - durations[0] - overhead)
+    i = next(i for i, sample in enumerate(samples) if sample["step"] == 22500)
+    checkpoint = max(0.0, samples[i]["elapsed_s"] - samples[i - 1]["elapsed_s"] - durations[i] - overhead,
+                     summary["wall_s"] - samples[-1]["elapsed_s"])
+    rate = summary["steps_run"] / sum(durations)
+    world_s = R.HORIZON / rate + 864 * overhead + 5 * checkpoint + setup
+    return {"execution_steps_per_s": rate, "sample_overhead_s": overhead,
+            "startup_s": setup, "checkpoint_allowance_s": checkpoint,
+            "projected_world_hours": world_s / 3600}
 
 
 def check_world(root: Path, arm: str, seed: int, git_commit: str | None = None) -> dict:
@@ -87,7 +111,7 @@ def check_world(root: Path, arm: str, seed: int, git_commit: str | None = None) 
             "sample_steps_per_s_min": min(r["steps_per_s"] for r in samples),
             "sample_steps_per_s_max": max(r["steps_per_s"] for r in samples),
             "git_commit": cond["git_commit"], "adapter": cond["adapter"],
-            "projected_world_hours": R.HORIZON / summary["steps_per_s"] / 3600}
+            **timing_projection(samples, summary)}
 
 
 def main() -> None:
@@ -99,12 +123,18 @@ def main() -> None:
     a = ap.parse_args()
     worlds = [check_world(a.root, arm, a.seed, a.git_commit) for arm in R.ARMS]
     hours = 20 * sum(w["projected_world_hours"] for w in worlds)
-    cost = hours * 1.95
+    gpu_cost = hours * 1.95
+    # Current Modal billing rates: $0.0473/core-hour and $0.008/GiB-hour.
+    # Allow one core and one GiB per container, plus 25% extra wall time.
+    cpu_memory_allowance = hours * (0.0473 + 0.008)
+    cost = (gpu_cost + cpu_memory_allowance) * 1.25
     report = {"checks": "passed", "seed": a.seed, "steps": 30000, "arms": worlds,
               "registered_worlds": 80, "l40s_usd_per_hour": 1.95,
-              "estimated_gpu_hours": hours, "estimated_usd": cost,
+              "estimated_gpu_hours": hours, "estimated_gpu_usd": gpu_cost,
+              "cpu_memory_allowance_usd": cpu_memory_allowance,
+              "wall_time_margin": 1.25, "estimated_usd": cost,
               "cost_limit_usd": 160, "launch_permitted": cost <= 160,
-              "basis": "10M / total smoke wall steps/s, 20 worlds per arm; includes smoke startup/readback/checkpoint overhead"}
+              "basis": "10M / aggregate measured execution steps/s + 864 sample overheads + 5 checkpoint allowances + startup once; 20 worlds per arm, CPU/memory allowance, then 25% time margin"}
     a.report.parent.mkdir(parents=True, exist_ok=True)
     a.report.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))

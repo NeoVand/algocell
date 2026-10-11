@@ -25,9 +25,9 @@ image = (
 )
 vol = modal.Volume.from_name("algocell-atlas-runs", create_if_missing=True)
 
-# Recalibrate against the four-arm smoke before launching. Six hours is the
-# provisional ceiling; the registered launch uses the measured ceiling below.
-WORLD_TIMEOUT_S = 6 * 60 * 60
+# Four-arm smoke (2026-10-11): arm C projects to about 1.05 h including
+# readbacks/checkpoints/startup. Four hours leaves over 3.8x margin for C.
+WORLD_TIMEOUT_S = 4 * 60 * 60
 
 
 @app.function(image=image, gpu="L40S", timeout=WORLD_TIMEOUT_S,
