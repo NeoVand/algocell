@@ -13,8 +13,8 @@ L,BRK,budget,k,census,records,counter = records (hits_total),flags ≠ scores,co
 16,halt,512,2,complete,1019,True,0,0,0
 16,halt,128,3,complete,4016,True,0,0,0
 16,halt,512,3,complete,4016,True,0,0,0
-16,halt,128,4,INCOMPLETE 201/256,14406,True,0,0,0
-16,halt,512,4,INCOMPLETE 201/256,14532,True,0,0,0
+16,halt,128,4,complete,17993,True,0,0,0
+16,halt,512,4,complete,18146,True,0,0,0
 20,faithful,128,1,complete,63,True,0,0,0
 20,faithful,512,1,complete,63,True,0,0,0
 20,faithful,128,2,complete,1018,True,0,0,0

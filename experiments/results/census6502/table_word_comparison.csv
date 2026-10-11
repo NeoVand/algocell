@@ -273,6 +273,22 @@ k,L,BRK,column,word,disassembly,in this census,in the exploratory,this census: e
 4,16,halt,"exact, ≥ 1 random partner",c2 48 88 b1,"NOP #$48; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y; PHA; DEY; LDA ($C2),Y | …",True,False,1 / 1,0 / 0 (re-run),False
 4,16,halt,"exact, ≥ 1 random partner",c3 49 50 b5,"DCP ($49,X); BVC -75",True,False,1 / 1,0 / 0 (re-run),False
 4,16,halt,"exact, ≥ 1 random partner",c8 d0 99 e5,INY; BNE -103; SBC $C8; BNE -103; SBC $C8; BNE -103; SBC $C8 | …,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",c9 48 88 b3,"CMP #$48; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y; PHA; DEY; LAX ($C9),Y | …",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",c9 90 3a 68,CMP #$90; NOP; PLA,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ca b4 4c 68,"DEX; LDY $4C,X; PLA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ca b5 08 48,"DEX; LDA $08,X; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ca b5 64 48,"DEX; LDA $64,X; PHA",True,False,1 / 2,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ca b5 d0 48,"DEX; LDA $D0,X; PHA",True,False,1 / 1,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ca b5 e4 48,"DEX; LDA $E4,X; PHA",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",ca bc 4a 26,"DEX; LDY $264A,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",cf 0c 48 b7,"DCP $480C; LAX $CF,Y; NOP $B748",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",d0 48 ba b5,"BNE +72; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X; PHA; TSX; LDA $D0,X | …",True,False,2 / 3,0 / 2 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",d0 99 a5 5e,BNE -103; LDA $5E,True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",e8 68 95 37,"INX; PLA; STA $37,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",e8 68 95 77,"INX; PLA; STA $77,X",True,False,1 / 1,0 / 0 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",f1 48 88 b1,"SBC ($48),Y; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y; PHA; DEY; LDA ($F1),Y | …",True,False,1 / 1,1 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",f3 4c 68 91,"ISC ($4C),Y; PLA; STA ($F3),Y; JMP $9168",True,False,1 / 1,0 / 1 (re-run),False
+4,16,halt,"exact, ≥ 1 random partner",f9 48 88 b3,"SBC $8848,Y; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y; PHA; DEY; LAX ($F9),Y | …",True,False,1 / 1,0 / 0 (re-run),False
 4,16,halt,≥ 75% in ≥ 8 of 16,20 02 20 04,JSR $2002; NOP $20; JAM; JSR $2004; JAM; JSR $2004 | …,True,True,0 / 16,0 / 16,True
 4,16,halt,≥ 75% in ≥ 8 of 16,20 0c 20 1f,"JSR $200C; SLO $0C20,X; JSR $201F; NOP $1F20",True,True,0 / 16,0 / 16,True
 4,16,halt,≥ 75% in ≥ 8 of 16,20 24 20 33,"JSR $2024; RLA ($20),Y; BIT $20; RLA ($20),Y; BIT $20; RLA ($20),Y | …",True,True,0 / 16,0 / 16,True
