@@ -1,0 +1,394 @@
+{
+  "schema": "s1-score/2",
+  "world": {
+    "t_rep": 150,
+    "t_closed": 50000,
+    "first_tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+    "first_open": true,
+    "first_confined": false,
+    "first_loop": true,
+    "first_entered": 16,
+    "p2_violation": false,
+    "p2_first_step": null,
+    "world": "lp0_s9003",
+    "arm": "DZ",
+    "seed": 9003,
+    "horizon": 300000,
+    "L": 16,
+    "budget": 128,
+    "machine": "z80c02_assay_L16",
+    "snapshot_step": 300000,
+    "n_cells": 64,
+    "frac_heritable": 0.875,
+    "frac_open_of_heritable": 0.0,
+    "frac_confined_of_heritable": 1.0,
+    "n_scanned": 16,
+    "n_scanned_confined": 16,
+    "frac_regenerator_of_heritable": 1.0,
+    "frac_intermediate_of_heritable": 0.0,
+    "frac_transmitter_of_heritable": 0.0,
+    "median_unexec_sites_transmitters": null,
+    "median_sites_confined_scanned": 0.0
+  },
+  "cells": [
+    {
+      "cell": 62,
+      "tape": "0c e3 21 e3 21 c0 0c c0 0c e3 21 e3 21 c0 0c c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 7,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 60,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 59,
+      "tape": "ac e3 21 e3 21 c0 ac c0 ac e3 21 e3 21 c0 ac c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 36,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 29,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 15,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 24,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 4,
+      "tape": "9d e3 21 e3 21 c0 9d c0 9d e3 21 e3 21 c0 9d c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 35,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 13,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 8,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 57,
+      "tape": "05 e3 21 e3 21 c0 05 c0 05 e3 21 e3 21 c0 05 c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 43,
+      "tape": "bd e3 21 e3 21 c0 bd c0 bd e3 21 e3 21 c0 bd c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 47,
+      "tape": "ae e3 21 e3 21 c0 ae c0 ae e3 21 e3 21 c0 ae c0",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 34,
+      "tape": "ad e3 21 e3 21 c0 ad c0 ad e3 21 e3 21 c0 ad c0",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    }
+  ],
+  "p2_tapes": [],
+  "judged_tapes": [
+    {
+      "tape": "00 41 00 41 00 41 00 41 00 41 00 41 00 41 00 41",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.10240885416666666
+    },
+    {
+      "tape": "00 41 00 41 00 41 00 41 00 41 00 41 00 01 00 41",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.16848958333333333
+    },
+    {
+      "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+      "heritable": true,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 0.5621744791666666
+    },
+    {
+      "tape": "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.0048177083333333336
+    },
+    {
+      "tape": "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 c5",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": 0,
+      "gen2": 0.013020833333333334
+    },
+    {
+      "tape": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": 0,
+      "gen2": 0.13984375
+    },
+    {
+      "tape": "21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5 21 e5",
+      "heritable": true,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 0.5422526041666667
+    },
+    {
+      "tape": "21 01 21 01 21 01 21 01 21 01 21 01 21 01 21 01",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.0009114583333333333
+    },
+    {
+      "tape": "01 21 01 21 01 21 01 21 01 21 01 21 01 21 01 21",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.0018880208333333333
+    },
+    {
+      "tape": "00 e3 21 e3 21 e0 00 e0 00 e3 21 e3 21 e0 00 e0",
+      "heritable": true,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 1.0
+    }
+  ],
+  "input_sha256": "f917dec2393a37c8fcf66c201cdd7fd9e7b9bad571e40023568da5b329aba761",
+  "code_sha256": {
+    "score6502.py": "f65e7f1028f0b953e7ed24cd5f8c0a7641a96a3cd3e75133ebe3019bcdf2ed4d",
+    "population_classes.py": "22d70358848edc50500509aa35f9dea76f47cbff8b068d8c6d7c8e6da43668b2",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "dial_soups.py": "a11510a58108e4dbea2a9ddbc834ff3ccbd0b127415f2321c8b058abbc5ef86a",
+    "algocell_exp/executor.py": "6d2a8adcdebe803510de3e1f28831e050c425c2e64a867ec38929e9d7db2d113",
+    "algocell_exp/assay.py": "ce809ff0e5046c80d60570ba42fa59f14429c245cf07357121a31959f9aedc64",
+    "algocell_exp/exectrace.py": "ca1462f82e5ae2d9ec7e949bf80096c0059cd7c82d400c455e81b3c2f32aa6cd",
+    "algocell_exp/zmachine.py": "5197b3cb542c9d4fa7e8340d515103e3db03807c77bf03cb1be203509a439f68",
+    "algocell_exp/m6502_instructions.json": "d0e6c62c4c4ffb8d0d84c2ebe7ffe867bf40741e7a8825873e9dd57af0ae36ce"
+  },
+  "executor": {
+    "z80c02_assay_L16": {
+      "machine": "z80c02_assay_L16",
+      "zilion": "0.3.0-dev",
+      "core": "z80 0.2.0 (stable; variant classic; compat 0.2; hooks fetch,instructionStart)",
+      "sha256_core": "e6795a6a5718f9330f7a1fe3cb6373abd837121fb51c2068cff185579ec56e9a",
+      "sha256_world": "36556772d1b61eaf6e55e4fafc5065f1c515e598c9ce5c0c4d1315bfe8f8be9d",
+      "sha256_wgsl": "b3b1d4ab4b9c62a9e7293a8cf96c93f99043721d3faa02e0a2c8cc7ed4f72088",
+      "ring": 32,
+      "segments": [
+        [
+          "A",
+          16
+        ],
+        [
+          "B",
+          16
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 25,
+        "stack": {
+          "convention": {
+            "kind": "topAliases",
+            "position": 31,
+            "values": {
+              "sp": 65535
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": null,
+      "ablation": "coarse"
+    }
+  },
+  "usage": {
+    "shader": {},
+    "machine": {
+      "z80c02_assay_L16": 138144,
+      "z80c02_assay_L16 (pc prefix replay)": 6192
+    }
+  },
+  "modal": {
+    "scorer_commit": "da90b617d4d321ad5e100ba91498b10847a57e89",
+    "app_id": "ap-X86zTQDutPZL4QMGTXKcd3",
+    "input_prefix": "s6502_scorer_test/985b5fbf386f45ec85dfa5b975a22429",
+    "result_path": "s6502_scorer_test/985b5fbf386f45ec85dfa5b975a22429/scored/DZ/lp0_s9003.json",
+    "wall_s": 4.109,
+    "adapter": {
+      "vendor": "NVIDIA",
+      "architecture": "",
+      "device": "NVIDIA L4",
+      "description": "610.57.04",
+      "stackgroup_min_size": 4,
+      "stackgroup_max_size": 128,
+      "vendor_id": 4318,
+      "device_id": 10168,
+      "adapter_type": "DiscreteGPU",
+      "backend_type": "Vulkan"
+    },
+    "software_vulkan": false
+  }
+}

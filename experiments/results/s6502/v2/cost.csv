@@ -1,0 +1,3 @@
+app_id,worlds,gpu,cpu,memory_gib,max_simultaneous_containers,created_at,stopped_at,app_elapsed_s,scorer_wall_s,scorer_compute_estimate_usd,whole_app_compute_upper_bound_usd,state,tasks
+ap-xVead2ED3QKiTs4BMnXRjp,80,L4,1,2,20,2026-10-11 09:19:04-05:00,2026-10-11 09:21:49-05:00,165.0,366.98,0.08800384277777779,0.7913583333333334,stopped,0
+ap-X86zTQDutPZL4QMGTXKcd3,10,L4,1,2,10,2026-10-11 09:18:22-05:00,2026-10-11 09:18:55-05:00,33.0,42.442,0.01017782738888889,0.07913583333333334,stopped,0

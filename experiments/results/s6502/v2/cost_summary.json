@@ -1,0 +1,7 @@
+{
+  "scorer_compute_estimate_usd": 0.09818167016666668,
+  "whole_app_compute_upper_bound_usd": 0.8704941666666667,
+  "storage_egress_allowance_usd": 0.01,
+  "total_run_cost_upper_bound_usd": 0.8804941666666667,
+  "bound_method": "Maximum simultaneous containers times entire app lifetime, plus storage/egress allowance; not an invoice."
+}
