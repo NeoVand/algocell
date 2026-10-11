@@ -1,0 +1,317 @@
+world,budget,suppress,conditions,pairs,mem_changed,b_written,halted,mem_mismatch,wc_mismatch,reg_mismatch
+L3,128,-,2,4000,403,221,87,0,0,0
+L3,128,"PUSH;EX (SP),HL;CALL;RST N",1,2000,75,20,50,0,0,0
+L3,128,"random pairs, no masks",0,20000,9426,7092,350,0,0,0
+L3,128,"random pairs, random masks (1 in 6)",0,20000,8290,6173,361,0,0,0
+L4,32,-,2,4000,328,389,68,0,0,0
+L4,32,"PUSH;EX (SP),HL;CALL;RST N",1,2000,92,44,43,0,0,0
+L4,128,-,5,10000,514,514,209,0,0,0
+L4,128,"PUSH;EX (SP),HL;CALL;RST N",4,8000,397,430,176,0,0,0
+L4,128,family:block-copy,1,2000,74,51,41,0,0,0
+L4,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,36,25,69,0,0,0
+L4,128,family:stack;family:ex;family:call-ret;family:rst,1,2000,92,35,46,0,0,0
+L4,512,-,2,4000,336,437,64,0,0,0
+L4,512,family:block-copy,1,2000,77,58,41,0,0,0
+L4,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,32,21,100,0,0,0
+L4,512,family:stack;family:ex;family:call-ret;family:rst,1,2000,87,24,60,0,0,0
+L4,128,"random pairs, no masks",0,20000,11027,8499,452,0,0,0
+L4,128,"random pairs, random masks (1 in 6)",0,20000,10555,7799,460,0,0,0
+L5,128,-,2,4000,1413,1903,67,0,0,0
+L5,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1317,2125,52,0,0,0
+L5,128,"random pairs, no masks",0,20000,12661,10241,549,0,0,0
+L5,128,"random pairs, random masks (1 in 6)",0,20000,11759,9135,577,0,0,0
+L6,128,-,2,4000,1406,2318,48,0,0,0
+L6,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1470,2508,52,0,0,0
+L6,128,"random pairs, no masks",0,20000,13816,11336,652,0,0,0
+L6,128,"random pairs, random masks (1 in 6)",0,20000,12513,10059,674,0,0,0
+L7,128,-,1,2000,89,69,66,0,0,0
+L7,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1442,2401,66,0,0,0
+L7,128,"random pairs, no masks",0,20000,14460,11997,724,0,0,0
+L7,128,"random pairs, random masks (1 in 6)",0,20000,13061,10686,734,0,0,0
+L8,128,-,2,4000,1502,2362,72,0,0,0
+L8,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1886,3125,47,0,0,0
+L8,128,"random pairs, no masks",0,20000,15025,12545,811,0,0,0
+L8,128,"random pairs, random masks (1 in 6)",0,20000,14503,11803,816,0,0,0
+L9,32,-,2,4000,694,794,124,0,0,0
+L9,72,-,2,4000,553,608,157,0,0,0
+L9,72,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1362,2141,87,0,0,0
+L9,128,-,12,24000,3470,4864,946,0,0,0
+L9,128,CALL;RST N,2,4000,974,1375,163,0,0,0
+L9,128,"POP;RET;EX DE,HL;EXX;EX AF,AF'",2,4000,641,866,154,0,0,0
+L9,128,PUSH,2,4000,1269,2015,82,0,0,0
+L9,128,"PUSH;EX (SP),HL;CALL;RST N",8,16000,5314,8911,403,0,0,0
+L9,128,family:block-copy,2,4000,256,182,167,0,0,0
+L9,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,40,30,108,0,0,0
+L9,128,family:stack;family:ex;family:call-ret;family:rst,4,8000,2327,3897,213,0,0,0
+L9,512,-,4,8000,932,1415,341,0,0,0
+L9,512,CALL;RST N,2,4000,1145,1880,125,0,0,0
+L9,512,"POP;RET;EX DE,HL;EXX;EX AF,AF'",2,4000,860,1269,138,0,0,0
+L9,512,PUSH,2,4000,811,1348,117,0,0,0
+L9,512,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1357,2187,108,0,0,0
+L9,512,family:block-copy,1,2000,117,92,94,0,0,0
+L9,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,47,40,158,0,0,0
+L9,512,family:stack;family:ex;family:call-ret;family:rst,4,8000,2334,4253,188,0,0,0
+L9,128,"random pairs, no masks",0,20000,15701,13639,933,0,0,0
+L9,128,"random pairs, random masks (1 in 6)",0,20000,14919,12544,0,0,0,0
+L10,128,-,2,4000,700,1072,158,0,0,0
+L10,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1514,2409,118,0,0,0
+L10,128,"random pairs, no masks",0,20000,16142,14188,966,0,0,0
+L10,128,"random pairs, random masks (1 in 6)",0,20000,15232,13161,1041,0,0,0
+L12,128,-,2,4000,1423,2446,96,0,0,0
+L12,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2146,3609,21,0,0,0
+L12,128,"random pairs, no masks",0,20000,16776,14855,1145,0,0,0
+L12,128,"random pairs, random masks (1 in 6)",0,20000,16483,14290,1264,0,0,0
+L16,32,-,8,16000,9039,12569,219,0,0,0
+L16,32,"EX (SP),HL",1,2000,1412,1825,12,0,0,0
+L16,32,"POP;RET;EX DE,HL;EXX;EX AF,AF'",2,4000,2766,3583,31,0,0,0
+L16,32,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2683,3469,28,0,0,0
+L16,32,ed:43;ed:53;ed:63;ed:73;ed:4B;ed:5B;ed:6B;ed:7B,1,2000,1460,1812,9,0,0,0
+L16,32,family:block-copy,6,12000,5061,6558,365,0,0,0
+L16,32,family:call-ret;family:rst,2,4000,2663,3409,52,0,0,0
+L16,32,family:ld8;family:ld-special,1,2000,1410,1857,10,0,0,0
+L16,32,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special,7,14000,7086,10485,314,0,0,0
+L16,32,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,4,8000,1798,2694,516,0,0,0
+L16,32,family:ld8-imm;family:ld16-imm,1,2000,1408,1787,12,0,0,0
+L16,32,family:ld8-mem;family:ld16-mem,6,12000,6220,9416,116,0,0,0
+L16,32,family:rotate;family:rotate-mem;family:bit;family:bit-set;family:bit-set-mem;-RLD;-RRD,1,2000,1405,1778,18,0,0,0
+L16,32,family:stack,1,2000,1329,1751,13,0,0,0
+L16,32,family:stack;family:ex;family:call-ret;family:rst,7,14000,8247,12600,91,0,0,0
+L16,32,family:writes-mem;-family:incdec-mem;-family:rotate-mem;-family:bit-set-mem,4,8000,690,215,911,0,0,0
+L16,128,-,57,114000,45627,86090,1566,0,0,0
+L16,128,"EX (SP),HL",2,4000,1571,2427,93,0,0,0
+L16,128,"POP;RET;EX DE,HL;EXX;EX AF,AF'",2,4000,1579,2444,97,0,0,0
+L16,128,"PUSH;EX (SP),HL;CALL;RST N",9,18000,9799,16277,157,0,0,0
+L16,128,ed:43;ed:53;ed:63;ed:73;ed:4B;ed:5B;ed:6B;ed:7B,2,4000,1315,2508,89,0,0,0
+L16,128,"family:bit;family:bit-set;family:bit-set-mem;family:rotate;family:rotate-mem;EX AF,AF';DJNZ;JR;EXX;ed:40;ed:41;ed:42;ed:43;ed:44;ed:45;ed:46;ed:47;ed:48;ed:49;ed:4a;ed:4b;ed:4c;ed:4d;ed:4e;ed:4f;ed:50;ed:51;ed:52;ed:53;ed:54;ed:55;ed:56;ed:57;ed:58;ed:59;ed:5a;ed:5b;ed:5c;ed:5d;ed:5e;ed:5f;ed:60;ed:61;ed:62;ed:63;ed:64;ed:65;ed:66;ed:67;ed:68;ed:69;ed:6a;ed:6b;ed:6c;ed:6d;ed:6e;ed:6f;ed:70;ed:71;ed:72;ed:73;ed:74;ed:75;ed:76;ed:78;ed:79;ed:7a;ed:7b;ed:7c;ed:7d;ed:7e;ed:a0;ed:a1;ed:a2;ed:a3;ed:a8;ed:a9;ed:aa;ed:ab;ed:b0;ed:b1;ed:b2;ed:b3;ed:b8;ed:b9;ed:ba;ed:bb",2,4000,1245,2572,98,0,0,0
+L16,128,family:block-copy,12,24000,8209,13837,620,0,0,0
+L16,128,family:call-ret;family:rst,2,4000,1637,2456,171,0,0,0
+L16,128,family:ld8;family:ld-special,2,4000,1386,2540,71,0,0,0
+L16,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special,6,12000,3130,4741,600,0,0,0
+L16,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,4,8000,598,665,555,0,0,0
+L16,128,family:ld8-imm;family:ld16-imm,2,4000,905,1172,160,0,0,0
+L16,128,family:ld8-mem;family:ld16-mem,12,24000,8094,14770,603,0,0,0
+L16,128,family:rotate;family:rotate-mem;family:bit;family:bit-set;family:bit-set-mem;-RLD;-RRD,2,4000,1252,2528,95,0,0,0
+L16,128,family:stack,2,4000,1217,1789,118,0,0,0
+L16,128,family:stack;family:ex;family:call-ret;family:rst,8,16000,8703,14030,153,0,0,0
+L16,128,family:writes-mem;-family:incdec-mem;-family:rotate-mem;-family:bit-set-mem,4,8000,521,212,1258,0,0,0
+L16,512,-,12,24000,7611,13133,783,0,0,0
+L16,512,family:block-copy,12,24000,7418,12749,825,0,0,0
+L16,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special,5,10000,2541,3815,477,0,0,0
+L16,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,3,6000,177,132,512,0,0,0
+L16,512,family:ld8-mem;family:ld16-mem,12,24000,7084,13511,850,0,0,0
+L16,512,family:stack;family:ex;family:call-ret;family:rst,6,12000,5921,9372,257,0,0,0
+L16,512,family:writes-mem;-family:incdec-mem;-family:rotate-mem;-family:bit-set-mem,3,6000,333,142,1202,0,0,0
+L16,128,"random pairs, no masks",0,20000,17311,15298,1319,0,0,0
+L16,128,"random pairs, random masks (1 in 6)",0,20000,17467,15253,1401,0,0,0
+L18,128,-,2,4000,1211,2116,133,0,0,0
+L18,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2109,3468,58,0,0,0
+L18,128,"random pairs, no masks",0,20000,17655,15631,1488,0,0,0
+L18,128,"random pairs, random masks (1 in 6)",0,20000,17388,14943,1586,0,0,0
+L19,128,-,9,18000,12795,12721,499,0,0,0
+L19,128,"random pairs, no masks",0,20000,17757,16150,1561,0,0,0
+L19,128,"random pairs, random masks (1 in 6)",0,20000,17859,16237,1621,0,0,0
+L20,128,-,7,14000,5901,9368,371,0,0,0
+L20,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1943,3914,5,0,0,0
+L20,128,"random pairs, no masks",0,20000,17724,15878,1593,0,0,0
+L20,128,"random pairs, random masks (1 in 6)",0,20000,16529,14527,1659,0,0,0
+L24,128,-,2,4000,2129,2689,127,0,0,0
+L24,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1933,3779,27,0,0,0
+L24,128,"random pairs, no masks",0,20000,18030,16202,1710,0,0,0
+L24,128,"random pairs, random masks (1 in 6)",0,20000,17729,15617,1748,0,0,0
+L25,128,-,8,16000,11741,13084,414,0,0,0
+L25,128,"PUSH;EX (SP),HL;CALL;RST N",6,12000,5977,10800,238,0,0,0
+L25,128,family:block-copy,2,4000,3052,3325,99,0,0,0
+L25,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,291,427,190,0,0,0
+L25,128,family:stack;family:ex;family:call-ret;family:rst,2,4000,1947,3560,68,0,0,0
+L25,200,-,2,4000,2296,2712,141,0,0,0
+L25,200,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1834,3425,103,0,0,0
+L25,512,-,2,4000,2006,2453,150,0,0,0
+L25,512,family:block-copy,2,4000,2213,2476,135,0,0,0
+L25,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,74,57,246,0,0,0
+L25,512,family:stack;family:ex;family:call-ret;family:rst,2,4000,1833,3538,80,0,0,0
+L25,128,"random pairs, no masks",0,20000,18052,16573,1772,0,0,0
+L25,128,"random pairs, random masks (1 in 6)",0,20000,17828,16061,1911,0,0,0
+L32,128,-,8,16000,7171,13549,303,0,0,0
+L32,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1950,3605,79,0,0,0
+L32,128,"family:bit;family:bit-set;family:bit-set-mem;family:rotate;family:rotate-mem;EX AF,AF';DJNZ;JR;EXX;ed:40;ed:41;ed:42;ed:43;ed:44;ed:45;ed:46;ed:47;ed:48;ed:49;ed:4a;ed:4b;ed:4c;ed:4d;ed:4e;ed:4f;ed:50;ed:51;ed:52;ed:53;ed:54;ed:55;ed:56;ed:57;ed:58;ed:59;ed:5a;ed:5b;ed:5c;ed:5d;ed:5e;ed:5f;ed:60;ed:61;ed:62;ed:63;ed:64;ed:65;ed:66;ed:67;ed:68;ed:69;ed:6a;ed:6b;ed:6c;ed:6d;ed:6e;ed:6f;ed:70;ed:71;ed:72;ed:73;ed:74;ed:75;ed:76;ed:78;ed:79;ed:7a;ed:7b;ed:7c;ed:7d;ed:7e;ed:a0;ed:a1;ed:a2;ed:a3;ed:a8;ed:a9;ed:aa;ed:ab;ed:b0;ed:b1;ed:b2;ed:b3;ed:b8;ed:b9;ed:ba;ed:bb",2,4000,2597,3042,257,0,0,0
+L32,128,"random pairs, no masks",0,20000,18193,16677,1975,0,0,0
+L32,128,"random pairs, random masks (1 in 6)",0,20000,18440,16892,0,0,0,0
+L36,128,-,10,20000,13364,16658,971,0,0,0
+L36,128,"PUSH;EX (SP),HL;CALL;RST N",6,12000,5844,11640,87,0,0,0
+L36,128,family:block-copy,2,4000,2678,3468,193,0,0,0
+L36,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,563,916,138,0,0,0
+L36,128,family:stack;family:ex;family:call-ret;family:rst,4,8000,3869,7814,43,0,0,0
+L36,288,-,2,4000,1687,2747,164,0,0,0
+L36,288,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1756,3586,103,0,0,0
+L36,512,-,2,4000,1886,2700,173,0,0,0
+L36,512,family:block-copy,2,4000,2035,2689,183,0,0,0
+L36,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,2,4000,345,519,400,0,0,0
+L36,512,family:stack;family:ex;family:call-ret;family:rst,2,4000,1886,3777,46,0,0,0
+L36,128,"random pairs, no masks",0,20000,18370,17015,2168,0,0,0
+L36,128,"random pairs, random masks (1 in 6)",0,20000,18490,17176,0,0,0,0
+L49,128,-,8,16000,13723,14758,572,0,0,0
+L49,128,"PUSH;EX (SP),HL;CALL;RST N",6,12000,7448,11854,34,0,0,0
+L49,128,family:block-copy,2,4000,3439,3635,143,0,0,0
+L49,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,673,964,201,0,0,0
+L49,128,family:stack;family:ex;family:call-ret;family:rst,2,4000,2059,3646,102,0,0,0
+L49,392,-,2,4000,2694,3153,275,0,0,0
+L49,392,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2286,3735,91,0,0,0
+L49,512,-,2,4000,2487,3022,259,0,0,0
+L49,512,family:block-copy,2,4000,2605,3184,245,0,0,0
+L49,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,218,326,288,0,0,0
+L49,512,family:stack;family:ex;family:call-ret;family:rst,2,4000,1754,2956,307,0,0,0
+L49,128,"random pairs, no masks",0,20000,18564,17476,2551,0,0,0
+L49,128,"random pairs, random masks (1 in 6)",0,20000,18222,16654,2655,0,0,0
+L50,128,-,5,10000,7321,8242,520,0,0,0
+L50,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2093,3773,81,0,0,0
+L50,128,"random pairs, no masks",0,20000,18515,17181,2492,0,0,0
+L50,128,"random pairs, random masks (1 in 6)",0,20000,18242,16995,2503,0,0,0
+L64,128,-,13,26000,19397,22528,408,0,0,0
+L64,128,"PUSH;EX (SP),HL;CALL;RST N",6,12000,6933,11171,219,0,0,0
+L64,128,family:block-copy,2,4000,2997,3427,88,0,0,0
+L64,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,752,1170,125,0,0,0
+L64,128,family:stack;family:ex;family:call-ret;family:rst,2,4000,2014,3980,1,0,0,0
+L64,512,-,4,8000,4489,6065,448,0,0,0
+L64,512,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2085,3664,105,0,0,0
+L64,512,family:block-copy,2,4000,2377,3393,233,0,0,0
+L64,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,364,632,137,0,0,0
+L64,512,family:stack;family:ex;family:call-ret;family:rst,2,4000,1724,3293,208,0,0,0
+L64,128,"random pairs, no masks",0,20000,18535,17290,2711,0,0,0
+L64,128,"random pairs, random masks (1 in 6)",0,20000,18410,17236,2657,0,0,0
+L81,128,-,8,16000,11930,14229,511,0,0,0
+L81,128,"PUSH;EX (SP),HL;CALL;RST N",5,10000,6120,8648,554,0,0,0
+L81,128,family:block-copy,2,4000,2857,3440,135,0,0,0
+L81,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,949,1306,89,0,0,0
+L81,128,family:stack;family:ex;family:call-ret;family:rst,2,4000,2645,3819,65,0,0,0
+L81,512,-,2,4000,3340,3687,219,0,0,0
+L81,512,family:block-copy,2,4000,3302,3685,208,0,0,0
+L81,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,563,857,165,0,0,0
+L81,512,family:stack;family:ex;family:call-ret;family:rst,2,4000,2060,3532,152,0,0,0
+L81,648,-,2,4000,3059,3409,152,0,0,0
+L81,648,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2318,3534,255,0,0,0
+L81,128,"random pairs, no masks",0,20000,18744,17804,3041,0,0,0
+L81,128,"random pairs, random masks (1 in 6)",0,20000,18600,17417,3228,0,0,0
+L100,32,-,1,2000,1029,1659,129,0,0,0
+L100,32,"PUSH;EX (SP),HL;CALL;RST N",1,2000,582,901,154,0,0,0
+L100,64,-,2,4000,1903,3064,213,0,0,0
+L100,64,"PUSH;EX (SP),HL;CALL;RST N",1,2000,1027,1995,0,0,0,0
+L100,128,-,20,40000,27537,36497,1197,0,0,0
+L100,128,"PUSH;EX (SP),HL;CALL;RST N",16,32000,19947,30514,581,0,0,0
+L100,128,family:block-copy,2,4000,2927,3603,144,0,0,0
+L100,128,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,987,1455,98,0,0,0
+L100,128,family:stack;family:ex;family:call-ret;family:rst,4,8000,4370,7816,79,0,0,0
+L100,256,-,2,4000,1903,3464,155,0,0,0
+L100,256,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1848,3521,242,0,0,0
+L100,512,-,2,4000,2681,3577,403,0,0,0
+L100,512,family:block-copy,2,4000,2751,3544,220,0,0,0
+L100,512,family:ld8;family:ld8-imm;family:ld8-mem;family:ld16-imm;family:ld16-mem;family:ld-special;family:stack;family:ex;family:block-copy,1,2000,790,1118,157,0,0,0
+L100,512,family:stack;family:ex;family:call-ret;family:rst,2,4000,2013,3637,168,0,0,0
+L100,800,-,2,4000,2867,3252,210,0,0,0
+L100,800,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1623,3529,279,0,0,0
+L100,1024,-,2,4000,2760,3197,225,0,0,0
+L100,1024,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1772,3560,265,0,0,0
+L100,2048,-,2,4000,2187,2843,237,0,0,0
+L100,2048,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1520,3474,335,0,0,0
+L100,128,"random pairs, no masks",0,20000,18845,17796,3201,0,0,0
+L100,128,"random pairs, random masks (1 in 6)",0,20000,18549,17523,3304,0,0,0
+L8_P32,128,-,2,4000,1427,2371,57,0,0,0
+L8_P32,128,"random pairs, no masks",0,20000,13684,11927,700,0,0,0
+L8_P32,128,"random pairs, random masks (1 in 6)",0,20000,12763,10958,725,0,0,0
+L10_P28,128,-,2,4000,1078,1732,152,0,0,0
+L10_P28,128,"random pairs, no masks",0,20000,15452,13813,959,0,0,0
+L10_P28,128,"random pairs, random masks (1 in 6)",0,20000,14001,11977,1002,0,0,0
+L10_P40,128,-,2,4000,761,1173,97,0,0,0
+L10_P40,128,"random pairs, no masks",0,20000,14533,13197,854,0,0,0
+L10_P40,128,"random pairs, random masks (1 in 6)",0,20000,14092,12290,935,0,0,0
+L12_P28,128,-,2,4000,1133,2111,747,0,0,0
+L12_P28,128,"random pairs, no masks",0,20000,16342,14660,1093,0,0,0
+L12_P28,128,"random pairs, random masks (1 in 6)",0,20000,15690,13869,1126,0,0,0
+L12_P36,128,-,2,4000,1307,2456,350,0,0,0
+L12_P36,128,"random pairs, no masks",0,20000,15820,14211,981,0,0,0
+L12_P36,128,"random pairs, random masks (1 in 6)",0,20000,14886,13043,1034,0,0,0
+L16_P33,128,-,2,4000,1790,2017,125,0,0,0
+L16_P33,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1479,1921,228,0,0,0
+L16_P33,128,"random pairs, no masks",0,20000,17269,15583,1340,0,0,0
+L16_P33,128,"random pairs, random masks (1 in 6)",0,20000,16632,14647,1363,0,0,0
+L16_P34,128,-,2,4000,1727,2242,154,0,0,0
+L16_P34,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1709,2374,165,0,0,0
+L16_P34,128,"random pairs, no masks",0,20000,17329,15791,1334,0,0,0
+L16_P34,128,"random pairs, random masks (1 in 6)",0,20000,17006,14934,1362,0,0,0
+L16_P35,128,-,2,4000,1559,1844,151,0,0,0
+L16_P35,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1924,2294,166,0,0,0
+L16_P35,128,"random pairs, no masks",0,20000,17133,15244,1342,0,0,0
+L16_P35,128,"random pairs, random masks (1 in 6)",0,20000,16941,15167,0,0,0,0
+L16_P37,128,-,2,4000,1421,1688,174,0,0,0
+L16_P37,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,1478,2333,220,0,0,0
+L16_P37,128,"random pairs, no masks",0,20000,16901,15302,1262,0,0,0
+L16_P37,128,"random pairs, random masks (1 in 6)",0,20000,16404,14883,1325,0,0,0
+L36_P73,128,-,2,4000,3689,3858,103,0,0,0
+L36_P73,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,3089,3959,153,0,0,0
+L36_P73,128,"random pairs, no masks",0,20000,18429,17201,2152,0,0,0
+L36_P73,128,"random pairs, random masks (1 in 6)",0,20000,17870,16344,2220,0,0,0
+L36_P74,128,-,2,4000,2463,3343,141,0,0,0
+L36_P74,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2856,3762,36,0,0,0
+L36_P74,128,"random pairs, no masks",0,20000,18381,17165,2135,0,0,0
+L36_P74,128,"random pairs, random masks (1 in 6)",0,20000,18000,16502,2229,0,0,0
+L36_P75,128,-,2,4000,3763,3945,103,0,0,0
+L36_P75,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,3020,3598,69,0,0,0
+L36_P75,128,"random pairs, no masks",0,20000,18186,16934,2151,0,0,0
+L36_P75,128,"random pairs, random masks (1 in 6)",0,20000,18135,16790,2245,0,0,0
+L36_P79,128,-,2,4000,3207,3723,77,0,0,0
+L36_P79,128,"PUSH;EX (SP),HL;CALL;RST N",2,4000,2641,3531,290,0,0,0
+L36_P79,128,"random pairs, no masks",0,20000,18064,16782,2037,0,0,0
+L36_P79,128,"random pairs, random masks (1 in 6)",0,20000,16992,15333,2137,0,0,0
+lethal_L16,128,-,5,10000,4337,9786,271,0,0,0
+lethal_L16,128,"random pairs, no masks",0,20000,16883,14163,13774,0,0,0
+lethal_L16,128,"random pairs, random masks (1 in 6)",0,20000,16778,14356,14620,0,0,0
+lethal_L32,128,-,3,6000,3622,5959,74,0,0,0
+lethal_L32,128,"random pairs, no masks",0,20000,17635,15309,12874,0,0,0
+lethal_L32,128,"random pairs, random masks (1 in 6)",0,20000,17644,15685,13314,0,0,0
+lp0_L16,128,-,1,2000,753,1937,0,0,0,0
+lp0_L16,128,"random pairs, no masks",0,20000,17345,15359,1353,0,0,0
+lp0_L16,128,"random pairs, random masks (1 in 6)",0,20000,17252,15150,1394,0,0,0
+lp001_L16,128,-,1,2000,958,1936,87,0,0,0
+lp001_L16,128,"random pairs, no masks",0,20000,17184,15150,3343,0,0,0
+lp001_L16,128,"random pairs, random masks (1 in 6)",0,20000,17128,14542,2985,0,0,0
+lp003_L16,128,-,1,2000,910,1927,124,0,0,0
+lp003_L16,128,"random pairs, no masks",0,20000,17314,15297,6168,0,0,0
+lp003_L16,128,"random pairs, random masks (1 in 6)",0,20000,16927,14155,5665,0,0,0
+lp01_L16,128,-,1,2000,1100,1960,35,0,0,0
+lp01_L16,128,"random pairs, no masks",0,20000,17266,15098,10069,0,0,0
+lp01_L16,128,"random pairs, random masks (1 in 6)",0,20000,16719,14241,8963,0,0,0
+lp03_L16,128,-,1,2000,1108,1959,57,0,0,0
+lp03_L16,128,"random pairs, no masks",0,20000,17159,14971,12487,0,0,0
+lp03_L16,128,"random pairs, random masks (1 in 6)",0,20000,16429,14193,12052,0,0,0
+lp1_L16,128,-,1,2000,1108,1931,58,0,0,0
+lp1_L16,128,"random pairs, no masks",0,20000,16759,14012,13732,0,0,0
+lp1_L16,128,"random pairs, random masks (1 in 6)",0,20000,15828,13639,13055,0,0,0
+randreg_L16,128,-,7,14000,6529,8773,428,0,0,0
+randreg_L16,128,"random pairs, no masks",0,20000,17579,16413,1495,0,0,0
+randreg_L16,128,"random pairs, random masks (1 in 6)",0,20000,17287,16022,1541,0,0,0
+randreg_L20,128,-,9,18000,11586,13528,501,0,0,0
+randreg_L20,128,"random pairs, no masks",0,20000,18114,17113,1663,0,0,0
+randreg_L20,128,"random pairs, random masks (1 in 6)",0,20000,17271,16019,1741,0,0,0
+randreg_L32,128,-,12,24000,18631,20574,825,0,0,0
+randreg_L32,128,"random pairs, no masks",0,20000,18561,17570,2132,0,0,0
+randreg_L32,128,"random pairs, random masks (1 in 6)",0,20000,18418,17294,2202,0,0,0
+randreg_L50,128,-,7,14000,11821,12450,703,0,0,0
+randreg_L50,128,"random pairs, no masks",0,20000,18830,18075,2770,0,0,0
+randreg_L50,128,"random pairs, random masks (1 in 6)",0,20000,18467,17579,2702,0,0,0
+randreg_L64,128,-,35,70000,57476,61818,2424,0,0,0
+randreg_L64,128,"random pairs, no masks",0,20000,18922,18162,2819,0,0,0
+randreg_L64,128,"random pairs, random masks (1 in 6)",0,20000,18839,17949,2976,0,0,0
+randsp_L16,128,-,1,2000,1122,1717,5,0,0,0
+randsp_L16,128,"random pairs, no masks",0,20000,17305,13794,1439,0,0,0
+randsp_L16,128,"random pairs, random masks (1 in 6)",0,20000,17166,13637,1512,0,0,0
+randsp_L20,128,-,9,18000,8609,12840,374,0,0,0
+randsp_L20,128,"random pairs, no masks",0,20000,17807,14416,1599,0,0,0
+randsp_L20,128,"random pairs, random masks (1 in 6)",0,20000,17614,13866,0,0,0,0
+randsp_L32,128,-,12,24000,13140,19169,629,0,0,0
+randsp_L32,128,"random pairs, no masks",0,20000,18263,14593,2010,0,0,0
+randsp_L32,128,"random pairs, random masks (1 in 6)",0,20000,17612,13055,2098,0,0,0
+randsp_L50,128,-,7,14000,10620,11067,594,0,0,0
+randsp_L50,128,"random pairs, no masks",0,20000,18578,15108,2501,0,0,0
+randsp_L50,128,"random pairs, random masks (1 in 6)",0,20000,18551,14130,2788,0,0,0
+randsp_L64,128,-,35,70000,51055,54639,1867,0,0,0
+randsp_L64,128,"random pairs, no masks",0,20000,18585,14663,2787,0,0,0
+randsp_L64,128,"random pairs, random masks (1 in 6)",0,20000,18292,13702,2980,0,0,0
