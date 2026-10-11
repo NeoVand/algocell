@@ -8,7 +8,7 @@
 (c) the vendored machines are what build_machines.mjs generates from the Zilion checkout (skipped without one);
 (d) ZSoup has Soup's public API with the same signatures, the same initial soup, readbacks and write_soup;
 (e) ZSoup's own pipeline: after each step its pair memory, write counts and lane records equal a direct run of the
-    machine on the pairs the step drew (Z80 and the 6502 skeleton);
+    machine on the pairs the step drew (Z80 and the full 6502 core);
 (f) the step-locked harness: 0 mismatches over 300 steps (plain and lethal), CPU recount = comparator, and a
     one-instruction budget difference is detected;
 (g) refusals: suppression masks on a machine without an ablation table, a non-square grid, run.py disagreements;

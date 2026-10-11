@@ -43,7 +43,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     cols = list(dict.fromkeys(k for r in rows for k in r))
     with path.open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols)
+        w = csv.DictWriter(fh, fieldnames=cols, lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
 

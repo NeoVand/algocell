@@ -149,9 +149,9 @@ class World:
 
     def algocell_executor(self) -> tuple[str, str | None]:
         """Algocell's own single-pair executor for this world (file in shader/, or a derivation): (file name, derivation).
-        The executor text depends on the ring only through `const MEM_LENGTH: u32 = P;` (export-sim.ts writes
-        createZ80TestShader(L, P), whose text differs between rings in that line alone; checked by the tests), so the
-        L = 19, P = 38 executor, which export-sim.ts never wrote, is z80_test_L18.wgsl with MEM_LENGTH = 38."""
+        Ring changes affect MEM_LENGTH and the private memory array size (see impact.derive_executor; the tests
+        regenerate every exported plain/ring executor). The unexported L19/P38 executor derives from L18/P36;
+        those two use the same array size, so only MEM_LENGTH changes for that particular derivation."""
         if self.rule == "plain":
             if self.P == 2 * self.L:
                 f = f"z80_test_L{self.L}.wgsl"

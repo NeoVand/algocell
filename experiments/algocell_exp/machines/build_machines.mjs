@@ -7,8 +7,8 @@
 //
 // For each entry of the worlds*.json files beside this script it calls Zilion's buildMachine (codegen stays in TypeScript, as in
 // zilion's scripts/export-machines.mjs) and writes <name>.wgsl and <name>.manifest.json, then PROVENANCE.md with the
-// Zilion commit and each machine's SHA-256s. Unlike zilion's exporter it also accepts the skeleton cores (m6502, bff),
-// which ZSoup uses to show its plumbing on a second ISA; a skeleton machine is marked as such and is not for results.
+// Zilion commit and each machine's SHA-256s. It resolves the full m6502 and skeleton bff descriptors too;
+// ZSoup uses m6502 to show its plumbing on a second ISA. Skeleton machines are marked and are not for results.
 //
 // --check exits 1 unless every .wgsl and .manifest.json on disk equals what the Zilion checkout generates now, and
 // PROVENANCE.md equals what would be written for the commit it records; it also reports whether that commit is the

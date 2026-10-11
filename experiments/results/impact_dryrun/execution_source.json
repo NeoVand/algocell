@@ -1,0 +1,11 @@
+{
+ "execution_commit": "de1d4647f5f92b117ecd3fb56c2a378641ab99f9",
+ "code_sha256": "32c892225977e1ff19552760bce7e9fa9513f270d3565eac628c407ec5e42972",
+ "inputs_sha256": "c964d145c1b95cde7900ac725cd49f7c49e88c6891ef54d928a464299a8deb71",
+ "prepared_at_commit": "21ad62aaeebf",
+ "worker_source_verified_from_git": true,
+ "post_run_change": "Benchmark overall-wall timer fixed; raw phase timings and scientific outputs unchanged. bench_raw.csv preserves remote output. Future checkpoint namespace also includes worker hash.",
+ "app_finished_at": "2026-10-11T07:42:20Z",
+ "app_stop_check": "Modal reports main impact app already stopped; no other app was stopped.",
+ "csv_line_endings": "Local CSV exports normalized from CRLF to LF; rows and numerical values unchanged."
+}

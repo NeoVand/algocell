@@ -69,7 +69,12 @@ def bundle_name():
     import json
     from pathlib import Path
     m = json.loads(Path("results/impact_dryrun/input_manifest.json").read_text())
-    return m["inputs_sha256"][:16]
+    local = json.loads(Path("results/impact_dryrun/cross_local.json").read_text())
+    if local["inputs_sha256"] != m["inputs_sha256"]:
+        raise RuntimeError("local cross-platform inputs are stale")
+    # Identical sampled bytes can be rerun after a worker fix. Keep that run's
+    # checkpoints separate rather than colliding with a completed older worker.
+    return f"{m['inputs_sha256'][:16]}-{local['code_sha256'][:12]}"
 
 
 @app.local_entrypoint()

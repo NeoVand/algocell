@@ -206,14 +206,14 @@ def supplemental_equiv(m, arrays, dest, commit, deadline):
 
 
 def bench_item(tag, budget):
-    start = time.monotonic()
+    started = time.monotonic()
     tr = I.Triple(tag)
     c = K.Condition(f"bench/{tag}_st{budget}", "bench", "random", tag, budget, L=tr.L, P=tr.P)
     p = K.draw_random(c, NREG, K.DRY_STREAM)
     tr.run(p[:1000], budget, None, 1)
     t = time.monotonic()
-    for start in range(0, len(p), S.BLOCK):
-        tr.run(p[start:start + S.BLOCK], budget, None, 1, lane_base=start)
+    for lane_base in range(0, len(p), S.BLOCK):
+        tr.run(p[lane_base:lane_base + S.BLOCK], budget, None, 1, lane_base=lane_base)
     te = time.monotonic() - t
     sub = p[:S.ATTR_BATCH]
     results = tr.run(sub, budget, None, 1)
@@ -222,7 +222,7 @@ def bench_item(tag, budget):
     Att(tr, budget, None, 1).attribute(sub, np.arange(len(sub)), results, census=True)
     return {"world": tag, "rule": tr.w.rule, "L": tr.L, "budget": budget, "pairs": len(p),
             "t_exec_s": te, "pairs_per_s": len(p) / te, "attr_batch_lanes": len(sub),
-            "t_attr_batch_s": time.monotonic() - t, "wall_s": time.monotonic() - start}
+            "t_attr_batch_s": time.monotonic() - t, "wall_s": time.monotonic() - started}
 
 
 def finish(folder, commit, max_seconds=6400):
