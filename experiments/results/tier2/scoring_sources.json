@@ -1,0 +1,176 @@
+{
+  "scripts": [
+    {
+      "script": "dial_soups.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "1a03265e9bbac503cf628b06e50aad56691406171fc7b4574495919c5de7fa7c",
+      "prepared_sha256": "a11510a58108e4dbea2a9ddbc834ff3ccbd0b127415f2321c8b058abbc5ef86a",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "offset_switch.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "74e6f1e2edce2148a8f9af9e0227c97edefc2ca5bbb2b922bb068aa0f91dcfc2",
+      "prepared_sha256": "5250755dad01913c27a00a3ded9a23c0ffc3c994594520170cd561f5cf46b03f",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "r4_analyse.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "65837a01ac0412e85f4fc8153f82000b4f0951a3aac2d452fafffc29d9ff4cce",
+      "prepared_sha256": "1512bcebf6689d3d74891dd425572fa52b5e1cfd34153939ae1e29d5a6882daf",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "offset_encounter.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "fa320a1d99e74f00013bee26f1ce82cb41baef0dc6c46ddc3168300ba49e5783",
+      "prepared_sha256": "aaf966b7a0834cb4b78dc26099c4b7b9a31dbdeff1b4f124894a3c9fd7b428a3",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "assay_batch.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "a1026320a7e9071adf79a1d5bc544a2faffd18c9aa5de8405a47f1e31bb675d7",
+      "prepared_sha256": "c5aecba77d46b58fb3024976539bee2c0c0d426bc13d57a6204094a290ae08f6",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "c4_functional.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "6ebd458350da74f16a524c0fc11563fee048f33a03d4949bd7936c004448343c",
+      "prepared_sha256": "a7ac6a9b99a5dfea4fbccdb25091f3a33d5dc650f1c3c579277b1ad460fd330c",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "stage_g.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "be7f2865db599a5a5cd8303a597a8d94353d682c1b8a1ec530c3f425b52904fe",
+      "prepared_sha256": "be7f2865db599a5a5cd8303a597a8d94353d682c1b8a1ec530c3f425b52904fe",
+      "changes": "none"
+    },
+    {
+      "script": "capacity_over_time.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "6323cf71b770f3ae804d735e52c47e8d93ee9a1e25a55b3b0690224f128d2cbe",
+      "prepared_sha256": "63ac4a6aa697827a1adfc2a54746531ff3190bd68d782604a3ae9d13b81d334d",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "score_L.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "95a0c3941c414643ef1a49ef0d5557aefc0e829223c208385c7241e7b0d913d5",
+      "prepared_sha256": "95a0c3941c414643ef1a49ef0d5557aefc0e829223c208385c7241e7b0d913d5",
+      "changes": "none"
+    },
+    {
+      "script": "stage_f.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "7ce7fc67b34a8ed1838b9012b28f36eff279afef5c8fce07cd9836a957293cd5",
+      "prepared_sha256": "f8430cb6bbaa79a89a9be03aea73c9077e2ff3f8a379ed6298f16a18f95bc225",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "serial_retention.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "8cd76ee597c20fac3ace42c1fd1c12310670374e0d6ea5bfff0a7b970eef3fad",
+      "prepared_sha256": "8cd76ee597c20fac3ace42c1fd1c12310670374e0d6ea5bfff0a7b970eef3fad",
+      "changes": "none"
+    },
+    {
+      "script": "branching_transfer.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "e6603dcc60096bd970f6544acb6daf9cd7c3f0e550512513033a466d774641de",
+      "prepared_sha256": "7d306dbd342638a2793b9e677e27cd7162a5ce7c45232e8b251551367cd6d980",
+      "changes": "explicit CLI/input/backend routing and targeted F4c reporting; registered numeric measurements/formulas retained"
+    },
+    {
+      "script": "mutscan.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+      "prepared_sha256": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+      "changes": "none"
+    },
+    {
+      "script": "population_classes.py",
+      "baseline_commit": "0970b82",
+      "baseline_sha256": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+      "prepared_sha256": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+      "changes": "none"
+    }
+  ],
+  "frozen_numerical_functions": [
+    {
+      "script": "dial_soups.py",
+      "function": "_km_median",
+      "ast_sha256": "5bcffe4dc13989177798e685af5ddf87f37c76f31fd196f321965eb6f8fa26d7",
+      "identical": true
+    },
+    {
+      "script": "dial_soups.py",
+      "function": "_perm_spearman",
+      "ast_sha256": "d45e32d33267ff2211f03444688e56933231eae3a51c8761dc8b04efe14b3438",
+      "identical": true
+    },
+    {
+      "script": "dial_soups.py",
+      "function": "report",
+      "ast_sha256": "6a3e87f9a1f23d5c7a3b2bdaad652427ca9836ae112095a22b87688f9265ecfe",
+      "identical": true
+    },
+    {
+      "script": "offset_switch.py",
+      "function": "classify",
+      "ast_sha256": "f97d14411929e1f922992439ec1ac8a9c3aa7967e592526fe7d3a839fe0f59d2",
+      "identical": true
+    },
+    {
+      "script": "stage_f.py",
+      "function": "cell",
+      "ast_sha256": "97bbc3b01ad6d443e340c4e069278b3344e0d0d6b95544bb9455fed7131a024d",
+      "identical": true
+    },
+    {
+      "script": "serial_retention.py",
+      "function": "run_genotype",
+      "ast_sha256": "a1c596fe81f44e8d08fe4bfaaaa47e98acfe6106bf36862401d662a5fffdfd35",
+      "identical": true
+    },
+    {
+      "script": "serial_retention.py",
+      "function": "sites",
+      "ast_sha256": "bdf1e7de3658cb27c002123adf573c370c590ce09e81aef6ced2bfc66e78fb67",
+      "identical": true
+    },
+    {
+      "script": "serial_retention.py",
+      "function": "report",
+      "ast_sha256": "ac1444607c75c052edca63619fe2e2e76e0ecd50d5b33b1bb7e1e33286f7d399",
+      "identical": true
+    },
+    {
+      "script": "branching_transfer.py",
+      "function": "branch_step",
+      "ast_sha256": "ef97ff7d0671bac51333c0f3f2e05d1450c4889b741ea9c9e382d4c4f5ccdd28",
+      "identical": true
+    },
+    {
+      "script": "branching_transfer.py",
+      "function": "run_arm",
+      "ast_sha256": "6c628df590801f199e03d4b14875d62e41caab6f2245b658acf31d2b801a2626",
+      "identical": true
+    },
+    {
+      "script": "branching_transfer.py",
+      "function": "mutants",
+      "ast_sha256": "d6dece130f05b0dc9a0381cc7c96e0f0cad8110fe21bf45de0a10ae7be55bbf4",
+      "identical": true
+    },
+    {
+      "script": "branching_transfer.py",
+      "function": "report",
+      "ast_sha256": "5831dcadd982cd28dc5e497ac933dd76b941f157358cb81f47878a654b352666",
+      "identical": true
+    }
+  ]
+}

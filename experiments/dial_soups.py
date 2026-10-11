@@ -32,14 +32,18 @@ def schedule(step):
     return 50 if step < 2000 else (250 if step < 20000 else 2500)
 
 
-def run_world(v: str, seed: int, steps: int, outdir: str) -> dict:
+def run_world(v: str, seed: int, steps: int, outdir: str, machine: str | None = None) -> dict:
     from algocell_exp.soup import Soup
     os.makedirs(outdir, exist_ok=True)
     path = os.path.join(outdir, f"{v}_s{seed}.jsonl")
-    soup = Soup(160, 125, "square", L, seed, 8192, 128, 4, [], shader_variant=v)
+    if machine:
+        from algocell_exp.tier2 import soup_for
+        soup = soup_for(machine, L, seed, variant=v)
+    else:
+        soup = Soup(160, 125, "square", L, seed, 8192, 128, 4, [], shader_variant=v)
     step, t0 = 0, time.time()
     with open(path, "w") as f:
-        f.write(json.dumps({"kind": "condition", "variant": v, "p": DIAL.get(v), "seed": seed, "steps": steps}) + "\n")
+        f.write(json.dumps({"kind": "condition", "variant": v, "p": DIAL.get(v), "seed": seed, "steps": steps, **({"machine": soup.machine_provenance} if machine else {})}) + "\n")
         while step <= steps:
             s = soup.read_soup()
             if step in SNAPS or step == steps:
@@ -56,7 +60,7 @@ def run_world(v: str, seed: int, steps: int, outdir: str) -> dict:
 
 
 # ------------------------------------------------------------------------------------------------ analysis
-def _patch(v):
+def _patch(v, machine=None):
     """Route the standard executors (assay, exectrace) through the world's own variant, with a fresh seed per call."""
     from algocell_exp import assay as A
     from algocell_exp import conv
@@ -68,15 +72,15 @@ def _patch(v):
         return zlib.crc32(f"{v}:{ctr['k']}".encode()) & 0x7FFFFFFF
 
     def ex(pairs, tape_length, z80_steps, suppress=(), mem_length=None, zero_halts=False):
-        return conv.execute(pairs, tape_length, z80_steps, v, nxt(), suppress)
+        return conv.execute(pairs, tape_length, z80_steps, v, nxt(), suppress, machine=machine)
 
     def ext(pairs, tape_length, steps, suppress=(), zero_halts=False, **kw):
-        return conv.execute(pairs, tape_length, steps, v, nxt(), suppress, traced=True)
+        return conv.execute(pairs, tape_length, steps, v, nxt(), suppress, traced=True, machine=machine)
     A.execute_pairs = ex
     X.execute_pairs_traced = ext
 
 
-def analyse(runs: str, out: str, variants=None, seeds=None, snap=300000) -> None:
+def analyse(runs: str, out: str, variants=None, seeds=None, snap=300000, machine=None) -> None:
     from algocell_exp import assay as A
     from algocell_exp import exectrace as X
     import population_classes as PC
@@ -84,11 +88,14 @@ def analyse(runs: str, out: str, variants=None, seeds=None, snap=300000) -> None
     rows = []
     variants = variants or list(DIAL)
     for v in variants:
-        _patch(v)
+        _patch(v, machine)
         for seed in (seeds or SEEDS):
             path = os.path.join(runs, f"{v}_s{seed}.jsonl")
             if not os.path.exists(path):
                 continue
+            if machine:
+                from algocell_exp.tier2 import check_run_core
+                check_run_core(json.loads(open(path).readline()), machine, f"{v}_L16")
             recs = [json.loads(x) for x in open(path)][1:]
             rng = np.random.default_rng([seed, int(DIAL.get(v, 0) * 1000), 11])
             cache = {}
@@ -188,13 +195,14 @@ def main():
     ap.add_argument("--runs", default=os.path.join(HERE, "runs", "dial", "dial"))
     ap.add_argument("--out", default=os.path.join(HERE, "results", "dial"))
     ap.add_argument("--smoke", action="store_true", help="local smoke: lp0 and lp1, seed 9001, 2,000 steps")
+    ap.add_argument("--machine", default=None, help="c0/c1: matching impact world (and mapped assay twin)")
     a = ap.parse_args()
     if a.smoke:
         for v in ("lp0", "lp1"):
-            print(run_world(v, 9001, 2000, os.path.join(HERE, "runs", "dial_smoke")))
+            print(run_world(v, 9001, 2000, os.path.join(HERE, "runs", "dial_smoke"), machine=a.machine))
         return
     if a.analyse:
-        analyse(a.runs, a.out)
+        analyse(a.runs, a.out, machine=a.machine)
 
 
 if __name__ == "__main__":

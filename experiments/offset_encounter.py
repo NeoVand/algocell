@@ -1,6 +1,7 @@
 """E, post hoc: encounter-level components of the matched pair (R, T) of the copy-offset switch, L = 16, benign and
 lethal tar. Partners and executors are 4,096 cells drawn from the final soups of the ten mix50 mutation-on worlds of
 each tar. Output: results/offset/OFFSET_ENCOUNTER.md"""
+import argparse
 import glob
 import os
 import sys
@@ -11,6 +12,15 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from algocell_exp import assay as A  # noqa: E402
 
+ap = argparse.ArgumentParser()
+ap.add_argument("--runs", default=os.path.join(HERE, "runs", "offset", "offset"))
+ap.add_argument("--out", default=os.path.join(HERE, "results", "offset", "OFFSET_ENCOUNTER.md"))
+from algocell_exp import executor as E
+E.add_argument(ap)
+a = ap.parse_args()
+E.from_args(a)
+os.makedirs(os.path.dirname(a.out), exist_ok=True)
+
 L, N = 16, 4096
 rng = np.random.default_rng(0)
 R = np.array([0x44, 0x5e, 0xed, 0xb0] * 4, np.uint8)
@@ -20,7 +30,7 @@ lines = ["# Encounter components of the matched regenerator R and transmitter T 
          "|---|---|---|---|---|---|"]
 for tar in ("benign", "lethal"):
     zh = tar == "lethal"
-    soups = [np.load(f) for f in sorted(glob.glob(os.path.join(HERE, "runs", "offset", "offset", f"L16_{tar}_muton_mix50_s*_final.npy")))]
+    soups = [np.load(f) for f in sorted(glob.glob(os.path.join(a.runs, f"L16_{tar}_muton_mix50_s*_final.npy")))]
     pool = np.concatenate(soups)
     pool = pool[rng.choice(len(pool), N, replace=False)]
     for name in ("R", "T"):
@@ -39,5 +49,5 @@ for tar in ("benign", "lethal"):
         off = A.execute_pairs(np.concatenate([M, P], 1), L, 128, zero_halts=zh)[:, L:]
         viable = ((off == M).all(1) | (off == X).all(1)).mean()
         lines.append(f"| {tar} | {name} | {copy:.3f} | {same:.3f} | {core:.3f} | {viable:.3f} |")
-open(os.path.join(HERE, "results", "offset", "OFFSET_ENCOUNTER.md"), "w").write("\n".join(lines) + "\n")
+open(a.out, "w").write("\n".join(lines) + "\n")
 print("\n".join(lines))

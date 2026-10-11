@@ -21,28 +21,29 @@ app = modal.App("algocell-offset")
 
 
 @app.function(image=image, gpu=["L40S", "A10G", "L4"], timeout=2 * 60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))
-def world(c: dict) -> dict:
+def world(c: dict, machine: str = "", outdir: str = "/runs/offset") -> dict:
     import sys
     sys.path.insert(0, "/root")
     import offset_switch
-    r = offset_switch.run_world(c, "/runs/offset")
+    r = offset_switch.run_world(c, outdir, machine=machine or None)
     runs_volume.commit()
     return r
 
 
 @app.local_entrypoint()
-def main(smoke: bool = False, part: str = "e"):
+def main(smoke: bool = False, part: str = "e", machine: str = "", outdir: str = ""):
     import offset_switch
+    target = outdir or (f"/runs/tier2_{machine}/offset" if machine else "/runs/offset")
     if smoke:
-        print(world.remote({"L": 16, "tar": "lethal", "mut": "off", "start": "mix50", "seed": 99, "steps": 2000}))
+        print(world.remote({"L": 16, "tar": "lethal", "mut": "off", "start": "mix50", "seed": 99, "steps": 2000}, machine, (outdir or "/runs/tier2_smoke/offset") if machine else "/runs/offset"))
         return
     done = set()
     try:
-        done = {e.path.split("/")[-1] for e in runs_volume.listdir("/offset")}
+        done = {e.path.split("/")[-1] for e in runs_volume.listdir(target)}
     except Exception:  # noqa: BLE001
         pass
     conds = offset_switch.conditions_l32lethal() if part == "l32lethal" else offset_switch.conditions()
     todo = [c for c in conds if offset_switch.stem(c) + "_final.npy" not in done]
     print(f"{len(todo)} conditions to run ({len(done)} files already on the volume)")
-    for r in world.map(todo, return_exceptions=True):
+    for r in world.map(todo, kwargs={"machine": machine, "outdir": target}, return_exceptions=True):
         print(r if isinstance(r, dict) else f"FAILED: {r!r}"[:300], flush=True)

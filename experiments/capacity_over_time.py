@@ -36,7 +36,14 @@ def main():
     ap.add_argument("--stages", default="G,K,I")
     ap.add_argument("--out", default=os.path.join(R, "capacity_time"))
     ap.add_argument("--yes", action="store_true")
+    ap.add_argument("--runs-dir", default=None, help="override one selected stage only")
+    ap.add_argument("--runs-table", default=None)
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a)
+    if (a.runs_dir or a.runs_table) and len(a.stages.split(",")) != 1:
+        ap.error("directory overrides require one stage")
     if not a.yes:
         sys.exit("refusing to run: pass --yes after pausing the browser simulation (local GPU)")
     os.makedirs(a.out, exist_ok=True)
@@ -45,6 +52,7 @@ def main():
     t0 = time.time()
     for stage in a.stages.split(","):
         runs_dir, csv, zh = STAGES[stage]
+        runs_dir, csv = a.runs_dir or runs_dir, a.runs_table or csv
         g = pd.read_csv(csv)
         for _, w in g.iterrows():
             L, seed, label = int(w["L"]), int(w["seed"]), str(w["label"])

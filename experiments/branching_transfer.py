@@ -55,6 +55,7 @@ COPY = 0.75
 GENS_REPORT = (1, 2, 4, 8)
 SEED = 20261010
 ARM_ID = {"U": 0, "K": 1}
+RUNS_ROOT = os.path.join(HERE, "runs")
 CHUNK = 1 << 18                                         # pairs per executor dispatch (32 MiB of pair memory at L = 64)
 
 
@@ -75,7 +76,7 @@ def kin_pool(L: int) -> tuple[np.ndarray, str]:
         raise SystemExit(f"arm K: expected 20 Stage G worlds at L = {L}, found {len(w)}; stopping (registered pool unavailable)")
     tapes, stems = [], []
     for r in w.itertuples():
-        stem = os.path.join(HERE, "runs", "stageG", f"{r.label}_L{L}_st128_k4_s{r.seed}")
+        stem = os.path.join(RUNS_ROOT, "stageG", f"{r.label}_L{L}_st128_k4_s{r.seed}")
         files = {n: f for n, st, f in ss.snapshot_files(stem)}
         for name in K_SNAPS:
             if name not in files:
@@ -399,7 +400,11 @@ def main() -> None:
     ap.add_argument("--gens", type=int, default=REG["gens"])
     from algocell_exp import executor as E
     E.add_argument(ap)
+    ap.add_argument("--runs-root", default=None, help="read-only archive root for arm K partner pools")
     a = ap.parse_args()
+    if a.runs_root:
+        global RUNS_ROOT
+        RUNS_ROOT = a.runs_root
     E.from_args(a, why="its panel is the Z80 serial-retention genotypes")
     if a.report:
         report(a)

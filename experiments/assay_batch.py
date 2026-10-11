@@ -121,6 +121,9 @@ def main(d: str) -> None:
     files = select_summaries(d)
     for i, p in enumerate(files):
         s = json.load(open(p))
+        from algocell_exp import executor as E
+        from algocell_exp.tier2 import check_batch_core
+        check_batch_core(s, E.active().spec if E.active() else None)
         stem = p[: -len(".summary.json")]
         L = s.get("tape_length", 16)
         patterns = s["suppress"] if isinstance(s["suppress"], list) else parse_patterns(s["suppress"])

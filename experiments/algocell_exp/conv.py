@@ -42,7 +42,10 @@ def _pipeline(path: Path):
     return _PIPE[path]
 
 
-def execute(pairs: np.ndarray, L: int, steps: int, variant: str | None, seed: int, suppress=(), traced: bool = False):
+def execute(pairs: np.ndarray, L: int, steps: int, variant: str | None, seed: int, suppress=(), traced: bool = False, machine: str | None = None):
+    if machine is not None:
+        from .tier2 import execute_convention
+        return execute_convention(pairs, L, steps, variant, seed, suppress, traced, machine)
     N = pairs.shape[0]
     assert pairs.shape[1] == 2 * L
     dev = A.get_device()
@@ -86,7 +89,7 @@ def execute(pairs: np.ndarray, L: int, steps: int, variant: str | None, seed: in
     return (res, masks) if traced else res
 
 
-def assay_many_conv(tapes: np.ndarray, variant: str | None, n: int = 32, seed: int = 0, suppress=()) -> list[dict]:
+def assay_many_conv(tapes: np.ndarray, variant: str | None, n: int = 32, seed: int = 0, suppress=(), machine: str | None = None) -> list[dict]:
     """assay_many() (culture test as organism A, gen2, faithfulness) with every encounter under the variant."""
     T = np.ascontiguousarray(tapes).astype(np.uint8)
     M, L = T.shape
@@ -96,12 +99,12 @@ def assay_many_conv(tapes: np.ndarray, variant: str | None, n: int = 32, seed: i
     s1, s2 = (int(x) for x in rng.integers(1, 2**31, size=2))
     TT = np.repeat(T, n, axis=0)
     RR = np.tile(R1, (M, 1))
-    res = execute(np.concatenate([TT, RR], 1), L, 128, variant, s1, suppress)
+    res = execute(np.concatenate([TT, RR], 1), L, 128, variant, s1, suppress, machine=machine)
     before = A._best_shift_match_rows(RR, TT)
     after, _ = A._best_shift_rows(res[:, L:], TT)
     score = A._norm_gain_rows(before, after, M, n)
     RR2 = np.tile(R2, (M, 1))
-    res2 = execute(np.concatenate([res[:, L:], RR2], 1), L, 128, variant, s2, suppress)
+    res2 = execute(np.concatenate([res[:, L:], RR2], 1), L, 128, variant, s2, suppress, machine=machine)
     before2 = A._best_shift_match_rows(RR2, TT)
     after2 = A._best_shift_match_rows(res2[:, L:], TT)
     gen2 = A._norm_gain_rows(before2, after2, M, n)

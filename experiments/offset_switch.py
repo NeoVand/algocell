@@ -62,12 +62,16 @@ def classify(s, L):
     return core, isR, isT
 
 
-def run_world(c: dict, outdir: str) -> dict:
+def run_world(c: dict, outdir: str, machine: str | None = None) -> dict:
     from algocell_exp.soup import Soup
     L = c["L"]
     os.makedirs(outdir, exist_ok=True)
     seed = 7000 + 100 * (L == 32) + 50 * (c["tar"] == "lethal") + c["seed"] + 1000 * ["mix50", "R_into_T", "T_into_R"].index(c["start"]) + 20000 * (c["mut"] == "off")
-    soup = Soup(160, 125, "square", L, seed, 8192, 128, 4, [], zero_halts=(c["tar"] == "lethal"), mutations_per_step=(0 if c["mut"] == "off" else None))
+    if machine:
+        from algocell_exp.tier2 import soup_for
+        soup = soup_for(machine, L, seed, lethal=c["tar"] == "lethal", mutations_per_step=0 if c["mut"] == "off" else None)
+    else:
+        soup = Soup(160, 125, "square", L, seed, 8192, 128, 4, [], zero_halts=(c["tar"] == "lethal"), mutations_per_step=(0 if c["mut"] == "off" else None))
     rng = np.random.default_rng([seed, 99])
     N = soup.cell_count
     Rt = np.array(R_TAPE[L], np.uint8)
@@ -85,7 +89,7 @@ def run_world(c: dict, outdir: str) -> dict:
     path = os.path.join(outdir, stem(c) + ".jsonl")
     step, t0 = 0, time.time()
     with open(path, "w") as f:
-        f.write(json.dumps({"kind": "condition", **c, "soup_seed": seed}) + "\n")
+        f.write(json.dumps({"kind": "condition", **c, "soup_seed": seed, **({"machine": soup.machine_provenance} if machine else {})}) + "\n")
         while step <= c["steps"]:
             s = soup.read_soup()
             core, isR, isT = classify(s, L)
@@ -100,13 +104,16 @@ def run_world(c: dict, outdir: str) -> dict:
     return {**c, "wall_s": round(time.time() - t0, 1)}
 
 
-def analyse(indir: str, out: str) -> None:
+def analyse(indir: str, out: str, machine=None) -> None:
     rows = []
     for f in sorted(os.listdir(indir)):
         if not f.endswith(".jsonl"):
             continue
         recs = [json.loads(l) for l in open(os.path.join(indir, f))]
         c = recs[0]
+        if machine:
+            from algocell_exp.tier2 import check_run_core, tag_for
+            check_run_core(c, machine, tag_for(c["L"], lethal=c["tar"] == "lethal"))
         S = pd.DataFrame(recs[1:])
         S["Tshare"] = S["T"] / (S["R"] + S["T"]).replace(0, np.nan)
         last = S.iloc[-1]
@@ -144,11 +151,12 @@ def main():
     ap.add_argument("--indir", default=os.path.join(HERE, "runs", "offset"))
     ap.add_argument("--out", default=os.path.join(HERE, "results", "offset"))
     ap.add_argument("--local-smoke", action="store_true")
+    ap.add_argument("--machine", default=None, help="c0/c1: matching impact world; classifier is core independent")
     a = ap.parse_args()
     if a.analyse:
-        analyse(a.indir, a.out)
+        analyse(a.indir, a.out, machine=a.machine)
     elif a.local_smoke:
-        print(run_world({"L": 16, "tar": "benign", "mut": "off", "start": "mix50", "seed": 99, "steps": 2000}, os.path.join(HERE, "runs", "offset_smoke")))
+        print(run_world({"L": 16, "tar": "benign", "mut": "off", "start": "mix50", "seed": 99, "steps": 2000}, os.path.join(HERE, "runs", "offset_smoke"), machine=a.machine))
 
 
 if __name__ == "__main__":

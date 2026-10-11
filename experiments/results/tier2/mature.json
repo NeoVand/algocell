@@ -1,0 +1,62 @@
+[
+  {
+    "tag": "L16",
+    "records": [
+      {
+        "archive": "/runs/stageL/none@closure10M_L16_st128_k4_s6001.soup_final.u8.br",
+        "steps_per_s": [
+          6557.490769113017,
+          6887.741649420407,
+          6960.633732325636
+        ]
+      },
+      {
+        "archive": "/runs/stageL/none@closure10M_L16_st128_k4_s6003.soup_final.u8.br",
+        "steps_per_s": [
+          6784.544190833757,
+          6989.883349504074,
+          6830.311782079634
+        ]
+      },
+      {
+        "archive": "/runs/stageL/none@closure10M_L16_st128_k4_s6006.soup_final.u8.br",
+        "steps_per_s": [
+          6815.544169989711,
+          6819.812908139774,
+          6599.554705680282
+        ]
+      }
+    ],
+    "note": "C0 archived endpoints used only as performance inputs to C1; no endpoint scored"
+  },
+  {
+    "tag": "L20",
+    "records": [
+      {
+        "archive": "/runs/stageL/none@closure10M_L20_st128_k4_s6001.soup_final.u8.br",
+        "steps_per_s": [
+          6833.060252955235,
+          6924.948455162263,
+          7041.236423512876
+        ]
+      },
+      {
+        "archive": "/runs/stageL/none@closure10M_L20_st128_k4_s6003.soup_final.u8.br",
+        "steps_per_s": [
+          7022.924835294349,
+          6871.987233491893,
+          7041.5136278160035
+        ]
+      },
+      {
+        "archive": "/runs/stageL/none@closure10M_L20_st128_k4_s6006.soup_final.u8.br",
+        "steps_per_s": [
+          7108.7737191606875,
+          7031.649063600178,
+          6970.967447183507
+        ]
+      }
+    ],
+    "note": "C0 archived endpoints used only as performance inputs to C1; no endpoint scored"
+  }
+]
