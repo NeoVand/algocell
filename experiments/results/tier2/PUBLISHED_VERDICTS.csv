@@ -1,0 +1,37 @@
+claim,registered_component,published_verdict,source
+DZ1,open_p0_ge8,met,REVISION_PREREG.md:633–637; results/dial/dial_worlds.csv
+DZ1,open_p1_le2,met,REVISION_PREREG.md:633–637; results/dial/dial_worlds.csv
+DZ1,falling_rank_trend,met,REVISION_PREREG.md:633–637; results/dial/dial_worlds.csv
+DZ2,KM_medians_le1_reversal,not met,REVISION_PREREG.md:638–641
+DZ2,positive_spearman_perm_lt05,met,REVISION_PREREG.md:638–641
+DZ3,positive_transmitter_trend_perm_lt05,met,REVISION_PREREG.md:642–645
+DZ3,p0_transmitter_majority_le3,met,REVISION_PREREG.md:642–645
+DZ3,p1_transmitter_majority_ge7,not met,REVISION_PREREG.md:642–645
+E1,L16_benign_off_mix50_7of10_in_03_07,not met,REVISION_PREREG.md:434–436; results/offset/offset_switch.csv
+E1,L32_benign_off_mix50_7of10_in_03_07,not met,REVISION_PREREG.md:434–436; results/offset/offset_switch.csv
+E2,L16_benign_on_mix50_7of10_below_start_in_005_04,not met,REVISION_PREREG.md:437–443; script prints interval part; register conjunction separately
+E2,L16_lethal_on_mix50_7of10_below_start_in_005_04,not met,REVISION_PREREG.md:437–443; script prints interval part; register conjunction separately
+E2,L32_benign_on_mix50_7of10_below_start_in_005_04,not met,REVISION_PREREG.md:437–443; script prints interval part; register conjunction separately
+E3,lethal_direction,no direction registered,REVISION_PREREG.md:402–403
+E-L32L,7of10_Tshare_gt_half,met,REVISION_PREREG.md:625–630
+E-L32L,kill_7of10_Tshare_lt04,not fired,REVISION_PREREG.md:625–630
+L1,L16_recovery_ge5of10,not met,results/stageL/SCORING.md
+L2,L16_block_and_unexecuted_recovery,not met,results/stageL/SCORING.md; freeze ≥half implementation vs all-sites wording
+L3,L16_nonblock_dominant_le1_all_snapshots,not met,results/stageL/SCORING.md (as registered)
+L1,L20_recovery_ge5of10,not met,results/stageL/SCORING.md
+L2,L20_block_and_unexecuted_recovery,n/a (no recovery),results/stageL/SCORING.md; freeze ≥half implementation vs all-sites wording
+L3,L20_nonblock_dominant_le1_all_snapshots,not met,results/stageL/SCORING.md (as registered)
+L,joint_kill_both_lengths,fired,results/stageL/SCORING.md; REVISION_PREREG.md:202–207
+C4b,SI13_motif_gt50_and_confined_4of5,not met,published_r4_endpoints.csv; results/r4/r4_inv.csv; REVISION_PREREG.md:500–506; motif majority not reported as met in original prose
+C4b,most_heritable_confined_4of5,met,published_r4_endpoints.csv; results/r4/r4_inv.csv; REVISION_PREREG.md:500–506; motif majority not reported as met in original prose
+C4b,reverse_pusher_lt05_4of5,met,published_r4_endpoints.csv; results/r4/r4_inv.csv; REVISION_PREREG.md:500–506; motif majority not reported as met in original prose
+C4c,invasion_direction,no direction registered,"REVISION_PREREG.md:427–432,507–513"
+F4c,heritable_lt10of10_OR_KM_gt2000,met,"PLAN.md:274–275,397; results/stageF/stage_f/rings.csv"
+S1,complete_registered_genotype_panel,not met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329
+S2,complete_registered_genotype_panel,met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329
+S3,complete_registered_genotype_panel,met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329
+S4,complete_registered_genotype_panel,met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329
+S5,complete_registered_genotype_panel,met (descriptive),results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329
+X1-1,registered_U_endpoint,met,results/branching/BRANCHING.md; REVISION_PREREG.md:1113–1122
+X1-2,registered_U_endpoint,not met,results/branching/BRANCHING.md; REVISION_PREREG.md:1113–1122
+X1-3,registered_U_endpoint,met,results/branching/BRANCHING.md; REVISION_PREREG.md:1113–1122

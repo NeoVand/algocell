@@ -1,0 +1,1123 @@
+{
+  "panel": [
+    {
+      "key": "pusher16",
+      "kind": "pusher",
+      "tape": [
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "pusher50",
+      "kind": "pusher",
+      "tape": [
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "pusher64",
+      "kind": "pusher",
+      "tape": [
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "ret16",
+      "kind": "evolved closer",
+      "tape": [
+        173,
+        227,
+        33,
+        227,
+        33,
+        192,
+        173,
+        192,
+        173,
+        227,
+        33,
+        227,
+        33,
+        192,
+        173,
+        192
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "ldir20",
+      "kind": "evolved closer",
+      "tape": [
+        30,
+        4,
+        237,
+        176,
+        30,
+        4,
+        237,
+        176,
+        30,
+        4,
+        237,
+        176,
+        30,
+        4,
+        237,
+        176,
+        30,
+        4,
+        237,
+        176
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "ldir32",
+      "kind": "evolved closer",
+      "tape": [
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176,
+        4,
+        94,
+        237,
+        176
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "jr50",
+      "kind": "evolved closer",
+      "tape": [
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        32,
+        240,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        32,
+        240,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        32,
+        240,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "lethal16_s4009",
+      "kind": "lethal-tar closer",
+      "tape": [
+        29,
+        46,
+        15,
+        195,
+        235,
+        29,
+        116,
+        91,
+        112,
+        160,
+        40,
+        237,
+        184,
+        127,
+        141,
+        28
+      ],
+      "sup": [],
+      "zh": true
+    },
+    {
+      "key": "genome16_s6006",
+      "kind": "transient genome",
+      "tape": [
+        30,
+        80,
+        195,
+        142,
+        118,
+        141,
+        188,
+        240,
+        212,
+        138,
+        42,
+        108,
+        116,
+        113,
+        237,
+        176
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "genome20_s6003",
+      "kind": "transient genome",
+      "tape": [
+        94,
+        17,
+        4,
+        197,
+        237,
+        184,
+        143,
+        224,
+        0,
+        250,
+        145,
+        146,
+        0,
+        118,
+        45,
+        213,
+        94,
+        16,
+        237,
+        116
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "genome20_s6004",
+      "kind": "transient genome",
+      "tape": [
+        0,
+        147,
+        28,
+        0,
+        70,
+        92,
+        17,
+        108,
+        237,
+        160,
+        193,
+        207,
+        32,
+        106,
+        247,
+        171,
+        50,
+        122,
+        39,
+        12
+      ],
+      "sup": [],
+      "zh": false
+    },
+    {
+      "key": "pusher32_8080",
+      "kind": "pusher (8080)",
+      "tape": [
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197,
+        1,
+        197
+      ],
+      "sup": [
+        "family:bit",
+        "family:bit-set",
+        "family:bit-set-mem",
+        "family:rotate",
+        "family:rotate-mem",
+        "EX AF,AF'",
+        "DJNZ",
+        "JR ",
+        "EXX",
+        "ed:40",
+        "ed:41",
+        "ed:42",
+        "ed:43",
+        "ed:44",
+        "ed:45",
+        "ed:46",
+        "ed:47",
+        "ed:48",
+        "ed:49",
+        "ed:4a",
+        "ed:4b",
+        "ed:4c",
+        "ed:4d",
+        "ed:4e",
+        "ed:4f",
+        "ed:50",
+        "ed:51",
+        "ed:52",
+        "ed:53",
+        "ed:54",
+        "ed:55",
+        "ed:56",
+        "ed:57",
+        "ed:58",
+        "ed:59",
+        "ed:5a",
+        "ed:5b",
+        "ed:5c",
+        "ed:5d",
+        "ed:5e",
+        "ed:5f",
+        "ed:60",
+        "ed:61",
+        "ed:62",
+        "ed:63",
+        "ed:64",
+        "ed:65",
+        "ed:66",
+        "ed:67",
+        "ed:68",
+        "ed:69",
+        "ed:6a",
+        "ed:6b",
+        "ed:6c",
+        "ed:6d",
+        "ed:6e",
+        "ed:6f",
+        "ed:70",
+        "ed:71",
+        "ed:72",
+        "ed:73",
+        "ed:74",
+        "ed:75",
+        "ed:76",
+        "ed:78",
+        "ed:79",
+        "ed:7a",
+        "ed:7b",
+        "ed:7c",
+        "ed:7d",
+        "ed:7e",
+        "ed:a0",
+        "ed:a1",
+        "ed:a2",
+        "ed:a3",
+        "ed:a8",
+        "ed:a9",
+        "ed:aa",
+        "ed:ab",
+        "ed:b0",
+        "ed:b1",
+        "ed:b2",
+        "ed:b3",
+        "ed:b8",
+        "ed:b9",
+        "ed:ba",
+        "ed:bb"
+      ],
+      "zh": false
+    },
+    {
+      "key": "closer32_8080_p1",
+      "kind": "constructed closer (8080)",
+      "tape": [
+        33,
+        32,
+        0,
+        49,
+        64,
+        0,
+        22,
+        16,
+        43,
+        70,
+        43,
+        78,
+        197,
+        21,
+        194,
+        8,
+        0,
+        195,
+        17,
+        0,
+        53,
+        50,
+        233,
+        54,
+        221,
+        176,
+        71,
+        223,
+        249,
+        46,
+        239,
+        73
+      ],
+      "sup": [
+        "family:bit",
+        "family:bit-set",
+        "family:bit-set-mem",
+        "family:rotate",
+        "family:rotate-mem",
+        "EX AF,AF'",
+        "DJNZ",
+        "JR ",
+        "EXX",
+        "ed:40",
+        "ed:41",
+        "ed:42",
+        "ed:43",
+        "ed:44",
+        "ed:45",
+        "ed:46",
+        "ed:47",
+        "ed:48",
+        "ed:49",
+        "ed:4a",
+        "ed:4b",
+        "ed:4c",
+        "ed:4d",
+        "ed:4e",
+        "ed:4f",
+        "ed:50",
+        "ed:51",
+        "ed:52",
+        "ed:53",
+        "ed:54",
+        "ed:55",
+        "ed:56",
+        "ed:57",
+        "ed:58",
+        "ed:59",
+        "ed:5a",
+        "ed:5b",
+        "ed:5c",
+        "ed:5d",
+        "ed:5e",
+        "ed:5f",
+        "ed:60",
+        "ed:61",
+        "ed:62",
+        "ed:63",
+        "ed:64",
+        "ed:65",
+        "ed:66",
+        "ed:67",
+        "ed:68",
+        "ed:69",
+        "ed:6a",
+        "ed:6b",
+        "ed:6c",
+        "ed:6d",
+        "ed:6e",
+        "ed:6f",
+        "ed:70",
+        "ed:71",
+        "ed:72",
+        "ed:73",
+        "ed:74",
+        "ed:75",
+        "ed:76",
+        "ed:78",
+        "ed:79",
+        "ed:7a",
+        "ed:7b",
+        "ed:7c",
+        "ed:7d",
+        "ed:7e",
+        "ed:a0",
+        "ed:a1",
+        "ed:a2",
+        "ed:a3",
+        "ed:a8",
+        "ed:a9",
+        "ed:aa",
+        "ed:ab",
+        "ed:b0",
+        "ed:b1",
+        "ed:b2",
+        "ed:b3",
+        "ed:b8",
+        "ed:b9",
+        "ed:ba",
+        "ed:bb"
+      ],
+      "zh": false
+    },
+    {
+      "key": "closer32_8080_p2",
+      "kind": "constructed closer (8080)",
+      "tape": [
+        33,
+        32,
+        0,
+        49,
+        64,
+        0,
+        22,
+        16,
+        43,
+        70,
+        43,
+        78,
+        197,
+        21,
+        194,
+        8,
+        0,
+        195,
+        17,
+        0,
+        52,
+        99,
+        224,
+        7,
+        86,
+        154,
+        70,
+        29,
+        8,
+        77,
+        148,
+        7
+      ],
+      "sup": [
+        "family:bit",
+        "family:bit-set",
+        "family:bit-set-mem",
+        "family:rotate",
+        "family:rotate-mem",
+        "EX AF,AF'",
+        "DJNZ",
+        "JR ",
+        "EXX",
+        "ed:40",
+        "ed:41",
+        "ed:42",
+        "ed:43",
+        "ed:44",
+        "ed:45",
+        "ed:46",
+        "ed:47",
+        "ed:48",
+        "ed:49",
+        "ed:4a",
+        "ed:4b",
+        "ed:4c",
+        "ed:4d",
+        "ed:4e",
+        "ed:4f",
+        "ed:50",
+        "ed:51",
+        "ed:52",
+        "ed:53",
+        "ed:54",
+        "ed:55",
+        "ed:56",
+        "ed:57",
+        "ed:58",
+        "ed:59",
+        "ed:5a",
+        "ed:5b",
+        "ed:5c",
+        "ed:5d",
+        "ed:5e",
+        "ed:5f",
+        "ed:60",
+        "ed:61",
+        "ed:62",
+        "ed:63",
+        "ed:64",
+        "ed:65",
+        "ed:66",
+        "ed:67",
+        "ed:68",
+        "ed:69",
+        "ed:6a",
+        "ed:6b",
+        "ed:6c",
+        "ed:6d",
+        "ed:6e",
+        "ed:6f",
+        "ed:70",
+        "ed:71",
+        "ed:72",
+        "ed:73",
+        "ed:74",
+        "ed:75",
+        "ed:76",
+        "ed:78",
+        "ed:79",
+        "ed:7a",
+        "ed:7b",
+        "ed:7c",
+        "ed:7d",
+        "ed:7e",
+        "ed:a0",
+        "ed:a1",
+        "ed:a2",
+        "ed:a3",
+        "ed:a8",
+        "ed:a9",
+        "ed:aa",
+        "ed:ab",
+        "ed:b0",
+        "ed:b1",
+        "ed:b2",
+        "ed:b3",
+        "ed:b8",
+        "ed:b9",
+        "ed:ba",
+        "ed:bb"
+      ],
+      "zh": false
+    }
+  ],
+  "source_tables": {
+    "results/stageG/stageG/stage_g_runs.csv": "5f37ab58a84b7bd52c2f11115bd5752b14566e73320c0b5aa666bdf51dae459c",
+    "results/stageI/stageI/stage_g_runs.csv": "ac827713f96a02cc14c766933440caf680a6db8fe3a8658d32ad9a116c99b9f8",
+    "results/capacity_time_L/capacity_over_time.csv": "3de78afe3af6925f441e760e352adb3b76b305767dd3849ebedb4c7ef6438eef"
+  },
+  "K_pool_files": [
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2001.soup_t5000.u8.br",
+      "sha256": "c23d78d23af6dbfda917a44ebc6cfaf817f4297864db431b7c5bb594b81ba619"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2001.soup_t10000.u8.br",
+      "sha256": "a785ca0f3ac71843b2ed45b08426aaae1475453ffe0010b7430156397c7cb34e"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2002.soup_t5000.u8.br",
+      "sha256": "977ed8a9469fb04ab6ff913127cadca05d050ff4d191fa27727fd11b4eccccb1"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2002.soup_t10000.u8.br",
+      "sha256": "844cdbe49f3805dad1b626123a0dea07b1a55d067d3c2e3adbf13e423db618b9"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2003.soup_t5000.u8.br",
+      "sha256": "e8f0fc0b86913f50c0d43ad5ac38397219cb05a6bec474b78d7fa97b22186fc8"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2003.soup_t10000.u8.br",
+      "sha256": "f064067ef93feae4f2163a70a06c11c11c7d652652499ea5d054520f5f3dda0a"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2004.soup_t5000.u8.br",
+      "sha256": "d9404f6f9b10ebfe70546f27034c7b71256a56386428ddb238da14c16e5be347"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2004.soup_t10000.u8.br",
+      "sha256": "87c0d91b3a49c97c2050153877ae9273b255a1d214d1f9dbee7ee30dedd24d36"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2005.soup_t5000.u8.br",
+      "sha256": "ea99a4cb1f26bb2198f7441c225a4b00a357bfdcd3404226aeb1162814cab898"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2005.soup_t10000.u8.br",
+      "sha256": "af3b67360f5519bc2dfbb2b1fbddd27a5414df7da2dca3a55740872d381d78cc"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2006.soup_t5000.u8.br",
+      "sha256": "994975ad0071f42cf0edf3afb0ca722f5bf4e4cb0b96b5379d0d2252ba0f0b3f"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2006.soup_t10000.u8.br",
+      "sha256": "8cf04aa05e8ba53e039da038fa07c3b6d17b8149f614889b8c01c56ce4724883"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2007.soup_t5000.u8.br",
+      "sha256": "82fa11641df7d1f2d692b42c6a4341cb7280c345c219773b978df4b90540f70d"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2007.soup_t10000.u8.br",
+      "sha256": "a6c987e6ad770ebf9cec3fd009f7aa1e61e760b55c313d6265bc13d4e76adfab"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2008.soup_t5000.u8.br",
+      "sha256": "f4b6b56064434f50a6f53b35b5e1752c5ebf00d4638bb1a5fceadb881dbefae5"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2008.soup_t10000.u8.br",
+      "sha256": "9eb5ba1b02d2930abddca0d2ad4f42dac40a60cb7714696c2fcf5fbfcfeb90aa"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2009.soup_t5000.u8.br",
+      "sha256": "f5728cbeb6e4c18279471b3fe44c290fcdb6619d0205715194bf9698b2d0d21d"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2009.soup_t10000.u8.br",
+      "sha256": "1d7cdf29603997937d4215334d016ec1cca66bd512eb35a6260be549d0591a55"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2010.soup_t5000.u8.br",
+      "sha256": "a32851ff9758a0bc7a62e0c3ce2fbb88ba00354d32d98157c61c93ac16d2bfe0"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2010.soup_t10000.u8.br",
+      "sha256": "d994938cf70ae8ee527c1b5be89e64f4e7543ec11d0725f6edc62dfca3a1611e"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2011.soup_t5000.u8.br",
+      "sha256": "fdcc66117b76042728c9cd53bf4c9da9a7d783dd7ece200bfc20753e092fc63f"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2011.soup_t10000.u8.br",
+      "sha256": "78beadcdf2aede67b05ba1f6491b94088f15e5638baa6aafefcc0ea097480b13"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2012.soup_t5000.u8.br",
+      "sha256": "c0e7a3308c350d66ac5878d7c81280a073b1fdb098ff030e3111e7681984a82b"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2012.soup_t10000.u8.br",
+      "sha256": "fc1a0dd90d2d9df16439a6e4822b0bb9e3416375ecbd15dbaaf627b48d91d700"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2013.soup_t5000.u8.br",
+      "sha256": "773b1a09aa044b0c8a7be87c41a328fa6cd2c9720309534ce9a2927dd8647f0e"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2013.soup_t10000.u8.br",
+      "sha256": "19cc844af57703c9e3616721ec0e903a710b4ab3350685208465611ecc719580"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2014.soup_t5000.u8.br",
+      "sha256": "96c4ff9237d9fd496bbf178e970f10d9d65747fef8bc5b3dc7d5bfce18d97de4"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2014.soup_t10000.u8.br",
+      "sha256": "f0f350376ae5d38de84e26bcc35f6c61b032befe30db95d294048b013c74981c"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2015.soup_t5000.u8.br",
+      "sha256": "2303a64e58de52ccf1f32b28b4b39692a37e0747c404c6e4eda2ceff434d8446"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2015.soup_t10000.u8.br",
+      "sha256": "f31fdd1c09303ffcf47a772f10d3e844ef99c76928ca9cc463a1128cbc9edc4d"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2016.soup_t5000.u8.br",
+      "sha256": "8c9af3c6267f81c66772b8d05b9a4047fd1e8006024c9f956c7bf76c2f90a47d"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2016.soup_t10000.u8.br",
+      "sha256": "89ba4e71b86a7bc02f67166f15435df9b5844988919250333aa39884596878e1"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2017.soup_t5000.u8.br",
+      "sha256": "af655ecf46b2a29678efd99469b48b7a6869d79a52f016cf5b04eb9b84d9692f"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2017.soup_t10000.u8.br",
+      "sha256": "89c508d1f6a902805eb77da2a49e3397633129a56d4b3ede786e1e6a0d545e3c"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2018.soup_t5000.u8.br",
+      "sha256": "3de688c0ce1ba7edd4fd185dd01ff031dc5bb769b0691b6dcad45ea7fda7d0ca"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2018.soup_t10000.u8.br",
+      "sha256": "c08d28bcca92ba11aaadf39bb33cc7818e8b39f76a1a8495cc34b4521ba15f6f"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2019.soup_t5000.u8.br",
+      "sha256": "74377297955a29f3befc67a1d75b03ac1b78686123c15d556491c7f79c998a70"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2019.soup_t10000.u8.br",
+      "sha256": "99e3ed0916fbb25952fbb467d3809b6ca6af46e9aacd75734d9346fe6a9bd7ec"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2020.soup_t5000.u8.br",
+      "sha256": "8b58e05a40234ec80348227bdd8a8641ef24e6f1e01a297fc3318cf09b4ac061"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure_L16_st128_k4_s2020.soup_t10000.u8.br",
+      "sha256": "b3d740f5f45af6c8e1fb7202444806db13280dcc7eca3568bd725d962112a475"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2001.soup_t5000.u8.br",
+      "sha256": "6f95b6201f706ec11046bfbce94b3cf1e4ec052393b4c1fc7ff0bcd0dcc46812"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2001.soup_t10000.u8.br",
+      "sha256": "4c1dcea783f56d7a1768946104b136b832e11c07782091f5ad10d60c680e8933"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2002.soup_t5000.u8.br",
+      "sha256": "711b81b7096c98670f059131459e7e3bf5daf9f3d2a8686fd313dd52df93c589"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2002.soup_t10000.u8.br",
+      "sha256": "a5065364bbb3f7e743d4ed29a16e1e65964bc0a785f767405ac022fa0d264e59"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2003.soup_t5000.u8.br",
+      "sha256": "d04bba4500e4cd6b949236d16462db955fbcb12d62393aa2d8309fda5d149a0c"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2003.soup_t10000.u8.br",
+      "sha256": "ac047680981c3246666eb45d1e05ff81d12972ba5f443ff450bd8a78cd73e068"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2004.soup_t5000.u8.br",
+      "sha256": "c3ddeec5142ec5a8eecd9efbd8de7c677f86a66d6ea152dd7b158b3a0037695f"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2004.soup_t10000.u8.br",
+      "sha256": "0f1b1d2bca4b2989e9b312285947ef03b1146a4f338a048c9868bb51f171c10b"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2005.soup_t5000.u8.br",
+      "sha256": "b051a77a53f3dc55e07373878381f3872957c9fae72d57096baafa21ca6d3c60"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2005.soup_t10000.u8.br",
+      "sha256": "7056c6ee63d2f505f4b790cbb832036012c2cb8399dedeefdff7ef8792a2128b"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2006.soup_t5000.u8.br",
+      "sha256": "03d25644113459b1013b458c3dede21a134b382d6b8980a6b5adafeb4263f5e5"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2006.soup_t10000.u8.br",
+      "sha256": "becd2f596c6575047afb2c8449881bc8d86f49935d1785b46c8ecf3e884192ce"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2007.soup_t5000.u8.br",
+      "sha256": "e58f2684007685475289536f291b5a6b3f81ff1ba3e6c45fa4e6ca7c5b649b1a"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2007.soup_t10000.u8.br",
+      "sha256": "b0b66a6e24ba85b9368a0c3b03f493fd072e2ee552615d69bbf7d2a3efefd2fe"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2008.soup_t5000.u8.br",
+      "sha256": "cb6d5d7276c05548d0e80b1bee3f1bd03206e6b06959d86d920b2b8c74dc46f5"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2008.soup_t10000.u8.br",
+      "sha256": "78fd933ff84f2c391c688760698776f8cc62750a08a20fc450db924015b185e3"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2009.soup_t5000.u8.br",
+      "sha256": "8c7057102bf43b97f2dd4c7524dee2a74906b7712a2343aefae06abaaf718400"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2009.soup_t10000.u8.br",
+      "sha256": "a84dbd4b707390396812fd36794b32370e6b4edd27a940c81a88d552586660f5"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2010.soup_t5000.u8.br",
+      "sha256": "0740d1ae8cfbfdc54eac0dcb4638936ffab54bf6e9cc0a1164a0ec530857b631"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2010.soup_t10000.u8.br",
+      "sha256": "f54ddef53f1817ee631a06cc30a491e6def6b7d99bcec63c160d56276ddbbdab"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2011.soup_t5000.u8.br",
+      "sha256": "d60849e249c7c6a422b559279ca5a835dd43e5610a375858f8214a55f4261930"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2011.soup_t10000.u8.br",
+      "sha256": "4b7069a79b40c1b6c736826d3dca8d573ff5fe173804446809f6fe3d950e659b"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2012.soup_t5000.u8.br",
+      "sha256": "ad48ecf0133dcba90a6ea83989f10c3d05e9208b13f26732c4e16b3ae13accc1"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2012.soup_t10000.u8.br",
+      "sha256": "c67bd25b70e3f94e69b0d5d2eedebf585df97d0bee540e793ee3ac28408e4ce7"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2013.soup_t5000.u8.br",
+      "sha256": "44dad8e812ce42a028af0b54db499968376131f6b8b896626ce7617fbc870c40"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2013.soup_t10000.u8.br",
+      "sha256": "9bd50622cd3d738aba0890aa54be818b237d01828fb5316464d8d5d922fb3627"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2014.soup_t5000.u8.br",
+      "sha256": "44dbf4210e789342b758723aaaf63cb9222708d0b520d58b52358c128301fe5b"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2014.soup_t10000.u8.br",
+      "sha256": "353593baeaae686318277fd351923ba0903156ce79065233b97546fd5cb6bc61"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2015.soup_t5000.u8.br",
+      "sha256": "0e120bd4602ff69d4d1e4b2e923ab5648b3398a8f9cfd8a875b77c04a631c7bf"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2015.soup_t10000.u8.br",
+      "sha256": "7111ef022ae338d9c5dec63b81ef276e917352d947dc776d307d045208ed9522"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2016.soup_t5000.u8.br",
+      "sha256": "de3ee5a0de93b1c4580472e17bf87b344b4432496cc510067ad4ea93239aaa7d"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2016.soup_t10000.u8.br",
+      "sha256": "0737a01eafd445ea82bef477d94e88fc4964827aefa85729897f6248a216242a"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2017.soup_t5000.u8.br",
+      "sha256": "4fe1e7e615e7bb1e9be6703aa7b644faccb64099feda54f0abfc4075e0df3a24"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2017.soup_t10000.u8.br",
+      "sha256": "7ff5988998f9dd1ba8fa3e76be6116f1c03730306883314de4dce2dc0339f357"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2018.soup_t5000.u8.br",
+      "sha256": "e0adf0bd7fcc5b57604a63bc13421f3e01c608860a90fb4763198334d5b89f1a"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2018.soup_t10000.u8.br",
+      "sha256": "5e7df449b0a5a8fe1f14967d1964cf0a6ce5caecd8a391f6ec3b50945e20155a"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2019.soup_t5000.u8.br",
+      "sha256": "725d4a7797ebf0d84626a7d0e0df259fd506be64502252568f824b3d985c5c9a"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2019.soup_t10000.u8.br",
+      "sha256": "c5549cd568afe75507620ab9808cb075afde8c220443e9739f07d9508970c2c3"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2020.soup_t5000.u8.br",
+      "sha256": "2acb908f7179c687de1ff409db16caad20bee108f471cbd5c3a88176dea29739"
+    },
+    {
+      "path": "/Users/neo/repos/algocell/experiments/runs/stageG/none@closure1M_L64_st128_k4_s2020.soup_t10000.u8.br",
+      "sha256": "cc77c5dca722a92c2be032d769152eaf1107084390630959966d22935cc8224e"
+    }
+  ]
+}

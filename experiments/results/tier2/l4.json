@@ -1,0 +1,763 @@
+{
+  "fresh": [
+    {
+      "tag": "lp0_L16",
+      "steps_per_s": [
+        3235.5870976145857,
+        3389.6988165210855,
+        2780.2376043864947
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lp0_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "686a650580a3c269df85533c23da0dc48e5bea9077256b0b19632f4390d67732",
+        "sha256_wgsl": "c19db0e6a29eba18476af179bae2fa3cc5d482011b3dd2f6ce10543910bc47d5",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "1d8d18d8b10293a9ad860665e227ad057b743f58397ba4a267a5c9db28a5663f"
+      }
+    },
+    {
+      "tag": "lp001_L16",
+      "steps_per_s": [
+        3202.9867601304886,
+        3359.563056278765,
+        3513.0688937451278
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lp001_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "85c512968489daef779fc949c5f3090d6c71ce42014f37b14b2ccd97d6d30a17",
+        "sha256_wgsl": "08bee6fa7b62115e4a02672251c86601e9553480d1eb0ed14177ed83a0c0921e",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "b62e26a005c4d8bf704e959f91a8b98940375d93745cf38131e1ed3275c4fcf4"
+      }
+    },
+    {
+      "tag": "lp003_L16",
+      "steps_per_s": [
+        3431.6895321525362,
+        3551.768999825805,
+        3380.896600010416
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lp003_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "46c753007157ecb6818d2d30df193e4ab5879bfe1657caf6d0e08f15649c21c6",
+        "sha256_wgsl": "5c751281485e70da4b1859d158efe54ad85e60172494eb3d43309c9553559283",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "2c39d1bc2256fcad7a19b3f16da232d08f082fc7317f78148cf7d13b3998d2b4"
+      }
+    },
+    {
+      "tag": "lp01_L16",
+      "steps_per_s": [
+        3530.2780872016638,
+        3623.053257901057,
+        3594.0857805735595
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lp01_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "a75570740c138c814d6a0d16a745f368831e831df2e87cbaafc0c5acd1988b5f",
+        "sha256_wgsl": "7fe23fdb528c8e69cac30af086f3c9d22595ae29f281c98a52d58ea1ffff4545",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "f7a61a4e31c321242a078176f681af4e409da4e2b9b8eb9daf8813604537d1fd"
+      }
+    },
+    {
+      "tag": "lp03_L16",
+      "steps_per_s": [
+        4290.3208186794345,
+        4444.208857010091,
+        3863.344462950259
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lp03_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "63bf1a174daabab4723aa22b3393aa3b35063aa21b2b7c0dfa31f435342ddc94",
+        "sha256_wgsl": "46459d45f490c38a0b1ebb0e8ebf019b17c228b92bbe587bbc1877d74d9a392f",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "71ded37924b6f34a279c7d6cccecc8528258317cb2a65cf6827f91a380a40b2f"
+      }
+    },
+    {
+      "tag": "lp1_L16",
+      "steps_per_s": [
+        3460.1627199976892,
+        4220.582108640224,
+        4165.013346518858
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lp1_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "ddbf69eb3a7f919ece0e187836e1a2598ed29022c6a9e2f20554216d570d57ce",
+        "sha256_wgsl": "b3707e495f72e356d7ce155719a2677193d9f10f1aa252845d12fc76ebf9df35",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "368d8e53c4888313fe795ec993c00e8d17e837af472ddb64ab01845536e956f5"
+      }
+    },
+    {
+      "tag": "L16",
+      "steps_per_s": [
+        3223.6862005800826,
+        3526.782141200104,
+        3631.7980786236503
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks none)",
+        "sha256_core": "ef30ecfe8f3da5c8ac8cc8ad1c1c535b071d93cf524472c16570bd0ccd29bcbd",
+        "sha256_world": "b0513f0ab5afbb09d75fd32a7dbac2fda6e8db70eb9997431390442fda9e5c02",
+        "sha256_wgsl": "92b11dec76fadf3fc9cb5d2d42d7023abab198bd6bc1ec1e6c8efba66593da2e",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "08140111118fa8c22bd2dcbebdd7ddecb47382e53bbdfc274c7cf387a054b32f"
+      }
+    },
+    {
+      "tag": "lethal_L16",
+      "steps_per_s": [
+        4285.833776948349,
+        4543.785655218322,
+        4443.398606497253
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lethal_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "b42e67151308ed439f50be413e7e39a53bc07072228dd6afadb68af022845302",
+        "sha256_wgsl": "3a76461357c5da0aa26b6b0a79b11b4210c59184c9bf0c0f2ca69eb2e25c83c8",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": {
+          "lethal": {
+            "firstUnit": 0
+          }
+        },
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_lethal_L16.wgsl",
+        "soup_source_sha256": "cc403fa9d9c209209a590d46733f93c960115c7e3b9dfc323d6de37f5e5137af",
+        "zsoup_shader_sha256": "a295278b74fd4cf6fcf30ac43b8ac414dc43a2dca7aa2f16ca28ddf2c692c462"
+      }
+    },
+    {
+      "tag": "L32",
+      "steps_per_s": [
+        3306.906710977301,
+        3940.406371492416,
+        4249.553788811644
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_L32_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks none)",
+        "sha256_core": "ef30ecfe8f3da5c8ac8cc8ad1c1c535b071d93cf524472c16570bd0ccd29bcbd",
+        "sha256_world": "7d1ef3eb418caa6c6e94a6dde7379510135d09c98ecc3f364ca29ff3409bed76",
+        "sha256_wgsl": "cea34e536ee41eba30757958728f36ba2f8f141081fd4903dde624b860e58ffc",
+        "ring": 64,
+        "segments": [
+          [
+            "A",
+            32
+          ],
+          [
+            "B",
+            32
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 63,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L32.wgsl",
+        "soup_source_sha256": "7600ff7bcb22aa640c1a153c7b0043dcb32f55a05244f3c79e94d13f669ca0d1",
+        "zsoup_shader_sha256": "eee446535d6fbbff79fd2b3a35e4e9320d4630a3e3cbf9a42c3edcdcc6653c4e"
+      }
+    },
+    {
+      "tag": "lethal_L32",
+      "steps_per_s": [
+        3771.8028448780606,
+        3849.1403273984797,
+        3927.771187658778
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_lethal_L32_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks instructionStart)",
+        "sha256_core": "fbc64d2dce0aa2b2a93c44670ab95cad591e58589d23062e3bb7e82883fc8d0c",
+        "sha256_world": "6f5a6679699eb8eecd5a00a9a3886ca95e825e7e5f27ce4dd3ea7366915830a2",
+        "sha256_wgsl": "26fa0a2b10fefa714830da9ec38af050133dc2fdd2d0a5de7afa704bf64fc383",
+        "ring": 64,
+        "segments": [
+          [
+            "A",
+            32
+          ],
+          [
+            "B",
+            32
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 63,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": {
+          "lethal": {
+            "firstUnit": 0
+          }
+        },
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_lethal_L32.wgsl",
+        "soup_source_sha256": "b8b54d99bf5c20b0b00cc1e38277f66af56209e6e39c5278bf79c414575da92f",
+        "zsoup_shader_sha256": "0651b05a0deea7404b0e9d74261107653948c38d9b7530b47b5544c1fb4b2b12"
+      }
+    },
+    {
+      "tag": "randreg_L16",
+      "steps_per_s": [
+        2765.561778485922,
+        2716.4048944663523,
+        2812.770328061635
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_randreg_L16_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks none)",
+        "sha256_core": "ef30ecfe8f3da5c8ac8cc8ad1c1c535b071d93cf524472c16570bd0ccd29bcbd",
+        "sha256_world": "ae3a487dda241b1dc1f1ac567794271c605e7175e57562e179745e47efebeb02",
+        "sha256_wgsl": "037cf89695de5837347a5f9a4fb59f9d465541299ac47c878a89dd1119d92560",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            16
+          ],
+          [
+            "B",
+            16
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 31,
+              "values": {
+                "sp": 65535
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L16.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "d36e53627721e6ef352181ddd4afa925acb9285d719d352556938c042d870707"
+      }
+    },
+    {
+      "tag": "L20",
+      "steps_per_s": [
+        3059.177619907365,
+        2906.6719840975748,
+        3470.7073771739265
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_L20_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks none)",
+        "sha256_core": "ef30ecfe8f3da5c8ac8cc8ad1c1c535b071d93cf524472c16570bd0ccd29bcbd",
+        "sha256_world": "ba5c1aff5117558d82d1773d74b1a9633ed8cd3766985dcaa1a7ce53ba9b833c",
+        "sha256_wgsl": "9b8878fc8b104c651ff37f3bdb7db63faa30ae76fe5f7044a507d8351bdea4ee",
+        "ring": 40,
+        "segments": [
+          [
+            "A",
+            20
+          ],
+          [
+            "B",
+            20
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 39,
+              "values": {
+                "sp": 65519
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L20.wgsl",
+        "soup_source_sha256": "371253f7069365dc2ac28b74d96471db3726cd7241dd590bae588918097d0972",
+        "zsoup_shader_sha256": "daf6d55d72a2297da2f91520b0d07ee4c74a389706f91e47d3b4bd464d5f2b9e"
+      }
+    },
+    {
+      "tag": "L8_P32",
+      "steps_per_s": [
+        3878.4706485366187,
+        3983.3798648863467,
+        3679.665666871144
+      ],
+      "state": "fresh random soup, evolving during timing",
+      "warmup": 256,
+      "timed_steps_per_rep": 4096,
+      "machine": {
+        "machine": "imp_L8_P32_c1",
+        "zilion": "0.3.0-dev",
+        "core": "z80 0.3.0 (stable; variant classic; compat 0.3; hooks none)",
+        "sha256_core": "ef30ecfe8f3da5c8ac8cc8ad1c1c535b071d93cf524472c16570bd0ccd29bcbd",
+        "sha256_world": "baa6c6898d3f5408a54a6db638a552e67469d6e2b4f94cc7f535568bd220f949",
+        "sha256_wgsl": "f03caf10d734d0b1de4109d209add1c917435cf12f0e93d418cea4b3ec94fce2",
+        "ring": 32,
+        "segments": [
+          [
+            "A",
+            8
+          ],
+          [
+            "B",
+            8
+          ]
+        ],
+        "init": {
+          "perLane": false,
+          "stateWords": 27,
+          "stack": {
+            "convention": {
+              "kind": "topAliases",
+              "position": 15,
+              "values": {
+                "sp": 65519
+              }
+            }
+          }
+        },
+        "budget": {
+          "unit": "steps",
+          "perLane": true,
+          "default": null
+        },
+        "halting": null,
+        "ablation": "coarse",
+        "soup_kernels_from": "sim_square_L8_P32.wgsl",
+        "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+        "zsoup_shader_sha256": "a06c8a48fca85ecb0f8c799db6cf034c983d04485d994aaa8375deb16b7d5af7"
+      }
+    }
+  ],
+  "mature": [
+    {
+      "tag": "L16",
+      "records": [
+        {
+          "archive": "/runs/stageL/none@closure10M_L16_st128_k4_s6001.soup_final.u8.br",
+          "steps_per_s": [
+            4659.301730640694,
+            5257.358985351795,
+            5156.63519549924
+          ]
+        },
+        {
+          "archive": "/runs/stageL/none@closure10M_L16_st128_k4_s6003.soup_final.u8.br",
+          "steps_per_s": [
+            5589.462772074386,
+            5553.672528529147,
+            5802.0397770594
+          ]
+        },
+        {
+          "archive": "/runs/stageL/none@closure10M_L16_st128_k4_s6006.soup_final.u8.br",
+          "steps_per_s": [
+            5542.927832508658,
+            5519.974528821432,
+            5561.639821149932
+          ]
+        }
+      ],
+      "note": "C0 archived endpoints used only as performance inputs to C1; no endpoint scored"
+    },
+    {
+      "tag": "L20",
+      "records": [
+        {
+          "archive": "/runs/stageL/none@closure10M_L20_st128_k4_s6001.soup_final.u8.br",
+          "steps_per_s": [
+            4368.631348279883,
+            4365.723861011114,
+            4453.9775343015135
+          ]
+        },
+        {
+          "archive": "/runs/stageL/none@closure10M_L20_st128_k4_s6003.soup_final.u8.br",
+          "steps_per_s": [
+            4523.414338100218,
+            4281.119892424993,
+            4460.995257201303
+          ]
+        },
+        {
+          "archive": "/runs/stageL/none@closure10M_L20_st128_k4_s6006.soup_final.u8.br",
+          "steps_per_s": [
+            4384.903286274436,
+            4309.974067277473,
+            4362.119750175502
+          ]
+        }
+      ],
+      "note": "C0 archived endpoints used only as performance inputs to C1; no endpoint scored"
+    }
+  ]
+}
