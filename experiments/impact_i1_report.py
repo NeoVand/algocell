@@ -10,7 +10,7 @@ from pathlib import Path
 import impact_confirm as C
 import impact_study as S
 from algocell_exp import impact as I
-from algocell_exp.impact_assays import identity
+from algocell_exp.impact_assays import equal, identity
 from algocell_exp.impact_worlds import CORES, WORLDS
 
 # Claims are traced to the actual current source tables, with plot filters stated.
@@ -52,10 +52,45 @@ def claim(c):
     index = (S.HERE / "manuscript/NUMBERS_INDEX.md").read_text().splitlines()
     prereg = (S.HERE / "REVISION_PREREG.md").read_text().splitlines()
     refs = [f"manuscript/NUMBERS_INDEX.md:{i}" for i, ln in enumerate(index, 1) if any(p in ln for p in paths)]
-    regs = [f"REVISION_PREREG.md:{i}" for i, ln in enumerate(prereg, 1) if ln.startswith("#") and any(p in ln for p in sections)]
+    regs = [f"REVISION_PREREG.md:{i}" for i, ln in enumerate(prereg, 1) if ln.startswith(("#", "**")) and any(p in ln for p in sections)]
     assert refs and regs, family
-    if family in ("stageC", "stageE") and ("_st128_k4" not in c["cid"]):
+    if family == "stageC" and ("_st128_k4" not in c["cid"]):
         desc += " THIS CONDITION is outside the plotted st128/k4 arms; the flag applies to its exploratory inventory, not to the filtered figure estimates."
+    if family == "stageE":
+        nominal = c["cid"].startswith("stageE/none@nominal_") and "_st128_k4" in c["cid"]
+        if nominal:
+            desc = "Nominal Stage E emergence fraction and pusher-isolation comparison, Extended Data Fig. 2b (MAIN:23,135)."
+            if c["world"] in {"L8", "L9", "L16", "L36", "L64", "L100"}:
+                desc += " Also the six-length Kaplan–Meier panel, Fig. 1b (MAIN:119)."
+            else:
+                desc += " This length is outside Fig. 1b's six plotted lengths."
+        else:
+            desc = "Exploratory Stage E size/budget/mutation arm; Methods experiment inventory (MAIN:111). THIS CONDITION is outside the nominal st128/k4 filters used by Fig. 1b and Extended Data Fig. 2b."
+    if family == "E":
+        cid = c["cid"]
+        if "mutoff" in cid:
+            desc = "Mutation-free copy-offset share drift, Extended Data Fig. 6d (MAIN:143,236); registered E1/E2."
+        elif "L16_benign_muton" in cid:
+            desc = "Benign-tar L16 core-collapse control described in MAIN:143,236, omitted from the plotted mutation-on trajectories; registered E1/E2."
+            if "mix50" in cid:
+                desc += " The mixed final soups also supply the benign-tar encounter control, Extended Data Fig. 6e (MAIN:47,143)."
+        else:
+            panel = "c" if "L16_lethal" in cid else "b" if "L32_lethal" in cid else "a"
+            desc = f"Mutation-on copy-offset regenerator/transmitter trajectories, Extended Data Fig. 6{panel} (MAIN:143,236), registered E1/E2 and E-L32L."
+            if "L32_" in cid:
+                desc += " Final transmitter-share claim (MAIN:47); mixed final soups supply the N1–N4 encounter/flow follow-ups."
+            elif "mix50" in cid:
+                desc += " Mixed final soups supply the lethal-tar encounter components, Extended Data Fig. 6e (MAIN:47,143)."
+    if family == "R4":
+        cid = c["cid"]
+        if "/std_" in cid:
+            desc = "Standard-register SI13/R4 invasion or resident control: neither named design persists and diverse block-copy descendants keep soups closed (MAIN:232, Harness conventions); registered C4c."
+        elif "SI13_none" in cid:
+            desc = "Unseeded self-initialising-closer resident control under random registers; invasion design in MAIN:232 (Harness conventions), registered C4b."
+        elif "SI13_pusher" in cid:
+            desc = "Pusher seeded into the self-initialising closer's world: the soup remains heritable and closed (MAIN:232, Harness conventions), registered C4b."
+        else:
+            desc = "Self-initialising closer seeded into a random-register pusher world displaces it in five of five soups (MAIN:33,232), registered C4b."
     return dict(claims=desc, numbers_index="; ".join(refs), registration="; ".join(regs))
 
 
@@ -97,6 +132,8 @@ def rates_and_attributes(rows, pairs):
 def report(out=C.OUT):
     m = json.loads((out / "input_manifest.json").read_text())
     remote = out / "remote"
+    if (remote / "results/meta.json").exists():
+        remote /= "results"  # Modal CLI retains the downloaded directory basename
     meta = json.loads((remote / "meta.json").read_text())
     if meta["code_sha256"] != m["code_sha256"]:
         raise ValueError("completed worker source mismatch")
@@ -130,11 +167,30 @@ def report(out=C.OUT):
     S.write_csv(out / "attribution_classes.csv", classes)
     S.write_csv(out / "c1_c2_differ.csv", [dict(cid=r["cid"], pairs=r["pairs"], c1_c2_differ=r["c1_c2_differ"],
                  rate=r["c1_c2_differ"] / r["pairs"]) for r in rows])
-    items = {e["aid"]: e for e in m["assays"]}
+    items = {e["aid"]: dict(e) for e in m["assays"]}
     assays = [json.loads(p.read_text()) for p in sorted((remote / "assays").glob("*.json"))]
+    supplement = None
+    if (out / "supplement_manifest.json").exists():
+        supplement = json.loads((out / "supplement_manifest.json").read_text())
+        local_meta = json.loads((out / "supplement_meta.json").read_text())
+        if (local_meta["status"] != "complete" or local_meta["source_code_sha256"] != m["code_sha256"]
+                or supplement["code_sha256"] != m["code_sha256"] or local_meta["max_gpu_burst_s"] > 60
+                or local_meta["min_pause_minus_burst_s"] < 0):
+            raise ValueError("local supplement source/burst/pause gate failed")
+        for e in supplement["assays"]:
+            if e["aid"] in items:
+                raise ValueError("duplicate supplemental assay")
+            items[e["aid"]] = e
+        for aid, aliases in supplement["aliases"].items():
+            for field in ("sources", "names", "references"):
+                items[aid][field] = sorted(set(items[aid][field] + [v for alias in aliases for v in alias[field]]))
+        local = [json.loads(p.read_text()) for p in sorted((out / "local_assays").glob("*.json"))]
+        if any(a["code_sha256"] != m["code_sha256"] for a in local):
+            raise ValueError("local assay source mismatch")
+        assays += local
     if {a["aid"] for a in assays} != set(items):
         raise ValueError("incomplete assays")
-    ai, scores = [], []
+    ai, scores, changes = [], [], []
     for a in assays:
         checks = identity(a["outputs"])
         if any(checks[k] != a[k] for k in checks):
@@ -147,8 +203,22 @@ def report(out=C.OUT):
                        sources=json.dumps(item["sources"])))
         for core in CORES:
             scores.append(dict(aid=a["aid"], core=core.upper(), **a["outputs"][core]))
+            if core != "c0":
+                for col in checks["differing_columns"][core]:
+                    changes.append(dict(aid=a["aid"], names=json.dumps(item["names"]), world=item["world"],
+                                        core=core.upper(), column=col, c0=a["outputs"]["c0"][col],
+                                        value=a["outputs"][core][col], references=json.dumps(item["references"])))
     S.write_csv(out / "assay_identity.csv", ai)
     S.write_csv(out / "assay_scores.csv", scores)
+    S.write_csv(out / "assay_tapes.csv", [{**e, **{k: json.dumps(e[k]) for k in ("sources", "names", "references", "suppress")}}
+                                         for e in items.values()])
+    S.write_csv(out / "assay_changes.csv", changes)
+    assay_columns = [dict(column=col,
+                         c1_changed=sum(not equal(a["outputs"]["c0"][col], a["outputs"]["c1"][col]) for a in assays),
+                         c2_changed=sum(not equal(a["outputs"]["c0"][col], a["outputs"]["c2"][col]) for a in assays),
+                         c1_c2_changed=sum(not equal(a["outputs"]["c1"][col], a["outputs"]["c2"][col]) for a in assays))
+                     for col in assays[0]["outputs"]["c0"]]
+    S.write_csv(out / "assay_columns.csv", assay_columns)
     families = []
     for family in sorted({r["family"] for r in rows}):
         rr = [r for r in rows if r["family"] == family]
@@ -159,6 +229,10 @@ def report(out=C.OUT):
                          c1_c2_differ=sum(r["c1_c2_differ"] for r in rr)))
     S.write_csv(out / "families.csv", families)
     usage = json.loads((remote / "executor_usage.json").read_text())
+    if supplement:
+        lu = local_meta["usage"]
+        usage["shader"].update(lu["shader"])
+        usage["machine"] = dict(Counter(usage["machine"]) + Counter(lu["machine"]))
     if usage["shader"] or sum(usage["machine"].values()) != len(items) * 3 * 3 * 64:
         raise ValueError("assay executor routing or pair count mismatch")
     S.write_csv(out / "executor_usage.csv", [dict(backend="machine", machine=k, pairs=v) for k, v in usage["machine"].items()])
@@ -171,6 +245,11 @@ def report(out=C.OUT):
     S.write_csv(out / "cores.csv", core_rows)
     other = sum(t["other"] for t in totals)
     stopped_other = "class 'other'" in meta.get("error", "") or "other attribution" in meta.get("error", "")
+    remaining = [sp for sp in sorted(m["conditions"], key=lambda sp: (sp["condition"]["world"], sp["key"]))
+                 if sp["key"] not in {r["key"] for r in records}]
+    stop = [dict(status=meta["status"], error=meta.get("error", ""), other_detected=int(stopped_other),
+                 first_uncompleted_condition=remaining[0]["condition"]["cid"] if remaining else "")]
+    S.write_csv(out / "stop.csv", stop)
     outcomes = []
     for core, col in (("C1", "c1_identical"), ("C2", "c2_identical")):
         scope_flags = [r for r in flags if r["core"] == core and r["decision_scope"]]
@@ -189,7 +268,8 @@ def report(out=C.OUT):
         dict(limit="stochastic-world streams", statement="Dial and randreg/randsp comparisons use executor case-index streams, not archived encounter streams; no soup-trajectory equivalence is claimed.", source="REVISION_PREREG.md I1; impact_dryrun/proof_summary.csv"),
         dict(limit="sim_* lockstep coverage", statement="Single-pair C0 executor proofs cover all impact worlds. Direct sim_* lockstep coverage is plain/lethal L16/L32 only; the other soup-generating worlds lack that direct proof.", source="impact_dryrun/README.md; results/zsoup/lockstep.md"),
         dict(limit="sampling and decisions", statement="Final and labelled-emergence snapshots and frozen X input pools; scheduled intermediates excluded. Per-condition CP upper < 1e-4, no multiplicity correction; exploratory ring sweep excluded from decision.", source="REVISION_PREREG.md I1"),
-        dict(limit="assay scope", statement="Complete assay.assay score dictionaries for individually named Z80 genotypes and cited genotype-table entries, n=64, seed=0, budget=128; anonymous population/offset samples are aggregate claims, not named tapes. BFF is a separate ISA. Unspecified payloads use an explicitly labelled seed-0 tail; source-fixed payloads are retained. Same undefined (NaN) scores count as identical, without numeric tolerance.", source="assay_tapes.csv; assay_scores.csv; impact_assays.py"),
+        dict(limit="assay scope", statement="Complete assay.assay score dictionaries for individually named Z80 genotypes and cited genotype-table entries, n=64 and seed=0. Budgets are 128, with the additional 32-step rows of the named Stage E unit table. Anonymous population/offset samples are aggregate claims, not named tapes. BFF is a separate ISA. Unspecified payloads use an explicitly labelled seed-0 tail; source-fixed payloads are retained. Same undefined (NaN) scores count as identical, without numeric tolerance.", source="assay_tapes.csv; assay_scores.csv; supplement_manifest.json"),
+        dict(limit="local assay completion", statement="The detached worker's initial catalogue omitted Stage E's named unit-tiling table. Those additional cases were completed locally with the same sealed assay engine and imp_* machines, in bounded bursts with equal-or-longer pauses. Source aliases identify table cases already covered by the Modal panel. The detached worker manifest remains immutable.", source="supplement_manifest.json; supplement_meta.json; local_gpu_bursts.csv"),
         dict(limit="attribution", statement="Latest propagating event in the frozen repaired replay, F/Q repaired coherently, exact class checks and first-probe reproduction. Every affected pair is attributed; no unaffected-pair census in the confirmatory run. An other event immediately stops execution.", source="REVISION_PREREG.md I1; impact.py at bdcdcb6"),
         dict(limit="interpretation", statement="Affected encounter memory or assay changes flag dependence on core semantics; this study does not determine whether evolved-soup headline outcomes change. C2 is a vendor variant. Second-tier replication requires explicit spend approval.", source="REVISION_PREREG.md I1"),
     ]
@@ -198,6 +278,8 @@ def report(out=C.OUT):
     if (out / "billing.json").exists():
         billing = json.loads((out / "billing.json").read_text())
         call = json.loads((out / "modal_call.json").read_text())
+        if not billing:
+            raise ValueError("actual Modal app billing is not yet available")
         if any(r["object_id"] != call["app_id"] for r in billing):
             raise ValueError("billing includes another app")
         billed = float(sum((Decimal(r["cost"]) for r in billing), Decimal(0)))
@@ -211,11 +293,15 @@ def report(out=C.OUT):
                    total_pairs_per_core=sum(r["pairs"] for r in rows), cores=3, cp_confidence=.95,
                    c1_c2_differ=sum(r["c1_c2_differ"] for r in rows), other_attributions=other,
                    stopped_on_other=int(stopped_other), gpu=meta["gpu"], worker_wall_s=meta["wall_s"],
+                   other_occurrences_detected=other + int(stopped_other),
                    registered_stream=m["reg_stream"], dry_stream=m["dry_stream"],
                    exclusion_overlap=sum(int(r["overlap"]) for r in S._read_csv(out / "exclusion.csv")),
-                   assay_score_columns=len(assays[0]["outputs"]["c0"]), assay_combinations=len(ai))
+                   assay_score_columns=len(assays[0]["outputs"]["c0"]), assay_combinations=len(ai),
+                   modal_assay_combinations=len(m["assays"]),
+                   local_assay_combinations=len(supplement["assays"]) if supplement else 0)
     S.write_csv(out / "metrics.csv", [dict(metric=k, value=v) for k, v in metrics.items()])
     S.write_csv(out / "run.csv", [{**meta, "error": meta.get("error", "")}])
+    validation = S._read_csv(out / "validation.csv")
     M = S.md_table
     c1flags = [r for r in flags if r["core"] == "C1" and r["decision_scope"]]
     c2flags = [r for r in flags if r["core"] == "C2" and r["decision_scope"]]
@@ -252,6 +338,18 @@ Class key (`attribution_classes.csv`):
 
 {M(nonidentical, ['aid', 'world', 'c1_identical', 'c2_identical', 'differing_columns', 'sources']) if nonidentical else 'None.'}
 
+Changed-combination counts by output column (`assay_columns.csv`); exact before/after values and manuscript references are in `assay_changes.csv`:
+
+{M(assay_columns, ['column', 'c1_changed', 'c2_changed', 'c1_c2_changed'])}
+
+Validation (`validation.csv`; the source-table score comparisons are in `unit_table_c0_validation.csv`):
+
+{M(validation, ['check', 'result', 'detail'])}
+
+Stop record (`stop.csv`):
+
+{M(stop, ['status', 'other_detected', 'first_uncompleted_condition', 'error'])}
+
 Cost (`cost.csv`; actual app charges from `billing.json`, distinct from runtime modelling):
 
 {M(costs, ['metric', 'value', 'basis'])}
@@ -260,7 +358,7 @@ Limits (`limits.csv`):
 
 {M(limits, ['limit', 'statement', 'source'])}
 '''
-    (out / "README.md").write_text(readme)
+    (out / "README.md").write_text(readme.rstrip() + "\n")
     print(M(outcomes, list(outcomes[0])))
     print("Generated", out / "README.md")
 

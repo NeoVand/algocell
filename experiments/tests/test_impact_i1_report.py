@@ -44,3 +44,24 @@ def test_unplotted_exploratory_arm_is_not_assigned_to_filtered_figure():
     c = R.claim(dict(family="stageC", cid="stageC/all-ld_L16_st32_k2@emergence"))
     assert "THIS CONDITION is outside" in c["claims"]
     assert "NUMBERS_INDEX" in c["numbers_index"] and "REVISION_PREREG" in c["registration"]
+
+
+def test_l10_nominal_supports_size_panel_but_not_six_length_km_panel():
+    c = R.claim(dict(family="stageE", cid="stageE/none@nominal_L10_st128_k4@emergence", world="L10"))
+    assert "Extended Data Fig. 2b" in c["claims"]
+    assert "outside Fig. 1b's six" in c["claims"]
+    assert "Also the six-length" not in c["claims"]
+
+
+def test_copy_offset_benign_l16_is_an_unplotted_control():
+    c = R.claim(dict(family="E", cid="E/L16_benign_muton_R_into_T@final", world="L16"))
+    assert "core-collapse control" in c["claims"] and "omitted" in c["claims"]
+    assert "Extended Data Fig. 6a" not in c["claims"]
+
+
+def test_standard_register_invasion_maps_to_c4c_and_its_actual_outcome():
+    c = R.claim(dict(family="R4", cid="R4/std_R4_SI13@final", world="L16"))
+    assert "neither named design persists" in c["claims"]
+    lines = (R.S.HERE / "REVISION_PREREG.md").read_text().splitlines()
+    referenced = [lines[int(r.split(":")[1]) - 1] for r in c["registration"].split("; ")]
+    assert any(r.startswith("**C4c") for r in referenced)

@@ -1,0 +1,2671 @@
+{
+ "assays": [
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e",
+   "world": "L10",
+   "L": 10,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:48; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L10, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "014644323a67f66c"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e",
+   "world": "L10",
+   "L": 10,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:49; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L10, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "2cb48bcc4787a5b5"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L10",
+   "L": 10,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:45; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L10, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "66516f534061b415"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L10",
+   "L": 10,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:46; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L10, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "8b9e2ea5c5b730e5"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L10",
+   "L": 10,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:47; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L10, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "b211e36777982ae8"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L10",
+   "L": 10,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:44; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L10, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c13c5fff7403d66a"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L100",
+   "L": 100,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:126; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L100, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "41ba3809c242948c"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L100",
+   "L": 100,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:125; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L100, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "5b50e82afb13511a"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L100",
+   "L": 100,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:124; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L100, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "78d6f239141ba6e8"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L100",
+   "L": 100,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:123; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L100, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "bc9a5a21833d5c8b"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L100",
+   "L": 100,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:127; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L100, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c3fb6c47b43536d3"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L100",
+   "L": 100,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:122; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L100, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "dbf263b1bf8e0d8b"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L12",
+   "L": 12,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:50; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L12, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "0520945024b713ce"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L12",
+   "L": 12,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:51; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L12, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "30ea73a9ec8c5cca"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L12",
+   "L": 12,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:54; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L12, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "326b3df05d1c99a2"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L12",
+   "L": 12,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:52; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L12, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "baa76f4f834220a5"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L12",
+   "L": 12,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:53; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L12, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c84d3302bfbb014c"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L12",
+   "L": 12,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:55; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L12, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e3a649017946f229"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L16",
+   "L": 16,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:60; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L16, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "22fecca1efe07384"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L16",
+   "L": 16,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:58; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L16, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "364d3527ab7a18c5"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L16",
+   "L": 16,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:61; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L16, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "373fcaf1785cc220"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L16",
+   "L": 16,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:59; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L16, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "754961ceebf70b5f"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L16",
+   "L": 16,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:56; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L16, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "ccb1d17d6bd85c9e"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L18",
+   "L": 18,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:64; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L18, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "0655644580eb2f20"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L18",
+   "L": 18,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:62; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L18, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "254b7cac2f4727fc"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e",
+   "world": "L18",
+   "L": 18,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:66; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L18, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "409df38e4c781f58"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L18",
+   "L": 18,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:63; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L18, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "6567327ba4967fa6"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L18",
+   "L": 18,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:65; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L18, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "b507e758d774c4fb"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e",
+   "world": "L18",
+   "L": 18,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:67; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L18, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "d2bba212cee52d69"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L20",
+   "L": 20,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:68; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L20, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "143406936aa73ea9"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L20",
+   "L": 20,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:72; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L20, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "46696b9088148982"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed",
+   "world": "L20",
+   "L": 20,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:70; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L20, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "545c87360f8a612a"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L20",
+   "L": 20,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:73; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L20, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "591a627cb1318420"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed",
+   "world": "L20",
+   "L": 20,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:71; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L20, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "fcb7793eea7d9e2f"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L24",
+   "L": 24,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:74; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L24, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "1a10c3369f9dcfe6"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L24",
+   "L": 24,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:76; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L24, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "1f9435eff85f49f4"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L24",
+   "L": 24,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:78; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L24, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "58ab3b3e9f8d917d"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L24",
+   "L": 24,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:77; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L24, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "7533626ea94c269c"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L24",
+   "L": 24,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:79; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L24, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "b18ccf2747a7dfa5"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L24",
+   "L": 24,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:75; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L24, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "f96d978565b4c1e3"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L25",
+   "L": 25,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:83; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L25, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "4336dbda33c6b99d"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04",
+   "world": "L25",
+   "L": 25,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:85; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L25, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "487e43cfda198e12"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L25",
+   "L": 25,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:80; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L25, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "9982a58ccc089c38"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04",
+   "world": "L25",
+   "L": 25,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:84; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L25, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a80b583e73b1fc95"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L25",
+   "L": 25,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:82; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L25, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "d459244588f1bbfb"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L25",
+   "L": 25,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:81; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L25, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e78dce699214d26a"
+  },
+  {
+   "tape": "04 5e ed",
+   "world": "L3",
+   "L": 3,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:7; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L3, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "211810cc3307b2b4"
+  },
+  {
+   "tape": "04 5e ed",
+   "world": "L3",
+   "L": 3,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:6; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L3, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "69a1fdd0c50d04f6"
+  },
+  {
+   "tape": "01 c5 01",
+   "world": "L3",
+   "L": 3,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:2; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L3, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "b36e05d3845dc8e2"
+  },
+  {
+   "tape": "01 c5 01",
+   "world": "L3",
+   "L": 3,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:3; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L3, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "bc2dffe6f582426b"
+  },
+  {
+   "tape": "1d ed b0",
+   "world": "L3",
+   "L": 3,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:4; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L3, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "de45e0e2e0bd15c4"
+  },
+  {
+   "tape": "1d ed b0",
+   "world": "L3",
+   "L": 3,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:5; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L3, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "eaa8e8f6017008cf"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed",
+   "world": "L32",
+   "L": 32,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:88; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L32, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "4f8c1e7ace14c33c"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L32",
+   "L": 32,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:90; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L32, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "90244e25b43e9d1e"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed",
+   "world": "L32",
+   "L": 32,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:89; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L32, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "9d2af81c4054355c"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L32",
+   "L": 32,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:86; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L32, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "baf4a08ec3f76f52"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L36",
+   "L": 36,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:93; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L36, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "1182b0a56411662e"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L36",
+   "L": 36,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:95; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L36, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "1b2a645d7674c7aa"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L36",
+   "L": 36,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:94; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L36, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "2c1a5d2edfa2a396"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L36",
+   "L": 36,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:97; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L36, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "8233efec14f34375"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L36",
+   "L": 36,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:96; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L36, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a6ebfc1a307b494c"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L36",
+   "L": 36,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:92; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L36, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "b9e8cfe144998b3b"
+  },
+  {
+   "tape": "01 c5 01 c5",
+   "world": "L4",
+   "L": 4,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:8; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L4, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "38a1f8fcbcc25820"
+  },
+  {
+   "tape": "04 5e ed b0",
+   "world": "L4",
+   "L": 4,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:13; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L4, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "6aef8bcbf6f420dc"
+  },
+  {
+   "tape": "1d ed b0 1d",
+   "world": "L4",
+   "L": 4,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:11; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L4, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "7082f25bc64accc5"
+  },
+  {
+   "tape": "04 5e ed b0",
+   "world": "L4",
+   "L": 4,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:12; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L4, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "9217020a3ab98241"
+  },
+  {
+   "tape": "01 c5 01 c5",
+   "world": "L4",
+   "L": 4,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:9; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L4, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "9f516c6f17ed944a"
+  },
+  {
+   "tape": "1d ed b0 1d",
+   "world": "L4",
+   "L": 4,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:10; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L4, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "d928486b2bc4859a"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L49",
+   "L": 49,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:98; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L49, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "2a77f67a478eb304"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L49",
+   "L": 49,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:101; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L49, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "2efffd3a4a873300"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04",
+   "world": "L49",
+   "L": 49,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:102; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L49, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "6aaebdad85464393"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04",
+   "world": "L49",
+   "L": 49,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:103; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L49, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a62927a036798aad"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L49",
+   "L": 49,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:100; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L49, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c11b009b37dac7d2"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L49",
+   "L": 49,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:99; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L49, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e4ab6076776c20e0"
+  },
+  {
+   "tape": "04 5e ed b0 04",
+   "world": "L5",
+   "L": 5,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:19; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L5, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "0b001821fa88dccb"
+  },
+  {
+   "tape": "1d ed b0 1d ed",
+   "world": "L5",
+   "L": 5,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:16; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L5, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "3426274b3389add0"
+  },
+  {
+   "tape": "1d ed b0 1d ed",
+   "world": "L5",
+   "L": 5,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:17; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L5, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "7b9c16290a7408d7"
+  },
+  {
+   "tape": "01 c5 01 c5 01",
+   "world": "L5",
+   "L": 5,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:15; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L5, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "879e2c9f1296d902"
+  },
+  {
+   "tape": "04 5e ed b0 04",
+   "world": "L5",
+   "L": 5,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:18; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L5, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a0e393baa216cb53"
+  },
+  {
+   "tape": "01 c5 01 c5 01",
+   "world": "L5",
+   "L": 5,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:14; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L5, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e2873378698e4a81"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e",
+   "world": "L50",
+   "L": 50,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:108; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L50, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "82ffe25c614ef2ac"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e",
+   "world": "L50",
+   "L": 50,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:109; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L50, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "92f43efa9a6304b4"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed",
+   "world": "L50",
+   "L": 50,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:106; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L50, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "cb10c24b6653ed64"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed",
+   "world": "L50",
+   "L": 50,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:107; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L50, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "d57346a748b4eb4e"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L50",
+   "L": 50,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:104; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L50, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "f12d1d4a348ffbd0"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0",
+   "world": "L6",
+   "L": 6,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:23; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L6, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "2831549b38aab37a"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e",
+   "world": "L6",
+   "L": 6,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:25; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L6, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "480d61c9e2fc81ba"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e",
+   "world": "L6",
+   "L": 6,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:24; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L6, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a1bd6b1d81d4dd53"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5",
+   "world": "L6",
+   "L": 6,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:20; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L6, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a4fb1085cb3c5ee4"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5",
+   "world": "L6",
+   "L": 6,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:21; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L6, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e0e4d24db2187f35"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0",
+   "world": "L6",
+   "L": 6,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:22; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L6, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e1b218f1c8b1391f"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L64",
+   "L": 64,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:112; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L64, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "48afc2de37eb0363"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d",
+   "world": "L64",
+   "L": 64,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:113; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L64, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "960db62e8ab58baa"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+   "world": "L64",
+   "L": 64,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:114; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L64, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "a3526a5f5e49364b"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+   "world": "L64",
+   "L": 64,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:110; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L64, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "ad5cb2846f97ce59"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d",
+   "world": "L7",
+   "L": 7,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:29; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L7, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "62add6b6c5539f1a"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01",
+   "world": "L7",
+   "L": 7,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:26; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L7, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "6f6feef3320824c1"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed",
+   "world": "L7",
+   "L": 7,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:31; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L7, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "7d56dd9d51f99402"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d",
+   "world": "L7",
+   "L": 7,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:28; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L7, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "81f5dd06ff8f8332"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01",
+   "world": "L7",
+   "L": 7,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:27; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L7, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "8c49c4314ab9dd1f"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed",
+   "world": "L7",
+   "L": 7,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:30; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L7, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "d8d2e6d729ee6f73"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0",
+   "world": "L8",
+   "L": 8,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:37; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L8, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "134228a244abb1d9"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0",
+   "world": "L8",
+   "L": 8,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:36; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L8, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "1996b427256d5d91"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5",
+   "world": "L8",
+   "L": 8,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:32; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L8, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "5ca4ade147e8c5dd"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed",
+   "world": "L8",
+   "L": 8,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:34; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L8, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "bb23a61618c79aef"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5",
+   "world": "L8",
+   "L": 8,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:33; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L8, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c0e97e7304e1be98"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed",
+   "world": "L8",
+   "L": 8,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:35; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L8, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c48f3a4d557464f3"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L81",
+   "L": 81,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:116; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L81, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "2436941d7aec01d3"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L81",
+   "L": 81,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:119; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L81, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e52f66e37832449e"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04",
+   "world": "L81",
+   "L": 81,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:120; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L81, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "e8547a9010b50132"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0 1d ed b0",
+   "world": "L81",
+   "L": 81,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:118; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L81, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "eb343bcc43b08410"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L81",
+   "L": 81,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:117; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L81, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "f09b82fbc70de1a2"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04",
+   "world": "L81",
+   "L": 81,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:121; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L81, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "f3510c465b0bf7c7"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L9",
+   "L": 9,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:39; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L9, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "480b90580956016b"
+  },
+  {
+   "tape": "01 c5 01 c5 01 c5 01 c5 01",
+   "world": "L9",
+   "L": 9,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:38; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "pusher 01 c5 \u00d7/truncated to L9, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "aaa6e9d9f8752c89"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0",
+   "world": "L9",
+   "L": 9,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:41; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L9, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)",
+    "MAIN_nature.md:412 (Theorem 6 L9 example)"
+   ],
+   "aid": "ab3f661680b49a90"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04",
+   "world": "L9",
+   "L": 9,
+   "suppress": [],
+   "budget": 128,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:43; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L9, 128 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "c31fc4bdd2d2fac5"
+  },
+  {
+   "tape": "1d ed b0 1d ed b0 1d ed b0",
+   "world": "L9",
+   "L": 9,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:40; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-3 1d ed b0 \u00d7/truncated to L9, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)",
+    "MAIN_nature.md:412 (Theorem 6 L9 example)"
+   ],
+   "aid": "c56e406a295f3068"
+  },
+  {
+   "tape": "04 5e ed b0 04 5e ed b0 04",
+   "world": "L9",
+   "L": 9,
+   "suppress": [],
+   "budget": 32,
+   "n": 64,
+   "seed": 0,
+   "sources": [
+    "results/stageE/stage_e/unit_fitness_vs_L.csv:42; stage_e.py:259 np.resize"
+   ],
+   "names": [
+    "LDIR-4 04 5e ed b0 \u00d7/truncated to L9, 32 steps"
+   ],
+   "references": [
+    "NUMBERS_INDEX.md:353",
+    "NUMBERS_INDEX.md:419",
+    "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+   ],
+   "aid": "d889578ee9c155a1"
+  }
+ ],
+ "aliases": {
+  "86ade9029af9cbc0": [
+   {
+    "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+    "world": "L16",
+    "L": 16,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:57; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "pusher 01 c5 \u00d7/truncated to L16, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ],
+  "1820c279cbc752aa": [
+   {
+    "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+    "world": "L20",
+    "L": 20,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:69; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "pusher 01 c5 \u00d7/truncated to L20, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ],
+  "30e5fdcf6f65a8b0": [
+   {
+    "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+    "world": "L32",
+    "L": 32,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:87; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "pusher 01 c5 \u00d7/truncated to L32, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ],
+  "c8c136c01459657d": [
+   {
+    "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+    "world": "L32",
+    "L": 32,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:91; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "LDIR-4 04 5e ed b0 \u00d7/truncated to L32, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ],
+  "3ed01aa051a8014d": [
+   {
+    "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+    "world": "L50",
+    "L": 50,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:105; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "pusher 01 c5 \u00d7/truncated to L50, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ],
+  "af1cf06a1bce80cf": [
+   {
+    "tape": "01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5 01 c5",
+    "world": "L64",
+    "L": 64,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:111; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "pusher 01 c5 \u00d7/truncated to L64, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ],
+  "696f49d17eab741c": [
+   {
+    "tape": "04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0 04 5e ed b0",
+    "world": "L64",
+    "L": 64,
+    "suppress": [],
+    "budget": 128,
+    "n": 64,
+    "seed": 0,
+    "sources": [
+     "results/stageE/stage_e/unit_fitness_vs_L.csv:115; stage_e.py:259 np.resize"
+    ],
+    "names": [
+     "LDIR-4 04 5e ed b0 \u00d7/truncated to L64, 128 steps"
+    ],
+    "references": [
+     "NUMBERS_INDEX.md:353",
+     "NUMBERS_INDEX.md:419",
+     "MAIN_nature.md:135 (Extended Data Fig. 2b)"
+    ]
+   }
+  ]
+ },
+ "source_table": "results/stageE/stage_e/unit_fitness_vs_L.csv",
+ "source_table_sha256": "6df14c9b30710b320891f803fe4880a0def1f63979c3eb94723fad20ccea8d8c",
+ "original_worker_code_sha256": "dd16a6334df85cd8f2941a31a34c6b8de6b8235045a94ed7fe03ec78ae609eb4",
+ "code_sha256": "dd16a6334df85cd8f2941a31a34c6b8de6b8235045a94ed7fe03ec78ae609eb4",
+ "supplement_script_sha256": "f78385cf54e68bb60337f0de35281c65b16b8aafd06880a481209eba1ce61ce2",
+ "git": "e5b6d3a0823f",
+ "reason": "Complete named canonical units in Extended Data Fig. 2b's table and the L9 example in Theorem 6",
+ "burst_limit_s": 55,
+ "pause_rule": "at least each preceding GPU burst's wall time",
+ "modal_cost_usd": 0
+}
