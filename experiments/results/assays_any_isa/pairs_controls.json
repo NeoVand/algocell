@@ -1,0 +1,21 @@
+{
+ "n": 10000,
+ "controls": [
+  [
+   "machine budget 127 against the shader at 128",
+   {
+    "mem": 190,
+    "writes": 6790,
+    "fetch_map": 18
+   }
+  ],
+  [
+   "lethal machine against the plain shader",
+   {
+    "mem": 5486,
+    "writes": 5800,
+    "fetch_map": 2715
+   }
+  ]
+ ]
+}

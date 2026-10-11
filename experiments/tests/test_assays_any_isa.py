@@ -141,6 +141,11 @@ def test_refusals():
         E.ZilionExecutor("m6502_assay").run(rand_pairs(4, 16, 0), 16, 128, ["family:stack"])
     with pytest.raises(ValueError, match="no vendored machine or machine set"):
         E.ZilionExecutor("no_such_machine")
+    # a set is <prefix>[_lethal]_L<L>[_P<P>] only: ZSoup's z80c02_pair_L16 is not a member of the set 'z80c02'
+    z = E.ZilionExecutor("z80c02")
+    assert "z80c02_pair_L16" not in z.members and "z80c02_lethal_L16" in z.members
+    with pytest.raises(ValueError, match="has no machine for L = 16, ring 32, plain rule"):
+        z.run(rand_pairs(4, 16, 0), 16, 128)
     for isas, spec, ok in ((("z80",), "m6502_assay", False), (("z80",), SET, True), (None, "m6502_assay", True)):
         a = argparse.Namespace(machine=spec)
         if ok:

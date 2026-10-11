@@ -35,6 +35,7 @@ from __future__ import annotations
 import atexit
 import json
 import os
+import re
 from collections import Counter
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -129,17 +130,25 @@ class ZilionExecutor:
         self.budget_delta = int(budget_delta)
         names = zmachine.available(self.machines_dir)
         self.exact = spec in names
-        if not self.exact and not any(n.startswith(spec + "_") for n in names):
+        # a set is the machines named <spec>[_lethal]_L<L>[_P<P>], nothing else that merely shares the prefix
+        pat = re.compile(re.escape(spec) + r"(_lethal)?_L\d+(_P\d+)?")
+        self.members = [spec] if self.exact else sorted(n for n in names if pat.fullmatch(n))
+        if not self.members:
             raise ValueError(f"no vendored machine or machine set {spec!r} in {self.machines_dir} (have: {', '.join(names)})")
+        cores = set()
+        for n in self.members:
+            c = json.loads(zmachine.machine_paths(n, self.machines_dir)[1].read_text())["core"]
+            cores.add((c["id"], c["compat"], c["variant"], c["coreVersion"]))
+        if len(cores) != 1:
+            raise ValueError(f"machine set {spec!r} mixes cores {sorted(cores)}; a set must run one core")
         self._cache: dict = {}
         self.name = spec
 
-    # description of the set: the core of its first resolvable machine
+    # description of the set: its (single) core
     def _any_manifest(self) -> dict:
         from . import zmachine
 
-        names = [self.spec] if self.exact else sorted(n for n in zmachine.available(self.machines_dir) if n.startswith(self.spec + "_"))
-        _, man = zmachine.machine_paths(names[0], self.machines_dir)
+        _, man = zmachine.machine_paths(self.members[0], self.machines_dir)
         return json.loads(man.read_text())
 
     @property
@@ -166,7 +175,7 @@ class ZilionExecutor:
         key = (name, maps)
         if key in self._cache:
             return self._cache[key]
-        if name not in zmachine.available(self.machines_dir):
+        if name not in self.members:
             raise ValueError(f"machine set {self.spec!r} has no machine for L = {L}, ring {P}, {'lethal tar' if zero_halts else 'plain rule'} "
                              f"(expected {name!r}); vendor it (machines/worlds_*.json) and prove it against the shader first")
         m = zmachine.load_machine(name, self.machines_dir)

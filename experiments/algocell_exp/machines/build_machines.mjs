@@ -5,6 +5,7 @@
 //   node experiments/algocell_exp/machines/build_machines.mjs [--zilion <dir>]           # write
 //   node experiments/algocell_exp/machines/build_machines.mjs [--zilion <dir>] --check   # verify, write nothing
 //   node experiments/algocell_exp/machines/build_machines.mjs [--zilion <dir>] --spec worlds_assays.json [--check]
+//   (without --spec, writing refuses if a spec file records another Zilion commit than the checkout's; --all overrides)
 //
 // For each entry of the worlds*.json files beside this script it calls Zilion's buildMachine (codegen stays in TypeScript, as in
 // zilion's scripts/export-machines.mjs) and writes <name>.wgsl and <name>.manifest.json, then one provenance file per
@@ -144,6 +145,19 @@ if (check) {
   for (const n of notes) console.log(`${n} (outputs ${stale ? "differ" : "unchanged"})`);
   process.exit(stale ? 1 : 0);
 } else {
+  // Re-vendoring a spec file from another Zilion commit is a deliberate act: without --spec, refuse when any spec file
+  // records a commit other than the checkout's (pass --spec for one file, or --all to re-vendor every file at HEAD).
+  if (onlySpec === null && !args.includes("--all")) {
+    const other = builtSpecs.filter((sf) => {
+      const pp = join(here, provFile(sf));
+      const rec = existsSync(pp) && /commit `([0-9a-f]{40})`/.exec(readFileSync(pp, "utf8"));
+      return rec && rec[1] !== head;
+    });
+    if (other.length) {
+      console.error(`refusing to re-vendor ${other.join(", ")}: recorded from another Zilion commit than ${head.slice(0, 12)}; pass --spec <file> or --all`);
+      process.exit(2);
+    }
+  }
   for (const [f, text] of Object.entries(files)) {
     writeFileSync(join(here, f), text);
     console.log(`wrote ${f}`);
