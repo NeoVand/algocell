@@ -1,0 +1,316 @@
+{
+  "schema": "s1-score/1",
+  "world": {
+    "t_rep": 1450000,
+    "t_closed": 1450000,
+    "first_tape": "51 00 68 91 42 c8 10 38 51 00 68 91 42 c8 10 38",
+    "first_open": false,
+    "first_confined": true,
+    "first_loop": false,
+    "first_entered": 0,
+    "p2_violation": false,
+    "p2_first_step": null,
+    "world": "s6502_A_s65018",
+    "arm": "A",
+    "seed": 65018,
+    "horizon": 10000000,
+    "L": 16,
+    "budget": 128,
+    "machine": "m6502_pair_maps_L16",
+    "snapshot_step": 10000000,
+    "n_cells": 64,
+    "frac_heritable": 0.953125,
+    "frac_open_of_heritable": 0.0,
+    "frac_confined_of_heritable": 1.0,
+    "n_scanned": 16,
+    "n_scanned_confined": 16,
+    "frac_regenerator_of_heritable": 0.9375,
+    "frac_intermediate_of_heritable": 0.0,
+    "frac_transmitter_of_heritable": 0.0625,
+    "median_unexec_sites_transmitters": 5.0,
+    "median_sites_confined_scanned": 2.0
+  },
+  "cells": [
+    {
+      "cell": 29,
+      "tape": "80 e2 68 99 68 82 c8 6c 80 e2 68 99 68 82 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 33,
+      "tape": "80 92 68 99 68 de c8 6c 80 92 68 99 68 de c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 7,
+      "tape": "05 83 68 99 50 62 c8 6c 0f 48 22 3b ae 17 68 00",
+      "confined": true,
+      "n_sites": 8,
+      "n_sites_unexecuted": 5,
+      "n_executed": 10,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 32,
+      "tape": "c0 fd 68 99 c8 a9 c8 6c c0 fd 68 99 c8 a9 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 12,
+      "tape": "e0 64 68 99 88 f4 c8 6c e0 64 68 99 88 f4 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 14,
+      "tape": "e1 02 68 99 08 7c c8 6c e1 02 68 99 08 7c c8 6c",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 61,
+      "tape": "80 8e 68 99 88 6c c8 6c 80 8e 68 99 88 6c c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 8,
+      "tape": "80 22 68 99 88 c0 c8 6c 80 22 68 99 88 c0 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 31,
+      "tape": "c0 1e 68 99 28 c5 c8 6c c0 1e 68 99 28 c5 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 44,
+      "tape": "c0 5e 68 99 88 34 c8 6c c0 5e 68 99 88 34 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 57,
+      "tape": "80 7c 68 99 68 8b c8 6c 80 7c 68 99 68 8b c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 55,
+      "tape": "80 ab 68 99 88 44 c8 6c 80 ab 68 99 88 44 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 49,
+      "tape": "80 04 68 99 88 86 c8 6c 80 04 68 99 88 86 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 24,
+      "tape": "80 ec 68 99 88 8a c8 6c 80 ec 68 99 88 8a c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 11,
+      "tape": "80 8c 68 99 88 67 c8 6c 80 8c 68 99 88 67 c8 6c",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 56,
+      "tape": "e1 02 68 99 08 7c c8 6c e1 02 68 99 08 7c c8 6c",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 10,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    }
+  ],
+  "p2_tapes": [],
+  "judged_tapes": [
+    {
+      "tape": "b4 43 34 78 6c b4 00 36 b4 38 36 b4 78 36 d8 36",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.016787574404761904
+    },
+    {
+      "tape": "34 1b 36 68 36 1b 34 1b 36 34 36 36 35 36 43 34",
+      "heritable": false,
+      "entered": 12,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.010026041666666666
+    },
+    {
+      "tape": "51 00 68 91 42 c8 10 38 51 00 68 91 42 c8 10 38",
+      "heritable": true,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": false,
+      "copy_offset": 0,
+      "gen2": 1.0
+    }
+  ],
+  "input_sha256": "d5539f8bb11e864dfcf52012a531965bd3268c21a0b87036705dd10b24ef5481",
+  "code_sha256": {
+    "score6502.py": "5ac2c539d97ffd3609a765aa6345637c6b73516eab5e93ddeedddb8fe0369f9f",
+    "population_classes.py": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "dial_soups.py": "1a03265e9bbac503cf628b06e50aad56691406171fc7b4574495919c5de7fa7c",
+    "algocell_exp/executor.py": "95ca025c38c65bcb05fa3740b22cec2fb52dc75e717143ca2c1f23f92d77e737",
+    "algocell_exp/assay.py": "ce809ff0e5046c80d60570ba42fa59f14429c245cf07357121a31959f9aedc64",
+    "algocell_exp/exectrace.py": "ca1462f82e5ae2d9ec7e949bf80096c0059cd7c82d400c455e81b3c2f32aa6cd",
+    "algocell_exp/zmachine.py": "5197b3cb542c9d4fa7e8340d515103e3db03807c77bf03cb1be203509a439f68"
+  },
+  "executor": {
+    "m6502_pair_maps_L16": {
+      "machine": "m6502_pair_maps_L16",
+      "zilion": "0.3.0-dev",
+      "core": "m6502 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+      "sha256_core": "797ecdcf37667e270225e5e91c2e25b2b711bff8a8477b76003199d25c318e6d",
+      "sha256_world": "b2136495763250f26cf73efc2bb370844771f738d96bbbff08c8cfd881f3cf41",
+      "sha256_wgsl": "991a4cb99b6f7734b844c393f29e63b4f5acde073e8444bfd821186f2e451f21",
+      "ring": 32,
+      "segments": [
+        [
+          "A",
+          16
+        ],
+        [
+          "B",
+          16
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 8,
+        "stack": {
+          "convention": {
+            "kind": "firstPushAt",
+            "position": 31,
+            "values": {
+              "s": 255
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": {
+        "traps": {
+          "illegal": "as-chip"
+        }
+      },
+      "ablation": "none"
+    }
+  },
+  "usage": {
+    "shader": {},
+    "machine": {
+      "m6502_pair_maps_L16": 137136,
+      "m6502_pair_maps_L16 (pc prefix replay)": 2064
+    }
+  },
+  "modal": {
+    "scorer_commit": "2f3582c49f548977b516b7199d06eb641a3ed7e1",
+    "app_id": "ap-MWL0OwXSJsCgpPh7SJiHcd",
+    "input_prefix": "s6502/A",
+    "result_path": "s6502_scored/A/s6502_A_s65018.json",
+    "wall_s": 3.32,
+    "adapter": null,
+    "software_vulkan": false
+  }
+}

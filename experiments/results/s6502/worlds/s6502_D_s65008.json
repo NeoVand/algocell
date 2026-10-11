@@ -1,0 +1,309 @@
+{
+  "schema": "s1-score/1",
+  "world": {
+    "t_rep": 1525000,
+    "t_closed": 1525000,
+    "first_tape": "88 b1 00 48 4c 00 b1 b1 88 b1 00 48 4c 00 b1 b1",
+    "first_open": false,
+    "first_confined": true,
+    "first_loop": true,
+    "first_entered": 0,
+    "p2_violation": false,
+    "p2_first_step": null,
+    "world": "s6502_D_s65008",
+    "arm": "D",
+    "seed": 65008,
+    "horizon": 10000000,
+    "L": 16,
+    "budget": 128,
+    "machine": "m6502_brkhalt_maps_L16",
+    "snapshot_step": 10000000,
+    "n_cells": 64,
+    "frac_heritable": 0.921875,
+    "frac_open_of_heritable": 0.0,
+    "frac_confined_of_heritable": 1.0,
+    "n_scanned": 16,
+    "n_scanned_confined": 16,
+    "frac_regenerator_of_heritable": 0.1875,
+    "frac_intermediate_of_heritable": 0.0,
+    "frac_transmitter_of_heritable": 0.8125,
+    "median_unexec_sites_transmitters": 9.0,
+    "median_sites_confined_scanned": 10.0
+  },
+  "cells": [
+    {
+      "cell": 33,
+      "tape": "88 b7 f0 48 4c 00 5a 00 c0 f6 fa 3a 22 68 fa ab",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 43,
+      "tape": "88 b7 08 48 4c 00 8e 15 88 b7 08 48 4c 00 8e 15",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 1,
+      "n_executed": 7,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 44,
+      "tape": "88 b7 b0 48 4c c0 7d 96 96 32 8e 84 40 23 cf 30",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 57,
+      "tape": "88 b7 50 48 4c 00 1f 51 0d 32 41 35 37 94 a8 22",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 56,
+      "tape": "88 b3 e0 48 4c 00 da 2a 88 b3 e0 48 4c 00 da 2a",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 1,
+      "n_executed": 7,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 18,
+      "tape": "88 b7 f0 48 4c 00 89 81 83 b9 ee 52 4a 8a 00 bd",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 59,
+      "tape": "88 b7 d0 48 4c 00 f2 2e 01 b7 0f 79 6a 88 cb 88",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 30,
+      "tape": "88 b7 f0 48 4c 00 95 5a 10 57 38 38 38 38 38 38",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 42,
+      "tape": "88 b7 28 48 4c 00 03 b1 88 b7 28 48 4c 00 03 b1",
+      "confined": true,
+      "n_sites": 2,
+      "n_sites_unexecuted": 1,
+      "n_executed": 7,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 63,
+      "tape": "88 b7 f0 48 4c 00 a3 b7 b7 b7 5a b7 b7 b7 81 88",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 37,
+      "tape": "88 b7 70 48 4c 00 0a 00 00 00 b8 00 97 00 00 7e",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 28,
+      "tape": "88 b7 f0 48 4c 80 39 6a b7 58 74 3b a5 45 e3 88",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 26,
+      "tape": "88 b7 70 48 4c 60 1e b7 88 b7 68 c0 4c dc f6 16",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 47,
+      "tape": "88 b7 70 48 4c a0 1d b4 38 c4 6d 80 88 60 60 60",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 0,
+      "tape": "88 b7 10 48 4c 00 eb 1e 35 c1 88 a2 88 cc 88 00",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 34,
+      "tape": "88 b7 d0 48 4c 00 fa 61 7e c9 48 49 2a 97 00 00",
+      "confined": true,
+      "n_sites": 10,
+      "n_sites_unexecuted": 9,
+      "n_executed": 7,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    }
+  ],
+  "p2_tapes": [],
+  "judged_tapes": [
+    {
+      "tape": "88 b1 00 48 4c 00 b1 b1 88 b1 00 48 4c 00 b1 b1",
+      "heritable": true,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 1.0
+    },
+    {
+      "tape": "88 b3 83 48 4c 5f 0d 1a 88 b3 83 48 4c 5f 0d 1a",
+      "heritable": true,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 1.0
+    }
+  ],
+  "input_sha256": "b0814f2fcf7e29d3def7e4e86bfdeabfce8798131c1ff19f9b1c7a45c370fe5f",
+  "code_sha256": {
+    "score6502.py": "5ac2c539d97ffd3609a765aa6345637c6b73516eab5e93ddeedddb8fe0369f9f",
+    "population_classes.py": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "dial_soups.py": "1a03265e9bbac503cf628b06e50aad56691406171fc7b4574495919c5de7fa7c",
+    "algocell_exp/executor.py": "95ca025c38c65bcb05fa3740b22cec2fb52dc75e717143ca2c1f23f92d77e737",
+    "algocell_exp/assay.py": "ce809ff0e5046c80d60570ba42fa59f14429c245cf07357121a31959f9aedc64",
+    "algocell_exp/exectrace.py": "ca1462f82e5ae2d9ec7e949bf80096c0059cd7c82d400c455e81b3c2f32aa6cd",
+    "algocell_exp/zmachine.py": "5197b3cb542c9d4fa7e8340d515103e3db03807c77bf03cb1be203509a439f68"
+  },
+  "executor": {
+    "m6502_brkhalt_maps_L16": {
+      "machine": "m6502_brkhalt_maps_L16",
+      "zilion": "0.3.0-dev",
+      "core": "m6502 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+      "sha256_core": "797ecdcf37667e270225e5e91c2e25b2b711bff8a8477b76003199d25c318e6d",
+      "sha256_world": "f128de32bedbe5eba99e283401ee90ed6e8e634fdfb9c5c115b303f13f3e4984",
+      "sha256_wgsl": "272ed453e0c12c1f78dcea446b815cfa7f599ba7edeaa7fe9e8296daf4743d69",
+      "ring": 32,
+      "segments": [
+        [
+          "A",
+          16
+        ],
+        [
+          "B",
+          16
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 8,
+        "stack": {
+          "convention": {
+            "kind": "firstPushAt",
+            "position": 31,
+            "values": {
+              "s": 255
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": {
+        "lethal": {
+          "firstUnit": 0
+        },
+        "traps": {
+          "illegal": "as-chip"
+        }
+      },
+      "ablation": "none"
+    }
+  },
+  "usage": {
+    "shader": {},
+    "machine": {
+      "m6502_brkhalt_maps_L16": 136992,
+      "m6502_brkhalt_maps_L16 (pc prefix replay)": 4128
+    }
+  },
+  "modal": {
+    "scorer_commit": "2f3582c49f548977b516b7199d06eb641a3ed7e1",
+    "app_id": "ap-MWL0OwXSJsCgpPh7SJiHcd",
+    "input_prefix": "s6502/D",
+    "result_path": "s6502_scored/D/s6502_D_s65008.json",
+    "wall_s": 3.712,
+    "adapter": null,
+    "software_vulkan": false
+  }
+}

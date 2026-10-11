@@ -1,0 +1,336 @@
+{
+  "schema": "s1-score/1",
+  "world": {
+    "t_rep": 7675000,
+    "t_closed": 7675000,
+    "first_tape": "96 ae 04 5c be cd b3 4c 08 88 30 34 06 d8 30 30 30 b0 b0 b0 30 30 b0 b0 b0 30 30 b0 30 30 30 b0",
+    "first_open": false,
+    "first_confined": true,
+    "first_loop": true,
+    "first_entered": 0,
+    "p2_violation": false,
+    "p2_first_step": null,
+    "world": "s6502_B_s65019",
+    "arm": "B",
+    "seed": 65019,
+    "horizon": 10000000,
+    "L": 32,
+    "budget": 128,
+    "machine": "m6502_pair_maps_L32",
+    "snapshot_step": 10000000,
+    "n_cells": 64,
+    "frac_heritable": 0.984375,
+    "frac_open_of_heritable": 0.0,
+    "frac_confined_of_heritable": 1.0,
+    "n_scanned": 16,
+    "n_scanned_confined": 16,
+    "frac_regenerator_of_heritable": 1.0,
+    "frac_intermediate_of_heritable": 0.0,
+    "frac_transmitter_of_heritable": 0.0,
+    "median_unexec_sites_transmitters": null,
+    "median_sites_confined_scanned": 0.0
+  },
+  "cells": [
+    {
+      "cell": 41,
+      "tape": "96 f2 b3 0a be 91 e9 88 4c 00 e3 ec 90 0d 9b 0d 00 50 00 35 35 37 38 11 b4 38 08 36 36 37 bd 37",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 23,
+      "tape": "96 b2 d5 e0 be 11 19 88 4c 00 42 a7 3c ea 49 dd 74 f7 00 00 bc 14 00 3c 12 00 3c 3c 3e 0e 3c 0d",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 54,
+      "tape": "96 32 54 de bf 51 c9 88 4c 00 38 83 43 6e 23 4a 35 ca 00 64 b7 57 bf 11 df bc 58 35 bc 34 34 0d",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 2,
+      "tape": "96 b2 c4 00 bf 11 80 88 4c 00 74 59 0f ee 01 21 f3 e2 00 e8 b4 6b e8 b4 6b 00 c4 00 c4 3a a1 74",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 38,
+      "tape": "96 b2 04 b2 bf 11 bd 88 4c 00 0f 4f 27 bf 8c 76 40 cb 00 08 b4 35 6b d0 2e 38 08 36 36 37 37 b1",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 4,
+      "tape": "96 32 54 5a bf 51 c9 88 4c 00 bc 42 7c 44 81 4c 50 10 00 e7 c7 50 17 81 10 08 37 37 56 37 42 08",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 62,
+      "tape": "96 32 14 29 bf 11 63 88 4c 00 d9 e1 e5 ce 68 45 d8 6b 00 42 b4 42 05 b4 42 35 15 00 37 15 34 3d",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 49,
+      "tape": "96 b2 c7 6a bf 11 f3 88 4c 00 20 4c 09 00 86 f1 00 20 00 35 35 34 2b 20 68 00 36 0f 00 30 02 00",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 42,
+      "tape": "96 f2 80 63 be 51 d8 88 4c c0 9c 0e 91 61 52 ae 9d ad 00 08 8c 78 37 6d 42 05 30 34 34 05 30 34",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 22,
+      "tape": "96 b2 b1 f8 be 11 20 88 4c 00 64 57 41 93 85 a9 85 33 00 35 6a 34 38 13 47 0f b4 02 0f 30 02 00",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 61,
+      "tape": "96 32 45 1e be 91 53 88 4c 40 c0 19 90 bb 6c 19 a4 72 00 08 0a 37 37 37 42 fc f4 9b 5c 36 38 08",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 24,
+      "tape": "96 32 14 29 bf 11 63 88 4c 00 d9 e1 e5 ce 68 45 d8 6b 00 6a 04 67 b4 5f 67 00 3c 3c 3e 0e 3c 0d",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 37,
+      "tape": "96 32 b3 e6 bf 91 88 88 4c 00 c1 c2 c4 e7 bd 46 41 51 00 13 42 25 df 35 25 31 30 d2 30 30 96 b2",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 8,
+      "tape": "96 32 04 30 bf 91 e1 88 4c 40 cf b4 42 cf 7d 42 cf b4 00 7a b6 06 be 91 1d ae 0d 00 7f 30 09 3f",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 17,
+      "tape": "96 f2 69 f2 be 11 af 88 4c 00 79 7f bb b3 d2 cc 22 cd 00 c4 14 3c 00 00 6c 36 0b 00 36 0b 00 36",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 3,
+      "tape": "96 32 96 2e bf 51 ba 88 4c 00 87 e2 e7 c7 50 54 81 10 00 35 35 cf 08 00 34 cf 08 00 34 37 42 08",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 11,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    }
+  ],
+  "p2_tapes": [],
+  "judged_tapes": [
+    {
+      "tape": "34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 30 02 00",
+      "heritable": false,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.015278477822580645
+    },
+    {
+      "tape": "00 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.03060525873655914
+    },
+    {
+      "tape": "34 34 08 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.006928343413978496
+    },
+    {
+      "tape": "34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 30 05 00 30",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.03820144489247312
+    },
+    {
+      "tape": "96 ae 04 5c be cd b3 4c 08 88 30 34 06 d8 30 30 30 b0 b0 b0 30 30 b0 b0 b0 30 30 b0 30 30 30 b0",
+      "heritable": true,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 1.0
+    }
+  ],
+  "input_sha256": "d60e83cb9d6d10aae55ec148c8cb3d7aebe6d68752d5a5d1bbca2226e1d311fd",
+  "code_sha256": {
+    "score6502.py": "5ac2c539d97ffd3609a765aa6345637c6b73516eab5e93ddeedddb8fe0369f9f",
+    "population_classes.py": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "dial_soups.py": "1a03265e9bbac503cf628b06e50aad56691406171fc7b4574495919c5de7fa7c",
+    "algocell_exp/executor.py": "95ca025c38c65bcb05fa3740b22cec2fb52dc75e717143ca2c1f23f92d77e737",
+    "algocell_exp/assay.py": "ce809ff0e5046c80d60570ba42fa59f14429c245cf07357121a31959f9aedc64",
+    "algocell_exp/exectrace.py": "ca1462f82e5ae2d9ec7e949bf80096c0059cd7c82d400c455e81b3c2f32aa6cd",
+    "algocell_exp/zmachine.py": "5197b3cb542c9d4fa7e8340d515103e3db03807c77bf03cb1be203509a439f68"
+  },
+  "executor": {
+    "m6502_pair_maps_L32": {
+      "machine": "m6502_pair_maps_L32",
+      "zilion": "0.3.0-dev",
+      "core": "m6502 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+      "sha256_core": "797ecdcf37667e270225e5e91c2e25b2b711bff8a8477b76003199d25c318e6d",
+      "sha256_world": "de5aa57ff7eb5ecb7ad90a1d9865fa234c21b27271b3a278bb2c0f076ee237f8",
+      "sha256_wgsl": "ccceae39dd43f7f6652e963e95c8cab358c556d428940ab126a976fd22f104ac",
+      "ring": 64,
+      "segments": [
+        [
+          "A",
+          32
+        ],
+        [
+          "B",
+          32
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 8,
+        "stack": {
+          "convention": {
+            "kind": "firstPushAt",
+            "position": 63,
+            "values": {
+              "s": 255
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": {
+        "traps": {
+          "illegal": "as-chip"
+        }
+      },
+      "ablation": "none"
+    }
+  },
+  "usage": {
+    "shader": {},
+    "machine": {
+      "m6502_pair_maps_L32": 268496,
+      "m6502_pair_maps_L32 (pc prefix replay)": 2064
+    }
+  },
+  "modal": {
+    "scorer_commit": "2f3582c49f548977b516b7199d06eb641a3ed7e1",
+    "app_id": "ap-MWL0OwXSJsCgpPh7SJiHcd",
+    "input_prefix": "s6502/B",
+    "result_path": "s6502_scored/B/s6502_B_s65019.json",
+    "wall_s": 5.853,
+    "adapter": null,
+    "software_vulkan": false
+  }
+}

@@ -1247,3 +1247,43 @@ executed code is reported as not confirmed. X3 on the N6 worlds (confirmatory): 
 - **Assays.** Draft corpus 3 runs through the executor interface (`ASSAYS_ANY_ISA.md`, merged): every tape the
   manuscript names, under C0, C1 and C2.
 - **Second tier.** Only with explicit spend approval.
+
+### Outcome of S1 (2026-10-11)
+
+**Sources.** Scorer `score6502.py`, committed at 63a0d05 before any registered world was read. Its positive control
+reproduced the Z80 DZ p = 0 worlds exactly, 10 of 10 on every column (`results/s6502/SCORER_CONTROL.md`). Scored on
+Modal from 2f3582c. Records: `results/s6502/S1.md`, `s1_worlds.csv`, `s1_verdicts.json`, `worlds/`. All 80 worlds ran
+the full 10,000,000 steps.
+
+**Arm A (primary: L = 16, 128 instructions, BRK faithful).**
+- 20 of 20 worlds have a t_rep, so the null rule does not apply.
+- **P1 not supported.** The first replicator is confined and has a loop in 14 of 20 worlds (0.70, against ≥ 0.8
+  required). All 20 first replicators are confined: their pointer is in the partner in 0 of 16 traced encounters. The
+  other 6 show no decrease of the 16-bit program counter.
+- **P2 supported.** No world has an open straight-line heritable tape before closure.
+- **P3 not tested.** Transmitters and regenerators both occur (94 and 209 of the scanned heritable cells). No scanned
+  heritable confined cell had a measured d ≥ 6, so the offset equality could not be tested.
+- **P4 supported.** Kaplan–Meier median t_rep 1,125,000 steps. t_rep = t_closed in 20 of 20.
+- **Kill not triggered.** 0 of 20 first replicators are open and straight-line.
+
+**Registered reading.**
+- The claim that the census predicts the beginning stands for the 6502 (kill not triggered).
+- The beginning is closed in every arm-A world, with no open phase (P2).
+- The loop criterion as registered (P1) is not met.
+
+**Arms B–D (descriptive).**
+
+| Arm | Worlds with a t_rep | First replicator | Confined + loop | KM median t_rep |
+|---|---|---|---|---|
+| B (L = 32) | 4 of 20 | all confined | 4 of 4 | censored |
+| C (512 instructions) | 20 of 20 | 19 confined, 1 open | 14 of 20 | 837,500 |
+| D (BRK halts) | 18 of 20 | all confined | 17 of 18 | 1,650,000 |
+
+No arm has an open straight-line first replicator.
+
+**Exploratory, not registered.** The 6 arm-A first replicators that are confined without a program-counter decrease
+are to be examined in position space. The hypothesis, written before that examination: a 16-bit PC can return to an
+earlier organism byte through a higher alias (a jump or return to an address ≥ the current one that maps to a lower
+ring position), or through a BRK vector cycle. The registered criterion cannot see either on a ring. Arm D, where BRK
+halts, has loops in 17 of 18. Whatever this examination finds is reported as exploratory and does not change the
+registered P1 verdict.

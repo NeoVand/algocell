@@ -1,0 +1,336 @@
+{
+  "schema": "s1-score/1",
+  "world": {
+    "t_rep": 132500,
+    "t_closed": 132500,
+    "first_tape": "35 42 08 ca b4 15 94 35 4c 00 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32",
+    "first_open": false,
+    "first_confined": true,
+    "first_loop": true,
+    "first_entered": 0,
+    "p2_violation": false,
+    "p2_first_step": null,
+    "world": "s6502_B_s65005",
+    "arm": "B",
+    "seed": 65005,
+    "horizon": 10000000,
+    "L": 32,
+    "budget": 128,
+    "machine": "m6502_pair_maps_L32",
+    "snapshot_step": 10000000,
+    "n_cells": 64,
+    "frac_heritable": 0.890625,
+    "frac_open_of_heritable": 0.0,
+    "frac_confined_of_heritable": 1.0,
+    "n_scanned": 16,
+    "n_scanned_confined": 16,
+    "frac_regenerator_of_heritable": 0.5,
+    "frac_intermediate_of_heritable": 0.0,
+    "frac_transmitter_of_heritable": 0.5,
+    "median_unexec_sites_transmitters": 16.0,
+    "median_sites_confined_scanned": 5.0
+  },
+  "cells": [
+    {
+      "cell": 58,
+      "tape": "ca b5 10 95 c0 4c c0 39 5e 8f 9b d1 04 03 0f 12 ca b5 10 95 c0 4c c0 39 5e 8f 9b d1 04 03 0f 12",
+      "confined": true,
+      "n_sites": 9,
+      "n_sites_unexecuted": 8,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 27,
+      "tape": "ca b5 48 95 c0 4c c0 58 ca b5 48 95 c0 4c c0 58 ca b5 48 95 c0 4c c0 58 ca b5 48 95 c0 4c c0 58",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 43,
+      "tape": "ca b5 10 95 c0 4c 00 04 03 e8 7a 55 de 0e 25 7a ca b5 10 95 c0 4c 00 04 03 e8 7a 55 de 0e 25 7a",
+      "confined": true,
+      "n_sites": 9,
+      "n_sites_unexecuted": 8,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 22,
+      "tape": "ca b5 c8 95 80 4c 00 66 ca b5 c8 95 80 4c 00 66 ca b5 c8 95 80 4c 00 66 ca b5 c8 95 80 4c 00 66",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 52,
+      "tape": "ca b5 c8 95 00 4c 80 b6 ca b5 c8 95 00 4c 80 b6 ca b5 c8 95 00 4c 80 b6 ca b5 c8 95 00 4c 80 b6",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 20,
+      "tape": "ca b5 60 95 c0 4c 80 2a 05 81 31 46 2d c8 8e 4d c6 2b 5c 85 58 24 a7 ea 3a 5d 4e de 2a 30 02 00",
+      "confined": true,
+      "n_sites": 25,
+      "n_sites_unexecuted": 24,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 47,
+      "tape": "ca b5 c8 95 b8 4c 80 5f ca b5 c8 95 00 4c 80 5f ca b5 c8 95 b8 4c 80 5f ca b5 c8 95 00 4c 80 5f",
+      "confined": true,
+      "n_sites": 0,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": null,
+      "sites_equals_d_minus6": null
+    },
+    {
+      "cell": 36,
+      "tape": "ca b5 08 95 c0 4c c0 6a ca b5 08 95 c0 4c c0 6a ca b5 08 95 c0 4c c0 6a ca b5 08 95 c0 4c c0 6a",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 16,
+      "tape": "ca b5 08 95 80 4c 80 95 ca b5 08 95 80 4c 80 95 ca b5 08 95 80 4c 80 95 ca b5 08 95 80 4c 80 95",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 17,
+      "tape": "ca b5 60 95 c0 4c 80 74 30 a0 30 a7 0b fe 1d a2 34 a3 94 12 97 ff 2d 58 ff 42 36 f9 e4 32 7c 00",
+      "confined": true,
+      "n_sites": 25,
+      "n_sites_unexecuted": 24,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 4,
+      "tape": "ca b5 60 95 c0 4c 40 4e ca 00 00 ee c0 4c a7 dc ca 75 08 ae 00 2c 80 98 94 6a 82 21 b4 b0 82 49",
+      "confined": true,
+      "n_sites": 25,
+      "n_sites_unexecuted": 24,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 19,
+      "tape": "ca b5 a0 95 c0 4c 40 f7 37 bf 12 a1 29 8b bc 68 34 1f f6 46 2a da 2a f0 b3 72 6c a5 45 bd f0 17",
+      "confined": true,
+      "n_sites": 25,
+      "n_sites_unexecuted": 24,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 45,
+      "tape": "ca b5 10 95 40 4c c0 24 c8 88 42 b5 19 d2 9b 6a ca b5 10 95 40 4c c0 24 c8 88 42 b5 19 54 9b 6a",
+      "confined": true,
+      "n_sites": 9,
+      "n_sites_unexecuted": 8,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 1,
+      "tape": "ca b5 48 95 c0 4c c0 ff ca b5 48 95 c0 4c c0 ff ca b5 48 95 c0 4c c0 ff ca b5 48 95 c0 4c c0 ff",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 3,
+      "tape": "ca b5 10 95 c0 4c 00 a0 35 49 f7 27 21 64 d9 61 ca b5 10 95 c0 4c 00 a0 35 49 f7 27 21 64 d9 61",
+      "confined": true,
+      "n_sites": 9,
+      "n_sites_unexecuted": 8,
+      "n_executed": 8,
+      "class": "transmitter",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    },
+    {
+      "cell": 40,
+      "tape": "ca b5 08 95 c0 4c 00 66 ca b5 08 95 c0 4c 00 66 ca b5 08 95 c0 4c 00 66 ca b5 08 95 c0 4c 00 66",
+      "confined": true,
+      "n_sites": 1,
+      "n_sites_unexecuted": 0,
+      "n_executed": 8,
+      "class": "regenerator",
+      "copy_offset": 0,
+      "sites_equals_d_minus6": false
+    }
+  ],
+  "p2_tapes": [],
+  "judged_tapes": [
+    {
+      "tape": "34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 30 02 00",
+      "heritable": false,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.0073399697580645165
+    },
+    {
+      "tape": "00 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00 34 34 05 00",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.017623277889784947
+    },
+    {
+      "tape": "34 34 08 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.004410282258064516
+    },
+    {
+      "tape": "34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 34 05 30 34 30 05 00 30",
+      "heritable": false,
+      "entered": 16,
+      "open": true,
+      "confined": false,
+      "loop": null,
+      "copy_offset": null,
+      "gen2": 0.018223916330645164
+    },
+    {
+      "tape": "35 42 08 ca b4 15 94 35 4c 00 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32",
+      "heritable": true,
+      "entered": 0,
+      "open": false,
+      "confined": true,
+      "loop": true,
+      "copy_offset": 0,
+      "gen2": 1.0
+    }
+  ],
+  "input_sha256": "84d324061b333ef185c59c925882d7229edbf366cd93d22dd69568faf181f887",
+  "code_sha256": {
+    "score6502.py": "5ac2c539d97ffd3609a765aa6345637c6b73516eab5e93ddeedddb8fe0369f9f",
+    "population_classes.py": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "dial_soups.py": "1a03265e9bbac503cf628b06e50aad56691406171fc7b4574495919c5de7fa7c",
+    "algocell_exp/executor.py": "95ca025c38c65bcb05fa3740b22cec2fb52dc75e717143ca2c1f23f92d77e737",
+    "algocell_exp/assay.py": "ce809ff0e5046c80d60570ba42fa59f14429c245cf07357121a31959f9aedc64",
+    "algocell_exp/exectrace.py": "ca1462f82e5ae2d9ec7e949bf80096c0059cd7c82d400c455e81b3c2f32aa6cd",
+    "algocell_exp/zmachine.py": "5197b3cb542c9d4fa7e8340d515103e3db03807c77bf03cb1be203509a439f68"
+  },
+  "executor": {
+    "m6502_pair_maps_L32": {
+      "machine": "m6502_pair_maps_L32",
+      "zilion": "0.3.0-dev",
+      "core": "m6502 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+      "sha256_core": "797ecdcf37667e270225e5e91c2e25b2b711bff8a8477b76003199d25c318e6d",
+      "sha256_world": "de5aa57ff7eb5ecb7ad90a1d9865fa234c21b27271b3a278bb2c0f076ee237f8",
+      "sha256_wgsl": "ccceae39dd43f7f6652e963e95c8cab358c556d428940ab126a976fd22f104ac",
+      "ring": 64,
+      "segments": [
+        [
+          "A",
+          32
+        ],
+        [
+          "B",
+          32
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 8,
+        "stack": {
+          "convention": {
+            "kind": "firstPushAt",
+            "position": 63,
+            "values": {
+              "s": 255
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": {
+        "traps": {
+          "illegal": "as-chip"
+        }
+      },
+      "ablation": "none"
+    }
+  },
+  "usage": {
+    "shader": {},
+    "machine": {
+      "m6502_pair_maps_L32": 268496,
+      "m6502_pair_maps_L32 (pc prefix replay)": 2064
+    }
+  },
+  "modal": {
+    "scorer_commit": "2f3582c49f548977b516b7199d06eb641a3ed7e1",
+    "app_id": "ap-MWL0OwXSJsCgpPh7SJiHcd",
+    "input_prefix": "s6502/B",
+    "result_path": "s6502_scored/B/s6502_B_s65005.json",
+    "wall_s": 4.285,
+    "adapter": null,
+    "software_vulkan": false
+  }
+}
