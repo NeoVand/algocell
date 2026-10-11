@@ -511,7 +511,7 @@ CONFIRM_JOBS = ("assay_batch_I", "c4_I", "stage_g_I", "exec_trace", "inflow_inso
 
 def git_rev() -> str:
     head = subprocess.run(["git", "-C", str(HERE), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-    dirty = subprocess.run(["git", "-C", str(HERE), "status", "--porcelain", "--untracked-files=no", "--", "."], capture_output=True, text=True).stdout.strip()
+    dirty = subprocess.run(["git", "-C", str(HERE), "status", "--porcelain", "--untracked-files=no", "--", ".", ":!results/assays_any_isa"], capture_output=True, text=True).stdout.strip()
     return head + (" (working tree modified)" if dirty else "")
 
 
