@@ -77,7 +77,7 @@ exists:
 **The pilot sizes the design; it cannot touch the predictions.**
 
 - The pilot is 4 worlds per length (8 in all), each 100,000 steps, at L = 16 and 32, with 128 instructions.
-  `pilot6502.py` runs it; it ran on Modal.
+  `pilot6502.py` runs it, on Modal.
 - It sets only the horizon and the spend estimate. It cannot change P1–P4, the null outcome, the kill rule or the
   analysis.
 - Its report holds only steps per second and population-concentration trajectories: the share of the most common
