@@ -1,0 +1,13 @@
+{
+  "finished": "2026-10-11T10:27:27.160295-05:00",
+  "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python experiments/check_py65_difftest.py",
+  "status": "passed",
+  "ledger_rows_reconciled": 2009068,
+  "s1_worlds_tested": 62,
+  "census_words_tested": 300,
+  "source_hashes_checked": true,
+  "machine_hashes_checked": true,
+  "witness_categories": 6,
+  "ledger_sha256": "60238cc07a3a2f4892c2d04e076c510dd7021066a976e1e878a83fd95d7442f9",
+  "checker_sha256": "5277bfb837ff8a5cbc92c860d215c41c15480195903c072d5cb62f62047e6494"
+}
