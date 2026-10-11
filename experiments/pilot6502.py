@@ -3,6 +3,7 @@
     cd experiments
     python pilot6502.py --out results/pilot6502                         # the pilot: L = 16 and 32, seeds 1-4, 100,000 steps
     python pilot6502.py --smoke --out <scratch dir>                     # plumbing only: 200 steps, L = 16, one seed
+    (--burst 60, the default, pauses as long as the GPU ran after every minute of GPU work; --burst 0 on an idle machine)
 
 The pilot is to be run only after the pre-registration's predictions are locked. Each world is Algocell's soup (ZSoup:
 the original lattice, pairing, mutation and statistics kernels, 160 × 125, 8,192 draws per step, background mutation
@@ -45,7 +46,9 @@ def machine_for(L: int, brk: str) -> str:
 
 
 def run_world(L: int, seed: int, steps: int, out: Path, brk: str = "faithful", budget: int = 128, sample_every: int = 500,
-              snapshot_every: int = 25000, submit: int = 50, label: str = "pilot6502") -> dict:
+              snapshot_every: int = 25000, submit: int = 50, label: str = "pilot6502", burst: float = 0.0) -> dict:
+    """One world. burst > 0 shares the GPU: after each sample, once the GPU has run `burst` seconds since the last pause,
+    the run sleeps as long as it ran (wall time is excluded from steps_per_s, which times the GPU intervals only)."""
     out.mkdir(parents=True, exist_ok=True)
     mname = machine_for(L, brk)
     world = f"{label}_{mname}_s{seed}_st{budget}"
@@ -67,6 +70,8 @@ def run_world(L: int, seed: int, steps: int, out: Path, brk: str = "faithful", b
 
     step = 0
     t_start = time.perf_counter()
+    since_pause = 0.0
+    slept = 0.0
     while step < steps:
         target = min(steps, (step // sample_every + 1) * sample_every)
         t0 = time.perf_counter()
@@ -91,10 +96,16 @@ def run_world(L: int, seed: int, steps: int, out: Path, brk: str = "faithful", b
               "active_pairs": int(inter["active"].sum()), "elapsed_s": round(time.perf_counter() - t_start, 2)})
         if snapshot_every and step % snapshot_every == 0 and step < steps:
             snapshot(f"t{step}", cells)
+        since_pause += dt
+        if burst > 0 and since_pause >= burst and step < steps:
+            time.sleep(since_pause)
+            slept += since_pause
+            since_pause = 0.0
     cells = soup.read_soup()
     snapshot("final", cells)
     wall = time.perf_counter() - t_start
-    summary = {"kind": "summary", "world": world, "steps_run": step, "wall_s": round(wall, 1), "steps_per_s": round(step / wall, 2),
+    summary = {"kind": "summary", "world": world, "steps_run": step, "wall_s": round(wall, 1), "paused_s": round(slept, 1),
+               "steps_per_s": round(step / max(wall - slept, 1e-9), 2),
                "finished": time.strftime("%Y-%m-%d %H:%M:%S %Z")}
     emit(summary)
     f.close()
@@ -111,11 +122,12 @@ def main() -> None:
     ap.add_argument("--sample-every", type=int, default=500)
     ap.add_argument("--snapshot-every", type=int, default=25_000)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--burst", type=float, default=60.0, help="GPU sharing: after this many seconds of GPU work, pause as long (0 = never pause)")
     ap.add_argument("--smoke", action="store_true", help="plumbing only: 200 steps, L = 16, seed 1, samples every 100")
     ap.add_argument("--i-am-authorised", action="store_true", help="required for anything but --smoke (the pilot waits for the locked predictions)")
     a = ap.parse_args()
     if a.smoke:
-        s = run_world(16, 1, 200, a.out, brk=a.brk, budget=a.budget, sample_every=100, snapshot_every=100, label="smoke6502")
+        s = run_world(16, 1, 200, a.out, brk=a.brk, budget=a.budget, sample_every=100, snapshot_every=100, label="smoke6502", burst=a.burst)
         print(json.dumps(s))
         return
     if not a.i_am_authorised:
@@ -123,7 +135,7 @@ def main() -> None:
     for L in a.L:
         for seed in a.seeds:
             print(json.dumps(run_world(L, seed, a.steps, a.out, brk=a.brk, budget=a.budget, sample_every=a.sample_every,
-                                       snapshot_every=a.snapshot_every)), flush=True)
+                                       snapshot_every=a.snapshot_every, burst=a.burst)), flush=True)
 
 
 if __name__ == "__main__":
