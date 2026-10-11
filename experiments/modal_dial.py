@@ -30,14 +30,14 @@ def _gpu():
 
 
 @app.function(image=image, gpu=["L40S", "A10G", "L4"], timeout=60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))
-def dial_world(v: str, seed: int, steps: int, outdir: str = "/runs/dial") -> dict:
+def dial_world(v: str, seed: int, steps: int, outdir: str = "/runs/dial", machine: str = "") -> dict:
     import os
     import sys
     sys.path.insert(0, "/root")
     import dial_soups
     if os.path.exists(os.path.join(outdir, f"{v}_s{seed}_t{steps}.npy")):
         return {"variant": v, "seed": seed, "skipped": True}
-    r = dial_soups.run_world(v, seed, steps, outdir)
+    r = dial_soups.run_world(v, seed, steps, outdir, machine=machine or None)
     r["gpu"] = _gpu()
     with open(os.path.join(outdir, f"{v}_s{seed}.gpu"), "w") as f:
         f.write(r["gpu"] + "\n")
@@ -66,16 +66,19 @@ def rep_world(seed: int, steps: int) -> dict:
 
 
 @app.local_entrypoint()
-def main(part: str = "all", dry: bool = False):
+def main(part: str = "all", dry: bool = False, machine: str = "", outdir: str = ""):
     import dial_soups
+    target = outdir or (f"/runs/tier2_{machine}/dial" if machine else "/runs/dial")
+    if machine and part not in ("dial",):
+        raise ValueError("--machine requires --part dial")
     if dry:
-        print(dial_world.remote("lp01", 9999, 2000, "/runs/dial_dry"))
+        print(dial_world.remote("lp01", 9999, 2000, (outdir or "/runs/tier2_smoke/dial") if machine else "/runs/dial_dry", machine))
         return
     handles = []
     if part in ("all", "rep"):
         handles.append(("rep", rep_world.starmap([(s, 3000000) for s in range(8201, 8221)], return_exceptions=True)))
     if part in ("all", "dial"):
-        jobs = [(v, s, 300000) for v in dial_soups.DIAL for s in dial_soups.SEEDS]
+        jobs = [(v, s, 300000, target, machine) for v in dial_soups.DIAL for s in dial_soups.SEEDS]
         handles.append(("dial", dial_world.starmap(jobs, return_exceptions=True)))
     for name, it in handles:
         for r in it:

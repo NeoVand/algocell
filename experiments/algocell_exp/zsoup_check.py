@@ -227,8 +227,8 @@ class Lockstep:
     """The original Soup with a Zilion machine executing a copy of every step's pairs beside it (see module doc)."""
 
     def __init__(self, L: int = 16, zero_halts: bool = False, seed: int = 1, machine: str | None = None, suppress=None,
-                 steps_capacity: int = 20000, zil_budget_delta: int = 0, z80_steps: int = 128) -> None:
-        self.soup = s = Soup(tape_length=L, seed=seed, zero_halts=zero_halts, suppress=suppress, z80_steps=z80_steps)
+                 steps_capacity: int = 20000, zil_budget_delta: int = 0, z80_steps: int = 128, shader_variant=None, mem_length=None, mutations_per_step=None) -> None:
+        self.soup = s = Soup(tape_length=L, seed=seed, zero_halts=zero_halts, suppress=suppress, z80_steps=z80_steps, shader_variant=shader_variant, mem_length=mem_length, mutations_per_step=mutations_per_step)
         self.dev = dev = s.device
         name = machine or f"z80c02_{'lethal' if zero_halts else 'pair'}_L{L}"
         self.machine = load_machine(name, device=dev)

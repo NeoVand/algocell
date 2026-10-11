@@ -48,12 +48,27 @@ def main():
     ap.add_argument("dir")
     ap.add_argument("--ref", default="runs/stageE")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--f4c-only", action="store_true", help="score only the registered L8/P32 cell; no reference worlds needed")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a)
     out = a.out or os.path.join(a.dir, "analysis", "stage_f")
     os.makedirs(out, exist_ok=True)
     f = pd.read_csv(os.path.join(a.dir, "analysis", "assays.csv"))
     if "mem_length" not in f:
         raise SystemExit("assays.csv lacks mem_length; re-run assay_batch with the ring-aware version")
+    if a.f4c_only:
+        g = f[(f["tape_len"] == 8) & (f["mem_length"] == 32) & (f["label"] == "none@ring32")]
+        if len(g) != 10 or sorted(g["seed"].astype(int)) != list(range(101, 111)):
+            raise SystemExit("F4c requires all ten original seeds 101–110")
+        r = cell(g)
+        pd.DataFrame([r]).to_csv(os.path.join(out, "rings.csv"), index=False)
+        met = r["t_rep_n"] < 10 or r["t_rep_km"] > 2000
+        text = f"# F4c — L8, P32\n\nHeritable {r['t_rep_n']}/10; KM median {r['t_rep_km']}; registered verdict: {'MET' if met else 'NOT MET'}.\n"
+        open(os.path.join(out, "NUMBERS_F.md"), "w").write(text)
+        print(text)
+        return
     e = pd.read_csv(os.path.join(a.ref, "analysis", "assays.csv"))
     e = e[e["label"].isin(["none@nominal", "stack-write-only@nominal"]) & e["tape_len"].isin([8, 10, 12, 16, 36]) & e["replicate"].isna()].copy()
     e["mem_length"] = 2 * e["tape_len"]

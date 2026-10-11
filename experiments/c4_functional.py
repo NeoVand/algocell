@@ -47,6 +47,9 @@ def main():
     files = select_summaries(a.dir)
     for i, f in enumerate(files):
         s = json.load(open(f))
+        from algocell_exp import executor as E
+        from algocell_exp.tier2 import check_batch_core
+        check_batch_core(s, E.active().spec if E.active() else None)
         if want and s["label"] not in want:
             continue
         stem = f[: -len(".summary.json")]

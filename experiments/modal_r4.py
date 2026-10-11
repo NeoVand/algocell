@@ -35,21 +35,24 @@ def long_world(v: str, seed: int, steps: int) -> dict:
 
 
 @app.function(image=image, gpu=["L40S", "A10G", "L4"], timeout=2 * 60 * 60, volumes={"/runs": runs_volume}, retries=modal.Retries(max_retries=1, initial_delay=10.0))
-def inv_world(c: dict) -> dict:
+def inv_world(c: dict, machine: str = "", outdir: str = "/runs/r4_inv") -> dict:
     import sys
     sys.path.insert(0, "/root")
     import invasion_generic
-    r = invasion_generic.run_world(c, "/runs/r4_inv")
+    r = invasion_generic.run_world(c, outdir, machine=machine or None)
     runs_volume.commit()
     return r
 
 
 @app.local_entrypoint()
-def main(part: str = "all"):
+def main(part: str = "all", machine: str = "", outdir: str = ""):
     import invasion_generic
     calls = []
+    if machine and part != "inv":
+        raise ValueError("--machine requires --part inv")
+    target = outdir or (f"/runs/tier2_{machine}/r4_inv" if machine else "/runs/r4_inv")
     if part in ("all", "inv"):
-        for r in inv_world.map(invasion_generic.conditions(), return_exceptions=True):
+        for r in inv_world.map(invasion_generic.conditions(), kwargs={"machine": machine, "outdir": target}, return_exceptions=True):
             print(r if isinstance(r, dict) else f"FAILED: {r!r}"[:300], flush=True)
     if part in ("all", "long"):
         jobs = [("randreg", s, 3000000) for s in range(8101, 8121)]

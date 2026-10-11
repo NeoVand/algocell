@@ -1,0 +1,2331 @@
+{
+ "tier2c0_assay_L16": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L16": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L20": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 20,
+      "name": "A"
+     },
+     {
+      "bytes": 20,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L20": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 20,
+      "name": "A"
+     },
+     {
+      "bytes": 20,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L32": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 32,
+      "name": "A"
+     },
+     {
+      "bytes": 32,
+      "name": "B"
+     }
+    ],
+    "ring": 64
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L32": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 32,
+      "name": "A"
+     },
+     {
+      "bytes": 32,
+      "name": "B"
+     }
+    ],
+    "ring": 64
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L50": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 50,
+      "name": "A"
+     },
+     {
+      "bytes": 50,
+      "name": "B"
+     }
+    ],
+    "ring": 100
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L50": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 50,
+      "name": "A"
+     },
+     {
+      "bytes": 50,
+      "name": "B"
+     }
+    ],
+    "ring": 100
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L64": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 64,
+      "name": "A"
+     },
+     {
+      "bytes": 64,
+      "name": "B"
+     }
+    ],
+    "ring": 128
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L64": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 64,
+      "name": "A"
+     },
+     {
+      "bytes": 64,
+      "name": "B"
+     }
+    ],
+    "ring": 128
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_lethal_L16": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "halting": {
+    "lethal": {
+     "firstUnit": 0
+    }
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_lethal_L16": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "halting": {
+    "lethal": {
+     "firstUnit": 0
+    }
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_lethal_L32": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 32,
+      "name": "A"
+     },
+     {
+      "bytes": 32,
+      "name": "B"
+     }
+    ],
+    "ring": 64
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "halting": {
+    "lethal": {
+     "firstUnit": 0
+    }
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_lethal_L32": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 32,
+      "name": "A"
+     },
+     {
+      "bytes": 32,
+      "name": "B"
+     }
+    ],
+    "ring": 64
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "halting": {
+    "lethal": {
+     "firstUnit": 0
+    }
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2_randreg_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> conv_state: u32;\nfn conv_draw() -> u32 {\n    let s = conv_state;\n    conv_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "conv_state = zil_seed * 2246822519u + zil_lane * 3266489917u + 0x27d4eb2fu;\nconv_draw();\ncpu_a = conv_draw() & 0xffu;\ncpu_f = conv_draw() & 0xffu;\ncpu_b = conv_draw() & 0xffu;\ncpu_c = conv_draw() & 0xffu;\ncpu_d = conv_draw() & 0xffu;\ncpu_e = conv_draw() & 0xffu;\ncpu_h = conv_draw() & 0xffu;\ncpu_l = conv_draw() & 0xffu;\ncpu_a2 = conv_draw() & 0xffu;\ncpu_f2 = conv_draw() & 0xffu;\ncpu_b2 = conv_draw() & 0xffu;\ncpu_c2 = conv_draw() & 0xffu;\ncpu_d2 = conv_draw() & 0xffu;\ncpu_e2 = conv_draw() & 0xffu;\ncpu_h2 = conv_draw() & 0xffu;\ncpu_l2 = conv_draw() & 0xffu;\ncpu_ix = conv_draw() & 0xffffu;\ncpu_iy = conv_draw() & 0xffffu;"
+   }
+  }
+ },
+ "tier2_randreg_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> conv_state: u32;\nfn conv_draw() -> u32 {\n    let s = conv_state;\n    conv_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "conv_state = zil_seed * 2246822519u + zil_lane * 3266489917u + 0x27d4eb2fu;\nconv_draw();\ncpu_a = conv_draw() & 0xffu;\ncpu_f = conv_draw() & 0xffu;\ncpu_b = conv_draw() & 0xffu;\ncpu_c = conv_draw() & 0xffu;\ncpu_d = conv_draw() & 0xffu;\ncpu_e = conv_draw() & 0xffu;\ncpu_h = conv_draw() & 0xffu;\ncpu_l = conv_draw() & 0xffu;\ncpu_a2 = conv_draw() & 0xffu;\ncpu_f2 = conv_draw() & 0xffu;\ncpu_b2 = conv_draw() & 0xffu;\ncpu_c2 = conv_draw() & 0xffu;\ncpu_d2 = conv_draw() & 0xffu;\ncpu_e2 = conv_draw() & 0xffu;\ncpu_h2 = conv_draw() & 0xffu;\ncpu_l2 = conv_draw() & 0xffu;\ncpu_ix = conv_draw() & 0xffffu;\ncpu_iy = conv_draw() & 0xffffu;"
+   }
+  }
+ },
+ "tier2c0_assay_L8_P32": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L8_P32": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2_lp0_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 0u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp0_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 0u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp001_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 42949672u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp001_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 42949672u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp003_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 128849018u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp003_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 128849018u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp01_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 429496729u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp01_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 429496729u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp03_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 1288490188u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp03_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 1288490188u) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp1_L16_c0_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (true) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2_lp1_L16_c1_assay": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   },
+   "hooks": {
+    "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+    "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();",
+    "onInstructionStart": "if (unit == 0u) { if (true) { return ZIL_HALT; } }"
+   }
+  }
+ },
+ "tier2c0_assay_L8": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 16
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L8": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 16
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L10": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 20
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L10": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 20
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L12": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L12": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L36": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 36,
+      "name": "A"
+     },
+     {
+      "bytes": 36,
+      "name": "B"
+     }
+    ],
+    "ring": 72
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L36": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 36,
+      "name": "A"
+     },
+     {
+      "bytes": 36,
+      "name": "B"
+     }
+    ],
+    "ring": 72
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L10_P28": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L10_P28": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L10_P40": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L10_P40": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L12_P28": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L12_P28": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L12_P36": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L12_P36": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L16_P33": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 33
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L16_P33": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 33
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L16_P34": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L16_P34": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L16_P35": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 35
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L16_P35": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 35
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c0_assay_L16_P37": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 37
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "tier2c1_assay_L16_P37": {
+  "note": "I1-T2 assay twin: impact execution world, with observational fetch/start maps only.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 37
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ }
+}

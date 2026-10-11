@@ -55,11 +55,15 @@ def shares(s):
     return {"pusher": float((hp <= 4).mean()), "SI13": float(si.mean()), "R4": float(r4.mean()), "zero_frac": float((s == 0).mean())}
 
 
-def run_world(c, outdir):
+def run_world(c, outdir, machine=None):
     from algocell_exp.soup import Soup
     os.makedirs(outdir, exist_ok=True)
     seed = 9100 + c["seed"] + 37 * ["pusher", "SI13", "R4"].index(c["resident"]) + 300 * (c["variant"] == "randreg")
-    soup = Soup(160, 125, "square", 16, seed, 8192, 128, 4, [], shader_variant=c["variant"])
+    if machine:
+        from algocell_exp.tier2 import soup_for
+        soup = soup_for(machine, 16, seed, variant=c["variant"])
+    else:
+        soup = Soup(160, 125, "square", 16, seed, 8192, 128, 4, [], shader_variant=c["variant"])
     rng = np.random.default_rng([seed, 5])
     N = soup.cell_count
     cells = make(c["resident"], N, rng)
@@ -69,7 +73,7 @@ def run_world(c, outdir):
     soup.write_soup(cells.astype(np.uint8))
     step, t0 = 0, time.time()
     with open(os.path.join(outdir, stem(c) + ".jsonl"), "w") as f:
-        f.write(json.dumps({"kind": "condition", **c, "soup_seed": seed}) + "\n")
+        f.write(json.dumps({"kind": "condition", **c, "soup_seed": seed, **({"machine": soup.machine_provenance} if machine else {})}) + "\n")
         while step <= c["steps"]:
             f.write(json.dumps({"step": step, **shares(soup.read_soup())}) + "\n")
             dt = 50 if step < 2000 else 250
