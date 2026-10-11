@@ -7,11 +7,11 @@
  "workgroupSize": 64,
  "core": {
   "id": "m6502",
-  "name": "MOS 6502 (NMOS) — skeleton",
-  "coreVersion": "0.0.0-skeleton",
-  "status": "skeleton",
+  "name": "MOS 6502 (NMOS)",
+  "coreVersion": "0.3.0",
+  "status": "experimental",
   "variant": "nmos",
-  "compat": "skeleton",
+  "compat": "0.3",
   "addressBits": 16,
   "fetchUnitBytes": 1,
   "hooks": [],
@@ -46,10 +46,10 @@
   }
  },
  "sha256": {
-  "wgsl": "e6276ec7472f5b0d886025d31b589bcedc6d52fdfea08894ffff56dbbfdbffe8",
-  "core": "cb7b7781f2afe8df86622f29843fb9162b4e259531fd306981b654ab36964c14",
+  "wgsl": "cf8cd76ba04c904b390dd436fef5b57cd562f3952df31ccbc94d91fed893ab95",
+  "core": "e0c2ad55735b05ba0c6662bc1445d5fab74c4ff2f010e9de098421501e222960",
   "world": "74751cc3e629e263ec46dda4ee62db8c625a1573d63a49a728566ca7abb56dd1",
-  "options": "6d9f90b4cb7da8ef90ba72b644eafcd048a8c366fa4b0999289b4a49921bf498"
+  "options": "b338922478d878641fefd9d41c84bd7c5a25b8491d27c60f8f411038ed73de2c"
  },
  "params": {
   "bytes": 32,
