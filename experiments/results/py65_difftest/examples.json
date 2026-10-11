@@ -1,0 +1,1026 @@
+{
+  "P32/jsr-low-read-order": {
+    "corpus": "census",
+    "id": "L16/2008204b/zero",
+    "P": 32,
+    "input_hex": "2008204b2008204b2008204b2008204b00000000000000000000000000000000",
+    "status": "explained",
+    "reasons": [
+      "jsr-low-read-order"
+    ],
+    "raw_difference": {
+      "registers": {
+        "s": {
+          "py65": 27,
+          "zilion": 33
+        }
+      },
+      "memory": [
+        {
+          "position": 0,
+          "py65": 25,
+          "zilion": 23
+        },
+        {
+          "position": 20,
+          "py65": 25,
+          "zilion": 23
+        },
+        {
+          "position": 28,
+          "py65": 25,
+          "zilion": 23
+        },
+        {
+          "position": 30,
+          "py65": 25,
+          "zilion": 23
+        }
+      ]
+    },
+    "raw_state": {
+      "a": 0,
+      "x": 0,
+      "y": 0,
+      "s": 27,
+      "p": 34,
+      "pc": 8215
+    },
+    "zilion_state": {
+      "a": 0,
+      "x": 0,
+      "y": 0,
+      "s": 33,
+      "p": 34,
+      "pc": 8215
+    },
+    "diagnostic_state": {
+      "a": 0,
+      "x": 0,
+      "y": 0,
+      "s": 33,
+      "p": 34,
+      "pc": 8215
+    },
+    "events": [
+      {
+        "kind": "jsr-low-read-order",
+        "step": 12,
+        "pc": 2568,
+        "low_before_push": 8,
+        "low_after_push": 10,
+        "high": 10
+      },
+      {
+        "kind": "jsr-low-read-order",
+        "step": 42,
+        "pc": 8203,
+        "low_before_push": 10,
+        "low_after_push": 13,
+        "high": 32
+      },
+      {
+        "kind": "jsr-low-read-order",
+        "step": 58,
+        "pc": 8205,
+        "low_before_push": 13,
+        "low_after_push": 15,
+        "high": 32
+      },
+      {
+        "kind": "jsr-low-read-order",
+        "step": 73,
+        "pc": 8207,
+        "low_before_push": 15,
+        "low_after_push": 17,
+        "high": 32
+      },
+      {
+        "kind": "jsr-low-read-order",
+        "step": 88,
+        "pc": 8209,
+        "low_before_push": 17,
+        "low_after_push": 19,
+        "high": 32
+      },
+      {
+        "kind": "jsr-low-read-order",
+        "step": 103,
+        "pc": 8211,
+        "low_before_push": 19,
+        "low_after_push": 21,
+        "high": 32
+      },
+      {
+        "kind": "jsr-low-read-order",
+        "step": 118,
+        "pc": 8213,
+        "low_before_push": 21,
+        "low_after_push": 23,
+        "high": 32
+      }
+    ],
+    "diagnostic_final_matches": true,
+    "first_raw_divergence": {
+      "step": 12,
+      "opcode": 32,
+      "before_state": {
+        "a": 0,
+        "x": 0,
+        "y": 0,
+        "s": 233,
+        "p": 32,
+        "pc": 2568
+      },
+      "before_memory_hex": "2008204b2008204b20080a200a200a200a200a200a200a200a200a200a200200",
+      "oracle_after": {
+        "a": 0,
+        "x": 0,
+        "y": 0,
+        "s": 231,
+        "p": 32,
+        "pc": 2570
+      },
+      "zilion_after": {
+        "a": 0,
+        "x": 0,
+        "y": 0,
+        "s": 231,
+        "p": 32,
+        "pc": 2568
+      },
+      "difference": {
+        "registers": {
+          "pc": {
+            "py65": 2570,
+            "zilion": 2568
+          }
+        }
+      }
+    }
+  },
+  "P32/status-b-bit": {
+    "corpus": "census",
+    "id": "L16/61d599b9/partner-3",
+    "P": 32,
+    "input_hex": "61d599b961d599b961d599b961d599b9fd8f84f6e05e413272c0ea4ae8907b0e",
+    "status": "explained",
+    "reasons": [
+      "status-b-bit"
+    ],
+    "raw_difference": {
+      "registers": {
+        "p": {
+          "py65": 180,
+          "zilion": 164
+        }
+      }
+    },
+    "raw_state": {
+      "a": 144,
+      "x": 0,
+      "y": 0,
+      "s": 252,
+      "p": 180,
+      "pc": 24
+    },
+    "zilion_state": {
+      "a": 144,
+      "x": 0,
+      "y": 0,
+      "s": 252,
+      "p": 164,
+      "pc": 24
+    },
+    "diagnostic_state": {
+      "a": 144,
+      "x": 0,
+      "y": 0,
+      "s": 252,
+      "p": 164,
+      "pc": 24
+    },
+    "events": [
+      {
+        "kind": "status-b-bit",
+        "step": 10,
+        "opcode": 0,
+        "py65_p": 180,
+        "nmos_p": 164
+      }
+    ],
+    "diagnostic_final_matches": true,
+    "first_raw_divergence": {
+      "step": 10,
+      "opcode": 0,
+      "before_state": {
+        "a": 144,
+        "x": 0,
+        "y": 0,
+        "s": 255,
+        "p": 160,
+        "pc": 22
+      },
+      "before_memory_hex": "61d599b961d599b961d599b961d599b9fd8f84f6e05e003272d5ea4ae8907b0e",
+      "oracle_after": {
+        "a": 144,
+        "x": 0,
+        "y": 0,
+        "s": 252,
+        "p": 180,
+        "pc": 24
+      },
+      "zilion_after": {
+        "a": 144,
+        "x": 0,
+        "y": 0,
+        "s": 252,
+        "p": 164,
+        "pc": 24
+      },
+      "difference": {
+        "registers": {
+          "p": {
+            "py65": 180,
+            "zilion": 164
+          }
+        }
+      }
+    }
+  },
+  "P32/jsr-low-read-order+status-b-bit": {
+    "corpus": "random_P32",
+    "id": "seed-650201/tape-92997",
+    "P": 32,
+    "input_hex": "b111e1fef6ca2063c9a72c3897ef4a28a3ee8e7ef30d5cdd231d1082a27e1260",
+    "status": "explained",
+    "reasons": [
+      "jsr-low-read-order",
+      "status-b-bit"
+    ],
+    "raw_difference": {
+      "registers": {
+        "s": {
+          "py65": 205,
+          "zilion": 221
+        },
+        "p": {
+          "py65": 119,
+          "zilion": 228
+        },
+        "pc": {
+          "py65": 8485,
+          "zilion": 8629
+        }
+      },
+      "memory": [
+        {
+          "position": 5,
+          "py65": 129,
+          "zilion": 33
+        },
+        {
+          "position": 6,
+          "py65": 104,
+          "zilion": 0
+        },
+        {
+          "position": 7,
+          "py65": 104,
+          "zilion": 129
+        },
+        {
+          "position": 14,
+          "py65": 117,
+          "zilion": 104
+        },
+        {
+          "position": 15,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 16,
+          "py65": 33,
+          "zilion": 104
+        },
+        {
+          "position": 17,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 18,
+          "py65": 33,
+          "zilion": 104
+        },
+        {
+          "position": 19,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 20,
+          "py65": 33,
+          "zilion": 104
+        },
+        {
+          "position": 21,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 22,
+          "py65": 33,
+          "zilion": 113
+        },
+        {
+          "position": 23,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 24,
+          "py65": 33,
+          "zilion": 104
+        },
+        {
+          "position": 25,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 26,
+          "py65": 33,
+          "zilion": 104
+        },
+        {
+          "position": 27,
+          "py65": 42,
+          "zilion": 201
+        },
+        {
+          "position": 28,
+          "py65": 33,
+          "zilion": 104
+        },
+        {
+          "position": 29,
+          "py65": 138,
+          "zilion": 201
+        },
+        {
+          "position": 30,
+          "py65": 33,
+          "zilion": 117
+        }
+      ]
+    },
+    "raw_state": {
+      "a": 0,
+      "x": 0,
+      "y": 0,
+      "s": 205,
+      "p": 119,
+      "pc": 8485
+    },
+    "zilion_state": {
+      "a": 0,
+      "x": 0,
+      "y": 0,
+      "s": 221,
+      "p": 228,
+      "pc": 8629
+    },
+    "diagnostic_state": {
+      "a": 0,
+      "x": 0,
+      "y": 0,
+      "s": 221,
+      "p": 228,
+      "pc": 8629
+    },
+    "events": [
+      {
+        "kind": "jsr-low-read-order",
+        "step": 28,
+        "pc": 26726,
+        "low_before_push": 99,
+        "low_after_push": 104,
+        "high": 104
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 44,
+        "opcode": 0,
+        "py65_p": 117,
+        "nmos_p": 101
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 57,
+        "opcode": 0,
+        "py65_p": 117,
+        "nmos_p": 101
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 70,
+        "opcode": 0,
+        "py65_p": 117,
+        "nmos_p": 101
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 83,
+        "opcode": 0,
+        "py65_p": 117,
+        "nmos_p": 101
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 96,
+        "opcode": 0,
+        "py65_p": 117,
+        "nmos_p": 101
+      }
+    ],
+    "diagnostic_final_matches": true,
+    "first_raw_divergence": {
+      "step": 28,
+      "opcode": 32,
+      "before_state": {
+        "a": 187,
+        "x": 0,
+        "y": 0,
+        "s": 231,
+        "p": 96,
+        "pc": 26726
+      },
+      "before_memory_hex": "b111e1fef6ca206368c968c968c968c968c968c968c970c968c968c968c90800",
+      "oracle_after": {
+        "a": 187,
+        "x": 0,
+        "y": 0,
+        "s": 229,
+        "p": 96,
+        "pc": 26728
+      },
+      "zilion_after": {
+        "a": 187,
+        "x": 0,
+        "y": 0,
+        "s": 229,
+        "p": 96,
+        "pc": 26723
+      },
+      "difference": {
+        "registers": {
+          "pc": {
+            "py65": 26728,
+            "zilion": 26723
+          }
+        }
+      }
+    }
+  },
+  "P64/status-b-bit": {
+    "corpus": "random_P64",
+    "id": "seed-650201/tape-141",
+    "P": 64,
+    "input_hex": "b5448566a089b6fc00df12581ca1ab8743381001175011b44f411591021f7c8c4d407602fcb84a0af5335db66036249cacd1d88d0db0b4af533b680baba7034a",
+    "status": "explained",
+    "reasons": [
+      "status-b-bit"
+    ],
+    "raw_difference": {
+      "registers": {
+        "p": {
+          "py65": 180,
+          "zilion": 164
+        }
+      }
+    },
+    "raw_state": {
+      "a": 160,
+      "x": 137,
+      "y": 137,
+      "s": 252,
+      "p": 180,
+      "pc": 10
+    },
+    "zilion_state": {
+      "a": 160,
+      "x": 137,
+      "y": 137,
+      "s": 252,
+      "p": 164,
+      "pc": 10
+    },
+    "diagnostic_state": {
+      "a": 160,
+      "x": 137,
+      "y": 137,
+      "s": 252,
+      "p": 164,
+      "pc": 10
+    },
+    "events": [
+      {
+        "kind": "status-b-bit",
+        "step": 5,
+        "opcode": 0,
+        "py65_p": 180,
+        "nmos_p": 164
+      }
+    ],
+    "diagnostic_final_matches": true,
+    "first_raw_divergence": {
+      "step": 5,
+      "opcode": 0,
+      "before_state": {
+        "a": 160,
+        "x": 137,
+        "y": 137,
+        "s": 255,
+        "p": 160,
+        "pc": 8
+      },
+      "before_memory_hex": "b5448566a089b6fc00df12581ca1ab8743381001175011b44f411591021f7c8c4d407602fcb8a00af5335db66036249cacd1d88d0db0b4af533b680baba7034a",
+      "oracle_after": {
+        "a": 160,
+        "x": 137,
+        "y": 137,
+        "s": 252,
+        "p": 180,
+        "pc": 10
+      },
+      "zilion_after": {
+        "a": 160,
+        "x": 137,
+        "y": 137,
+        "s": 252,
+        "p": 164,
+        "pc": 10
+      },
+      "difference": {
+        "registers": {
+          "p": {
+            "py65": 180,
+            "zilion": 164
+          }
+        }
+      }
+    }
+  },
+  "P64/jsr-low-read-order": {
+    "corpus": "random_P64",
+    "id": "seed-650201/tape-4063",
+    "P": 64,
+    "input_hex": "6c36ea1595dd129b884d624a9f37db8cedb38a2f4e71fb39dea0c5fcae87afcd0c07c820d5ac0fdd68cc1c57209561969efcca1931bb1f8d1ecc89ecdebeff0c",
+    "status": "explained",
+    "reasons": [
+      "jsr-low-read-order"
+    ],
+    "raw_difference": {
+      "registers": {
+        "a": {
+          "py65": 106,
+          "zilion": 31
+        },
+        "s": {
+          "py65": 227,
+          "zilion": 225
+        },
+        "pc": {
+          "py65": 44272,
+          "zilion": 44286
+        }
+      },
+      "memory": [
+        {
+          "position": 34,
+          "py65": 200,
+          "zilion": 229
+        },
+        {
+          "position": 35,
+          "py65": 32,
+          "zilion": 172
+        }
+      ]
+    },
+    "raw_state": {
+      "a": 106,
+      "x": 155,
+      "y": 172,
+      "s": 227,
+      "p": 32,
+      "pc": 44272
+    },
+    "zilion_state": {
+      "a": 31,
+      "x": 155,
+      "y": 172,
+      "s": 225,
+      "p": 32,
+      "pc": 44286
+    },
+    "diagnostic_state": {
+      "a": 31,
+      "x": 155,
+      "y": 172,
+      "s": 225,
+      "p": 32,
+      "pc": 44286
+    },
+    "events": [
+      {
+        "kind": "jsr-low-read-order",
+        "step": 95,
+        "pc": 44259,
+        "low_before_push": 213,
+        "low_after_push": 229,
+        "high": 172
+      }
+    ],
+    "diagnostic_final_matches": true,
+    "first_raw_divergence": {
+      "step": 95,
+      "opcode": 32,
+      "before_state": {
+        "a": 140,
+        "x": 155,
+        "y": 14,
+        "s": 229,
+        "p": 32,
+        "pc": 44259
+      },
+      "before_memory_hex": "6c36ea1595dd129b884d624a9f37db8cedb38a2f4e71fb39dea0c5fcae87afcd0c07c820d5ace5ace5ace5ace5ace5ace5ace5ace5ace5ace5ace5ace5ac258d",
+      "oracle_after": {
+        "a": 140,
+        "x": 155,
+        "y": 14,
+        "s": 227,
+        "p": 32,
+        "pc": 44261
+      },
+      "zilion_after": {
+        "a": 140,
+        "x": 155,
+        "y": 14,
+        "s": 227,
+        "p": 32,
+        "pc": 44245
+      },
+      "difference": {
+        "registers": {
+          "pc": {
+            "py65": 44261,
+            "zilion": 44245
+          }
+        }
+      }
+    }
+  },
+  "P64/jsr-low-read-order+status-b-bit": {
+    "corpus": "random_P64",
+    "id": "seed-650201/tape-69443",
+    "P": 64,
+    "input_hex": "45a656e318098b2085400018c349cfc0cf215ff56a6ed01c1f07c1c5f4fe6c720fc06945b87315d26cbaaf577e9cdd8257d1022b741c85e8fef71f00f87b49bf",
+    "status": "explained",
+    "reasons": [
+      "jsr-low-read-order",
+      "status-b-bit"
+    ],
+    "raw_difference": {
+      "registers": {
+        "a": {
+          "py65": 159,
+          "zilion": 22
+        },
+        "s": {
+          "py65": 228,
+          "zilion": 10
+        },
+        "p": {
+          "py65": 184,
+          "zilion": 41
+        },
+        "pc": {
+          "py65": 18825,
+          "zilion": 35138
+        }
+      },
+      "memory": [
+        {
+          "position": 2,
+          "py65": 86,
+          "zilion": 118
+        },
+        {
+          "position": 3,
+          "py65": 227,
+          "zilion": 229
+        },
+        {
+          "position": 6,
+          "py65": 139,
+          "zilion": 137
+        },
+        {
+          "position": 7,
+          "py65": 32,
+          "zilion": 64
+        },
+        {
+          "position": 9,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 13,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 17,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 21,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 25,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 29,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 33,
+          "py65": 73,
+          "zilion": 64
+        },
+        {
+          "position": 37,
+          "py65": 73,
+          "zilion": 64
+        }
+      ]
+    },
+    "raw_state": {
+      "a": 159,
+      "x": 0,
+      "y": 0,
+      "s": 228,
+      "p": 184,
+      "pc": 18825
+    },
+    "zilion_state": {
+      "a": 22,
+      "x": 0,
+      "y": 0,
+      "s": 10,
+      "p": 41,
+      "pc": 35138
+    },
+    "diagnostic_state": {
+      "a": 22,
+      "x": 0,
+      "y": 0,
+      "s": 10,
+      "p": 41,
+      "pc": 35138
+    },
+    "events": [
+      {
+        "kind": "jsr-low-read-order",
+        "step": 59,
+        "pc": 16519,
+        "low_before_push": 133,
+        "low_after_push": 137,
+        "high": 64
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 62,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 67,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 68,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 73,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 74,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 79,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 80,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 85,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 86,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 91,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 92,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 97,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 98,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 103,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 104,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 109,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 110,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 115,
+        "opcode": 64,
+        "py65_p": 112,
+        "nmos_p": 96
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 116,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 121,
+        "opcode": 64,
+        "py65_p": 48,
+        "nmos_p": 32
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 123,
+        "opcode": 64,
+        "py65_p": 118,
+        "nmos_p": 102
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 124,
+        "opcode": 0,
+        "py65_p": 118,
+        "nmos_p": 102
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 125,
+        "opcode": 64,
+        "py65_p": 118,
+        "nmos_p": 102
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 126,
+        "opcode": 64,
+        "py65_p": 57,
+        "nmos_p": 41
+      },
+      {
+        "kind": "status-b-bit",
+        "step": 127,
+        "opcode": 64,
+        "py65_p": 185,
+        "nmos_p": 169
+      }
+    ],
+    "diagnostic_final_matches": true,
+    "first_raw_divergence": {
+      "step": 59,
+      "opcode": 32,
+      "before_state": {
+        "a": 159,
+        "x": 0,
+        "y": 0,
+        "s": 201,
+        "p": 160,
+        "pc": 16519
+      },
+      "before_memory_hex": "45a656e318098b208540894089408940894089408940894089408940894089408940894089408940894089408940894089408940894089408940894089400900",
+      "oracle_after": {
+        "a": 159,
+        "x": 0,
+        "y": 0,
+        "s": 199,
+        "p": 160,
+        "pc": 16521
+      },
+      "zilion_after": {
+        "a": 159,
+        "x": 0,
+        "y": 0,
+        "s": 199,
+        "p": 160,
+        "pc": 16517
+      },
+      "difference": {
+        "registers": {
+          "pc": {
+            "py65": 16521,
+            "zilion": 16517
+          }
+        }
+      }
+    }
+  }
+}

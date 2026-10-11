@@ -1,0 +1,8 @@
+corpus,stream,count
+s1,raw-py65,896
+census,raw-py65,4157
+census,gpu-verified-diagnostic-prefix,102
+random_P32,raw-py65,879370
+random_P32,gpu-verified-diagnostic-prefix,23
+random_P64,raw-py65,882703
+random_P64,gpu-verified-diagnostic-prefix,20
