@@ -1,0 +1,3 @@
+batch_seed,mutation_id,word_index,byte_position,expected_value,actual_value,lost
+12,174,22904,91616,63,63,False
+12,180,22904,91617,203,0,True
