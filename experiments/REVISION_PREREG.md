@@ -1129,3 +1129,83 @@ N6-4 not met (executor a whole-tape non-copier in 20 of 20, but a non-copier by 
 required; abundance P = 0.062). N6-5′ met (0.0064 expected founders from 55 recorded point mutations). Kill not triggered.
 Registered decision applied: N6-1 and N6-2 met, so the founder result is stated as confirmed; the writer's kind by
 executed code is reported as not confirmed. X3 on the N6 worlds (confirmatory): X3-1 met, 20 of 20; X3-2 met.
+
+## S1 — the second machine: the NMOS 6502 (registered 2026-10-11, before any registered 6502 world is run; spend approved by the user)
+
+**Basis.**
+- The draft and its dated amendments: `planning/PREREG_6502_DRAFT.md`, with the predictions locked from the census
+  before any soup; disclosures; stack; arms.
+- The census on the validated core: `results/census6502/CENSUS.md`.
+- The pilot, used for sizing only: `results/pilot6502/PILOT.md`.
+- Machines: vendored Zilion machines (`algocell_exp/machines/worlds_6502.json`, zilion `next` 183ff5c), on the NMOS 6502
+  core. That core matches all 2,560,000 SingleStepTests 6502/v1 vectors, with no divergence rule, and its decimal mode
+  is checked exhaustively against Clark's Appendix A.
+- Soup: Algocell's unchanged soup kernels with the CPU replaced (ZSoup). This path is bit-identical to the published
+  Z80 pipeline (`algocell_exp/ZSOUP.md`).
+- Assays: the frozen assays through the executor interface, identical to the published Z80 outputs
+  (`algocell_exp/ASSAYS_ANY_ISA.md`).
+
+**Design.**
+- **World.** 160 × 125 square lattice; 8,192 drawn pairs per step; background mutation k = 4; pair memory is a ring of
+  2L bytes, organism first.
+- **Initial 6502 state per encounter.** A = X = Y = 0, P = 0x20, PC = 0.
+- **Stack.** S aliases the last byte of the partner, so the first push lands at 2L − 1. The Z80 worlds' SP also
+  aliases the last byte, with a first push at 2L − 2 because the Z80 decrements before it stores.
+- **JAM opcodes** halt the encounter.
+- **Arms**, 20 worlds each, horizon 10,000,000 steps, no early stop:
+  - (A, primary) L = 16, 128 instructions, BRK faithful;
+  - (B) L = 32, 128, BRK faithful;
+  - (C) L = 16, 512, BRK faithful;
+  - (D) L = 16, 128, BRK halts (a fetched 0x00 halts the encounter, the analogue of lethal tar).
+- **Seeds.** 65001–65020 in every arm. They are new: the pilot used seeds 1–4, and its worlds are excluded.
+- **Records.**
+  - The three most common tapes with their shares, plus concentration statistics, sampled every 50 steps to 2,000,
+    every 250 to 20,000, every 2,500 to 1,000,000 and every 25,000 to 10,000,000.
+  - Full soups at 20,000, 100,000, 1,000,000, 3,000,000 and 10,000,000 steps.
+- Runs on Modal (NVIDIA L40S), one world per container.
+
+**Definitions (frozen; ISA-neutral as in `ASSAYS_ANY_ISA.md`).**
+- **Heritable.** The culture test, gen2 ≥ 0.3 over 64 partners, as `assay_batch`.
+- **Encounters.** Every trace uses 16 traced encounters with soup partners, as `exec_trace`.
+- **Open.** The pointer fetches a partner byte as instruction stream in ≥ 8 of the 16.
+- **Confined.** It fetches none in all 16.
+- **Loop.**
+  - In at least one of the 16 encounters, the 16-bit program counter decreases between two consecutive steps.
+  - The increment wrap 0xFFFF → 0x0000 does not count.
+  - The program counter sequence is read by single-step replays of the same machine.
+  - **Straight-line:** no such decrease in any of the 16.
+  - This replaces "re-executes its own bytes", because straight-line code on a ring laps the ring.
+- **Transmissible sites.** The single-mutant scan, as `mutscan`.
+- **Classes.**
+  - **Transmitter:** confined, ≥ 5 sites.
+  - **Regenerator:** confined, ≤ 2 sites.
+- **Copy offset d.** As `copy_offset`.
+- **t_rep.** The first sample at which a top-3 tape holding ≥ 0.5% of cells is heritable.
+- **t_closed.** The first sample at which such a tape is heritable and confined. Both are censored at the horizon.
+- **First replicator.** The heritable tape at t_rep. If several qualify, take the largest share.
+
+**Predictions** (locked 2026-10-11 from the census; stated in the draft as P1–P4).
+- **P1.** In arm A, among worlds with a t_rep, the first replicator is confined and has a loop in ≥ 0.8 of them.
+- **P2.** In arm A, no world has an open straight-line heritable tape holding ≥ 0.5% of cells at any sample before its
+  t_closed.
+- **P3.** At 10,000,000 steps, population classes (64 random cells; up to 16 heritable cells scanned).
+  - Across the worlds of arm A, both transmitters and regenerators occur.
+  - Among heritable confined cells with a measured d ≥ 6, sites = d − 6 in ≥ 0.8 of them.
+- **P4.** In arm A the Kaplan–Meier median of t_rep is above 450 steps (the Z80 value at L = 16), or t_rep is censored
+  in more than half the worlds.
+
+**Rules.**
+- **Null.** If fewer than 5 of the 20 arm A worlds have a t_rep, the test is uninformative about form. P1–P3 are then
+  reported as not tested; P4 is reported.
+- **Kill.** If ≥ 0.25 of the arm A first replicators are open and straight-line, the claim that the census predicts the
+  beginning is withdrawn for the 6502.
+- **Arms B–D** are reported with the same endpoints, descriptively. No kill rule applies to them.
+
+**Analysis.**
+- **Scorer.** A scoring script implements these definitions. It is written before any registered world is inspected.
+  - Positive control: run on archived Z80 worlds that recorded top-3 tapes (the DZ dial worlds at p = 0), where it must
+    reproduce their registered t_rep, t_closed and open-first outcomes.
+  - It is committed before it reads any 6502 world.
+- **Outputs.** Generated tables under `results/s6502/`.
+
+**Spend.** About $105–145 on Modal, at about 1 L40S-hour per world (approved).
