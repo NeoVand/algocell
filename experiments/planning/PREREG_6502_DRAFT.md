@@ -84,3 +84,22 @@ exists:
   tape and the quasispecies share.
 - No replicator classification (open/closed, loops, heredity) is run on pilot soups.
 - The pilot worlds are excluded from the registered test.
+
+### Disclosure and registration items (2026-10-11)
+
+- **Disclosure.** Before the predictions were locked, the agent generalising the assays ran a plumbing smoke test on
+  random 6502 tapes and saw two counts on its console:
+  - 0 copies in a reduced branching-transfer run;
+  - 0 of 64 random cells heritable.
+
+  These were random tapes, not soups. The counts were removed from the committed report, and the coordinator learned
+  of them only after the lock.
+- **Stack (to state at registration).** The 6502's S aliases the last byte of the partner, so its first push lands at
+  2L − 1. The Z80 worlds' SP also aliases the last byte, but the Z80 decrements before it stores, so its first push
+  lands at 2L − 2. "Identical world" means the same convention, the stack at the end of the partner, not the same
+  first-push byte.
+- **Arms (to fix at registration).** The 512-instruction arm and the BRK-halts arm need assay keywords: today 128 is
+  hard-coded in five functions and five drivers, and `inflow_insoup.encounter` fixes `zero_halts=False`.
+- **6502 readings (to fix at registration).**
+  - The loop criterion of P1 is clarification (a) above.
+  - The class reading follows the copy offset of a closed core (d − 6, the census's 296 of 296).
