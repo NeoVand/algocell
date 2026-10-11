@@ -35,10 +35,16 @@ All Z80 machines are `compat:'0.2'`, the 0.2.0 core every registered result ran 
 | `z80c02_pair_L16`, `z80c02_pair_L32` | the plain pair; no hooks, so the emitted core is the 0.2.0 core text byte for byte (`PROVENANCE.md` checks the SHA-256 against zilion's `Z80_CORE_WGSL`) |
 | `z80c02_lethal_L16`, `z80c02_lethal_L32` | plus `halting.lethal: { firstUnit: 0 }`, Stage I's lethal tar |
 | `z80c02_pair_maps_L16` | plus the fetch and start maps (the outputs of Algocell's op-traced executor) |
-| `m6502skel_pair_L16` | the SKELETON 6502 core of zilion `next`, with `init.stack: { firstPushAt: 'lastByte' }`; for plumbing only |
+| `m6502_pair_L16` | zilion's full NMOS 6502 core (status experimental; all 2,560,000 SingleStepTests `6502/v1` vectors pass), with `init.stack: { firstPushAt: 'lastByte' }`; ZSoup's plumbing check on a second ISA |
 
-Zilion's own exporter refuses skeleton cores, so `build_machines.mjs` calls `buildMachine` itself. Each machine's size
-is listed in `PROVENANCE.md`.
+The 6502 study's own machines are in `machines/worlds_6502.json` (`build_machines.mjs` reads every `worlds*.json`):
+`m6502_pair_maps_L16`, `_L20`, `_L32` (BRK faithful) and `m6502_brkhalt_maps_L16`, `_L20`, `_L32` (BRK halts the lane,
+`halting.lethal: { firstUnit: 0 }`), each a pair on a ring of 2L with A = X = Y = 0 and P = 0x20 (`init.set`), PC = 0,
+the first push on the last byte of B, a per-lane budget, JAM halting as on the chip, write counts and the fetch and
+start maps. The census that uses them is `census6502.py` (`results/census6502/CENSUS.md`).
+
+`build_machines.mjs` calls `buildMachine` itself (zilion's own exporter refuses skeleton cores, which this script still
+accepts and marks). Each machine's size is listed in `PROVENANCE.md`.
 
 ## How ZSoup works
 
@@ -166,21 +172,23 @@ that. The CPU counts must equal the comparator's.
 - **Coverage over time.** Every 1,000-step window still has at least 169,525 executions that changed memory. All
   windows are in `lockstep_windows.csv`, and the population trajectories are in `lockstep_trajectory.csv`.
 
-### 4. A second ISA through ZSoup: plumbing only (`plumbing.md`)
+### 4. A second ISA through ZSoup: plumbing (`plumbing.md`)
 
-`m6502skel_pair_L16` puts zilion's SKELETON 6502 in the same pair world, with the stack given by meaning
+`m6502_pair_L16` puts zilion's full NMOS 6502 in the same pair world, with the stack given by meaning
 (`firstPushAt: 'lastByte'`, which gives S = 0xFF; the manifest lists it). ZSoup runs it with no change and no Z80
 assumption.
 
 `plumbing_check` runs it for 200 steps. After each step, the soup's own pair memory, write counts and lane records are
 compared with a direct `ZMachine.run` of the same machine on the pairs that step drew.
 
-- **Result:** 837,089 active pairs, 0 memory, 0 write-count and 0 record mismatches.
-- **Activity:** 1,883 pairs were changed by execution. The skeleton traps on what it does not implement: 794,908
-  `unimplemented` traps and 42,099 `illegal` (JAM) traps.
-- **Z80 under the same check:** 836,895 active pairs, 0 mismatches.
+- **Result:** 865,637 active pairs, 0 memory, 0 write-count and 0 record mismatches.
+- **Activity:** 515,567 pairs were changed by execution (6,641,661 writes into A, 9,725,041 into B; a read-modify-write
+  instruction counts two). 711,633 active lanes halted on a JAM opcode (trap `illegal`); the others ran their 128
+  steps.
+- **Z80 under the same check:** 866,210 active pairs, 0 mismatches.
 
-This shows the plumbing only; the skeleton is not a 6502.
+This checks the plumbing; the 6502 core itself is validated in zilion (per-instruction vectors). The table was
+regenerated on the full core (zilion `ed93b7c`); the earlier table, on the skeleton core, is in the git history.
 
 ### 5. The original pipeline's own nondeterminism (`nondeterminism.md`)
 
@@ -243,10 +251,14 @@ check when the Zilion checkout is at the commit in `PROVENANCE.md`.
   (`params.batch_seed`, pair index), and ZSoup passes exactly these as the machine's (seed, lane). So zilion's raw-hook
   versions (`test/world/algocell.mjs`) should run in the soup unchanged, but this is untested.
 - **Grids.** ZSoup keeps the square-lattice soup kernels only.
-- **Pinned Zilion.** The machines were exported from zilion `next` at `81c88dc` (`PROVENANCE.md`). Every Z80 machine
-  states `compat: '0.2'`, and the exporter refuses a Z80 world without one. Since the Z80 0.3 merge (`81c88dc`), the
-  Z80 descriptor is version 0.3.0. Its frozen `'0.2'` compat emits the 0.2.0 core text unchanged: the core SHA-256 equals
-  `Z80_CORE_WGSL`'s. All tables above were produced with these files.
+- **Pinned Zilion.** The machines are exported from zilion `next` at `ed93b7c` (`PROVENANCE.md`). Every Z80 machine
+  states `compat: '0.2'`, and the exporter refuses a Z80 world without one. Its frozen `'0.2'` compat emits the 0.2.0
+  core text unchanged: the core SHA-256 equals `Z80_CORE_WGSL`'s. The tables of sections 1–3, 5 and 6 were produced
+  with the Z80 machines exported at `81c88dc`. Re-exported at `ed93b7c` they differ from those files in one comment
+  line of the WGSL header and in `manifest.core.coreVersion`, both of which now read 0.2.0 (the version of the
+  semantics that runs, zilion's `coreVersionFor`) where they read 0.3.0; every other byte of every Z80 WGSL and
+  manifest is unchanged, the core and world SHA-256s included. Only the WGSL SHA-256 changed, because of that comment
+  line. Section 4's table was regenerated at `ed93b7c`.
 - **Readbacks before the first step.** As in `Soup`, the statistics kernels (`read_byte_counts`, `read_hashes`) read
   the soup's dimensions from params ring slot 0, which only `step` fills. Before the first step they return zeros. This
   is inherited, not changed.
@@ -255,8 +267,9 @@ check when the Zilion checkout is at the commit in `PROVENANCE.md`.
   is not part of the soup's state.
 - **Determinism.** ZSoup inherits the soup's nondeterminism (the claim race and the mutation race). Equivalence is
   therefore proved encounter by encounter, not run against run.
-- **The 6502.** The 6502 in `machines/` is zilion's skeleton. The 6502 soup needs the validated core (zilion M2) and
-  a world spec, and nothing else in ZSoup. `run.py` refuses non-Z80 machines, because its exemplar mechanisms and
-  suppression counts are Z80 disassembly; they need 6502 counterparts.
+- **The 6502.** The 6502 in `machines/` is zilion's full core (M2, status experimental), in the worlds of
+  `worlds_6502.json`. `run.py` refuses non-Z80 machines, because its exemplar mechanisms and suppression counts are
+  Z80 disassembly; they need 6502 counterparts. `pilot6502.py` runs ZSoup with a 6502 machine and records only
+  ISA-neutral statistics (shares, quasispecies share, byte histograms, snapshots).
 - **Cost.** ZSoup issues seven dispatches per step where Soup issues five (section 6). Fusing the two bridge kernels
   into neighbouring passes would change kept kernel text, so it was not done.

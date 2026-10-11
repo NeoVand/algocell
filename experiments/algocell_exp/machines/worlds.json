@@ -56,9 +56,9 @@
    "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
   }
  },
- "m6502skel_pair_L16": {
-  "note": "PLUMBING ONLY: the SKELETON NMOS 6502 core of zilion next (a handful of opcodes; every other opcode traps), in the same pair world with the stack given by meaning (the first push lands on the last byte of B). Not for results.",
-  "core": { "isa": "m6502" },
+ "m6502_pair_L16": {
+  "note": "The full NMOS 6502 core of zilion next (status experimental; all 2,560,000 SingleStepTests 6502/v1 vectors pass), in the same pair world as z80c02_pair_L16 with the stack given by meaning (the first push lands on the last byte of B): ZSoup's plumbing check on a second ISA. The 6502 study's machines are in worlds_6502.json.",
+  "core": { "isa": "m6502", "variant": "nmos", "compat": "0.3" },
   "world": {
    "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
    "init": { "stack": { "firstPushAt": "lastByte" } },

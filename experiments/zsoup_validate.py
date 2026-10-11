@@ -6,7 +6,7 @@
     python zsoup_validate.py lockstep       # step-locked differential test in the original soup   → lockstep.{csv,md}
     python zsoup_validate.py nondet         # run-to-run nondeterminism of the original pipeline   → nondeterminism.{csv,md}
     python zsoup_validate.py bench          # steps/s, ZSoup vs Soup                               → throughput.{csv,md}
-    python zsoup_validate.py plumbing       # a second ISA (the 6502 skeleton) through ZSoup        → plumbing.md
+    python zsoup_validate.py plumbing       # a second ISA (the full NMOS 6502) through ZSoup       → plumbing.md
 
 Archived soups are read from /Users/neo/repos/algocell/experiments/runs (read-only).
 """
@@ -320,20 +320,20 @@ def cmd_plumbing(a) -> None:
     from algocell_exp.zsoup_check import plumbing_check
 
     lines = []
-    for mname in ("m6502skel_pair_L16", "z80c02_pair_L16"):
+    for mname in ("m6502_pair_L16", "z80c02_pair_L16"):
         r = plumbing_check(mname, steps=a.steps)
         lines.append(r)
         log(r)
     write_csv("plumbing.csv", lines)
     body = header("ZSoup on a second ISA: plumbing only", "plumbing")
-    body += ("`m6502skel_pair_L16` is the SKELETON 6502 core of zilion `next` (a handful of opcodes; every other opcode traps as "
-             "'unimplemented'), in the same pair world with the stack given by meaning (`firstPushAt: 'lastByte'`). This shows that "
-             "ZSoup runs a non-Z80 machine with no Z80 assumption: after each checked step the soup's own pair memory and write "
-             "counts equal a direct `ZMachine.run` of the same machine on the pairs the step drew (read from the soup before the "
-             "step). It is not science: the skeleton is not a 6502.\n\n"
+    body += ("`m6502_pair_L16` is zilion's full NMOS 6502 core (all 256 opcodes; status experimental, every one of the 2,560,000 "
+             "SingleStepTests `6502/v1` vectors passes), in the same pair world with the stack given by meaning (`firstPushAt: "
+             "'lastByte'`). This shows that ZSoup runs a non-Z80 machine with no Z80 assumption: after each checked step the soup's "
+             "own pair memory, write counts and lane records equal a direct `ZMachine.run` of the same machine on the pairs the step "
+             "drew (read from the soup before the step). It checks the plumbing, not the 6502 (the core's validation is zilion's).\n\n"
              "`pairs_changed`: active pairs whose memory the execution changed; `soup_bytes_changed`: soup bytes that differ from "
              "the initial soup after the run, mutations included (512 per step); `halted_lanes`: active lanes by halt reason / trap "
-             "cause (the skeleton traps on every opcode it does not implement).\n\n")
+             "cause (on the 6502, trap/illegal is a JAM opcode; on the Z80, halt-insn is HALT).\n\n")
     body += md_table(lines, list(lines[0])) + "\n"
     (OUT / "plumbing.md").write_text(body)
     log(body)

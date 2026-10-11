@@ -8,7 +8,7 @@
  "core": {
   "id": "z80",
   "name": "Zilog Z80",
-  "coreVersion": "0.3.0",
+  "coreVersion": "0.2.0",
   "status": "stable",
   "variant": "classic",
   "compat": "0.2",
@@ -50,7 +50,7 @@
   }
  },
  "sha256": {
-  "wgsl": "a2e1d97e920b08fa5f4927f667a862dd8ee237cd15fa0ff9eb6f3fa8db817c73",
+  "wgsl": "65ce1fa6f45990856c7e071806d35ef8ee18b4cd9c03a1fa19453aa4226922da",
   "core": "8db4015dab560cd075b2f4da7de78b6cc5e2b120034bfbf62590eb49784b2955",
   "world": "b0513f0ab5afbb09d75fd32a7dbac2fda6e8db70eb9997431390442fda9e5c02",
   "options": "2f52fff414fe16c0aec2cf23e3d704f9bf54e05b0ad819b24336a3eed3396ed4"

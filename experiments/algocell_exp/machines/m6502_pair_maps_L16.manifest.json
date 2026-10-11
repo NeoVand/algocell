@@ -1,0 +1,312 @@
+{
+ "schema": "zilion.manifest/2",
+ "zilion": "0.3.0-dev",
+ "hostContract": 2,
+ "mode": "kernel",
+ "entryPoint": "main",
+ "workgroupSize": 64,
+ "core": {
+  "id": "m6502",
+  "name": "MOS 6502 (NMOS)",
+  "coreVersion": "0.3.0",
+  "status": "experimental",
+  "variant": "nmos",
+  "compat": "0.3",
+  "addressBits": 16,
+  "fetchUnitBytes": 1,
+  "hooks": [
+   "fetch",
+   "instructionStart"
+  ],
+  "params": {}
+ },
+ "world": {
+  "budget": {
+   "unit": "steps",
+   "value": "perLane"
+  },
+  "halting": {
+   "traps": {
+    "illegal": "as-chip"
+   }
+  },
+  "init": {
+   "set": {
+    "a": 0,
+    "p": 32,
+    "x": 0,
+    "y": 0
+   },
+   "stack": {
+    "firstPushAt": "lastByte"
+   }
+  },
+  "memory": {
+   "kind": "segments",
+   "ring": 32,
+   "segments": [
+    {
+     "bytes": 16,
+     "name": "A"
+    },
+    {
+     "bytes": 16,
+     "name": "B"
+    }
+   ]
+  },
+  "outputs": {
+   "fetchMap": true,
+   "startMap": true,
+   "writeCounts": true
+  }
+ },
+ "sha256": {
+  "wgsl": "991a4cb99b6f7734b844c393f29e63b4f5acde073e8444bfd821186f2e451f21",
+  "core": "797ecdcf37667e270225e5e91c2e25b2b711bff8a8477b76003199d25c318e6d",
+  "world": "b2136495763250f26cf73efc2bb370844771f738d96bbbff08c8cfd881f3cf41",
+  "options": "b338922478d878641fefd9d41c84bd7c5a25b8491d27c60f8f411038ed73de2c"
+ },
+ "params": {
+  "bytes": 32,
+  "fields": [
+   {
+    "name": "lane_count",
+    "role": "laneCount",
+    "offset": 0,
+    "words": 1
+   },
+   {
+    "name": "lane_base",
+    "role": "laneBase",
+    "offset": 4,
+    "words": 1
+   },
+   {
+    "name": "budget",
+    "role": "budget",
+    "offset": 8,
+    "words": 1
+   },
+   {
+    "name": "seed",
+    "role": "seed",
+    "offset": 12,
+    "words": 1
+   },
+   {
+    "name": "step_base",
+    "role": "stepBase",
+    "offset": 16,
+    "words": 2
+   },
+   {
+    "name": "resume",
+    "role": "resume",
+    "offset": 24,
+    "words": 1
+   },
+   {
+    "name": "_pad1",
+    "role": "pad",
+    "offset": 28,
+    "words": 1
+   }
+  ]
+ },
+ "bindings": [
+  {
+   "group": 0,
+   "binding": 0,
+   "name": "zil_params",
+   "role": "params",
+   "type": "uniform"
+  },
+  {
+   "group": 0,
+   "binding": 1,
+   "name": "zil_mem",
+   "role": "memory",
+   "type": "storage",
+   "wordsPerLane": 8
+  },
+  {
+   "group": 0,
+   "binding": 2,
+   "name": "zil_out",
+   "role": "record",
+   "type": "storage",
+   "wordsPerLane": 15
+  },
+  {
+   "group": 0,
+   "binding": 4,
+   "name": "zil_budget_in",
+   "role": "budgetIn",
+   "type": "read-only-storage",
+   "wordsPerLane": 1
+  }
+ ],
+ "memory": {
+  "model": "segments",
+  "ringBytes": 32,
+  "position": "addr % 32u",
+  "hostBytesPerLane": 32,
+  "storageWordsPerLane": 8,
+  "packing": "little-endian bytes",
+  "segments": [
+   {
+    "name": "A",
+    "position": 0,
+    "bytes": 16,
+    "hostOffset": 0,
+    "storageWord": 0,
+    "storageWords": 4
+   },
+   {
+    "name": "B",
+    "position": 16,
+    "bytes": 16,
+    "hostOffset": 16,
+    "storageWord": 4,
+    "storageWords": 4
+   }
+  ],
+  "padding": null,
+  "stored": true
+ },
+ "record": {
+  "wordsPerLane": 15,
+  "fields": [
+   {
+    "name": "steps",
+    "offset": 0,
+    "words": 1
+   },
+   {
+    "name": "haltReason",
+    "offset": 1,
+    "words": 1
+   },
+   {
+    "name": "trapCause",
+    "offset": 2,
+    "words": 1
+   },
+   {
+    "name": "state",
+    "offset": 3,
+    "words": 8,
+    "items": [
+     "a",
+     "x",
+     "y",
+     "s",
+     "p",
+     "pc",
+     "halted",
+     "trap"
+    ]
+   },
+   {
+    "name": "writeCounts",
+    "offset": 11,
+    "words": 2,
+    "items": [
+     "A",
+     "B"
+    ]
+   },
+   {
+    "name": "fetchMap",
+    "offset": 13,
+    "words": 1
+   },
+   {
+    "name": "startMap",
+    "offset": 14,
+    "words": 1
+   }
+  ]
+ },
+ "state": [
+  {
+   "name": "a",
+   "bits": 8,
+   "offset": 0
+  },
+  {
+   "name": "x",
+   "bits": 8,
+   "offset": 1
+  },
+  {
+   "name": "y",
+   "bits": 8,
+   "offset": 2
+  },
+  {
+   "name": "s",
+   "bits": 8,
+   "offset": 3
+  },
+  {
+   "name": "p",
+   "bits": 8,
+   "offset": 4
+  },
+  {
+   "name": "pc",
+   "bits": 16,
+   "offset": 5
+  },
+  {
+   "name": "halted",
+   "bits": 8,
+   "offset": 6
+  },
+  {
+   "name": "trap",
+   "bits": 8,
+   "offset": 7
+  }
+ ],
+ "haltReasons": {
+  "running": 0,
+  "halt-insn": 1,
+  "host": 2,
+  "trap": 3
+ },
+ "trapCauses": {
+  "illegal": 1,
+  "halt-insn": 2,
+  "unmatched": 3,
+  "bounds": 4,
+  "misaligned": 5,
+  "div-zero": 6,
+  "syscall": 7,
+  "unimplemented": 8
+ },
+ "resumable": true,
+ "ablation": {
+  "kind": "none"
+ },
+ "budget": {
+  "unit": "steps",
+  "perLane": true,
+  "default": null
+ },
+ "init": {
+  "perLane": false,
+  "stateWords": 8,
+  "stack": {
+   "convention": {
+    "kind": "firstPushAt",
+    "position": 31,
+    "values": {
+     "s": 255
+    }
+   }
+  }
+ }
+}
