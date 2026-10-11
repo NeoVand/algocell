@@ -20,7 +20,8 @@ import modal
 HERE = Path(__file__).resolve().parent
 SCORER_FILES = ("score6502.py", "population_classes.py", "mutscan.py", "dial_soups.py",
                 "run6502.py", "algocell_exp/executor.py", "algocell_exp/assay.py",
-                "algocell_exp/exectrace.py", "algocell_exp/zmachine.py")
+                "algocell_exp/exectrace.py", "algocell_exp/zmachine.py",
+                "algocell_exp/m6502_instructions.json")
 # Immutable cached dependency image of modal_dial.py (Python 3.12, wgpu 0.32.0,
 # numpy 2.5.3, brotli 1.2.0, pandas 3.0.6, Vulkan libraries). Referencing its ID
 # permits a Mesa layer before adding source mounts, with no pip/npm installs.
@@ -37,7 +38,7 @@ def source_image(base):
 
 image = source_image(base_image)
 cpu_image = source_image(base_image.apt_install("mesa-vulkan-drivers"))
-app = modal.App("algocell-s6502-scorer")
+app = modal.App("algocell-s6502-scorer-v2")
 vol = modal.Volume.from_name("algocell-atlas-runs")
 
 
@@ -47,7 +48,7 @@ def locations(prefix: str, arm: str, seed: int, registered: bool) -> tuple[str, 
         from run6502 import ARMS, SEEDS, world_name
         if prefix != "s6502" or arm not in ARMS or seed not in SEEDS:
             raise ValueError("invalid registered prefix, arm or seed")
-        return f"s6502/{arm}", f"s6502_scored/{arm}", world_name(arm, seed), ARMS[arm]["machine"], "s1"
+        return f"s6502/{arm}", f"s6502_scored_v2/{arm}", world_name(arm, seed), ARMS[arm]["machine"], "s1"
     parts = PurePosixPath(prefix).parts
     if (len(parts) != 2 or parts[0] != "s6502_scorer_test"
             or not re.fullmatch(r"[A-Za-z0-9_-]+", parts[1])
@@ -56,7 +57,7 @@ def locations(prefix: str, arm: str, seed: int, registered: bool) -> tuple[str, 
     return prefix, f"{prefix}/scored/DZ", f"lp0_s{seed}", "z80c02_assay_L16", "dz"
 
 
-@app.function(image=image, gpu=["L40S", "A10G", "L4"], timeout=4 * 60 * 60, volumes={"/vol": vol},
+@app.function(image=image, gpu="L4", cpu=1, memory=2048, timeout=120, max_containers=20, volumes={"/vol": vol},
               retries=0, single_use_containers=True)
 def world(prefix: str, arm: str, seed: int, registered: bool, scorer_commit: str) -> dict:
     return _score_volume_world(prefix, arm, seed, registered, scorer_commit)
@@ -77,11 +78,15 @@ def _score_volume_world(prefix: str, arm: str, seed: int, registered: bool, scor
     if result_path.exists():
         raise FileExistsError(f"scored result exists: {destination}/{name}.json")
     started = time.perf_counter()
-    result = S.score_world(Path("/vol") / source / f"{name}.jsonl", machine, fmt, device=device)
+    result = S.score_world(Path("/vol") / source / f"{name}.jsonl", machine, fmt, device=device,
+                           sensitivities=registered)
     result["modal"] = {"scorer_commit": scorer_commit, "app_id": app.app_id,
                        "input_prefix": source, "result_path": f"{destination}/{name}.json",
                        "wall_s": round(time.perf_counter() - started, 3),
                        "adapter": adapter_info, "software_vulkan": device is not None}
+    if device is None:
+        from algocell_exp.soup import get_device
+        result["modal"]["adapter"] = dict(get_device().adapter.info)
     result_path.parent.mkdir(parents=True, exist_ok=True)
     with result_path.open("x") as f:
         f.write(json.dumps(result, indent=2, allow_nan=False) + "\n")
@@ -130,7 +135,7 @@ def committed_scorer() -> str:
 
 
 @app.local_entrypoint()
-def main(archive: str = "", out: str = "results/s6502", registered: bool = False,
+def main(archive: str = "", out: str = "results/s6502/v2", registered: bool = False,
          arms: str = "A,B,C,D", seeds: str = "", prefix: str = "", gather_only: bool = False,
          cpu_test: bool = False):
     import subprocess
@@ -189,7 +194,7 @@ def main(archive: str = "", out: str = "results/s6502", registered: bool = False
         results.append(result)
         print(json.dumps({"world": name, "wall_s": result["modal"]["wall_s"],
                           "volume_roundtrip": True}), flush=True)
-    S.report(results, output)
+    S.report(results, output, report_name="S1_v2.md" if registered else "S1.md")
     if not registered:
         complete_control = set(selected_seeds) == set(range(9001, 9011))
         matched = S.control_report(results, HERE / "results/dial/dial_worlds.csv", output) if complete_control else None

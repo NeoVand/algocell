@@ -1,0 +1,13 @@
+protocol,arm,worlds,with_rep,with_closed,first_confined_loop,first_open_straight,p2_worlds,km_t_rep,km_t_closed,transmitter,regenerator,offset_eligible,offset_equal,status,null,P1,P2,P3,P3_classes,P3_offset,P4,kill,first_confined,first_open,first_loop
+original32,A,20,20,20,14,0,0,1125000.0,1125000.0,94,209,0,0,complete,False,False,True,,True,,True,False,20,0,14
+v2_frozen32,A,20,20,20,14,0,0,1125000.0,1125000.0,94,209,0,0,complete,False,False,True,,True,,True,False,20,0,14
+v2_literal64,A,20,20,20,14,0,0,1125000.0,1125000.0,94,209,0,0,complete,False,False,True,,True,,True,False,20,0,14
+original32,B,20,4,4,4,0,0,,,39,57,0,0,descriptive,,,,,,,,,4,0,4
+v2_frozen32,B,20,4,4,4,0,0,,,39,57,0,0,descriptive,,,,,,,,,4,0,4
+v2_literal64,B,20,4,4,4,0,0,,,39,57,0,0,descriptive,,,,,,,,,4,0,4
+original32,C,20,20,20,14,0,0,837500.0,837500.0,44,229,0,0,descriptive,,,,,,,,,19,1,15
+v2_frozen32,C,20,20,20,14,0,0,837500.0,837500.0,44,229,0,0,descriptive,,,,,,,,,19,1,15
+v2_literal64,C,20,20,20,14,0,0,837500.0,837500.0,44,229,0,0,descriptive,,,,,,,,,19,1,15
+original32,D,20,18,18,17,0,0,1650000.0,1650000.0,86,232,0,0,descriptive,,,,,,,,,18,0,17
+v2_frozen32,D,20,18,18,17,0,0,1650000.0,1650000.0,86,232,0,0,descriptive,,,,,,,,,18,0,17
+v2_literal64,D,20,18,18,17,0,0,1650000.0,1650000.0,86,232,0,0,descriptive,,,,,,,,,18,0,17

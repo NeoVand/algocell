@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 from algocell_exp import executor as E
-from score6502 import endpoints, pc_has_loop, read_input, score_world, verdict, report
+from score6502 import endpoints, pc_has_loop, pair_has_loop, read_input, score_world, verdict, report
 from modal_score6502 import locations, parse_seeds, world_cpu_test
 
 
@@ -44,7 +44,7 @@ def test_handmade_machine_traces(machine, hexcode, expected):
     ex = E.ZilionExecutor(machine)
     pc = ex.pc_trace(pairs, 16, 128)
     assert pc.shape == (16, 129)
-    assert pc_has_loop(pc) is expected
+    assert pair_has_loop(ex, pairs, 16, 128, False) is expected
     # Each prefix really runs the same machine, with the same initial memory.
     m = ex.machine_for(16)
     for k in (0, 1, 2, 8, 128):
@@ -60,7 +60,44 @@ def test_registered_machine_interface_on_handmade_pairs(machine, L, zh):
     ex = E.ZilionExecutor(machine)
     r = ex.run(pairs, L, 512, zero_halts=zh, fetch_map=True)
     assert r.steps.tolist() == [512] * 16 and r.fetch_map.shape == (16, 2 * L)
-    assert not pc_has_loop(ex.pc_trace(pairs, L, 512, zero_halts=zh))
+    assert not pair_has_loop(ex, pairs, L, 512, zh)
+
+
+@pytest.mark.parametrize("pc,lengths,expected", [
+    ([65534, 1], [3], False),
+    ([65535, 2], [3], False),
+    ([65534, 65532], [2], True),
+    ([65535, 1], [2], False),
+    ([65535, 0], [2], True),  # a backward taken branch coinciding with the old exception
+])
+def test_sequential_wrap_exception(pc, lengths, expected):
+    assert pc_has_loop(pc, lengths) is expected
+
+
+@pytest.mark.parametrize("L", [16, 32])
+@pytest.mark.parametrize("opcode,operand,expected,end", [(0x0C, 0xEA, False, 1),
+                                                       (0xD0, 0xFC, True, 65532)])
+def test_audit_wrap_probe_and_backward_branch(L, opcode, operand, expected, end):
+    pairs = np.full((1, 2 * L), 0xEA, dtype=np.uint8)
+    pairs[0, :3] = [0x4C, 0xFE, 0xFF]
+    pairs[0, -2:] = [opcode, operand]
+    ex = E.ZilionExecutor(f"m6502_pair_maps_L{L}")
+    assert ex.pc_trace(pairs, L, 2)[0].tolist() == [0, 65534, end]
+    assert pair_has_loop(ex, pairs, L, 2, False) is expected
+
+
+def test_opcode_replay_reads_modified_memory():
+    pairs = np.full((1, 32), 0xEA, dtype=np.uint8)
+    pairs[0, :8] = [0xA9, 0xEA, 0x8D, 0xFE, 0xFF, 0x4C, 0xFE, 0xFF]
+    pairs[0, 30] = 0x0C
+    ex = E.ZilionExecutor("m6502_pair_maps_L16")
+    pc, opcodes = ex.pc_trace(pairs, 16, 4, return_opcodes=True)
+    assert pc[0].tolist() == [0, 2, 5, 65534, 65535]
+    assert opcodes[0].tolist() == [0xA9, 0x8D, 0x4C, 0xEA]
+
+
+def test_modal_v2_preserves_original_output_prefix():
+    assert locations("s6502", "A", 65001, True)[1] == "s6502_scored_v2/A"
 
 
 def test_exact_machine_cache_retains_request_validation():

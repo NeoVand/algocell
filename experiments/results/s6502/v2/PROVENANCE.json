@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-11",
+  "scorer_commits": [
+    "da90b617d4d321ad5e100ba91498b10847a57e89"
+  ],
+  "apps": [
+    "ap-X86zTQDutPZL4QMGTXKcd3",
+    "ap-xVead2ED3QKiTs4BMnXRjp"
+  ],
+  "registered_worlds": 80,
+  "control_worlds": 10,
+  "whole_app_compute_upper_bound_usd": 0.8704941666666667,
+  "total_run_cost_upper_bound_usd": 0.8804941666666667,
+  "scorer_compute_estimate_usd": 0.09818167016666668,
+  "generator_sha256": "29ec6fecc5b30d237738d474b185b94033fff45d848a0997662f47e19aa4aae1",
+  "evidence_sha256": {
+    "AUDIT.md": "ae3911d70b77e5965d74001457a039c91a0932af3e5502e8cd6a5e6f90df3b32",
+    "s1_worlds.csv": "b4de1b513085ac6c6a06a1c96b1b77817cc139e8219f28b66c3e7b448680ec07",
+    "s1_cells.csv": "b26af71e899a12fe267ab485c9a2d22a3f4e075dd82c2eea847d9949c46f9b69",
+    "s1_verdicts.json": "4f6ffc43e132eac838293196478bedcb2afdc4d69c2060b1ba31ee4c5d27641e",
+    "audit_checks.csv": "563f21296ffbfcd276dd1ee2b5b612249d1aaf7370d2e5c9b2576877b147dfac",
+    "audit_cpu.csv": "4b0c13694172149f756aada2ff1dfa0f9a7089c80f4cbad7ac4f15ec8535a950",
+    "audit_culture_sensitivity.csv": "cd348b5b3c4c9a4bfec7ae94fd8b0e98a4537fe7eee3ccffa6415adb2fc17702",
+    "audit_inputs.csv": "4c965b54c2b517c41ea75bcac6018107f92489bfbe76954ca9e505d626b39414",
+    "audit_km.csv": "764117b75fbdabdfb08b05f5048077d77ee7c81bdaa25b20f445579ff2146961",
+    "audit_mutation_race.csv": "1b1b2fd1a05d6b2ba0d08e57e9f0d073205bc293c2db76accc65cc284781cfb1",
+    "audit_sources.csv": "9e68a4b0639dd9a3e5b71d8c810f2c4da59c6002eda48b3d5eacacb00efc26d0",
+    "v2/arm_comparison.csv": "32f203bc74298b2f590563d334eae727083fc8f317235de7e34965f55322ea71",
+    "v2/audit_findings.csv": "86d18fc0d98188725f33709f490077a427b151ae15f99b06c5f7b5dfcf8935bf",
+    "v2/control_matches.csv": "71a6370ba8ad15f7e791131add1321611694a952561ad5590dea336dbc6a88dd",
+    "v2/cost.csv": "3f8ad81f4881beddbe8ca2516c947716823600023b7924c0a362f6e54d54ce69",
+    "v2/culture_summary.csv": "cbb849e2e255e476560e39fea2227af1307d39440f9d01e1b328ac71184d9695",
+    "v2/final_cultures.csv": "bf81f08398775b5825edf8778697544bbf6908ba5640dd76d84d6d77f56a449a",
+    "v2/partner_sensitivity.csv": "cbcaffe61c5ad1f15b082db8f797184868cd695967ddd1578acf2b9a5d914560",
+    "v2/partner_summary.csv": "75e7dff9d899caae258172bb5da759a0281e57fe9365822343d4acf788a9bfc7",
+    "v2/s1_cells.csv": "b26af71e899a12fe267ab485c9a2d22a3f4e075dd82c2eea847d9949c46f9b69",
+    "v2/s1_cells_64.csv": "b26af71e899a12fe267ab485c9a2d22a3f4e075dd82c2eea847d9949c46f9b69",
+    "v2/s1_p2.csv": "24ff0856a701ff87e920c88fe63fc1b61b712f48815965fa22ddc0c55836d3d9",
+    "v2/s1_worlds.csv": "b4de1b513085ac6c6a06a1c96b1b77817cc139e8219f28b66c3e7b448680ec07",
+    "v2/s1_worlds_64.csv": "b4de1b513085ac6c6a06a1c96b1b77817cc139e8219f28b66c3e7b448680ec07",
+    "v2/tape_comparison.csv": "8ed392fc3f9c5f61d0567db7539738c6f35c6ac141def5ef9ead21713bbef243",
+    "v2/verdict_comparison.csv": "6c073f0a3df13c0bdb5e909af59eaee6f68a68040bc856efde5f6140324a6ec6",
+    "v2/world_comparison.csv": "940b1070f8801ec0433e4728b943b863e60ba8cc2bc9779860fb11ddf98dd2d7",
+    "v2/modal_rates.json": "56125a91baf10e3d84209a959a575076e1fce564239d1df78a2c1b0b558330aa",
+    "v2/modal_apps.json": "a2e4b64ab3af8c0a0ceffcdd29e979001b328f8d521235e225c71136b235d4a3",
+    "v2/cost_summary.json": "1414d80f2f4ad8aefe0e7e6f80c4ee4c0e04a7be5aacc51275157f7ec9ba26ca",
+    "v2/modal_calls.json": "8e7b6e73486e0c4370ae417674773ab891bba705a775e78c51f8ce80c2758a3d"
+  }
+}
