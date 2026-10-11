@@ -4164,6 +4164,4647 @@
    }
   }
  },
+ "imp_L8_P18_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 18 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P18_c0, imp_L8_P18_c1, imp_L8_P18_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 18
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P18_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 18 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P18_c0, imp_L8_P18_c1, imp_L8_P18_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 18
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P18_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 18 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P18_c0, imp_L8_P18_c1, imp_L8_P18_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 18
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P20_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 20 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P20_c0, imp_L8_P20_c1, imp_L8_P20_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 20
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P20_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 20 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P20_c0, imp_L8_P20_c1, imp_L8_P20_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 20
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P20_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 20 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P20_c0, imp_L8_P20_c1, imp_L8_P20_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 20
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P22_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 22 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P22_c0, imp_L8_P22_c1, imp_L8_P22_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 22
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P22_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 22 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P22_c0, imp_L8_P22_c1, imp_L8_P22_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 22
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P22_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 22 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P22_c0, imp_L8_P22_c1, imp_L8_P22_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 22
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P24_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 24 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P24_c0, imp_L8_P24_c1, imp_L8_P24_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P24_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 24 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P24_c0, imp_L8_P24_c1, imp_L8_P24_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P24_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 24 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P24_c0, imp_L8_P24_c1, imp_L8_P24_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P26_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P26_c0, imp_L8_P26_c1, imp_L8_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P26_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P26_c0, imp_L8_P26_c1, imp_L8_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P26_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P26_c0, imp_L8_P26_c1, imp_L8_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P28_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 28 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P28_c0, imp_L8_P28_c1, imp_L8_P28_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P28_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 28 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P28_c0, imp_L8_P28_c1, imp_L8_P28_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P28_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 28 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P28_c0, imp_L8_P28_c1, imp_L8_P28_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 28
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P30_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P30_c0, imp_L8_P30_c1, imp_L8_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P30_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P30_c0, imp_L8_P30_c1, imp_L8_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P30_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P30_c0, imp_L8_P30_c1, imp_L8_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P36_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P36_c0, imp_L8_P36_c1, imp_L8_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P36_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P36_c0, imp_L8_P36_c1, imp_L8_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P36_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P36_c0, imp_L8_P36_c1, imp_L8_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P40_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 8 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P40_c0, imp_L8_P40_c1, imp_L8_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P40_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 8 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P40_c0, imp_L8_P40_c1, imp_L8_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L8_P40_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 8 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L8_P40_c0, imp_L8_P40_c1, imp_L8_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 8,
+      "name": "A"
+     },
+     {
+      "bytes": 8,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P22_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 22 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P22_c0, imp_L10_P22_c1, imp_L10_P22_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 22
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P22_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 22 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P22_c0, imp_L10_P22_c1, imp_L10_P22_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 22
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P22_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 22 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P22_c0, imp_L10_P22_c1, imp_L10_P22_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 22
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P24_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 24 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P24_c0, imp_L10_P24_c1, imp_L10_P24_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P24_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 24 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P24_c0, imp_L10_P24_c1, imp_L10_P24_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P24_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 24 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P24_c0, imp_L10_P24_c1, imp_L10_P24_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 24
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P26_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P26_c0, imp_L10_P26_c1, imp_L10_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P26_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P26_c0, imp_L10_P26_c1, imp_L10_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P26_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P26_c0, imp_L10_P26_c1, imp_L10_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P30_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P30_c0, imp_L10_P30_c1, imp_L10_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P30_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P30_c0, imp_L10_P30_c1, imp_L10_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P30_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P30_c0, imp_L10_P30_c1, imp_L10_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P32_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 32 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P32_c0, imp_L10_P32_c1, imp_L10_P32_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P32_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 32 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P32_c0, imp_L10_P32_c1, imp_L10_P32_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P32_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 32 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P32_c0, imp_L10_P32_c1, imp_L10_P32_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P34_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 34 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P34_c0, imp_L10_P34_c1, imp_L10_P34_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P34_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 34 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P34_c0, imp_L10_P34_c1, imp_L10_P34_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P34_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 34 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P34_c0, imp_L10_P34_c1, imp_L10_P34_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P36_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P36_c0, imp_L10_P36_c1, imp_L10_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P36_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P36_c0, imp_L10_P36_c1, imp_L10_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P36_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P36_c0, imp_L10_P36_c1, imp_L10_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P38_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P38_c0, imp_L10_P38_c1, imp_L10_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P38_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P38_c0, imp_L10_P38_c1, imp_L10_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P38_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P38_c0, imp_L10_P38_c1, imp_L10_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P44_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 10 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P44_c0, imp_L10_P44_c1, imp_L10_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P44_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 10 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P44_c0, imp_L10_P44_c1, imp_L10_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L10_P44_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 10 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L10_P44_c0, imp_L10_P44_c1, imp_L10_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 10,
+      "name": "A"
+     },
+     {
+      "bytes": 10,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P26_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P26_c0, imp_L12_P26_c1, imp_L12_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P26_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P26_c0, imp_L12_P26_c1, imp_L12_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P26_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 26 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P26_c0, imp_L12_P26_c1, imp_L12_P26_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 26
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P30_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P30_c0, imp_L12_P30_c1, imp_L12_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P30_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P30_c0, imp_L12_P30_c1, imp_L12_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P30_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 30 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P30_c0, imp_L12_P30_c1, imp_L12_P30_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 30
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P32_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 32 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P32_c0, imp_L12_P32_c1, imp_L12_P32_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P32_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 32 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P32_c0, imp_L12_P32_c1, imp_L12_P32_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P32_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 32 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P32_c0, imp_L12_P32_c1, imp_L12_P32_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P34_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 34 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P34_c0, imp_L12_P34_c1, imp_L12_P34_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P34_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 34 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P34_c0, imp_L12_P34_c1, imp_L12_P34_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P34_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 34 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P34_c0, imp_L12_P34_c1, imp_L12_P34_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 34
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P38_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P38_c0, imp_L12_P38_c1, imp_L12_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P38_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P38_c0, imp_L12_P38_c1, imp_L12_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P38_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P38_c0, imp_L12_P38_c1, imp_L12_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P40_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P40_c0, imp_L12_P40_c1, imp_L12_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P40_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P40_c0, imp_L12_P40_c1, imp_L12_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P40_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P40_c0, imp_L12_P40_c1, imp_L12_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P42_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 42 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P42_c0, imp_L12_P42_c1, imp_L12_P42_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 42
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P42_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 42 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P42_c0, imp_L12_P42_c1, imp_L12_P42_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 42
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P42_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 42 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P42_c0, imp_L12_P42_c1, imp_L12_P42_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 42
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P44_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P44_c0, imp_L12_P44_c1, imp_L12_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P44_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P44_c0, imp_L12_P44_c1, imp_L12_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P44_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P44_c0, imp_L12_P44_c1, imp_L12_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P46_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 46 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P46_c0, imp_L12_P46_c1, imp_L12_P46_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 46
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P46_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 46 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P46_c0, imp_L12_P46_c1, imp_L12_P46_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 46
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P46_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 46 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P46_c0, imp_L12_P46_c1, imp_L12_P46_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 46
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P48_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 12 on a padded ring of 48 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P48_c0, imp_L12_P48_c1, imp_L12_P48_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 48
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P48_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 12 on a padded ring of 48 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P48_c0, imp_L12_P48_c1, imp_L12_P48_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 48
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L12_P48_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 12 on a padded ring of 48 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L12_P48_c0, imp_L12_P48_c1, imp_L12_P48_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 12,
+      "name": "A"
+     },
+     {
+      "bytes": 12,
+      "name": "B"
+     }
+    ],
+    "ring": 48
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P36_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P36_c0, imp_L16_P36_c1, imp_L16_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P36_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P36_c0, imp_L16_P36_c1, imp_L16_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P36_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 36 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P36_c0, imp_L16_P36_c1, imp_L16_P36_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 36
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P38_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P38_c0, imp_L16_P38_c1, imp_L16_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P38_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P38_c0, imp_L16_P38_c1, imp_L16_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P38_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 38 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P38_c0, imp_L16_P38_c1, imp_L16_P38_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 38
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P40_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P40_c0, imp_L16_P40_c1, imp_L16_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P40_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P40_c0, imp_L16_P40_c1, imp_L16_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P40_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 40 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P40_c0, imp_L16_P40_c1, imp_L16_P40_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 40
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P42_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 42 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P42_c0, imp_L16_P42_c1, imp_L16_P42_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 42
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P42_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 42 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P42_c0, imp_L16_P42_c1, imp_L16_P42_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 42
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P42_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 42 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P42_c0, imp_L16_P42_c1, imp_L16_P42_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 42
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P44_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P44_c0, imp_L16_P44_c1, imp_L16_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P44_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P44_c0, imp_L16_P44_c1, imp_L16_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P44_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 44 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P44_c0, imp_L16_P44_c1, imp_L16_P44_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 44
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P46_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 46 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P46_c0, imp_L16_P46_c1, imp_L16_P46_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 46
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P46_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 46 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P46_c0, imp_L16_P46_c1, imp_L16_P46_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 46
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P46_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 46 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P46_c0, imp_L16_P46_c1, imp_L16_P46_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 46
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P48_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 48 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P48_c0, imp_L16_P48_c1, imp_L16_P48_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 48
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P48_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 48 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P48_c0, imp_L16_P48_c1, imp_L16_P48_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 48
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P48_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 48 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P48_c0, imp_L16_P48_c1, imp_L16_P48_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 48
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P50_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 50 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P50_c0, imp_L16_P50_c1, imp_L16_P50_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 50
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P50_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 50 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P50_c0, imp_L16_P50_c1, imp_L16_P50_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 50
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P50_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 50 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P50_c0, imp_L16_P50_c1, imp_L16_P50_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 50
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P52_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 52 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P52_c0, imp_L16_P52_c1, imp_L16_P52_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 52
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P52_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 52 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P52_c0, imp_L16_P52_c1, imp_L16_P52_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 52
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P52_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 52 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P52_c0, imp_L16_P52_c1, imp_L16_P52_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 52
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P54_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 54 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P54_c0, imp_L16_P54_c1, imp_L16_P54_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 54
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P54_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 54 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P54_c0, imp_L16_P54_c1, imp_L16_P54_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 54
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P54_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 54 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P54_c0, imp_L16_P54_c1, imp_L16_P54_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 54
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P56_c0": {
+  "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): Algocell's pair at L = 16 on a padded ring of 56 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P56_c0, imp_L16_P56_c1, imp_L16_P56_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.2"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 56
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P56_c1": {
+  "note": "Impact study (C1: the fixed Zilion Z80 (compat '0.3', variant classic)): Algocell's pair at L = 16 on a padded ring of 56 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P56_c0, imp_L16_P56_c1, imp_L16_P56_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "classic"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 56
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
+ "imp_L16_P56_c2": {
+  "note": "Impact study (C2: the fixed Zilion Z80 with the Zilog NMOS Q latch (compat '0.3', variant zilog-nmos)): Algocell's pair at L = 16 on a padded ring of 56 (ring sweep, Extended Data Fig. 3). The world spec is identical for imp_L16_P56_c0, imp_L16_P56_c1, imp_L16_P56_c2.",
+  "core": {
+   "isa": "z80",
+   "compat": "0.3",
+   "variant": "zilog-nmos"
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 56
+   },
+   "init": {
+    "stack": {
+     "topAliases": "lastByte"
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "ablation": {
+    "table": "uniform",
+    "layout": "coarse"
+   },
+   "outputs": {
+    "writeCounts": true
+   }
+  }
+ },
  "imp_lethal_L16_c0": {
   "note": "Impact study (C0: the Zilion 0.2.0 Z80 (compat '0.2'), the core every registered result ran on): the lethal-tar rule at L = 16. The world spec is identical for imp_lethal_L16_c0, imp_lethal_L16_c1, imp_lethal_L16_c2.",
   "core": {

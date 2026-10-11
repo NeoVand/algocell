@@ -17,7 +17,9 @@ The registered corpora are drawn exactly as the draft says, independently of the
 Condition registry (`conditions()`). Tier 'draft': the archives the draft names (Stages A–F final and emergence soups,
 the line-of-descent runs lod_v6 and N6, the Stage G open-phase snapshots that X1 and X2 drew partners from). Tier
 'added': registered conditions with archived final soups that the draft's list does not name (Stages G, H, I, K, L, M;
-the earlier N3 line-of-descent runs; DZ; C; C4a; C4a-rep; E; R4 invasions; N5). See IMPACT report, protocol issues.
+the earlier N3 line-of-descent runs; DZ; C; C4a; C4a-rep; E; R2 and R4 invasions; N5), plus the exploratory ring sweep
+that supports Extended Data Fig. 3. As for the stages, only final and emergence snapshots of the ring sweep enter the
+registry; scheduled intermediate snapshots remain outside the draft's sampling scope. See IMPACT report, protocol issues.
 """
 
 from __future__ import annotations
@@ -49,6 +51,14 @@ RANDOM_BUDGET = 128
 
 STAGES_DRAFT = ("stageA", "stageB", "stageC", "stageD", "stageE", "stageF")
 STAGES_ADDED = ("stageG", "stageH", "stageI", "stageK", "stageL", "stageM")
+
+# invasion_closer.py runs A1 with make_conds.ABLATIONS['i8080']; A2 has no suppression. Keep this in the package so
+# uploaded corpus inputs need no top-level experiment modules; a registry test checks the exact selectors.
+I8080_SUPPRESS = (
+    "family:bit", "family:bit-set", "family:bit-set-mem", "family:rotate", "family:rotate-mem", "EX AF,AF'", "DJNZ", "JR ", "EXX",
+    *(f"ed:{n:02x}" for n in (*range(0x40, 0x77), *range(0x78, 0x7f), *range(0xa0, 0xa4), *range(0xa8, 0xac),
+                             *range(0xb0, 0xb4), *range(0xb8, 0xbc))),
+)
 
 
 def h32(s: str) -> int:
@@ -201,6 +211,16 @@ def _conv_world(f: Path):
     return f"{f.name.split('_')[0]}_L16", 16
 
 
+def _invasion_closer_conditions() -> list[Condition]:
+    out = _npy_conditions("R2", "added", "invasion_closer/A*_final.npy", lambda f: ("L32", 32),
+                          note="R2 constructed-closer invasion arms and unseeded controls; A1 i8080, A2 full Z80")
+    for c in out:
+        exp = c.cid.split("/", 1)[1].split("_", 1)[0]
+        assert exp in ("A1", "A2"), c.cid
+        c.suppress = I8080_SUPPRESS if exp == "A1" else ()
+    return out
+
+
 def conditions(tiers=("draft", "added")) -> list[Condition]:
     """Every corpus-2 condition, in a fixed order."""
     out: list[Condition] = []
@@ -215,6 +235,10 @@ def conditions(tiers=("draft", "added")) -> list[Condition]:
     if "added" in tiers:
         for st in STAGES_ADDED:
             out += _stage_conditions(st, "added")
+        sweep = _stage_conditions("ring_sweep", "added")
+        for c in sweep:
+            c.note = "Exploratory ring sweep supporting Extended Data Fig. 3; final and emergence snapshots"
+        out += sweep
         for d in ("lod_modal", "lod_v2_modal", "lod_v3_modal"):
             out += _npy_conditions(f"N3-{d}", "added", f"{d}/**/final.npy", lambda f: ("L16", 16), label_of=lambda f: "L16_benign",
                                    note="N3 line-of-descent worlds under the earlier recorder rules")
@@ -224,6 +248,7 @@ def conditions(tiers=("draft", "added")) -> list[Condition]:
         out += _npy_conditions("C4a-rep", "added", "conv_rep/conv_rep/randreg_s82*_t3000000.npy", _conv_world, note="final = step 3,000,000")
         out += _npy_conditions("E", "added", "offset/offset/*_final.npy", _offset_world, note="copy-offset switch")
         out += _npy_conditions("R4", "added", "r4_inv/r4_inv/*_final.npy", _r4_world, note="C4b/C4c invasions")
+        out += _invasion_closer_conditions()
         out += _npy_conditions("N5", "added", "n5/*.npy", lambda f: ("L16", 16), note="N5 invasions")
     ids = [c.cid for c in out]
     assert len(ids) == len(set(ids)), "condition ids must be unique"

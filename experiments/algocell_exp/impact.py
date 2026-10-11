@@ -11,8 +11,9 @@ dispatch, the record and memory carried over), from the same initial state:
 
 1. Repaired pass. Before every step, x's common state (the 25 state fields of the 0.2.0 record, the memory, the ring
    padding, the step count, write counts and halt fields) is set to C0's; x keeps only its own internal latches (WZ, IM,
-   and with zilog-nmos Q), which C0 does not have. A step after which the two differ is an *event*: one instruction,
-   executed from identical common states, gave different results. Each event is classed from the instruction bytes at
+   and with zilog-nmos Q), which C0 does not have. Q's flag-write relation is preserved: when Q equalled the old F,
+   repairing F also sets Q to the repaired F; an otherwise-clear Q stays clear. A step after which the two differ is an
+   *event*: one instruction, executed from identical common states, gave different results. Each event is classed from the instruction bytes at
    PC and the fields that differ (`classify`); the expected difference of each documented class is checked exactly.
    Because every step starts from repaired state, every deviation along the run is seen as an event of its own: one that
    fits no documented class is "other", which is a bug and stops the study (`AttributionError`).
@@ -50,6 +51,7 @@ from .zmachine import ZMachine, ZResult, load_machine
 
 COMMON = ("a", "f", "b", "c", "d", "e", "h", "l", "a_", "f_", "b_", "c_", "d_", "e_", "h_", "l_", "ix", "iy", "sp", "pc", "i", "r",
           "iff1", "iff2", "halted")
+# Q is core-private but depends on F; unlike WZ/IM it needs coordinated repair.
 HIDDEN = {"c0": (), "c1": ("wz", "im"), "c2": ("wz", "im", "q")}
 REGS10 = ("a", "f", "b", "c", "d", "e", "h", "l", "sp", "pc")       # Algocell's executor register words 0-9
 CLASSES = ("wasted-prefix", "bit-hl", "scf-ccf", "block-repeat", "other")
@@ -149,9 +151,18 @@ class Rec:
         return out
 
     def set_common(self, rec: np.ndarray, src: "Rec", src_rec: np.ndarray, rows=None) -> np.ndarray:
-        """rec with every common part copied from src_rec (another machine's records, mapped by name)."""
+        """Copy common parts by name, preserving Q's relation to F when repairing flags.
+
+        A completed instruction leaves Q either equal to F (wrote flags) or zero.
+        Keeping the old Q while repairing a differing F would invent an SCF/CCF
+        event. Compare before copying, including Q=F=0: if F differs in the
+        repaired pass, the immediately preceding instruction wrote flags.
+        """
         out = rec.copy()
         rows = slice(None) if rows is None else rows
+        if "q" in self.off:
+            q, f = rec[rows, self.off["q"]], rec[rows, self.off["f"]]
+            out[rows, self.off["q"]] = np.where(q == f, src_rec[rows, src.off["f"]], q)
         for n in ("steps", "haltReason", "trapCause") + COMMON:
             out[rows, self.off[n]] = src_rec[rows, src.off[n]]
         if self.wc:
@@ -676,7 +687,10 @@ def compare_c0(w: World, m: ZMachine, pairs: np.ndarray, budget: int, masks=None
 
 # ── GPU-resident stepping (the fast path of the attribution; the CPU-stepped Attributor above is its reference) ───────
 _REPAIR_WGSL = """
-struct RP { n: u32, src_words: u32, dst_words: u32, count: u32 }
+struct RP {
+    n: u32, src_words: u32, dst_words: u32, count: u32,
+    q_off: u32, src_f: u32, dst_f: u32, unused: u32,
+}
 @group(0) @binding(0) var<storage, read> src: array<u32>;
 @group(0) @binding(1) var<storage, read_write> dst: array<u32>;
 @group(0) @binding(2) var<storage, read> fmap: array<u32>;
@@ -685,6 +699,13 @@ struct RP { n: u32, src_words: u32, dst_words: u32, count: u32 }
 fn repair(@builtin(global_invocation_id) id: vec3u) {
     let lane = id.x;
     if (lane >= rp.n) { return; }
+    // Preserve the flag-write relation before the common-field loop overwrites F.
+    if (rp.q_off != 0xffffffffu) {
+        let d = lane * rp.dst_words;
+        if (dst[d + rp.q_off] == dst[d + rp.dst_f]) {
+            dst[d + rp.q_off] = src[lane * rp.src_words + rp.src_f];
+        }
+    }
     for (var k = 0u; k < rp.count; k++) {
         dst[lane * rp.dst_words + fmap[2u * k + 1u]] = src[lane * rp.src_words + fmap[2u * k]];
     }
@@ -767,13 +788,15 @@ class FastAttributor(Attributor):
             fmap = np.array([v for pr in zip(off0, offx) for v in pr], dtype=np.uint32)
             fbuf = mk(fmap.nbytes)
             dev.queue.write_buffer(fbuf, 0, fmap.tobytes())
-            ubuf = dev.create_buffer(size=16, usage=B.UNIFORM | B.COPY_DST)
-            dev.queue.write_buffer(ubuf, 0, np.array([m, rw["c0"], rw[c], len(off0)], dtype=np.uint32).tobytes())
+            ubuf = dev.create_buffer(size=32, usage=B.UNIFORM | B.COPY_DST)
+            repair_params = np.array([m, rw["c0"], rw[c], len(off0), rvs[c].off.get("q", 0xFFFFFFFF),
+                                      rvs["c0"].off["f"], rvs[c].off["f"], 0], dtype=np.uint32)
+            dev.queue.write_buffer(ubuf, 0, repair_params.tobytes())
             rbg[c] = dev.create_bind_group(layout=self.rpipe.get_bind_group_layout(0), entries=[
                 {"binding": 0, "resource": {"buffer": rec["c0"], "offset": 0, "size": rec["c0"].size}},
                 {"binding": 1, "resource": {"buffer": rec[c], "offset": 0, "size": rec[c].size}},
                 {"binding": 2, "resource": {"buffer": fbuf, "offset": 0, "size": fbuf.size}},
-                {"binding": 3, "resource": {"buffer": ubuf, "offset": 0, "size": 16}}])
+                {"binding": 3, "resource": {"buffer": ubuf, "offset": 0, "size": 32}}])
             keep += [fbuf, ubuf]
         per_step = m * 4 * (2 * (rw["c0"] + sw) + sum(2 * rw[c] + sw for c in cores))
         K = max(1, min(T, self.HIST_BYTES // max(per_step, 1)))

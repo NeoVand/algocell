@@ -9,7 +9,7 @@ the three machines (same world SHA-256, same hooks); only `core` differs:
 
 World tags:
     L<L>            Algocell's pair: tapes A, B of L bytes on a ring of P = 2L (Stages A–M, line-of-descent runs, ...)
-    L<L>_P<P>       the same pair on a padded or odd ring of P > 2L bytes (Stage F; the draft's corpus-1 rings)
+    L<L>_P<P>       the same pair on a padded or odd ring of P > 2L bytes (Stage F, ring sweep, corpus-1 rings)
     lethal_L<L>     plus the lethal-tar rule (Stage I, E, E-L32L): a zero byte fetched as an instruction's first byte halts
     lp<tag>_L16     the lethality dial (DZ): that halt happens with probability p, Algocell's PCG stream (raw hooks)
     randreg_L<L>    random registers at every encounter (C, C4a, C4a-rep, C4b): Algocell's PCG stream (raw hooks)
@@ -54,7 +54,17 @@ CORE_NOTES = {
 # the P = 38 ring of the draft's corpus 1 (the ring difftest's size; no soup ran at L = 19).
 PLAIN_L = (3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 18, 19, 20, 24, 25, 32, 36, 49, 50, 64, 81, 100)
 # padded and odd rings (Stage F, every (L, P) it ran; the draft's corpus 1 uses P = 33, 35, 37 at L = 16, 73, 75, 79 at 36)
-PADDED = ((8, 32), (10, 28), (10, 40), (12, 28), (12, 36), (16, 33), (16, 34), (16, 35), (16, 37), (36, 73), (36, 74), (36, 75), (36, 79))
+STAGE_F_PADDED = ((8, 32), (10, 28), (10, 40), (12, 28), (12, 36), (16, 33), (16, 34), (16, 35), (16, 37), (36, 73), (36, 74), (36, 75), (36, 79))
+# The exploratory ring sweep supports Extended Data Fig. 3. Preserve its actual exported/archived rings: there are
+# gaps in the L = 8 and 10 grids, so a blanket 2L..2L+24 range would invent unrun worlds.
+RING_SWEEP_RINGS = {
+    8: (16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 40),
+    10: (20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 44),
+    12: tuple(range(24, 49, 2)),
+    16: tuple(sorted((*range(32, 57, 2), 33, 35, 37))),
+}
+PADDED = STAGE_F_PADDED + tuple(sorted({(L, P) for L, Ps in RING_SWEEP_RINGS.items() for P in Ps if P > 2 * L}
+                                      - set(STAGE_F_PADDED)))
 LETHAL_L = (16, 32)                 # Stage I, offset (E), E-L32L
 DIAL_L = 16                         # DZ: every p at L = 16
 CONV_L = (16, 20, 32, 50, 64)       # C (soups at L = 16; its partner tests of Stage G and K tapes at 16, 20, 32, 50, 64)
@@ -158,7 +168,8 @@ class World:
 
 def all_worlds() -> list[World]:
     ws = [World(f"L{L}", L, 2 * L, note=f"Algocell's pair at L = {L} (ring {2 * L})") for L in PLAIN_L]
-    ws += [World(f"L{L}_P{P}", L, P, note=f"Algocell's pair at L = {L} on a {'odd' if P % 2 else 'padded'} ring of {P} (Stage F)") for L, P in PADDED]
+    ws += [World(f"L{L}_P{P}", L, P, note=f"Algocell's pair at L = {L} on a {'odd' if P % 2 else 'padded'} ring of {P} "
+                                       f"({'Stage F' if (L, P) in STAGE_F_PADDED else 'ring sweep, Extended Data Fig. 3'})") for L, P in PADDED]
     ws += [World(f"lethal_L{L}", L, 2 * L, "lethal", note=f"the lethal-tar rule at L = {L}") for L in LETHAL_L]
     ws += [World(f"{tag}_L{DIAL_L}", DIAL_L, 2 * DIAL_L, "dial", p, note=f"the lethality dial (DZ) at p = {p!r}, Algocell's PCG stream")
            for tag, p in DIAL.items()]
