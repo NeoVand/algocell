@@ -1,0 +1,6 @@
+metric,value,basis
+estimated_total_usd,6.97548840621005,Dry-run upper projection plus assay/startup/storage/egress allowances
+allocation_ceiling_usd,7.895811111111111,Timeout at L40S rate plus reserve
+modeled_worker_cost_usd,2.3180269590525926,Measured worker runtime times allocated resource rate; excludes startup/idle
+actual_modal_app_cost_usd,2.32766004,"Modal billing report, this app ID only; billed GPU+CPU+memory"
+cap_usd,8,User-authorized ceiling

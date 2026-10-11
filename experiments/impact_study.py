@@ -6,7 +6,7 @@
     python impact_study.py conditions            # list the corpus conditions
 
 Machines: algocell_exp/machines/worlds_impact.json (impact_worlds.py). Corpora and seed streams: impact_corpus.py.
-Measures and attribution: impact.py. Corpus 3 (the assays under the three cores) is pending: see `corpus3_assays`.
+Measures and attribution: impact.py. Corpus 3: impact_assays.py, through the executor interface.
 """
 
 from __future__ import annotations
@@ -328,13 +328,10 @@ def _cat(rs):
                    state=np.concatenate([r.state for r in rs]), state_names=rs[0].state_names, record=np.concatenate([r.record for r in rs]))
 
 
-def corpus3_assays(*_a, **_k):
-    """Corpus 3 of the draft (the replication assay on every tape the manuscript names, under C0, C1 and C2): PENDING.
-    It needs assay.py's assays to run on Zilion machines (built on branch feat/assays). The hook: given
-    `assay_on_machine(machine_name, tapes, **assay_kwargs) -> scores` from that work, run it with the three machines of
-    each named tape's world (impact_worlds.World.machines()) and report, per tape, whether every score is identical under
-    C0, C1 and C2 (draft measure 'assay identity')."""
-    raise NotImplementedError("corpus 3 (assays under C0/C1/C2) is pending: it needs assay.py on Zilion machines (feat/assays)")
+def corpus3_assays(items=None):
+    """Every output column of the replication assay, under the three imp_* cores."""
+    from algocell_exp.impact_assays import assay_item, panel
+    return [assay_item(item) for item in (panel() if items is None else items)]
 
 
 def cmd_conditions(a) -> None:

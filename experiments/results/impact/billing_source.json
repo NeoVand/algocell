@@ -1,0 +1,20 @@
+{
+ "app_id": "ap-daZZL35rGzo2uExmlVVveZ",
+ "requested_range": "today (UTC)",
+ "resolution": "hourly",
+ "resources": true,
+ "retrieved_at_utc": "2026-10-11T09:15:47.425769+00:00",
+ "command": [
+  "/Users/neo/repos/algocell/experiments/.venv/bin/modal",
+  "billing",
+  "report",
+  "--for",
+  "today",
+  "-r",
+  "h",
+  "--show-resources",
+  "--json",
+  "--profile",
+  "neovand"
+ ]
+}

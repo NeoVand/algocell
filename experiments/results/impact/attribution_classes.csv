@@ -1,0 +1,6 @@
+code,meaning
+wasted-prefix,"wasted DD/FD prefix + LD A,R"
+bit-hl,"BIT n,(HL) X/Y"
+scf-ccf,SCF/CCF (Zilog NMOS Q latch)
+block-repeat,"repeating block instructions, including I/O repeat H and P/V"
+other,other (stop the study)

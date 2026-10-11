@@ -1,0 +1,15 @@
+{
+ "upper_projection_usd": 6.049771739543384,
+ "assay_allowance_s": 300,
+ "reserve_usd": 0.75,
+ "estimate_usd": 6.97548840621005,
+ "allocation_ceiling_usd": 7.895811111111111,
+ "max_worker_s": 11900,
+ "allocation_timeout_s": 12200,
+ "cap_usd": 8,
+ "rates_usd_s": {
+  "L40S": 0.0005857222222222222,
+  "A10G": 0.00034961111111111114
+ },
+ "basis": "impact_dryrun/projection.csv draft+added upper, plus assays and startup/storage/egress reserve"
+}

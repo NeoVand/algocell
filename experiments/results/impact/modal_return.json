@@ -1,0 +1,16 @@
+{
+ "status": "complete",
+ "gpu": "L40S",
+ "adapter": "NVIDIA L40S (Vulkan, DiscreteGPU)",
+ "rate_usd_s": 0.0005857222222222222,
+ "code_sha256": "dd16a6334df85cd8f2941a31a34c6b8de6b8235045a94ed7fe03ec78ae609eb4",
+ "conditions_expected": 787,
+ "pairs_per_condition": 100000,
+ "assay_items_expected": 298,
+ "started_at_utc": "2026-10-11T08:08:14Z",
+ "conditions": 787,
+ "assay_items": 298,
+ "wall_s": 3957.553377876,
+ "completed_at_utc": "2026-10-11T09:14:09Z",
+ "modeled_cost_usd": 2.3180269590525926
+}
