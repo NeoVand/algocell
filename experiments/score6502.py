@@ -1,4 +1,4 @@
-"""Frozen S1 scoring, on a supplied run directory and its vendored machine.
+"""S1 scoring with the audited sequential-PC-wrap correction.
 
 This script was validated only on handmade inputs and archived Z80 DZ lp0 worlds
 before inspecting any registered S1 output. See results/s6502/SCORER_CONTROL.md.
@@ -44,11 +44,35 @@ def write_json(path: Path, result: dict):
     path.write_text(json.dumps(json_safe(result), indent=2, allow_nan=False) + "\n")
 
 
-def pc_has_loop(pc: np.ndarray) -> bool:
-    """S1: any 16-bit PC decrease, excluding exactly FFFF -> 0000."""
+def pc_has_loop(pc: np.ndarray, instruction_lengths: np.ndarray | None = None) -> bool:
+    """PC decrease excluding sequential increments modulo 2^16.
+
+    Omitted lengths retain the frozen Z80 control's one-byte-wrap exception.
+    The 6502 scorer always supplies executed instruction lengths from replay.
+    """
     pc = np.asarray(pc, dtype=np.uint32) & 0xFFFF
     before, after = pc[..., :-1], pc[..., 1:]
-    return bool(((after < before) & ~((before == 0xFFFF) & (after == 0))).any())
+    lengths = 1 if instruction_lengths is None else np.asarray(instruction_lengths, dtype=np.uint32)
+    if instruction_lengths is not None and lengths.shape != before.shape:
+        raise ValueError("one instruction length is required per PC transition")
+    return bool(((after < before) & (after != ((before + lengths) & 0xFFFF))).any())
+
+
+def pair_has_loop(ex, pairs: np.ndarray, L: int, steps: int, zh: bool) -> bool:
+    if ex.isa != "m6502":
+        return pc_has_loop(ex.pc_trace(pairs, L, steps, zero_halts=zh))
+    table = json.loads((HERE / "algocell_exp/m6502_instructions.json").read_text())
+    lengths = np.array([r["length"] for r in table["instructions"]], dtype=np.uint32)
+    pc, opcodes = ex.pc_trace(pairs, L, steps, zero_halts=zh, return_opcodes=True)
+    return pc_has_loop(pc, lengths[opcodes])
+
+
+def trace_flags(tape, partners, ex, L, steps, zh):
+    pairs = np.concatenate([np.repeat(tape[None], len(partners), 0), partners], axis=1)
+    _, masks = X.execute_pairs_traced(pairs, L, steps, zero_halts=zh)
+    entered = X.exec_positions(masks, 2 * L)[:, L:].any(axis=1)
+    return {"entered": int(entered.sum()), "open": bool(entered.sum() >= 8),
+            "confined": bool(not entered.any()), "loop": pair_has_loop(ex, pairs, L, steps, zh)}
 
 
 def judge_tape(tape: np.ndarray, rng, ex, L: int, steps: int, zh: bool) -> dict:
@@ -60,7 +84,7 @@ def judge_tape(tape: np.ndarray, rng, ex, L: int, steps: int, zh: bool) -> dict:
     entered = X.exec_positions(masks, 2 * L)[:, L:].any(axis=1)
     heritable = bool(r["is_replicator"])
     # Replays consume no random draws. Use precisely the same 16 initial pairs.
-    loop = pc_has_loop(ex.pc_trace(pairs, L, steps, zero_halts=zh)) if heritable else None
+    loop = pair_has_loop(ex, pairs, L, steps, zh) if heritable else None
     return {"heritable": heritable, "entered": int(entered.sum()), "open": bool(entered.sum() >= 8),
             "confined": bool(not entered.any()), "loop": loop, "copy_offset": r["copy_offset"],
             "gen2": r["gen2_score"]}
@@ -140,7 +164,20 @@ def read_input(path: Path, input_format: str) -> tuple[dict, list[dict], dict]:
     return condition, samples, snapshot
 
 
-def score_world(path: Path, machine: str, input_format: str = "s1", *, device=None) -> dict:
+def load_snapshot(path: Path, snapshot: dict, L: int) -> np.ndarray:
+    raw = brotli.decompress((path.parent / snapshot["file"]).read_bytes())
+    if hashlib.sha256(raw).hexdigest() != snapshot["sha256_raw"]:
+        raise ValueError("snapshot SHA-256 mismatch")
+    if len(raw) != snapshot["raw_bytes"]:
+        raise ValueError("snapshot raw size mismatch")
+    soup = np.frombuffer(raw, dtype=np.uint8).reshape(snapshot["shape"])
+    if soup.ndim != 2 or soup.shape[1] != L:
+        raise ValueError("snapshot is not cells x L uint8")
+    return soup
+
+
+def score_world(path: Path, machine: str, input_format: str = "s1", *, device=None,
+                sensitivities: bool = False) -> dict:
     condition, samples, snapshot = read_input(path, input_format)
     seed = int(condition["seed"])
     L = 16 if input_format == "dz" else int(condition["L"])
@@ -159,6 +196,8 @@ def score_world(path: Path, machine: str, input_format: str = "s1", *, device=No
                 raise ValueError(f"world's vendored machine differs: {key}")
     rng = np.random.default_rng([seed, 0, 11])  # DZ lp0 stream, unchanged
     cache = {}
+    culture_rows = [] if sensitivities else None
+    extra = {}
 
     def judge(t):
         if t not in cache:
@@ -174,23 +213,39 @@ def score_world(path: Path, machine: str, input_format: str = "s1", *, device=No
         if input_format == "dz":
             soup = np.load(snap_path, allow_pickle=False)
         else:
-            raw = brotli.decompress(snap_path.read_bytes())
-            if hashlib.sha256(raw).hexdigest() != snapshot["sha256_raw"]:
-                raise ValueError("snapshot SHA-256 mismatch")
-            if len(raw) != snapshot["raw_bytes"]:
-                raise ValueError("snapshot raw size mismatch")
-            soup = np.frombuffer(raw, dtype=np.uint8).reshape(snapshot["shape"])
+            soup = load_snapshot(path, snapshot, L)
         if soup.ndim != 2 or soup.shape[1] != L or soup.dtype != np.uint8:
             raise ValueError("snapshot is not cells x L uint8")
         classes, cells = classify(soup, L, [], zh, np.random.default_rng([seed, 23]),
-                                  steps=steps, include_offsets=True)
+                                  steps=steps, include_offsets=True, culture_rows=culture_rows)
+        if sensitivities:
+            if input_format != "s1":
+                raise ValueError("sensitivities require a registered 6502 world")
+            classes64, cells64 = classify(soup, L, [], zh, np.random.default_rng([seed, 23]),
+                                          steps=steps, include_offsets=True, culture_partners=64,
+                                          culture_rows=culture_rows)
+            extra = {"literal64": {"classes": classes64, "cells": cells64},
+                     "culture_cells": culture_rows, "soup_trace": None}
+            if row["t_rep"] is not None:
+                snapshots = [json.loads(line) for line in path.read_text().splitlines()
+                             if json.loads(line).get("kind") == "snapshot"]
+                near = min((s for s in snapshots if s["step"] >= row["t_rep"]), key=lambda s: s["step"])
+                near_soup = soup if near["step"] == snapshot["step"] else load_snapshot(path, near, L)
+                srng = np.random.default_rng([seed, 0, 6502, 16])
+                indices = srng.choice(len(near_soup), size=16, replace=False)
+                tape = np.frombuffer(bytes.fromhex(row["first_tape"]), dtype=np.uint8)
+                extra["soup_trace"] = {"snapshot_step": near["step"], "snapshot_file": near["file"],
+                                       "snapshot_sha256": near["sha256_raw"],
+                                       "rng_seed": [seed, 0, 6502, 16], "partner_indices": indices.tolist(),
+                                       "partners": [t.tobytes().hex() for t in near_soup[indices]],
+                                       **trace_flags(tape, near_soup[indices], ex, L, steps, zh)}
     row.update({"world": path.stem, "arm": condition.get("arm", "DZ"), "seed": seed,
                 "horizon": int(condition["steps"]), "L": L, "budget": steps,
                 "machine": machine, "snapshot_step": snapshot["step"], **classes})
     code_files = ("score6502.py", "population_classes.py", "mutscan.py", "dial_soups.py",
                   "algocell_exp/executor.py", "algocell_exp/assay.py", "algocell_exp/exectrace.py",
-                  "algocell_exp/zmachine.py")
-    return json_safe({"schema": "s1-score/1", "world": row, "cells": cells,
+                  "algocell_exp/zmachine.py", "algocell_exp/m6502_instructions.json")
+    return json_safe({"schema": "s1-score/2", "world": row, "cells": cells, **extra,
                       "p2_tapes": violations, "judged_tapes": [{"tape": t, **r} for t, r in cache.items()],
                       "input_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                       "code_sha256": {f: hashlib.sha256((HERE / f).read_bytes()).hexdigest() for f in code_files},
@@ -242,7 +297,7 @@ def verdict(results: list[dict]) -> dict:
             "kill": bool(n and summary["first_open_straight"] / n >= 0.25)}
 
 
-def report(results: list[dict], out: Path):
+def report(results: list[dict], out: Path, *, report_name: str = "S1.md"):
     if not results:
         raise ValueError("no scored worlds")
     keys = [(r["world"]["arm"], r["world"]["seed"]) for r in results]
@@ -287,7 +342,10 @@ def report(results: list[dict], out: Path):
                           *[f"- {p}: {label(v[p])}." for p in ("P1", "P2", "P3", "P4")],
                           f"- P3 class occurrence: {label(v['P3_classes'])}; offset equality: {label(v['P3_offset'])}.",
                           f"- Kill rule: {'triggered; beginning claim withdrawn for 6502' if v['kill'] else 'not triggered'}."]
-    (out / "S1.md").write_text("\n".join(lines) + "\n")
+    lines.insert(2, "6502 loop calls exclude every sequential PC increment modulo 2^16, using the executed "
+                 "opcode from each prefix's replayed memory and the Zilion descriptor length. "
+                 "Z80 control loop calls retain the frozen rule.")
+    (out / report_name).write_text("\n".join(lines) + "\n")
 
 
 def control_report(results: list[dict], expected: Path, out: Path) -> bool:

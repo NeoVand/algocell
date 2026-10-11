@@ -1,0 +1,2310 @@
+{
+  "source": "zilion src/cores/m6502/index.ts m6502.table()",
+  "zilion_commit": "183ff5c7429403439c664487980a40bf62f49b7b",
+  "instructions": [
+    {
+      "page": 0,
+      "key": 0,
+      "mnemonic": "BRK",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 1,
+      "mnemonic": "ORA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 2,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 3,
+      "mnemonic": "SLO",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 4,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 5,
+      "mnemonic": "ORA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 6,
+      "mnemonic": "ASL",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 7,
+      "mnemonic": "SLO",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 8,
+      "mnemonic": "PHP",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 9,
+      "mnemonic": "ORA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 10,
+      "mnemonic": "ASL",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 11,
+      "mnemonic": "ANC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 12,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 13,
+      "mnemonic": "ORA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 14,
+      "mnemonic": "ASL",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 15,
+      "mnemonic": "SLO",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 16,
+      "mnemonic": "BPL",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 17,
+      "mnemonic": "ORA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 18,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 19,
+      "mnemonic": "SLO",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 20,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 21,
+      "mnemonic": "ORA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 22,
+      "mnemonic": "ASL",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 23,
+      "mnemonic": "SLO",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 24,
+      "mnemonic": "CLC",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 25,
+      "mnemonic": "ORA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 26,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 27,
+      "mnemonic": "SLO",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 28,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 29,
+      "mnemonic": "ORA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 30,
+      "mnemonic": "ASL",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 31,
+      "mnemonic": "SLO",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 32,
+      "mnemonic": "JSR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 33,
+      "mnemonic": "AND",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 34,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 35,
+      "mnemonic": "RLA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 36,
+      "mnemonic": "BIT",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 37,
+      "mnemonic": "AND",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 38,
+      "mnemonic": "ROL",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 39,
+      "mnemonic": "RLA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 40,
+      "mnemonic": "PLP",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 41,
+      "mnemonic": "AND",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 42,
+      "mnemonic": "ROL",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 43,
+      "mnemonic": "ANC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 44,
+      "mnemonic": "BIT",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 45,
+      "mnemonic": "AND",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 46,
+      "mnemonic": "ROL",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 47,
+      "mnemonic": "RLA",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 48,
+      "mnemonic": "BMI",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 49,
+      "mnemonic": "AND",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 50,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 51,
+      "mnemonic": "RLA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 52,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 53,
+      "mnemonic": "AND",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 54,
+      "mnemonic": "ROL",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 55,
+      "mnemonic": "RLA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 56,
+      "mnemonic": "SEC",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 57,
+      "mnemonic": "AND",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 58,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 59,
+      "mnemonic": "RLA",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 60,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 61,
+      "mnemonic": "AND",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 62,
+      "mnemonic": "ROL",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 63,
+      "mnemonic": "RLA",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 64,
+      "mnemonic": "RTI",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 65,
+      "mnemonic": "EOR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 66,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 67,
+      "mnemonic": "SRE",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 68,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 69,
+      "mnemonic": "EOR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 70,
+      "mnemonic": "LSR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 71,
+      "mnemonic": "SRE",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 72,
+      "mnemonic": "PHA",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 73,
+      "mnemonic": "EOR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 74,
+      "mnemonic": "LSR",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 75,
+      "mnemonic": "ALR",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 76,
+      "mnemonic": "JMP",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 77,
+      "mnemonic": "EOR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 78,
+      "mnemonic": "LSR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 79,
+      "mnemonic": "SRE",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 80,
+      "mnemonic": "BVC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 81,
+      "mnemonic": "EOR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 82,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 83,
+      "mnemonic": "SRE",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 84,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 85,
+      "mnemonic": "EOR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 86,
+      "mnemonic": "LSR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 87,
+      "mnemonic": "SRE",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 88,
+      "mnemonic": "CLI",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 89,
+      "mnemonic": "EOR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 90,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 91,
+      "mnemonic": "SRE",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 92,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 93,
+      "mnemonic": "EOR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 94,
+      "mnemonic": "LSR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 95,
+      "mnemonic": "SRE",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 96,
+      "mnemonic": "RTS",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 97,
+      "mnemonic": "ADC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 98,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 99,
+      "mnemonic": "RRA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 100,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 101,
+      "mnemonic": "ADC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 102,
+      "mnemonic": "ROR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 103,
+      "mnemonic": "RRA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 104,
+      "mnemonic": "PLA",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 105,
+      "mnemonic": "ADC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 106,
+      "mnemonic": "ROR",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 107,
+      "mnemonic": "ARR",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 108,
+      "mnemonic": "JMP",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 109,
+      "mnemonic": "ADC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 110,
+      "mnemonic": "ROR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 111,
+      "mnemonic": "RRA",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 112,
+      "mnemonic": "BVS",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 113,
+      "mnemonic": "ADC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 114,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 115,
+      "mnemonic": "RRA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 116,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 117,
+      "mnemonic": "ADC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 118,
+      "mnemonic": "ROR",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 119,
+      "mnemonic": "RRA",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 120,
+      "mnemonic": "SEI",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 121,
+      "mnemonic": "ADC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 122,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 123,
+      "mnemonic": "RRA",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 124,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 125,
+      "mnemonic": "ADC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 126,
+      "mnemonic": "ROR",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 127,
+      "mnemonic": "RRA",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 128,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 129,
+      "mnemonic": "STA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 130,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 131,
+      "mnemonic": "SAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 132,
+      "mnemonic": "STY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 133,
+      "mnemonic": "STA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 134,
+      "mnemonic": "STX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 135,
+      "mnemonic": "SAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 136,
+      "mnemonic": "DEY",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 137,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 138,
+      "mnemonic": "TXA",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 139,
+      "mnemonic": "ANE",
+      "length": 2,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 140,
+      "mnemonic": "STY",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 141,
+      "mnemonic": "STA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 142,
+      "mnemonic": "STX",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 143,
+      "mnemonic": "SAX",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 144,
+      "mnemonic": "BCC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 145,
+      "mnemonic": "STA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 146,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 147,
+      "mnemonic": "SHA",
+      "length": 2,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 148,
+      "mnemonic": "STY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 149,
+      "mnemonic": "STA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 150,
+      "mnemonic": "STX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 151,
+      "mnemonic": "SAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 152,
+      "mnemonic": "TYA",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 153,
+      "mnemonic": "STA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 154,
+      "mnemonic": "TXS",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 155,
+      "mnemonic": "TAS",
+      "length": 3,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 156,
+      "mnemonic": "SHY",
+      "length": 3,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 157,
+      "mnemonic": "STA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 158,
+      "mnemonic": "SHX",
+      "length": 3,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 159,
+      "mnemonic": "SHA",
+      "length": 3,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 160,
+      "mnemonic": "LDY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 161,
+      "mnemonic": "LDA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 162,
+      "mnemonic": "LDX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 163,
+      "mnemonic": "LAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 164,
+      "mnemonic": "LDY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 165,
+      "mnemonic": "LDA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 166,
+      "mnemonic": "LDX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 167,
+      "mnemonic": "LAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 168,
+      "mnemonic": "TAY",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 169,
+      "mnemonic": "LDA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 170,
+      "mnemonic": "TAX",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 171,
+      "mnemonic": "LXA",
+      "length": 2,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 172,
+      "mnemonic": "LDY",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 173,
+      "mnemonic": "LDA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 174,
+      "mnemonic": "LDX",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 175,
+      "mnemonic": "LAX",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 176,
+      "mnemonic": "BCS",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 177,
+      "mnemonic": "LDA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 178,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 179,
+      "mnemonic": "LAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 180,
+      "mnemonic": "LDY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 181,
+      "mnemonic": "LDA",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 182,
+      "mnemonic": "LDX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 183,
+      "mnemonic": "LAX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 184,
+      "mnemonic": "CLV",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 185,
+      "mnemonic": "LDA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 186,
+      "mnemonic": "TSX",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 187,
+      "mnemonic": "LAS",
+      "length": 3,
+      "families": [
+        "unstable"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 188,
+      "mnemonic": "LDY",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 189,
+      "mnemonic": "LDA",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 190,
+      "mnemonic": "LDX",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 191,
+      "mnemonic": "LAX",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 192,
+      "mnemonic": "CPY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 193,
+      "mnemonic": "CMP",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 194,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 195,
+      "mnemonic": "DCP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 196,
+      "mnemonic": "CPY",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 197,
+      "mnemonic": "CMP",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 198,
+      "mnemonic": "DEC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 199,
+      "mnemonic": "DCP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 200,
+      "mnemonic": "INY",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 201,
+      "mnemonic": "CMP",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 202,
+      "mnemonic": "DEX",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 203,
+      "mnemonic": "SBX",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 204,
+      "mnemonic": "CPY",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 205,
+      "mnemonic": "CMP",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 206,
+      "mnemonic": "DEC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 207,
+      "mnemonic": "DCP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 208,
+      "mnemonic": "BNE",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 209,
+      "mnemonic": "CMP",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 210,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 211,
+      "mnemonic": "DCP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 212,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 213,
+      "mnemonic": "CMP",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 214,
+      "mnemonic": "DEC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 215,
+      "mnemonic": "DCP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 216,
+      "mnemonic": "CLD",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 217,
+      "mnemonic": "CMP",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 218,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 219,
+      "mnemonic": "DCP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 220,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 221,
+      "mnemonic": "CMP",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 222,
+      "mnemonic": "DEC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 223,
+      "mnemonic": "DCP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 224,
+      "mnemonic": "CPX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 225,
+      "mnemonic": "SBC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 226,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 227,
+      "mnemonic": "ISC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 228,
+      "mnemonic": "CPX",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 229,
+      "mnemonic": "SBC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 230,
+      "mnemonic": "INC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 231,
+      "mnemonic": "ISC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 232,
+      "mnemonic": "INX",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 233,
+      "mnemonic": "SBC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 234,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 235,
+      "mnemonic": "SBC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 236,
+      "mnemonic": "CPX",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 237,
+      "mnemonic": "SBC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 238,
+      "mnemonic": "INC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 239,
+      "mnemonic": "ISC",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 240,
+      "mnemonic": "BEQ",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 241,
+      "mnemonic": "SBC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 242,
+      "mnemonic": "JAM",
+      "length": 1,
+      "families": [
+        "jam"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 243,
+      "mnemonic": "ISC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 244,
+      "mnemonic": "NOP",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 245,
+      "mnemonic": "SBC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 246,
+      "mnemonic": "INC",
+      "length": 2,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 247,
+      "mnemonic": "ISC",
+      "length": 2,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 248,
+      "mnemonic": "SED",
+      "length": 1,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 249,
+      "mnemonic": "SBC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 250,
+      "mnemonic": "NOP",
+      "length": 1,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 251,
+      "mnemonic": "ISC",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 252,
+      "mnemonic": "NOP",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 253,
+      "mnemonic": "SBC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 254,
+      "mnemonic": "INC",
+      "length": 3,
+      "families": [
+        "documented"
+      ]
+    },
+    {
+      "page": 0,
+      "key": 255,
+      "mnemonic": "ISC",
+      "length": 3,
+      "families": [
+        "undocumented"
+      ]
+    }
+  ]
+}

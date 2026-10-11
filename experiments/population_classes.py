@@ -40,9 +40,11 @@ def cls(conf: bool, sites: int) -> str:
 
 
 def classify(soup: np.ndarray, L: int, sup: list, zh: bool, rng, *, steps: int = 128,
-             include_offsets: bool = False) -> tuple[dict, list[dict]]:
-    cells = soup[rng.choice(len(soup), size=min(NCELL, len(soup)), replace=False)]
-    res = A.assay_many(cells, z80_steps=steps, suppress=sup, n=32, seed=int(rng.integers(1 << 31)), zero_halts=zh)
+             include_offsets: bool = False, culture_partners: int = 32,
+             culture_rows: list | None = None) -> tuple[dict, list[dict]]:
+    indices = rng.choice(len(soup), size=min(NCELL, len(soup)), replace=False)
+    cells = soup[indices]
+    res = A.assay_many(cells, z80_steps=steps, suppress=sup, n=culture_partners, seed=int(rng.integers(1 << 31)), zero_halts=zh)
     herit = np.array([r["is_replicator"] for r in res])
     P = rng.integers(0, 256, size=(len(cells) * NP_TRACE, L), dtype=np.uint8)
     _, masks = X.execute_pairs_traced(np.concatenate([np.repeat(cells, NP_TRACE, 0), P], 1), L, steps, suppress=sup, zero_halts=zh)
@@ -52,6 +54,12 @@ def classify(soup: np.ndarray, L: int, sup: list, zh: bool, rng, *, steps: int =
     out_cells = []
     hidx = np.flatnonzero(herit)
     scanned = rng.permutation(hidx)[:NSCAN]
+    if culture_rows is not None:
+        culture_rows.extend({"cell": j, "soup_cell": int(indices[j]), "tape": cells[j].tobytes().hex(),
+                             "partners": culture_partners, "gen2": r["gen2_score"],
+                             "heritable": bool(herit[j]), "confined": bool(conf[j]),
+                             "scanned": bool(j in scanned), "copy_offset": r["copy_offset"]}
+                            for j, r in enumerate(res))
     for j in scanned:
         d = scan_tape(cells[j], 16, 16, steps, seed=int(rng.integers(1 << 31)), zero_halts=zh, suppress=tuple(sup))
         row, site = summarise(d, L)

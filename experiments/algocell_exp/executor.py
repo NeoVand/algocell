@@ -257,13 +257,16 @@ class ZilionExecutor:
         """Provenance of every machine of the set that this process used."""
         return {name: m.describe() for (name, _), m in self._cache.items()}
 
-    def pc_trace(self, pairs: np.ndarray, L: int, steps: int, *, zero_halts: bool = False) -> np.ndarray:
+    def pc_trace(self, pairs: np.ndarray, L: int, steps: int, *, zero_halts: bool = False,
+                 return_opcodes: bool = False) -> np.ndarray | tuple[np.ndarray, np.ndarray]:
         """PC at reset and after each single step, replaying identical initial pairs.
 
         Prefix budgets 0..steps are independent deterministic replays of the same
         machine. Per-lane budgets batch them into one dispatch; uniform-budget
         machines use one dispatch per prefix. No ISA or state-layout assumptions
         are made beyond a state field named pc. Halted lanes retain their last PC.
+        With return_opcodes, also read each pre-step opcode from that prefix's
+        replayed memory. This supports self-modifying code on an unpadded ring.
         """
         pairs = np.ascontiguousarray(pairs, dtype=np.uint8)
         if pairs.ndim != 2 or pairs.shape[1] != 2 * L or steps < 0:
@@ -272,16 +275,28 @@ class ZilionExecutor:
         if "pc" not in m.fields.get("state", {}).get("items", []):
             raise ValueError(f"{m.name}: the state record has no pc field")
         n = len(pairs)
+        if return_opcodes and m.m["world"]["memory"]["ring"] != 2 * L:
+            raise ValueError("opcode replay requires the complete unpadded pair ring")
         if not n:
-            return np.empty((0, steps + 1), dtype=np.uint16)
+            pc = np.empty((0, steps + 1), dtype=np.uint16)
+            return (pc, np.empty((0, steps), dtype=np.uint8)) if return_opcodes else pc
         if m.budget_per_lane:
             r = m.run(np.repeat(pairs, steps + 1, axis=0),
                       budget=np.tile(np.arange(steps + 1), n))
             pc = r.reg("pc").reshape(n, steps + 1)
+            if return_opcodes:
+                memory = r.memory.reshape(n, steps + 1, 2 * L)
+                opcodes = np.take_along_axis(memory[:, :-1],
+                                             ((pc[:, :-1] & 0xFFFF) % (2 * L))[..., None], axis=2)[..., 0]
         else:
-            pc = np.stack([m.run(pairs, budget=k).reg("pc") for k in range(steps + 1)], axis=1)
+            records = [m.run(pairs, budget=k) for k in range(steps + 1)]
+            pc = np.stack([r.reg("pc") for r in records], axis=1)
+            if return_opcodes:
+                opcodes = np.stack([r.memory[np.arange(n), (r.reg("pc") & 0xFFFF) % (2 * L)]
+                                    for r in records[:-1]], axis=1)
         _USAGE[("machine", m.name + " (pc prefix replay)")] += n * (steps + 1)
-        return (pc & 0xFFFF).astype(np.uint16)
+        pc = (pc & 0xFFFF).astype(np.uint16)
+        return (pc, opcodes) if return_opcodes else pc
 
 
 # ── selection ───────────────────────────────────────────────────────────────────────────────────────────────────────
