@@ -1,0 +1,69 @@
+{
+ "z80c02_pair_L16": {
+  "note": "Algocell's pair world on the Zilion 0.2.0 Z80 (compat '0.2'): tapes A, B of 16 bytes on a ring of 32, SP aliasing the last byte of B, a per-lane step budget (0 = the lane does not run), the opcode-suppression table in the uniform (Algocell's params.suppress layout), writes counted per tape.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true }
+  }
+ },
+ "z80c02_pair_L32": {
+  "note": "As z80c02_pair_L16 at L = 32 (ring of 64).",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 32, "name": "A" }, { "bytes": 32, "name": "B" }], "ring": 64 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true }
+  }
+ },
+ "z80c02_lethal_L16": {
+  "note": "z80c02_pair_L16 under the lethal-tar rule (Stage I): a zero byte fetched as the first byte of an instruction halts the lane.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 } },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true }
+  }
+ },
+ "z80c02_lethal_L32": {
+  "note": "z80c02_pair_L32 under the lethal-tar rule.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 32, "name": "A" }, { "bytes": 32, "name": "B" }], "ring": 64 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "halting": { "lethal": { "firstUnit": 0 } },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true }
+  }
+ },
+ "z80c02_pair_maps_L16": {
+  "note": "z80c02_pair_L16 with the fetch map (positions fetched as instruction stream) and the start map (positions where an instruction began) in the record: the outputs of Algocell's op-traced executor.",
+  "core": { "isa": "z80", "compat": "0.2" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "topAliases": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "ablation": { "table": "uniform", "layout": "coarse" },
+   "outputs": { "writeCounts": true, "fetchMap": true, "startMap": true }
+  }
+ },
+ "m6502skel_pair_L16": {
+  "note": "PLUMBING ONLY: the SKELETON NMOS 6502 core of zilion next (a handful of opcodes; every other opcode traps), in the same pair world with the stack given by meaning (the first push lands on the last byte of B). Not for results.",
+  "core": { "isa": "m6502" },
+  "world": {
+   "memory": { "kind": "segments", "segments": [{ "bytes": 16, "name": "A" }, { "bytes": 16, "name": "B" }], "ring": 32 },
+   "init": { "stack": { "firstPushAt": "lastByte" } },
+   "budget": { "unit": "steps", "value": "perLane" },
+   "outputs": { "writeCounts": true }
+  }
+ }
+}
