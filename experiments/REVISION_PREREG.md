@@ -1209,3 +1209,41 @@ executed code is reported as not confirmed. X3 on the N6 worlds (confirmatory): 
 - **Outputs.** Generated tables under `results/s6502/`.
 
 **Spend.** About $105–145 on Modal, at about 1 L40S-hour per world (approved).
+
+## I1 — emulator impact study (registered 2026-10-11, before any confirmatory draw; draft `planning/IMPACT_STUDY_DRAFT.md`)
+
+**Status before registration.**
+- Done: the tooling, the C0 equivalence proofs (92 worlds, 6.06M pairs, 0 mismatches, 120 of 120 controls caught),
+  and an exploratory dry run of 1,000 pairs per condition per core, on draws excluded from the confirmatory corpus.
+  Records: `results/impact_equiv/`, `results/impact_dryrun/`, merged at bdcdcb6.
+- No confirmatory draw has been made.
+- The protocol issues raised by the dry run (`results/impact_dryrun/PROTOCOL.md`) are settled as follows; the draft
+  is otherwise registered as written.
+
+**Frozen.**
+- **Cores.** C0 = compat '0.2'; C1 = compat '0.3' classic; C2 = compat '0.3' zilog-nmos. The core, hook, machine and
+  world SHA-256s are in `cores.csv` and `algocell_exp/machines/PROVENANCE_impact.md`, at zilion 183ff5c.
+- **Scope.** The complete registry of `impact_corpus.conditions()` at bdcdcb6 (787 conditions). Each condition runs
+  in its own world: archived budget, masks and rule. The Stage H partner is a uniform other cell.
+  - Included snapshots: final and labelled-emergence (`soup_emergence`). Scheduled intermediates are excluded.
+  - The ring sweep (exploratory; Extended Data Fig. 3) is reported but is outside the decision rule.
+- **Draws.** 100,000 confirmatory pairs per condition, with the seed streams, draw order and lane indexing of
+  `impact_corpus` at bdcdcb6. The exclusion of the dry-run draws is proved as there.
+- **Stochastic worlds.** The dials and randreg/randsp use the executor's case-index streams, not the archived soups'
+  encounter streams. This is a stated limit.
+- **Attribution.** The latest propagating event in the repaired replay, with F/Q repaired coherently, exact class
+  checks and first-probe reproduction, as implemented.
+  - Classes: wasted prefix + `LD A,R`; `BIT n,(HL)`; `SCF`/`CCF`; repeating block instructions, including the I/O
+    repeats' H and P/V; other. An "other" stops the study.
+  - C1-versus-C2 differences (`c1_c2_differ`) are reported, to isolate the Q latch.
+- **Decision rule (C1), per condition.**
+  - A condition is unaffected if the 95% Clopper–Pearson upper bound of its affected-pair rate is below 1e-4, that is
+    at most 3 affected pairs of 100,000. Otherwise it is flagged.
+  - No multiplicity correction. The per-condition rule is the strict one, and it errs toward flagging.
+  - The results stand where every registered condition is unaffected and the assays are identical. Every flagged
+    condition is named in the paper, with the claims that rest on it.
+- **C2.** Reported with the same rule. A flag is not by itself a reason to re-run (the Q latch is one vendor's
+  behaviour), but it does make the condition a candidate for the second tier.
+- **Assays.** Draft corpus 3 runs through the executor interface (`ASSAYS_ANY_ISA.md`, merged): every tape the
+  manuscript names, under C0, C1 and C2.
+- **Second tier.** Only with explicit spend approval.
