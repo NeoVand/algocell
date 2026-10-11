@@ -156,9 +156,10 @@ def test_vendored_machines_regenerate():
     assert p.returncode == 0, p.stdout + p.stderr
 
 
-def test_vendored_manifests_match_wgsl():
-    for man in MACHINES_DIR.glob("*.manifest.json"):
-        load_machine(man.name[: -len(".manifest.json")])   # checks sha256 and compiles
+@pytest.mark.parametrize("man", sorted(MACHINES_DIR.glob("*.manifest.json")), ids=lambda p: p.stem)
+def test_vendored_manifests_match_wgsl(man):
+    # Separate cases keep GPU verification splittable as the machine registry grows.
+    load_machine(man.name[: -len(".manifest.json")])   # checks sha256 and compiles
 
 
 # ── (d) API ─────────────────────────────────────────────────────────────────────────────────────────────────────────

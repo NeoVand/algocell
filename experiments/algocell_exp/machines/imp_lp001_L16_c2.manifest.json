@@ -1,0 +1,443 @@
+{
+ "schema": "zilion.manifest/2",
+ "zilion": "0.3.0-dev",
+ "hostContract": 2,
+ "mode": "kernel",
+ "entryPoint": "main",
+ "workgroupSize": 64,
+ "core": {
+  "id": "z80",
+  "name": "Zilog Z80",
+  "coreVersion": "0.3.0",
+  "status": "stable",
+  "variant": "zilog-nmos",
+  "compat": "0.3",
+  "addressBits": 16,
+  "fetchUnitBytes": 1,
+  "hooks": [
+   "instructionStart"
+  ],
+  "params": {}
+ },
+ "world": {
+  "ablation": {
+   "layout": "coarse",
+   "table": "uniform"
+  },
+  "budget": {
+   "unit": "steps",
+   "value": "perLane"
+  },
+  "hooks": {
+   "declarations": "var<private> lethal_state: u32;\nfn lethal_draw() -> u32 {\n    let s = lethal_state;\n    lethal_state = s * 747796405u + 2891336453u;\n    let w = ((s >> ((s >> 28u) + 4u)) ^ s) * 277803737u;\n    return (w >> 22u) ^ w;\n}",
+   "onInstructionStart": "if (unit == 0u) { if (lethal_draw() < 42949672u) { return ZIL_HALT; } }",
+   "onReset": "lethal_state = zil_seed * 2654435761u + zil_lane * 2246822519u + 0x165667b1u; lethal_draw();"
+  },
+  "init": {
+   "stack": {
+    "topAliases": "lastByte"
+   }
+  },
+  "memory": {
+   "kind": "segments",
+   "ring": 32,
+   "segments": [
+    {
+     "bytes": 16,
+     "name": "A"
+    },
+    {
+     "bytes": 16,
+     "name": "B"
+    }
+   ]
+  },
+  "outputs": {
+   "writeCounts": true
+  }
+ },
+ "sha256": {
+  "wgsl": "4ab65adb8aab57caf05c4e7c8478d90c1f53338fba9a5fdb380adfa1198dac3d",
+  "core": "5b1630959be5eaaad8e95f6768916e2f9b8538b37c9390f4087f41884d4319d2",
+  "world": "85c512968489daef779fc949c5f3090d6c71ce42014f37b14b2ccd97d6d30a17",
+  "options": "eee726e2feea1c379b1eb96388144a6a8eff6c1b8d1a66ce2f6a3d02a5091e3b"
+ },
+ "params": {
+  "bytes": 128,
+  "fields": [
+   {
+    "name": "lane_count",
+    "role": "laneCount",
+    "offset": 0,
+    "words": 1
+   },
+   {
+    "name": "lane_base",
+    "role": "laneBase",
+    "offset": 4,
+    "words": 1
+   },
+   {
+    "name": "budget",
+    "role": "budget",
+    "offset": 8,
+    "words": 1
+   },
+   {
+    "name": "seed",
+    "role": "seed",
+    "offset": 12,
+    "words": 1
+   },
+   {
+    "name": "step_base",
+    "role": "stepBase",
+    "offset": 16,
+    "words": 2
+   },
+   {
+    "name": "_pad0",
+    "role": "pad",
+    "offset": 24,
+    "words": 1
+   },
+   {
+    "name": "_pad1",
+    "role": "pad",
+    "offset": 28,
+    "words": 1
+   },
+   {
+    "name": "ablation",
+    "role": "ablation",
+    "offset": 32,
+    "words": 24
+   }
+  ]
+ },
+ "bindings": [
+  {
+   "group": 0,
+   "binding": 0,
+   "name": "zil_params",
+   "role": "params",
+   "type": "uniform"
+  },
+  {
+   "group": 0,
+   "binding": 1,
+   "name": "zil_mem",
+   "role": "memory",
+   "type": "storage",
+   "wordsPerLane": 8
+  },
+  {
+   "group": 0,
+   "binding": 2,
+   "name": "zil_out",
+   "role": "record",
+   "type": "storage",
+   "wordsPerLane": 33
+  },
+  {
+   "group": 0,
+   "binding": 4,
+   "name": "zil_budget_in",
+   "role": "budgetIn",
+   "type": "read-only-storage",
+   "wordsPerLane": 1
+  }
+ ],
+ "memory": {
+  "model": "segments",
+  "ringBytes": 32,
+  "position": "addr % 32u",
+  "hostBytesPerLane": 32,
+  "storageWordsPerLane": 8,
+  "packing": "little-endian bytes",
+  "segments": [
+   {
+    "name": "A",
+    "position": 0,
+    "bytes": 16,
+    "hostOffset": 0,
+    "storageWord": 0,
+    "storageWords": 4
+   },
+   {
+    "name": "B",
+    "position": 16,
+    "bytes": 16,
+    "hostOffset": 16,
+    "storageWord": 4,
+    "storageWords": 4
+   }
+  ],
+  "padding": null,
+  "stored": true
+ },
+ "record": {
+  "wordsPerLane": 33,
+  "fields": [
+   {
+    "name": "steps",
+    "offset": 0,
+    "words": 1
+   },
+   {
+    "name": "haltReason",
+    "offset": 1,
+    "words": 1
+   },
+   {
+    "name": "trapCause",
+    "offset": 2,
+    "words": 1
+   },
+   {
+    "name": "state",
+    "offset": 3,
+    "words": 28,
+    "items": [
+     "a",
+     "f",
+     "b",
+     "c",
+     "d",
+     "e",
+     "h",
+     "l",
+     "a_",
+     "f_",
+     "b_",
+     "c_",
+     "d_",
+     "e_",
+     "h_",
+     "l_",
+     "ix",
+     "iy",
+     "sp",
+     "pc",
+     "i",
+     "r",
+     "iff1",
+     "iff2",
+     "halted",
+     "wz",
+     "im",
+     "q"
+    ]
+   },
+   {
+    "name": "writeCounts",
+    "offset": 31,
+    "words": 2,
+    "items": [
+     "A",
+     "B"
+    ]
+   }
+  ]
+ },
+ "state": [
+  {
+   "name": "a",
+   "bits": 8,
+   "offset": 0
+  },
+  {
+   "name": "f",
+   "bits": 8,
+   "offset": 1
+  },
+  {
+   "name": "b",
+   "bits": 8,
+   "offset": 2
+  },
+  {
+   "name": "c",
+   "bits": 8,
+   "offset": 3
+  },
+  {
+   "name": "d",
+   "bits": 8,
+   "offset": 4
+  },
+  {
+   "name": "e",
+   "bits": 8,
+   "offset": 5
+  },
+  {
+   "name": "h",
+   "bits": 8,
+   "offset": 6
+  },
+  {
+   "name": "l",
+   "bits": 8,
+   "offset": 7
+  },
+  {
+   "name": "a_",
+   "bits": 8,
+   "offset": 8
+  },
+  {
+   "name": "f_",
+   "bits": 8,
+   "offset": 9
+  },
+  {
+   "name": "b_",
+   "bits": 8,
+   "offset": 10
+  },
+  {
+   "name": "c_",
+   "bits": 8,
+   "offset": 11
+  },
+  {
+   "name": "d_",
+   "bits": 8,
+   "offset": 12
+  },
+  {
+   "name": "e_",
+   "bits": 8,
+   "offset": 13
+  },
+  {
+   "name": "h_",
+   "bits": 8,
+   "offset": 14
+  },
+  {
+   "name": "l_",
+   "bits": 8,
+   "offset": 15
+  },
+  {
+   "name": "ix",
+   "bits": 16,
+   "offset": 16
+  },
+  {
+   "name": "iy",
+   "bits": 16,
+   "offset": 17
+  },
+  {
+   "name": "sp",
+   "bits": 16,
+   "offset": 18
+  },
+  {
+   "name": "pc",
+   "bits": 16,
+   "offset": 19
+  },
+  {
+   "name": "i",
+   "bits": 8,
+   "offset": 20
+  },
+  {
+   "name": "r",
+   "bits": 8,
+   "offset": 21
+  },
+  {
+   "name": "iff1",
+   "bits": 1,
+   "offset": 22
+  },
+  {
+   "name": "iff2",
+   "bits": 1,
+   "offset": 23
+  },
+  {
+   "name": "halted",
+   "bits": 8,
+   "offset": 24
+  },
+  {
+   "name": "wz",
+   "bits": 16,
+   "offset": 25
+  },
+  {
+   "name": "im",
+   "bits": 2,
+   "offset": 26
+  },
+  {
+   "name": "q",
+   "bits": 8,
+   "offset": 27
+  }
+ ],
+ "haltReasons": {
+  "running": 0,
+  "halt-insn": 1,
+  "host": 2,
+  "trap": 3
+ },
+ "trapCauses": {
+  "illegal": 1,
+  "halt-insn": 2,
+  "unmatched": 3,
+  "bounds": 4,
+  "misaligned": 5,
+  "div-zero": 6,
+  "syscall": 7,
+  "unimplemented": 8
+ },
+ "resumable": false,
+ "ablation": {
+  "kind": "uniform",
+  "layout": "coarse",
+  "pages": [
+   {
+    "id": 0,
+    "name": "base",
+    "keyBits": 8
+   },
+   {
+    "id": 1,
+    "name": "cb",
+    "keyBits": 8
+   },
+   {
+    "id": 2,
+    "name": "ed",
+    "keyBits": 8
+   }
+  ],
+  "wordsPerPage": 8,
+  "words": 24
+ },
+ "budget": {
+  "unit": "steps",
+  "perLane": true,
+  "default": null
+ },
+ "init": {
+  "perLane": false,
+  "stateWords": 28,
+  "stack": {
+   "convention": {
+    "kind": "topAliases",
+    "position": 31,
+    "values": {
+     "sp": 65535
+    }
+   }
+  }
+ }
+}

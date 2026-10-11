@@ -1,0 +1,30 @@
+{
+ "collected": 475,
+ "passed": 473,
+ "skipped": 2,
+ "failed_final": 0,
+ "longest_burst_s": 22.373280416009948,
+ "equal_pauses_between_gpu_bursts": true,
+ "generator_check": "all vendored files and PROVENANCE match rebuilt zilion 183ff5c74294; recorded core outputs unchanged",
+ "q_regression_before_fix": {
+  "passed": 1,
+  "failed": 4,
+  "false_decisive_event": "scf-ccf step 5 instead of wasted-prefix step 1; both attributors"
+ },
+ "q_regression_after_fix": {
+  "passed": 5,
+  "failed": 0
+ },
+ "final_cpu_report_tests": {
+  "passed": 3,
+  "failed": 0,
+  "wall_s": 0.08,
+  "includes": "test_benchmark_wall_timer_survives_multiple_execution_blocks"
+ },
+ "skip_reason": "Two provenance tests skip because zilion HEAD is newer than the recorded core commit; a manual full regeneration check passed.",
+ "benchmark_timer_regression_before_fix": {
+  "failed": 1,
+  "invalid_wall_s": 18,
+  "expected_wall_s": 12
+ }
+}

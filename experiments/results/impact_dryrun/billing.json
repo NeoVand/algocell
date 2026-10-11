@@ -1,0 +1,50 @@
+[
+ {
+  "object_id": "ap-KLBng9CqyaldZWMusPVUOS",
+  "description": "algocell-impact",
+  "environment": "main",
+  "interval_start": "2026-10-11T07:00:00",
+  "resource": "CPU",
+  "cost": "0.05413223"
+ },
+ {
+  "object_id": "ap-KLBng9CqyaldZWMusPVUOS",
+  "description": "algocell-impact",
+  "environment": "main",
+  "interval_start": "2026-10-11T07:00:00",
+  "resource": "L40S",
+  "cost": "1.11583346"
+ },
+ {
+  "object_id": "ap-KLBng9CqyaldZWMusPVUOS",
+  "description": "algocell-impact",
+  "environment": "main",
+  "interval_start": "2026-10-11T07:00:00",
+  "resource": "Memory",
+  "cost": "0.03662223"
+ },
+ {
+  "object_id": "ap-oyzNpwu72KxundBdVuiWZa",
+  "description": "algocell-impact",
+  "environment": "main",
+  "interval_start": "2026-10-11T07:00:00",
+  "resource": "CPU",
+  "cost": "0.00026276"
+ },
+ {
+  "object_id": "ap-oyzNpwu72KxundBdVuiWZa",
+  "description": "algocell-impact",
+  "environment": "main",
+  "interval_start": "2026-10-11T07:00:00",
+  "resource": "L40S",
+  "cost": "0.00541638"
+ },
+ {
+  "object_id": "ap-oyzNpwu72KxundBdVuiWZa",
+  "description": "algocell-impact",
+  "environment": "main",
+  "interval_start": "2026-10-11T07:00:00",
+  "resource": "Memory",
+  "cost": "0.00017777"
+ }
+]

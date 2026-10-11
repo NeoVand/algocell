@@ -1,0 +1,33 @@
+{
+ "version": 1,
+ "n": 1000,
+ "n_registered": 100000,
+ "dry_stream": 210,
+ "reg_stream": 1,
+ "git": "21ad62aaeebf",
+ "zilion_commit": "ed93b7c3aecdfe6a0cedf6dcb3f63aebb78bac8d",
+ "prepare_s": 46.06377320800675,
+ "inputs_sha256": "c964d145c1b95cde7900ac725cd49f7c49e88c6891ef54d928a464299a8deb71",
+ "inputs_bytes": 24600193,
+ "price_source": "modal billing rates --json --profile neovand (2026-10-11)",
+ "rates_usd_s": {
+  "L40S": 0.0005857222222222222,
+  "A10G": 0.00034961111111111114
+ },
+ "estimated_total_usd": 2.5,
+ "estimate_basis": "Prior 38-minute local dry run, scaled by conditions, plus proof, compilation and benchmark allowance: about 71 minutes at the L40S allocation rate.",
+ "max_allocated_s": 7800,
+ "max_modeled_usd": 4.568633333333333,
+ "adapter": "NVIDIA L40S (Vulkan, DiscreteGPU)",
+ "gpu": "L40S",
+ "rate_usd_s": 0.0005857222222222222,
+ "code_sha256": "32c892225977e1ff19552760bce7e9fa9513f270d3565eac628c407ec5e42972",
+ "status": "complete",
+ "wall_s": 2048.018007203,
+ "conditions": 787,
+ "chunks": 787,
+ "proof_worlds": 53,
+ "work_s": 1172.781566735998,
+ "completed_at_utc": "2026-10-11T07:42:05Z",
+ "modeled_cost_usd": 1.1995696583300681
+}
