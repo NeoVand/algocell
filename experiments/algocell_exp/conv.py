@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 
 from . import assay as A
+from . import executor as _ex
 from .gen_trace_shader import ensure
 
 SHADER_DIR = Path(__file__).parent / "shader"
@@ -27,6 +28,7 @@ def _path(L: int, variant: str | None, traced: bool) -> Path:
 
 
 def _pipeline(path: Path):
+    _ex.shader_guard("conv._pipeline")   # the convention and dial executors have no Zilion machine yet: never run them silently in a machine run
     if path not in _PIPE:
         dev = A.get_device()
         module = dev.create_shader_module(code=path.read_text())

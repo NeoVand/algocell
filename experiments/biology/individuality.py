@@ -534,7 +534,10 @@ def main() -> None:
     ap.add_argument("--n-partners", type=int, default=N_PARTNERS)
     ap.add_argument("--skip-bff", action="store_true")
     ap.add_argument("--skip-z80", action="store_true")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its Z80 rows are Stage G tapes with Z80 loop labels (the BFF rows run on the BFF executor whatever is given)")
     os.makedirs(a.out, exist_ok=True)
     hist: dict = {}
     notes: list[str] = []

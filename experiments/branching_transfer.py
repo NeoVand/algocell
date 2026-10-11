@@ -397,7 +397,10 @@ def main() -> None:
     ap.add_argument("--k", type=int, default=REG["k"])
     ap.add_argument("--cap", type=int, default=REG["cap"])
     ap.add_argument("--gens", type=int, default=REG["gens"])
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its panel is the Z80 serial-retention genotypes")
     if a.report:
         report(a)
         return

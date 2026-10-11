@@ -36,7 +36,10 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--labels", default=None, help="comma-separated labels to restrict to (default: all)")
     ap.add_argument("--partners", type=int, default=32)
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its runs are Z80 worlds")
     out = a.out or os.path.join(a.dir, "analysis", "c4")
     os.makedirs(out, exist_ok=True)
     want = set(a.labels.split(",")) if a.labels else None

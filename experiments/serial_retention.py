@@ -25,6 +25,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from algocell_exp import assay as A  # noqa: E402
+from algocell_exp import executor as E  # noqa: E402
 from algocell_exp import exectrace as X  # noqa: E402
 
 R_RES = os.path.join(HERE, "results")
@@ -156,7 +157,8 @@ def run_genotype(gt: dict, seed: int, pool: np.ndarray | None = None) -> tuple[p
                                       "aligned_g1": aligned if gen == 1 else np.nan}))
             ctrl[gen] = float(alive_c.mean())
     df = pd.concat(rows, ignore_index=True)
-    meta = {"key": gt["key"], "kind": gt["kind"], "L": L, "tape": hx(x), "rule": ("i8080" if gt["sup"] else "Z80") + (", lethal tar" if zh else ""),
+    isa = E.current().isa          # the ISA that ran (Algocell's shaders and the z80c02 machines: "z80")
+    meta = {"key": gt["key"], "kind": gt["kind"], "L": L, "tape": hx(x), "rule": ("i8080" if gt["sup"] else {"z80": "Z80"}.get(isa, isa)) + (", lethal tar" if zh else ""),
             "n_mutants": M, "n_identifiable": int(ident.sum()), "entered_frac": entered, "executed": "".join("1" if e else "0" for e in executed),
             **{f"ctrl_alive_g{g}": ctrl[g] for g in GENS}}
     return df, meta
@@ -268,7 +270,10 @@ def main() -> None:
     ap.add_argument("--only", default="")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--yes", action="store_true", help="confirm that the browser simulation is paused (local GPU)")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its panel is Z80 genotypes, some under the Z80 i8080 suppression")
     if a.report:
         report(a)
         return

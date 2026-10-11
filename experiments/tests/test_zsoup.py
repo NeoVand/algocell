@@ -152,7 +152,7 @@ def test_vendored_machines_regenerate():
     head = subprocess.run(["git", "-C", str(zdir), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     if head != recorded:
         pytest.skip(f"Zilion checkout at {head[:12]}, machines vendored from {recorded[:12]} (run build_machines.mjs --check by hand)")
-    p = subprocess.run(["node", str(MACHINES_DIR / "build_machines.mjs"), "--check", "--zilion", str(zdir)], capture_output=True, text=True)
+    p = subprocess.run(["node", str(MACHINES_DIR / "build_machines.mjs"), "--check", "--spec", "worlds.json", "--zilion", str(zdir)], capture_output=True, text=True)
     assert p.returncode == 0, p.stdout + p.stderr
 
 

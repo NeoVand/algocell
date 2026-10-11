@@ -3,13 +3,16 @@
     res, masks = execute_pairs_traced(pairs, L, steps, zero_halts=False)   # masks: (N, 8) uint32, bit a = address a fetched
     ex = exec_positions(masks, 2 * L)                                       # (N, 2L) bool
 
-Pipelines are compiled from the traced executor derived by gen_trace_shader from the executor assay.py would use.
+Pipelines are compiled from the traced executor derived by gen_trace_shader from the executor assay.py would use. With a
+Zilion machine selected (algocell_exp.executor), the machine runs the pairs and its fetch map is returned in the same
+(N, 8) uint32 layout.
 """
 from __future__ import annotations
 
 import numpy as np
 
 from . import assay as A
+from . import executor as _ex
 from .gen_trace_shader import ensure
 
 _PIPE: dict = {}
@@ -18,6 +21,7 @@ _PIPE: dict = {}
 def _pipeline(L: int, mem_length: int | None, zero_halts: bool):
     P = int(mem_length) if mem_length else 2 * L
     key = (L, P, bool(zero_halts))
+    _ex.shader_guard("exectrace._pipeline")
     if key not in _PIPE:
         dev = A.get_device()
         src = A._executor_path(L, mem_length, bool(zero_halts))
@@ -34,6 +38,16 @@ def _pipeline(L: int, mem_length: int | None, zero_halts: bool):
 
 
 def execute_pairs_traced(pairs: np.ndarray, L: int, steps: int, suppress=(), mem_length: int | None = None, zero_halts: bool = False):
+    if _ex.active() is not None:
+        r = _ex.active().run(pairs, L, steps, suppress, mem_length=mem_length, zero_halts=zero_halts, fetch_map=True)
+        return r.memory, _ex.pack_fetch_masks(r.fetch_map)
+    _ex.count_shader("trace(" + A._executor_path(L, mem_length, bool(zero_halts)).name + ")", pairs.shape[0])
+    return _shader_execute_pairs_traced(pairs, L, steps, suppress, mem_length, zero_halts)
+
+
+def _shader_execute_pairs_traced(pairs: np.ndarray, L: int, steps: int, suppress=(), mem_length: int | None = None, zero_halts: bool = False, return_regs: bool = False):
+    """execute_pairs_traced on Algocell's traced executor shader (path (a) of algocell_exp.executor); with `return_regs`,
+    also the (N, 20) register words (12 as the plain executor, then the 8 mask words)."""
     N = pairs.shape[0]
     assert pairs.shape[1] == 2 * L
     dev = A.get_device()
@@ -71,6 +85,8 @@ def execute_pairs_traced(pairs: np.ndarray, L: int, steps: int, suppress=(), mem
     masks = regs[:, 12:20].copy()
     for b in (io_buf, regs_buf, p_buf):
         b.destroy()
+    if return_regs:
+        return res, masks, regs.copy()
     return res, masks
 
 

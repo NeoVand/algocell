@@ -1,6 +1,7 @@
 """Post hoc replication assays for a batch of runs → analysis/assays.csv.
 
     python assay_batch.py runs/stageA            # needs the local GPU; ~1–3 h for 600 runs
+    python assay_batch.py runs/stageA --machine z80c02_assay   # every encounter on a vendored Zilion machine set
 
 Column blocks (review 2026-10-07: the old file mixed emergence-time and final-state
 quantities under one name; every column now says which tape and which partners):
@@ -212,4 +213,13 @@ def main(d: str) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    import argparse
+
+    from algocell_exp import executor as E
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("dir")
+    E.add_argument(ap)
+    a = ap.parse_args()
+    E.from_args(a, why="its mechanism labels are Z80 disassembly")
+    main(a.dir)

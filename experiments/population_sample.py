@@ -57,7 +57,10 @@ def main():
     ap.add_argument("--stages", default="G,K,I,M,L")
     ap.add_argument("--out", default=os.path.join(R, "population"))
     ap.add_argument("--yes", action="store_true")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its soups are Z80 worlds, some under the Z80 i8080 suppression")
     if not a.yes:
         sys.exit("refusing to run: pass --yes after pausing the browser simulation (local GPU)")
     from make_conds import ABLATIONS

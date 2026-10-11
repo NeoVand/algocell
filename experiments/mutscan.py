@@ -174,7 +174,10 @@ def main() -> None:
     ap.add_argument("--fresh", action="store_true")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--yes", action="store_true", help="confirm that the browser simulation is paused (local GPU)")
+    from algocell_exp import executor as E
+    E.add_argument(ap)
     a = ap.parse_args()
+    E.from_args(a, why="its tapes come from a Z80 per-world table with Z80 loop labels")
     global SUPPRESS
     if a.ablation:
         from make_conds import ABLATIONS

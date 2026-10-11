@@ -1,0 +1,1320 @@
+{
+ "assay_batch_I": {
+  "id": "assay_batch_I",
+  "family": "culture test",
+  "cmds": [
+   "assay_batch.py {w}/stageI"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 3.7,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 56512
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 4.4,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 56512
+     }
+    }
+   },
+   "n": {
+    "wall_s": 3.7,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16 (budget -1)": 56512
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "stageI/analysis/assays.csv",
+    "sha_a": "655b8094993e92b621d8dd25f909b6fd6703da483276f49f615a49696f517246",
+    "sha_b": "9c3552c1f39c4614a8a9468490b046d004f84b6c7564e0463b85606c5f939044",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`executor` z80_test_lethal_L16.wgsl \u2192 z80c02_assay_lethal_L16",
+     "rows": 10
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "5 of 10 rows differ in 2 columns (e.g. trep_self_b, final_self_b)",
+     "rows": 10
+    },
+    "committed": "results/stageI/assays.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "c4_I": {
+  "id": "c4_I",
+  "family": "culture test",
+  "cmds": [
+   "c4_functional.py {w}/stageI"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 7.4,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 235520
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 8.6,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 235520
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "stageI/analysis/c4/functional.csv",
+    "sha_a": "1e4d381ebfe2432c554df225e1cf0f7689b708ec790921d0943e54f683138cf6",
+    "sha_b": "1e4d381ebfe2432c554df225e1cf0f7689b708ec790921d0943e54f683138cf6",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/stageI/c4/functional.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "stageI/analysis/c4/functional_fixed_steps.csv",
+    "sha_a": "107988a767367bc860e08f5fca4177c9bb5673f4dfd78dd07df9126a92273909",
+    "sha_b": "107988a767367bc860e08f5fca4177c9bb5673f4dfd78dd07df9126a92273909",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/stageI/c4/functional_fixed_steps.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "stageI/analysis/c4/NUMBERS_C4.md",
+    "sha_a": "772e687e947e856f05190c0b3003d25614ed871fb522bdd81b2ccc31d33ec7c9",
+    "sha_b": "772e687e947e856f05190c0b3003d25614ed871fb522bdd81b2ccc31d33ec7c9",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/stageI/c4/NUMBERS_C4.md",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "stage_g_I": {
+  "id": "stage_g_I",
+  "family": "partner test",
+  "cmds": [
+   "stage_g.py --dir {w}/stageI --out {w}/stageI/analysis/stageI --no-verdicts"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 3.8,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 5120
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 4.5,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 5120
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "stageI/analysis/stageI/stage_g_runs.csv",
+    "sha_a": "ac827713f96a02cc14c766933440caf680a6db8fe3a8658d32ad9a116c99b9f8",
+    "sha_b": "ac827713f96a02cc14c766933440caf680a6db8fe3a8658d32ad9a116c99b9f8",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/stageI/stageI/stage_g_runs.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "stageI/analysis/stageI/NUMBERS_G.md",
+    "sha_a": "c147c43a21ac33e252bd9ed441af72e5100a555416d298829e98c61797ff4019",
+    "sha_b": "c147c43a21ac33e252bd9ed441af72e5100a555416d298829e98c61797ff4019",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "assay_batch_G": {
+  "id": "assay_batch_G",
+  "family": "culture test",
+  "cmds": [
+   "assay_batch.py {w}/stageG"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 25.7,
+    "usage": {
+     "shader": {
+      "z80_test_L16.wgsl": 121472,
+      "z80_test_L20.wgsl": 120320,
+      "z80_test_L50.wgsl": 120896,
+      "z80_test_L64.wgsl": 120896
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 32.5,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 121472,
+      "z80c02_assay_L20": 120320,
+      "z80c02_assay_L50": 120896,
+      "z80c02_assay_L64": 120896
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "stageG/analysis/assays.csv",
+    "sha_a": "ffdcb5734be9ecc1fa1ff64d12884d21f7f7fd8b20f4587a6d1020a4519f63db",
+    "sha_b": "d6249627d8064a571873f3a674b81f46b98d7bb275d9539a395e048cb7b44fe3",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`executor` z80_test_L16.wgsl \u2192 z80c02_assay_L16, z80_test_L20.wgsl \u2192 z80c02_assay_L20, z80_test_L50.wgsl \u2192 z80c02_assay_L50, z80_test_L64.wgsl \u2192 z80c02_assay_L64",
+     "rows": 80
+    },
+    "committed": "results/stageG/assays.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "every committed column identical; (a) also writes `zero_halts`, `executor`, which the committed table predates",
+     "rows": 80
+    }
+   }
+  ]
+ },
+ "stage_g_G": {
+  "id": "stage_g_G",
+  "family": "partner test",
+  "cmds": [
+   "stage_g.py --dir {w}/stageG --out {w}/stageG/analysis/stageG --no-verdicts"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 5.3,
+    "usage": {
+     "shader": {
+      "z80_test_L16.wgsl": 10240,
+      "z80_test_L20.wgsl": 10240,
+      "z80_test_L50.wgsl": 10240,
+      "z80_test_L64.wgsl": 10240
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 4.7,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 10240,
+      "z80c02_assay_L20": 10240,
+      "z80c02_assay_L50": 10240,
+      "z80c02_assay_L64": 10240
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "stageG/analysis/stageG/stage_g_runs.csv",
+    "sha_a": "baa3f302a6a0126ff749c741eb49b2cc407f854c8739a2588782359e11032b72",
+    "sha_b": "baa3f302a6a0126ff749c741eb49b2cc407f854c8739a2588782359e11032b72",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/stageG/stageG/stage_g_runs.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "every committed column identical; (a) also writes `zero_halts`, which the committed table predates",
+     "rows": 80
+    }
+   }
+  ]
+ },
+ "assay_batch_M": {
+  "id": "assay_batch_M",
+  "family": "culture test",
+  "cmds": [
+   "assay_batch.py {w}/stageM/stageM"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 27.4,
+    "usage": {
+     "shader": {
+      "z80_test_L16.wgsl": 121664,
+      "z80_test_L32.wgsl": 121280
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 31.3,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 121664,
+      "z80c02_assay_L32": 121280
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "stageM/stageM/analysis/assays.csv",
+    "sha_a": "24c63e20b5f2ac7b53ea31329a4630923c0e468625dd731a9fbfdb0775ce08ce",
+    "sha_b": "73b15b47f9e62b51c2630035a0cac62f99e648575770af7f39396f7307713056",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`executor` z80_test_L16.wgsl \u2192 z80c02_assay_L16, z80_test_L32.wgsl \u2192 z80c02_assay_L32",
+     "rows": 40
+    },
+    "committed": "results/stageM/assays.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "individuality": {
+  "id": "individuality",
+  "family": "partner test (inflow)",
+  "cmds": [
+   "biology/individuality.py --skip-bff --out {w}/individuality"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 7.4,
+    "usage": {
+     "shader": {
+      "z80_test_L16.wgsl": 10240,
+      "z80_test_L20.wgsl": 10240,
+      "z80_test_L50.wgsl": 10240,
+      "z80_test_L64.wgsl": 10240
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 8.0,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 10240,
+      "z80c02_assay_L20": 10240,
+      "z80c02_assay_L50": 10240,
+      "z80c02_assay_L64": 10240
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "individuality/per_replicator.csv",
+    "sha_a": "2a6b30b442f0ce4a7c2c1df3e53aff60a42debea79bc5d44035fd65479a0b57e",
+    "sha_b": "2a6b30b442f0ce4a7c2c1df3e53aff60a42debea79bc5d44035fd65479a0b57e",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/biology/individuality/per_replicator.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where machine == 'z80' (cell for cell)",
+     "rows": 160
+    }
+   },
+   {
+    "file": "individuality/summary.csv",
+    "sha_a": "530f5fc2aa1cd390043a89e45d9f85b64cb6c71af6ff0548feb4ea04b0a27681",
+    "sha_b": "530f5fc2aa1cd390043a89e45d9f85b64cb6c71af6ff0548feb4ea04b0a27681",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "individuality/predictions.csv",
+    "sha_a": "64adea9ff04684023798b2391b45d398c1ef70e84dc73f6ce0fbeccab831cb3d",
+    "sha_b": "64adea9ff04684023798b2391b45d398c1ef70e84dc73f6ce0fbeccab831cb3d",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "individuality/offspring_hist.json",
+    "sha_a": "e054fec7a63abccebf47739b5faf7135cab6f5eea1a8c292338a59a9ed4cfb49",
+    "sha_b": "e054fec7a63abccebf47739b5faf7135cab6f5eea1a8c292338a59a9ed4cfb49",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "exec_trace": {
+  "id": "exec_trace",
+  "family": "traced execution (confinement)",
+  "cmds": [
+   "exec_trace.py --yes --out {w}/exectrace"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 7.6,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 10240,
+      "trace(z80_test_L20.wgsl)": 10240,
+      "trace(z80_test_L32.wgsl)": 10240,
+      "trace(z80_test_L50.wgsl)": 10240,
+      "trace(z80_test_L64.wgsl)": 10240,
+      "trace(z80_test_lethal_L16.wgsl)": 5120
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 6.9,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 10240,
+      "z80c02_assay_L20": 10240,
+      "z80c02_assay_L32": 10240,
+      "z80c02_assay_L50": 10240,
+      "z80c02_assay_L64": 10240,
+      "z80c02_assay_lethal_L16": 5120
+     }
+    }
+   },
+   "n": {
+    "wall_s": 6.9,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16 (budget -1)": 10240,
+      "z80c02_assay_L20 (budget -1)": 10240,
+      "z80c02_assay_L32 (budget -1)": 10240,
+      "z80c02_assay_L50 (budget -1)": 10240,
+      "z80c02_assay_L64 (budget -1)": 10240,
+      "z80c02_assay_lethal_L16 (budget -1)": 5120
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "exectrace/per_replicator.csv",
+    "sha_a": "288a4d72b3e8e7d9d186c1931d41611617ff45dc14515a734d9eeacc17a4ddf9",
+    "sha_b": "288a4d72b3e8e7d9d186c1931d41611617ff45dc14515a734d9eeacc17a4ddf9",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "109 of 220 rows differ in 4 columns (e.g. partner_exec_mean, copied_frac, H_bits, n_unique_offspring)",
+     "rows": 220
+    },
+    "committed": "results/exectrace/per_replicator.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "exectrace/AGREEMENT.md",
+    "sha_a": "f16b6e7f5d2ead888f0e592259b157ad745b30d20357232f98fce57e6dda3f15",
+    "sha_b": "f16b6e7f5d2ead888f0e592259b157ad745b30d20357232f98fce57e6dda3f15",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/exectrace/AGREEMENT.md",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "inflow_insoup": {
+  "id": "inflow_insoup",
+  "family": "traced execution (inflow)",
+  "cmds": [
+   "inflow_insoup.py --yes --out {w}/inflow_insoup"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 9.7,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 20480,
+      "trace(z80_test_L20.wgsl)": 15360,
+      "trace(z80_test_L50.wgsl)": 17152,
+      "trace(z80_test_L64.wgsl)": 16640
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 9.7,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 20480,
+      "z80c02_assay_L20": 15360,
+      "z80c02_assay_L50": 17152,
+      "z80c02_assay_L64": 16640
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "inflow_insoup/per_world.csv",
+    "sha_a": "598b3681fdf80d6a60465133ea4b96aec0ba86a503542ac35f0bd2a6d07d2e28",
+    "sha_b": "598b3681fdf80d6a60465133ea4b96aec0ba86a503542ac35f0bd2a6d07d2e28",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/inflow_insoup/per_world.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "inflow_insoup/sensitivity.csv",
+    "sha_a": "3c6b58130a509dca2f27fc80704f175739a25b58a74f7fe249c20bcb0ae6b566",
+    "sha_b": "3c6b58130a509dca2f27fc80704f175739a25b58a74f7fe249c20bcb0ae6b566",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/inflow_insoup/sensitivity.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "inflow_insoup/INFLOW_INSOUP.md",
+    "sha_a": "7bdde13d900843ef59e9b6fd623331a7f8b34331fdbc1244b31bb0fba8639a16",
+    "sha_b": "7bdde13d900843ef59e9b6fd623331a7f8b34331fdbc1244b31bb0fba8639a16",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/inflow_insoup/INFLOW_INSOUP.md",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "mutscan_G": {
+  "id": "mutscan_G",
+  "family": "single-mutant scan",
+  "cmds": [
+   "mutscan.py --yes --fresh --out {w}/mutscan",
+   "mutscan.py --report --out {w}/mutscan"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 510.0,
+    "usage": {
+     "shader": {
+      "z80_test_L16.wgsl": 10447360,
+      "z80_test_L20.wgsl": 13058560,
+      "z80_test_L50.wgsl": 4098560,
+      "z80_test_L64.wgsl": 5245440
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 506.9,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 10447360,
+      "z80c02_assay_L20": 13058560,
+      "z80c02_assay_L50": 4098560,
+      "z80c02_assay_L64": 5245440
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "mutscan/mutscan_tapes.csv",
+    "sha_a": "86700a95c2a322c4650b35f257a7f2a147894eac6e511fb3e59af49c836fd44f",
+    "sha_b": "ca70e4ad94ed9ee4fa8e86e7eeba3b2dcb01c2be86d3a3dc5634e836559bb5a3",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 160
+    },
+    "committed": "results/mutscan/mutscan_tapes.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "after replaying the committed file's incremental re-write on (a) (rows where L == 16 read back once with pandas' default float parser): identical-except: `wall_s` (wall-clock time); raw: 38 of 160 rows differ in 5 columns (e.g. robustness_f, trans_mean_heritable, frac_both, capacity_bits, ctrl_gen2) (last-digit float differences)",
+     "rows": 160
+    }
+   },
+   {
+    "file": "mutscan/mutscan_sites.csv",
+    "sha_a": "71748802aef162eda767582b7105a8129040f9461ad3dae200ef5ff07afb6d83",
+    "sha_b": "71748802aef162eda767582b7105a8129040f9461ad3dae200ef5ff07afb6d83",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/mutscan/mutscan_sites.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "after replaying the committed file's incremental re-write on (a) (rows where L == 16 read back once with pandas' default float parser): identical; raw: 376 of 6000 rows differ in 4 columns (e.g. frac_herit, frac_faith, frac_trans, frac_both) (last-digit float differences)"
+    }
+   },
+   {
+    "file": "mutscan/REPORT.md",
+    "sha_a": "a15213d24b7f480186253cec2e153ddc822998795e0b8e5d7c4ca123bf522384",
+    "sha_b": "a15213d24b7f480186253cec2e153ddc822998795e0b8e5d7c4ca123bf522384",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/mutscan/REPORT.md",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "mutscan_I": {
+  "id": "mutscan_I",
+  "family": "single-mutant scan",
+  "cmds": [
+   "mutscan.py --yes --fresh --runs results/stageI/stageI/stage_g_runs.csv --L 16 --zero-halts --out {w}/mutscan_I"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 26.0,
+    "usage": {
+     "shader": {
+      "z80_test_lethal_L16.wgsl": 5223680
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 28.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 5223680
+     }
+    }
+   },
+   "n": {
+    "wall_s": 24.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16 (budget -1)": 5223680
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "mutscan_I/mutscan_tapes.csv",
+    "sha_a": "79cd0944c3091e8234589cea78f8c80cd324302a0cca2d857c04853ceaebb85f",
+    "sha_b": "ca7a6729ff23297baa91f4c924d293633768ad8c23aab845b748d6f2f919aae5",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 20
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "11 of 20 rows differ in 5 columns (e.g. robustness_h, robustness_f, trans_mean_heritable, frac_both, capacity_bits)",
+     "rows": 20
+    },
+    "committed": "results/mutscan_I/mutscan_tapes.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 20
+    }
+   },
+   {
+    "file": "mutscan_I/mutscan_sites.csv",
+    "sha_a": "f8b98c9cb497813283d8df75180d500c9e7d64c1a9a7abe722ed1623faec0d57",
+    "sha_b": "f8b98c9cb497813283d8df75180d500c9e7d64c1a9a7abe722ed1623faec0d57",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "10 of 320 rows differ in 4 columns (e.g. frac_herit, frac_faith, frac_trans, frac_both)",
+     "rows": 320
+    },
+    "committed": "results/mutscan_I/mutscan_sites.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "mutscan_K": {
+  "id": "mutscan_K",
+  "family": "single-mutant scan",
+  "cmds": [
+   "mutscan.py --yes --fresh --runs results/stageK/stageK/stage_g_runs.csv --L 32 --out {w}/mutscan_K"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 36.0,
+    "usage": {
+     "shader": {
+      "z80_test_L32.wgsl": 2624000
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 36.8,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L32": 2624000
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "mutscan_K/mutscan_tapes.csv",
+    "sha_a": "103b9b6a1f550d40471b9b138a6585e3a959e50687f69924b3bea350e9060dd4",
+    "sha_b": "dea0d17e2b0f66e901e32353e0923ef7b200bd0de2b70ce37d94f0db0a49b4c1",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 40
+    },
+    "committed": "results/mutscan_K/mutscan_tapes.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 40
+    }
+   },
+   {
+    "file": "mutscan_K/mutscan_sites.csv",
+    "sha_a": "1f0e7fa9ac426c06f4c65cbdeba60b96a2fd6fe894e0acdb34642674ae5eabe7",
+    "sha_b": "1f0e7fa9ac426c06f4c65cbdeba60b96a2fd6fe894e0acdb34642674ae5eabe7",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/mutscan_K/mutscan_sites.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "serial_retention": {
+  "id": "serial_retention",
+  "family": "serial transfer",
+  "cmds": [
+   "serial_retention.py --yes --out {w}/serial_retention"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 90.5,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 192,
+      "trace(z80_test_L20.wgsl)": 192,
+      "trace(z80_test_L32.wgsl)": 256,
+      "trace(z80_test_L50.wgsl)": 128,
+      "trace(z80_test_L64.wgsl)": 64,
+      "trace(z80_test_lethal_L16.wgsl)": 64,
+      "z80_test_L16.wgsl": 1572864,
+      "z80_test_L20.wgsl": 1964544,
+      "z80_test_L32.wgsl": 4186112,
+      "z80_test_L50.wgsl": 413696,
+      "z80_test_L64.wgsl": 264192,
+      "z80_test_lethal_L16.wgsl": 524288
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 98.7,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 1573056,
+      "z80c02_assay_L20": 1964736,
+      "z80c02_assay_L32": 4186368,
+      "z80c02_assay_L50": 413824,
+      "z80c02_assay_L64": 264256,
+      "z80c02_assay_lethal_L16": 524352
+     }
+    }
+   },
+   "n": {
+    "wall_s": 97.4,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16 (budget -1)": 1573056,
+      "z80c02_assay_L20 (budget -1)": 1964736,
+      "z80c02_assay_L32 (budget -1)": 4186368,
+      "z80c02_assay_L50 (budget -1)": 413824,
+      "z80c02_assay_L64 (budget -1)": 264256,
+      "z80c02_assay_lethal_L16 (budget -1)": 524352
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "serial_retention/sr_summary.csv",
+    "sha_a": "2f229e4e3b6dc9118fce6e60f4d9175944a29a06c7351a25e1c1de275affd3c9",
+    "sha_b": "286edb9dee8cd7289b5336ee4107f8b4dd8e324e5b654b7d64533e7b359101b4",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 14
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "11 of 14 rows differ in 16 columns (e.g. ctrl_alive_g2, ctrl_alive_g4, retained_g1, erased_g1, lost_g1, sites_g1)",
+     "rows": 14
+    },
+    "committed": "results/serial_retention/sr_summary.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "`wall_s` (wall-clock time)",
+     "rows": 14
+    }
+   },
+   {
+    "file": "serial_retention/sr_sites.csv",
+    "sha_a": "9d32e2e7121eef8ccfabf4c1a3a48e90d8127b75f38a398d2fb54450af1fcd79",
+    "sha_b": "9d32e2e7121eef8ccfabf4c1a3a48e90d8127b75f38a398d2fb54450af1fcd79",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "374 of 1664 rows differ in 5 columns (e.g. frac_ok, retained, erased, lost, transmissible)",
+     "rows": 1664
+    },
+    "committed": "results/serial_retention/sr_sites.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "serial_retention/sr_mutants.csv.gz",
+    "sha_a": "563984d3b1939dd02187475346e109b7f41d5069e1b22fbc483a8523fac895ef",
+    "sha_b": "5a93eabfc737ff7a8cd1b7bf09140446fe38eebc99f470a72b9d1aac3a2373bf",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "5180 of 278032 rows differ in 7 columns (e.g. alive, retained, erased, lost, p_present_alive, bg)",
+     "rows": 278032
+    },
+    "committed": "results/serial_retention/sr_mutants.csv.gz",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "serial_retention/REPORT.md",
+    "sha_a": "feb4f22f1427aed36b5277e8a075b0a20a9430a101937762b683374272c215f6",
+    "sha_b": "feb4f22f1427aed36b5277e8a075b0a20a9430a101937762b683374272c215f6",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "4 lines differ"
+    },
+    "committed": "results/serial_retention/REPORT.md",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "branching": {
+  "id": "branching",
+  "family": "branching transfer",
+  "cmds": [
+   "branching_transfer.py --out {w}/branching",
+   "branching_table.py --dir {w}/branching"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 60.9,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 128,
+      "trace(z80_test_L20.wgsl)": 64,
+      "trace(z80_test_L32.wgsl)": 64,
+      "trace(z80_test_L64.wgsl)": 64,
+      "z80_test_L16.wgsl": 470324,
+      "z80_test_L20.wgsl": 507138,
+      "z80_test_L32.wgsl": 931042,
+      "z80_test_L64.wgsl": 367520
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 55.7,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 470452,
+      "z80c02_assay_L20": 507202,
+      "z80c02_assay_L32": 931106,
+      "z80c02_assay_L64": 367584
+     }
+    }
+   },
+   "n": {
+    "wall_s": 50.9,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16 (budget -1)": 470832,
+      "z80c02_assay_L20 (budget -1)": 507202,
+      "z80c02_assay_L32 (budget -1)": 931172,
+      "z80c02_assay_L64 (budget -1)": 366866
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "branching/branching_summary.csv",
+    "sha_a": "471cdf4e5fb4a3884b35b9e87dc102d4a7c4a56d2883fdc5338fb0baa8b0d67c",
+    "sha_b": "770c501bd74c3379b65939696a366b626ffcca3d56961c1dd722938b17983b92",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "`gen_wall_s` (wall-clock time); `arm_wall_s` (wall-clock time); `executor` z80_test_L16.wgsl \u2192 z80c02_assay_L16, z80_test_L20.wgsl \u2192 z80c02_assay_L20, z80_test_L32.wgsl \u2192 z80c02_assay_L32, z80_test_L64.wgsl \u2192 z80c02_assay_L64",
+     "rows": 56
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "40 of 56 rows differ in 14 columns (e.g. ctrl_alive, ctrl_alive_n, ctrl_mean_size, ctrl_copy_rate, mut_alive, mut_mean_size)",
+     "rows": 56
+    },
+    "committed": "results/branching/branching_summary.csv",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "`gen_wall_s` (wall-clock time); `arm_wall_s` (wall-clock time)",
+     "rows": 56
+    }
+   },
+   {
+    "file": "branching/branching_sites.csv",
+    "sha_a": "465f770da1b709d7f51909a8ac2b56d9694e59dadd01419ed9c774273f8c4970",
+    "sha_b": "465f770da1b709d7f51909a8ac2b56d9694e59dadd01419ed9c774273f8c4970",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "1132 of 1824 rows differ in 9 columns (e.g. n_ok, alive, carry_alive, bg, retained, erased)",
+     "rows": 1824
+    },
+    "committed": "results/branching/branching_sites.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "branching/branching_mutants.csv.gz",
+    "sha_a": "9efeb2591f9c75f50b28caa29e50136acb67810bdeef05cc1eadd15d74002961",
+    "sha_b": "67f95c5bc58c9c07ce6337e0e14d0b935a9b04581d3458f7fc1d34854cc81ff9",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "29110 of 58368 rows differ in 8 columns (e.g. alive, carry_alive, bg, ok, retained, erased)",
+     "rows": 58368
+    },
+    "committed": "results/branching/branching_mutants.csv.gz",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "branching/BRANCHING.md",
+    "sha_a": "a52c5ec950093fadd12c6b465eebfd6afc28a0ba7ecb3d9af2b4f1fc18518ae7",
+    "sha_b": "358e0361570dfad935ff1c37ca0b5b82985feeb4dae09f69a24796b18a032527",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "lines matching `^Runtime: `, `^total wall `"
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "8 lines differ"
+    },
+    "committed": "results/branching/BRANCHING.md",
+    "a_vs_committed": {
+     "status": "identical-except",
+     "detail": "lines matching `^Runtime: `, `^total wall `"
+    }
+   },
+   {
+    "file": "branching/SUPP_TABLE.md",
+    "sha_a": "ec9d0e22ca5d930e18ce6023d14459b68544fe408e46ae508db7e6f2b8ef535a",
+    "sha_b": "ec9d0e22ca5d930e18ce6023d14459b68544fe408e46ae508db7e6f2b8ef535a",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "4 lines differ"
+    },
+    "committed": "results/branching/SUPP_TABLE.md",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": ""
+    }
+   },
+   {
+    "file": "branching/runtime.txt",
+    "sha_a": "c54f6e1a7728d4406043a979c2d7f42b9c633da9fb8f48af162ca56da712d09f",
+    "sha_b": "99b3e770230e76603b0d976a15247a901d8de48b1738082837524ebba4fcf15b",
+    "a_vs_b": {
+     "status": "identical-except",
+     "detail": "lines matching `^Runtime: `, `^total wall `"
+    },
+    "a_vs_n": {
+     "status": "identical-except",
+     "detail": "lines matching `^Runtime: `, `^total wall `"
+    }
+   }
+  ]
+ },
+ "population_classes_I": {
+  "id": "population_classes_I",
+  "family": "population classes",
+  "cmds": [
+   "population_classes.py --yes --stages I --out {w}/population_I"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 98.0,
+    "usage": {
+     "shader": {
+      "trace(z80_test_lethal_L16.wgsl)": 174080,
+      "z80_test_lethal_L16.wgsl": 10704928
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 117.5,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 10879008
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "population_I/classes_snapshots.csv",
+    "sha_a": "53e50986c472cb229f0cb3ddd90b0de493014c256f16b2fecf7d45691bb200fd",
+    "sha_b": "53e50986c472cb229f0cb3ddd90b0de493014c256f16b2fecf7d45691bb200fd",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/population/classes_snapshots.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where stage == 'I' (cell for cell)",
+     "rows": 170
+    }
+   },
+   {
+    "file": "population_I/classes_cells.csv",
+    "sha_a": "8376990965f0ab28a561af7e262cc4160be3e4089abf765da4359e5649d3903e",
+    "sha_b": "8376990965f0ab28a561af7e262cc4160be3e4089abf765da4359e5649d3903e",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/population/classes_cells.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where stage == 'I' (cell for cell)",
+     "rows": 1217
+    }
+   },
+   {
+    "file": "population_I/REPORT_classes.md",
+    "sha_a": "f1ac8d80113a2eedece75e6dbcaa395ea0bd3f8694848228e7cf59f76c0d939c",
+    "sha_b": "f1ac8d80113a2eedece75e6dbcaa395ea0bd3f8694848228e7cf59f76c0d939c",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "population_classes_M": {
+  "id": "population_classes_M",
+  "family": "population classes",
+  "cmds": [
+   "population_classes.py --yes --stages M --finals-only --out {w}/population_M"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 103.4,
+    "usage": {
+     "shader": {
+      "trace(z80_test_L16.wgsl)": 20480,
+      "trace(z80_test_L32.wgsl)": 20480,
+      "z80_test_L16.wgsl": 2713600,
+      "z80_test_L32.wgsl": 5335040
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 115.9,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_L16": 2734080,
+      "z80c02_assay_L32": 5355520
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "population_M/classes_snapshots.csv",
+    "sha_a": "097addb1c80ff7031cef34110a92c324b969d4a27041a4c108d4531e64ea1652",
+    "sha_b": "097addb1c80ff7031cef34110a92c324b969d4a27041a4c108d4531e64ea1652",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/population/classes_snapshots.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where stage == 'M' and snapshot == 'final' (cell for cell)",
+     "rows": 40
+    }
+   },
+   {
+    "file": "population_M/classes_cells.csv",
+    "sha_a": "89ab0ad3c5717869917a4c80c2a4fce7fc040c96926e121ce0ec731b9cc9378c",
+    "sha_b": "89ab0ad3c5717869917a4c80c2a4fce7fc040c96926e121ce0ec731b9cc9378c",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "committed": "results/population/classes_cells.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where stage == 'M' and snapshot == 'final' (cell for cell)",
+     "rows": 640
+    }
+   },
+   {
+    "file": "population_M/REPORT_classes.md",
+    "sha_a": "00300ac96da38816a4246dfcddc31b28cc09eaa668eacf4fb6c3b97ed65d6a24",
+    "sha_b": "00300ac96da38816a4246dfcddc31b28cc09eaa668eacf4fb6c3b97ed65d6a24",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    }
+   }
+  ]
+ },
+ "population_sample_I": {
+  "id": "population_sample_I",
+  "family": "population classes (sample)",
+  "cmds": [
+   "population_sample.py --yes --stages I --out {w}/population_q_I"
+  ],
+  "runs": {
+   "a": {
+    "wall_s": 11.7,
+    "usage": {
+     "shader": {
+      "trace(z80_test_lethal_L16.wgsl)": 41120,
+      "z80_test_lethal_L16.wgsl": 821760
+     },
+     "machine": {}
+    }
+   },
+   "b": {
+    "wall_s": 12.1,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16": 862880
+     }
+    }
+   },
+   "n": {
+    "wall_s": 10.6,
+    "usage": {
+     "shader": {},
+     "machine": {
+      "z80c02_assay_lethal_L16 (budget -64)": 862880
+     }
+    }
+   }
+  },
+  "files": [
+   {
+    "file": "population_q_I/population_worlds.csv",
+    "sha_a": "3153c6131f242a76e6784df9b933b06c1508f2e1092cc7fce4bf90a21fc431c7",
+    "sha_b": "3153c6131f242a76e6784df9b933b06c1508f2e1092cc7fce4bf90a21fc431c7",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "4 of 10 rows differ in 6 columns (e.g. frac_heritable, frac_confined, confined_given_heritable, identical_to_modal_given_heritable, median_sites_scanned, max_sites_scanned)",
+     "rows": 10
+    },
+    "committed": "results/population/population_worlds.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where stage == 'I' (cell for cell)",
+     "rows": 10
+    }
+   },
+   {
+    "file": "population_q_I/population_cells.csv",
+    "sha_a": "42bafc5e3303986d558b896cd36e08cec3a0f687a18857b1b7182cf79b7df530",
+    "sha_b": "42bafc5e3303986d558b896cd36e08cec3a0f687a18857b1b7182cf79b7df530",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "18 of 80 rows differ in 4 columns (e.g. cell, tape, hamming_to_modal, n_sites)",
+     "rows": 80
+    },
+    "committed": "results/population/population_cells.csv",
+    "a_vs_committed": {
+     "status": "identical",
+     "detail": "committed rows where stage == 'I' (cell for cell)",
+     "rows": 80
+    }
+   },
+   {
+    "file": "population_q_I/REPORT.md",
+    "sha_a": "77f1e1d47e114ce4cb0c3ac2ff074ab608c861dbe08900e923f001d3b40c6c2a",
+    "sha_b": "77f1e1d47e114ce4cb0c3ac2ff074ab608c861dbe08900e923f001d3b40c6c2a",
+    "a_vs_b": {
+     "status": "identical",
+     "detail": ""
+    },
+    "a_vs_n": {
+     "status": "DIFFERENT",
+     "detail": "1 lines differ"
+    }
+   }
+  ]
+ }
+}
