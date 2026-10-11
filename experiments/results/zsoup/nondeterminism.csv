@@ -1,0 +1,12 @@
+L,lethal,seed,steps_compared,first_step_active_differ,first_step_soup_differ,step1_active_run1,step1_active_run2,step1_active_flags_differ,step1_soup_bytes_differ,steps_with_identical_soups
+16,False,1,50,1,1,4567,3972,2129,20659,0
+16,False,2,50,1,1,4718,4657,1771,15006,0
+16,False,3,50,1,1,3995,4531,1676,16886,0
+16,False,4,50,1,1,3969,3969,494,4551,0
+16,False,5,50,1,1,4669,4522,2455,22403,0
+16,True,1,50,1,1,3966,4327,1469,7739,0
+16,True,2,50,1,1,3966,3964,618,3249,0
+16,True,3,50,1,1,4054,4024,1026,4775,0
+32,False,1,50,1,1,4130,4421,1351,18734,0
+32,False,2,50,1,1,4423,3972,1379,20145,0
+32,False,3,50,1,1,4010,4020,614,8181,0

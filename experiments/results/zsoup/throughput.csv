@@ -1,0 +1,4 @@
+L,lethal,machine,steps_timed,warmup,reps,soup_steps_per_s,zsoup_steps_per_s,zsoup_over_soup,soup_all,zsoup_all
+16,False,z80c02_pair_L16,3000,300,3,713.8,666.1,0.933,822 714 669,655 666 687
+16,True,z80c02_lethal_L16,3000,300,3,1779.3,1301.1,0.731,1557 1779 1837,1301 1140 1440
+32,False,z80c02_pair_L32,3000,300,3,1019.7,810.6,0.795,1199 1007 1020,863 811 736

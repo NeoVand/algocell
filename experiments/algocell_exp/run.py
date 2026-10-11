@@ -56,6 +56,7 @@ def run(
     exemplar_count: int = 3,
     mem_length: int | None = None,
     zero_halts: bool = False,
+    machine: str | None = None,
 ) -> dict:
     """on_snapshot(name, soup_uint8_2d) is called with 'emergence' (first tq_10
     crossing) and 'final' so callers can persist soup snapshots.
@@ -70,8 +71,26 @@ def run(
     Every sample also carries the shader's per-pair write counters summarised
     (`ix_*`). `mutations_per_step` overrides the default pair_count/2^noise_exp (control
     arms). `provenance` is stored verbatim in the condition record. `zero_halts` selects the lethal-tar rule (a zero
-    byte fetched as an opcode halts the pair; Stage I control, square grid only) and is recorded in the condition record."""
-    soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step, mem_length=mem_length, zero_halts=zero_halts)
+    byte fetched as an opcode halts the pair; Stage I control, square grid only) and is recorded in the condition record.
+    `machine` (a vendored Zilion Z80 machine, algocell_exp/machines) runs the soup as a ZSoup: the same soup kernels with
+    each step's pairs executed by that machine. L, the ring and the lethal rule are the machine's: a `tape` or
+    `mem_length` that disagrees, or `zero_halts=True` with a machine without the lethal-tar rule, is an error, and the
+    recorded `zero_halts` is the machine's. The machine's provenance is recorded. Only Z80 machines are accepted: the
+    exemplar mechanisms and suppression counts below are Z80 disassembly."""
+    if machine:
+        from .zmachine import load_machine
+        from .zsoup import ZSoup
+
+        if load_machine(machine).core["id"] != "z80":
+            raise ValueError(f"run.py's analyses (exemplar mechanisms, suppression counts) are Z80-specific; machine {machine} is not a Z80 (run a ZSoup directly)")
+        soup = ZSoup(machine, width, height, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step, grid=grid)
+        for what, want, got in (("tape", tape, soup.tape_length), ("mem_length", mem_length, soup.mem_length)):
+            if want is not None and int(want) != got:
+                raise ValueError(f"{what} {want} disagrees with machine {machine} ({got})")
+        if zero_halts and not soup.zero_halts:
+            raise ValueError(f"zero_halts requested, but machine {machine} has no lethal-tar rule")
+    else:
+        soup = Soup(width, height, grid, tape, seed, pairs, z80_steps, noise_exp, suppress, mutations_per_step=mutations_per_step, mem_length=mem_length, zero_halts=zero_halts)
     cond = {
         "label": label,
         "grid": grid,
@@ -104,6 +123,7 @@ def run(
         "census_pairs": census_pairs,
         "exemplar_count": exemplar_count,
         "adapter": adapter_summary(),
+        **({"machine": machine} if machine else {}),
         **_provenance(soup, provenance),
     }
     emit = (lambda d: (out.write(json.dumps(d) + "\n"), out.flush())) if out else (lambda d: None)
@@ -317,6 +337,8 @@ def _provenance(soup, extra: dict | None) -> dict:
         "versions": {"wgpu": wgpu.__version__, "wgpu_native": wgpu_native_version, "numpy": np.__version__, "brotli": getattr(brotli, "__version__", None), "python": platform.python_version()},
         "mutations_per_step_override": soup.mutations_per_step,
     }
+    if hasattr(soup, "machine_provenance"):   # ZSoup: the Zilion machine that executed the pairs
+        prov["machine"] = soup.machine_provenance
     if extra:
         prov.update(extra)
     return {"provenance": prov}
@@ -346,6 +368,7 @@ def main(argv=None) -> None:
     ap.add_argument("--sample-steps", default="", help="comma-separated extra sample steps, e.g. 1,2,3,5,8,13,21,34")
     ap.add_argument("--snapshot-steps", default="", help="comma-separated steps at which the full soup is snapshotted and the interaction census taken")
     ap.add_argument("--zero-halts", action="store_true", help="lethal-tar rule: a zero byte fetched as an opcode halts the pair for the rest of the encounter (Stage I control; square grid only)")
+    ap.add_argument("--machine", default=None, help="run as a ZSoup: execute pairs with this vendored Zilion machine (algocell_exp/machines/<name>)")
     a = ap.parse_args(argv)
     out = open(a.out, "w") if a.out else sys.stdout
     try:
@@ -355,7 +378,7 @@ def main(argv=None) -> None:
             stop_share=None if a.stop_share < 0 else a.stop_share, label=a.label, out=out, quiet=a.quiet, random_tapes=a.random_tapes,
             sample_every_early=a.sample_every_early, early_until=a.early_until, mutations_per_step=a.mutations_per_step,
             sample_steps=[int(x) for x in a.sample_steps.split(",") if x], snapshot_steps=[int(x) for x in a.snapshot_steps.split(",") if x],
-            zero_halts=a.zero_halts,
+            zero_halts=a.zero_halts, machine=a.machine,
         )
     finally:
         if a.out:

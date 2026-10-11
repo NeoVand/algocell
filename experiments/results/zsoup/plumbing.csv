@@ -1,0 +1,3 @@
+machine,core,init_stack,checked_steps,active_pairs,pairs_changed,writes_A,writes_B,mem_mismatch,wc_mismatch,record_mismatch,inactive_wc_nonzero,soup_bytes_changed,halted_lanes (reason/cause)
+m6502skel_pair_L16,m6502 0.0.0-skeleton (skeleton; variant nmos; compat skeleton; hooks none),"{""convention"": {""kind"": ""firstPushAt"", ""position"": 31, ""values"": {""s"": 255}}}",200,837089,1883,2764,20428,0,0,0,0,89083,"trap/unimplemented: 794,908, trap/illegal: 42,099"
+z80c02_pair_L16,z80 0.3.0 (stable; variant classic; compat 0.2; hooks none),"{""convention"": {""kind"": ""topAliases"", ""position"": 31, ""values"": {""sp"": 65535}}}",200,836895,151492,2584417,1624038,0,0,0,0,298716,"halt-insn/halt-insn: 46,775"
