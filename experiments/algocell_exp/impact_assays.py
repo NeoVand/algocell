@@ -31,7 +31,7 @@ TABLES = (
     "pe/pe_matrix.csv", "lod/founding.csv", "lod/founders2.csv",
     "lod_n6/founding.csv", "lod_n6/founders2.csv",
     "conv/conv_worlds.csv", "dial/dial_worlds.csv",
-    "r4/r4_long.csv", "r4/r4_rep.csv", "review_r2/census_p2.csv",
+    "r4/r4_long.csv", "r4/r4_rep.csv", "review_r2/census_p2.csv", "review_r2/census_p3.csv",
 )
 TAPE_COLUMNS = {"tape", "tape_hex", "first_tape", "final_tape", "F_tape",
                 "last_open_tape", "executor", "producer_tape", "modal"}
@@ -64,7 +64,8 @@ def panel():
         if not p.exists():
             raise FileNotFoundError(p)
         refs = [f"NUMBERS_INDEX.md:{i}" for i, line in enumerate(index, 1)
-                if rel in line or "results/" + rel.split("/")[0] + "/" in line]
+                if rel in line or "results/" + rel.split("/")[0] + "/" in line
+                or (rel == "review_r2/census_p3.csv" and "census_p3.csv" in line)]
         assert refs, rel
         with p.open() as fh:
             for rowno, row in enumerate(csv.DictReader(fh), 2):
@@ -98,11 +99,43 @@ def panel():
                     name = "/".join(row.get(x, "") for x in ("key", "parent", "seed", "which") if row.get(x)) or col
                     add(value, world, sup, f"results/{rel}:{rowno}:{col}", name, refs)
 
+    # Named genotypes in the Fig. 1 trace data and the Fig. 2 source report.
+    for name, trace in json.loads((HERE / "results/concept/traces.json").read_text()).items():
+        add(trace["tape"], f"L{trace['L']}", (), f"results/concept/traces.json:{name}", name,
+            [f"NUMBERS_INDEX.md:{i}" for i, line in enumerate(index, 1) if "concept/traces.json" in line])
+    for lineno, line in enumerate((HERE / "results/video/FIG2_NUMBERS.md").read_text().splitlines(), 1):
+        for tape in re.findall(r"`([0-9a-f]{2}(?: [0-9a-f]{2}){15})`", line):
+            add(tape, "L16", (), f"results/video/FIG2_NUMBERS.md:{lineno}", "Fig. 2 frame genotype",
+                [f"NUMBERS_INDEX.md:{i}" for i, line in enumerate(index, 1) if "video/FIG2_NUMBERS.md" in line])
+    # NUMBERS_INDEX's corrected founding executors are named too. Extract the
+    # actual other half of each partial-overwrite record, retaining its digest.
+    with (HERE / "results/lod_n6/founders2.csv").open() as fh:
+        founders = list(csv.DictReader(fh))
+    for seed, prefix in ((32005, "21 c0 21 c0 21 e3"), (32017, "1f e1 21 e1")):
+        row = next(r for r in founders if int(r["seed"]) == seed and r["first"] == "True")
+        path = K.RUNS / f"lod_n6_modal/lod_n6/L16_benign_s{seed}/line_records.npz"
+        with np.load(path, allow_pickle=False) as z:
+            matches = np.flatnonzero((z["step"] == int(row["F_step"])) &
+                                    (z["tape"] == np.frombuffer(bytes.fromhex(row["F_tape"]), np.uint8)).all(1))
+            rid = int(matches[0])
+            assert int(z["kind"][rid]) == 2
+            tape = z["other"][rid].tobytes().hex(" ")
+        assert tape.startswith(prefix)
+        sha = hashlib.sha256(path.read_bytes()).hexdigest()
+        add(tape, "L16", (), f"runs/{path.relative_to(K.RUNS)}:other[{rid}]; SHA256={sha}",
+            f"corrected N6 executor {seed}", ["NUMBERS_INDEX.md:123 (open discrepancy 22)"])
+
     # Full named tilings, including the null and memory-load words of Proposition 3.
     for word in ("00 00", "01 c5", "11 d5", "21 e5", "2a e5", "e5 2a", "e1 e3"):
         add(" ".join([word] * 8), "L16", (), "MAIN_nature.md:276 (Proposition 3); :232 (stack move)", word + " × 8",
             ["NUMBERS_INDEX.md (census2 and harness conventions)"])
     add(" ".join(["1e a4 ed b0"] * 5), "L20", (), "MAIN_nature.md:408 (period-four example)", "1e a4 ed b0 × 5", ["MAIN_nature.md:408"])
+    add(" ".join(["a0 5e ed b0"] * 8), "L32", (), "MAIN_nature.md:238 (tiled intruder partner)", "a0 5e ed b0 × 8", ["NUMBERS_INDEX.md (encounter censuses)"])
+    rng = np.random.default_rng(0)
+    t = bytes.fromhex("a0 5e ed b0") + rng.integers(0, 256, 28, dtype=np.uint8).tobytes()
+    for world in ("L32", "lethal_L32"):
+        add(t.hex(" "), world, (), "MAIN_nature.md:143,:236; unspecified tail drawn with numpy seed 0", "a0 5e ed b0 + seed-0 tail",
+            ["NUMBERS_INDEX.md (copy-offset switch); REVISION_PREREG.md E"])
     # Two explicitly named hand-built designs with unspecified random tails: keep
     # the core and generate the tail deterministically, as documented in the table.
     for core in ("21 00 00 11 10 00 01 10 00 ed b0 18 fe", "2e 00 1e 10 ed b0"):
