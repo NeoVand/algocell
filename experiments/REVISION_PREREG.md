@@ -1821,3 +1821,33 @@ The coordinator's acceptance standard supersedes certification of a finite provi
 #### Replacement freeze identities and stopped disposition
 
 results/s8086/prelaunch/freeze.json is the authoritative replacement manifest and binds the exact amended registration, option (b) registration/schedules, A-only cohort and schemas, unchanged RNG streams and fixtures, repaired observer exports, source hashes, corrected census/controls, dependencies, the complete projection and validation. Its own hash is excluded to avoid a cycle and is attested by the same Git commit as this amendment. The historical first-freeze hashes above are superseded. projection.json contains the repaired option (b) allocation plan, cap_usd=85 and launch_fits=true; guard_limits.json binds all-in guard cap 85 to the same plan. These cost-gate facts do not authorize dispatch. No Modal call or paid computation occurs during this refreeze. **STOP: await coordinator review; do not launch.**
+
+#### Prospective R2 withdrawal and $95 cap amendment — 2026-10-12
+
+Recorded before any S2 population data. The coordinator withdraws R2a and R2b
+as confirmatory predictions. R2 has descriptive status only: no pass, failure,
+joint success, or scientific withdrawal claim may depend on these mechanism
+labels. The reason is that causal verification repeatedly changed labels on
+which R2 depended, including reset-source and open memory-fed classifications.
+The causally verified classifier is frozen for descriptive use: the current
+prefix-causal operand-fetch, memory-read and reset-value interventions, both
+alternative substitutions, and fail-safe `other` for unsupported, mixed,
+overflowed or failed claims. Label changes impose no audit stop condition.
+
+For every detected copier, publish the literal writer, memory-fed one-pass
+copier, confined copy loop and other encounter tables, all 16 partner labels,
+and every `other` case with its reason and evidence. Retain occurrence and the
+11-point persistence counts as descriptive summaries, with same-genotype
+persistence separate. R0, R1's full-encounter fetch-based openness, the route
+kill rule, L1 and the amended L2 remain unchanged and confirmatory. A remains
+20 worlds at 3M; B remains withdrawn. Eligibility and law proof obligations
+are unchanged.
+
+The user approved the all-in Modal cap of **$95 on 2026-10-12**, including
+preparation. This supersedes the $85 cap. Successful terminal attempts do not
+create fictitious pending-restart reservations. Restarted attempts retain
+their costs; a finite charged recovery-time budget extends the world lifetime
+without renewing it on each restart. The exact forecast, recovery allowance,
+simulation and identities will be recorded in the replacement freeze.
+Preparation remains local only. **STOP before launch for the coordinator's
+final independent check; no launch receipt is created.**

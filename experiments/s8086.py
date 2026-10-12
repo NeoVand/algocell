@@ -22,7 +22,7 @@ REGISTERED_ARMS = ('A',)
 SNAPSHOTS = (0, 20_000, 100_000, 1_000_000, HORIZON)
 PERSISTENCE = tuple(range(2_750_000, HORIZON + 1, 25_000))
 RATE = .000222 + .0000131 + 8 * .00000222
-CAP = 85.0  # user-approved all-in cap, 2026-10-12; preparation counts
+CAP = 95.0  # user-approved all-in cap, 2026-10-12; preparation counts
 
 @dataclass(frozen=True)
 class Registration:
