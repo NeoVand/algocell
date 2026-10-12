@@ -152,6 +152,7 @@ class SpendGuard:
                 unknown=sorted(set(unknown)|{event['job']})
             elif kind=='terminal':
                 if event['job'] not in jobs: raise ValueError('unknown terminal job')
+                experiment_stopped=True
             elif kind=='check': pass
             elif kind=='liability':
                 j=jobs.get(event['job'])
@@ -199,7 +200,20 @@ class SpendGuard:
             row={'previous':previous,'time':time.time(),**safe(event)}
             row['hash']=sha(json.dumps(row,sort_keys=True,separators=(',',':')).encode())
             f.seek(0,2); f.write(json.dumps(row)+'\n'); f.flush(); os.fsync(f.fileno())
-            return {'projected_liabilities_usd':total,'cap':self.cap,'stop_required':total>self.cap or bool(unknown) or experiment_stopped,'unknown_physical_liabilities':unknown}
+            app_liabilities={}
+            for j in jobs.values():
+                app=j.get('app_id');floor,remaining=app_liabilities.get(app,(0.,0.))
+                if j['status']=='settled':floor+=j['cost']
+                else:
+                    elapsed=j.get('elapsed_usd',0);floor+=elapsed
+                    remaining+=j.get('liability',j['reservation'])-elapsed
+                app_liabilities[app]=(floor,remaining)
+            return {'projected_liabilities_usd':total,'cap':self.cap,'cap_exceeded':total>self.cap,
+                    'app_liabilities_usd':{app:max(billed.get(app,0),floor)+remaining
+                                          for app,(floor,remaining) in app_liabilities.items()},
+                    'experiment_stopped':experiment_stopped,
+                    'stop_required':total>self.cap or bool(unknown) or experiment_stopped,
+                    'unknown_physical_liabilities':unknown}
 
     def reserve(self,job,usd,**provenance): return self.transact({'kind':'reserve','job':job,'usd':usd,**provenance})
     def start(self,job,call_id,app_id): return self.transact({'kind':'started','job':job,'call_id':call_id,'app_id':app_id})

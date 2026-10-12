@@ -7,7 +7,7 @@ Ledger lock acquisition is nonblocking and the entire transaction is timed.
 from __future__ import annotations
 import argparse,asyncio,json,math,os,queue,subprocess,sys,threading,time,uuid
 from pathlib import Path
-from s8086 import RATE,sha,safe
+from s8086 import RATE,sha,safe,PRE
 
 STARTUP_TIMEOUT_S=120
 STARTUP_ATTEMPTS=2  # historical nominal forecast allowance, NOT a restart limit
@@ -17,6 +17,7 @@ TERMINATION_GRACE_S=60
 WATCHDOG_POLL_S=1
 RPC_TIMEOUT_S=10
 BOOKKEEP_TIMEOUT_S=RPC_TIMEOUT_S  # incremental replay; bounded independently of stop requests
+LOCK_RETRY_S=.25  # per-poll allowance; contention retries continue until the real deadline
 LIFECYCLE_EXTRA_S=STARTUP_TIMEOUT_S*2+TERMINATION_GRACE_S+WATCHDOG_POLL_S+6*RPC_TIMEOUT_S
 ATTEMPT_TERMINATION_S=TERMINATION_GRACE_S+WATCHDOG_POLL_S+6*RPC_TIMEOUT_S
 FULL_WORLD_RECOVERIES=3
@@ -32,6 +33,19 @@ def envelope_seconds(execution_s):
     return math.ceil(execution_s)+LIFECYCLE_EXTRA_S
 
 def dispatch_seconds(execution_s): return SETUP_TIMEOUT_S+envelope_seconds(execution_s)
+
+def valid_world_freeze(path,world_freeze):
+    """Operational refreezes accept only byte-bound completed prior inputs.
+
+    The current freeze still attests every executing source file. This lineage
+    receipt does not rewrite a world header or permit any changed trajectory.
+    """
+    raw=(PRE/'freeze.json').read_bytes()
+    if world_freeze==sha(raw):return True
+    manifest=json.loads(raw)
+    entry=manifest.get('completed_world_inputs',{}).get(Path(path).stem)
+    return bool(entry and entry['freeze_sha256']==world_freeze
+                and entry['input_sha256']==sha(Path(path).read_bytes()))
 
 def atomic_json(path,value):
     path=Path(path);temp=path.with_suffix(path.suffix+'.tmp')
@@ -73,7 +87,7 @@ class AsyncStatus:
         while self.q.unfinished_tasks and time.monotonic()<deadline:time.sleep(.001)
 
 class Lifecycle:
-    def __init__(self,path,*,app_id,execution_s,call_id=None,started=None,now=time.monotonic,guard=None,job=None,setup=False,jobs=None,max_containers=1):
+    def __init__(self,path,*,app_id,execution_s,call_id=None,started=None,now=time.monotonic,guard=None,job=None,setup=False,jobs=None,max_containers=1,initial_account=None):
         self.path=Path(path);self.journal=AsyncJournal(path)
         self.app_id,self.call_id,self.now,self.guard,self.job=app_id,call_id,now,guard,job
         self.started=now() if started is None else started
@@ -89,8 +103,10 @@ class Lifecycle:
             self.expires_at=self.started+sum(dispatch_seconds(v) for v in jobs.values())+self.recovery_seconds
         self.stop_at=self.expires_at-ATTEMPT_TERMINATION_S
         self.confirmed=False;self.confirmed_at=None;self.requested=False;self.stop_reason=None;self.incomplete=False
-        self.tasks=set();self.attempts={};self.last_meter=0.;self.last_progress=None;self.unknown_bound=False
+        self.tasks=set();self.attempts={};self.last_meter=None;self.last_billing_error=None;self.last_progress=None;self.unknown_bound=False
         self.charged_usd=0.;self.elapsed_usd=0.;self.account=None;self.work_complete=False
+        self.ledger_account=initial_account;self.accounted_meter=None;self.accounting_pending=False
+        self.lock_failures=0;self.ledger_retry_at=0.
         self.emit('armed',expires_at=self.expires_at,stop_at=self.stop_at,reservation_seconds=self.reservation_seconds,setup_reserved=setup)
     @property
     def liability_retained(self): return not self.confirmed or self.unknown_bound
@@ -99,14 +115,53 @@ class Lifecycle:
     def flush_log(self): return self.journal.flush()
     def bookkeep(self,event):
         if not self.guard:return {'stop_required':False}
+        if self.now()<self.ledger_retry_at:return None
         result=queue.Queue(maxsize=1)
         def transact():
-            try: result.put((True,self.guard.transact(event,nonblocking=True)))
-            except BaseException as exc: result.put((False,exc))
+            deadline=time.monotonic()+min(LOCK_RETRY_S,BOOKKEEP_TIMEOUT_S)
+            delay=.01
+            while True:
+                try:
+                    result.put((True,self.guard.transact(event,nonblocking=True)));return
+                except BlockingIOError as exc:
+                    # Yield after a bounded wait, then retry on later polls.
+                    # A lock owner may be suspended: resource observations and
+                    # the independent deadline/stop path must keep advancing.
+                    remaining=deadline-time.monotonic()
+                    if remaining<=0:result.put((True,None));return
+                    time.sleep(min(delay,remaining));delay=min(.1,delay*2)
+                except BaseException as exc:result.put((False,exc));return
         threading.Thread(target=transact,daemon=True).start()
         try:ok,value=result.get(timeout=BOOKKEEP_TIMEOUT_S)
         except queue.Empty: raise TimeoutError('watchdog ledger IO exceeded bounded RPC allowance')
         if not ok: raise value
+        if value is None:
+            self.lock_failures+=1
+            self.ledger_retry_at=self.now()+min(1.,.25*2**min(self.lock_failures-1,2))
+            self.emit('ledger_wait',failures=self.lock_failures,retry_at=self.ledger_retry_at,
+                      resource_time_accrual_usd=self.elapsed_usd,liability_retained=True)
+        else:self.lock_failures=0;self.ledger_retry_at=0.
+        return value
+    def record_account(self,event):
+        value=self.bookkeep(event)
+        if value is not None:self.ledger_account=value
+        else:self.accounting_pending=True
+        self.account=self.ledger_account
+        if self.accounting_pending:
+            # Keep the last complete projection and replace this app's stale
+            # contribution with its current conservative time/billing bound.
+            # Before the first replay, retain the entire frozen plan.
+            nominal=sum(self.reservations.values()) if self.jobs else self.guard.plan[self.job]
+            previous=self.ledger_account or {'projected_liabilities_usd':self.guard.overhead+sum(self.guard.plan.values()),
+                                            'stop_required':False,'unknown_physical_liabilities':[],
+                                            'experiment_stopped':False}
+            old=previous.get('app_liabilities_usd',{}).get(self.app_id,nominal)
+            current=max(nominal,self.charged_usd)+max(0.,(self.last_meter or 0.)-self.elapsed_usd)
+            total=previous['projected_liabilities_usd']+max(0.,current-old)
+            self.account={**previous,'projected_liabilities_usd':total,'cap':self.guard.cap,
+                          'cap_exceeded':total>self.guard.cap,
+                          'stop_required':previous['stop_required'] or total>self.guard.cap,
+                          'ledger_pending':True}
         return value
     def uncertainty(self,reason):
         if not self.unknown_bound:
@@ -125,20 +180,29 @@ class Lifecycle:
             try:provider.cancel(call)
             except Exception as exc:self.emit('cancel_error',error=str(exc))
         self.emit('stop_requested',reason=reason,last_progress=self.last_progress,status='INCOMPLETE')
+    def account_stop(self,provider):
+        if not self.account['stop_required']:return
+        if self.account.get('cap_exceeded'):reason='complete spend projection exceeds cap'
+        elif self.account.get('unknown_physical_liabilities'):reason='unknown physical liabilities'
+        else:reason='terminal incomplete dispatch'
+        self.stop_now(provider,reason)
     def observe(self,sample):
         active=set(sample['tasks']);events=sample.get('attempt_events',[])
         # Test mocks may use TaskList alone; production always supplies cursor
         # events as well, including tasks already gone from the live list.
-        events=events+[{'attempt':t,'task':t,'state':'live','elapsed_s':0} for t in active if not any(e.get('task')==t for e in events)]
+        events=events+[{'attempt':next((k for k,a in self.attempts.items() if a['task']==t and a['live']),t),
+                        'task':t,'state':'live'} for t in active if not any(e.get('task')==t for e in events)]
         for event in events:
             key=event['attempt'];task=event.get('task',key)
             if key not in self.attempts:
                 self.attempts[key]={'first':self.now(),'observed_at':self.now(),'elapsed_s':0.,'live':True,'task':task,'state':'live'}
                 self.tasks.add(key);self.emit('attempt_observed',task=task,attempt=key,attempts_observed=len(self.tasks),recovery='restart_step_0')
             attempt=self.attempts[key]
-            elapsed=event.get('elapsed_s',self.now()-attempt['first'])
+            accrued=attempt['elapsed_s']+max(0.,self.now()-attempt['observed_at']) if attempt['live'] else attempt['elapsed_s']
+            elapsed=event.get('elapsed_s',accrued)
             if not math.isfinite(elapsed) or elapsed<0:raise ValueError('invalid attempt elapsed time')
-            attempt['elapsed_s']=max(attempt['elapsed_s'],elapsed)
+            attempt['elapsed_s']=max(attempt['elapsed_s'],elapsed,
+                                     accrued if event.get('state','live')=='live' else 0.)
             attempt['observed_at']=self.now()
             attempt['live']=event.get('state') not in ('completed','preempted','failed')
             attempt['state']=event.get('state','live')
@@ -190,8 +254,9 @@ class Lifecycle:
         self.emit('liability_charged',usd=self.charged_usd,attempts=len(self.attempts),seconds=seconds,setup_s=setup_elapsed)
         return active
     def poll(self,provider,*,finish=False,parent_alive=True):
+        self.accounting_pending=False
         self.work_complete |= finish
-        due=finish or not parent_alive or self.now()>=self.stop_at or self.requested
+        due=self.confirmed_at is None and (finish or not parent_alive or self.now()>=self.stop_at or self.requested)
         if self.setup and self.body_started is None and self.now()>=self.started+SETUP_TIMEOUT_S:due=True
         if due:
             reason=self.stop_reason if self.requested else ('normal_finish' if finish and parent_alive and self.now()<self.stop_at else 'parent/deadline')
@@ -204,25 +269,35 @@ class Lifecycle:
             if self.guard:
                 event={'kind':'batch_liability' if self.jobs else 'liability','job':self.job,'app_id':self.app_id,'usd':self.charged_usd,'elapsed_usd':self.elapsed_usd,'attempts':safe(self.attempts)}
                 if self.jobs:event['jobs']=list(self.jobs)
-                self.account=self.bookkeep(event)
-                if self.account['stop_required']:self.stop_now(provider,'meter plus live attempt liabilities plus remaining work exceeds cap')
+                self.record_account(event)
+                self.account_stop(provider)
+            error=sample.get('billing_error')
+            if error and error!=self.last_billing_error:
+                self.emit('meter_fallback',error=error,resource_time_accrual_usd=self.elapsed_usd,
+                          live_containers=len(active),complete_liability_usd=self.charged_usd)
+            self.last_billing_error=error
             meter=sample.get('metered_usd')
             if meter is not None:
-                if not math.isfinite(meter) or meter<self.last_meter:raise ValueError('invalid cumulative meter')
+                if not math.isfinite(meter) or self.last_meter is not None and meter<self.last_meter:raise ValueError('invalid cumulative meter')
                 self.last_meter=meter
-                self.account=self.bookkeep({'kind':'metered','app_id':self.app_id,'usd':meter})
-                if self.account['stop_required']:self.stop_now(provider,'metered spend exceeds complete cap')
+            if self.guard and self.last_meter is not None and self.last_meter!=self.accounted_meter:
+                if self.record_account({'kind':'metered','app_id':self.app_id,'usd':self.last_meter}) is not None:
+                    self.accounted_meter=self.last_meter
+                self.account_stop(provider)
             if sample['stopped'] and not active:
-                self.confirmed=True;self.confirmed_at=self.now()
+                if self.confirmed_at is None:self.confirmed_at=self.now()
                 if self.confirmed_at>self.expires_at:self.uncertainty('termination confirmed after reserved envelope')
                 self.emit('stopped_confirmed',attempts_observed=len(self.tasks),last_progress=self.last_progress,within_envelope=self.confirmed_at<=self.expires_at)
                 try:
-                    for job in self.jobs or [self.job]:self.bookkeep({'kind':'stopped','job':job,'app_id':self.app_id,'confirmed':True,'tasks_empty':True})
+                    if self.guard:
+                        for job in self.jobs or [self.job]:
+                            self.record_account({'kind':'stopped','job':job,'app_id':self.app_id,'confirmed':True,'tasks_empty':True})
                 except Exception as exc:self.emit('ledger_unavailable',error=str(exc))
-                return True
+                self.confirmed=not self.accounting_pending
+                return self.confirmed
         except Exception as exc:
             self.stop_now(provider,'observation/accounting unavailable');self.emit('observation_error',error=f'{type(exc).__name__}: {exc}')
-        if self.now()>self.expires_at and not self.confirmed:
+        if self.now()>self.expires_at and self.confirmed_at is None:
             self.uncertainty('termination not confirmed by reserved envelope expiry');self.emit('unconfirmed_overrun',liability_retained=True)
         return False
 
@@ -277,7 +352,8 @@ class ModalProvider:
             if not any(e['attempt']==key for e in events):
                 birth=task.enqueued_at or task.started_at or time.time();self.task_birth.setdefault(key,birth)
                 events.append({'attempt':key,'task':task.task_id,'state':'live','elapsed_s':max(0.,time.time()-self.task_birth[key])})
-        return {'stopped':life.lifecycle.app_state==P.APP_STATE_STOPPED,'tasks':[t.task_id for t in tasks.tasks],'attempt_events':events,'event_cursor':self.cursor,'metered_usd':self.last_meter}
+        meter=self.meter_poller.poll() if getattr(self,'meter_poller',None) else {'metered_usd':None}
+        return {'stopped':life.lifecycle.app_state==P.APP_STATE_STOPPED,'tasks':[t.task_id for t in tasks.tasks],'attempt_events':events,'event_cursor':self.cursor,**meter}
     def cancel(self,call):
         self.controls.append(subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--cancel',call],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True))
     def stop(self,app):
@@ -286,19 +362,14 @@ class ModalProvider:
         # Repeated independent CLI requests remain possible if an earlier one
         # hangs; each has a local RPC/command timeout in its own process.
         self.controls.append(subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--stop',app],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True))
-    def metering(self,app,started):
-        from meter8086 import billing
-        return self.loop.run_until_complete(asyncio.wait_for(billing(app,started),RPC_TIMEOUT_S))['metered_usd']
-
-
 def watch(config_path):
     from dispatch8086 import SpendGuard
     config=json.loads(Path(config_path).read_text());guard=SpendGuard(config['ledger'],config['plan'],cap=config['cap'],overhead=config['overhead'])
     provider=ModalProvider()
-    state=Lifecycle(config['events'],app_id=config.get('app_id'),execution_s=config['execution_s'],started=config['started_monotonic'],guard=guard,job=config['job'],setup=True,jobs=config.get('jobs'),max_containers=config.get('max_containers',1))
+    state=Lifecycle(config['events'],app_id=config.get('app_id'),execution_s=config['execution_s'],started=config['started_monotonic'],guard=guard,job=config['job'],setup=True,jobs=config.get('jobs'),max_containers=config.get('max_containers',1),initial_account=config['initial_account'])
     status_writer=AsyncStatus(config['status'])
     status_writer.publish({'ready':True,'heartbeat':time.monotonic()})
-    last_meter=0.
+    from meter8086 import AppMeterPoller
     while not state.confirmed:
         control=json.loads(Path(config_path).read_text());state.call_id=control.get('call_id')
         state.call_ids=list(control.get('call_ids',{}).values())
@@ -312,16 +383,13 @@ def watch(config_path):
             try:state.app_id=control.get('app_id') or provider.discover(config['app_name'],config['started_epoch'])
             except Exception as exc:state.requested=True;state.emit('discovery_error',error=str(exc))
         if state.app_id:
-            if time.monotonic()-last_meter>=60 and time.monotonic()+60<state.stop_at:
-                try:
-                    provider.last_meter=provider.metering(state.app_id,config['started_epoch'])
-                except Exception as exc:state.stop_now(provider,'meter unavailable');state.emit('meter_error',error=str(exc))
-                last_meter=time.monotonic()
+            if not getattr(provider,'meter_poller',None):
+                provider.meter_poller=AppMeterPoller(state.app_id,config['started_epoch'],Path(__file__).parent/'results/s8086/billing-poller')
             state.poll(provider,finish=control.get('finish',False),parent_alive=alive)
         elif time.monotonic()>=state.started+SETUP_TIMEOUT_S or not alive or control.get('finish'):
             state.requested=True;state.emit('setup_incomplete',status='INCOMPLETE')
             # Keep discovering: a late app-creation response must still be stopped.
-        status_writer.publish({'ready':True,'heartbeat':time.monotonic(),'app_id':state.app_id,'confirmed':state.confirmed,'confirmed_at':state.confirmed_at,'within_envelope':state.confirmed and not state.unknown_bound and state.confirmed_at<=state.expires_at,'stop_required':state.requested,'incomplete':state.incomplete,'charged_usd':state.charged_usd,'dispatch_permitted':state.body_started is not None and not state.requested and state.account is not None})
+        status_writer.publish({'ready':True,'heartbeat':time.monotonic(),'app_id':state.app_id,'confirmed':state.confirmed,'confirmed_at':state.confirmed_at,'stop_at':state.stop_at,'within_envelope':state.confirmed and not state.unknown_bound and state.confirmed_at<=state.expires_at,'stop_required':state.requested,'stop_reason':state.stop_reason,'incomplete':state.incomplete,'charged_usd':state.charged_usd,'elapsed_usd':state.elapsed_usd,'accounting_pending':state.accounting_pending,'dispatch_permitted':state.body_started is not None and not state.requested and state.account is not None and not state.accounting_pending})
         if not state.confirmed:time.sleep(WATCHDOG_POLL_S)
     state.flush_log();status_writer.flush()
 
@@ -330,7 +398,13 @@ class WatchdogProcess:
         prefix=guard.path.parent/f'lifecycle-{sha(job.encode())[:16]}'
         self.path=Path(str(prefix)+'.control.json');self.status=Path(str(prefix)+'.status.json');self.events=Path(str(prefix)+'.events.jsonl')
         if self.path.exists():raise FileExistsError('lifecycle already reserved; no restart')
+        # This is before app creation, so waiting for the serialized snapshot
+        # starts no new paid resource. Include all imported plan extensions in
+        # the fallback even if the watchdog's very first write is contended.
+        initial=guard.transact({'kind':'check','reason':'complete starting projection for independent watchdog'})
+        if initial['stop_required']:raise RuntimeError('starting complete projection forbids dispatch')
         self.config={'ledger':str(guard.path.resolve()),'plan':guard.plan,'cap':guard.cap,'overhead':guard.overhead,'job':job,'app_id':app_id,'app_name':f's2-{uuid.uuid4().hex}','execution_s':execution_s,'events':str(self.events.resolve()),'status':str(self.status.resolve()),'parent_pid':os.getpid(),'started_monotonic':time.monotonic(),'started_epoch':time.time()}
+        self.config['initial_account']=initial
         if jobs:self.config.update(jobs=dict(jobs),reservations={n:guard.plan[n] for n in jobs},max_containers=max_containers,call_ids={})
         atomic_json(self.path,self.config)
         with Path(str(prefix)+'.watchdog.log').open('x') as log:
@@ -348,13 +422,16 @@ class WatchdogProcess:
             self.config['app_id']=app_id;self.finish();raise TimeoutError('app setup timeout')
         self.config.update(app_id=app_id,body_started=time.monotonic());atomic_json(self.path,self.config)
     def permit(self):
-        limit=time.monotonic()+3*RPC_TIMEOUT_S+5
+        execution=self.config['execution_s']
+        allowance=(sum(dispatch_seconds(d) for d in self.config['jobs'].values()) if self.config.get('jobs') else dispatch_seconds(execution))
+        limit=self.config['started_monotonic']+allowance+recovery_seconds(execution,self.config['job'])-ATTEMPT_TERMINATION_S
         while time.monotonic()<limit:
             status=self.confirmation()
-            if status.get('stop_required') or self.process.poll() is not None:raise RuntimeError('watchdog spend/observation stop; INCOMPLETE')
+            if status.get('stop_required') or self.process.poll() is not None:
+                raise RuntimeError(f"watchdog stop: {status.get('stop_reason') or 'watchdog process exited'}; INCOMPLETE")
             if status.get('dispatch_permitted') and time.monotonic()-status['heartbeat']<3*RPC_TIMEOUT_S+WATCHDOG_POLL_S:return
             time.sleep(.05)
-        self.finish();raise TimeoutError('no current watchdog dispatch permit')
+        self.finish();raise TimeoutError('fixed app dispatch deadline reached without an accounting permit')
     def bind(self,call_id):self.config['call_id']=call_id;atomic_json(self.path,self.config)
     def bind_call(self,job,call_id):
         self.config['call_ids'][job]=call_id;atomic_json(self.path,self.config)
@@ -365,12 +442,17 @@ class WatchdogProcess:
     def confirmation(self):return json.loads(self.status.read_text()) if self.status.exists() else {}
     def wait_confirmed(self):
         limit=time.monotonic()+TERMINATION_GRACE_S
-        while time.monotonic()<limit:
+        while True:
             status=self.confirmation()
             if status.get('confirmed'):
                 if not status.get('within_envelope'):raise RuntimeError('late/unknown stop; liability retained')
-                if status.get('incomplete'):raise RuntimeError('watchdog cap/infrastructure stop; experiment INCOMPLETE')
+                if status.get('incomplete'):raise RuntimeError(f"watchdog stop: {status.get('stop_reason')}; experiment INCOMPLETE")
                 return status
+            # A physically stopped app cannot overrun while its final ledger
+            # rows wait for a lock. Keep awaiting those rows without turning
+            # contention into a terminal termination-timeout record.
+            if time.monotonic()>=limit and not (status.get('confirmed_at') is not None and status.get('accounting_pending')):
+                break
             time.sleep(.1)
         raise TimeoutError('stopping unconfirmed; liability retained, watchdog continues')
 

@@ -15,6 +15,7 @@ from unittest.mock import patch
 from dispatch8086 import SpendGuard
 from lifecycle8086 import Lifecycle, ATTEMPT_TERMINATION_S, STARTUP_TIMEOUT_S
 from s8086 import PRE, RATE, CAP, read_json, sha
+from meter8086 import AppMeterPoller
 
 class Journal:
     def __init__(self,path):self.rows=[]
@@ -155,8 +156,19 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
     nominal=projection['projection_usd']+carried_usd
     rng=random.Random(seed);violations=[];outcomes=Counter();restarts=0;max_charge=max_actual=0.;interleavings=0;queue_limits=Counter()
     faults=Counter();timeout_recoveries=0
+    class FaultGuard(SpendGuard):
+        locked=False
+        def transact(self,event,*,nonblocking=False):
+            if nonblocking and self.locked:
+                faults['ledger_lock_contentions']+=1
+                raise BlockingIOError('injected concurrent ledger lock owner')
+            return super().transact(event,nonblocking=nonblocking)
     class FaultProvider(Provider):
-        def __init__(self):super().__init__();self.stop_failures=0;self.cancel_failures=0
+        def __init__(self):super().__init__();self.stop_failures=0;self.cancel_failures=0;self.poller=None
+        def sample(self,app):
+            sample=super().sample(app)
+            if self.poller:sample.update(self.poller.refresh())
+            return sample
         def stop(self,app):
             super().stop(app)
             if self.stop_failures:
@@ -166,13 +178,14 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
             if self.cancel_failures:
                 self.cancel_failures-=1;faults['failed_cancel_rpcs']+=1
                 raise RuntimeError('injected cancel RPC failure')
-    with tempfile.TemporaryDirectory() as temp,patch('lifecycle8086.AsyncJournal',Journal),patch('dispatch8086.fcntl.flock'),patch('dispatch8086.os.fsync'),patch('lifecycle8086.Lifecycle.bookkeep',lambda self,event:self.guard.transact(event,nonblocking=True)):
+    with tempfile.TemporaryDirectory() as temp,patch('lifecycle8086.AsyncJournal',Journal),patch('dispatch8086.fcntl.flock'),patch('dispatch8086.os.fsync'),patch('lifecycle8086.LOCK_RETRY_S',0):
       for sequence in range(sequences):
         cap=nominal+1e-7 if sequence%4==0 else CAP
-        guard=SpendGuard(Path(temp)/'parallel',plan,cap=cap,overhead=overhead);guard.path=Ledger()
+        guard=FaultGuard(Path(temp)/'parallel',plan,cap=cap,overhead=overhead);guard.path=Ledger()
         for name in jobs:guard.reserve(name,plan[name]);guard.start(name,'call-'+name,'shared-app')
         clock=[0.];state=Lifecycle(Path(temp)/'events',app_id='shared-app',job=next(iter(jobs)),execution_s=deadline,
-                                  guard=guard,jobs=jobs,max_containers=20,started=0,now=lambda:clock[0],setup=True)
+                                  guard=guard,jobs=jobs,max_containers=20,started=0,now=lambda:clock[0],setup=True,
+                                  initial_account=guard.transact({'kind':'check'}))
         setup=rng.uniform(0,120);state.body_started=setup;clock[0]=setup
         state.call_ids=['call-'+n for n in jobs]
         provider=FaultProvider();schedule=[];intervals={};termination_delays={};active={};finished=set()
@@ -205,6 +218,25 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
         def actual_seconds(timestamp):
             return setup+sum(max(0,min(timestamp,end)-born)+max(0,min(timestamp-end,termination_delays[k]))
                              for k,(born,end) in intervals.items())
+        billing_rng=random.Random(seed+sequence)
+        def read_billing():
+            # Whole sequences without any valid meter, intermittent throttling,
+            # other failed/unknown reads, billing lag, then recovery. The same
+            # production app poller serves every one of the concurrent jobs.
+            fault=billing_rng.random()
+            if sequence%5==0 or fault<.4:
+                faults['rate_limited_billing_reads']+=1
+                raise RuntimeError('Rate limit exceeded for workspace billing report requests')
+            if fault<.5:
+                faults['failed_billing_reads']+=1;raise TimeoutError('billing RPC timeout')
+            if fault<.55:
+                faults['unknown_billing_reads']+=1;return {'metered_usd':None}
+            faults['successful_shared_app_billing_reads']+=1
+            if provider.poller.failures:faults['billing_recoveries']+=1
+            if 'Rate limit exceeded' in (provider.poller.error or ''):faults['rate_limit_recoveries']+=1
+            return {'metered_usd':provider.meter}
+        provider.poller=AppMeterPoller('shared-app',0,Path(temp)/f'meter-{sequence}',
+                                     read=read_billing,now=lambda:clock[0],wall=lambda:clock[0])
         def check():
             nonlocal max_charge,max_actual
             charged=overhead+plan['preparation']+state.charged_usd
@@ -224,7 +256,10 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
             provider.events=[{'attempt':key,'task':key,'state':'completed' if kind=='timeout' else kind,'elapsed_s':duration}]
             provider.events.extend({'attempt':k,'task':k,'state':'live','elapsed_s':timestamp-intervals[k][0]} for k in active if k!=key)
             if rng.random()<.3:provider.meter=max(provider.meter,actual_seconds(timestamp)*RATE)
+            guard.locked=billing_rng.random()<.25
             state.poll(provider);check()
+            if guard.locked and state.stop_reason=='observation/accounting unavailable':
+                violations.append((sequence,'a lock contention became terminal'))
             if kind=='timeout' and not state.incomplete:
                 faults['world_timeouts']+=1;sequence_timeouts+=1
                 retry=f'{name}:timeout-recovery:{sequence_timeouts}'
@@ -241,6 +276,7 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
                 # later bounded successful stop. Count cleanup independently.
                 for _ in range(3):state.poll(provider)
                 provider.stopped=True;provider.tasks=[];provider.events=[]
+                guard.locked=False
                 clock[0]+=30;state.poll(provider);check()
                 guard.transact({'kind':'terminal','job':next(iter(jobs)),'status':'INCOMPLETE','route_verdict':None,'law_verdict':None})
                 if not guard.transact({'kind':'check'})['stop_required']:violations.append((sequence,'d nonterminal'))
@@ -251,17 +287,19 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
                 break
         if stopped:outcomes['INCOMPLETE']+=1
         else:
+            guard.locked=False
             provider.tasks=[];provider.events=[]
             # Exercise failed normal-finish RPCs before eventual confirmation.
             for _ in range(3):state.poll(provider,finish=True)
             provider.stopped=True
-            clock[0]=max(end+termination_delays[k] for k,(_,end) in intervals.items())
+            clock[0]=max(clock[0]+1,max(end+termination_delays[k] for k,(_,end) in intervals.items()))
             state.poll(provider,finish=True);check()
             if not state.confirmed or state.incomplete or len(finished)!=20:violations.append((sequence,'c incomplete cohort'))
             base=sum(state.reservations.values())
             for name in state.jobs:guard.settle(name,state.charged_usd*(state.reservations[name]/base))
             if guard.transact({'kind':'check'})['stop_required']:violations.append((sequence,'a completion stop'))
             outcomes['COMPLETE']+=1;restarts+=sum(failures.values())
+        provider.poller.close()
     result={'date':'2026-10-12','sequences':sequences,'seed':seed,'concurrent_worlds':20,
             'violations':len(violations),'violation_details':violations[:30],
             'invariants':{'a':'successful completions within conservative complete budget never cause a stop',
@@ -269,7 +307,7 @@ def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=
                           'c':'all 20 worlds complete whenever the conservative full-run plus registered recovery budget fits',
                           'd':'a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch'},
             'outcomes':dict(outcomes),'restarts':restarts,'timeout_step0_same_seed_recoveries':timeout_recoveries,
-            'faults':dict(faults),'interleaved_job_transitions':interleavings,'available_gpu_limits':dict(queue_limits),
+            'faults':dict(faults),'shared_app_jobs':20,'interleaved_job_transitions':interleavings,'available_gpu_limits':dict(queue_limits),
             'carried_usd':carried_usd,'max_charged_usd':max_charge,'max_actual_usd':max_actual,
             'world_timeout_s':deadline,'projection_sha256':sha((PRE/'projection.json').read_bytes()),
             'simulation_sha256':sha(Path(__file__).read_bytes()),'no_paid_compute':True,'no_population':True}

@@ -153,7 +153,8 @@ def score_world(path, *, device=None, tick=lambda:None, registration=DEFAULT_REG
     m=ex.machine_for(L,zero_halts=False,maps=True)
     for k in ('sha256_core','sha256_world','sha256_wgsl'):
         if m.describe()[k]!=c['machine'][k]: raise ValueError('world machine hash mismatch')
-    if c['freeze_sha256']!=sha((Path(__file__).parent/'results/s8086/prelaunch/freeze.json').read_bytes()):
+    from lifecycle8086 import valid_world_freeze
+    if not valid_world_freeze(path,c['freeze_sha256']):
         raise ValueError('world freeze identity mismatch')
     trace=diagnostic_for(m); cache={}
     def judge(tape):

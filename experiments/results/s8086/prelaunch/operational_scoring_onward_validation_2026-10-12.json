@@ -1,0 +1,150 @@
+{
+  "schema": "s2-operational-scoring-onward-validation/1",
+  "date": "2026-10-12",
+  "full_suite": {
+    "passed": 992,
+    "failed": 0,
+    "skipped": 3,
+    "skipped_cases": [
+      {
+        "classname": "tests.test_assays_any_isa",
+        "name": "test_assay_machines_regenerate",
+        "time": "0.007"
+      },
+      {
+        "classname": "tests.test_impact",
+        "name": "test_vendored_machines_match_zilion",
+        "time": "0.017"
+      },
+      {
+        "classname": "tests.test_zsoup",
+        "name": "test_vendored_machines_regenerate",
+        "time": "0.031"
+      }
+    ],
+    "wall_s": 694.0812599170022,
+    "exit_code": 0,
+    "required_regressions": [
+      "test_failed_billing_uses_actual_live_container_accrual[rate_limit]",
+      "test_failed_billing_uses_actual_live_container_accrual[timeout]",
+      "test_failed_billing_uses_actual_live_container_accrual[unknown]",
+      "test_sigstop_dispatcher_holding_real_ledger_lock",
+      "test_first_contended_poll_includes_carried_plan_extensions"
+    ],
+    "junit_sha256": "67136c561f98bdf9aa35b967c6bfee859ca8cb8ec078082aa69913791d6f3949",
+    "log_sha256": "e0775d7e1bdec256a08753e9ce563f51cc5a3983e4199d79d2de937de32aef57"
+  },
+  "concurrent_fault_simulation": {
+    "date": "2026-10-12",
+    "sequences": 1000,
+    "seed": 539394182,
+    "concurrent_worlds": 20,
+    "violations": 0,
+    "violation_details": [],
+    "invariants": {
+      "a": "successful completions within conservative complete budget never cause a stop",
+      "b": "simultaneous charged current/settled and independently accumulated actual spend stay below cap <= $95",
+      "c": "all 20 worlds complete whenever the conservative full-run plus registered recovery budget fits",
+      "d": "a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch"
+    },
+    "outcomes": {
+      "COMPLETE": 800,
+      "INCOMPLETE": 200
+    },
+    "restarts": 2282,
+    "timeout_step0_same_seed_recoveries": 563,
+    "faults": {
+      "slow_startups": 5928,
+      "rate_limited_billing_reads": 7928,
+      "ledger_lock_contentions": 8950,
+      "failed_stop_rpcs": 1021,
+      "failed_cancel_rpcs": 1019,
+      "successful_shared_app_billing_reads": 6125,
+      "billing_recoveries": 3241,
+      "rate_limit_recoveries": 2330,
+      "unknown_billing_reads": 722,
+      "world_timeouts": 592,
+      "failed_billing_reads": 1391
+    },
+    "shared_app_jobs": 20,
+    "interleaved_job_transitions": 32310,
+    "available_gpu_limits": {
+      "8": 179,
+      "20": 197,
+      "2": 233,
+      "4": 207,
+      "1": 184
+    },
+    "carried_usd": 4.499165268980222,
+    "max_charged_usd": 73.03210133913588,
+    "max_actual_usd": 65.20053096135594,
+    "world_timeout_s": 9000,
+    "projection_sha256": "c6538caa76853c594a8f5c655006ded6b87b925e7a87c2719777d75d9e6b8364",
+    "simulation_sha256": "a5d9e3ebda914f65b032c7c87fd138e565a760b33a2435373f30be59f083a7ca",
+    "no_paid_compute": true,
+    "no_population": true,
+    "wall_s": 18.581816499994602,
+    "lifecycle_sha256": "c8c14271ebc5e86ee72435fb3a249653c9ed2afc6bad1496dfe41eb2653d0682",
+    "dispatch_sha256": "ddf7ac1acacb3938daa3ab2ac57cea9a576f2b1a1bb273d2f6b4a9b2e02530dd",
+    "meter_sha256": "17462ef93009a7b1a9d45a41b42c83289da4a183f4b7a8523143cb9e0d606b51"
+  },
+  "serial_simulation": {
+    "date": "2026-10-12",
+    "sequences": 1000,
+    "seed": 2509602950,
+    "violations": 0,
+    "violation_details": [],
+    "invariants": {
+      "a": "successful completions within complete forecast do not trigger a stop",
+      "b": "charged current/settled and independently accumulated actual spend <= sequence cap <= $95",
+      "c": "all 20 worlds complete when conservative full-run plus recovery budget fits",
+      "d": "cap stop is terminal INCOMPLETE with null route/law verdicts, never a negative"
+    },
+    "outcomes": {
+      "COMPLETE": 822,
+      "INCOMPLETE": 178
+    },
+    "restart_sequences": 685,
+    "recovered_attempts": 1752,
+    "completion_before_finish": 35327,
+    "finish_before_completion": 35411,
+    "max_charged_usd": 77.71180528780737,
+    "max_actual_usd": 64.49753564181377,
+    "provider_scope": "Randomized system simulation using production SpendGuard and Lifecycle.\n\nNo RPCs or GPU. A conforming single-container provider supplies cursor events,\nsetup/termination delays, preemptions and asynchronous result acknowledgement.\nActual resource seconds are accumulated separately from the guard's charges.\nThe provider honouring stop/server limits remains the registered residual risk.\n",
+    "projection_sha256": "c6538caa76853c594a8f5c655006ded6b87b925e7a87c2719777d75d9e6b8364",
+    "simulation_sha256": "a5d9e3ebda914f65b032c7c87fd138e565a760b33a2435373f30be59f083a7ca",
+    "no_paid_compute": true,
+    "no_population": true
+  },
+  "ledger_scale": {
+    "date": "2026-10-12",
+    "history_rows": 750000,
+    "ledger_bytes": 222643491,
+    "cold_reconciliation_s": 3.155407375015784,
+    "incremental_poll_s": 0.17282470897771418,
+    "watchdog_timeout_s": 10,
+    "false_stops": 0
+  },
+  "source_sha256": {
+    "dispatch8086.py": "ddf7ac1acacb3938daa3ab2ac57cea9a576f2b1a1bb273d2f6b4a9b2e02530dd",
+    "lifecycle8086.py": "c8c14271ebc5e86ee72435fb3a249653c9ed2afc6bad1496dfe41eb2653d0682",
+    "meter8086.py": "17462ef93009a7b1a9d45a41b42c83289da4a183f4b7a8523143cb9e0d606b51",
+    "spend_sim8086.py": "a5d9e3ebda914f65b032c7c87fd138e565a760b33a2435373f30be59f083a7ca",
+    "score8086.py": "2396a510f67edc6e37894c08fc9d2ce1a5bce985e165cecb37203c4b2b594682",
+    "tests/test_b5_enforcement.py": "585728ae82407b98842d25025d27b1923fca051146cae9e87d6309b791c40b3e",
+    "tests/test_meter8086.py": "b6ed3ae1e73b2a3dd4552ee9468b6bcec4ac24197af432dcdfac70798c3f657c"
+  },
+  "world_input_integrity_sha256": "b89923fbc81910487d194a21a699897ef91aa2947ab675011080a0ee36149fd7",
+  "completed_worlds": 20,
+  "snapshots_verified": 100,
+  "worlds_rerun": false,
+  "world_data_mutated": false,
+  "scoring_rules_eligibility_rules_endpoints_changed": false,
+  "scoring_source_change": "exact operational provenance gate only",
+  "known_metered_usd": 12.28942546,
+  "conservative_recorded_lifetime_bound_usd": 17.48499627932854,
+  "complete_forecast_usd": 77.3283545489802,
+  "cap": 95,
+  "run_directory": "results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery",
+  "artifacts_are_historical_except_this_operational_validation": true
+}

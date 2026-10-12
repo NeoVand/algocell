@@ -45,14 +45,20 @@ class Mock:
 state=Lifecycle(root/'events',app_id='app',call_id='call',execution_s=1,guard=guard,job='a')
 t=time.monotonic();state.poll(Mock());state.flush_log()
 (root/'elapsed').write_text(str(time.monotonic()-t))
+assert not state.incomplete and not state.requested and state.accounting_pending
+state.stop_at=time.monotonic()-1
+state.poll(Mock());state.flush_log()
+assert state.stop_reason=='parent/deadline'
 ''')
-        child=subprocess.Popen([sys.executable,str(watch),str(tmp_path)],start_new_session=True)
+        env=dict(os.environ,PYTHONPATH=os.pathsep.join([str(S.HERE),os.environ.get('PYTHONPATH','')]))
+        child=subprocess.Popen([sys.executable,str(watch),str(tmp_path)],start_new_session=True,env=env)
         child.wait(timeout=3)
         assert child.returncode==0
         assert (tmp_path/'stop').read_text()=='app' and (tmp_path/'cancel').read_text()=='call'
         assert float((tmp_path/'elapsed').read_text())<.5
         os.kill(parent.pid,0) # suspended dispatcher remains live, as in Astra
-        assert any('observation_error' in row for row in (tmp_path/'events').read_text().splitlines())
+        assert any('ledger_wait' in row for row in (tmp_path/'events').read_text().splitlines())
+        assert not any('observation_error' in row for row in (tmp_path/'events').read_text().splitlines())
     finally:
         os.kill(parent.pid,signal.SIGCONT);parent.kill();parent.wait()
 
