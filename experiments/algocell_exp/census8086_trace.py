@@ -129,28 +129,93 @@ def mechanism(log, L):
     end = int(writes[-1, 0])
     episode = log[log[:, 0] <= end]
     reads = episode[episode[:, 1] == 1]
-    if not len(reads):
-        return "literal writer", "no_data_reads_in_writing_episode"
     starts = episode[episode[:, 1] == 4, 2]
     confined = not np.any((episode[:, 1] == 0) & (episode[:, 2] >= L))
     repeated = len(np.unique(starts)) < len(starts)
     ops = {int(s): int(v) for s, kind, p, v, origin in episode if kind == 3}
-    # Every partner write must pair with a same-valued data read in the same
-    # MOVS/PUSH-memory step or the immediately preceding LODS/MOV-load step.
-    matched = True
-    for step, kind, pos, value, origin in writes:
-        op = ops.get(int(step), -1)
-        if op in (0xa4, 0xa5, 0xff):
-            rr = reads[reads[:, 0] == step]
-        elif 0x50 <= op <= 0x57 and ops.get(int(step)-1) in (0xac, 0xad, 0x8a, 0x8b):
-            rr = reads[reads[:, 0] == step-1]
+    # Trace-local register provenance for the admitted direct writing forms.
+    # Unknown register-producing instructions poison the register inventory;
+    # a later immediate load restores just that register. Irrelevant data reads
+    # do not turn an immediate-loaded PUSH into a memory-fed writer.
+    registers = ["literal"] * 8  # the declared reset, including stack phase
+    read_values = [[] for _ in range(8)]
+    channels = []
+    neutral = {0x90, 0xf4, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd}
+    for step in sorted(ops):
+        op = ops[step]
+        group = episode[episode[:, 0] == step]
+        fetched = list(map(int, group[group[:, 1] == 0, 3]))
+        while fetched and fetched[0] in (0x26, 0x2e, 0x36, 0x3e, 0xf0, 0xf1, 0xf2, 0xf3):
+            fetched.pop(0)
+        rr = group[group[:, 1] == 1]
+        ww = group[(group[:, 1] == 2) & (group[:, 2] >= L)]
+        channel, values = "other", []
+        if 0x50 <= op <= 0x57:
+            channel, values = registers[op-0x50], read_values[op-0x50]
+        elif op == 0xff and len(fetched) >= 2 and ((fetched[1] >> 3) & 7) in (6, 7):
+            if fetched[1] >> 6 != 3:
+                channel, values = "memory", list(rr[:, 3])
+            else:
+                reg = fetched[1] & 7
+                channel, values = registers[reg], read_values[reg]
+        elif op in (0xa4, 0xa5):
+            channel, values = "memory", list(rr[:, 3])
+        elif op in (0xaa, 0xab):
+            channel, values = registers[0], read_values[0]
+        elif op in (0xc6, 0xc7):
+            channel = "literal"
+        for write in ww:
+            rmw = (op < 0x40 and (op & 7) < 4) or op in (0x80, 0x81, 0x82, 0x83, 0xd0, 0xd1, 0xd2, 0xd3, 0xfe, 0xff)
+            if channel == "other" and rmw and np.any((rr[:, 2] == write[2]) & (rr[:, 3] == write[3])):
+                # A no-change RMW adds coverage/transactions but no new byte
+                # provenance. B9 51's bootstrap executes such ADDs between pushes.
+                continue
+            channels.append(channel if channel != "memory" or write[3] in values else "other")
+        if 0xb8 <= op <= 0xbf:
+            registers[op-0xb8] = "literal"; read_values[op-0xb8] = []
+        elif op in (0xac, 0xad):
+            registers[0] = "memory" if op == 0xad else "other"; read_values[0] = list(rr[:, 3])
+        elif 0x58 <= op <= 0x5f:
+            registers[op-0x58] = "memory"; read_values[op-0x58] = list(rr[:, 3])
+        elif op in (0x8a, 0x8b) and len(fetched) >= 2:
+            dest, source = (fetched[1] >> 3) & 7, fetched[1] & 7
+            if op == 0x8a: dest &= 3; source &= 3
+            if op == 0x8a:
+                registers[dest], read_values[dest] = "other", []
+            elif fetched[1] >> 6 == 3:
+                registers[dest], read_values[dest] = registers[source], read_values[source]
+            else:
+                registers[dest], read_values[dest] = "memory", list(rr[:, 3])
+        elif op in (0xc4, 0xc5) and len(fetched) >= 2:
+            dest = (fetched[1] >> 3) & 7
+            registers[dest], read_values[dest] = "memory", list(rr[:2, 3])
+        elif 0x40 <= op <= 0x4f:
+            reg = op & 7
+            if registers[reg] != "literal":
+                registers[reg] = "other"; read_values[reg] = []
+        elif op in (0xc6, 0xc7) and len(fetched) >= 2:
+            if fetched[1] >> 6 == 3:
+                reg = fetched[1] & 7
+                if op == 0xc7 or registers[reg & 3] == "literal":
+                    registers[reg if op == 0xc7 else reg & 3] = "literal"
+                    read_values[reg if op == 0xc7 else reg & 3] = []
+                else:
+                    registers[reg & 3] = "other"; read_values[reg & 3] = []
+        elif 0x91 <= op <= 0x97:
+            reg = op & 7
+            registers[0], registers[reg] = registers[reg], registers[0]
+            read_values[0], read_values[reg] = read_values[reg], read_values[0]
+        elif op in (0xa4, 0xa5, 0xaa, 0xab) or 0x50 <= op <= 0x57 or op in neutral or 0x60 <= op <= 0x7f:
+            pass
+        elif op < 0x40 and (op & 7) < 6:
+            # Memory-destination ALU does not modify general registers.
+            if not (len(fetched) >= 2 and (op & 7) < 2 and fetched[1] >> 6 != 3):
+                registers = ["other"] * 8; read_values = [[] for _ in range(8)]
         else:
-            matched = False
-            break
-        if not np.any(rr[:, 3] == value):
-            matched = False
-            break
-    if matched:
+            registers = ["other"] * 8; read_values = [[] for _ in range(8)]
+    if channels and all(c == "literal" for c in channels):
+        return "literal writer", "partner_writes_from_reset_or_immediate_registers"
+    if channels and all(c == "memory" for c in channels):
         if confined and repeated:
             return "confined copy loop", "paired_memory_moves_repeated_start_no_partner_fetch"
         if not repeated:
