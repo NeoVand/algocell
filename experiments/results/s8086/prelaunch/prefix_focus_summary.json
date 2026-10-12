@@ -1,0 +1,106 @@
+{
+  "contract": "isolated source event XOR 55/AA; exact write and identical starts/read/write addresses through that write; later divergence allowed",
+  "baseline_commit": "364007c",
+  "no_paid_compute": true,
+  "no_provider_calls": true,
+  "no_population_runs": true,
+  "R2_altered": false,
+  "release_authorized": false,
+  "zero_counts": [
+    {
+      "L": 16,
+      "budget": 128,
+      "baseline": {
+        "memory-fed one-pass copier": 2,
+        "other": 6,
+        "literal writer": 12
+      },
+      "after_only_proven_51b9_rejection": {
+        "memory-fed one-pass copier": 2,
+        "other": 7,
+        "literal writer": 11
+      },
+      "unchanged": false,
+      "complete_reaudit": false
+    },
+    {
+      "L": 16,
+      "budget": 512,
+      "baseline": {
+        "other": 16,
+        "memory-fed one-pass copier": 1,
+        "literal writer": 12
+      },
+      "after_only_proven_51b9_rejection": {
+        "other": 17,
+        "memory-fed one-pass copier": 1,
+        "literal writer": 11
+      },
+      "unchanged": false,
+      "complete_reaudit": false
+    },
+    {
+      "L": 32,
+      "budget": 128,
+      "baseline": {
+        "memory-fed one-pass copier": 5,
+        "other": 10,
+        "literal writer": 11
+      },
+      "after_only_proven_51b9_rejection": {
+        "memory-fed one-pass copier": 5,
+        "other": 11,
+        "literal writer": 10
+      },
+      "unchanged": false,
+      "complete_reaudit": false
+    },
+    {
+      "L": 32,
+      "budget": 512,
+      "baseline": {
+        "memory-fed one-pass copier": 4,
+        "other": 11,
+        "literal writer": 11
+      },
+      "after_only_proven_51b9_rejection": {
+        "memory-fed one-pass copier": 4,
+        "other": 12,
+        "literal writer": 10
+      },
+      "unchanged": false,
+      "complete_reaudit": false
+    }
+  ],
+  "disposition": "MANDATORY STOP: 51 B9 changes registered zero-partner provenance counts under the fail-safe rule",
+  "existing_classifier_unrepaired": true,
+  "existing_freeze_superseded": false,
+  "complete_census_reaudit": false,
+  "random_program_differential": "NOT RUN: mandatory count-change stop",
+  "spend_repairs": false,
+  "fault_simulation": false,
+  "cap_95_frozen": false,
+  "refreeze": false,
+  "07a5_encounters": 68,
+  "07a5_verified": 68,
+  "07a5_claimed_writes": 10880,
+  "earlier_witnesses": [
+    {
+      "name": "N1",
+      "parent": "eb06f49002f10000bc10009df3a5f400",
+      "partner": "02010000000000000000000000000000",
+      "old_label": "memory-fed one-pass copier",
+      "required_label": "other"
+    },
+    {
+      "name": "far_jump",
+      "parent": "8e0e0e00ea0a000200900ef490900200",
+      "partner": "00000000000000000000000000000000",
+      "old_label": "literal writer",
+      "required_label": "other"
+    }
+  ],
+  "gpu_bursts": 378,
+  "max_gpu_burst_s": 0.59030233300291,
+  "archive_sha256": "a8643ea898a687f001b873dc8dfb23a769383691b5cd654e73d52ec048cea0d0"
+}

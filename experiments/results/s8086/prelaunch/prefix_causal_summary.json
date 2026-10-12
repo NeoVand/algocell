@@ -1,0 +1,36 @@
+{
+  "contract": "isolated source event XOR 55/AA; exact write value and identical starts/read/write addresses through that write; later divergence allowed",
+  "baseline_commit": "364007c",
+  "no_paid_compute": true,
+  "no_provider_calls": true,
+  "no_population_runs": true,
+  "R2_altered": false,
+  "release_authorized": false,
+  "census": [
+    {
+      "L": 16,
+      "budget": 128,
+      "encounters": 4998,
+      "before": {
+        "2:memory-fed one-pass copier": 2,
+        "2:other": 6,
+        "2:literal writer": 12
+      },
+      "after": {
+        "2:memory-fed one-pass copier": 1,
+        "2:other": 19
+      },
+      "zero_counts_unchanged": false,
+      "07a5_unchanged": true
+    }
+  ],
+  "disposition": "MANDATORY STOP: first setting changes registered zero-partner counts",
+  "complete_census_reaudit": false,
+  "random_program_differential": "NOT RUN: mandatory count-change stop",
+  "existing_classifier_unrepaired": true,
+  "existing_freeze_superseded": false,
+  "gpu_bursts": 729,
+  "max_gpu_burst_s": 1.040363125037402,
+  "archive_sha256": "0160f68f057af79c6e831399b7d4e803d2977c0482a8c157f6b5642249559bba",
+  "label_changes": 478
+}
