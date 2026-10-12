@@ -191,7 +191,7 @@ def assay():
 
 def exact_assay(eligible):
     # Generic seed family, arbitrary noncontiguous code footprint, frozen d/c.
-    burst=Bursts(OUT);outputs=[];serial=[]
+    burst=Bursts(OUT);outputs=[];serial=[];diagnosis=[]
     for row in eligible.to_dict('records'):
         base=burst.run('exact-compile',lambda:load_machine(row['machine']));trace=burst.run('exact-trace-compile',lambda:Trace6502(base))
         t=parse(row['tape']);L=len(t);d=int(row['d']);free=[int(p) for p in str(row['free_positions']).split(';') if p!='nan' and p];cases=[]
@@ -208,28 +208,53 @@ def exact_assay(eligible):
             pairs=np.concatenate((np.repeat(T,17,0),np.tile(Q,(len(T),1))),1)
             raw=burst.run('exact-raw',lambda:base.run(pairs,budget=128));r=burst.run('exact-trace',lambda:trace.run(pairs,budget=128));assert same_execution(raw,r,base.record_words)
             off=r.memory[:,L:].reshape(len(T),17,L);labels=trace.labels(r)[:,L:].reshape(len(T),17,L)
-            for j,(kind,p,v,a) in enumerate(batch):outputs.append({'key':row['key'],'kind':kind,'position':p,'value':v,'exact_passed':int((off[j]==expected[j]).all(1).sum()),'provenance_passed':int((labels[j]==np.arange(L)%d).all(1).sum()),'partners':17})
+            for j,(kind,p,v,a) in enumerate(batch):
+                outputs.append({'key':row['key'],'kind':kind,'position':p,'value':v,'parent':hx(a),'expected_d':d,'exact_passed':int((off[j]==expected[j]).all(1).sum()),'provenance_passed':int((labels[j]==np.arange(L)%d).all(1).sum()),'partners':17,'output_sha256':sha(off[j].tobytes()),'sources_sha256':sha(labels[j].tobytes())})
+                for q in range(17):
+                    if not(np.array_equal(off[j,q],expected[j]) and np.array_equal(labels[j,q],np.arange(L)%d)):
+                        diagnosis.append({'key':row['key'],'kind':kind,'position':p,'value':v,'partner':q,'parent':hx(a),'offspring':hx(off[j,q]),'expected':hx(expected[j]),'sources':';'.join(map(str,labels[j,q]))})
             for g in range(1,9):
                 Q=fresh(L,f'{row["key"]}:{lo}',g,len(T));pairs=np.concatenate((current,Q),1)
                 raw=burst.run('serial-raw',lambda:base.run(pairs,budget=128));r=burst.run('serial-trace',lambda:trace.run(pairs,budget=128));assert same_execution(raw,r,base.record_words)
                 current=r.memory[:,L:];labels=trace.labels(r)[:,L:]
-                for j,(kind,p,v,a) in enumerate(batch):serial.append({'key':row['key'],'kind':kind,'position':p,'value':v,'generation':g,'exact':int(np.array_equal(current[j],expected[j])),'provenance_exact':int(np.array_equal(labels[j],np.arange(L)%d)),'offspring':hx(current[j]),'sources':';'.join(map(str,labels[j]))})
+                for j,(kind,p,v,a) in enumerate(batch):serial.append({'key':row['key'],'kind':kind,'position':p,'value':v,'generation':g,'expected_d':d,'exact':int(np.array_equal(current[j],expected[j])),'provenance_exact':int(np.array_equal(labels[j],np.arange(L)%d)),'offspring':hx(current[j]),'sources':';'.join(map(str,labels[j])),'partner':hx(Q[j])})
         write(OUT/'exact_cases.csv.gz',outputs);write(OUT/'exact_serial.csv.gz',serial)
     bad=sum(r['exact_passed']!=17 or r['provenance_passed']!=17 for r in outputs)+sum(not(r['exact'] and r['provenance_exact']) for r in serial)
+    if diagnosis:write(OUT/'diagnosis.csv.gz',diagnosis)
     write(OUT/'law_verdict.csv',[{'eligible':len(eligible),'verdict':'FAIL' if bad else 'PASS','scope':'observed frozen eligible panel'}])
 
 
 def report():
     for name in ('eligibility.csv','coverage.csv','law_verdict.csv','descriptive_mutants.csv.gz'):committed(OUT/name)
     ledger=pd.read_csv(OUT/'eligibility.csv');cover=pd.read_csv(OUT/'coverage.csv');m=pd.read_csv(OUT/'descriptive_mutants.csv.gz');v=pd.read_csv(OUT/'law_verdict.csv');b=pd.read_csv(OUT/'bursts.csv')
+    eligible=ledger[ledger.eligible==1];exact_count=serial_count=exact_bad=serial_bad=0
+    if len(eligible):
+        for name in ('exact_cases.csv.gz','exact_serial.csv.gz'):committed(OUT/name)
+        cases=pd.read_csv(OUT/'exact_cases.csv.gz');serial=pd.read_csv(OUT/'exact_serial.csv.gz')
+        assert set(cases.key)==set(serial.key)==set(eligible.key),'incomplete eligible panel'
+        for row in eligible.to_dict('records'):
+            cc=cases[cases.key==row['key']];ss=serial[serial.key==row['key']]
+            expected=255*(int(row['predicted_free'])+int(row['L'])-int(row['d']))+64
+            assert len(cc)==expected and len(ss)==8*expected,'incomplete exact intervention coverage'
+            assert (cc.kind=='single').sum()==255*int(row['predicted_free'])
+            assert (cc.kind=='joint').sum()==64
+            assert (cc.kind=='erased').sum()==255*(int(row['L'])-int(row['d']))
+        exact_count=len(cases);serial_count=len(serial)
+        exact_bad=int(((cases.exact_passed!=17)|(cases.provenance_passed!=17)).sum())
+        serial_bad=int(((serial.exact!=1)|(serial.provenance_exact!=1)).sum())
+        assert v.verdict.iloc[0]==('FAIL' if exact_bad+serial_bad else 'PASS')
     sites=m[m.identifiable==1].groupby(['key','arm','role','generation','position']).ok.mean().reset_index();sites['site']=sites.ok>=.5
     counts=sites.groupby(['key','arm','role','generation']).site.sum().reset_index()
     text=['# C2 — evolved 6502 retention','', 'Generated by `evolved6502_retention.py report` from committed CSVs. Registration: `REVISION_PREREG.md`, commit `213a653`.',
           f'Conditional law verdict: **{v.verdict.iloc[0]}**. Eligibility was committed before interventions; footprint and d were extracted from code and ordered provenance, never from observed sites.',
           f'Panel completeness: **{"complete" if cover.final_top3_available.all() else "INCOMPLETE"}**. {len(cover)} worlds, all four arms; {int(cover.first_available.sum())} first replicators; {int(cover.random_draws.sum())} final random draws; final top-3 available in {int(cover.final_top3_available.sum())}/{len(cover)} worlds. Raw logs are matched to corrected S1 input hashes. Missing logs are listed in `coverage.csv`; no substitute tapes were used.',
-          f'Observed panel: {len(ledger)} sampling roles, {ledger.tape.nunique()} distinct tapes, {int(ledger.eligible.sum())} eligible. No eligible architecture is a scope result for these tapes; missing final top-3 prevents a complete-panel conclusion.',
+          f'Observed panel: {len(ledger)} sampling roles, {ledger.tape.nunique()} distinct tapes, {int(ledger.eligible.sum())} eligible. Missing final top-3 prevents a complete-panel conclusion.',
+          f'Exact tests: {exact_count:,} interventions against zero+16 partners, {serial_count:,} serial observations through g8; {exact_bad} direct mismatches, {serial_bad} serial mismatches. Every byte and source label is scored; no cyclic realignment or similarity gate. All 255 alternatives per predicted coordinate and erased coordinate; 64 joint assignments per eligible tape. Joint sampling is not exhaustive.',
           '', '| arm | role | sampled | eligible |','|---|---|---:|---:|']
     for (arm,role),g in ledger.groupby(['arm','role']):text.append(f'| {arm} | {role} | {len(g)} | {g.eligible.sum()} |')
+    if len(eligible):
+        text += ['', '| arm | role | d | constrained c | predicted free d−c | tapes |','|---|---|---:|---:|---:|---:|']
+        for (arm,role,d,c,r),g in eligible.groupby(['arm','role','d','core_c','predicted_free']):text.append(f'| {arm} | {role} | {int(d)} | {int(c)} | {int(r)} | {len(g)} |')
     text += ['', 'Descriptive serial scan (X1-style thresholds; four mutant lineages, 64 controls, 32 alternatives/coordinate, independent fresh uniform partners). These outcomes are descriptive and do not test the exact overlap law.',
              '', '| key | role | sites g1 / g2 / g4 / g8 | control alive g8 | mutant alive g8 | retained g8 |','|---|---|---|---:|---:|---:|']
     for key,g in m.groupby('key'):
@@ -241,7 +266,7 @@ def report():
     text += [f'- {reason}: {n}' for reason,n in sorted(reasons.items())]
     text += ['',f'Local active compute including compilation/readback {b.active_s.sum():.2f} s, with equal pauses; maximum burst {b.active_s.max():.2f} s. No paid compute.',
              'All traced encounters match the raw frozen 6502 machine memory and architectural record. Pure-copy source labels are propagated through loads, PLA/PHA, transfers and stores; arithmetic/unknown channels are marked unresolved. Reverse movement, nonconstant displacement and payload-dependent control do not receive a fitted d−c prediction.',
-             'Files: `panel.csv`, `coverage.csv`, `inputs.csv`, `eligibility.csv`, `geometry.csv`, `geometry_traces.csv.gz`, `descriptive_panel.csv`, `descriptive_mutants.csv.gz`, `law_verdict.csv`, `bursts.csv`.']
+             'Files: `panel.csv`, `coverage.csv`, `inputs.csv`, `eligibility.csv`, `geometry.csv`, `geometry_traces.csv.gz`, `descriptive_panel.csv`, `descriptive_mutants.csv.gz`, `exact_cases.csv.gz`, `exact_serial.csv.gz`, `law_verdict.csv`, `bursts.csv`.']
     (OUT/'RETENTION.md').write_text('\n'.join(text)+'\n');print('\n'.join(text[:6]))
 
 
