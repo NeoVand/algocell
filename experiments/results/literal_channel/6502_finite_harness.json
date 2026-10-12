@@ -1,0 +1,43 @@
+{
+  "source": "/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/m6502.py",
+  "sha256": "761714d6beb5a1a3057298c5b37ad3ee5ed52a57551e45b373e3cb04302c5f34",
+  "qualification": "Supplied reference interpreter, not independent full ISA validation",
+  "trials": [
+    {
+      "budget": 39,
+      "brk_mode": "halt",
+      "exact_phases": [],
+      "partner": "00 00 00 00 00 00 00 00 00 00 48 48 a9 a9 a9 48"
+    },
+    {
+      "budget": 39,
+      "brk_mode": "faithful",
+      "exact_phases": [],
+      "partner": "48 34 b2 48 48 48 48 30 12 00 48 48 a9 a9 48 48"
+    },
+    {
+      "budget": 128,
+      "brk_mode": "halt",
+      "exact_phases": [],
+      "partner": "00 00 00 00 00 00 00 00 00 00 48 48 a9 a9 a9 48"
+    },
+    {
+      "budget": 128,
+      "brk_mode": "faithful",
+      "exact_phases": [],
+      "partner": "48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48"
+    },
+    {
+      "budget": 512,
+      "brk_mode": "halt",
+      "exact_phases": [],
+      "partner": "00 00 00 00 00 00 00 00 00 00 48 48 a9 a9 a9 48"
+    },
+    {
+      "budget": 512,
+      "brk_mode": "faithful",
+      "exact_phases": [],
+      "partner": "48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48"
+    }
+  ]
+}

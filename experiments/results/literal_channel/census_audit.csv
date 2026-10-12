@@ -1,0 +1,40 @@
+machine,source,word,literal_channel,mechanism,load_opcode,push_opcode,literal_bytes,alternating,note
+Z80,experiments/results/review_r2/census_p2.csv,01 c5,True,"LD rr,nn; PUSH rr",01,c5,c5 01,True,
+Z80,experiments/results/review_r2/census_p2.csv,11 d5,True,"LD rr,nn; PUSH rr",11,d5,d5 11,True,
+Z80,experiments/results/review_r2/census_p2.csv,21 e5,True,"LD rr,nn; PUSH rr",21,e5,e5 21,True,
+Z80,experiments/results/review_r2/census_p2.csv,2a e5,False,"LD HL,(nn); PUSH HL",,,,True,Memory read: outside Proposition 9
+Z80,experiments/results/review_r2/census_p2.csv,e5 2a,False,"LD HL,(nn); PUSH HL",,,,True,Memory read: outside Proposition 9
+Z80,experiments/results/census6502/control_z80_words.csv,01 c5,True,"LD rr,nn; PUSH rr",01,c5,c5 01,True,
+Z80,experiments/results/census6502/control_z80_words.csv,11 d5,True,"LD rr,nn; PUSH rr",11,d5,d5 11,True,
+Z80,experiments/results/census6502/control_z80_words.csv,21 e5,True,"LD rr,nn; PUSH rr",21,e5,e5 21,True,
+Z80,experiments/results/census6502/control_z80_words.csv,2a e5,False,"LD HL,(nn); PUSH HL",,,,True,Memory read: outside Proposition 9
+Z80,experiments/results/census6502/control_z80_words.csv,e5 2a,False,"LD HL,(nn); PUSH HL",,,,True,Memory read: outside Proposition 9
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,50 0d,False,Other arithmetic/store mechanism,,,,True,Outside load-literal/push grammar
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 30,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 31,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 32,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 33,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 34,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 35,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ff 37,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ad 50,False,LODSW; PUSH AX,,,,True,Memory read
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,b9 51,True,"MOV r16,imm16; PUSH r16",b9,51,51 b9,True,
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,ba 52,True,"MOV r16,imm16; PUSH r16",ba,52,52 ba,True,
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,c4 52,False,LES; PUSH DX,,,,True,Memory read
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,bb 53,True,"MOV r16,imm16; PUSH r16",bb,53,53 bb,True,
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,bd 55,True,"MOV r16,imm16; PUSH r16",bd,55,55 bd,True,
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,be 56,True,"MOV r16,imm16; PUSH r16",be,56,56 be,True,
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,bf 57,True,"MOV r16,imm16; PUSH r16",bf,57,57 bf,True,
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,07 a4,False,POP ES; MOVS,,,,True,Memory copy
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,07 a5,False,POP ES; MOVS,,,,True,Memory copy
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,50 ad,False,LODSW; PUSH AX,,,,True,Memory read
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,50 b8,True,"MOV r16,imm16; PUSH r16",b8,50,50 b8,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,51 b9,True,"MOV r16,imm16; PUSH r16",b9,51,51 b9,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,52 ba,True,"MOV r16,imm16; PUSH r16",ba,52,52 ba,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,53 bb,True,"MOV r16,imm16; PUSH r16",bb,53,53 bb,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,55 bd,True,"MOV r16,imm16; PUSH r16",bd,55,55 bd,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,56 be,True,"MOV r16,imm16; PUSH r16",be,56,56 be,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,57 bf,True,"MOV r16,imm16; PUSH r16",bf,57,57 bf,True,Starts with initial-register push; steady load-push pair follows
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,57 c7,False,Other arithmetic/store mechanism,,,,True,Outside load-literal/push grammar
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,0e ea,False,PUSH CS; far JMP,,,,True,Control transfer
+8086,/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt,35 ff,False,Memory/indirect or arithmetic,,,,True,Not a one-byte literal channel
