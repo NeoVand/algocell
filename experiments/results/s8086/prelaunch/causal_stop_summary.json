@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-12",
+  "reviewed_head": "a078045",
+  "rule": "every claimed write must follow s XOR 0x55 and s XOR 0xAA exactly, with full encounter starts unchanged",
+  "disposition": "MANDATORY STOP: 07 A5 and registered zero-partner provenance counts change",
+  "scope": "necessary-condition counterexample; STOP before class fixes, complete re-audit/differential, spend fixes, simulation or refreeze",
+  "R2_altered": false,
+  "existing_classifier_unrepaired": true,
+  "existing_freeze_superseded": false,
+  "release_authorized": false,
+  "no_modal_calls": true,
+  "no_paid_compute": true,
+  "no_population_runs": true,
+  "identities": {
+    "16": {
+      "frozen_machine_sha256": "4fee1c7c0ce17f0a4ec7d6ad425b0ebe10342336cb55acbe86ebfe663525a694",
+      "observer_sha256": "c4a3f5df46fcd1cb3f26891e76fe63d50a0fce3b30230afb44eabb98f99e37b9",
+      "read_intervention_sha256": "97e03813fe735a2a5315c66e5998db355600b33855a6954cf11117c5d23a5a60"
+    },
+    "32": {
+      "frozen_machine_sha256": "f031d3a7d217c9eed92d0e080da90399c3fd88ff8c40869d14739f99b98f9966",
+      "observer_sha256": "4fdb75ec14f8c2ecd012f27bc10d7ab4303a3c6b74a9a0ea44af6274bdc7d5b2",
+      "read_intervention_sha256": "0dd1075d30cb22d3f5f08844e61d80d2cccf0f3327ab9578f09c797635ff3dcc"
+    }
+  },
+  "07a5_encounters": 68,
+  "07a5_definite_rejections": 68,
+  "07a5_isolated_read_rejections": 68,
+  "zero_counts": [
+    {
+      "L": 16,
+      "budget": 128,
+      "k": 2,
+      "baseline_exact_zero_counts": {
+        "memory-fed one-pass copier": 2,
+        "other": 6,
+        "literal writer": 12
+      },
+      "counts_after_only_proven_07a5_rejection": {
+        "memory-fed one-pass copier": 1,
+        "other": 7,
+        "literal writer": 12
+      },
+      "complete_reaudit": false,
+      "unchanged": false
+    },
+    {
+      "L": 16,
+      "budget": 512,
+      "k": 2,
+      "baseline_exact_zero_counts": {
+        "other": 16,
+        "memory-fed one-pass copier": 1,
+        "literal writer": 12
+      },
+      "counts_after_only_proven_07a5_rejection": {
+        "other": 17,
+        "memory-fed one-pass copier": 0,
+        "literal writer": 12
+      },
+      "complete_reaudit": false,
+      "unchanged": false
+    },
+    {
+      "L": 32,
+      "budget": 128,
+      "k": 2,
+      "baseline_exact_zero_counts": {
+        "memory-fed one-pass copier": 5,
+        "other": 10,
+        "literal writer": 11
+      },
+      "counts_after_only_proven_07a5_rejection": {
+        "memory-fed one-pass copier": 4,
+        "other": 11,
+        "literal writer": 11
+      },
+      "complete_reaudit": false,
+      "unchanged": false
+    },
+    {
+      "L": 32,
+      "budget": 512,
+      "k": 2,
+      "baseline_exact_zero_counts": {
+        "memory-fed one-pass copier": 4,
+        "other": 11,
+        "literal writer": 11
+      },
+      "counts_after_only_proven_07a5_rejection": {
+        "memory-fed one-pass copier": 3,
+        "other": 12,
+        "literal writer": 11
+      },
+      "complete_reaudit": false,
+      "unchanged": false
+    }
+  ],
+  "N1": {
+    "parent": "eb06f49002f10000bc10009df3a5f400",
+    "partner": "02010000000000000000000000000000",
+    "old_label": "memory-fed one-pass copier",
+    "required_label": "other",
+    "baseline_full_starts": [
+      0,
+      8,
+      11,
+      12,
+      61698
+    ]
+  },
+  "gpu_bursts": 41,
+  "maximum_gpu_burst_s": 1.0325950830010697,
+  "archive_sha256": "8b2e90cc9e5f3f95ec8280539b71d3cb17da968cff0741ad1b295cf49779fc59",
+  "rejections_by_setting": [
+    {
+      "L": 16,
+      "budget": 128,
+      "initial_memory_rejections": 17,
+      "isolated_data_read_rejections": 17,
+      "zero_partner_rejected": true
+    },
+    {
+      "L": 16,
+      "budget": 512,
+      "initial_memory_rejections": 17,
+      "isolated_data_read_rejections": 17,
+      "zero_partner_rejected": true
+    },
+    {
+      "L": 32,
+      "budget": 128,
+      "initial_memory_rejections": 17,
+      "isolated_data_read_rejections": 17,
+      "zero_partner_rejected": true
+    },
+    {
+      "L": 32,
+      "budget": 512,
+      "initial_memory_rejections": 17,
+      "isolated_data_read_rejections": 17,
+      "zero_partner_rejected": true
+    }
+  ]
+}
