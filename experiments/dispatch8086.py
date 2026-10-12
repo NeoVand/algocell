@@ -14,9 +14,43 @@ import time
 from pathlib import Path
 from s8086 import CAP, RATE, sha, safe, launch_receipt, released_registration
 
+def parallel_projection(original):
+    """Operational timeout amendment; retain every non-world allocation."""
+    from copy import deepcopy
+    from lifecycle8086 import WORLD_TIMEOUT_S,dispatch_seconds,FULL_WORLD_RECOVERIES
+    p=deepcopy(original)
+    for name in p['execution_deadline_s']:
+        if name.startswith('world:'):
+            p['execution_deadline_s'][name]=WORLD_TIMEOUT_S
+            p['job_liabilities_usd'][name]=dispatch_seconds(WORLD_TIMEOUT_S)*RATE
+    world_cost=dispatch_seconds(WORLD_TIMEOUT_S)*RATE
+    p['world_deadline_s']={arm:WORLD_TIMEOUT_S for arm in p['registration']['arms']}
+    p['longest_world_container_s']=WORLD_TIMEOUT_S
+    for row in p['components']:row['world_seconds']=WORLD_TIMEOUT_S
+    p['component_totals_usd']={stage:sum(v for n,v in p['job_liabilities_usd'].items() if n.startswith(stage+':'))
+                             for stage in ('world','score','extract','law')}
+    p['component_totals_usd']['fixed']=sum(v for n,v in p['job_liabilities_usd'].items() if ':' not in n)+p['storage_termination_reserve_usd']
+    p['projection_usd']=sum(p['job_liabilities_usd'].values())+p['storage_termination_reserve_usd']
+    p['recovery_budget_usd']=FULL_WORLD_RECOVERIES*world_cost
+    p['cap_headroom_usd']=CAP-p['projection_usd']
+    p['full_world_restarts_absorbed']=int(p['cap_headroom_usd']//world_cost)
+    p['launch_fits']=p['projection_usd']<=CAP
+    p['lifecycle_policy'].update(one_app_per_job=False,max_containers_per_job=20,
+        concurrent_worlds=20,world_timeout_s=WORLD_TIMEOUT_S,
+        measured_world_minutes=63,timeout_disposition='infrastructure failure; restart step 0, same seed',
+        remaining_registered_full_world_recoveries=FULL_WORLD_RECOVERIES-1,
+        world_fixed_recovery_s={a:FULL_WORLD_RECOVERIES*dispatch_seconds(WORLD_TIMEOUT_S) for a in p['registration']['arms']})
+    return p
+
 def clone_accounting(jobs,billed,plan):
     # The replay state contains only scalar fields, not the event payloads.
     return {name:dict(job) for name,job in jobs.items()},dict(billed),dict(plan)
+
+def world_timeout(exc):
+    from modal.exception import FunctionTimeoutError
+    return (isinstance(exc,FunctionTimeoutError) or
+            isinstance(exc,TimeoutError) and str(exc)=='spend/allocation stop; incomplete world' or
+            isinstance(exc,RuntimeError) and str(exc)=='world allocation exceeded; retain liability')
 
 class SpendGuard:
     def __init__(self, path, plan, *, cap=CAP, overhead=1.):
@@ -60,6 +94,11 @@ class SpendGuard:
                 elif row['kind']=='terminal': jobs[row['job']]['experiment_stopped']=True
                 elif row['kind']=='liability':
                     jobs[row['job']].update(liability=row['usd'],elapsed_usd=row.get('elapsed_usd',0),app_id=row.get('app_id',jobs[row['job']].get('app_id')))
+                elif row['kind']=='batch_liability':
+                    base=sum(jobs[n]['reservation'] for n in row['jobs'])
+                    for n in row['jobs']:
+                        fraction=jobs[n]['reservation']/base
+                        jobs[n].update(liability=row['usd']*fraction,elapsed_usd=row.get('elapsed_usd',0)*fraction)
                 elif row['kind']=='settled':
                     jobs[row['job']]['status']='settled'; jobs[row['job']]['cost']=row['usd']
                 elif row['kind']=='metered': billed[row['app_id']]=row['usd']
@@ -77,14 +116,16 @@ class SpendGuard:
                 # app overlaps elapsed cost; it is never added twice. Remaining
                 # server/termination liabilities and all future work are added.
                 total=self.overhead+sum(v for k,v in plan.items() if k not in jobs)
-                accounted_apps=set()
+                apps={}
                 for j in jobs.values():
-                    app=j.get('app_id');meter=billed.get(app,0);accounted_apps.add(app)
-                    if j['status']=='settled':total+=max(j['cost'],meter)
+                    app=j.get('app_id');floor,remaining=apps.get(app,(0.,0.))
+                    if j['status']=='settled':floor+=j['cost']
                     else:
                         liability=j.get('liability',j['reservation']);elapsed=j.get('elapsed_usd',0)
-                        total+=max(meter,elapsed)+(liability-elapsed)
-                total+=sum(v for app,v in billed.items() if app not in accounted_apps)
+                        floor+=elapsed;remaining+=liability-elapsed
+                    apps[app]=(floor,remaining)
+                total+=sum(max(billed.get(app,0),floor)+remaining for app,(floor,remaining) in apps.items())
+                total+=sum(v for app,v in billed.items() if app not in apps)
                 return total
             total=complete_projection()
             unknown=[name for name,j in jobs.items() if j.get('unknown_bound')]
@@ -118,6 +159,18 @@ class SpendGuard:
                 elapsed=event.get('elapsed_usd',0)
                 if not math.isfinite(elapsed) or not 0<=elapsed<=event['usd']:raise ValueError('invalid observed elapsed cost')
                 j.update(liability=event['usd'],elapsed_usd=elapsed,app_id=event.get('app_id',j.get('app_id')))
+                total=complete_projection()
+            elif kind=='batch_liability':
+                names=event['jobs'];elapsed=event.get('elapsed_usd',0)
+                if (not names or len(set(names))!=len(names) or
+                        any(n not in jobs or jobs[n]['status']=='settled' or jobs[n].get('app_id')!=event['app_id'] for n in names)
+                        or not math.isfinite(elapsed) or not 0<=elapsed<=event['usd']):
+                    raise ValueError('invalid concurrent liabilities')
+                base=sum(jobs[n]['reservation'] for n in names)
+                if event['usd']+1e-12<base:raise ValueError('concurrent reservations cannot be released before stopping')
+                for n in names:
+                    fraction=jobs[n]['reservation']/base
+                    jobs[n].update(liability=event['usd']*fraction,elapsed_usd=elapsed*fraction)
                 total=complete_projection()
             elif kind=='settled':
                 if event['job'] not in jobs or jobs[event['job']]['status']=='settled': raise ValueError('invalid settlement')
@@ -206,6 +259,89 @@ def bounded_call(app,function,args,guard,job,execution_s,*,watchdog_factory=None
     return result
 
 
+def bounded_parallel(app,jobs,guard,*,watchdog_factory=None):
+    """One shared app/watchdog; one input per single-use container, at most 20.
+
+    Reserve the complete cohort before setup. Keep all nominal reservations
+    until provider STOPPED with no tasks; never settle individual live results.
+    """
+    from concurrent.futures import ThreadPoolExecutor,as_completed
+    from lifecycle8086 import WatchdogProcess,dispatch_seconds,FULL_WORLD_RECOVERIES
+    if not jobs or len(jobs)>20 or len({j[0] for j in jobs})!=len(jobs):
+        raise ValueError('invalid parallel cohort')
+    deadlines={name:deadline for name,_,_,deadline in jobs}
+    for name,deadline in deadlines.items():
+        if guard.plan[name]+1e-12<dispatch_seconds(deadline)*RATE:
+            raise ValueError('lifecycle envelope underreserved')
+    for name,deadline in deadlines.items():
+        guard.reserve(name,guard.plan[name],execution_s=deadline,concurrent_jobs=list(deadlines))
+    monitor=(watchdog_factory or WatchdogProcess)(guard,jobs[0][0],None,max(deadlines.values()),
+                                                 jobs=deadlines,max_containers=len(jobs))
+    calls={};current_calls={};results={};failure=None;recoveries=0
+    reservations={n:guard.plan[n] for n in deadlines}
+    try:
+        with app.run(name=monitor.app_name):
+            for name in deadlines:guard.transact({'kind':'lifecycle','job':name,'app_id':app.app_id})
+            monitor.bind_app(app.app_id)
+            try:
+                for name,function,args,_ in jobs:
+                    monitor.permit()
+                    call=function.spawn(*args);calls[name]=call;current_calls[name]=call
+                    monitor.bind_call(name,call.object_id)
+                    guard.start(name,call.object_id,app.app_id)
+                # RPC retrieval is concurrent too; all submissions precede any
+                # result wait. The independent stop path owns no host locks.
+                executor=ThreadPoolExecutor(max_workers=len(jobs))
+                futures={executor.submit(call.get):name for name,call in calls.items()}
+                try:
+                    while futures:
+                        future=next(as_completed(futures));name=futures.pop(future)
+                        try:results[name]=future.result()
+                        except Exception as exc:
+                            # This classification precedes any attempt-file
+                            # inspection. A fresh single-use input uses exactly
+                            # the original arguments/seed and starts at step 0.
+                            if not world_timeout(exc) or not name.startswith('world:') or recoveries>=FULL_WORLD_RECOVERIES-1:raise
+                            recoveries+=1
+                            retry=f'{name}:timeout-recovery:{recoveries}'
+                            reservation=reservations[name];deadline=deadlines[name]
+                            guard.transact({'kind':'plan_extension','jobs':{retry:reservation},
+                                'reason':'registered infrastructure timeout recovery; same seed, step 0',
+                                'failed_call_id':current_calls[name].object_id,'attempt_files_inspected':False})
+                            guard.reserve(retry,reservation,execution_s=deadline,recovery_of=name)
+                            guard.transact({'kind':'lifecycle','job':retry,'app_id':app.app_id})
+                            deadlines[retry]=deadline;reservations[retry]=reservation
+                            monitor.add_recovery(retry,deadline,reservation);monitor.permit()
+                            _,function,args,_=next(j for j in jobs if j[0]==name)
+                            call=function.spawn(*args);calls[retry]=call;current_calls[name]=call
+                            monitor.bind_call(retry,call.object_id);guard.start(retry,call.object_id,app.app_id)
+                            futures[executor.submit(call.get)]=name
+                finally:executor.shutdown(wait=False,cancel_futures=True)
+            except BaseException as exc:
+                failure=exc
+                guard.transact({'kind':'terminal','job':jobs[0][0],'app_id':app.app_id,
+                                'status':'INCOMPLETE','error':type(exc).__name__,'reason':str(exc),
+                                'route_verdict':None,'law_verdict':None,'concurrent_jobs':list(deadlines)})
+            finally:
+                monitor.finish()
+                try:monitor.wait_confirmed()
+                except BaseException as exc:
+                    if failure is None:failure=exc
+            if failure is not None:raise failure
+    except BaseException as exc:
+        monitor.finish()
+        guard.transact({'kind':'terminal','job':jobs[0][0],'status':'INCOMPLETE',
+                        'error':type(exc).__name__,'reason':str(exc),'liability_retained':True,
+                        'route_verdict':None,'law_verdict':None})
+        raise
+    base=sum(reservations.values())
+    charged=max(base,monitor.confirmation().get('charged_usd',base))
+    for name in deadlines:
+        guard.settle(name,charged*(reservations[name]/base),app_id=app.app_id,call_id=calls[name].object_id,
+                     stopping_confirmed=True,accounting='cohort liability share after app stopped and empty')
+    return results
+
+
 def dispatch_worlds(release, ledger, projection):
     receipt=launch_receipt(release); registration=released_registration(receipt)
     frozen=json.loads((Path(__file__).parent/'results/s8086/prelaunch/projection.json').read_text())
@@ -219,11 +355,15 @@ def dispatch_worlds(release, ledger, projection):
     import subprocess
     guard=SpendGuard(ledger,projection['job_liabilities_usd'],overhead=projection['storage_termination_reserve_usd'])
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=HERE,text=True).strip()
+    jobs=[];pools={}
     for arm in registration.arms:
         for seed in SEEDS:
-            job=f'world:{arm}:{seed}'; deadline=projection['execution_deadline_s'][job]
-            function=world.with_options(timeout=deadline,max_containers=1,buffer_containers=0,retries=0)
-            bounded_call(app,function,(arm,seed,commit,receipt,deadline),guard,job,deadline)
+            job=f'world:{arm}:{seed}';deadline=projection['execution_deadline_s'][job]
+            if deadline not in pools:
+                pools[deadline]=world.with_options(timeout=deadline,max_containers=20,buffer_containers=0,retries=0)
+            function=pools[deadline]
+            jobs.append((job,function,(arm,seed,commit,receipt,deadline),deadline))
+    bounded_parallel(app,jobs,guard)
 
 
 def dispatch_scoring(stage,release,ledger,projection):
@@ -253,11 +393,17 @@ def dispatch_scoring(stage,release,ledger,projection):
             local=HERE/f'results/s8086/eligibility/{arm}/{name}.json.gz'
             if committed(local)!=receipt.get('eligibility_sha256',{}).get(name):
                 raise ValueError('eligibility ledger differs from released data commit')
+    calls=[];pools={}
     for job,arm,seed,function in jobs:
         deadline=projection['execution_deadline_s'][job]
-        bounded=function.with_options(timeout=deadline,max_containers=1,buffer_containers=0,retries=0)
+        key=(function,deadline)
+        if key not in pools:
+            pools[key]=function.with_options(timeout=deadline,max_containers=min(20,len(jobs)),buffer_containers=0,retries=0)
+        bounded=pools[key]
         args=(receipt,deadline) if stage=='controls' else (arm,seed,stage,receipt,deadline,commit)
-        bounded_call(app,bounded,args,guard,job,deadline)
+        calls.append((job,bounded,args,deadline))
+    if len(calls)==1:bounded_call(app,*calls[0][1:3],guard,calls[0][0],calls[0][3])
+    else:bounded_parallel(app,calls,guard)
 
 
 if __name__=='__main__':

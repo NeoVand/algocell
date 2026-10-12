@@ -142,5 +142,140 @@ def guard_jobs(path):
     # Separate read-only test oracle, independent from SpendGuard's replay cache.
     return {r['job'] for r in map(json.loads,path.read_text().splitlines()) if r['kind']=='reserve'}
 
+def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False,carried_usd=0.):
+    """20 interleaved worlds; independent birth/end/cleanup resource oracle.
+
+    Provider timeouts terminate an input and admit a separately reserved,
+    identical-seed step-0 input. Transient stop/cancel RPC failures are retried
+    within the unchanged termination allowance. No paid compute or result data.
+    """
+    projection=read_json(PRE/'projection.json');plan=projection['job_liabilities_usd']
+    jobs={n:d for n,d in projection['execution_deadline_s'].items() if n.startswith('world:')}
+    deadline=max(jobs.values());overhead=projection['storage_termination_reserve_usd']+carried_usd
+    nominal=projection['projection_usd']+carried_usd
+    rng=random.Random(seed);violations=[];outcomes=Counter();restarts=0;max_charge=max_actual=0.;interleavings=0;queue_limits=Counter()
+    faults=Counter();timeout_recoveries=0
+    class FaultProvider(Provider):
+        def __init__(self):super().__init__();self.stop_failures=0;self.cancel_failures=0
+        def stop(self,app):
+            super().stop(app)
+            if self.stop_failures:
+                self.stop_failures-=1;faults['failed_stop_rpcs']+=1
+                raise TimeoutError('injected stop RPC timeout')
+        def cancel(self,call):
+            if self.cancel_failures:
+                self.cancel_failures-=1;faults['failed_cancel_rpcs']+=1
+                raise RuntimeError('injected cancel RPC failure')
+    with tempfile.TemporaryDirectory() as temp,patch('lifecycle8086.AsyncJournal',Journal),patch('dispatch8086.fcntl.flock'),patch('dispatch8086.os.fsync'),patch('lifecycle8086.Lifecycle.bookkeep',lambda self,event:self.guard.transact(event,nonblocking=True)):
+      for sequence in range(sequences):
+        cap=nominal+1e-7 if sequence%4==0 else CAP
+        guard=SpendGuard(Path(temp)/'parallel',plan,cap=cap,overhead=overhead);guard.path=Ledger()
+        for name in jobs:guard.reserve(name,plan[name]);guard.start(name,'call-'+name,'shared-app')
+        clock=[0.];state=Lifecycle(Path(temp)/'events',app_id='shared-app',job=next(iter(jobs)),execution_s=deadline,
+                                  guard=guard,jobs=jobs,max_containers=20,started=0,now=lambda:clock[0],setup=True)
+        setup=rng.uniform(0,120);state.body_started=setup;clock[0]=setup
+        state.call_ids=['call-'+n for n in jobs]
+        provider=FaultProvider();schedule=[];intervals={};termination_delays={};active={};finished=set()
+        provider.stop_failures=rng.randint(0,2);provider.cancel_failures=rng.randint(0,2)
+        failure_count=0 if sequence%5==0 else rng.randint(1,6)
+        failures=Counter(rng.choices(list(jobs),k=failure_count))
+        timeouts=Counter(rng.choices(list(jobs),k=0 if sequence%5==0 else rng.randint(0,2)))
+        slots=rng.choice((1,2,4,8,20));queue_limits[slots]+=1;available=[setup]*slots
+        failure_seconds=0.
+        for name in jobs:
+            slot=min(range(slots),key=lambda i:available[i]);born=available[slot]
+            kinds=['preempted']*failures[name]+['timeout']*timeouts[name]
+            rng.shuffle(kinds);kinds.append('completed')
+            for attempt,terminal in enumerate(kinds):
+                key=name+'-'+str(attempt);startup=rng.uniform(0,120)
+                if startup>=90:faults['slow_startups']+=1
+                duration=(deadline+startup if terminal=='timeout' else
+                          (deadline+startup)*rng.uniform(.02,1.) if terminal=='preempted' else
+                          startup+deadline*rng.uniform(.75,1.))
+                end=born+duration;intervals[key]=(born,end)
+                termination_delays[key]=rng.uniform(0,30)
+                schedule.append((born,'live',key,name,0.))
+                schedule.append((end,terminal,key,name,duration))
+                if terminal=='preempted':failure_seconds+=duration+ATTEMPT_TERMINATION_S
+                if terminal!='completed':born=end+termination_delays[key]+rng.uniform(0,30)
+            available[slot]=end+termination_delays[key]
+        schedule.sort(key=lambda e:(e[0],e[1]!='live',rng.random()))
+        expected=nominal+failure_seconds*RATE+sum(plan[n]*count for n,count in timeouts.items())
+        stopped=False;last_job=None;sequence_timeouts=0
+        def actual_seconds(timestamp):
+            return setup+sum(max(0,min(timestamp,end)-born)+max(0,min(timestamp-end,termination_delays[k]))
+                             for k,(born,end) in intervals.items())
+        def check():
+            nonlocal max_charge,max_actual
+            charged=overhead+plan['preparation']+state.charged_usd
+            actual=overhead+plan['preparation']+actual_seconds(clock[0])*RATE
+            max_charge=max(max_charge,charged);max_actual=max(max_actual,actual)
+            if charged>cap+1e-8 or actual>charged+1e-8 or actual>cap+1e-8:
+                violations.append((sequence,'b',charged,actual,cap))
+        for timestamp,kind,key,name,duration in schedule:
+            clock[0]=timestamp
+            if kind=='live':active[key]=name
+            else:
+                active.pop(key,None)
+                if kind=='completed':finished.add(name)
+            if last_job and last_job!=name:interleavings+=1
+            last_job=name
+            provider.tasks=list(active)
+            provider.events=[{'attempt':key,'task':key,'state':'completed' if kind=='timeout' else kind,'elapsed_s':duration}]
+            provider.events.extend({'attempt':k,'task':k,'state':'live','elapsed_s':timestamp-intervals[k][0]} for k in active if k!=key)
+            if rng.random()<.3:provider.meter=max(provider.meter,actual_seconds(timestamp)*RATE)
+            state.poll(provider);check()
+            if kind=='timeout' and not state.incomplete:
+                faults['world_timeouts']+=1;sequence_timeouts+=1
+                retry=f'{name}:timeout-recovery:{sequence_timeouts}'
+                try:
+                    guard.transact({'kind':'plan_extension','jobs':{retry:plan[name]},'reason':'timeout infrastructure recovery, step 0, same seed'})
+                    guard.reserve(retry,plan[name]);guard.start(retry,'call-'+retry,'shared-app')
+                    state.jobs[retry]=deadline;state.reservations[retry]=plan[name]
+                    state.call_ids.append('call-'+retry);timeout_recoveries+=1
+                except RuntimeError:state.stop_now(provider,'timeout recovery admission exceeds complete cap')
+            if state.incomplete:
+                if expected<=cap+1e-8:violations.append((sequence,'a/c sufficient complete recovery budget stopped',expected,cap,state.stop_reason))
+                stopped=True
+                # Failed control RPCs neither erase reservations nor prevent a
+                # later bounded successful stop. Count cleanup independently.
+                for _ in range(3):state.poll(provider)
+                provider.stopped=True;provider.tasks=[];provider.events=[]
+                clock[0]+=30;state.poll(provider);check()
+                guard.transact({'kind':'terminal','job':next(iter(jobs)),'status':'INCOMPLETE','route_verdict':None,'law_verdict':None})
+                if not guard.transact({'kind':'check'})['stop_required']:violations.append((sequence,'d nonterminal'))
+                try:guard.reserve('controls',plan['controls'])
+                except RuntimeError:pass
+                else:violations.append((sequence,'d further dispatch allowed'))
+                restarts+=sum(a['state']=='preempted' for a in state.attempts.values())
+                break
+        if stopped:outcomes['INCOMPLETE']+=1
+        else:
+            provider.tasks=[];provider.events=[]
+            # Exercise failed normal-finish RPCs before eventual confirmation.
+            for _ in range(3):state.poll(provider,finish=True)
+            provider.stopped=True
+            clock[0]=max(end+termination_delays[k] for k,(_,end) in intervals.items())
+            state.poll(provider,finish=True);check()
+            if not state.confirmed or state.incomplete or len(finished)!=20:violations.append((sequence,'c incomplete cohort'))
+            base=sum(state.reservations.values())
+            for name in state.jobs:guard.settle(name,state.charged_usd*(state.reservations[name]/base))
+            if guard.transact({'kind':'check'})['stop_required']:violations.append((sequence,'a completion stop'))
+            outcomes['COMPLETE']+=1;restarts+=sum(failures.values())
+    result={'date':'2026-10-12','sequences':sequences,'seed':seed,'concurrent_worlds':20,
+            'violations':len(violations),'violation_details':violations[:30],
+            'invariants':{'a':'successful completions within conservative complete budget never cause a stop',
+                          'b':'simultaneous charged current/settled and independently accumulated actual spend stay below cap <= $95',
+                          'c':'all 20 worlds complete whenever the conservative full-run plus registered recovery budget fits',
+                          'd':'a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch'},
+            'outcomes':dict(outcomes),'restarts':restarts,'timeout_step0_same_seed_recoveries':timeout_recoveries,
+            'faults':dict(faults),'interleaved_job_transitions':interleavings,'available_gpu_limits':dict(queue_limits),
+            'carried_usd':carried_usd,'max_charged_usd':max_charge,'max_actual_usd':max_actual,
+            'world_timeout_s':deadline,'projection_sha256':sha((PRE/'projection.json').read_bytes()),
+            'simulation_sha256':sha(Path(__file__).read_bytes()),'no_paid_compute':True,'no_population':True}
+    if output:Path(output).write_text(json.dumps(result,indent=2)+'\n')
+    if violations:raise AssertionError(json.dumps(result))
+    return result
+
 if __name__=='__main__':
     result=simulate();print(f"{result['sequences']} randomized sequences; {result['violations']} violations; {result['outcomes']}")

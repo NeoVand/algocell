@@ -36,6 +36,15 @@ def publish_complete(attempt,root,world,registration):
         old=[json.loads(s) for s in target.read_text().splitlines()]
         write_new(attempt/'publication.json',{'status':'duplicate_complete_ack','selected':False})
         return next(r for r in old if r.get('kind')=='summary')
+    # Modal v1 volumes support same-directory rename, not hard links or
+    # distributed locks. The dispatcher owns one single-container pool per
+    # world. This exclusive marker guards local retries/races; a stale marker
+    # fails closed and requires infrastructure review before another attempt.
+    marker=root/(source.name+'.publish-reserved')
+    with marker.open('x') as f:
+        f.write(str(attempt));f.flush();os.fsync(f.fileno())
+    if target.exists():
+        raise FileExistsError('canonical history appeared after publication reservation')
     for row in rows:
         if row.get('kind')=='snapshot':
             src=attempt/row['file'];dst=root/row['file']
@@ -44,6 +53,6 @@ def publish_complete(attempt,root,world,registration):
             os.replace(temp,dst)  # no canonical history exists yet
     temp=root/(source.name+'.publishing')
     with temp.open('wb') as f:f.write(source.read_bytes());f.flush();os.fsync(f.fileno())
-    os.link(temp,target);temp.unlink()  # complete record appears atomically
+    os.replace(temp,target)  # complete record appears atomically on Modal v1
     write_new(attempt/'publication.json',{'status':'first_complete_durable','selected':True})
     return summaries[0]

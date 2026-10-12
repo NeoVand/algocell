@@ -150,9 +150,12 @@ def test_option_b_cohort_forecast_and_95_dollar_guard(tmp_path):
     assert cohort['registration']==reg.as_dict() and set(cohort['arms'])=={'A'}
     assert cohort['seeds']==list(range(8086001,8086021)) and cohort['population_worlds']==20
     expected=project(S.read_json(S.PRE/'benchmark.json'),projection['job_liabilities_usd']['preparation'])
+    from dispatch8086 import parallel_projection
+    expected=parallel_projection(expected)
     assert expected['job_liabilities_usd']==projection['job_liabilities_usd']
     assert projection['cap_usd']==S.CAP==95 and projection['launch_fits']
-    assert projection['projection_usd']==pytest.approx(83.79381223898022)
+    assert projection['projection_usd']==pytest.approx(expected['projection_usd'])
+    assert all(d==9000 for j,d in projection['execution_deadline_s'].items() if j.startswith('world:'))
     assert all(':B:' not in job for job in projection['job_liabilities_usd'])
     limits=S.read_json(S.PRE/'guard_limits.json')
     assert limits['cap_usd']==95 and limits['includes_preparation']
