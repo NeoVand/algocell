@@ -1,0 +1,35 @@
+**The new figure is information-rich, but it is below the reference standard in self-explanation and print readability.** All four panels contain substantive content; there are no empty or placeholder panels. The category headers, numeric columns, byte maps and mechanism example are strengths worth preserving.
+
+Substantive defects:
+
+- **Panel b never names the measured outcome.** “Fraction of all mutant starts” supplies a denominator but does not say whether the curves measure survival, marker retention or another criterion. The title and legend do not resolve this. Change the axis to explicitly name marker-carrying lineages and define what qualifies as carrying in this serial-transfer assay.
+
+- **The site-count criteria are incompletely connected across panels a–c.** Panel a defines population-level carrying and a threshold across tested values. Panel b introduces 16 lines per value, while panel c reports qualifying sites without explaining how outcomes across those lines determine whether a value—and subsequently a site—qualifies. Label panel a’s column “Sites at generation 8,” and provide a compact definition of the serial site criterion beside panel c. Explicitly distinguish the branching and serial criteria if they differ.
+
+- **Panel a’s control column lacks a sufficient definition.** “Control alive” and counts such as 48/64 do not identify what the controls are or what the 64 counts. Use a heading or nearby note specifying the control condition, counted unit and endpoint.
+
+- **The provenance notes rely on unexplained internal references.** “Corrected-core rerun (C1),” “predicted pusher retention failed (X1-2)” and “archive only” require information outside the figure. In particular, “failed” does not say whether a prediction was contradicted or a procedure failed. Replace the codes with plain-language descriptions of the relevant comparison and outcome; explain which displayed results come from which run if that distinction matters.
+
+- **Panel b’s near-zero series obscure one another.** The orange squares and triangles coincide at later transfers, with the grey series also converging on the baseline. At print size, readers cannot reliably recover the separate trajectories from these symbols. Add a direct annotation identifying the coincident series and their shared outcome, or use carefully separated labels with leaders while preserving the actual coordinates.
+
+- **Panel c uses “executed” and “fetched” without establishing their relationship.** Its legend says “Byte executed,” its numeric column says “Fetched bytes,” and its note says “Fetched = reference encounters.” An encounter is not sufficiently defined to explain which bytes receive grey shading. State the operational meaning of the shading and counts, identify the reference execution being measured, and use consistent terminology.
+
+- **Panel d does not connect its example to the designs elsewhere.** “One ldir32 lineage” introduces a new identifier without identifying its design category or relationship to panels a–c. Expand or explain the identifier and state whether this is one of the listed designs or a separate illustrative example.
+
+- **Panel d’s mechanism annotation leaves essential notation undefined.** In “Source 0 (04) overwrites marker A7 at 8,” addresses and byte values are not explicitly distinguished, and the hexadecimal convention is unstated. “d = 4 bytes” never defines *d*. Rewrite this as an explicit address/value statement, mark hexadecimal values consistently, and name the quantity represented by *d*.
+
+- **Panel d’s boundary explanation remains conceptually ambiguous.** “Descendant encounter” does not explain the event marked at instruction 128 or its relationship to the processor reset. State what happens at that boundary and whether the plotted instruction count continues across the reset. Define “marker-derived bytes” sufficiently to distinguish ancestry tracking from simply matching the marker’s byte value.
+
+- **Essential explanatory text is too small for comfortable reading at 180 mm width.** Much of the body text appears approximately 6 pt, with still smaller byte-map symbols. The long methodological notes, numerical columns and mechanism annotations therefore require unusually close inspection. Increase their final-size typography and enlarge the open/filled site symbols. Recover space by shortening opaque wording and tightening the generous vertical spacing around the upper panels and panel c’s key.
+
+Optional polish:
+
+- Put “world 4” directly into panel c’s genome row label; the existing footnote explains the distinction, but the row would be easier to compare with panels a–b.
+- Standardize design names between panels: “Pusher 16,” “Pusher, L = 16,” “Return 16” and “Return closer” require unnecessary cross-matching.
+- Shorten panel c’s long title and retain the track-scaling explanation as a nearby note.
+- Connect panel d’s circled overwrite event directly to its annotation with a short leader.
+- Clarify “partners: zero bytes” as either partners containing zero-valued bytes or partners having zero length.
+
+I see no clear clipping, malformed glyphs or demonstrable numerical inconsistency. The differing panel content and dataset selections are not defects.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

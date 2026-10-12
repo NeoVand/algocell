@@ -1,0 +1,22 @@
+The new figure is comparably polished and information-rich, but **panel d still falls short in self-explanation**. Its numerical agreement is readable; the scientific outcomes being compared are not sufficiently identified.
+
+At 180 mm width, the main text and ticks are broadly consistent with the references’ typography. I see no clear clipping, text collisions, empty panels, or placeholders. The space beneath panel b reads as uneven spacing, not missing data. The added explanatory labels are useful and should be retained.
+
+**Substantive defect**
+
+- **Panel d — the counted outcomes need short definitions.** “Ring outcomes,” “Assay outcomes,” “Registered verdicts,” and “Registered subtests” identify evaluation categories without identifying the scored event or property. The notes establish the comparison—original Z80 versus corrected core—and explain that red means changed, but readers still cannot tell what those changes concern. “Verdicts count registered predictions” does not resolve this. Unlike the references’ explicitly named endpoints, such as lineage survival and allele carriage, these rows require an external caption to understand their scientific result.  
+  **Fix:** Expand each row label or add a compact secondary description naming its scored endpoint. Briefly distinguish a registered verdict from a registered subtest. Full protocols and preregistration details can remain in the manuscript legend.
+
+Panel d’s **area encoding itself is sound**: the visible segment proportions agree with the printed fractions, denominators are provided, and the normalization is explained. The extremely narrow ochre segment in the first row follows from its near-total agreement; it is not evidence of missing content.
+
+**Optional polish**
+
+- **Panel a:** “e3 swaps stack memory” leaves the other side of the exchange unnamed. Identify what is exchanged with stack memory, and introduce BC as a register. This would improve the mechanism explanation without adding a full instruction-set lesson.
+- **Panel c:** The three-item legend stretches beyond the plot toward panel d. Keep it more clearly within c’s territory, using tighter spacing or two lines. “Zero-valued bytes” would also read more naturally than “Zero-valued / bytes” under the shared Fraction axis.
+- **Panel c:** Identifying the illustrative world’s tape length and explicitly connecting its archive to panel b would improve conceptual provenance. The existing “one archive seed” and “separate from a” notes already help.
+- **Panel d:** Add spaces around the slashes in the numeric column, especially the long first fraction, to improve scanning at print size.
+- **Overall:** The comparatively large blank area below b could be reduced through modest vertical rebalancing. Preserve the informative notes and populated panels.
+
+The figure reaches the references’ level of visual polish and information density. The unresolved endpoint definitions in d prevent it from reaching their level of self-explanation.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

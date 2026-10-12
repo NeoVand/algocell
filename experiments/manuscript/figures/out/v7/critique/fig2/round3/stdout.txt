@@ -1,0 +1,20 @@
+**Below standard, narrowly.** The new figure matches the reference’s information density, and its typography is comparably readable at 180 mm. Every panel contains substantive content. The category headers, numeric columns, inline definitions and site tracks are effective. The remaining substantive defects concern panel d’s self-explanation.
+
+**Substantive defects**
+
+- **Panel d: the address system is undefined.** The block-copy design is labelled \(L=32\), but “Ring write address” runs to 64, with repeated sweeps before and after the offspring transition at step 128. The image does not explain what occupies this address space or what each wrap represents. **Fix:** identify the ring’s constituent regions, label their address boundaries and explain the wrap. Distinguish address wrapping from the parent-to-offspring transition.
+
+- **Panel d: the causal erasure event is insufficiently identified.** The orange circle, “Address 8: 0xA7 replaced by 0x04,” “Instruction 6; copy offset = 4 bytes,” and the fall from one marker-derived byte to zero appear related, but their relationship is not explicit. In particular, the replacement label could describe either the introduced mutation or the subsequent overwrite. The address trace shows writing activity without identifying the source that causes erasure. **Fix:** distinguish the initial mutation from the erasing write, directly label the circled event, and give the relevant source → destination relationship. Connect that event to the loss in the adjacent trace.
+
+- **Panel d: “marker-derived bytes” needs a local definition.** Panel b defines a marker as a five-byte mutant window, whereas panel d begins with one marker-derived byte. “Ancestry, not value match” usefully identifies the measurement principle but does not establish what was initially ancestry-labelled. **Fix:** state what receives the initial ancestry label and clarify whether this measurement differs from the window-retention measurement in panel b. Rename the axis accordingly if appropriate.
+
+**Optional polish**
+
+- Harmonize panel c’s “Byte executed / Never executed” key with its “Fetched bytes” column and opcode-fetch explanation. Consistent wording would remove an unnecessary interpretive step.
+- Expand “Sites g8” to “Sites at generation 8”; there is room for a two-line header.
+- Give panel d’s x-axis labels and the final explanatory footer slightly more separation.
+- Replace “pusher retention prediction contradicted” with a brief statement of the predicted and observed outcomes, making the comparison more immediate.
+
+The figure is informative and largely polished, but panel d still requires readers to supply essential connections between the mechanism, coordinates and measured outcome. Resolving those connections would bring its self-explanation up to the supplied reference standard.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

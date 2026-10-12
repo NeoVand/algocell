@@ -1,0 +1,127 @@
+{
+  "technical_checks": "passed",
+  "figures": {
+    "fig1": {
+      "page_mm": [
+        180,
+        167
+      ],
+      "png_pixels": [
+        4252,
+        3945
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 131,
+      "figcheck": "clean",
+      "critique_rounds": 3,
+      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
+      "cleared": false,
+      "delivered_image_reviewed": false,
+      "last_review_png_sha256": "e0faded57064abaa7b1e36dc291cd0a4453209c3b0efcee84e956ff875db4cdf",
+      "post_review_revision": "Measurement definitions corrected after round 3; no fourth review permitted",
+      "files": {
+        "pdf": "900efba533098250a3e872bce003cd7abb4fb1e176fd2b09c355de5323194b43",
+        "svg": "2eae61614434e24f7a1aebac6de43b1209558aa9acc8aa2266fc5273471800f3",
+        "png": "528af83a4dbf9ef369d4fcf8daae4221626fc84e5bec83d9e875f908d83cfddd"
+      },
+      "final_review": "critique/fig1/round3/critique.md"
+    },
+    "fig2": {
+      "page_mm": [
+        180,
+        150
+      ],
+      "png_pixels": [
+        4252,
+        3544
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 122,
+      "figcheck": "clean",
+      "critique_rounds": 3,
+      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
+      "cleared": false,
+      "delivered_image_reviewed": false,
+      "last_review_png_sha256": "14dc3b943eb65edbbb6245333710d1cb79c901d6453138b28bd4aa517bbeeaf2",
+      "post_review_revision": "Measurement definitions corrected after round 3; no fourth review permitted",
+      "files": {
+        "pdf": "d3807825f63dae53568a0794cee4b642bd62b69474e0ba844837374a91caeead",
+        "svg": "b97564d0b711cd1852ba9f5ebd18535f9c9cc3162848a537bd94508505a93545",
+        "png": "7175e7592a1ac8c1a16b6bd2257648fd025517c97842536b9ec7a37dd2c1ff76"
+      },
+      "final_review": "critique/fig2/round3/critique.md"
+    },
+    "fig3": {
+      "page_mm": [
+        180,
+        166
+      ],
+      "png_pixels": [
+        4252,
+        3922
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 149,
+      "figcheck": "clean",
+      "critique_rounds": 3,
+      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
+      "cleared": false,
+      "delivered_image_reviewed": false,
+      "last_review_png_sha256": "d88280b909135f7def8cb70936cc3f2a9953bff99fdaa889d8e284e1e709cf69",
+      "post_review_revision": "Measurement definitions corrected after round 3; no fourth review permitted",
+      "files": {
+        "pdf": "bd21f0dd58dc371b088e8f149f5d01b120a9049441fa775ca94e7e42f0757776",
+        "svg": "1813db2e5c32a6691e309ee81f385a791e6e703b7d73de790676c8d7b4c37c3a",
+        "png": "40015f92d342903b4cc65d188f9a66e7ff3f5f088d23a51d2cbca2f78afe9fde"
+      },
+      "final_review": "critique/fig3/round3/critique.md"
+    },
+    "fig4": {
+      "page_mm": [
+        180,
+        170
+      ],
+      "png_pixels": [
+        4252,
+        4016
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 121,
+      "figcheck": "clean",
+      "critique_rounds": 3,
+      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
+      "cleared": false,
+      "delivered_image_reviewed": false,
+      "last_review_png_sha256": "60f53afda483919fa5c56511f0a3834cab5a0ae7081233dd5626a9794d4c49f4",
+      "post_review_revision": "Measurement definitions corrected after round 3; no fourth review permitted",
+      "files": {
+        "pdf": "c5289f1360a02b328854599348d5d30cb00b46fcb469abb212e81003ca56d3e5",
+        "svg": "0ded0280f673015a21e40fdecdbc6ec7f76d694fc931e7c6fc9461ae2262fb09",
+        "png": "33cf451b9cc1a1ce1abc9ef7044236b561d52ac9e4d4e6c49db4424cdbc61534"
+      },
+      "final_review": "critique/fig4/round3/critique.md"
+    }
+  },
+  "data_sha256": "2de3dc5ef20e1d204f08ce4de5554ab2b9236a80dabcab500d090ef94b8f0044",
+  "legends_sha256": "968e18f42d96ae4d5c319420385867fcc7b68b9d652734349868b6acda29bd16",
+  "scope": "Figures 1-4; Figure 5 deferred for validated 8086 ecology",
+  "source_scripts": {
+    "prepare_v7.py": "017c7e707b7b1f66fb1f74a90d8cd9234f4704d3ae2fedc1c050b0d114a35d65",
+    "build_v7.py": "0df7e3c3d042749b24e189ba48597f7cd7771f55eb53aab2fa22e90e5a585e63",
+    "legends_v7.py": "e486806f0f900b3b226ea260cdc8a897f2c92bd582346662cb2601c0d5568be8",
+    "critique_v7.py": "a85224bbf27f20802cda28e56d5a78bf91b06deac5821e4b21648164b43915c5",
+    "verify_v7.py": "8f2a7bc93a11a180abee9c4d6c68fe2404a7e7a4c649e70f0591d98d91b1e2b9"
+  }
+}

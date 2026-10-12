@@ -1,0 +1,35 @@
+The new figure is information-rich, and all four panels contain substantive content. It nevertheless falls below the references in self-explanation and print readability. The main problems are undefined measurement criteria, an incompletely illustrated copying mechanism, and several annotations that become difficult to use at 180 mm width.
+
+**Substantive defects and concrete fixes**
+
+- **Panel a: the copying geometry is described but not shown.** The parent and offspring occupy separate, unaligned diagrams. The orange arrows do not identify read positions, write positions, or the distance \(d\). Consequently, the central claim—that later reads encounter earlier writes—cannot be understood directly from the drawing. Align source and destination on a shared address track, mark the displacement, and show one explicit write followed by a read of that overwritten position. Retain the useful explanatory text.
+
+- **Panel a: “protects a prefix” lacks a visible referent.** The bracket identifies the four-byte copying core, but the diagram does not identify the general prefix preserved by displacement \(d\), or distinguish that prefix from its payload portion. Add a bracket for the retained prefix and a nested distinction between core \(c\) and free payload \(r\). Put \(r=d-c\) next to this geometry rather than among the detached lower notes.
+
+- **Panels a–b: the measurement definitions are incomplete.** “All 255 alternatives pass” does not say what passing requires; “thresholded sites” provides neither the threshold nor the sampling criterion. These definitions are essential to interpreting “measured free byte positions” and the claimed agreement with the law. Add a compact assay definition stating the tested outcome, observation interval, and criterion for counting a position as free. Define the sampled criterion separately.
+
+- **Panel b: the orange exception has conflicting apparent meanings.** The axis calls its ordinate a measured number of free positions, while the annotation says “Score 0, law 4; payload passes.” The reader cannot tell whether this is biological failure, a scoring failure, or a different measurement. “Similarity-gate deficit” does not resolve that ambiguity. Explicitly distinguish the reported score from demonstrated payload carriage, define the gate, and state why this point appears at zero.
+
+- **Panel b: the series key does not establish comparable evidence.** “Z80 exact,” “6502 exact,” and “6502 carriage” name different procedures without explaining how each produces the same ordinate. In particular, “296 controls” does not identify what those controls control for. Expand the inline key or add a compact methods strip describing the outcome counted for each series. Identify Z80, 6502, and 8086 as processor architectures.
+
+- **Panel b: aggregation and sample units remain unclear.** The legend mixes cells, edited copiers, evolved copiers, and controls. “Cells remain nested in worlds” acknowledges grouping but gives no world counts or explanation of what the displayed totals represent. State the sampling unit and number of worlds for the applicable series, and specify whether bubble counts pool observations across worlds. The PNG does not establish that the area encoding is numerically wrong; its statistical meaning is insufficiently explicit.
+
+- **Panel b: the smallest area-key mark is effectively unusable at print size.** The “1” example is nearly invisible, and coincident symbols near the origin are crowded even in the inset. Enlarge the count legend independently, explicitly indicating its scale relationship to plotted discs, or supplement the small-count groups with direct counts. Explain whether ring size carries information or merely identifies a series.
+
+- **Panel c: the illustrated inheritance result has insufficiently clear provenance.** “One offspring, generation 8” does not specify whether these strips depict one selected example, a general result, or a summary across descendants. “Sources tracked to edited parent” also does not define whether teal means ancestral byte origin, retained value, or demonstrated mutational freedom. Label the strips as the appropriate kind of observation and define the colour outcome precisely. This matters because “transmits 28 payload positions” reads as a broader capacity claim.
+
+- **Panel d: the working criterion is not interpretable.** “2-generation gain ≥ 0.3” lacks the measured quantity, normalization, and baseline. Define gain in the subtitle or an adjacent short note. Without that definition, the working/nonworking partition cannot be independently read.
+
+- **Panel d: eligibility conditions are compressed and partly undefined.** “Aligned, complete copy” supplies no visible test for alignment or completeness, while “d = 4..32 divides 32” is awkward mathematical wording. Write “\(4 \le d \le 32\), with \(d\) dividing 32,” then briefly define the two additional conditions. Make explicit that these are conditions for applying the capacity prediction.
+
+- **Across the figure: secondary information is too small for its scientific importance.** At 180 mm width, much of the explanatory text is approximately 6 pt, with some labels smaller. The detached notes, heatmap qualifications, and numerical keys require sustained close reading. Enlarge these by reallocating space and shortening repeated prose; do not remove the information. The reference figures generally make their operational categories easier to scan through stronger grouping and closer placement.
+
+**Optional polish**
+
+- Separate the meaning of “a–d” payload blocks from byte counts more immediately: label them as four two-byte blocks.
+- Change “Same points: 0–10” to a conventional zoom label and strengthen its visual connection to the dashed region.
+- Place short definitions beside the relevant panel instead of concentrating them in the broad band below panel a.
+- Label the two outlined heatmap cells directly as `0x04` and `0x60`; the present “Rims” note requires unnecessary coordinate lookup.
+- The large white areas in panel b follow from the data range and diagonal relationship; they are not evidence of missing content. Likewise, the permitted 8086 pending legend entry does not constitute a vacant panel.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

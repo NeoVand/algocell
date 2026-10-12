@@ -1,0 +1,50 @@
+**The new figure is below the references’ standard of self-explanation at 180 mm width.** All four panels contain substantive content; there is no vacant or placeholder panel. The mechanism diagrams, ancestry strips, and exhaustive byte-value map are useful additions. However, several definitions and experimental connections remain implicit, and substantial unused space coexists with very small explanatory text.
+
+**Substantive defects and concrete fixes**
+
+1. **Figure-wide: essential text is too small at final print size.** Axis ticks, hexadecimal labels, the sampling statement, bubble-size labels, and several explanatory notes appear approximately 5–6 pt. The long vertical label in b is particularly demanding. Thin outlines and subtle fills also make small symbols difficult to distinguish. The 600 dpi export preserves edges but does not improve physical legibility.  
+   **Fix:** Enlarge these elements and strengthen fine outlines, using the available whitespace. Preserve the rich explanatory content.
+
+2. **Panel a: the mechanism starts after the event it needs to explain.** Both organisms are labeled “after copying,” but no initial arrangement identifies the original core, payload, source, or destination. The reader must reconstruct why the upper outcome repeats C0/C1 and why the lower outcome preserves a–d. Arrows suggest copying direction without explicitly connecting source bytes to destination bytes.  
+   **Fix:** Add a compact “before copying” arrangement or explicit source-to-destination annotations. Identify the protected prefix and show how forward overlap causes subsequent reads to encounter copied material.
+
+3. **Panel a: the equation’s scope and units are unresolved.** “Under the stated phase and coverage” invokes conditions that are not actually stated concretely in the panel. Neither \(r\) nor \(c\) is explicitly defined. “Each unit is two bytes,” displacement values, and “free payload” values require the reader to infer that the eight payload positions correspond to four illustrated boxes.  
+   **Fix:** Define all variables with units beside the equation; state the required phase and coverage conditions in plain language. Label the examples explicitly as displacement in bytes and payload capacity in byte positions, if that is the intended correspondence.
+
+4. **Panel b: the axes combine different quantities without explaining their comparability.** “Measured capacity / retention score” combines exact capacity, sampled scores, and sampled carriage. Their definitions, relationship, and connection to “predicted free payload” are missing. Consequently, agreement with \(y=x\) looks persuasive without the figure establishing what that agreement means.  
+   **Fix:** Briefly define each measurement and its common counting unit. Explain what one plotted point represents and how the prediction is obtained.
+
+5. **Panel b: the series names and sampling statement do not establish provenance.** “Z80 C1,” “6502 C2,” “exact … roles,” and “control cases” are undefined. “C1” also appears in a as a core label, creating a possible unintended connection. The totals beneath a do not explain how 2,343 cells, 101 edits, 42 roles, and 296 controls map onto the plotted points or groups.  
+   **Fix:** Expand or replace C1/C2 and “roles”; place the counts with their corresponding series. State the aggregation represented by each point and which observations contribute to bubble size.
+
+6. **Panel b: the red exception lacks a defined symbol and explanation.** The red circle is absent from the main key. “Gate deficit” names the exception without explaining what gate is involved or why a prediction near four corresponds to zero measured retention. Its appearance in both the main plot and inset is not explicitly identified as the same observation.  
+   **Fix:** Add the red marker to the key and give a short causal annotation. Label the inset as an enlargement and mark its source region on the main plot.
+
+7. **Panel b: overlapping symbols obscure the evidential structure.** Near the origin and at several points along the diagonal, bubbles, rings, triangles, and squares overlap closely. It is difficult to determine whether they represent independent coincident measurements or composite symbols. The one-cell bubble-size example is effectively a speck at print size.  
+   **Fix:** Explain coincident observations and use small, clearly indicated offsets or another readable treatment where necessary. Keep the proportional-area encoding, but make the smallest example legible through a callout. The PNG does not establish that the area scaling itself is wrong.
+
+8. **Panel c: the byte edit and displacement change are not connected.** “Edit 04 to 60” followed by “displacement 32” appears numerically inconsistent until the reader understands an unstated decoding rule. Panel d suggests hexadecimal notation, but c does not say so or explain the conversion. The organism or instruction being edited is also unidentified.  
+   **Fix:** Write the values explicitly as hexadecimal, identify the byte’s role, and explain why that edit produces a 32-byte displacement. Link this example to the relevant system in b and the highlighted cells in d.
+
+9. **Panel c: the ancestry encoding and inheritance claim are underspecified.** Orange and teal headings suggest erased versus transmitted payload, but the strips lack an explicit color key defining what exact ancestry means. The grey core’s ancestry status is unclear. “At generation 8” supplies a time point without specifying whose ancestry is tracked or whether the strip represents one offspring, an aggregate, or a guaranteed outcome.  
+   **Fix:** Add an inline key defining each color and a short statement identifying the tracked ancestor and the basis of the displayed result.
+
+10. **Panel d: the exhaustive screen lacks operational definitions.** The category counts sum correctly to 256, but “working,” “outside conditions,” and “eligible” are not defined. The figure does not establish what was held fixed while the byte varied, what counted as working, or which conditions determined eligibility. These definitions are central to interpreting the screen.  
+    **Fix:** State the fixed construct and the working/eligibility criteria beside the grid. Express the categories as outcomes of those criteria.
+
+11. **Panel d: zero capacity is difficult to distinguish from exclusion.** The capacity scale approaches a very pale fill, while excluded working values use white interiors with teal outlines. At print size, an eligible zero-capacity value can resemble a working value outside the conditions. The separate solid-teal “11 eligible” swatch also obscures the fact that eligible cells use a continuous scale.  
+    **Fix:** Give eligibility a categorical visual treatment independent of capacity, and explicitly state that the color scale applies only to eligible cells. Label the black-rimmed cells directly as `0x04` and `0x60` and connect them to c.
+
+12. **Layout: several large gaps look like space reserved for missing explanation.** The title-to-content gaps in a and c are conspicuous. Panel a also separates its mechanism, equation, and sample counts with large blank intervals; c leaves its ancestry explanation far below the strips. These gaps weaken grouping while nearby labels remain undersized.  
+    **Fix:** Bring explanations next to the marks they explain, move the sampling information into b, and use the recovered space for larger diagrams, typography, and the missing mechanism definitions.
+
+**Optional polish**
+
+- Align the second-column panel letters and titles more consistently.
+- Replace “copies copies” with a more precise description such as “overlap recopies the core.”
+- Standardize terminology across “positions,” “byte positions,” “payload,” and “capacity.”
+- Keep the permitted “8086: pending” key entry visually subordinate to measured series.
+
+No obvious clipping or malformed glyphs are visible. The main shortcomings are readable definitions, provenance, symbol interpretation, and use of space—not a lack of data-bearing panels.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

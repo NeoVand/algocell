@@ -1,0 +1,71 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v7-image-critic-957an5m5
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1317c-0c47-7281-89fe-0fd12ea5fba6
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect any files, read code, consult a repository, or infer hidden data. All images except the LAST are previous reference figures that establish the required standard. The LAST image is the new v7 figure, printed at 180 mm width, exported at 600 dpi. Is the new figure at least as polished, informative, and self-explanatory as the references? The previous minimalist redesign was rejected for empty or uninformative panels. Rich direct labels, colour category headers, inline keys, numeric columns, explanatory mechanism labels and densely informative data are explicitly desired. Different scientific content and panel counts are intentional; do not demand the old dataset in the new figure. There must be NO empty or placeholder panels. An 8086 pending entry in a symbol key is permitted, but no vacant data panel. Judge at final print size. List EVERY supported defect: gaps that look like missing content, layout, type size, overlaps, clipping, glyphs, misleading numerical or area encodings, ambiguous symbols, unexplained abbreviations or units, missing denominators, unclear conceptual provenance, or labels requiring an external caption to read the main result. Be demanding and specific. Separate optional polish from substantive defects. If there are substantive defects, provide concrete panel-specific fixes. If none remain, explicitly state that the new figure meets or exceeds the references in polish, information, and self-explanation. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**Below standard.** The new figure contains substantial information and no empty or placeholder panels. Its explanatory text and numeric table are valuable. However, at 180 mm width, several labels and encodings are too difficult to read, and important definitions remain incomplete. The references more successfully connect their visual keys, categories, and measurements.
+
+**Substantive defects**
+
+1. **Whole figure: too much essential information is set at small print size.**  
+   The setup text, qualifications beneath panels a and b, table entries, and definitions beneath c become particularly demanding at 180 mm. Several appear approximately in the 6–7 pt range; high export resolution preserves sharpness but does not improve physical legibility.  
+   **Fix:** Increase essential explanatory text toward 8 pt and rebalance the layout around it. Preserve the informative notes, using shorter sentences and deliberate line breaks.
+
+2. **Panels a–c: the provenance of “C1” versus “archive” remains unclear.**  
+   “C1 = corrected core; archive = original kernel” does not establish what was corrected or whether these labels distinguish simulation implementations, genome sequences, or another experimental difference. Panel b then introduces “Hist.” without explicitly equating it with “archive.” Because this comparison runs throughout the figure, it needs a self-contained definition.  
+   **Fix:** Use the same two names everywhere and add one concrete sentence identifying the changed experimental component and the meaning of the correction.
+
+3. **Panel a: the implementation key is incomplete for the actual line encoding.**  
+   “Archive open / C1 filled” describes markers, but most of each trajectory is a line. Light and dark versions of each condition colour also appear, without an explicit key. The three starting mixtures produce six trajectories per condition, often crossing or nearly coinciding, so assigning a particular line to an implementation is difficult.  
+   **Fix:** Add actual open/light and filled/dark example handles, alongside the existing mixture key. Make each implementation identifiable along the curves, with sufficiently distinct tones and clearly visible repeated markers.
+
+4. **Panel a: overplotting obscures the comparisons the legend promises.**  
+   The benign curves converge into a narrow band near zero; the lethal curves overlap around their plateau; the core-bearing trajectories are still more tightly packed. At print size, dashes, dots, and small markers are difficult to distinguish within these bands. The common outcome is readable, but differences between mixtures and implementations are not reliably inspectable.  
+   **Fix:** Retain the full-range plots, but add compact numeric endpoint summaries by mixture and implementation, or another clearly keyed summary of their differences. Increase marker and line-style discrimination.
+
+5. **Panels a and b: the biological categories and byte notation need a clearer connection.**  
+   “R regenerates, T transmits” provides names but does not explain the operational distinction between those classes. Both carry “5e ed b0,” while the note says core counts also include other byte-0 variants. The reader cannot determine from the figure how R, T, and the broader core-bearing population are classified. The hexadecimal-looking sequence is also unlabeled.  
+   **Fix:** Add a compact mechanism/classification key defining R, T, and other core-bearing variants; identify the sequence as hexadecimal bytes and state its role. Expand “NOP” to “no operation” in the condition header.
+
+6. **Panel b: overlapping points prevent confident reading of individual-world distributions.**  
+   Several stacks of filled purple points and tightly clustered teal points obscure marker shapes and multiplicity. The circle/square/triangle distinction is supposed to preserve starting-mixture information, but some points cannot be assigned confidently. The note supplies a total denominator, yet the plotted marks do not allow that total—or the mixture composition—to be inspected reliably.  
+   **Fix:** Use a collision-avoiding beeswarm or small, consistent horizontal offsets for the three starting mixtures. Repeat a compact shape key beside this panel. Keep the explicit 19-world ratio exception and the core-loss annotation.
+
+7. **Panel c: “Confinement KM (k steps)” does not identify the reported statistic.**  
+   The footer describes confinement and censoring, but “KM” alone does not tell the reader whether each number is a Kaplan–Meier median, a restricted mean, or another summary. “No partner instruction fetched” also needs a temporal definition: an observation within one encounter and a sustained state are different events.  
+   **Fix:** Name the statistic in the row label, expand Kaplan–Meier, and define the event whose waiting time is measured. State how the event is detected and what qualifies as confinement.
+
+8. **Panel c: the probability and count denominators are insufficiently explicit.**  
+   “p: zero halts execution” does not specify whether the probability applies per zero-byte execution, per encounter, per cell, or through some other assignment. “10 worlds / p” does not explicitly say whether there are ten worlds for each implementation. Bare entries such as “4 / 2” require the reader to remember that the slash separates implementations rather than representing a fraction.  
+   **Fix:** Specify the randomization unit for \(p\), write “10 worlds per implementation per p,” and label count rows as counts out of ten. Separate C1 and archive into visibly distinct subcolumns, or use a clearer paired-value convention.
+
+9. **Across panels: “heritable cells” and “core-bearing cells” are not related explicitly.**  
+   Panel c defines transmitter majority using all heritable cells, whereas panels a and b emphasize \(T/(R+T)\) and core-bearing occupancy. These may intentionally be different populations, but their relationship is not stated. That leaves the reader unable to compare the majority counts with the plotted transmitter shares confidently.  
+   **Fix:** Define “heritable” and state explicitly whether its denominator equals, includes, or differs from the populations measured above.
+
+**Optional polish**
+
+- Give the four axes within a short individual titles, so readers can refer directly to relative share versus core occupancy.
+- Standardize “Step,” “step,” “thousands,” “k steps,” and “300k.”
+- Align the implementation key more closely with its visual examples and use consistent wording across panels.
+- Use a slightly more compact arrangement of panel a’s legend and setup text to support larger explanatory typography.
+
+There is no clear clipping, broken glyph, misleading area encoding, or vacant data panel visible. The unused vertical space within the occupancy plots reflects their full-range axes and should not be treated as missing content.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+12,656

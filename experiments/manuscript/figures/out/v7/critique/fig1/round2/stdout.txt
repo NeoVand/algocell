@@ -1,0 +1,36 @@
+**No. The new figure is information-rich and has four populated panels, but substantive problems remain in readability, metric definitions, and interpretation of the validation results.** The mechanism illustration preserves much of the reference’s strength. There are no obvious placeholder panels, clipped labels, or major overlaps.
+
+The following assessment uses only the supplied images.
+
+**Substantive defects**
+
+- **Print-size readability, especially in panels a and b.** At 180 mm width, the smallest mechanism annotations, opcode explanations, and legend entries are approximately 4–5 pt. The pale byte faces, fine execution arrows, and small boundary markers compound the difficulty. These contain necessary information, so they cannot function merely as decorative detail. Increase essential annotations to approximately 6–7 pt, strengthen fine lines and pale boundaries, and recover space by tightening the large gaps between content blocks.
+
+- **Panel a: the two mechanism states lack an explicit relationship.** “Upper: first pusher; lower: an evolved return closer” identifies their roles, but does not establish whether these are successive states of one lineage, separate observed examples, or explanatory schematics. The title can encourage a sequential reading that the graphic does not substantiate. Add a short statement identifying that relationship and whether the shown bytes are illustrative or from a particular observation.
+
+- **Panel a: some notation remains dependent on specialist knowledge.** `LD BC,nn`, `PUSH BC`, and `A | B` are not directly decoded. The prose explanation of `c0` helps, but the inset’s central “operand = output” argument still requires understanding the register and immediate-value notation. Label `A | B` as the organism–partner boundary and briefly explain that the instruction loads the following two bytes into BC, then pushes those bytes to stack memory.
+
+- **Panel a: the lower write operation is insufficiently explicit.** The teal arc starts near `e3` and reaches partner bytes labelled `c0 ad`, but the reader cannot determine which source bytes were written or what those destination bytes represent. “Writes into occupied B” identifies the destination without resolving the operation. Label the transferred bytes or memory exchange directly, and identify whether `c0 ad` is copied output, existing partner code, or resulting memory content.
+
+- **Panels b and c: “Step” has no operational definition.** It could mean an executed instruction, an organism encounter, or a population update. This prevents interpretation of the emergence times and takeover trajectory. Define the unit beside the axes or in a shared inline note, including whether both panels use the same clock.
+
+- **Panel c: the three metrics are not sufficiently defined.** “≥12/16 modal match” does not identify what is counted or how the modal sequence is chosen. “Distinct / cells” does not say whether distinct means complete genomes, byte patterns, or another object. “Zero / all bytes” does not distinguish zero-valued bytes from other possible meanings of zero. Replace these with explicit definitions, such as fractions of cells matching a specified modal genome, distinct complete genomes divided by cell count, and zero-valued bytes divided by total bytes—using the actual intended definitions.
+
+- **Panel c: the headline exceeds what the labels establish.** “A pattern replaces random code” and “Modal takeover” suggest a biological or computational takeover, while the visible metric establishes sequence similarity only as presently labelled. State whether the expanding pattern was independently identified as a replicator, and whether its identity is tracked through time or recalculated at each snapshot. If that connection is unavailable, describe the result as increasing sequence similarity.
+
+- **Panels a–c: their conceptual connection is unclear.** The figure does not say whether the mechanism in a is the pattern taking over in c, or whether c is one of the worlds contributing to b. Seed 2002 identifies a run but does not connect the panels. Add a compact statement specifying these relationships; this is particularly important because the arrangement invites readers to treat the panels as one causal narrative.
+
+- **Panel d: the five agreement measures lack definitions.** “8088 vectors,” “Ring encounters,” “Isolated assays,” “Claim verdicts,” and “Claim components” identify categories but not what was compared or what constitutes agreement. The numeric denominators are present and valuable; their units and comparison criteria remain unclear. Give each row a short explanatory descriptor, with enough detail to understand the scientific meaning of its agreement rate.
+
+- **Panel d: the audit’s provenance is confusing.** “8088 vectors” appears beneath a statement that the audit compares an archive with a corrected **Z80** core. The image does not explain the relationship between these processor labels. “C1” is also an unresolved external reference. Explain the relationship and replace or supplement C1 with a self-contained description of the correction.
+
+- **Panel d: red combines differences whose significance is unresolved.** “Vector differences expected” explicitly distinguishes at least one class of difference, yet the same red encoding applies to every row. Readers cannot tell whether the remaining differences represent errors, changed scientific conclusions, or expected consequences of correction. Separate expected differences from unresolved or consequential disagreements, or provide concise row-specific explanations. The three differing claim verdicts especially need an indication of their scientific consequence.
+
+**Optional polish**
+
+- Panel b leaves a conspicuous unused region beneath its notes before the lower row begins. It does not look like a missing panel, but tightening that space could support larger text and a wider emergence plot.
+- Panel d’s title, “Validation,” is stronger than its explanatory note, “Audit.” “Agreement across five comparison levels” would describe the visible evidence more precisely.
+- Printing agreement percentages alongside the fractions would make panel d easier to compare. The smallest red segment is nearly invisible at final size; the exact counts already prevent this from being a numerical omission.
+- Standardize the presentation of hexadecimal bytes, including whether a prefix or an explicit “hexadecimal bytes” label is used.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

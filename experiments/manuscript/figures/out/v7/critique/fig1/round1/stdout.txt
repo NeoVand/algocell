@@ -1,0 +1,54 @@
+The new figure is **below the reference standard in self-explanation at final print size**, although it contains four populated panels and substantial scientific content. The main problems are undersized annotation, undefined measurements, and insufficient explanation of what is being validated. There are no obvious clipped elements, overlapping labels, broken glyphs, or vacant data panels.
+
+### Substantive defects
+
+**Across the figure — readability at 180 mm**
+
+- Much of the mechanism annotation, legends, numeric text, and footnotes appears approximately **5–6 pt**, with some mechanism labels smaller. The densely annotated reference figures also use small text, but the new figure’s additional explanatory burden makes this particularly consequential. Exporting at 600 dpi preserves sharpness without improving physical readability.
+- **Fix:** Increase essential labels to approximately 7 pt or larger. Recover space by tightening internal spacing and shortening annotations, while preserving the information.
+
+**Panel a — the mechanism’s transitions and visual vocabulary remain underexplained**
+
+- The upper organism is introduced as a repeating `01 c5` sequence, whereas the lower organism contains `e3` and a terminal `c0`. Nothing explicitly explains the relationship between these configurations. The numbered sequence implies continuity, but the appearance of different code is unexplained.
+- “Writes itself,” “runs into B,” and “comes back” describe actions without clearly identifying what moves: execution, a write destination, or copied code. The curved arrows and thin straight arrows appear to represent different operations, but their meanings are not directly distinguished.
+- Teal, grey, and salmon blocks have no explicit key. Their meanings cannot be established reliably from the labels alone.
+- `e3` and the partner’s `c0 ad` are left unexplained. The inset introduces `LD BC,nn` and `PUSH BC`, and the lower diagram introduces `RET NZ`, without plain-language explanations of the operands or return condition. “Stack starts” also assumes familiarity with the machine model.
+- **Fix:** Give the upper and lower configurations short descriptive labels explaining their relationship. Label execution and writing arrows directly; provide a compact block-colour key. Explain the functional role of the highlighted instructions and bytes, including the return condition. Parenthesize `(01 c5) × 8` to make the repeated unit explicit.
+
+**Panel b — the axis names the wrong quantity, and the event is undefined**
+
+- The vertical axis says **“Worlds with a heritable replicator”**, but its values run from 0 to 1. The footer specifies ten worlds per length, so the plotted quantity evidently needs to be labelled as a **fraction of worlds**, not a count.
+- The staircase presentation suggests cumulative emergence, but the wording does not distinguish “has produced one by this step” from “currently contains one.” These are different measurements.
+- “Heritable replicator” has no visible operational definition. The reader cannot tell what observation qualifies a world for inclusion.
+- `L` is never explicitly defined as a length in bytes. “Historical Z80” identifies an architecture and hints at provenance, but does not explain what “historical” denotes.
+- **Fix:** State the precise cumulative or instantaneous quantity on the axis, define the qualifying event briefly, and change the footer to explicitly identify the experiment/source, `L` in bytes, and `n = 10 worlds per L`.
+
+**Panel c — the three measurements cannot be interpreted precisely**
+
+- “Modal match” could mean the fraction of cells carrying the most common complete tape, average agreement with a modal sequence, or another measure.
+- “Zero bytes” does not specify whether the denominator is all bytes, cells, or positions within a selected tape.
+- “Distinct tapes” is plotted as a fraction without defining its normalization. The “20,000 cells” footer supplies population size but does not explicitly connect it to this calculation.
+- The **Distinct tapes legend sample is solid, while its plotted curve is dashed**.
+- The conspicuous transition near \(4 \times 10^4\) steps has no direct annotation explaining which measured change supports the title’s claim that a pattern replaces random code.
+- “Historical world 2002” is ambiguous: 2002 could be a year or an identifier.
+- **Fix:** Use explicit metric names or compact formulas with denominators, match the dashed legend sample, label the major transition using the defined measurements, and identify “world 2002” unambiguously.
+
+**Panel d — the validation claim lacks its essential comparison**
+
+- “Validation at five distinct levels” never states **what is compared with what**. “Hardware vectors / C1 audit” does not establish that relationship, and `C1` is unexplained.
+- “Instruction vectors,” “ring encounters,” “isolated assays,” “claim verdicts,” and “claim components” identify counting categories without explaining what constitutes agreement or difference in each.
+- The numeric column lacks a header identifying the entries as agreement counts over totals.
+- Equal-length stacked bars imply normalization to 100%, but there is no percentage scale or explicit normalization label. The displayed segment proportions appear consistent with the printed ratios; the defect is missing explanation, not an evident numerical mismatch.
+- For instruction vectors, the difference occupies only roughly **0.3%** of the bar and is effectively unreadable at print size. The raw ratio requires mental subtraction to recover the discrepancy.
+- **Fix:** Name the compared systems or evidence sources beneath the title. Define `C1` and the row-specific agreement criteria concisely. Add **“Agreement / total”** above the numeric column and explicitly label the bars as percentages. Supply agreement percentages or difference counts so the smallest discrepancy remains informative.
+
+### Optional polish
+
+- Add a descriptive heading to panel a to match the other three panels.
+- Tighten the space between panel d’s title, key, and rows; use the recovered room for the missing comparison statement and column headers.
+- Make the panel b legend’s length ordering easier to scan.
+- Harmonize panel-letter placement and title spacing.
+
+The rich mechanism drawing and numeric validation column are valuable. They should be retained and clarified; reducing their content would not resolve these defects.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
