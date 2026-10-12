@@ -247,6 +247,15 @@ def test_guard_nan_rejected_without_mutation(tmp_path):
     with pytest.raises(ValueError): guard.reserve('x',float('nan'))
     assert not (tmp_path/'ledger').exists()
 
+def test_manual_recovery_retains_failed_liability_and_cap(tmp_path):
+    guard=SpendGuard(tmp_path/'spend',{'first':.5},cap=2,overhead=.5)
+    guard.reserve('first',.5); guard.start('first','fc-failed','ap-failed')
+    guard.transact({'kind':'plan_extension','jobs':{'manual':.5},'reason':'manual packaging correction'})
+    result=guard.reserve('manual',.5)
+    assert result['projected_liabilities_usd']==1.5
+    with pytest.raises(ValueError): guard.transact({'kind':'plan_extension','jobs':{'manual':.5},'reason':'retry'})
+    with pytest.raises(RuntimeError): guard.transact({'kind':'plan_extension','jobs':{'over':1},'reason':'over cap'})
+
 def test_frozen_pair_bridge_and_active_total(machines):
     from run8086 import S2Soup
     m,_=machines[16]

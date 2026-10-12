@@ -2,8 +2,10 @@
 from __future__ import annotations
 import json
 import time
+import sys
 from pathlib import Path
 import modal
+if Path('/root/experiments').is_dir(): sys.path.insert(0,'/root/experiments')
 from modal_s8086 import image,volume
 from s8086 import HERE,PRE,ARMS,SEEDS,RATE,sha,launch_receipt
 app=modal.App('algocell-s8086-scoring')

@@ -28,7 +28,7 @@ class SpendGuard:
         with self.path.open('a+') as f:
             fcntl.flock(f,fcntl.LOCK_EX); f.seek(0)
             lines=[json.loads(s) for s in f if s.strip()]; previous='0'*64
-            jobs={}; billed={}; known_cost=0.; reserved=0.
+            jobs={}; billed={}; known_cost=0.; reserved=0.; plan=dict(self.plan)
             for row in lines:
                 digest=row.pop('hash')
                 if row['previous']!=previous or sha(json.dumps(row,sort_keys=True,separators=(',',':')).encode())!=digest:
@@ -42,6 +42,7 @@ class SpendGuard:
                 elif row['kind']=='settled':
                     jobs[row['job']]['status']='settled'; jobs[row['job']]['cost']=row['usd']
                 elif row['kind']=='metered': billed[row['app_id']]=row['usd']
+                elif row['kind']=='plan_extension': plan.update(row['jobs'])
             if not lines:
                 init={'kind':'plan','plan':self.plan,'cap':self.cap,'overhead':self.overhead,'previous':previous,'time':time.time()}
                 previous=sha(json.dumps(init,sort_keys=True,separators=(',',':')).encode())
@@ -49,14 +50,14 @@ class SpendGuard:
             for name,j in jobs.items():
                 if j['status']=='settled': known_cost+=j['cost']
                 else: reserved+=j['reservation']
-            unstarted=sum(v for k,v in self.plan.items() if k not in jobs)
+            unstarted=sum(v for k,v in plan.items() if k not in jobs)
             total=max(known_cost,sum(billed.values()))+reserved+unstarted+self.overhead
             kind=event['kind']
             if kind=='reserve':
                 name=event['job']
                 if name in jobs: raise FileExistsError('job already reserved; no automatic retry')
-                if name not in self.plan or event['usd']<self.plan[name]: raise ValueError('unplanned/underreserved job')
-                total+=event['usd']-self.plan[name]
+                if name not in plan or event['usd']<plan[name]: raise ValueError('unplanned/underreserved job')
+                total+=event['usd']-plan[name]
                 if total>self.cap: raise RuntimeError(f'spend stop: complete liabilities ${total:.4f} > ${self.cap}')
             elif kind=='settled':
                 if event['job'] not in jobs or jobs[event['job']]['status']=='settled': raise ValueError('invalid settlement')
@@ -68,6 +69,13 @@ class SpendGuard:
             elif kind=='metered':
                 if not math.isfinite(event['usd']) or event['usd']<billed.get(event['app_id'],0):
                     raise ValueError('billing must be cumulative/nondecreasing')
+            elif kind=='plan_extension':
+                extra=event['jobs']
+                if (not event.get('reason') or not extra or set(extra)&set(plan)
+                        or any(not math.isfinite(v) or v<0 for v in extra.values())):
+                    raise ValueError('invalid prospective manual plan extension')
+                total+=sum(extra.values())
+                if total>self.cap: raise RuntimeError('spend stop: extended complete liabilities exceed cap')
             else: raise ValueError('unknown spend event')
             row={'previous':previous,'time':time.time(),**safe(event)}
             row['hash']=sha(json.dumps(row,sort_keys=True,separators=(',',':')).encode())

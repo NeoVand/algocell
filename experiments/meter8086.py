@@ -26,8 +26,9 @@ async def billing(app_id,started_epoch):
 
 if __name__=='__main__':
     import argparse
-    ap=argparse.ArgumentParser(description=__doc__); ap.add_argument('--output',required=True); a=ap.parse_args()
-    call=json.loads((PRE/'benchmark_call.json').read_text())
+    ap=argparse.ArgumentParser(description=__doc__); ap.add_argument('--output',required=True)
+    ap.add_argument('--call',default='benchmark_call.json'); a=ap.parse_args()
+    call=json.loads((PRE/a.call).read_text())
     try: result=asyncio.run(billing(call['app_id'],call['started_epoch']))
     except Exception as e: result={'app_id':call['app_id'],'metered_usd':None,'error':f'{type(e).__name__}: {e}'}
     write_new(a.output,result); print(json.dumps(result))

@@ -2,14 +2,16 @@
 from __future__ import annotations
 import json
 import time
+import sys
 from pathlib import Path
 import modal
+if Path('/root/experiments').is_dir(): sys.path.insert(0,'/root/experiments')
 from s8086 import HERE,PRE,RATE,sha,write_new
 
 FILES=('s8086.py','run8086.py','score8086.py','law8086.py','benchmark8086.py','run6502.py',
        'census8086.py','census8086_law.py','dispatch8086.py','modal_s8086.py','modal_score8086.py')
 image=(modal.Image.from_id('im-T2VaU4HVHQXvzDSkbRye1y')
-       .env({'WGPU_BACKEND_TYPE':'Vulkan','XDG_RUNTIME_DIR':'/tmp'})
+       .env({'WGPU_BACKEND_TYPE':'Vulkan','XDG_RUNTIME_DIR':'/tmp','PYTHONPATH':'/root/experiments'})
        .add_local_dir(str(HERE/'algocell_exp'),remote_path='/root/experiments/algocell_exp')
        .add_local_dir(str(PRE),remote_path='/root/experiments/results/s8086/prelaunch'))
 for name in FILES: image=image.add_local_file(str(HERE/name),remote_path=f'/root/experiments/{name}')
@@ -58,16 +60,20 @@ def world(arm,seed,commit,receipt,deadline):
     return {'summary':result,'resource_time_bound_usd':(deadline+120)*RATE}
 
 @app.local_entrypoint()
-def main():
+def main(recovery: bool = False):
     """The only entrypoint is the authorized <=$2 fixed-input benchmark."""
     from dispatch8086 import SpendGuard
     from benchmark8086 import project
     # No retries; an existing reservation makes a second invocation fail.
     guard=SpendGuard(PRE/'spend.jsonl',{'preparation-benchmark':.50},cap=2.,overhead=.50)
-    guard.reserve('preparation-benchmark',.50,inputs_sha256=sha((PRE/'benchmark_inputs.json').read_bytes()))
+    job='preparation-benchmark-recovery' if recovery else 'preparation-benchmark'
+    if recovery:
+        guard.transact({'kind':'plan_extension','jobs':{job:.50},
+                        'reason':'Explicit manual recovery after stopped import failure; fixed inputs unchanged; no automatic retry'})
+    guard.reserve(job,.50,inputs_sha256=sha((PRE/'benchmark_inputs.json').read_bytes()))
     started=time.time(); call=fixed_benchmark.spawn()
-    guard.start('preparation-benchmark',call.object_id,app.app_id)
-    write_new(PRE/'benchmark_call.json',{'app_id':app.app_id,'call_id':call.object_id,
+    guard.start(job,call.object_id,app.app_id)
+    write_new(PRE/('benchmark_recovery_call.json' if recovery else 'benchmark_call.json'),{'app_id':app.app_id,'call_id':call.object_id,
                                        'started_epoch':started,'timeout_s':BENCHMARK_TIMEOUT,
                                        'rate_usd_per_s':RATE,'resource_reservation_usd':.50})
     result=call.get(); result['app_id']=app.app_id; result['call_id']=call.object_id
@@ -77,8 +83,9 @@ def main():
     if bound>.50: raise RuntimeError('benchmark resource bound exceeded reservation')
     result['whole_app_resource_bound_usd']=bound
     write_new(PRE/'benchmark.json',result)
-    guard.settle('preparation-benchmark',bound,app_id=app.app_id,call_id=call.object_id,
+    guard.settle(job,bound,app_id=app.app_id,call_id=call.object_id,
                  function_wall_s=result['function_wall_s'])
-    write_new(PRE/'projection.json',project(result,bound))
+    preparation=bound+(.50 if recovery else 0.)
+    write_new(PRE/'projection.json',project(result,preparation))
     print(json.dumps({'app_id':app.app_id,'resource_bound_usd':bound,
-                      'projection_usd':project(result,bound)['projection_usd']}))
+                      'projection_usd':project(result,preparation)['projection_usd']}))

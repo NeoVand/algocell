@@ -1,0 +1,20 @@
+{
+  "call": {
+    "app_id": "ap-3yv8gfnaUhIahlAjZ7ZbF9",
+    "call_id": "fc-01M4QMG5CSRRM9585JKJZMM4Y6",
+    "started_epoch": 1791794615.655542,
+    "timeout_s": 450,
+    "rate_usd_per_s": 0.00025286,
+    "resource_reservation_usd": 0.5
+  },
+  "status": "failed before user-function execution; app explicitly stopped",
+  "cause": "ModuleNotFoundError s8086 at remote module import",
+  "call_cancelled": true,
+  "app_stopped": true,
+  "observed_stop_epoch": 1791794836.391307,
+  "retained_resource_liability_usd": 0.5,
+  "population_calls": 0,
+  "manual_recovery_reason": "Correct remote PYTHONPATH without changing any fixed memories, biological design or code certificate",
+  "automatic_retries": false,
+  "platform_note": "Modal repeated container import attempts before app stop despite retries=0; no benchmark function execution occurred"
+}
