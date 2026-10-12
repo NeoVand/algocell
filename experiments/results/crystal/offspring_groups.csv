@@ -1,0 +1,15 @@
+status,source,confined,family,scan_rows,parent_small_units,both_offspring_small,partner_period_varies,median_offspring_period
+EXPLORATORY,offset/offset_cells.csv,,1e NN ed b0,1192,1103,1167,0,4.0
+EXPLORATORY,offset/offset_cells.csv,,XX 5e ed b0,1155,771,822,0,8.0
+EXPLORATORY,population/classes_cells.csv,False,other,24510,11393,2364,2242,32.0
+EXPLORATORY,population/classes_cells.csv,False,other block copy (motif),7,2,1,1,20.0
+EXPLORATORY,population/classes_cells.csv,False,return-bearing (motif),187,5,17,38,32.0
+EXPLORATORY,population/classes_cells.csv,True,1e NN ed b0,1192,1103,1167,0,4.0
+EXPLORATORY,population/classes_cells.csv,True,XX 5e ed b0,1155,771,822,0,8.0
+EXPLORATORY,population/classes_cells.csv,True,other,3105,1374,1451,0,50.0
+EXPLORATORY,population/classes_cells.csv,True,other block copy (motif),4128,2147,2256,0,16.0
+EXPLORATORY,population/classes_cells.csv,True,return-bearing (motif),6075,5781,6068,0,8.0
+EXPLORATORY,s6502/v2/s1_cells.csv,False,other,57,52,55,0,8.0
+EXPLORATORY,s6502/v2/s1_cells.csv,False,return-bearing (motif),9,8,9,0,8.0
+EXPLORATORY,s6502/v2/s1_cells.csv,True,other,622,374,391,0,8.0
+EXPLORATORY,s6502/v2/s1_cells.csv,True,return-bearing (motif),368,222,210,0,8.0

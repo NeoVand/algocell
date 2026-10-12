@@ -1,0 +1,49 @@
+status,key,phase,pos,n_encounters,opcode_frac,operand_frac,data_read_frac,unread_frac,write_frac
+EXPLORATORY,ret16,wild-type parent,0,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,1,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,2,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,3,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,4,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,5,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,6,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,7,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,8,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,9,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,10,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,11,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,12,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,13,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,14,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type parent,15,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,0,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,1,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,2,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,3,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,4,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,5,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,6,16,1.0,1.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,7,16,1.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,8,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,9,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,10,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,11,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,12,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,13,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,14,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,wild-type offspring next execution,15,16,0.0,0.0,1.0,0.0,1.0
+EXPLORATORY,ret16,mutant offspring next execution,0,8192,1.0,0.0640869140625,0.8992919921875,0.0,0.8568115234375
+EXPLORATORY,ret16,mutant offspring next execution,1,8192,0.94189453125,0.1368408203125,0.768310546875,0.0079345703125,0.7169189453125
+EXPLORATORY,ret16,mutant offspring next execution,2,8192,0.893310546875,0.1552734375,0.74853515625,0.0194091796875,0.7044677734375
+EXPLORATORY,ret16,mutant offspring next execution,3,8192,0.8970947265625,0.741455078125,0.7479248046875,0.0223388671875,0.7159423828125
+EXPLORATORY,ret16,mutant offspring next execution,4,8192,0.89013671875,0.7376708984375,0.7281494140625,0.026611328125,0.7056884765625
+EXPLORATORY,ret16,mutant offspring next execution,5,8192,0.9151611328125,0.7080078125,0.7408447265625,0.0269775390625,0.701416015625
+EXPLORATORY,ret16,mutant offspring next execution,6,8192,0.8885498046875,0.6885986328125,0.7142333984375,0.0565185546875,0.700439453125
+EXPLORATORY,ret16,mutant offspring next execution,7,8192,0.8824462890625,0.0970458984375,0.7061767578125,0.0467529296875,0.7042236328125
+EXPLORATORY,ret16,mutant offspring next execution,8,8192,0.3082275390625,0.1021728515625,0.70556640625,0.0296630859375,0.7039794921875
+EXPLORATORY,ret16,mutant offspring next execution,9,8192,0.338623046875,0.0518798828125,0.7042236328125,0.030517578125,0.71484375
+EXPLORATORY,ret16,mutant offspring next execution,10,8192,0.2891845703125,0.0931396484375,0.7095947265625,0.0323486328125,0.713134765625
+EXPLORATORY,ret16,mutant offspring next execution,11,8192,0.2772216796875,0.0833740234375,0.69287109375,0.0433349609375,0.715087890625
+EXPLORATORY,ret16,mutant offspring next execution,12,8192,0.3077392578125,0.0775146484375,0.69140625,0.033935546875,0.7127685546875
+EXPLORATORY,ret16,mutant offspring next execution,13,8192,0.287841796875,0.091552734375,0.703125,0.033203125,0.7208251953125
+EXPLORATORY,ret16,mutant offspring next execution,14,8192,0.26611328125,0.101318359375,0.706298828125,0.0330810546875,0.720458984375
+EXPLORATORY,ret16,mutant offspring next execution,15,8192,0.30029296875,0.055908203125,0.685302734375,0.0439453125,0.74658203125

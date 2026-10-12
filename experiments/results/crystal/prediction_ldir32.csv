@@ -1,0 +1,9 @@
+status,key,arm,gen,prediction,sites,scope
+EXPLORATORY,ldir32,U,1,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,2,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,4,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,8,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,1,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,2,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,4,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site
+EXPLORATORY,ldir32,U,8,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site

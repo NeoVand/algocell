@@ -1,0 +1,18 @@
+status,dataset,endpoint,cells,worlds,small_units,median_period,min_period,max_period
+EXPLORATORY,6502 A,first closed-heritable (same scored tape),20,20,20,8.0,8.0,8.0
+EXPLORATORY,6502 A,first replicator,20,20,20,8.0,8.0,8.0
+EXPLORATORY,6502 B,censored first replicator,16,16,0,,,
+EXPLORATORY,6502 B,first closed-heritable (same scored tape),4,4,2,20.0,8.0,32.0
+EXPLORATORY,6502 B,first replicator,4,4,2,20.0,8.0,32.0
+EXPLORATORY,6502 C,first closed-heritable (same scored tape),19,19,19,8.0,8.0,8.0
+EXPLORATORY,6502 C,first closed-heritable (scored cache order),1,1,1,8.0,8.0,8.0
+EXPLORATORY,6502 C,first replicator,20,20,20,8.0,8.0,8.0
+EXPLORATORY,6502 D,censored first replicator,2,2,0,,,
+EXPLORATORY,6502 D,first closed-heritable (same scored tape),18,18,18,8.0,8.0,8.0
+EXPLORATORY,6502 D,first replicator,18,18,18,8.0,8.0,8.0
+EXPLORATORY,Z80 G,earliest sampled closed-heritable,621,79,380,8.0,4.0,64.0
+EXPLORATORY,Z80 G,first replicator,80,80,80,2.0,2.0,2.0
+EXPLORATORY,Z80 G,no sampled closed-heritable cell,1,1,0,,,
+EXPLORATORY,Z80 I,earliest sampled closed-heritable,161,10,48,16.0,8.0,16.0
+EXPLORATORY,Z80 I,first replicator,10,10,10,8.0,4.0,8.0
+EXPLORATORY,Z80 I,first scored closed-heritable (same first tape),10,10,10,8.0,4.0,8.0

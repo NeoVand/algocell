@@ -1,0 +1,66 @@
+status,source,family,test,cells,small_units,median_period,positive_unexec
+EXPLORATORY,mutscan/mutscan_tapes.csv,1e NN ed b0,compatible; per-site mask missing,8,8,4.0,0
+EXPLORATORY,mutscan/mutscan_tapes.csv,XX 5e ed b0,compatible; per-site mask missing,6,6,4.0,0
+EXPLORATORY,mutscan/mutscan_tapes.csv,other,compatible; per-site mask missing,3,3,10.0,0
+EXPLORATORY,mutscan/mutscan_tapes.csv,other,deficit,21,0,50.0,0
+EXPLORATORY,mutscan/mutscan_tapes.csv,other,equal (exact from aggregate),93,93,2.0,0
+EXPLORATORY,mutscan/mutscan_tapes.csv,other block copy (motif),compatible; per-site mask missing,7,7,8.0,4
+EXPLORATORY,mutscan/mutscan_tapes.csv,other block copy (motif),deficit,3,0,20.0,3
+EXPLORATORY,mutscan/mutscan_tapes.csv,other block copy (motif),equal (exact from aggregate),2,0,16.0,2
+EXPLORATORY,mutscan/mutscan_tapes.csv,return-bearing (motif),compatible; per-site mask missing,17,17,8.0,0
+EXPLORATORY,mutscan_I/mutscan_tapes.csv,XX 5e ed b0,compatible; per-site mask missing,8,8,4.0,0
+EXPLORATORY,mutscan_I/mutscan_tapes.csv,other block copy (motif),compatible; per-site mask missing,11,11,8.0,7
+EXPLORATORY,mutscan_I/mutscan_tapes.csv,other block copy (motif),equal (exact from aggregate),1,0,16.0,1
+EXPLORATORY,mutscan_K/mutscan_tapes.csv,1e NN ed b0,compatible; per-site mask missing,1,1,4.0,0
+EXPLORATORY,mutscan_K/mutscan_tapes.csv,XX 5e ed b0,compatible; per-site mask missing,10,10,4.0,0
+EXPLORATORY,mutscan_K/mutscan_tapes.csv,other,equal (exact from aggregate),28,28,2.0,0
+EXPLORATORY,mutscan_K/mutscan_tapes.csv,other block copy (motif),compatible; per-site mask missing,1,1,4.0,0
+EXPLORATORY,offset/offset_cells.csv,1e NN ed b0,offset outside dividing-d conditions,1,0,20.0,1
+EXPLORATORY,offset/offset_cells.csv,1e NN ed b0,offset payload equal,1191,1103,4.0,189
+EXPLORATORY,offset/offset_cells.csv,XX 5e ed b0,offset outside dividing-d conditions,3,0,32.0,0
+EXPLORATORY,offset/offset_cells.csv,XX 5e ed b0,offset payload deficit,1,0,16.0,0
+EXPLORATORY,offset/offset_cells.csv,XX 5e ed b0,offset payload equal,1151,771,8.0,590
+EXPLORATORY,population/classes_cells.csv,1e NN ed b0,compatible; per-site mask missing,1101,1101,4.0,152
+EXPLORATORY,population/classes_cells.csv,1e NN ed b0,deficit,67,2,20.0,14
+EXPLORATORY,population/classes_cells.csv,1e NN ed b0,equal (exact from aggregate),24,0,20.0,24
+EXPLORATORY,population/classes_cells.csv,XX 5e ed b0,compatible; per-site mask missing,770,770,4.0,235
+EXPLORATORY,population/classes_cells.csv,XX 5e ed b0,deficit,54,0,32.0,24
+EXPLORATORY,population/classes_cells.csv,XX 5e ed b0,equal (exact from aggregate),330,0,16.0,330
+EXPLORATORY,population/classes_cells.csv,XX 5e ed b0,excess,1,1,4.0,1
+EXPLORATORY,population/classes_cells.csv,other,compatible; per-site mask missing,1375,1375,8.0,0
+EXPLORATORY,population/classes_cells.csv,other,deficit,2917,0,50.0,61
+EXPLORATORY,population/classes_cells.csv,other,equal (exact from aggregate),23323,11392,16.0,2
+EXPLORATORY,population/classes_cells.csv,other block copy (motif),compatible; per-site mask missing,1992,1992,5.0,663
+EXPLORATORY,population/classes_cells.csv,other block copy (motif),deficit,908,150,20.0,606
+EXPLORATORY,population/classes_cells.csv,other block copy (motif),equal (exact from aggregate),1230,2,16.0,1223
+EXPLORATORY,population/classes_cells.csv,other block copy (motif),excess,5,5,16.0,5
+EXPLORATORY,population/classes_cells.csv,return-bearing (motif),compatible; per-site mask missing,5781,5781,8.0,0
+EXPLORATORY,population/classes_cells.csv,return-bearing (motif),deficit,298,0,16.0,3
+EXPLORATORY,population/classes_cells.csv,return-bearing (motif),equal (exact from aggregate),183,5,32.0,0
+EXPLORATORY,population/population_cells.csv,1e NN ed b0,missing fetched/unexecuted counts,80,77,4.0,0
+EXPLORATORY,population/population_cells.csv,XX 5e ed b0,missing fetched/unexecuted counts,142,96,8.0,0
+EXPLORATORY,population/population_cells.csv,other,missing fetched/unexecuted counts,532,206,32.0,0
+EXPLORATORY,population/population_cells.csv,other block copy (motif),missing fetched/unexecuted counts,250,150,10.0,0
+EXPLORATORY,population/population_cells.csv,return-bearing (motif),missing fetched/unexecuted counts,356,340,8.0,0
+EXPLORATORY,s6502/v2/s1_cells.csv,other,compatible; per-site mask missing,354,354,8.0,33
+EXPLORATORY,s6502/v2/s1_cells.csv,other,deficit,263,72,16.0,128
+EXPLORATORY,s6502/v2/s1_cells.csv,other,equal (exact from aggregate),62,0,16.0,61
+EXPLORATORY,s6502/v2/s1_cells.csv,return-bearing (motif),compatible; per-site mask missing,221,221,8.0,6
+EXPLORATORY,s6502/v2/s1_cells.csv,return-bearing (motif),deficit,126,9,16.0,37
+EXPLORATORY,s6502/v2/s1_cells.csv,return-bearing (motif),equal (exact from aggregate),30,0,16.0,30
+EXPLORATORY,s6502/v2/s1_cells_64.csv,other,compatible; per-site mask missing,354,354,8.0,33
+EXPLORATORY,s6502/v2/s1_cells_64.csv,other,deficit,263,72,16.0,128
+EXPLORATORY,s6502/v2/s1_cells_64.csv,other,equal (exact from aggregate),62,0,16.0,61
+EXPLORATORY,s6502/v2/s1_cells_64.csv,return-bearing (motif),compatible; per-site mask missing,221,221,8.0,6
+EXPLORATORY,s6502/v2/s1_cells_64.csv,return-bearing (motif),deficit,126,9,16.0,37
+EXPLORATORY,s6502/v2/s1_cells_64.csv,return-bearing (motif),equal (exact from aggregate),30,0,16.0,30
+EXPLORATORY,serial_retention/posthoc_cells.csv,other,deficit,4,0,32.0,4
+EXPLORATORY,serial_retention/posthoc_cells.csv,other,equal (exact from aggregate),20,4,32.0,16
+EXPLORATORY,serial_retention/posthoc_cells.csv,return-bearing (motif),equal (exact from aggregate),8,4,24.0,8
+EXPLORATORY,serial_retention/sr_summary.csv,1e NN ed b0,equal (exact from aggregate),4,4,4.0,0
+EXPLORATORY,serial_retention/sr_summary.csv,XX 5e ed b0,equal (exact from aggregate),4,4,4.0,0
+EXPLORATORY,serial_retention/sr_summary.csv,other,deficit,8,0,35.0,4
+EXPLORATORY,serial_retention/sr_summary.csv,other,equal (exact from aggregate),24,16,2.0,8
+EXPLORATORY,serial_retention/sr_summary.csv,other block copy (motif),deficit,4,0,20.0,4
+EXPLORATORY,serial_retention/sr_summary.csv,other block copy (motif),equal (exact from aggregate),8,0,16.0,8
+EXPLORATORY,serial_retention/sr_summary.csv,return-bearing (motif),equal (exact from aggregate),4,4,8.0,0

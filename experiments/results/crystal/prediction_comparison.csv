@@ -1,0 +1,41 @@
+status,key,arm,gen,prediction,sites,scope,n_sites
+EXPLORATORY,pusher16,U,1,verbatim paths only,2,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,1
+EXPLORATORY,pusher16,U,2,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher16,U,4,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher16,U,8,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher16,U,1,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,1
+EXPLORATORY,pusher16,U,2,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher16,U,4,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher16,U,8,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher64,U,1,verbatim paths only,32,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,29
+EXPLORATORY,pusher64,U,2,verbatim paths only,16,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,21
+EXPLORATORY,pusher64,U,4,verbatim paths only,8,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher64,U,8,verbatim paths only,4,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher64,U,1,no opcode in child executions,14,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,29
+EXPLORATORY,pusher64,U,2,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,21
+EXPLORATORY,pusher64,U,4,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,pusher64,U,8,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,1,verbatim paths only,1,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,2,verbatim paths only,1,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,4,verbatim paths only,1,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,8,verbatim paths only,1,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,1,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,2,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,4,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ret16,U,8,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,1,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,2,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,4,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,8,verbatim paths only,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,1,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,2,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,4,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,ldir32,U,8,no opcode in child executions,0,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,0
+EXPLORATORY,genome20_s6003,U,1,verbatim paths only,11,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,2,verbatim paths only,11,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,4,verbatim paths only,11,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,8,verbatim paths only,11,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,1,no opcode in child executions,11,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,2,no opcode in child executions,10,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,4,no opcode in child executions,10,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
+EXPLORATORY,genome20_s6003,U,8,no opcode in child executions,10,frozen wild-type local map; 32 values/site; 16 partners; >=half probes edge; >=half contexts site,9
