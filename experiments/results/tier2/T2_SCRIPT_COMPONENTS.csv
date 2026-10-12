@@ -1,0 +1,9 @@
+claim,script_component,verdict,evidence
+DZ2,correlation_only_report,met,DIAL.md omits KM reversal verdict; registered count is evaluated separately
+E2,L16_benign_interval_only,not met,2/10; interval-only count omits below-start conjunction
+E2,L16_lethal_interval_only,not met,0/10; interval-only count omits below-start conjunction
+E2,L32_benign_interval_only,not met,5/10; interval-only count omits below-start conjunction
+E-L32L,frozen_report,descriptive,offset_switch.py labels lethal arms E3 descriptive; registered >.5/<.4 thresholds evaluated separately
+L2,L16_half_unexecuted,n/a (no recovery),"0 recoveries; >=half sites unexecuted, versus literal all sites"
+L2,L20_half_unexecuted,not met,"1 recoveries; >=half sites unexecuted, versus literal all sites"
+C4b,frozen_report,descriptive,"r4_analyse.py emits final-cell classes, not a binary verdict; named motif and descendant confinement remain separate"

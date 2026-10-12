@@ -1,0 +1,41 @@
+{
+  "app_id": "ap-bAUeWQx7pVbtC7D51FI205",
+  "score_tag": "c1_20261012T042053Z",
+  "started_utc": "2026-10-12T04:20:53Z",
+  "source_commit": "dadd24105d88751817e07bf90f8aecb57972abc7",
+  "max_allocated_runtime_usd": 3.337752,
+  "calls": [
+    {
+      "experiment": "DZ",
+      "call_id": "fc-01M4Q5F4P56VJ8VZ0MNH743X7D"
+    },
+    {
+      "experiment": "E",
+      "call_id": "fc-01M4Q5F4REQB7FKZEFY2X1JPME"
+    },
+    {
+      "experiment": "R4",
+      "call_id": "fc-01M4Q5F4V6X20AB7GBP4K09M1W"
+    },
+    {
+      "experiment": "F",
+      "call_id": "fc-01M4Q5F4Y3M75F5AE25JVD3NEC"
+    },
+    {
+      "experiment": "StageE-L10",
+      "call_id": "fc-01M4Q5F50N69AS196XZJPXX8BS"
+    },
+    {
+      "experiment": "Serial",
+      "call_id": "fc-01M4Q5F5367P3XHG2X3CT7SK2E"
+    },
+    {
+      "experiment": "Branching",
+      "call_id": "fc-01M4Q5F55QGZE7N12EN537MKRJ"
+    },
+    {
+      "experiment": "L",
+      "call_id": "fc-01M4Q5F58CMM8WNKM6PD9H3ESA"
+    }
+  ]
+}

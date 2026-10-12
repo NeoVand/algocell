@@ -1,0 +1,15 @@
+{
+  "app_id": "ap-oRCTXTA8C8njp8zlxGpi9I",
+  "score_tag": "c1_20261012T042053Z",
+  "started_utc": "2026-10-12T04:22:44Z",
+  "source_commit": "dadd24105d88751817e07bf90f8aecb57972abc7",
+  "max_allocated_runtime_usd": 0.151716,
+  "calls": [
+    {
+      "experiment": "StageE-L10",
+      "call_id": "fc-01M4Q5JGNGZZNV667CV7DGWYFY"
+    }
+  ],
+  "original_generic_timeout_forecast_usd": 3.337752,
+  "timeout_forecast_note": "Single StageE-L10 retry; initial wrapper recorded its generic all-scorer ceiling."
+}

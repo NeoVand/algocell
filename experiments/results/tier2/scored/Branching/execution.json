@@ -1,0 +1,42 @@
+{
+  "experiment": "Branching",
+  "started_epoch": 1791778859.4754553,
+  "status": "complete",
+  "gpu": "NVIDIA L4",
+  "source_hashes": {
+    "dial_soups.py": "a11510a58108e4dbea2a9ddbc834ff3ccbd0b127415f2321c8b058abbc5ef86a",
+    "offset_switch.py": "5250755dad01913c27a00a3ded9a23c0ffc3c994594520170cd561f5cf46b03f",
+    "r4_analyse.py": "1512bcebf6689d3d74891dd425572fa52b5e1cfd34153939ae1e29d5a6882daf",
+    "offset_encounter.py": "aaf966b7a0834cb4b78dc26099c4b7b9a31dbdeff1b4f124894a3c9fd7b428a3",
+    "assay_batch.py": "c5aecba77d46b58fb3024976539bee2c0c0d426bc13d57a6204094a290ae08f6",
+    "c4_functional.py": "a7ac6a9b99a5dfea4fbccdb25091f3a33d5dc650f1c3c579277b1ad460fd330c",
+    "stage_g.py": "be7f2865db599a5a5cd8303a597a8d94353d682c1b8a1ec530c3f425b52904fe",
+    "capacity_over_time.py": "63ac4a6aa697827a1adfc2a54746531ff3190bd68d782604a3ae9d13b81d334d",
+    "score_L.py": "95a0c3941c414643ef1a49ef0d5557aefc0e829223c208385c7241e7b0d913d5",
+    "stage_f.py": "f8430cb6bbaa79a89a9be03aea73c9077e2ff3f8a379ed6298f16a18f95bc225",
+    "serial_retention.py": "8cd76ee597c20fac3ace42c1fd1c12310670374e0d6ea5bfff0a7b970eef3fad",
+    "branching_transfer.py": "7d306dbd342638a2793b9e677e27cd7162a5ce7c45232e8b251551367cd6d980",
+    "mutscan.py": "1f282fe0290a6df85d20acf424d24d9535480dc00affbe8c8aff00cd149fdffe",
+    "population_classes.py": "38f17a691774026e3b803141f638ac025215d10f98b0704093783ac3a1ca3e4d"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "/root/branching_transfer.py",
+        "--report",
+        "--out",
+        "/runs/tier2_scores/c1_20261012T042053Z/Branching"
+      ],
+      "started_epoch": 1791778866.0864081,
+      "log": "00_branching_transfer.log",
+      "finished_epoch": 1791778868.4160674,
+      "returncode": 0
+    }
+  ],
+  "input_root": "/runs/tier2",
+  "output_root": "/runs/tier2_scores/c1_20261012T042053Z/Branching",
+  "updated_epoch": 1791778869.5033984,
+  "finished_epoch": 1791778869.503394,
+  "runtime_estimate_usd": 0.0025356645554971695
+}

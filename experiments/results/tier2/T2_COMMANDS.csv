@@ -1,0 +1,16 @@
+experiment,command,seconds,returncode
+Branching,/usr/local/bin/python /root/branching_transfer.py --report --out /runs/tier2_scores/c1_20261012T042053Z/Branching,2.3296592235565186,0
+DZ,/usr/local/bin/python /root/dial_soups.py --analyse --machine c1 --runs /tmp/tier2_score_inputs/dial --out /runs/tier2_scores/c1_20261012T042053Z/DZ,92.90066027641296,0
+E,/usr/local/bin/python /root/offset_switch.py --analyse --machine c1 --indir /tmp/tier2_score_inputs/offset --out /runs/tier2_scores/c1_20261012T042053Z/E,36.910003423690796,0
+E,/usr/local/bin/python /root/offset_encounter.py --machine tier2c1_assay --runs /tmp/tier2_score_inputs/offset --out /runs/tier2_scores/c1_20261012T042053Z/E/OFFSET_ENCOUNTER.md,15.276710748672485,0
+F,/usr/local/bin/python /root/assay_batch.py /tmp/tier2_score_inputs/stageF --machine tier2c1_assay,17.661073684692383,0
+F,/usr/local/bin/python /root/stage_f.py /tmp/tier2_score_inputs/stageF --f4c-only --machine tier2c1_assay --out /runs/tier2_scores/c1_20261012T042053Z/F,2.759808301925659,0
+L,/usr/local/bin/python /root/assay_batch.py /tmp/tier2_score_inputs/stageL --machine tier2c1_assay,40.6973614692688,0
+L,/usr/local/bin/python /root/c4_functional.py /tmp/tier2_score_inputs/stageL --machine tier2c1_assay,18.979305744171143,0
+L,/usr/local/bin/python /root/stage_g.py --dir /tmp/tier2_score_inputs/stageL --out /runs/tier2_scores/c1_20261012T042053Z/L --no-verdicts --machine tier2c1_assay,9.046916246414185,0
+L,/usr/local/bin/python /root/capacity_over_time.py --yes --stages L --machine tier2c1_assay --runs-dir /tmp/tier2_score_inputs/stageL --runs-table /runs/tier2_scores/c1_20261012T042053Z/L/stage_g_runs.csv --out /runs/tier2_scores/c1_20261012T042053Z/L/capacity_time_L,708.5343933105469,0
+L,/usr/local/bin/python /root/score_L.py --cap /runs/tier2_scores/c1_20261012T042053Z/L/capacity_time_L/capacity_over_time.csv --runs /runs/tier2_scores/c1_20261012T042053Z/L/stage_g_runs.csv --out /runs/tier2_scores/c1_20261012T042053Z/L/SCORING.md,2.2513489723205566,0
+R4,/usr/local/bin/python /root/r4_analyse.py --machine c1 --runs /tmp/tier2_score_inputs/r4_inv --seed-path-root /Users/neo/repos/algocell/experiments/runs/r4_inv/r4_inv --out /runs/tier2_scores/c1_20261012T042053Z/R4,31.2956862449646,0
+Serial,/usr/local/bin/python /root/serial_retention.py --report --out /runs/tier2_scores/c1_20261012T042053Z/Serial,1.9518721103668213,0
+StageE-L10,/usr/local/bin/python /root/assay_batch.py /tmp/tier2_score_inputs/stageE --machine tier2c1_assay,8.943469762802124,0
+StageE-L10,/usr/local/bin/python /tmp/stage_e_frozen_tables.py /tmp/tier2_score_inputs/stageE /runs/tier2_scores/c1_20261012T042053Z/StageE-L10,3.3638675212860107,0

@@ -1,5 +1,25 @@
 # I1-T2 running spend ledger
 
+Scoring closeout UTC: 2026-10-12T04:35:22.033817+00:00.
+
+All registered world/panel work has finished. Stage L keeps its 20 failed end-check markers, but all 20 worlds ran 10M steps and have every frozen scoring input; all were scored. No new tier-2 world was launched. The dispatcher projection counting replacement Stage L runs is not a remaining-work budget for this scoring task.
+
+| kind          | app_id                    |   metered_usd |
+|:--------------|:--------------------------|--------------:|
+| worlds/panels | ap-GpoWKGnLbLpyPF0kyUWKsT |   19.16065586 |
+| scoring       | ap-bAUeWQx7pVbtC7D51FI205 |    0.39176397 |
+| scoring       | ap-oRCTXTA8C8njp8zlxGpi9I |    0.00405097 |
+
+New scoring actual metered spend: **$0.39581494**, including the failed Stage E plotting attempt and its table-only completion; scoring ceiling **$5**.
+Tier-2 world/panel and scoring apps combined: **$19.55647080**. Remaining under $40: **$20.44352920**. Retaining the original $2 preparation reserve leaves **$18.44352920**. Preparation outside these apps is not claimed as metered here.
+
+Function-body runtime estimates: worlds/panels $17.72714790; scoring $0.27012659. These estimates exclude startup and are not the bill.
+
+Billing is authoritative app-attributed usage and can lag. The report requests the full current-hour interval because Modal excludes a partial end interval; `score_spend.json` records the query bounds. All eight successful scoring jobs completed, plus the preserved failed plotting attempt. The allocated-runtime ceilings were $3.337752 initially and $0.151716 for the single Stage E retry, before startup overhead.
+
+## Historical launch forecast and early snapshot
+
+
 Updated UTC: 2026-10-11 13:57:19.
 
 COST.md rates: L4 $0.000222/s + one CPU core $0.0000131/s + 8 GiB × $0.00000222/s = $0.00025286/container-second. No credits or automatic retries assumed.
