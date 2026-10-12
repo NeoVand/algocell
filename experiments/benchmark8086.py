@@ -72,6 +72,7 @@ def benchmark():
         ex=E.ZilionExecutor(cfg['machine'],device=s.device)
         m=ex.machine_for(L,zero_halts=False,maps=True); diagnostic=diagnostic_for(m)
         compilation=time.perf_counter()-t0
+        print(json.dumps({'kind':'fixed-compile','L':L,'seconds':compilation}),flush=True)
         backend_validation=[]
         for word in ('b951','51b9','07a5','a507','ff30','30ff','ad50','50ad'):
             parent=np.tile(np.frombuffer(bytes.fromhex(word),np.uint8),L//2)
@@ -126,6 +127,7 @@ def benchmark():
             for _ in range(3):
                 t0=time.perf_counter(); dispatch(128); timing.append(128/(time.perf_counter()-t0))
             rates.extend(timing); world_times.append({'panel':name,'world_steps_per_s':timing})
+            print(json.dumps({'kind':'fixed-world-timing','L':L,'panel':name,'steps_per_s':timing}),flush=True)
         # Count/readback/serialization uses fixed data, no endpoint classifier.
         q.write_buffer(s.soup_buf,0,fixed)
         from algocell_exp.metrics import quasispecies_share

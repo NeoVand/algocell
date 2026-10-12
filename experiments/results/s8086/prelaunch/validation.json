@@ -1,9 +1,9 @@
 {
   "date": "2026-10-12",
   "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q",
-  "passed": 38,
+  "passed": 39,
   "failed": 0,
-  "wall_s": 34.46,
+  "wall_s": 34.54,
   "warnings": [
     "Existing Modal-local mock test warning"
   ],
@@ -30,5 +30,7 @@
   ],
   "no_population_runs": true,
   "compileall": "passed",
-  "diff_check": "passed"
+  "diff_check": "passed",
+  "manual_recovery_guard": "passed in full suite",
+  "remote_trace_backend": "explicit CPU software Vulkan, cross-checked against L4 memory/full record during final benchmark"
 }

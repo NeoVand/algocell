@@ -176,8 +176,14 @@ def test_all_ten_full_constructed_law_assays(machines,tmp_path):
     assert all(r['status']=='complete-zero-mismatch' for r in result.values())
     assert sum(r['encounters'] for r in result.values())==1_185_792
     path=S.PRE/'constructed_control_validation.json'
-    if path.exists(): assert json.loads(path.read_text())==result
+    if path.exists():
+        previous=json.loads(path.read_text())
+        assert all(previous[n]=={k:result[n][k] for k in previous[n]} for n in previous)
     else: S.write_new(path,result)
+    counts=S.PRE/'constructed_control_denominators.json'
+    if counts.exists(): assert json.loads(counts.read_text())==result
+    else: S.write_new(counts,result)
+    assert all(r['joint_assignments']==512 and r['serial_generations']==8 for r in result.values())
 
 def test_l2_nonzero_source_counterexample(machines):
     # Fixed-input review counterexample, not an evolved candidate. Preserve
@@ -302,6 +308,44 @@ def test_complete_record_and_incomplete_boundaries(tmp_path):
     altered=json.loads(json.dumps(records)); altered[1]['top3'][0]['count']=19999
     write(altered)
     with pytest.raises(ValueError,match='tape/count'): Score.read_input(path)
+
+def test_storage_observer_matches_original_and_chunking(machines):
+    from algocell_exp.census8086_trace import DiagnosticMachine,same_execution
+    from census8086 import pairs
+    from census8086_law import GEOMETRIES,parents
+    for L,(m,original) in machines.items():
+        storage=S.fixed_burst(lambda:DiagnosticMachine(m,events=8192,storage_trace=True))
+        for word in ('b951','51b9','07a5','a507','ff30','30ff','ad50','50ad'):
+            p=np.tile(np.frombuffer(bytes.fromhex(word),np.uint8),L//2)
+            mem=pairs(p[None],L)
+            for budget in (128,512):
+                old=original.run(mem,budget=budget,lane_base=777,chunk=3)
+                new=storage.run(mem,budget=budget,lane_base=777,chunk=3)
+                assert np.array_equal(old.memory,new.memory) and np.array_equal(old.record,new.record)
+        for LL,d in GEOMETRIES:
+            if LL!=L: continue
+            for op in (0xa4,0xa5):
+                mem=pairs(parents(d,L,op)[None],L)
+                old=original.run(mem,budget=128); new=storage.run(mem,budget=128)
+                assert np.array_equal(old.record,new.record)
+        p=np.arange(L,dtype=np.uint8); p[:10]=[0xbf,L,0,0xb9,255,255,0xad,0xab,0xe2,0xfc]
+        mem=pairs(p[None],L); budgets=np.array([0,1,3,128]+[512]*13,np.uint32)
+        old=original.run(mem,budget=budgets,lane_base=444,chunk=4)
+        new=storage.run(mem,budget=budgets,lane_base=444,chunk=4)
+        assert np.array_equal(old.record,new.record) and np.array_equal(old.memory,new.memory)
+        assert same_execution(m.run(mem,budget=budgets),new,m.record_words)
+        for cap in (0,1,5):
+            a=S.fixed_burst(lambda:DiagnosticMachine(m,events=cap))
+            b=S.fixed_burst(lambda:DiagnosticMachine(m,events=cap,storage_trace=True))
+            ra=a.run(mem,budget=128); rb=b.run(mem,budget=128)
+            assert np.array_equal(ra.record,rb.record)
+            if cap: assert all(log is None for log in b.logs(rb))
+        if m.m.get('resumable'):
+            mem=pairs(parents(L,L,0xa4)[None],L)
+            first_old=original.run(mem,budget=3); first_new=storage.run(mem,budget=3)
+            resumed_old=original.run(first_old.memory,budget=5,resume=first_old.record,step_base=3)
+            resumed_new=storage.run(first_new.memory,budget=5,resume=first_new.record,step_base=3)
+            assert np.array_equal(resumed_old.record,resumed_new.record)
 
 def test_instruction_and_retained_rep_boundaries(machines):
     from census8086 import pairs

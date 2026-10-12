@@ -106,7 +106,10 @@ def diagnostic_for(machine):
     lane record/memory is checked against the uninstrumented L4 machine.
     """
     from algocell_exp.census8086_trace import DiagnosticMachine
-    if os.environ.get('S2_TRACE_BACKEND') == 'software-vulkan':
+    backend=os.environ.get('S2_TRACE_BACKEND','')
+    if backend not in ('','software-vulkan','storage-vulkan'): raise ValueError('unknown S2 trace backend')
+    if backend == 'storage-vulkan': return DiagnosticMachine(machine,events=8192,storage_trace=True)
+    if backend == 'software-vulkan':
         import wgpu
         from algocell_exp.zmachine import load_machine
         adapter=wgpu.gpu.request_adapter_sync(force_fallback_adapter=True)

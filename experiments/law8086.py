@@ -236,6 +236,14 @@ def family_report(eligibility, outcomes, controls_complete, family, *, arm, excl
         coverage['culture_positive']+=len(data['certificates'])
         for cert in data['certificates'].values():
             unresolved+=cert['families'][family]['status']=='unresolved'
+        for source in data['candidates']:
+            if source['source']!='random-cell': continue
+            score=source['culture']['gen2_score']
+            coverage['random_cell_unknowns']+=score is None
+            coverage['random_cell_culture_positive']+=score is not None and score>=.3
+            cert=data['certificates'].get(source['tape'])
+            coverage['random_cell_eligible']+=bool(cert and cert['families'][family]['status']=='eligible'
+                and (not exclude_L1 or cert['families']['L1']['status']!='eligible'))
         for tape in data['selection'][family]['eligible']:
             if not exclude_L1 or data['certificates'][tape]['families']['L1']['status']!='eligible':
                 coverage['eligible']+=1
@@ -358,7 +366,10 @@ def assay_case(parent, geometry, arm, seed, machine, diagnostic, emit, *, contro
                     diag = diagnosis(machine,diagnostic,memory[i],c[3],geometry)
                     emit({'kind':'candidate-mismatch','case':c[0],'challenge':'serial','generation':g,**diag})
                     return {'status':diag['status'],'encounters':tested}
-    return {'status':'complete-zero-mismatch','encounters':tested,'erased_coordinates':L-geometry['d']}
+    return {'status':'complete-zero-mismatch','encounters':tested,'erased_coordinates':L-geometry['d'],
+            'free_coordinates':len(geometry['free']),'single_assignments':len(geometry['free'])*256,
+            'single_alternatives':len(geometry['free'])*255,'joint_assignments':512,
+            'erased_assignments':(L-geometry['d'])*256,'census_partners':17,'serial_generations':8}
 
 def assay_frozen(path, out, machine, diagnostic=None, tick=lambda:None):
     verify_freeze(); committed(path)

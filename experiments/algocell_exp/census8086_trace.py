@@ -15,7 +15,7 @@ from .zmachine import ZMachine
 
 
 class DiagnosticMachine(ZMachine):
-    def __init__(self, base: ZMachine, events: int = 0):
+    def __init__(self, base: ZMachine, events: int = 0, *, storage_trace: bool = False):
         m = copy.deepcopy(base.m)
         old = base.record_words
         self.base, self.events, self.diag_offset = base, events, old
@@ -43,9 +43,12 @@ class DiagnosticMachine(ZMachine):
             at = matches[0].end()
             src = src[:at] + f"\n    census_event({event}u, i8086_pc(), {value});" + src[at:]
         once("fn zil_store_record(o: u32, steps: u32) {", "fn zil_store_record(o: u32, steps: u32) {\n    census_store(o);")
-        once("fn zil_reset_lane(lane: u32, seed: u32) {", "fn zil_reset_lane(lane: u32, seed: u32) {\n    census_clear();")
+        storage_trace = storage_trace and events > 0
+        record_base = "\n    census_record_base = (lane - zil_params.lane_base) * ZIL_RECORD_WORDS;" if storage_trace else ""
+        once("fn zil_reset_lane(lane: u32, seed: u32) {", "fn zil_reset_lane(lane: u32, seed: u32) {" + record_base + "\n    census_clear();")
         L, P = base.segment("A")["bytes"], base.ring_bytes
-        trace_vars = f"var<private> census_log: array<u32, {5*events}>;" if events else ""
+        trace_vars = ("var<private> census_record_base: u32;" if storage_trace else
+                      f"var<private> census_log: array<u32, {5*events}>;" if events else "")
         log = f"""
   if (census_n < {events}u) {{
     let o = census_n * 5u;
@@ -54,7 +57,17 @@ class DiagnosticMachine(ZMachine):
     census_log[o+4u] = select(0u, 1u, p >= {L}u && census_written[p] == 0u);
   }}
 """ if events else ""
+        if storage_trace:
+            log = f"""
+  if (census_n < {events}u) {{
+    let o = census_record_base + {old+6}u + census_n * 5u;
+    zil_out[o] = zil_step; zil_out[o+1u] = kind;
+    zil_out[o+2u] = select(p, addr, kind >= 3u); zil_out[o+3u] = value;
+    zil_out[o+4u] = select(0u, 1u, p >= {L}u && census_written[p] == 0u);
+  }}
+"""
         store = f"for (var i=0u; i < min(census_n, {events}u)*5u; i++) {{ zil_out[o+{old+6}u+i] = census_log[i]; }}" if events else ""
+        if storage_trace: store = ""  # every lane owns only its appended record region
         src += f"""
 // Census observation only. 0 fetch, 1 data read, 2 write, 3 decode, 4 start.
 var<private> census_written: array<u32, {P}>;
