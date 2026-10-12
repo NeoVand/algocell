@@ -1,0 +1,8 @@
+status,p,first_open,n,closed_n,t_closed_km,caveat
+EXPLORATORY,0.0,True,10,10,18000.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
+EXPLORATORY,0.01,True,10,10,42500.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
+EXPLORATORY,0.03,True,10,9,60000.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
+EXPLORATORY,0.1,True,10,10,75000.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
+EXPLORATORY,0.3,True,2,2,40000.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
+EXPLORATORY,0.3,False,8,8,57500.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
+EXPLORATORY,1.0,False,10,9,52500.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"
