@@ -46,7 +46,11 @@ def sample(archive):
                 tape=t['tape'];assert sha(bytes.fromhex(tape))==t['sha256'] if 'sha256' in t else True
                 rows.append({**common,'role':'final_top3','cell':rank,'tape':hx(parse(tape)),'key':f'{w["world"]}:top{rank}'})
         coverage.append({'world':w['world'],'arm':w['arm'],'first_available':int(bool(w['first_tape'])),'random_draws':8,'final_top3_available':int(available),'raw_log_sha256':expected,'raw_path':str(log)})
-    for r in rows:r['sampling_hash']=sha(f'C2:{SEED}:{r["key"]}'.encode())
+    for r in rows:
+        # Reuse the registered WORLD:CELL hash for final-draw ordering and
+        # descriptive selection; first tapes use their declared cell=-1.
+        sampling_key=f'{r["world"]}:{r["cell"]}' if r['role']!='final_top3' else r['key']
+        r['sampling_hash']=sha(f'C2:{SEED}:{sampling_key}'.encode())
     write(OUT/'panel.csv',rows);write(OUT/'coverage.csv',coverage)
     write(OUT/'inputs.csv',[{'path':str(p.relative_to(HERE)),'sha256':sha(p.read_bytes())} for p in (V2/'s1_worlds.csv',V2/'final_cultures.csv')])
     return rows
