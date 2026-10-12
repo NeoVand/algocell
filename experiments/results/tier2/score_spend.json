@@ -1,0 +1,30 @@
+{
+  "queried_utc": "2026-10-12T04:35:22.033817+00:00",
+  "report_end_utc": "2026-10-12T05:00:00+00:00",
+  "billing_note": "Full-hour reporting excludes partial end intervals; request through the next hour boundary to include available current-hour charges.",
+  "apps": [
+    {
+      "kind": "worlds/panels",
+      "app_id": "ap-GpoWKGnLbLpyPF0kyUWKsT",
+      "started_utc": "2026-10-11T13:55:40Z",
+      "metered_usd": 19.16065586,
+      "error": null
+    },
+    {
+      "kind": "scoring",
+      "app_id": "ap-bAUeWQx7pVbtC7D51FI205",
+      "started_utc": "2026-10-12T04:20:53Z",
+      "metered_usd": 0.39176397,
+      "error": null
+    },
+    {
+      "kind": "scoring",
+      "app_id": "ap-oRCTXTA8C8njp8zlxGpi9I",
+      "started_utc": "2026-10-12T04:22:44Z",
+      "metered_usd": 0.00405097,
+      "error": null
+    }
+  ],
+  "run_runtime_estimate_usd": 17.727147899559284,
+  "scoring_runtime_estimate_usd": 0.27012659473751066
+}
