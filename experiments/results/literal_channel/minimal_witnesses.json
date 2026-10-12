@@ -1,0 +1,166 @@
+[
+  {
+    "width": 2,
+    "execution_period": 4,
+    "loads": 1,
+    "pushes": 1,
+    "word": [
+      169,
+      72,
+      169,
+      72
+    ],
+    "tokens": "LP",
+    "written": [
+      72,
+      169
+    ],
+    "phases": [
+      1,
+      3
+    ],
+    "primitive_period": 2,
+    "replayed_tokens": "LP"
+  },
+  {
+    "width": 2,
+    "execution_period": 12,
+    "loads": 3,
+    "pushes": 3,
+    "word": [
+      169,
+      72,
+      169,
+      72,
+      169,
+      72,
+      169,
+      72,
+      169,
+      72,
+      169,
+      72
+    ],
+    "tokens": "LPLPLP",
+    "written": [
+      72,
+      169,
+      72,
+      169,
+      72,
+      169
+    ],
+    "phases": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "primitive_period": 2,
+    "replayed_tokens": "LPLPLP"
+  },
+  {
+    "width": 3,
+    "execution_period": 6,
+    "loads": 1,
+    "pushes": 2,
+    "word": [
+      169,
+      72,
+      72,
+      169,
+      72,
+      72
+    ],
+    "tokens": "LPP",
+    "written": [
+      72,
+      72,
+      169,
+      72,
+      72,
+      169
+    ],
+    "phases": [
+      1,
+      4
+    ],
+    "primitive_period": 3,
+    "replayed_tokens": "LPP"
+  },
+  {
+    "width": 3,
+    "execution_period": 9,
+    "loads": 2,
+    "pushes": 1,
+    "word": [
+      169,
+      72,
+      169,
+      169,
+      72,
+      169,
+      169,
+      72,
+      169
+    ],
+    "tokens": "LPL",
+    "written": [
+      72,
+      169,
+      169
+    ],
+    "phases": [
+      1,
+      4,
+      7
+    ],
+    "primitive_period": 3,
+    "replayed_tokens": "LPL"
+  },
+  {
+    "width": 3,
+    "execution_period": 12,
+    "loads": 2,
+    "pushes": 4,
+    "word": [
+      169,
+      72,
+      72,
+      169,
+      72,
+      72,
+      169,
+      72,
+      72,
+      169,
+      72,
+      72
+    ],
+    "tokens": "LPPLPP",
+    "written": [
+      72,
+      72,
+      169,
+      72,
+      72,
+      169,
+      72,
+      72,
+      169,
+      72,
+      72,
+      169
+    ],
+    "phases": [
+      1,
+      4,
+      7,
+      10
+    ],
+    "primitive_period": 3,
+    "replayed_tokens": "LPPLPP"
+  }
+]

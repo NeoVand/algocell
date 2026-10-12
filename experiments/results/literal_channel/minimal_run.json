@@ -1,0 +1,15 @@
+{
+  "z3_version": "5.1.0",
+  "max_period": 64,
+  "control_period": 16,
+  "cpu_only": true,
+  "minimal_cycle": true,
+  "width1_multi_opcode_method": "exact load/push alphabet quotient",
+  "elapsed_seconds": 0.5535089169861749,
+  "cases": 1051,
+  "results": {
+    "sat": 5,
+    "unsat": 1046,
+    "unknown": 0
+  }
+}

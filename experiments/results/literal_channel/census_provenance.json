@@ -1,0 +1,49 @@
+[
+  {
+    "path": "/Users/neo/repos/algocell-wt-conj9/experiments/results/review_r2/census_p2.csv",
+    "sha256": "54e350fde2e6c46e75f604b855b8f5c030fb7ada6c8ed6c42bb0a5d0cb572884"
+  },
+  {
+    "path": "/Users/neo/repos/algocell-wt-conj9/experiments/results/census6502/control_z80_words.csv",
+    "sha256": "6ed8a638b12e3ae7c73b9a834f1deaa72218a1c8b832328914c3b2be713fdf81"
+  },
+  {
+    "path": "/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/out8086_p2.txt",
+    "sha256": "eae19ba77d46bd0f856473826474cf7cf2c4ba06c058f21d36339d95633238a1",
+    "qualification": "Partial unvalidated interpreter; 9,343 unknown words"
+  },
+  {
+    "path": "/private/tmp/claude-501/-Users-neo-repos-algocell/26fc62cd-9c63-4d42-8467-b9398dac54bd/scratchpad/isa_research/census/m8086.py",
+    "sha256": "a405726314c6bc7cb316fca629145d764b5cb6be28145cf4fa9a83dfe6e3fdd7"
+  },
+  {
+    "replay_word": "b8 50",
+    "exact_zero_partner": false,
+    "unknown": "",
+    "partner": "f8 50 f8 50 f8 50 f8 50 f8 50 f8 50 f8 50 f8 50"
+  },
+  {
+    "replay_word": "50 b8",
+    "exact_zero_partner": true,
+    "unknown": "",
+    "partner": "50 b8 50 b8 50 b8 50 b8 50 b8 50 b8 50 b8 50 b8"
+  },
+  {
+    "replay_word": "b9 51",
+    "exact_zero_partner": true,
+    "unknown": "",
+    "partner": "51 b9 51 b9 51 b9 51 b9 51 b9 51 b9 51 b9 51 b9"
+  },
+  {
+    "replay_word": "bc 54",
+    "exact_zero_partner": false,
+    "unknown": "",
+    "partner": "00 00 52 bc 00 00 00 00 00 00 00 00 00 00 00 00"
+  },
+  {
+    "replay_word": "54 bc",
+    "exact_zero_partner": false,
+    "unknown": "FE /2-7",
+    "partner": "22 00 52 bc 00 00 00 00 00 00 00 00 00 00 fe ff"
+  }
+]
