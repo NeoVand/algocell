@@ -90,6 +90,12 @@ def geometry(log,labels,L,opcodes):
                 info=opcodes[int(op)];name=info['mnemonic']
                 if name not in safe:reason.append('uncertified_control_or_address_dependency')
                 if name=='JMP' and info.get('mode')=='ind':reason.append('indirect_control_dependency')
+                if info.get('mode') in ('izx','izy'):
+                    # The zero-page pointer is machinery, even when it was
+                    # never fetched. Freeze its causal seed coordinates too.
+                    pointer_reads=log[(log[:,0]==step)&(log[:,1]==1)][:2]
+                    if len(pointer_reads)!=2:reason.append('unresolved_pointer_dependency')
+                    footprint.update(map(int,pointer_reads[:,4]))
             if UNKNOWN in footprint or any(p>=d for p in footprint):reason.append('footprint_outside_protected_prefix')
             if np.any((log[:,1]<=1)&(log[:,4]>=L)&(log[:,4]!=UNKNOWN)):reason.append('original_partner_inflow')
             free=sorted(set(range(d))-footprint)
