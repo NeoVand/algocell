@@ -1,0 +1,74 @@
+{
+  "cwd": "/Users/neo/repos/algocell-wt-s2/experiments",
+  "volume": "algocell-atlas-runs",
+  "commands": [
+    {
+      "remote_path": "/s8086/A",
+      "local_destination": "results/s8086/downloads/worlds_A",
+      "command": [
+        "/Users/neo/repos/algocell/experiments/.venv/bin/modal",
+        "volume",
+        "get",
+        "algocell-atlas-runs",
+        "/s8086/A",
+        "results/s8086/downloads/worlds_A"
+      ],
+      "exit_code": 0
+    },
+    {
+      "remote_path": "/s8086_score/A",
+      "local_destination": "results/s8086/downloads/score_A",
+      "command": [
+        "/Users/neo/repos/algocell/experiments/.venv/bin/modal",
+        "volume",
+        "get",
+        "algocell-atlas-runs",
+        "/s8086_score/A",
+        "results/s8086/downloads/score_A"
+      ],
+      "exit_code": 0
+    },
+    {
+      "remote_path": "/s8086_extract/A",
+      "local_destination": "results/s8086/downloads/extract_A",
+      "command": [
+        "/Users/neo/repos/algocell/experiments/.venv/bin/modal",
+        "volume",
+        "get",
+        "algocell-atlas-runs",
+        "/s8086_extract/A",
+        "results/s8086/downloads/extract_A"
+      ],
+      "exit_code": 0
+    },
+    {
+      "remote_path": "/s8086_assay/A",
+      "local_destination": "results/s8086/downloads/assay_A",
+      "command": [
+        "/Users/neo/repos/algocell/experiments/.venv/bin/modal",
+        "volume",
+        "get",
+        "algocell-atlas-runs",
+        "/s8086_assay/A",
+        "results/s8086/downloads/assay_A"
+      ],
+      "exit_code": 0
+    },
+    {
+      "remote_path": "/s8086_controls",
+      "local_destination": "results/s8086/downloads/controls",
+      "command": [
+        "/Users/neo/repos/algocell/experiments/.venv/bin/modal",
+        "volume",
+        "get",
+        "algocell-atlas-runs",
+        "/s8086_controls",
+        "results/s8086/downloads/controls"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "download_only": true,
+  "paid_compute": false,
+  "sdk_note": "Recursive CLI destinations were pre-created as directories. Initial commands with absent destination directories failed with IsADirectoryError; glob paths were rejected by the SDK. Successful downloads are inventoried separately. These were download errors, not frozen report/scorer failures."
+}

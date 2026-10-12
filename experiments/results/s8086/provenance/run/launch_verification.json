@@ -1,0 +1,111 @@
+{
+  "verified_utc": "2026-10-12T23:21:51.696806+00:00",
+  "pipeline_pid": 92573,
+  "dispatcher_pid": 93348,
+  "watchdog_pid": 94099,
+  "stage": "score",
+  "app_id": "ap-oPclb4JJTIN2GSttSCXdz4",
+  "app_state": "APP_STATE_EPHEMERAL",
+  "submitted_inputs": 20,
+  "live_tasks": 4,
+  "task_ids": [
+    "ta-01M4S6R5V8MTEG0FP1CJ6KKWWR",
+    "ta-01M4S6R5V8PA3PB6J8JQEZS55R",
+    "ta-01M4S6R2CQDMSTDB6PMXYW6FYR",
+    "ta-01M4S6R9H411G7K5MW94QQ30KR"
+  ],
+  "functions": [
+    {
+      "tag": "score",
+      "function_id": "fu-h8uSv4QGjASown20kLRe77",
+      "num_total_tasks": 0,
+      "num_running_inputs": 0,
+      "backlog": 0,
+      "server_timeout_s": 43200,
+      "max_containers": 1
+    },
+    {
+      "tag": "positive_controls",
+      "function_id": "fu-wemveCnISXQCys7pXZ9qPr",
+      "num_total_tasks": 0,
+      "num_running_inputs": 0,
+      "backlog": 0,
+      "server_timeout_s": 3600,
+      "max_containers": 1
+    },
+    {
+      "tag": "fu-UwiLKUXDOBtkXZmBc1vL09",
+      "function_id": "fu-UwiLKUXDOBtkXZmBc1vL09",
+      "num_total_tasks": 4,
+      "num_running_inputs": 1,
+      "backlog": 10,
+      "server_timeout_s": 437,
+      "max_containers": 20
+    }
+  ],
+  "processes": [
+    "92573     1 92573       05:30 Ss   /Users/neo/repos/algocell/experiments/.venv/bin/python -u /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/pipeline_invocation.py",
+    "93348 92573 92573       05:10 S    /Users/neo/repos/algocell/experiments/.venv/bin/python -u /Users/neo/repos/algocell-wt-s2/experiments/dispatch8086.py --release /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/launch_receipt.json --ledger /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/spend.jsonl --projection /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/prelaunch/projection.json --stage score",
+    "94099 93348 94099       05:05 Ss   /Users/neo/repos/algocell/experiments/.venv/bin/python /Users/neo/repos/algocell-wt-s2/experiments/lifecycle8086.py --watch /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/lifecycle-c9d22168ad82de2b.control.json"
+  ],
+  "watchdog_status": {
+    "ready": true,
+    "heartbeat": 335451.928680416,
+    "app_id": "ap-oPclb4JJTIN2GSttSCXdz4",
+    "confirmed": false,
+    "confirmed_at": null,
+    "stop_at": 353386.624424458,
+    "within_envelope": false,
+    "stop_required": false,
+    "stop_reason": null,
+    "incomplete": false,
+    "charged_usd": 4.6425096,
+    "elapsed_usd": 0.5237341673165932,
+    "accounting_pending": false,
+    "dispatch_permitted": true
+  },
+  "known_metered_spend_usd": 12.31932614,
+  "billing_may_lag": true,
+  "conservative_recorded_lifetime_bound_before_relaunch_usd": 17.48499627932854,
+  "complete_forecast": {
+    "projected_liabilities_usd": 77.3283545489802,
+    "cap": 95.0,
+    "cap_exceeded": false,
+    "app_liabilities_usd": {
+      "historical-aggregate-repartition": 0.0,
+      "ap-3yv8gfnaUhIahlAjZ7ZbF9": 0.13615844559320928,
+      "ap-sCeRhIXHr8Hn8g5NSjXSpy": 0.32965967688591,
+      "ap-UKKBebIo8fZoAiCzWaIN4q": 0.2319970067962599,
+      "ap-3PIHGikI8Kpb05rvJkI7aW": 0.10208868970484257,
+      "ap-yeH7c7tuWHnJ2pmjmb3GKP": 0.27334166,
+      "ap-WrP0TDnnkk8I8SLYcdgPD6": 0.27334166,
+      "ap-OA10sRnKgZFM20rzDcsuZj": 3.15139418,
+      "ap-r9eOs1cleFWGxTvSjkTOyd": 0.00039464999999999997,
+      "ap-AawWLpOdEAKefnoMEyt4oG": 0.00039464999999999997,
+      "ap-X2PqHW0j9NrmN83lUKuziS": 0.00039464999999999997,
+      "ap-jp21jIEOItxTeW5JR2iC78": 0.27334166,
+      "ap-YsuzxXb8wGjPHh4PbWuUQx": 47.94731319999998,
+      "ap-wQRyRHah2aSZE1XSxfUxml": 4.6425096,
+      "ap-HVdEYWxtneffRMm4w3ODZq": 0.27334166,
+      "ap-oPclb4JJTIN2GSttSCXdz4": 4.6425095999999995
+    },
+    "experiment_stopped": false,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  },
+  "cap": 95,
+  "remaining_eta_hours": 4.448888888888889,
+  "eta_chicago": "2026-10-12T22:48:47.696806-05:00",
+  "eta_assumption": "4 observed containers persist; full frozen non-world envelopes and diagnosis allowance; extra queues/recoveries can extend",
+  "world_data_mutated": false,
+  "worlds_rerun": false,
+  "freeze_sha256": "e98812d555b1632d07e5c561f786c1d129917f05eff676d87ea7acdbd722f3d9",
+  "paths": {
+    "run_directory": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery",
+    "pipeline_log": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/pipeline.log",
+    "stage_log": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/score.log",
+    "ledger": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/spend.jsonl",
+    "watchdog_status": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/lifecycle-c9d22168ad82de2b.status.json",
+    "watchdog_events": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/scoring-onward/run-20261012-lock-recovery/lifecycle-c9d22168ad82de2b.events.jsonl"
+  }
+}
