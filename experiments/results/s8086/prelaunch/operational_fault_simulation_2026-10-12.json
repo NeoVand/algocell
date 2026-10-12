@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-12",
+  "sequences": 1000,
+  "seed": 2509602950,
+  "violations": 0,
+  "violation_details": [],
+  "invariants": {
+    "a": "successful completions within complete forecast do not trigger a stop",
+    "b": "charged current/settled and independently accumulated actual spend <= sequence cap <= $95",
+    "c": "all 20 worlds complete when conservative full-run plus recovery budget fits",
+    "d": "cap stop is terminal INCOMPLETE with null route/law verdicts, never a negative"
+  },
+  "outcomes": {
+    "COMPLETE": 830,
+    "INCOMPLETE": 170
+  },
+  "restart_sequences": 698,
+  "recovered_attempts": 1798,
+  "completion_before_finish": 36026,
+  "finish_before_completion": 36112,
+  "max_charged_usd": 94.13339484474324,
+  "max_actual_usd": 80.33134704719177,
+  "provider_scope": "Randomized system simulation using production SpendGuard and Lifecycle.\n\nNo RPCs or GPU. A conforming single-container provider supplies cursor events,\nsetup/termination delays, preemptions and asynchronous result acknowledgement.\nActual resource seconds are accumulated separately from the guard's charges.\nThe provider honouring stop/server limits remains the registered residual risk.\n",
+  "projection_sha256": "6063d8e7810a60e847ed111f1a9c24da802c126542fcf23bd71e7df0648c09a7",
+  "simulation_sha256": "68955cf5f540fea96385e99a1c20590e27ec39e62fdbc4dfea26b691160e6979",
+  "no_paid_compute": true,
+  "no_population": true
+}

@@ -328,7 +328,7 @@ if __name__=='__main__':
     group.add_argument('--watch',type=Path);group.add_argument('--stop');group.add_argument('--cancel');a=ap.parse_args()
     if a.watch:watch(a.watch)
     elif a.stop:
-        subprocess.run([sys.executable,'-m','modal','app','stop',a.stop],timeout=RPC_TIMEOUT_S,check=True)
+        subprocess.run([sys.executable,'-m','modal','app','stop','--yes',a.stop],timeout=RPC_TIMEOUT_S,check=True)
     else:
         from modal_proto import api_pb2 as P
         provider=ModalProvider();provider.request('FunctionCallCancel',P.FunctionCallCancelRequest(function_call_id=a.cancel,terminate_containers=True))
