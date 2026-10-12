@@ -1,0 +1,47 @@
+{
+  "schema": "s2-fixed-benchmark/1",
+  "seed": "PCG64(0x8086BEEF+L)",
+  "active": "all 8192 slots",
+  "restored_before_every_dispatch": true,
+  "inputs": {
+    "16": {
+      "soup_sha256": "909bb213d23acce88d900e59f48e463f942261e4d3c7613c33406d2ed0c8b2bc",
+      "pairs_sha256": "0e6c1ff288f698820984c8f102e832d63ed78c74ddfe8c2412457893c340bf8d",
+      "active_sha256": "20991320440caacea16b70e9f59131dae5c3de673bb8330d6680fc5332af196f"
+    },
+    "32": {
+      "soup_sha256": "a78435bdc7b8632433b043f5be9c8042cf1ed40cc8411bf725df2980085d71f5",
+      "pairs_sha256": "2fdebbdf746bdd8d0fbecde3f54269703dc157782ed1daf16d17d357c161645f",
+      "active_sha256": "20991320440caacea16b70e9f59131dae5c3de673bb8330d6680fc5332af196f"
+    }
+  },
+  "world_panels": {
+    "16": {
+      "mixture": "0e6c1ff288f698820984c8f102e832d63ed78c74ddfe8c2412457893c340bf8d",
+      "b951": "1445ae5d66b793eed9012acdd3e653bfaabec430ed0026c5072b549de8048cef",
+      "07a5": "64ff04805bd84d4c637b897d0ac811dca833815edcee90b2529c02e7a5e4a777",
+      "ff30": "5295df7daad92a8d0463d8649c5d3289d43750e8e12ae9834b9d6747e7bfc692",
+      "ad50": "8aad3eaf3100da0e842999f8007829abbd225da0145990f216a409b5420553b1",
+      "REP-d8-a4": "8b4b8ce516650a031a8e0c87b76042259adb64b2ec81b595abedf008e5eae872",
+      "REP-d8-a5": "310c1df6a3541d9198e44e24e16f312372188de7508ba26026303018aab08433",
+      "REP-d16-a4": "3af11d1731febb3993d6f194007f5abff7b905e90b12b4490ea5f5c678e34509",
+      "REP-d16-a5": "441c5a3a4f1abbdb14e30ef242753a2a1953d856d027b90cf946a9214572da02",
+      "nonREP": "7607220c9e172bbc7be7baa3d627dd5d1ec1ba2dda3418377307ef5dc7ae12e0"
+    },
+    "32": {
+      "mixture": "2fdebbdf746bdd8d0fbecde3f54269703dc157782ed1daf16d17d357c161645f",
+      "b951": "1e80507ecf557ffbd0f4af69073d1c47e38882718d360cd6232cf9cc6f9cb923",
+      "07a5": "0378a21035b7c99893196d2fc896e3d4c8e24ddeeb5732d0077594cae42e17a9",
+      "ff30": "373a0aacfa18cb2564a34390ef6a8f6a9a4bbf20dd0862f33711d592e82e7a1b",
+      "ad50": "fca928fa8a0652ce3d7e34e8f4c2764a6dd60b7798fa8575eebfffdd178afa43",
+      "REP-d8-a4": "5272382c954d3cba109f4a67724adcbe7e96cb2b0dfec5ba77185ef2ac219e90",
+      "REP-d8-a5": "024af620cb1242c4339d6ba546911b5094a6e669ecc98084dcb3ad40ab50b5d5",
+      "REP-d16-a4": "9a27aeea90348c39e0e42d71f7d8fc2a63f001c06e8ee8b1a24f9e372d3a8ed0",
+      "REP-d16-a5": "4c787456c0cf0e3afe5a77eed0d4433b16f49d736e9307f7666d5fbfcad2a7b5",
+      "REP-d32-a4": "8d3fc4251e41285f6b092358c274e58769e3bf689d5862e472ff0ae23650d4d5",
+      "REP-d32-a5": "54066087302b2b09caaedae7ad15a3363fb1a1314f887d19c335c30b3f1f3d88",
+      "nonREP": "8526c8eef54015e952aff0777ebcae73908280ed3e449376314d7f4b9b261390"
+    }
+  },
+  "law_panels": "complete single/joint/erasure/serial workload: six-byte MOVSB and constructed LODS/STOS/LOOP; d=L; original S2 fixed streams"
+}

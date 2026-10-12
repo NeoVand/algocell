@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-12",
+  "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q",
+  "passed": 38,
+  "failed": 0,
+  "wall_s": 34.46,
+  "warnings": [
+    "Existing Modal-local mock test warning"
+  ],
+  "constructed_law_controls": 10,
+  "constructed_law_encounters": 1185792,
+  "census_replay": "B9 51,07 A5,FF 30,AD 50; both phases, L16/L32, budgets128/512; exact output hashes and matches; full diagnostic lane identity",
+  "boundaries": [
+    "sequential ring laps",
+    "multi-byte offset wraps",
+    "forward aliases",
+    "backward/taken branches",
+    "far transfers",
+    "retained REP",
+    "halts",
+    "coherent self modification",
+    "overflow other",
+    "culture64 trace16",
+    "tie share baseline censor persistence",
+    "sampling multiplicity caps",
+    "input record snapshot identity",
+    "injected payload core source mismatches",
+    "NaN/liability/hashchain guards",
+    "archived DZ 10-world endpoint regression"
+  ],
+  "no_population_runs": true,
+  "compileall": "passed",
+  "diff_check": "passed"
+}
