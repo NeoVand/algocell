@@ -212,6 +212,7 @@ def test_handmade_run_format_and_integrity(tmp_path):
     ("m6502_brkhalt_maps_L16", 128, "halt", 16),
 ])
 def test_full_scorer_on_handmade_records(tmp_path, machine, budget, brk, L):
+    shader_usage_before = E.usage()["shader"].copy()
     ex = E.ZilionExecutor(machine)
     provenance = ex.machine_for(L, zero_halts=brk == "halt", maps=True).describe()
     tape = "ea" * L
@@ -230,7 +231,7 @@ def test_full_scorer_on_handmade_records(tmp_path, machine, budget, brk, L):
     result = score_world(path, machine)
     assert result["world"]["budget"] == budget and result["world"]["n_cells"] == 64
     assert result["world"]["t_rep"] is None and result["world"]["frac_heritable"] == 0
-    assert machine in result["executor"] and not result["usage"]["shader"]
+    assert machine in result["executor"] and result["usage"]["shader"] == shader_usage_before
     (tmp_path / filename).write_bytes(brotli.compress(raw[:-1] + b"\x00"))
     with pytest.raises(ValueError, match="snapshot SHA-256"):
         score_world(path, machine)

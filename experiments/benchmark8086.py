@@ -10,7 +10,7 @@ from pathlib import Path
 import brotli
 import numpy as np
 import wgpu
-from s8086 import PRE,sha,safe,ARMS,SEEDS,HORIZON,RATE,DEFAULT_REGISTRATION
+from s8086 import PRE,sha,safe,ARMS,SEEDS,HORIZON,RATE,CAP,DEFAULT_REGISTRATION
 
 def fixed_inputs(L):
     from census8086_law import parents
@@ -227,7 +227,7 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
             'world_deadline_s':deadlines,'longest_world_container_s':slowest,
             'storage_termination_reserve_usd':storage_reserve,'projected_output_gib':output_gib,
             'storage_assumption':'twofold measured gzip volume +2 GiB overhead; one paid month and one export; no credits',
-            'diagnostic_replays_cap':1290,'cap_usd':60,'launch_fits':total<=60,
+            'diagnostic_replays_cap':1290,'cap_usd':CAP,'launch_fits':total<=CAP,
             'L1_total_evolved_encounters_cap':40_960_000*len(registration.arms),'L2_total_evolved_encounters_cap':51_200_000*len(registration.arms),
             'constructed_encounters':1_185_792,
             'warning':'Fixed-input timing cannot prove a worst-case population runtime; allocation stops are incomplete experiments.'}

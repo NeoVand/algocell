@@ -1,5 +1,20 @@
 # Prelaunch limitations recorded 2026-10-12
 
+## Current option (b) disposition — 2026-10-12
+
+The user's approved A-only 20×3M cohort and $85 all-in cap are registered
+prospectively in REVISION_PREREG.md. B and all L32 population scope claims are
+withdrawn with no population data collected. The validated B2 source-root/core/
+phase amendment supersedes the original L2 prediction; L1 and all A endpoints,
+including 2.75–3M R2b, remain unchanged. B3/B4 corrected census evidence and the
+B5 lifecycle watchdog are included in the replacement freeze. Complete option
+(b) forecast: $81.032328 including preparation and all repaired allowances.
+Stay on measured L4; no hardware benchmark or paid compute during refreeze.
+**STOPPED: coordinator refreeze review required; no launch receipt or dispatch.**
+The remaining sections preserve the earlier repair-stage and historical limits;
+statements that a final choice/refreeze is pending describe that earlier stage.
+
+
 No S2 population has been run. These are fixed-input findings, not evolved results.
 
 ## Prospective implementation correction — 2026-10-12

@@ -97,7 +97,7 @@ def test_spend_guard_reserves_every_remaining_liability(tmp_path):
     guard.settle('a',1.)
     guard.reserve('b',58.)
     with pytest.raises(ValueError): guard.settle('b',59.)
-    refuse=SpendGuard(tmp_path/'refuse.jsonl',{'a':2.,'b':58.},overhead=.01)
+    refuse=SpendGuard(tmp_path/'refuse.jsonl',{'a':2.,'b':58.},cap=60,overhead=.01)
     with pytest.raises(RuntimeError): refuse.reserve('a',2.)
     raw=(tmp_path/'spend.jsonl').read_text().replace('fc-fixed','fc-tampered')
     (tmp_path/'spend.jsonl').write_text(raw)

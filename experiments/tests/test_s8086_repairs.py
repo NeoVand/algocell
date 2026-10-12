@@ -78,7 +78,7 @@ def test_shifted_source_amendment():
 
 
 def test_new_meter_enforces_current_transaction(tmp_path):
-    guard=SpendGuard(tmp_path/'ledger.jsonl',{'a':59},overhead=0)
+    guard=SpendGuard(tmp_path/'ledger.jsonl',{'a':59},cap=60,overhead=0)
     r=guard.transact({'kind':'metered','app_id':'app','usd':60})
     assert r['projected_liabilities_usd']==119 and r['stop_required']
 
@@ -111,7 +111,7 @@ def test_lifecycle_no_renewal_on_restart_and_meter_stop(tmp_path):
         def sample(self,app): return {'stopped':False,'tasks':['restart'],'metered_usd':60}
         def cancel(self,call): pass
         def stop(self,app): self.stopped=True
-    mock=Mock(); guard=SpendGuard(tmp_path/'ledger.jsonl',{'a':59},overhead=0)
+    mock=Mock(); guard=SpendGuard(tmp_path/'ledger.jsonl',{'a':59},cap=60,overhead=0)
     state=Lifecycle(tmp_path/'life.jsonl',app_id='ap-mock',execution_s=100,started=0,now=lambda:10,
                     guard=guard,job='a')
     expiry=state.expires_at; state.poll(mock)
@@ -138,6 +138,45 @@ def test_parameterized_projection_and_schedule(horizon,arms,n,k):
     assert len(reg.persistence)==11 and set(reg.persistence)<=set(reg.sample_steps)
     assert result['population_worlds']==20*len(arms)
     assert result['L1_total_evolved_encounters_cap']==40960000*len(arms)
+
+
+def test_option_b_cohort_forecast_and_85_dollar_guard(tmp_path):
+    from benchmark8086 import project
+    reg=S.DEFAULT_REGISTRATION
+    cohort=S.read_json(S.PRE/'cohort.json')
+    projection=S.read_json(S.PRE/'projection.json')
+    assert reg.arms==('A',) and reg.horizon==3000000
+    assert cohort['registration']==reg.as_dict() and set(cohort['arms'])=={'A'}
+    assert cohort['seeds']==list(range(8086001,8086021)) and cohort['population_worlds']==20
+    expected=project(S.read_json(S.PRE/'benchmark.json'),projection['job_liabilities_usd']['preparation'])
+    assert expected['job_liabilities_usd']==projection['job_liabilities_usd']
+    assert projection['cap_usd']==S.CAP==85 and projection['launch_fits']
+    assert projection['projection_usd']==pytest.approx(81.03232790536507)
+    assert all(':B:' not in job for job in projection['job_liabilities_usd'])
+    limits=S.read_json(S.PRE/'guard_limits.json')
+    assert limits['cap_usd']==85 and limits['includes_preparation']
+    assert limits['job_liabilities_usd']==projection['job_liabilities_usd']
+    guard=SpendGuard(tmp_path/'approved',projection['job_liabilities_usd'],
+                     overhead=projection['storage_termination_reserve_usd'])
+    job=f'world:A:{S.SEEDS[0]}'
+    assert guard.reserve(job,guard.plan[job])['cap']==85
+    with pytest.raises(ValueError): SpendGuard(tmp_path/'too-high',{},cap=85.01)
+    over=SpendGuard(tmp_path/'over',{'work':85},overhead=.01)
+    with pytest.raises(RuntimeError): over.reserve('work',85)
+
+
+def test_option_b_schemas_and_stopped_release_gate(tmp_path,monkeypatch):
+    schemas=S.read_json(S.PRE/'input_schemas.json')
+    condition=schemas['world_jsonl_record']['oneOf'][0]['properties']
+    assert condition['arm']['enum']==['A'] and condition['L']['enum']==[16]
+    assert condition['registration']['const']==S.DEFAULT_REGISTRATION.as_dict()
+    assert schemas['score']['properties']['schema']['const']=='s2-score/2-registration'
+    assert schemas['eligibility_gzip_json']['properties']['schema']['const']=='s2-eligibility/2-source-root-phase'
+    freeze={'approved_cap_usd':85,'projection_usd':81.032328,'registration':S.DEFAULT_REGISTRATION.as_dict()}
+    monkeypatch.setattr(S,'verify_freeze',lambda:freeze)
+    release=tmp_path/'unapproved.json'
+    release.write_text(json.dumps({'population_launch_approved':False}))
+    with pytest.raises(ValueError,match='not been released'): S.launch_receipt(release)
 
 
 def test_independent_process_runs_while_dispatcher_is_blocked(tmp_path):

@@ -1,65 +1,76 @@
 {
   "date": "2026-10-12",
-  "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q",
-  "passed": 40,
+  "option": "b",
+  "suite": "all experiments/tests",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /Users/neo/repos/algocell/experiments/.venv/bin/python results/s8086/prelaunch/refreeze_test_runner.py",
+  "passed": 840,
   "failed": 0,
-  "wall_s": 64.14,
-  "warnings": [
-    "Existing Modal-local mock test warning"
-  ],
-  "constructed_law_controls": 10,
-  "constructed_law_encounters": 1185792,
-  "census_replay": "B9 51,07 A5,FF 30,AD 50; both phases, L16/L32, budgets128/512; exact output hashes and matches; full diagnostic lane identity",
-  "boundaries": [
-    "sequential ring laps",
-    "multi-byte offset wraps",
-    "forward aliases",
-    "backward/taken branches",
-    "far transfers",
-    "retained REP",
-    "halts",
-    "coherent self modification",
-    "overflow other",
-    "culture64 trace16",
-    "tie share baseline censor persistence",
-    "sampling multiplicity caps",
-    "input record snapshot identity",
-    "injected payload core source mismatches",
-    "NaN/liability/hashchain guards",
-    "archived DZ 10-world endpoint regression"
-  ],
-  "no_population_runs": true,
-  "compileall": "passed",
-  "diff_check": "passed for implementation source, tests and registration; verbatim generated WGSL archives retain inherited trailing whitespace and carried registration-body archive retains its terminal blank line",
-  "manual_recovery_guard": "passed in full suite",
-  "remote_trace_backend": "storage-vulkan on L4; unchanged event format and full raw-record/memory parity validated; original private WGSL remains byte-identical",
-  "post_full_checks": [
+  "skipped": 3,
+  "total_collected": 843,
+  "wall_s": 325.3868071670295,
+  "module_case_counts": {
+    "tests.test_assays_any_isa": 28,
+    "tests.test_bff": 15,
+    "tests.test_impact": 147,
+    "tests.test_impact_assay_supplement": 1,
+    "tests.test_impact_confirm": 10,
+    "tests.test_impact_i1_report": 7,
+    "tests.test_impact_q": 5,
+    "tests.test_impact_registry": 4,
+    "tests.test_impact_report": 3,
+    "tests.test_lethal": 7,
+    "tests.test_mixed": 6,
+    "tests.test_pipeline": 46,
+    "tests.test_port": 3,
+    "tests.test_py65_ring": 44,
+    "tests.test_run6502": 11,
+    "tests.test_s8086": 36,
+    "tests.test_s8086_repairs": 29,
+    "tests.test_score6502": 42,
+    "tests.test_tier2": 6,
+    "tests.test_zcensus": 7,
+    "tests.test_zsoup": 386
+  },
+  "skip_details": [
     {
-      "command": "pytest tests/test_s8086.py -q -k storage_observer",
-      "passed": 1,
-      "deselected": 28,
-      "wall_s": 13.15,
-      "purpose": "explicit REP/resume memory as well as full record parity"
+      "case": "tests.test_assays_any_isa.test_assay_machines_regenerate",
+      "reason": "Zilion checkout at 3c3534d76f22, assay machines vendored from 183ff5c74294"
     },
     {
-      "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q -k 'not exact_census and not constructed_rep_and_non_rep and not all_ten_full and not l2_nonzero and not byte_granular_count and not frozen_pair_bridge and not storage_observer and not instruction_and_retained and not culture_n64'",
-      "passed": 35,
-      "deselected": 9,
-      "wall_s": 0.5,
-      "purpose": "final gzip, flag-specific footprint, unknown-history/censoring and unresolved-diagnosis safeguards; all nine GPU checks already covered",
-      "warnings": [
-        "Existing Modal-local mock test warning"
-      ]
+      "case": "tests.test_impact.test_vendored_machines_match_zilion",
+      "reason": "zilion checkout at 3c3534d76f22, machines from 183ff5c74294"
     },
     {
-      "command": "pytest tests/test_s8086.py -q -k cf_preserved",
-      "passed": 1,
-      "deselected": 32,
-      "wall_s": 0.09,
-      "purpose": "Corrected fixed JNC displacement FB; flag-specific CF dependency regression; included in final 35 CPU passes"
+      "case": "tests.test_zsoup.test_vendored_machines_regenerate",
+      "reason": "Zilion checkout at 3c3534d76f22, machines vendored from 183ff5c74294 (run build_machines.mjs --check by hand)"
     }
   ],
-  "unique_test_cases_covered": 44,
-  "diff_check_scope": "git diff --check 80426a4 -- experiments/REVISION_PREREG.md experiments/s8086.py experiments/run8086.py experiments/score8086.py experiments/law8086.py experiments/dispatch8086.py experiments/benchmark8086.py experiments/modal_s8086.py experiments/modal_score8086.py experiments/meter8086.py experiments/algocell_exp/census8086_trace.py experiments/tests/test_s8086.py",
-  "archival_whitespace": "Full staged check reports six inherited whitespace-only shader lines and one terminal blank line in S2_REGISTRATION_BASE.md. These archived exact bytes are deliberately preserved; no execution or normative substance changes."
+  "S2_and_inherited_runner_cases": 76,
+  "gpu_policy": "synchronous queue buffer readback after every submit; equal pause after every submit/pipeline compilation; existing S2 foreground equal-pause wrapper retained",
+  "gpu_bursts": 34243,
+  "maximum_gpu_burst_s": 0.21577020804397762,
+  "gpu_burst_sum_s": 80.05051244219067,
+  "equal_pauses_verified": true,
+  "source_compile": "passed; no bytecode writes",
+  "diff_check": "passed",
+  "artifact_regeneration_idempotence": "passed for all tested input/guard/RNG/observer bytes",
+  "no_modal_calls": true,
+  "no_paid_compute": true,
+  "no_hardware_benchmark": true,
+  "no_population_runs": true,
+  "launch_receipt_created": false,
+  "launch_status": "STOPPED: coordinator refreeze review required",
+  "warnings": [
+    "One inherited Modal-local mock execution warning; no provider calls"
+  ],
+  "inherited_test_correction": "Full-suite execution exposed three 6502 assertions against process-wide shader usage. tests/test_score6502.py now checks no additional shader usage during each scoring call; runtime and scientific behavior are unchanged. Entire suite rerun.",
+  "harness_correction": "Initial harness used installed wgpu on_submitted_work_done_sync; its CFFI callback signature failed. Replaced only in harness by standard synchronous buffer readback and reran all tests successfully; subprocess PYTHONPATH also set explicitly.",
+  "constructed_law_controls": 10,
+  "constructed_law_encounters": 1185792,
+  "source12_amended_encounters": 88064,
+  "repair_validation": "repair_validation.json; STOPPED_REPAIR_REPORT.md; corrected census re-audit remains frozen",
+  "known_limits": [
+    "unresolved arbitrary 8086 proof extraction",
+    "physical stop needs functioning host/provider controls; unknown overruns retain liabilities"
+  ]
 }

@@ -93,7 +93,7 @@ fn on_fetch(addr: u32) {
     { let fp = zil_pos(addr); zil_fetch_map[fp >> 5u] |= (1u << (fp & 31u)); }
 }
 fn on_instruction_start(pc: u32, unit: u32) -> u32 {
-    census_event(4u, i8086_pc(), unit);
+    census_event(4u, pc, unit);
     { let sp = zil_pos(pc); zil_start_map[sp >> 5u] |= (1u << (sp & 31u)); }
     return ZIL_CONTINUE;
 }

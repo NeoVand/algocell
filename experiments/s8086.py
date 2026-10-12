@@ -17,16 +17,18 @@ HORIZON = 3_000_000
 SEEDS = tuple(range(8086001, 8086021))
 ARMS = {a: {'L': L, 'budget': 128, 'machine': f'i8086_pair_maps_L{L}'}
         for a, L in (('A', 16), ('B', 32))}
+# B remains a fixed-input/control identity only; option (b) withdraws its population.
+REGISTERED_ARMS = ('A',)
 SNAPSHOTS = (0, 20_000, 100_000, 1_000_000, HORIZON)
 PERSISTENCE = tuple(range(2_750_000, HORIZON + 1, 25_000))
 RATE = .000222 + .0000131 + 8 * .00000222
-CAP = 60.0
+CAP = 85.0  # user-approved all-in cap, 2026-10-12; preparation counts
 
 @dataclass(frozen=True)
 class Registration:
     """Prospective numerical parameters; construction never registers/releases."""
     horizon: int = HORIZON
-    arms: tuple[str,...] = ('A','B')
+    arms: tuple[str,...] = REGISTERED_ARMS
 
     def __post_init__(self):
         object.__setattr__(self,'arms',tuple(self.arms))
@@ -135,7 +137,10 @@ def launch_receipt(path):
             or release.get('freeze_sha256') != sha((PRE / 'freeze.json').read_bytes())
             or not release.get('independent_design_review')):
         raise ValueError('population launch has not been released by coordinator')
-    if freeze['projection_usd'] > CAP: raise ValueError('complete design exceeds $60')
+    if freeze.get('approved_cap_usd') != CAP: raise ValueError('freeze cap differs from approved guard limit')
+    if freeze.get('registration') != DEFAULT_REGISTRATION.as_dict():
+        raise ValueError('freeze differs from option (b) registration')
+    if freeze['projection_usd'] > CAP: raise ValueError(f'complete design exceeds ${CAP:g}')
     return release
 
 def fixed_burst(fn):
