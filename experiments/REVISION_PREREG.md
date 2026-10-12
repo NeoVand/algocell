@@ -1366,3 +1366,21 @@ The independent audit (results/s6502/AUDIT.md) found a multi-byte sequential-PC-
 | D | v2_literal64 | 18 | 18 | 0 | 17 | 17 | 0 | 0 | 1650000.0 | 86 | 232 | 0 | 0 |
 
 **Remaining limits.** Sequential instruction increments through $FFFF are now exempted using the executed Zilion instruction length. Forward alias returns remain invisible to the registered 16-bit-PC-decrease measure; the prior position-space result remains exploratory and does not change P1. The nominal 512 mutations per step are attempts: the audit demonstrates a lost update when distinct byte mutations share a packed word. This is the same shared, disclosed property as in the Z80 kernel, not a 6502-specific correction. No mutation-policy rerun was performed, so its effect on the world outcomes is unmeasured. The updated scorer retains exact Z80 DZ p=0 positive-control parity, 10/10 on every column.
+
+### Outcome of I1-T2 (2026-10-11 night; `results/tier2/T2.md`, scored with the frozen scorers under C1)
+
+- **Stage L.** Scoreable: all 20 worlds reached 10,000,000 steps. The step-7500 snapshot that the dispatcher
+  requested is absent from the original archives too (sampling skips it), and no frozen scorer uses it. No re-run.
+- **Claims that stand** (every registered component equal to the published verdict): DZ1; E1, E2, E3, E-L32L; L1,
+  L3, the Stage L joint kill; C4b and C4c, with C4b's components kept separate (motif majority not met 0/5,
+  confinement met 5/5, suppression met 5/5); F4c; S1–S5; X1-1, X1-2, X1-3.
+- **Changed components:**
+  - DZ2: KM reversals 2 → 1, not met → met.
+  - DZ3: transmitter-majority worlds at p = 1, 6/10 → 8/10, not met → met.
+  - L2, L = 16: recovery 1/10 → 0/10, not met → not applicable.
+  - L2, L = 20: recovery 0/10 → 1/10, not applicable → not met. Seed 6010 rose from 2 to 3 sites, 0 of them
+    unexecuted.
+- **Attribution limit.** Each tier-2 world is a fresh run, and the soups were never run-to-run deterministic
+  (collision races). A component near its threshold can change without any effect of the core, so the changes are
+  reported as changes under re-run with C1, not as caused by C1.
+- **Spend.** $19.56 of the $40 cap: runs plus scoring.
