@@ -7,6 +7,7 @@ import math
 import os
 import subprocess
 import time
+from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 
@@ -21,9 +22,56 @@ PERSISTENCE = tuple(range(2_750_000, HORIZON + 1, 25_000))
 RATE = .000222 + .0000131 + 8 * .00000222
 CAP = 60.0
 
-def samples():
-    return [0, *range(50, 2001, 50), *range(2250, 20001, 250),
-            *range(22500, 1_000_001, 2500), *range(1_025_000, HORIZON + 1, 25000)]
+@dataclass(frozen=True)
+class Registration:
+    """Prospective numerical parameters; construction never registers/releases."""
+    horizon: int = HORIZON
+    arms: tuple[str,...] = ('A','B')
+
+    def __post_init__(self):
+        object.__setattr__(self,'arms',tuple(self.arms))
+        if (type(self.horizon) is not int or not 250_000 <= self.horizon <= HORIZON
+                or self.horizon % 25_000 or not self.arms or len(set(self.arms))!=len(self.arms)
+                or any(a not in ARMS for a in self.arms) or self.arms!=tuple(sorted(self.arms))):
+            raise ValueError('invalid prospective horizon/arm set')
+
+    @property
+    def sample_steps(self):
+        schedule = [0,*range(50,2001,50),*range(2250,20001,250),
+                    *range(22500,1_000_001,2500),*range(1_025_000,HORIZON+1,25000)]
+        return tuple(s for s in schedule if s<=self.horizon)
+
+    @property
+    def snapshots(self):
+        return tuple(sorted({s for s in SNAPSHOTS if s<=self.horizon}|{self.horizon}))
+
+    @property
+    def persistence(self):
+        return tuple(range(self.horizon-250_000,self.horizon+1,25_000))
+
+    def as_dict(self):
+        return {'horizon':self.horizon,'arms':list(self.arms),
+                'sample_steps':list(self.sample_steps),'snapshot_steps':list(self.snapshots),
+                'R2b_steps':list(self.persistence),'worlds_per_arm':20,'final_cells':64,
+                'cases_per_family_cap':16}
+
+    @classmethod
+    def from_dict(cls,data):
+        result=cls(data['horizon'],tuple(data['arms']))
+        if data!=result.as_dict(): raise ValueError('derived registration schedule differs')
+        return result
+
+DEFAULT_REGISTRATION = Registration()
+
+def samples(horizon=HORIZON):
+    return list(Registration(horizon).sample_steps)
+
+def released_registration(receipt):
+    # Required only by future release paths, after user choice and refreeze.
+    freeze=verify_freeze()
+    if receipt.get('registration')!=freeze.get('registration') or not receipt.get('registration'):
+        raise ValueError('prospective horizon and arms have not been registered/released')
+    return Registration.from_dict(receipt['registration'])
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()

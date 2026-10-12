@@ -9,9 +9,9 @@ import brotli
 import numpy as np
 from algocell_exp import assay as A, executor as E
 from algocell_exp.census8086_trace import DiagnosticMachine, mechanism, same_execution
-from s8086 import ARMS, HORIZON, SEEDS, SNAPSHOTS, PERSISTENCE, samples, key, rng, partners, sha, safe, write_new, verify_freeze,diagnostic_for
+from s8086 import ARMS, HORIZON, SEEDS, SNAPSHOTS, PERSISTENCE, samples, key, rng, partners, sha, safe, write_new, verify_freeze,diagnostic_for,DEFAULT_REGISTRATION
 
-def endpoints(records, judge):
+def endpoints(records, judge, registration=DEFAULT_REGISTRATION):
     first = closed = None; occurrence = []; persistence = {}; unresolved = []
     blocked_rep = blocked_closed = False
     previous = None
@@ -31,9 +31,9 @@ def endpoints(records, judge):
             if first is None and not blocked_rep: first = event
             if closed is None and not blocked_closed and r['confined']: closed = event
             if r['open_memory_fed']: events.append(event); occurrence.append(event)
-        if sample['step'] in PERSISTENCE: persistence[sample['step']] = {r['tape'] for r in events}
+        if sample['step'] in registration.persistence: persistence[sample['step']] = {r['tape'] for r in events}
         previous = sample['step']
-    persistent = set(persistence) == set(PERSISTENCE) and all(persistence.values())
+    persistent = set(persistence) == set(registration.persistence) and all(persistence.values())
     same = bool(persistent and set.intersection(*persistence.values()))
     return {'scoreable':not unresolved,'unresolved':unresolved,'first':first,'closed':closed,
             't_rep':first['step'] if first else None,'t_closed':closed['step'] if closed else None,
@@ -93,21 +93,23 @@ def load_snapshot(path, record, L):
     if sha(raw) != record['sha256_raw']: raise ValueError('snapshot hash mismatch')
     return np.frombuffer(raw,np.uint8).reshape(20000,L)
 
-def read_input(path):
+def read_input(path, registration=DEFAULT_REGISTRATION):
     records = [json.loads(line) for line in Path(path).read_text().splitlines()]
     if not records or records[0].get('schema') != 's2-world/1': raise ValueError('missing S2 condition')
     c = records[0]; arm,seed = c['arm'],c['seed']
-    if arm not in ARMS or seed not in SEEDS or c['steps'] != HORIZON:
+    if c.get('registration',registration.as_dict())!=registration.as_dict():
+        raise ValueError('condition registration differs from selected horizon/arms')
+    if arm not in registration.arms or seed not in SEEDS or c['steps'] != registration.horizon:
         raise ValueError('unregistered condition')
     if any(c[k] != v for k,v in ARMS[arm].items() if k != 'machine') or c['machine_name'] != ARMS[arm]['machine']:
         raise ValueError('condition differs from registered machine/arm')
     for k,v in {'width':160,'height':125,'pair_count':8192,'noise_exp':4,
-                'mutation_attempts_per_step':512,'sample_steps':samples(),'snapshot_steps':list(SNAPSHOTS)}.items():
+                'mutation_attempts_per_step':512,'sample_steps':list(registration.sample_steps),'snapshot_steps':list(registration.snapshots)}.items():
         if c[k] != v: raise ValueError(f'condition differs: {k}')
     sr = [r for r in records if r.get('kind') == 'sample']
-    if [r['step'] for r in sr] != samples(): raise ValueError('missing/corrupt/duplicate sample')
+    if [r['step'] for r in sr] != list(registration.sample_steps): raise ValueError('missing/corrupt/duplicate sample')
     summaries = [r for r in records if r.get('kind') == 'summary']
-    if (len(summaries)!=1 or summaries[0]['steps_run']!=HORIZON or summaries[0]['samples']!=585
+    if (len(summaries)!=1 or summaries[0]['steps_run']!=registration.horizon or summaries[0]['samples']!=len(registration.sample_steps)
             or any(r.get('kind')=='incomplete' for r in records)):
         raise ValueError('incomplete record; cannot be a biological negative')
     parsed=[]; prev_active=0
@@ -126,7 +128,7 @@ def read_input(path):
             raise ValueError('active pair accounting mismatch')
         prev_active=r['active_pairs_total']; parsed.append({'step':r['step'],'top3':tapes})
     snapshots=[r for r in records if r.get('kind')=='snapshot']
-    if [r['step'] for r in snapshots]!=list(SNAPSHOTS): raise ValueError('missing/duplicate checkpoint')
+    if [r['step'] for r in snapshots]!=list(registration.snapshots): raise ValueError('missing/duplicate checkpoint')
     for r in snapshots:
         loaded=load_snapshot(path,r,c['L'])
         sample=next(s for s in sr if s['step']==r['step'])
@@ -134,9 +136,9 @@ def read_input(path):
         if r['step']==0 and sha(loaded.tobytes())!=c['initial_sha256']: raise ValueError('initial identity mismatch')
     return c,parsed,snapshots[-1]
 
-def score_world(path, *, device=None, tick=lambda:None):
+def score_world(path, *, device=None, tick=lambda:None, registration=DEFAULT_REGISTRATION):
     verify_freeze()
-    c,records,snapshot=read_input(path); arm,seed,L=c['arm'],c['seed'],c['L']
+    c,records,snapshot=read_input(path,registration); arm,seed,L=c['arm'],c['seed'],c['L']
     ex=E.ZilionExecutor(ARMS[arm]['machine'],device=device)
     m=ex.machine_for(L,zero_halts=False,maps=True)
     for k in ('sha256_core','sha256_world','sha256_wgsl'):
@@ -149,35 +151,35 @@ def score_world(path, *, device=None, tick=lambda:None):
         if tape not in cache: cache[tape]=judge_tape(tape,arm,seed,ex,trace)
         return cache[tape]
     with E.using(ex):
-        ep=endpoints(records,judge)
+        ep=endpoints(records,judge,registration)
         soup=load_snapshot(path,snapshot,L)
         # Draw indices before reading any cell genotype or candidate score.
         indices=rng(arm,seed,L,'cells-final').choice(20000,64,replace=False)
         candidates=[]
         for source,event in (('first',ep['first']),('closed',ep['closed'])):
             if event: candidates.append({'source':source,'tape':event['tape'],'step':event['step']})
-        for t,s in records[-1]['top3']: candidates.append({'source':'final-top','tape':t,'share':s,'step':HORIZON})
-        for i in indices: candidates.append({'source':'random-cell','cell':int(i),'tape':soup[i].tobytes().hex(),'step':HORIZON})
+        for t,s in records[-1]['top3']: candidates.append({'source':'final-top','tape':t,'share':s,'step':registration.horizon})
+        for i in indices: candidates.append({'source':'random-cell','cell':int(i),'tape':soup[i].tobytes().hex(),'step':registration.horizon})
         for r in candidates: r['culture']=judge(r['tape'])['culture']
-    world={'world':Path(path).stem,'arm':arm,'seed':seed,'L':L,'horizon':HORIZON,
+    world={'world':Path(path).stem,'arm':arm,'seed':seed,'L':L,'horizon':registration.horizon,
            'scoreable':ep['scoreable'],'t_rep':ep['t_rep'],'t_closed':ep['t_closed'],
            'first':ep['first'],'closed':ep['closed'],'open_memory_occurrence':ep['open_memory_occurrence'],
            'persistent_open_memory':ep['persistent_open_memory'],
            'same_genotype_persistence':ep['same_genotype_persistence']}
-    return safe({'schema':'s2-score/1','world':world,'endpoints':ep,'candidates':candidates,
+    return safe({'schema':'s2-score/2-registration','registration':registration.as_dict(),'world':world,'endpoints':ep,'candidates':candidates,
                  'random_cell_indices':indices.tolist(),'random_cell_denominator':64,
                  'random_cell_unknowns':sum(cache[r['tape']]['gen2'] is None for r in candidates if r['source']=='random-cell'),
                  'judged_tapes':[{'tape':t,**r} for t,r in sorted(cache.items())],
                  'input_sha256':sha(Path(path).read_bytes()),'executor':ex.describe(),'usage':E.usage()})
 
-def km(rows, field):
+def km(rows, field, registration=DEFAULT_REGISTRATION):
     events=Counter(r[field] for r in rows if r[field] is not None)
     at_risk=len(rows); survival=1.; curve=[]; median=None
     for t,n in sorted(events.items()):
         survival*=1-n/at_risk; curve.append({'step':t,'at_risk':at_risk,'events':n,'survival':survival})
         at_risk-=n
         if median is None and survival<=.5: median=t
-    return {'curve':curve,'median':median,'right_censored':at_risk,'censor_step':HORIZON}
+    return {'curve':curve,'median':median,'right_censored':at_risk,'censor_step':registration.horizon}
 
 def binomial_interval(k,n):
     if not n: return None
@@ -187,11 +189,12 @@ def binomial_interval(k,n):
     return {'count':k,'n':n,'wilson95':[max(0.,center-half),min(1.,center+half)],
             'descriptive_only':True}
 
-def arm_verdict(results, arm):
+def arm_verdict(results, arm, registration=DEFAULT_REGISTRATION):
+    if arm not in registration.arms: raise ValueError("arm withdrawn from prospective registration")
     rows=[r['world'] for r in results if r['world']['arm']==arm]
     if len({r['seed'] for r in rows})!=len(rows): raise ValueError('duplicate world')
     complete=(len(rows)==20 and {r['seed'] for r in rows}==set(SEEDS)
-              and all(r['scoreable'] and r['horizon']==HORIZON and r['L']==ARMS[arm]['L'] for r in rows))
+              and all(r['scoreable'] and r['horizon']==registration.horizon and r['L']==ARMS[arm]['L'] for r in rows))
     scoreable=[r for r in rows if r['scoreable']]
     rep=[r for r in scoreable if r['t_rep'] is not None]; D=len(rep)
     O=sum(r['first']['open'] for r in rep); closed=sum(r['first']['confined'] for r in rep)
@@ -205,15 +208,15 @@ def arm_verdict(results, arm):
             'R2a':occurrence>=2 if complete else None,'R2b':persistent>=1 if complete else None,
             'R2_joint':occurrence>=2 and persistent>=1 if complete else None,
             'kill':closed>=math.ceil(.25*D) if complete and D>=10 else None,
-            'km_rep':km(scoreable,'t_rep'),'km_closed':km(scoreable,'t_closed'),
+            'km_rep':km(scoreable,'t_rep',registration),'km_closed':km(scoreable,'t_closed',registration),
             'descriptive_binomial_intervals':{'R0':binomial_interval(D,20),'R1':binomial_interval(O,D),
                     'R2a':binomial_interval(occurrence,20),'R2b':binomial_interval(persistent,20)} if complete else None,
             'first_tape_distribution':[{'fetch':k[0],'mechanism':k[1],'count':v} for k,v in sorted(counts.items())],
             'first_encounter_distribution':[{'tape_fetch':k[0],'open':k[1],'mechanism':k[2],'count':v} for k,v in sorted(encounter_counts.items())]}
 
-def report(results,out):
+def report(results,out,registration=DEFAULT_REGISTRATION):
     out=Path(out); out.mkdir(parents=True,exist_ok=False)
-    write_new(out/'route_verdicts.json',{'arms':[arm_verdict(results,a) for a in ARMS]})
+    write_new(out/'route_verdicts.json',{'arms':[arm_verdict(results,a,registration) for a in registration.arms], 'registration':registration.as_dict()})
     for r in results: write_new(out/'worlds'/f"{r['world']['world']}.json.gz",r)
 
 if __name__ == '__main__':

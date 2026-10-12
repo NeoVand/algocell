@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-12",
+  "suite": "tests/test_s8086.py tests/test_s8086_repairs.py",
+  "tests_passed": 63,
+  "elapsed_s": 56.12,
+  "review_commit": "b21e0f7",
+  "no_modal_calls": true,
+  "no_population": true,
+  "no_final_refreeze": true,
+  "launch_status": "STOPPED",
+  "amended_certificates_full_raw_identity": [
+    "certificate_L2_source_counterexample_amended.json.gz",
+    "certificate_REP_L16_d16_a4_amended.json.gz",
+    "certificate_REP_L16_d16_a5_amended.json.gz",
+    "certificate_REP_L16_d8_a4_amended.json.gz",
+    "certificate_REP_L16_d8_a5_amended.json.gz",
+    "certificate_REP_L32_d16_a4_amended.json.gz",
+    "certificate_REP_L32_d16_a5_amended.json.gz",
+    "certificate_REP_L32_d32_a4_amended.json.gz",
+    "certificate_REP_L32_d32_a5_amended.json.gz",
+    "certificate_REP_L32_d8_a4_amended.json.gz",
+    "certificate_REP_L32_d8_a5_amended.json.gz",
+    "certificate_byte_count_dependency_amended.json.gz",
+    "certificate_nonREP_amended.json.gz"
+  ],
+  "local_bursts": 3078,
+  "maximum_burst_s": 3.603575917019043,
+  "gpu_burst_sum_s": 39.563935464655515,
+  "equal_pauses_verified": true,
+  "source12_encounters": 88064,
+  "REP_control_encounters": 1185792,
+  "census_candidate_settings": 1246,
+  "census_encounters": 21182,
+  "census_labels_changed": 1476,
+  "07a5_verdict": "still open memory-fed one-pass copier",
+  "known_limits": [
+    "conservative unresolved L2 extraction remains",
+    "physical stop requires functioning host/provider control; unknown overruns retain liabilities and stop further work"
+  ]
+}

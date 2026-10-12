@@ -13,7 +13,7 @@ from benchmark8086 import input_manifest,fixed_inputs
 
 def archive_certificate(name,certificate):
     import gzip
-    path=S.PRE/f'{name}.json.gz'; raw=json.dumps(certificate,sort_keys=True).encode()
+    path=S.PRE/f'{name}_amended.json.gz'; raw=json.dumps(certificate,sort_keys=True).encode()
     if path.exists(): assert gzip.decompress(path.read_bytes())==raw
     else: path.write_bytes(gzip.compress(raw,mtime=0))
 
@@ -92,7 +92,9 @@ def test_spend_guard_reserves_every_remaining_liability(tmp_path):
     guard=SpendGuard(tmp_path/'spend.jsonl',{'a':2.,'b':58.},overhead=0)
     guard.reserve('a',2.)
     with pytest.raises(FileExistsError): guard.reserve('a',2.)
-    guard.start('a','fc-fixed','ap-fixed'); guard.settle('a',1.)
+    guard.start('a','fc-fixed','ap-fixed')
+    guard.transact({'kind':'stopped','job':'a','app_id':'ap-fixed','confirmed':True,'tasks_empty':True})
+    guard.settle('a',1.)
     guard.reserve('b',58.)
     with pytest.raises(ValueError): guard.settle('b',59.)
     refuse=SpendGuard(tmp_path/'refuse.jsonl',{'a':2.,'b':58.},overhead=.01)
@@ -187,19 +189,18 @@ def test_all_ten_full_constructed_law_assays(machines,tmp_path):
     assert len(result)==10
     assert all(r['status']=='complete-zero-mismatch' for r in result.values())
     assert sum(r['encounters'] for r in result.values())==1_185_792
-    path=S.PRE/'constructed_control_validation.json'
+    path=S.PRE/'constructed_control_validation_amended.json'
     if path.exists():
         previous=json.loads(path.read_text())
         assert all(previous[n]=={k:result[n][k] for k in previous[n]} for n in previous)
     else: S.write_new(path,result)
-    counts=S.PRE/'constructed_control_denominators.json'
+    counts=S.PRE/'constructed_control_denominators_amended.json'
     if counts.exists(): assert json.loads(counts.read_text())==result
     else: S.write_new(counts,result)
     assert all(r['joint_assignments']==512 and r['serial_generations']==8 for r in result.values())
 
 def test_l2_nonzero_source_counterexample(machines):
-    # Fixed-input review counterexample, not an evolved candidate. Preserve
-    # the approved L2 definition and show its proposed prediction is false.
+    # The fixed-input counterexample now passes the prospective amendment.
     p=np.arange(16,dtype=np.uint8)
     p[:9]=[0xbe,12,0,0xbf,28,0,0x49,0xf3,0xa4]
     p=np.tile(p,2); m,t=machines[32]
@@ -207,7 +208,23 @@ def test_l2_nonzero_source_counterexample(machines):
     assert g['status']=='eligible',g
     assert g['C']==list(range(9)) and g['source_start']==12
     assert set(g['source_map'])==set(range(12,28))
-    assert Law.check_descendant(p,p,g['source_map'],g)=='parent_source_identity_mismatch'
+    assert Law.check_descendant(p,p,g['source_map'],g) is None
+    assert g['R']==list(range(12,28)) and g['C_R']==list(range(16,25))
+    assert g['free']==[12,13,14,15,25,26,27] and g['held_erased']==list(range(9))
+    assert g['erasure_controls']==[9,10,11,28,29,30,31] and g['phase']==4
+    import gzip
+    path=S.PRE/'source12_interventions_amended.jsonl.gz'
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        evidence=Path(tmp)/'assays.jsonl.gz'
+        with gzip.open(evidence,'wt') as f:
+            result=Law.assay_case(p,g,'B',S.SEEDS[0],m,t,lambda row:f.write(json.dumps(S.safe(row))+'\n'))
+        assert result['status']=='complete-zero-mismatch' and result['encounters']==88_064
+        assert result['single_assignments']==1792 and result['erased_assignments']==1792
+        if not path.exists(): path.write_bytes(evidence.read_bytes())
+    summary=S.PRE/'source12_validation_amended.json'
+    if summary.exists(): assert json.loads(summary.read_text())==S.safe(result)
+    else: S.write_new(summary,result)
     archive_certificate('certificate_L2_source_counterexample',c)
 
 def test_byte_granular_count_dependency(machines):
@@ -334,34 +351,38 @@ def test_frozen_pair_bridge_and_active_total(machines):
     expected=m.run(pair,budget=np.where(active!=0,128,0).astype(np.uint32),seed=123)
     assert total==37 and np.array_equal(memory.reshape(128,32),expected.memory) and np.array_equal(record,expected.record)
 
-def test_complete_record_and_incomplete_boundaries(tmp_path):
+@pytest.mark.parametrize("horizon",[3000000,1000000,1500000])
+def test_complete_record_and_incomplete_boundaries(tmp_path,horizon):
+    registration=S.Registration(horizon,("A",))
     import brotli
     cells=np.tile(np.arange(16,dtype=np.uint8),(20000,1)); raw=cells.tobytes(); compressed=brotli.compress(raw)
     top={'tape':cells[0].tobytes().hex(),'sha256':S.sha(cells[0].tobytes()),'count':20000,'share':1.}
     condition={'kind':'condition','schema':'s2-world/1','arm':'A','seed':S.SEEDS[0],**S.ARMS['A'],
-               'machine_name':S.ARMS['A']['machine'],'steps':S.HORIZON,'width':160,'height':125,
+               'machine_name':S.ARMS['A']['machine'],'steps':horizon,'width':160,'height':125,
                'pair_count':8192,'noise_exp':4,'mutation_attempts_per_step':512,
-               'sample_steps':S.samples(),'snapshot_steps':list(S.SNAPSHOTS),'initial_sha256':S.sha(raw)}
+               'sample_steps':list(registration.sample_steps),'snapshot_steps':list(registration.snapshots),'registration':registration.as_dict(),'initial_sha256':S.sha(raw)}
     records=[condition]
-    for step in S.samples():
+    for step in registration.sample_steps:
         records.append({'kind':'sample','step':step,'top3':[top],'pair_draws_total':step*8192,
                         'active_pairs_total':step*1000,'soup_sha256':S.sha(raw)})
-        if step in S.SNAPSHOTS:
+        if step in registration.snapshots:
             name=f'fixed{step}.br'; (tmp_path/name).write_bytes(compressed)
             records.append({'kind':'snapshot','step':step,'file':name,'raw_bytes':len(raw),
                             'shape':[20000,16],'sha256_raw':S.sha(raw),'sha256_compressed':S.sha(compressed)})
-    records.append({'kind':'summary','steps_run':S.HORIZON,'samples':585})
+    records.append({'kind':'summary','steps_run':horizon,'samples':len(registration.sample_steps)})
     path=tmp_path/'synthetic-fixed-record.jsonl'
     def write(rows): path.write_text('\n'.join(json.dumps(r) for r in rows)+'\n')
-    write(records); c,parsed,snap=Score.read_input(path)
-    assert len(parsed)==585 and snap['step']==S.HORIZON
+    write(records); c,parsed,snap=Score.read_input(path,registration)
+    if horizon!=S.HORIZON:
+        with pytest.raises(ValueError,match='registration|condition'): Score.read_input(path)
+    assert len(parsed)==len(registration.sample_steps) and snap['step']==horizon
     write(records[:-1])
-    with pytest.raises(ValueError,match='incomplete'): Score.read_input(path)
+    with pytest.raises(ValueError,match='incomplete'): Score.read_input(path,registration)
     write([r for r in records if r.get('step')!=50])
-    with pytest.raises(ValueError,match='sample'): Score.read_input(path)
+    with pytest.raises(ValueError,match='sample'): Score.read_input(path,registration)
     altered=json.loads(json.dumps(records)); altered[1]['top3'][0]['count']=19999
     write(altered)
-    with pytest.raises(ValueError,match='tape/count'): Score.read_input(path)
+    with pytest.raises(ValueError,match='tape/count'): Score.read_input(path,registration)
 
 def test_storage_observer_matches_original_and_chunking(machines):
     from algocell_exp.census8086_trace import DiagnosticMachine,same_execution
@@ -416,7 +437,14 @@ def test_instruction_and_retained_rep_boundaries(machines):
         p=np.frombuffer(bytes.fromhex(tape),np.uint8)[None]; mem=pairs(p,16)
         r=m.run(mem,budget=budget); q=t.run(mem,budget=budget)
         assert same_execution(r,q,m.record_words)
-        if tape.startswith('90') or tape.startswith('b900'): assert mechanism(t.logs(q)[0],16)[0]=='other'
+        log=t.logs(q)[0]
+        for step in np.unique(log[:,0]):
+            group=log[log[:,0]==step]; starts=group[group[:,1]==4,2]; fetched=group[group[:,1]==0,2]
+            if len(starts) and len(fetched): assert int(starts[0])%32==int(fetched[0])
+        if tape.startswith('90'):
+            assert log[log[:,1]==4,2][:16].tolist()==list(range(16))
+            assert int(log[log[:,1]==4,2].max())>32
+        if tape.startswith('90') or tape.startswith('b900'): assert mechanism(log,16)[0]=='other'
         if tape.startswith('f4'): assert int(r.steps[0])==1 and int(r.halt_reason[0])==1
         if tape.startswith('bf'):
             log=t.logs(q)[0]; assert int((log[:,1]==2).sum())==1
@@ -450,3 +478,32 @@ def test_archived_dz_endpoint_control():
         assert result['t_closed']==targets.loc[seed,'t_closed']
         assert result['first']['tape']==targets.loc[seed,'first_tape']
         assert result['first']['open']==targets.loc[seed,'first_open']
+
+
+def test_astra_start_and_push_sp_gpu_counterexamples(machines):
+    from census8086 import pairs
+    from algocell_exp.census8086_trace import mechanism,same_execution
+    m,t=machines[16]
+    import types,subprocess
+    legacy=types.ModuleType('algocell_exp._astra_legacy'); legacy.__package__='algocell_exp'
+    source=subprocess.check_output(['git','show','b21e0f7:experiments/algocell_exp/census8086_trace.py'],text=True)
+    exec(compile(source,'reviewed_classifier','exec'),legacy.__dict__)
+    old=S.fixed_burst(lambda:legacy.DiagnosticMachine(m,events=8192))
+    p=np.zeros(16,np.uint8); p[:9]=[0xbf,16,0,0xb9,2,0,0xf3,0xa5,0xf4]
+    mem=pairs(p[None],16); raw=m.run(mem,budget=4); obs=t.run(mem,budget=4)
+    assert same_execution(raw,obs,m.record_words)
+    previous=old.run(mem,budget=4); assert same_execution(raw,previous,m.record_words)
+    for log in old.logs(previous):
+        assert log[log[:,1]==4,2].tolist()==[1,4,7,6]
+        assert legacy.mechanism(log,16)[0]=='memory-fed one-pass copier'
+    for log in t.logs(obs):
+        assert log[log[:,1]==4,2].tolist()==[0,3,6,6]
+        assert mechanism(log,16)[0]=='confined copy loop'
+    p=np.zeros(16,np.uint8); p[:6]=[0x8b,0x26,14,0,0x54,0xf4]; p[14:]=[0x14,0x12]
+    mem=pairs(p[None],16); raw=m.run(mem,budget=128); obs=t.run(mem,budget=128)
+    assert same_execution(raw,obs,m.record_words)
+    for log in t.logs(obs):
+        writes=log[log[:,1]==2]
+        assert writes[:,2:4].tolist()==[[18,0x12],[19,0x12]]
+        assert legacy.mechanism(log,16)[0]=='memory-fed one-pass copier'
+        assert mechanism(log,16)[0]=='other'

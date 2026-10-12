@@ -10,7 +10,7 @@ from pathlib import Path
 import brotli
 import numpy as np
 import wgpu
-from s8086 import PRE,sha,safe,ARMS,SEEDS,HORIZON,RATE
+from s8086 import PRE,sha,safe,ARMS,SEEDS,HORIZON,RATE,DEFAULT_REGISTRATION
 
 def fixed_inputs(L):
     from census8086_law import parents
@@ -172,19 +172,22 @@ def benchmark():
                                  'numpy':np.__version__,'wgpu':wgpu.__version__,'brotli':brotli.__version__},
                  'function_wall_s':time.perf_counter()-start})
 
-def project(bench,preparation_bound):
+def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
     """Worst input/candidate ceilings, both separate law families, 20% slowdown
     and 10% runner margin; startup and CPU scoring/serialization are included.
     """
-    jobs={}; components=[]; deadlines={}; slowest=0
+    from lifecycle8086 import envelope_seconds,LIFECYCLE_EXTRA_S
+    jobs={}; execution={}; components=[]; deadlines={}; slowest=0
+    n=len(registration.sample_steps); k=len(registration.snapshots)
     for r in bench['records']:
         arm,L=r['arm'],r['L']
-        world_s=HORIZON/min(r['world_steps_per_s'])/.8*1.1 + 585*r['sample_s']*1.5 + 5*r['snapshot_s']*1.5
+        if arm not in registration.arms: continue
+        world_s=registration.horizon/min(r['world_steps_per_s'])/.8*1.1 + n*r['sample_s']*1.5 + k*r['snapshot_s']*1.5
         startup=max(120,r['compile_s']*2)
         deadline=math.ceil(world_s+startup+60); deadlines[arm]=deadline; slowest=max(slowest,deadline)
-        world_usd=(deadline+120)*RATE
+        world_usd=envelope_seconds(deadline)*RATE
         # At most 3 tapes at each of 585 samples plus 69 source records.
-        tapes=585*3+69
+        tapes=n*3+69
         scoring_s=tapes*r['culture_route_s_per_tape']*1.5+startup
         extracting_s=69*r['extraction_s_per_tape']*1.5+startup
         # L1 and L2 each select <=16 per world. L2 admits up to L-1
@@ -193,18 +196,20 @@ def project(bench,preparation_bound):
         l2=(((L-1)*256)+512)*25
         # Max at d=L; smaller d adds erased*17 but removes free*25.
         law_s=16*(l1+l2)/r['law_encounters_per_s']*1.5+startup
-        components.append({'arm':arm,'worlds':20,'world_seconds':deadline,'score_seconds':scoring_s,
+        components.append({'arm':arm,'worlds':20,'world_seconds':deadline,'samples':n,'snapshots':k,'score_tapes_cap':tapes,'score_seconds':scoring_s,
                            'extraction_seconds':extracting_s,'law_seconds':law_s,
                            'L1_encounters_per_case_cap':l1,'L2_encounters_per_case_cap':l2})
         for seed in SEEDS:
-            jobs[f'world:{arm}:{seed}']=world_usd
-            jobs[f'score:{arm}:{seed}']=(scoring_s+60+120)*RATE
-            jobs[f'extract:{arm}:{seed}']=(extracting_s+60+120)*RATE
-            jobs[f'law:{arm}:{seed}']=(law_s+60+120)*RATE
+            for stage,seconds in (('world',deadline),('score',scoring_s+60),('extract',extracting_s+60),('law',law_s+60)):
+                job=f'{stage}:{arm}:{seed}'
+                execution[job]=math.ceil(seconds)
+                jobs[job]=envelope_seconds(seconds)*RATE
     rate=min(r['law_encounters_per_s'] for r in bench['records'])
-    jobs['controls']= (1_185_792/rate*1.5+240)*RATE
+    execution['controls']=math.ceil(1_185_792/rate*1.5+120)
+    jobs['controls']=envelope_seconds(execution['controls'])*RATE
     diagnosis_s=1290*max(r['extraction_s_per_tape'] for r in bench['records'])*2+240
-    jobs['diagnosis']=(diagnosis_s+120)*RATE
+    execution['diagnosis']=math.ceil(diagnosis_s)
+    jobs['diagnosis']=envelope_seconds(diagnosis_s)*RATE
     jobs['preparation']=preparation_bound
     # Packed full-control outputs measured locally; twofold volume margin,
     # plus2 GB for checkpoints/certificates, one paid month and one export.
@@ -212,14 +217,18 @@ def project(bench,preparation_bound):
     output_gib=(185_505_792*sizes['worst_gzip_bytes_per_encounter']*2)/(1024**3)+2
     storage_reserve=max(5.,math.ceil(output_gib*(.09+.04)+.5))
     total=sum(jobs.values())+storage_reserve
-    return {'schema':'s2-cost/1','gpu':'L4','cpu':1,'memory_gib':8,'rate_usd_per_s':RATE,
+    return {'schema':'s2-cost/2-lifecycle','registration':registration.as_dict(),'population_worlds':20*len(registration.arms),
+            'execution_deadline_s':execution,'lifecycle_extra_s':LIFECYCLE_EXTRA_S,
+            'lifecycle_policy':{'startup_timeout_s':120,'startup_attempt_allowance':2,'max_containers_per_job':1,
+                'termination_grace_s':60,'watchdog_poll_s':1,'bounded_rpc_allowance_s':60,
+                'one_app_per_job':True,'restart_renews_clock':False,'settlement_requires_stopped_and_no_tasks':True},'gpu':'L4','cpu':1,'memory_gib':8,'rate_usd_per_s':RATE,
             'rates_source':'https://modal.com/pricing','rates_checked':'2026-10-12',
             'components':components,'job_liabilities_usd':jobs,'projection_usd':total,
             'world_deadline_s':deadlines,'longest_world_container_s':slowest,
             'storage_termination_reserve_usd':storage_reserve,'projected_output_gib':output_gib,
             'storage_assumption':'twofold measured gzip volume +2 GiB overhead; one paid month and one export; no credits',
             'diagnostic_replays_cap':1290,'cap_usd':60,'launch_fits':total<=60,
-            'L1_total_evolved_encounters_cap':81_920_000,'L2_total_evolved_encounters_cap':102_400_000,
+            'L1_total_evolved_encounters_cap':40_960_000*len(registration.arms),'L2_total_evolved_encounters_cap':51_200_000*len(registration.arms),
             'constructed_encounters':1_185_792,
             'warning':'Fixed-input timing cannot prove a worst-case population runtime; allocation stops are incomplete experiments.'}
 

@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 import modal
 if Path('/root/experiments').is_dir(): sys.path.insert(0,'/root/experiments')
-from modal_s8086 import image,volume
+from modal_s8086 import image,volume,STARTUP_TIMEOUT
 from s8086 import HERE,PRE,ARMS,SEEDS,RATE,sha,launch_receipt
 app=modal.App('algocell-s8086-scoring')
 
@@ -18,11 +18,14 @@ def locations(arm,seed,stage):
     return f'/vol/s8086/{arm}/{name}.jsonl',f'/vol/s8086_{stage}/{arm}/{name}'
 
 @app.function(image=image,gpu='L4',cpu=(1,1),memory=(8192,8192),timeout=12*3600,
-              retries=0,single_use_containers=True,max_containers=1,volumes={'/vol':volume})
+              startup_timeout=STARTUP_TIMEOUT,retries=0,single_use_containers=True,
+              min_containers=0,buffer_containers=0,max_containers=1,volumes={'/vol':volume})
 def score(arm,seed,stage,receipt,deadline_s,eligibility_commit=''):
     import sys
     sys.path.insert(0,'/root/experiments')
     import s8086,score8086,law8086
+    registration=s8086.Registration.from_dict(receipt["registration"])
+    if arm not in registration.arms: raise ValueError("arm withdrawn")
     from algocell_exp.zmachine import load_machine
     source,destination=locations(arm,seed,stage)
     freeze=json.loads((PRE/'freeze.json').read_text())
@@ -42,7 +45,7 @@ def score(arm,seed,stage,receipt,deadline_s,eligibility_commit=''):
         if time.monotonic()-start>deadline_s-30: raise TimeoutError('scoring spend stop; incomplete')
     try:
         if stage=='score':
-            result=score8086.score_world(Path(source),tick=tick); s8086.write_new(Path(str(out)+'.json.gz'),result)
+            result=score8086.score_world(Path(source),tick=tick,registration=registration); s8086.write_new(Path(str(out)+'.json.gz'),result)
         else:
             m=load_machine(ARMS[arm]['machine'])
             scored=Path(f'/vol/s8086_score/{arm}/{out.name}.json.gz')
@@ -58,13 +61,18 @@ def score(arm,seed,stage,receipt,deadline_s,eligibility_commit=''):
                     raise ValueError('committed eligibility data release required before interventions')
                 law8086.committed=lambda p:sha(Path(p).read_bytes())
                 result=law8086.assay_frozen(eligibility,out,m,tick=tick)
-    finally: volume.commit()
+    except BaseException:
+        try: volume.commit()
+        except Exception: pass
+        raise
+    else: volume.commit()
     wall=time.monotonic()-start
     if wall>deadline_s: raise RuntimeError('scoring allocation exceeded')
-    return {'result_path':str(out),'resource_time_bound_usd':(deadline_s+120)*RATE}
+    return {'result_path':str(out),'body_complete':True}
 
 @app.function(image=image,gpu='L4',cpu=(1,1),memory=(8192,8192),timeout=3600,
-              retries=0,single_use_containers=True,max_containers=1,volumes={'/vol':volume})
+              startup_timeout=STARTUP_TIMEOUT,retries=0,single_use_containers=True,
+              min_containers=0,buffer_containers=0,max_containers=1,volumes={'/vol':volume})
 def positive_controls(receipt,deadline_s):
     import sys
     sys.path.insert(0,'/root/experiments')
@@ -84,5 +92,9 @@ def positive_controls(receipt,deadline_s):
     for L in (16,32):
         tick(); m=load_machine(f'i8086_pair_maps_L{L}'); machines[L]=(m,diagnostic_for(m))
     try: result=law8086.controls(Path('/vol/s8086_controls'),machines,tick=tick)
-    finally: volume.commit()
-    return {'results':result,'resource_time_bound_usd':(deadline_s+120)*RATE}
+    except BaseException:
+        try: volume.commit()
+        except Exception: pass
+        raise
+    else: volume.commit()
+    return {'results':result,'body_complete':True}

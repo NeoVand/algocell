@@ -11,7 +11,7 @@ import wgpu
 from algocell_exp.metrics import quasispecies_share
 from algocell_exp.soup import adapter_summary
 from algocell_exp.zsoup import ZSoup
-from s8086 import ARMS, HERE, HORIZON, SEEDS, SNAPSHOTS, samples, sha, launch_receipt
+from s8086 import ARMS, HERE, HORIZON, SEEDS, SNAPSHOTS, samples, sha, launch_receipt, released_registration
 from run6502 import exact_tapes as _exact_tapes, utc_now
 
 class S2Soup(ZSoup):
@@ -66,8 +66,8 @@ def exact_tapes(cells, hashes):
 def world_name(arm, seed): return f's8086_{arm}_s{seed}'
 
 def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_output=lambda: None):
-    launch_receipt(release)
-    if arm not in ARMS or seed not in SEEDS or not 0 < deadline_s:
+    receipt=launch_receipt(release); registration=released_registration(receipt)
+    if arm not in registration.arms or seed not in SEEDS or not 0 < deadline_s:
         raise ValueError('invalid registered world/allocation')
     cfg = ARMS[arm]
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
@@ -78,20 +78,21 @@ def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_ou
     with (out / f'{world}.jsonl').open('x') as f:
         def emit(r):
             f.write(json.dumps(r, allow_nan=False) + '\n'); f.flush()
-        soup = S2Soup(cfg['machine'], seed=seed, width=160, height=125, pair_count=8192,
-                      noise_exp=4, z80_steps=128)
-        initial = soup.read_soup().tobytes()
-        emit({'kind': 'condition', 'schema': 's2-world/1', 'world': world, 'arm': arm,
-              'seed': seed, **cfg, 'machine_name': cfg['machine'], 'machine': soup.machine_provenance,
-              'steps': HORIZON, 'width': 160, 'height': 125, 'pair_count': 8192,
-              'noise_exp': 4, 'mutation_attempts_per_step': 512, 'applied_updates': None,
-              'sample_steps': samples(), 'snapshot_steps': SNAPSHOTS, 'git_commit': git_commit,
-              'initial_sha256': sha(initial), 'adapter': adapter_summary(), 'started': utc_now(),
-              'allocation': {'gpu': 'L4', 'cpu': 1, 'memory_mib': 8192, 'deadline_s': deadline_s},
-              'freeze_sha256': sha((HERE / 'results/s8086/prelaunch/freeze.json').read_bytes())})
-        commit_output()
         try:
-            for target in samples():
+            soup = S2Soup(cfg['machine'], seed=seed, width=160, height=125, pair_count=8192,
+                          noise_exp=4, z80_steps=128)
+            initial = soup.read_soup().tobytes()
+            emit({'kind': 'condition', 'schema': 's2-world/1', 'world': world, 'arm': arm,
+                  'seed': seed, **cfg, 'machine_name': cfg['machine'], 'machine': soup.machine_provenance,
+                  'steps': registration.horizon, 'width': 160, 'height': 125, 'pair_count': 8192,
+                  'noise_exp': 4, 'mutation_attempts_per_step': 512, 'applied_updates': None,
+                  'sample_steps': list(registration.sample_steps), 'snapshot_steps': list(registration.snapshots),
+                  'registration':registration.as_dict(), 'git_commit': git_commit,
+                  'initial_sha256': sha(initial), 'adapter': adapter_summary(), 'started': utc_now(),
+                  'allocation': {'gpu': 'L4', 'cpu': 1, 'memory_mib': 8192, 'deadline_s': deadline_s},
+                  'freeze_sha256': sha((HERE / 'results/s8086/prelaunch/freeze.json').read_bytes())})
+            commit_output()
+            for target in registration.sample_steps:
                 while step < target:
                     # Leave 30 seconds for final checkpoint, storage and termination.
                     if time.monotonic() - start >= deadline_s - 30:
@@ -104,7 +105,7 @@ def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_ou
                       'byte_hist': hist.astype(int).tolist(), 'soup_sha256': sha(cells.tobytes()),
                       'pair_draws_total': step * 8192, 'active_pairs_total': soup.active_pairs_total,
                       'elapsed_s': time.monotonic()-start})
-                if step in SNAPSHOTS:
+                if step in registration.snapshots:
                     raw = cells.tobytes(); name = f'{world}.t{step}.u8.br'
                     compressed = brotli.compress(raw, quality=9)
                     with (out / name).open('xb') as ck: ck.write(compressed)
@@ -112,16 +113,20 @@ def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_ou
                           'raw_bytes': len(raw), 'compressed_bytes': len(compressed),
                           'sha256_raw': sha(raw), 'sha256_compressed': sha(compressed)})
                     commit_output()
-            result = {'kind': 'summary', 'world': world, 'steps_run': step, 'samples': len(samples()),
-                      'snapshots': len(SNAPSHOTS), 'active_pairs_total': soup.active_pairs_total,
+            result = {'kind': 'summary', 'world': world, 'steps_run': step, 'samples': len(registration.sample_steps),
+                      'snapshots': len(registration.snapshots), 'active_pairs_total': soup.active_pairs_total,
                       'wall_s': time.monotonic()-start, 'finished': utc_now()}
             emit(result); commit_output(); return result
         except BaseException as exc:
-            raw = soup.read_soup().tobytes(); name = f'{world}.safety.t{step}.u8.br'
-            with (out / name).open('xb') as ck: ck.write(brotli.compress(raw))
-            emit({'kind': 'incomplete', 'steps_run': step, 'error': type(exc).__name__,
-                  'reason': str(exc), 'file': name, 'sha256_raw': sha(raw)})
-            commit_output(); raise
+            # Never depend on another GPU read/checkpoint to record failure.
+            # The independent dispatcher journal covers even broken storage.
+            try:
+                emit({'kind':'incomplete','steps_run':step,'error':type(exc).__name__,
+                      'reason':str(exc),'last_acknowledged_progress':step})
+                commit_output()
+            except Exception:
+                pass  # Preserve the original exception for the host terminal record.
+            raise
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__)

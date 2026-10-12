@@ -41,7 +41,7 @@ class DiagnosticMachine(ZMachine):
             if len(matches) != 1:
                 raise ValueError(f"missing {name} diagnostic hook")
             at = matches[0].end()
-            src = src[:at] + f"\n    census_event({event}u, i8086_pc(), {value});" + src[at:]
+            src = src[:at] + f"\n    census_event({event}u, {'pc' if event == 4 else 'i8086_pc()'}, {value});" + src[at:]
         once("fn zil_store_record(o: u32, steps: u32) {", "fn zil_store_record(o: u32, steps: u32) {\n    census_store(o);")
         storage_trace = storage_trace and events > 0
         record_base = "\n    census_record_base = (lane - zil_params.lane_base) * ZIL_RECORD_WORDS;" if storage_trace else ""
@@ -146,86 +146,110 @@ def mechanism(log, L):
     confined = not np.any((episode[:, 1] == 0) & (episode[:, 2] >= L))
     repeated = len(np.unique(starts)) < len(starts)
     ops = {int(s): int(v) for s, kind, p, v, origin in episode if kind == 3}
-    # Trace-local register provenance for the admitted direct writing forms.
-    # Unknown register-producing instructions poison the register inventory;
-    # a later immediate load restores just that register. Irrelevant data reads
-    # do not turn an immediate-loaded PUSH into a memory-fed writer.
-    registers = ["literal"] * 8  # the declared reset, including stack phase
-    read_values = [[] for _ in range(8)]
+    # Each byte is (channel, exact read event identity, value). A word store
+    # pairs low then high with its semantic source; equal values elsewhere in
+    # the read set never establish pairing. Arithmetic kills copy identity.
+    literal = ("literal", None, None)
+    other = ("other", None, None)
+    regs = [[literal, literal] for _ in range(8)]
+    segments = [[literal, literal] for _ in range(4)]
     channels = []
-    neutral = {0x90, 0xf4, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd}
+    pending_rep = False
+
+    def arithmetic(reg):
+        regs[reg] = [literal,literal] if all(b[0] == "literal" for b in regs[reg]) else [other,other]
+
+    def get(reg, word):
+        return regs[reg][:] if word else [regs[reg & 3][int(reg >= 4)]]
+
+    def put(reg, word, value):
+        if word: regs[reg] = value[:]
+        else: regs[reg & 3][int(reg >= 4)] = value[0]
+
     for step in sorted(ops):
         op = ops[step]
         group = episode[episode[:, 0] == step]
         fetched = list(map(int, group[group[:, 1] == 0, 3]))
+        prefixes = []
         while fetched and fetched[0] in (0x26, 0x2e, 0x36, 0x3e, 0xf0, 0xf1, 0xf2, 0xf3):
-            fetched.pop(0)
+            prefixes.append(fetched.pop(0))
+        if fetched: pending_rep = op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xac,0xad,0xae,0xaf) and any(p in (0xf2,0xf3) for p in prefixes)
         rr = group[group[:, 1] == 1]
-        ww = group[(group[:, 1] == 2) & (group[:, 2] >= L)]
-        channel, values = "other", []
+        ww = group[group[:, 1] == 2]
+        read = [("memory", (int(step),i,int(r[2])), int(r[3])) for i,r in enumerate(rr)]
+        source = []
+        modrm = fetched[1] if len(fetched) > 1 else None
+        word = op & 1
+        mode = modrm >> 6 if modrm is not None else None
+        reg = (modrm >> 3) & 7 if modrm is not None else None
+        rm = modrm & 7 if modrm is not None else None
         if 0x50 <= op <= 0x57:
-            channel, values = registers[op-0x50], read_values[op-0x50]
-        elif op == 0xff and len(fetched) >= 2 and ((fetched[1] >> 3) & 7) in (6, 7):
-            if fetched[1] >> 6 != 3:
-                channel, values = "memory", list(rr[:, 3])
-            else:
-                reg = fetched[1] & 7
-                channel, values = registers[reg], read_values[reg]
-        elif op in (0xa4, 0xa5):
-            channel, values = "memory", list(rr[:, 3])
-        elif op in (0xaa, 0xab):
-            channel, values = registers[0], read_values[0]
-        elif op in (0xc6, 0xc7):
-            channel = "literal"
-        for write in ww:
-            rmw = (op < 0x40 and (op & 7) < 4) or op in (0x80, 0x81, 0x82, 0x83, 0xd0, 0xd1, 0xd2, 0xd3, 0xfe, 0xff)
-            if channel == "other" and rmw and np.any((rr[:, 2] == write[2]) & (rr[:, 3] == write[3])):
-                # A no-change RMW adds coverage/transactions but no new byte
-                # provenance. B9 51's bootstrap executes such ADDs between pushes.
+            # The kernel implements 8086 PUSH SP's decremented stored value.
+            if op == 0x54: arithmetic(4)
+            source = get(op-0x50, True)
+        elif op in (0xfe,0xff) and reg in (6,7):
+            if mode == 3:
+                if op == 0xff and rm == 4: arithmetic(4)
+                source = get(rm,word)
+            else: source = read[:1+word]
+        elif op in (0xa4,0xa5): source = read[:1+word]
+        elif op in (0xaa,0xab,0xa2,0xa3): source = get(0,word)
+        elif op in (0x88,0x89) and mode != 3: source = get(reg,word)
+        elif op in (0xc6,0xc7): source = [literal]*(1+word)
+        elif op in (6,14,22,30): source = segments[(op>>3)&3][:]
+        elif op == 0x8c and mode != 3: source = segments[reg&3][:]
+        elif op == 0x8f and mode != 3: source = read[:2]
+        for i,write in enumerate(ww):
+            if write[2] < L: continue
+            rmw = (op < 0x40 and (op & 7) < 4) or op in (0x80,0x81,0x82,0x83,0xd0,0xd1,0xd2,0xd3,0xf6,0xf7,0xfe,0xff)
+            if not source and rmw and np.any((rr[:,2] == write[2]) & (rr[:,3] == write[3])):
+                # Address-paired unchanged RMW contributes no new copy origin.
                 continue
-            channels.append(channel if channel != "memory" or write[3] in values else "other")
-        if 0xb8 <= op <= 0xbf:
-            registers[op-0xb8] = "literal"; read_values[op-0xb8] = []
-        elif op in (0xac, 0xad):
-            registers[0] = "memory" if op == 0xad else "other"; read_values[0] = list(rr[:, 3])
+            b = source[i] if i < len(source) else other
+            channels.append(b[0] if b[0] != "memory" or int(write[3]) == b[2] else "other")
+
+        # Explicit writes and every implicit general-register update in the
+        # vendored execute/string/repeat/push/pop helpers. Unknown semantics
+        # poison all registers and segments, including trap/interrupt paths.
+        if 0xb0 <= op <= 0xbf: put(op&7,op>=0xb8,[literal]*(2 if op>=0xb8 else 1))
+        elif op in (0xac,0xad,0xa0,0xa1): put(0,word,read[:1+word] or [other]*(1+word))
         elif 0x58 <= op <= 0x5f:
-            registers[op-0x58] = "memory"; read_values[op-0x58] = list(rr[:, 3])
-        elif op in (0x8a, 0x8b) and len(fetched) >= 2:
-            dest, source = (fetched[1] >> 3) & 7, fetched[1] & 7
-            if op == 0x8a: dest &= 3; source &= 3
-            if op == 0x8a:
-                registers[dest], read_values[dest] = "other", []
-            elif fetched[1] >> 6 == 3:
-                registers[dest], read_values[dest] = registers[source], read_values[source]
-            else:
-                registers[dest], read_values[dest] = "memory", list(rr[:, 3])
-        elif op in (0xc4, 0xc5) and len(fetched) >= 2:
-            dest = (fetched[1] >> 3) & 7
-            registers[dest], read_values[dest] = "memory", list(rr[:2, 3])
-        elif 0x40 <= op <= 0x4f:
-            reg = op & 7
-            if registers[reg] != "literal":
-                registers[reg] = "other"; read_values[reg] = []
-        elif op in (0xc6, 0xc7) and len(fetched) >= 2:
-            if fetched[1] >> 6 == 3:
-                reg = fetched[1] & 7
-                if op == 0xc7 or registers[reg & 3] == "literal":
-                    registers[reg if op == 0xc7 else reg & 3] = "literal"
-                    read_values[reg if op == 0xc7 else reg & 3] = []
-                else:
-                    registers[reg & 3] = "other"; read_values[reg & 3] = []
-        elif 0x91 <= op <= 0x97:
-            reg = op & 7
-            registers[0], registers[reg] = registers[reg], registers[0]
-            read_values[0], read_values[reg] = read_values[reg], read_values[0]
-        elif op in (0xa4, 0xa5, 0xaa, 0xab) or 0x50 <= op <= 0x57 or op in neutral or 0x60 <= op <= 0x7f:
-            pass
-        elif op < 0x40 and (op & 7) < 6:
-            # Memory-destination ALU does not modify general registers.
-            if not (len(fetched) >= 2 and (op & 7) < 2 and fetched[1] >> 6 != 3):
-                registers = ["other"] * 8; read_values = [[] for _ in range(8)]
+            arithmetic(4); put(op-0x58,True,read[:2] if len(read)>=2 else [other]*2)
+        elif op in (7,15,23,31):
+            arithmetic(4); segments[(op>>3)&3] = read[:2] if len(read)>=2 else [other]*2
+        elif op in (0x88,0x89,0x8a,0x8b) and modrm is not None:
+            if op in (0x8a,0x8b): put(reg,word,get(rm,word) if mode==3 else read[:1+word])
+            elif mode==3: put(rm,word,get(reg,word))
+        elif op in (0xc4,0xc5) and modrm is not None:
+            put(reg,True,read[:2]); segments[0 if op==0xc4 else 3] = read[2:4]
+        elif op == 0x8e and modrm is not None: segments[reg&3] = get(rm,True) if mode==3 else read[:2]
+        elif op == 0x8c and mode==3: put(rm,True,segments[reg&3])
+        elif 0x40 <= op <= 0x4f: arithmetic(op&7)
+        elif op in (0xc6,0xc7) and mode==3: put(rm,word,[literal]*(1+word))
+        elif 0x90 <= op <= 0x97:
+            regs[0],regs[op&7] = regs[op&7],regs[0]
+        elif op in (0x86,0x87) and modrm is not None:
+            old = get(reg,word)
+            put(reg,word,get(rm,word) if mode==3 else read[:1+word])
+            if mode==3: put(rm,word,old)
+        elif op == 0x8f and modrm is not None:
+            arithmetic(4)
+            if mode==3: put(rm,True,read[:2])
+        elif op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xae,0xaf): pass
+        elif op in (0xe0,0xe1,0xe2): arithmetic(1)
+        elif op in (0xe3,0xe9,0xea,0xeb,0x9b,0xa8,0xa9,0xf4,0xf5,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd) or 0x60 <= op <= 0x7f: pass
+        elif 0x50 <= op <= 0x57 or op in (6,14,22,30): pass
+        elif op in (0xfe,0xff) and reg in (6,7): pass
+        elif op < 0x40 and (op&7)<4 and modrm is not None and (op&7)<2 and mode!=3: pass
+        elif op in (0xc6,0xc7,0x88,0x89,0x8c) and mode!=3: pass
         else:
-            registers = ["other"] * 8; read_values = [[] for _ in range(8)]
+            regs = [[other,other] for _ in range(8)]
+            segments = [[other,other] for _ in range(4)]
+        if op in (0xa4,0xa5,0xa6,0xa7,0xac,0xad): arithmetic(6)
+        if op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xae,0xaf): arithmetic(7)
+        if pending_rep and op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xac,0xad,0xae,0xaf): arithmetic(1)
+        if 0x50 <= op <= 0x57 or op in (6,14,22,30) or (op in (0xfe,0xff) and reg in (6,7)):
+            arithmetic(4)
     if channels and all(c == "literal" for c in channels):
         return "literal writer", "partner_writes_from_reset_or_immediate_registers"
     if channels and all(c == "memory" for c in channels):

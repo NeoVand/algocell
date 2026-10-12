@@ -2,6 +2,24 @@
 
 No S2 population has been run. These are fixed-input findings, not evolved results.
 
+## Prospective implementation correction — 2026-10-12
+
+Astra §2's amendment is now implemented and validated; the historical L2
+source-origin defect described below is repaired prospectively. L32/d16/s12
+passes 88,064 exact encounters with actual roots 12…27, source core 16…24,
+seven free roots, seven mutable erasure controls, nine held erased setup roots,
+and phase 4 in the source seed. All ten s=0 REP controls pass the unchanged
+1,185,792-encounter suite. Raw dependencies, inherited core and generation-zero
+ancestry are distinct certificate fields; unsupported forms remain unresolved.
+No final registration or refreeze has occurred, and the old freeze is invalidated
+by these source changes. Numerical horizon/arm options await user choice.
+
+B3/B4 have a fresh census re-audit; B5 now has an independent mocked lifecycle
+watchdog and confirmed-stop settlement. Revised complete option totals are in
+FORECAST_OPTIONS_REPAIRED.md. **STOPPED.** No new Modal or population work.
+The remaining paragraphs preserve the historical frozen limitations.
+
+
 The approved L2 eligibility allows a forward kernel starting at arbitrary source s. Its prediction nevertheless names the primary seed 0..d-1. That prediction is false when s is nonzero: the independently reviewed L32/d16 seed beginning `BE 0C 00 BF 1C 00 49 F3 A4` starts at s=12. The actual source roots are 12..27; primary free positions 9..11 are erased, while original positions 25..27 survive. The fixed-input GPU regression verifies that the baseline meets the approved kernel certificate, C={0..8}, full partner coverage and reset closure, and that its canonical primary-source prediction is rejected. This is a known specification defect before any evolved assay. The implementation preserves the approved definition and never silently imposes s=0. A source-start restriction or a shifted causal seed requires a design decision by the coordinator/user before launch. L1 is unaffected.
 
 The L2 dependency verifier covers immediate word loads, byte/word MOV transfers (low-byte forms), INC/DEC, MOVS, LODS/STOS, LOOP/conditional branches/near jumps, NOP, CLD and HLT with explicit byte dependencies and semantic source pairing. Other instruction forms return an unresolved certificate. They are recorded, and unresolved culture-positive certificates prevent a supported L2 verdict; they are not removed as biological negatives. Complete automatic proof extraction for arbitrary 8086 loops is not implemented. This limitation cannot be hidden by calling a smaller admitted instruction set the entire broader family.

@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 from algocell_exp.census8086_trace import DiagnosticMachine, same_execution
 from census8086 import panel, pairs
-from s8086 import HERE, key, rng, sha, safe, write_new, committed, verify_freeze,diagnostic_for,read_json
+from s8086 import HERE, key, rng, sha, safe, write_new, committed, verify_freeze,diagnostic_for,read_json,DEFAULT_REGISTRATION
 
 class Unresolved(ValueError): pass
 
@@ -113,6 +113,11 @@ def copy_certificate(parent, log, L, *, baseline=True):
             if rr or ww: raise Unresolved('halt_access')
         else:
             raise Unresolved(f'unmodelled_dependency_opcode:{op:02x}')
+        for reg in ((6,) if op in (0xac,0xad) else (6,7) if op in (0xa4,0xa5) else (7,) if op in (0xaa,0xab) else ()):
+            regs[reg] = [regs[reg][0].copy(),sources(reg).copy()]
+            held[reg] = [None,None]
+        if op in (0xe0,0xe1,0xe2) or (pending_rep is not None and op in (0xa4,0xa5)):
+            regs[1] = [regs[1][0].copy(),sources(1).copy()]; held[1] = [None,None]
         if ww:
             if copy_reads is None or len(copy_reads) != len(ww) or any(r is None for r in copy_reads):
                 raise ValueError('interfering_or_unpaired_write')
@@ -135,16 +140,35 @@ def copy_certificate(parent, log, L, *, baseline=True):
     if any(root >= L for root in origins[L:]): raise ValueError('partner_ancestry')
     if baseline and not np.array_equal(parent, np.tile(parent[:d],L//d)):
         raise ValueError('nonperiodic_baseline')
+    # K is the raw dependency footprint, never reduced modulo d. Held setup
+    # roots may be ancestrally erased; arbitrary erasure excludes those roots.
     if any(p >= d for p in fetched_roots | dependencies):
-        raise ValueError('original_erased_coordinate_code_or_control_dependency')
+        raise ValueError('raw_core_exceeds_footprint_bound')
     C = sorted(fetched_roots | dependencies)
     # Values at dependencies are held fixed at every repeated core position.
     # Executed stream therefore remains unchanged for arbitrary free payload.
     if not C or max(C)+1 > d: raise ValueError('core_exceeds_seed')
-    return {'d': d, 'c': max(C)+1, 'C': C, 'free': sorted(set(range(d))-set(C)),
-            'source_start': moves[0][0], 'byte_moves': len(moves),
-            'source_map': origins[L:], 'moves_sha256': sha(np.asarray(moves,dtype='<u4').tobytes()),
-            'trace_sha256': sha(log.astype('<u4').tobytes())}
+    s = moves[0][0]
+    if not 0 <= s <= L-d: raise ValueError('source_root_interval_outside_A')
+    R = list(range(s,s+d))
+    source_map = [s+((L+q-s)%d) for q in range(L)]
+    if origins[L:] != source_map: raise ValueError('ordered_source_map_disagrees_with_roots_phase')
+    if set(origins[L:]) != set(R): raise ValueError('incomplete_original_A_root_interval')
+    C_R = sorted(source_map[k] for k in C)
+    if any(parent[k] != parent[source_map[k]] for k in C):
+        raise ValueError('entry_phase_core_not_inherited_exactly')
+    E = sorted(set(range(L))-set(R))
+    free = sorted(set(R)-set(C_R))
+    if len(free) != d-len(C): raise ValueError('noninjective_source_core')
+    if any(source_map[source_map[q]] != source_map[q] for q in range(L)):
+        raise ValueError('nonidempotent_serial_source_map')
+    return {'d':d,'c':max(C)+1,'C':C,'K':C,'R':R,'C_R':C_R,'free':free,'F':free,'E':E,
+            'erasure_controls':sorted(set(E)-set(C)), 'held_erased':sorted(set(E)&set(C)),
+            'phase':(L-s)%d,'physical_entry':0,'source_start':s,'byte_moves':len(moves),
+            'source_map':source_map, 'reset_source_map':source_map,
+            'noninterference':'explicit raw dependency transfer; hold K and C_R; F and E\\K disjoint from raw dependencies; same fixed physical reset core',
+            'moves_sha256':sha(np.asarray(moves,dtype='<u4').tobytes()),
+            'trace_sha256':sha(log.astype('<u4').tobytes())}
 
 def extract(parent, machine, diagnostic=None):
     parent = np.asarray(parent,dtype=np.uint8); L = len(parent)
@@ -163,7 +187,7 @@ def extract(parent, machine, diagnostic=None):
         for log in logs: geometry.append(copy_certificate(parent,log,L))
         g = geometry[0]
         for v in geometry[1:]:
-            if any(v[k] != g[k] for k in ('d','C','free','source_start','source_map')):
+            if any(v[k] != g[k] for k in ('d','K','R','C_R','F','E','held_erased','phase','source_start','source_map')):
                 raise ValueError('context_dependent_certificate')
         if not np.all(raw.memory[:,L:] == parent): raise ValueError('baseline_descendant_not_closed')
         result['families']['L2'] = {'status': 'eligible', **g, 'panel_geometry': geometry,
@@ -206,9 +230,9 @@ def freeze_candidates(scored, out, machine, diagnostic=None, tick=lambda:None):
             certs[tape] = extract(np.frombuffer(bytes.fromhex(tape),np.uint8),machine,diagnostic)
     selections = {f:selection(scored['candidates'],certs,world['arm'],world['seed'],world['L'],f)
                   for f in ('L1','L2')}
-    result = {'schema':'s2-eligibility/1','world':world,'certificates':certs,'selection':selections,
+    result = {'schema':'s2-eligibility/2-source-root-phase','world':world,'certificates':certs,'selection':selections,
               'candidates':scored['candidates'], 'scored_sha256':sha(json.dumps(scored,sort_keys=True).encode()),
-              'extractor_sha256':sha(Path(__file__).read_bytes())}
+              'extractor_sha256':sha(Path(__file__).read_bytes()),'registration':scored.get('registration',DEFAULT_REGISTRATION.as_dict())}
     if Path(out).suffix!='.gz': out=Path(str(out)+'.gz')
     write_new(out,result); return result
 
@@ -232,10 +256,11 @@ def controls(out, machines, tick=lambda:None):
                 emit({'kind':'summary',**results[name]})
     write_new(Path(out)/'summary.json',results); return results
 
-def family_report(eligibility, outcomes, controls_complete, family, *, arm, exclude_L1=False):
+def family_report(eligibility, outcomes, controls_complete, family, *, arm, exclude_L1=False, registration=DEFAULT_REGISTRATION):
+    if arm not in registration.arms: raise ValueError("arm not retained")
     from s8086 import SEEDS,HORIZON,ARMS
     eligibility=[d for d in eligibility if d['world']['arm']==arm]
-    selected=[]; cases={}; worlds=set(); unresolved=0; coverage=Counter()
+    selected=[]; cases={}; worlds=set(); unresolved=0; coverage=Counter(); geometries=[]; reasons=Counter()
     for data in eligibility:
         world=data['world']['world']
         coverage['source_records']+=len(data['candidates'])
@@ -244,6 +269,8 @@ def family_report(eligibility, outcomes, controls_complete, family, *, arm, excl
         coverage['culture_positive']+=len(data['certificates'])
         for cert in data['certificates'].values():
             unresolved+=cert['families'][family]['status']=='unresolved'
+            if cert['families'][family]['status']!='eligible':
+                reasons[cert['families'][family].get('reason','unspecified')]+=1
         for source in data['candidates']:
             if source['source']!='random-cell': continue
             score=source['culture']['gen2_score']
@@ -258,6 +285,8 @@ def family_report(eligibility, outcomes, controls_complete, family, *, arm, excl
         for tape in data['selection'][family]['selected']:
             if exclude_L1 and data['certificates'][tape]['families']['L1']['status']=='eligible': continue
             name=f'{world}:{tape}'; selected.append(name); worlds.add(world)
+            g=data['certificates'][tape]['families'][family]
+            geometries.append({'case':name,**{k:g[k] for k in ('d','c','K','C_R','R','F','E','held_erased','erasure_controls','phase','physical_entry','source_map') if k in g}})
             if tape in outcomes.get(world,{}).get(family,{}): cases[name]=outcomes[world][family][tape]
         coverage['cap_excluded']+=sum(not exclude_L1 or data['certificates'][t]['families']['L1']['status']!='eligible'
                                       for t in data['selection'][family]['cap_excluded'])
@@ -265,38 +294,40 @@ def family_report(eligibility, outcomes, controls_complete, family, *, arm, excl
     if unresolved and status!='failed application': status='incomplete/invalid'
     rows=[d['world'] for d in eligibility]
     complete=(len(rows)==20 and {r['seed'] for r in rows}==set(SEEDS)
-              and all(r['scoreable'] and r['horizon']==HORIZON and r['L']==ARMS[arm]['L'] for r in rows))
+              and all(r['scoreable'] and r['horizon']==registration.horizon and r['L']==ARMS[arm]['L'] for r in rows))
     if not complete and status!='failed application': status='incomplete/invalid'
     return {'family':family,'arm':arm,'arm_complete':complete,'exclude_L1':exclude_L1,'verdict':status,'independent_worlds':len(worlds),
             'selected':len(selected),'completed':sum(r['status']=='complete-zero-mismatch' for r in cases.values()),
-            'unresolved_extractions':unresolved,'denominators':dict(coverage)}
+            'unresolved_extractions':unresolved,'extraction_failure_reasons':dict(reasons),
+            'source_root_core_phase_certificates':geometries,'denominators':dict(coverage)}
 
-def report(eligibility,outcomes,controls_complete,out):
+def report(eligibility,outcomes,controls_complete,out,registration=DEFAULT_REGISTRATION):
     from s8086 import ARMS
-    rows=[family_report(eligibility,outcomes,controls_complete,f,arm=a,exclude_L1=exclude)
-          for a in ARMS for f,exclude in (('L1',False),('L2',False),('L2',True))]
-    write_new(out,{'families':rows,'L2_never_rescues_L1':True}); return rows
+    rows=[family_report(eligibility,outcomes,controls_complete,f,arm=a,exclude_L1=exclude,registration=registration)
+          for a in registration.arms for f,exclude in (('L1',False),('L2',False),('L2',True))]
+    write_new(out,{'families':rows,'L2_never_rescues_L1':True,'registration':registration.as_dict()}); return rows
 
 def variants(parent, geometry, arm, seed):
     L,d = len(parent),geometry['d']; free = geometry['free']; tape = parent.tobytes().hex()
+    roots = geometry.get('source_map',[q%d for q in range(L)])
     for pos in free:
         for value in range(256):
             p = parent.copy(); p[pos] = value
-            yield f'single:{pos}:{value}', 'single', p, np.tile(p[:d],L//d)
+            yield f'single:{pos}:{value}', 'single', p, p[roots].copy()
     for index in range(512):
         p = parent.copy()
         p[free] = ((37*np.arange(len(free))+index)%256 if index < 256 else
                    rng(arm,seed,L,'law-joint',tape,f'joint:{index}').integers(0,256,len(free),dtype=np.uint8))
-        yield f'joint:{index}', 'joint', p, np.tile(p[:d],L//d)
-    for pos in range(d,L):
+        yield f'joint:{index}', 'joint', p, p[roots].copy()
+    for pos in geometry.get('erasure_controls',range(d,L)):
         for value in range(256):
             p = parent.copy(); p[pos] = value
-            yield f'erased:{pos}:{value}', 'erased', p, parent.copy()
+            yield f'erased:{pos}:{value}', 'erased', p, parent[roots].copy()
 
 def check_descendant(actual, expected, roots, geometry):
     d = geometry['d']
     if not np.array_equal(actual,expected): return 'exact_offspring_mismatch'
-    if list(roots) != [i%d for i in range(len(actual))]: return 'parent_source_identity_mismatch'
+    if list(roots) != geometry.get('source_map',[i%d for i in range(len(actual))]): return 'parent_source_identity_mismatch'
     return None
 
 def diagnosis(machine, diagnostic, memory, expected, geometry):
@@ -317,6 +348,8 @@ def diagnosis(machine, diagnostic, memory, expected, geometry):
     return safe({'input':memory.tobytes().hex(),'expected':expected.tobytes().hex(),
                  'output':r1.memory[0].tobytes().hex(),'record':r1.record[0].tolist(),
                  'ordered_trace':None if log is None else log.tolist(), 'identical_replays':identical,
+                 'expected_geometry':geometry,'raw_dependency_identity':g.get('K') if resolved else None,
+                 'actual_source_map':g.get('source_map') if resolved else None,
                  'diagnostic_identity':same,'provenance_resolved':resolved,'reason':reason,
                  # Static baseline promise breaking in a mutant is a failed application,
                  # not an outcome-driven removal from the selected panel.
@@ -349,7 +382,8 @@ def assay_case(parent, geometry, arm, seed, machine, diagnostic, emit, *, contro
                 mismatch = check_descendant(child,expect,geometry['source_map'],geometry)
                 emit({'case':case,'kind':kind,'generation':1,'challenge':'census','partner':v,
                       'input_sha256':sha(mem[i*17+v].tobytes()),'output_sha256':sha(child.tobytes()),
-                      'matched':mismatch is None})
+                      'matched':mismatch is None,'generation_zero_source_map':geometry['source_map'],
+                      'physical_entry':0,'phase':geometry.get('phase',0)})
                 tested += 1
                 if mismatch:
                     diag = diagnosis(machine,diagnostic,mem[i*17+v],expect,geometry)
@@ -376,16 +410,20 @@ def assay_case(parent, geometry, arm, seed, machine, diagnostic, emit, *, contro
                 emit({'case':c[0],'kind':c[1],'challenge':'serial','generation':g,
                       'partner_bytes':fresh[i].tobytes().hex(),'partner_sha256':sha(fresh[i].tobytes()),
                       'input_sha256':sha(memory[i].tobytes()),'output_sha256':sha(current[i].tobytes()),
-                      'matched':mismatch is None})
+                      'matched':mismatch is None,'generation_zero_source_map':roots[i],
+                      'physical_entry':0,'phase':geometry.get('phase',0)})
                 tested += 1
                 if mismatch:
                     diag = diagnosis(machine,diagnostic,memory[i],c[3],geometry)
                     emit({'kind':'candidate-mismatch','case':c[0],'challenge':'serial','generation':g,**diag})
                     return {'status':diag['status'],'encounters':tested}
-    return {'status':'complete-zero-mismatch','encounters':tested,'erased_coordinates':L-geometry['d'],
+    return {'status':'complete-zero-mismatch','encounters':tested,'erased_coordinates':len(geometry.get('E',range(geometry['d'],L))),
+            'held_erased_coordinates':len(geometry.get('held_erased',[])),
+            'held_erased_ancestry_absent':not set(geometry.get('held_erased',[])) & set(geometry['source_map']),
+            'geometry':geometry,
             'free_coordinates':len(geometry['free']),'single_assignments':len(geometry['free'])*256,
             'single_alternatives':len(geometry['free'])*255,'joint_assignments':512,
-            'erased_assignments':(L-geometry['d'])*256,'census_partners':17,'serial_generations':8}
+            'erased_assignments':len(geometry.get('erasure_controls',range(geometry['d'],L)))*256,'census_partners':17,'serial_generations':8}
 
 def assay_frozen(path, out, machine, diagnostic=None, tick=lambda:None):
     verify_freeze(); committed(path)

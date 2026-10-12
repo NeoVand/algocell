@@ -5,13 +5,14 @@ the opcode names in a periodic word. All 17 encounters receive separate labels.
 
 Literal writers require every effective partner write in the episode to have
 reset/immediate register provenance through the traced admitted forms. The
-register inventory follows word immediate loads, word MOV loads, LODSW, POP,
-XCHG and direct PUSH/STOS. Register-producing forms outside this conservative
+register inventory follows byte/word immediate and MOV loads, LODS, POP,
+LES/LDS, XCHG and direct PUSH/STOS/MOV stores, plus segment transfers. Register-producing forms outside this conservative
 inventory invalidate register provenance until a traced load restores it.
-Modified memory-derived values are not called exact data copies. Partial byte
-loads with unresolved high-byte provenance are other.
+Modified memory-derived values are not called exact data copies. Every register byte carries an exact read-event identity and value. Byte
+loads update only the named byte; an unresolved byte in a word store is other.
 
-Memory-fed copy writes require paired actual same-value data reads through
+Memory-fed copy writes require the actual ordered source byte at each store
+position (low then high for words), with exact read-event provenance, through
 MOVS, memory PUSH or a tracked word load followed by register PUSH/STOS. A
 copy loop additionally repeats full instruction-start addresses and fetches
 no partner position; distinct full start addresses mark the admitted one-pass
@@ -29,3 +30,12 @@ causal hereditary capacity, partner independence or a population route.
 Copy scores, unique write coverage, original partner reads and empirical
 partner-output differences are separate measurements. A label can describe
 a partial writer; exact/near-copy thresholds must be read from their columns.
+
+Correction 2026-10-12: instruction-start addresses come from the hook's pc
+argument, including prefixes and retained REP. Implicit pointer/count/stack
+arithmetic never preserves a memory-copy identity, even if a result coincides
+with another read byte. PUSH SP uses this kernel's decremented stored value.
+All push/pop helpers, segment stack operations, strings, REP and LOOP,
+call/return/interrupt paths, and implicit accumulator/DX transformations were
+audited; unsupported transfers poison provenance. See correction_labels.csv
+and correction_provenance.json for the complete fresh census re-audit.
