@@ -1,0 +1,10 @@
+No substantive defect remains.
+
+- **3b:** The compact symbol key matches the plotted encodings; the reserved 8086 diamond has no plotted data. Population circles visibly vary in area. The axis and legend distinguish exact capacity from sampled retention scores/counts. Crowding near zero does not justify displacing coincident values.
+- **3c:** Both strips register to the same offspring positions. Grey core, vermilion erasure and teal transmission agree with the legend. The single edit annotation is concise and readable.
+- **3d:** “Nominal free payload” appropriately qualifies the ordinate; the legend explicitly defines \(d-4\), distinguishes it from measured capacity and limits formal predictions to 11 alleles. Open/filled markers and baseline ticks remain distinguishable.
+- **Composition:** The empty designer frame is intentional. No visible clipping, text collisions or substantive print-size legibility failure requires correction.
+
+Optional polish: label the 3d ordinate “Nominal free payload, d − 4 (positions)” to make the arithmetic explicit alongside the plot.
+
+NO SUBSTANTIVE DEFECTS

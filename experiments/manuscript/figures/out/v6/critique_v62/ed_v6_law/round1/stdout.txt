@@ -1,0 +1,11 @@
+**Required fixes:** None evident in the supplied PNGs.
+
+- No visible clipping, label collisions or malformed glyphs. Axis labels, ticks and panel letters are legible at the stated 180 mm width.
+- Panel a’s nonzero residual is consistent with the legend’s −0.8 cluster mean; the remaining points lie on zero.
+- Panel b’s coincident symbols agree with the legend’s explicit description of layered markers. The grey open circle at approximately (4, 0) remains distinct and visible.
+- Panel c’s filled teal circles and open grey squares match the stated forward and reciprocal encodings. The single identity line and displayed limits accommodate the plotted points.
+- The visible colours do not conflict with the supplied semantic scheme. No numeric table is visible in these attachments.
+
+**Optional polish:** Reduce the large unused lower-right area and generous spacing between panel rows. The faint reference lines could be slightly darker for more reliable print reproduction, while remaining subordinate to the markers. Neither change is necessary to interpret the data.
+
+NO SUBSTANTIVE DEFECTS

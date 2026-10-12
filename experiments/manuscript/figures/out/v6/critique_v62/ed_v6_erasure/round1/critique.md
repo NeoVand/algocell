@@ -1,0 +1,5 @@
+**Required fixes:** None. No visible overlaps, clipping, malformed glyphs or symbol mismatches. Axis labels and integer ticks are readable at the stated width. The vermilion trace appropriately encodes loss: the count falls from 1 to 0 at step 6 and remains zero through the second encounter, consistent with the legend. The slightly negative lower axis limit separates the zero trace from the axis without suggesting negative observations.
+
+**Optional polish:** Tighten the outer vertical whitespace to make this single-panel Extended Data figure more compact, retaining the full execution-step range.
+
+NO SUBSTANTIVE DEFECTS

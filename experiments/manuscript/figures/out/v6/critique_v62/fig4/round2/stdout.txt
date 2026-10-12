@@ -1,0 +1,9 @@
+No substantive defect remains at the composed figure’s 180 mm print width.
+
+- **4a:** Axis text and direct labels remain readable. Teal/purple chemistry, faint/opaque cohorts and starting-mixture line styles agree with the legend. No visible clipping or problematic overlap.
+- **4b:** Open/filled markers and circle/square/triangle shapes remain distinguishable. Point separation preserves individual observations; the legend clearly explains horizontal offsets and the omitted undefined ratio.
+- **4c:** Both axes are legible, with clear historical/C1 correspondence. Equally spaced probability settings match the explicitly categorical definition. Visible counts agree with the legend’s endpoint statements.
+
+Optional polish: slightly reduce the vertical gap between **4a** and **4b–c** to tighten the composition. The existing spacing is not a substantive defect.
+
+NO SUBSTANTIVE DEFECTS

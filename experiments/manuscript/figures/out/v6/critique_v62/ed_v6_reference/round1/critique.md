@@ -1,0 +1,7 @@
+**Required fix:** Reconcile panel c’s axis label, “Offspring inflow (bits),” with the legend’s “Offspring entropy across the same partners, in bits.” These name different quantities. Use the intended quantity consistently; if the legend is correct, change the axis to “Offspring entropy (bits).”
+
+**Optional polish:** Slightly enlarge tick labels, category labels and panel a’s direct labels for more comfortable reading at 180 mm. The unused lower-right area offers room to rebalance the layout, although the present arrangement is acceptable.
+
+No visible overlaps, clipping or malformed glyphs. Zero-valued markers remain distinguishable from the axes, and the limits accommodate all points. Grey controls and teal carriage agree with the legend and specified colour roles. No additional encoding defect is evident.
+
+SUBSTANTIVE DEFECTS

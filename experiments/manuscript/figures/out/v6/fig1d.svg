@@ -6,7 +6,6 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-10-12T11:19:39.990013</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -30,59 +29,210 @@ z
   </g>
   <g id="axes_1">
    <g id="text_1">
-    <text style="font-weight: 700; font-size: 8px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="20.026772" y="14.804376" transform="rotate(-0 20.026772 14.804376)">d</text>
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #222222" x="20.026772" y="13.834927" transform="rotate(-0 20.026772 13.834927)">d</text>
    </g>
-   <g id="text_2">
-    <text style="font-weight: 700; font-size: 7px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.232441" y="14.464128" transform="rotate(-0 45.232441 14.464128)">Validation has distinct levels</text>
+  </g>
+  <g id="axes_2">
+   <g id="patch_2">
+    <path d="M 177.562205 160.214173
+L 478.091339 160.214173
+L 478.091339 26.430236
+L 177.562205 26.430236
+z
+" style="fill: #ffffff"/>
    </g>
-   <g id="text_3">
-    <text style="font-weight: 700; font-size: 6.5px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="29.72126" y="40.856902" transform="rotate(-0 29.72126 40.856902)">Instruction vectors</text>
+   <g id="patch_3">
+    <path d="M 177.562205 36.464031
+L 465.603712 36.464031
+L 465.603712 47.269657
+L 177.562205 47.269657
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #8a95a1"/>
    </g>
-   <g id="text_4">
-    <text style="font-size: 6.2px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="40.638494" transform="rotate(-0 196.951181 40.638494)">8088 raw pass: 3,126,917/3,137,000</text>
+   <g id="patch_4">
+    <path d="M 177.562205 62.191712
+L 446.84904 62.191712
+L 446.84904 72.997337
+L 177.562205 72.997337
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #8a95a1"/>
    </g>
-   <g id="text_5">
-    <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="53.095723" transform="rotate(-0 196.951181 53.095723)">10,083 expected divergences; queue untested</text>
+   <g id="patch_5">
+    <path d="M 177.562205 87.919392
+L 459.602782 87.919392
+L 459.602782 98.725018
+L 177.562205 98.725018
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #8a95a1"/>
    </g>
-   <g id="text_6">
-    <text style="font-weight: 700; font-size: 6.5px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="29.72126" y="71.879264" transform="rotate(-0 29.72126 71.879264)">Ring encounters</text>
+   <g id="patch_6">
+    <path d="M 177.562205 113.647072
+L 427.127482 113.647072
+L 427.127482 124.452698
+L 177.562205 124.452698
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #8a95a1"/>
    </g>
-   <g id="text_7">
-    <text style="font-size: 6.2px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="71.660856" transform="rotate(-0 196.951181 71.660856)">C1 unchanged: 643/690 conditions</text>
+   <g id="patch_7">
+    <path d="M 177.562205 139.374752
+L 434.424712 139.374752
+L 434.424712 150.180378
+L 177.562205 150.180378
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #8a95a1"/>
    </g>
-   <g id="text_8">
-    <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="84.118085" transform="rotate(-0 196.951181 84.118085)">47 flagged conditions</text>
+   <g id="patch_8">
+    <path d="M 465.603712 36.464031
+L 466.532526 36.464031
+L 466.532526 47.269657
+L 465.603712 47.269657
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #e8431f"/>
    </g>
-   <g id="text_9">
-    <text style="font-weight: 700; font-size: 6.5px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="29.72126" y="102.901627" transform="rotate(-0 29.72126 102.901627)">Reproductive assays</text>
+   <g id="patch_9">
+    <path d="M 446.84904 62.191712
+L 466.532526 62.191712
+L 466.532526 72.997337
+L 446.84904 72.997337
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #e8431f"/>
    </g>
-   <g id="text_10">
-    <text style="font-size: 6.2px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="102.683218" transform="rotate(-0 196.951181 102.683218)">C1 identical: 407/417 cases</text>
+   <g id="patch_10">
+    <path d="M 459.602782 87.919392
+L 466.532526 87.919392
+L 466.532526 98.725018
+L 459.602782 98.725018
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #e8431f"/>
    </g>
-   <g id="text_11">
-    <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="115.140448" transform="rotate(-0 196.951181 115.140448)">10 changed assay cases</text>
+   <g id="patch_11">
+    <path d="M 427.127482 113.647072
+L 466.532526 113.647072
+L 466.532526 124.452698
+L 427.127482 124.452698
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #e8431f"/>
    </g>
-   <g id="text_12">
-    <text style="font-weight: 700; font-size: 6.5px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="29.72126" y="133.923989" transform="rotate(-0 29.72126 133.923989)">Ecological reruns</text>
+   <g id="patch_12">
+    <path d="M 434.424712 139.374752
+L 466.532526 139.374752
+L 466.532526 150.180378
+L 434.424712 150.180378
+z
+" clip-path="url(#pbe2c4436fe)" style="fill: #e8431f"/>
    </g>
-   <g id="text_13">
-    <text style="font-size: 6.2px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="133.705581" transform="rotate(-0 196.951181 133.705581)">C1 verdicts retained: 19/22</text>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="me1000ee509" d="M 0 0
+L 0 2
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#me1000ee509" x="177.562205" y="160.214173" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="177.562205" y="168.582337" transform="rotate(-0 177.562205 168.582337)">0.0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#me1000ee509" x="322.047365" y="160.214173" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="322.047365" y="168.582337" transform="rotate(-0 322.047365 168.582337)">0.5</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#me1000ee509" x="466.532526" y="160.214173" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="466.532526" y="168.582337" transform="rotate(-0 466.532526 168.582337)">1.0</text>
+     </g>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 6.5px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="327.826772" y="176.57721" transform="rotate(-0 327.826772 176.57721)">Fraction preserved</text>
+    </g>
    </g>
-   <g id="text_14">
-    <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="146.16281" transform="rotate(-0 196.951181 146.16281)">Components unchanged: 32/36</text>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_4">
+      <defs>
+       <path id="m516c5ef942" d="M 0 0
+L -2 0
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m516c5ef942" x="177.562205" y="41.866844" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="173.562205" y="44.050926" transform="rotate(-0 173.562205 44.050926)">Instruction vectors</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#m516c5ef942" x="177.562205" y="67.594525" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="173.562205" y="69.778607" transform="rotate(-0 173.562205 69.778607)">Ring encounters</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m516c5ef942" x="177.562205" y="93.322205" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="173.562205" y="95.506287" transform="rotate(-0 173.562205 95.506287)">Isolated assays</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m516c5ef942" x="177.562205" y="119.049885" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="173.562205" y="121.233967" transform="rotate(-0 173.562205 121.233967)">Claim verdicts</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m516c5ef942" x="177.562205" y="144.777565" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="173.562205" y="146.961647" transform="rotate(-0 173.562205 146.961647)">Claim components</text>
+     </g>
+    </g>
    </g>
-   <g id="text_15">
-    <text style="font-weight: 700; font-size: 6.5px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="29.72126" y="164.946351" transform="rotate(-0 29.72126 164.946351)">8086 ecology</text>
+   <g id="patch_13">
+    <path d="M 177.562205 160.214173
+L 177.562205 26.430236
+" style="fill: none; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
-   <g id="text_16">
-    <text style="font-size: 6.2px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="164.727943" transform="rotate(-0 196.951181 164.727943)">PENDING S2</text>
-   </g>
-   <g id="text_17">
-    <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="196.951181" y="177.185172" transform="rotate(-0 196.951181 177.185172)">No population outcome plotted</text>
-   </g>
-   <g id="text_18">
-    <text style="font-size: 6px; font-family: 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="20.026772" y="190.757455" transform="rotate(-0 20.026772 190.757455)">Units differ between validation levels; 8086 ecology awaits S2.</text>
+   <g id="patch_14">
+    <path d="M 177.562205 160.214173
+L 478.091339 160.214173
+" style="fill: none; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
   </g>
  </g>
+ <defs>
+  <clipPath id="pbe2c4436fe">
+   <rect x="177.562205" y="26.430236" width="300.529134" height="133.783937"/>
+  </clipPath>
+ </defs>
 </svg>

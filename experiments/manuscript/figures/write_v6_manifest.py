@@ -11,6 +11,9 @@ D=OUT/'data'
 
 
 def main():
+    if (HERE/'out/v6/qa_manifest_v62.json').exists():
+        from write_v62_manifest import main as current
+        return current()
     checks=json.loads((OUT/'figcheck.json').read_text())
     rows=[]
     for n in range(1,5):

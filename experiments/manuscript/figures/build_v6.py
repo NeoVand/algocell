@@ -438,6 +438,12 @@ def save(fig,name):
 
 
 def main():
+    # Keep the established entry point on the coordinator's current redesign.
+    from build_v62 import main as redesign
+    return redesign()
+
+
+def legacy_main():
     ap=argparse.ArgumentParser();ap.add_argument('--only',default='1,2,3,4');args=ap.parse_args()
     if args.only!='1,2,3,4' and (OUT/'figcheck.json').exists():
         REPORTS.update(json.loads((OUT/'figcheck.json').read_text()))

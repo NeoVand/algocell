@@ -10,6 +10,9 @@ OUT=Path(__file__).resolve().parent/'out/v6'
 
 
 def main():
+    if (OUT/'figcheck_v62.json').exists():
+        from verify_v62 import main as current
+        return current()
     checks=json.loads((OUT/'figcheck.json').read_text())
     assert len(checks)==20 and not any(checks.values()),checks
     status=[]

@@ -1,0 +1,12 @@
+Required fix:
+
+- **Reconcile the C1 reversal count.** The black curve visibly decreases from **.01 to .03** and from **.3 to 1**, while the legend reports “one C1 reversal.” If DZ2 excludes the smaller decrease, state the qualifying criterion in this legend; otherwise correct the count. The reference to Figure 4c does not make that distinction visible here.
+
+Optional polish:
+
+- Enlarge axis text slightly for comfortable reading at 180 mm; the spacious panel allows this.
+- At **.03**, the filled black marker largely obscures the open grey marker. A slightly larger open-marker diameter would make both series easier to identify without moving either point.
+
+No visible clipping or text overlaps. The categorical spacing is explicitly disclosed, the 300 k-step limit agrees with the censoring description, and marker styles match the legend.
+
+SUBSTANTIVE DEFECTS

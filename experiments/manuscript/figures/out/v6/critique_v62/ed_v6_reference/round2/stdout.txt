@@ -1,0 +1,13 @@
+**Required fixes:** None supported by the supplied PNGs.
+
+- No visible overlaps, clipping, broken glyphs or obscured markers. Zero-valued points remain distinguishable above the lower axes.
+- Axis limits accommodate all points. Fractions and entropy retain separate, correctly labelled scales.
+- Grey controls and teal carriage agree with the legend and colour conventions. Direct labels in panel a identify the series clearly.
+- Panel letters and legend descriptions correspond; no visible numerical or semantic contradiction is apparent.
+
+**Optional polish:**
+
+- The empty lower-right quadrant and generous spacing make the figure sparse. A tighter arrangement could improve space use while preserving the separate assays.
+- At 180 mm width, tick labels and direct labels are relatively small. Modestly enlarging them would improve print readability, particularly the light-grey “Controls” label.
+
+NO SUBSTANTIVE DEFECTS

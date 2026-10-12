@@ -1,0 +1,13 @@
+**Required fixes**
+
+None evident. No visible clipping or consequential overlaps. The zero-valued points remain visible above the lower plot boundaries; axis limits accommodate all marks. Labels and tick numerals appear adequate, although compact, at 180 mm width.
+
+Marker shapes, open/filled treatment, colours and trajectory styles correspond to the legend. Panel a reports a fraction consistently with its axis; panel b reports counts. The legend explicitly accounts for the zero-abundance, zero-tail C1 benign world and explains that horizontal offsets carry no measured meaning.
+
+**Optional polish**
+
+- Replace “Core abundance and tail diversity preserve every competition world” with “Core-bearing abundance and transmitter-tail diversity across all competition worlds.” This avoids “preserve” sounding like a biological survival claim.
+- Slightly strengthen the faint historical trajectories in panel c for print reproduction, retaining a clear distinction from C1. Their intersections make individual styles harder to follow, but do not establish an encoding defect.
+- Reduce the generous vertical spacing between rows if a more compact figure is desirable.
+
+NO SUBSTANTIVE DEFECTS
