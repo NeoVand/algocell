@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 from algocell_exp.census8086_trace import DiagnosticMachine, same_execution
 from census8086 import panel, pairs
-from s8086 import HERE, key, rng, sha, safe, write_new, committed, verify_freeze,diagnostic_for
+from s8086 import HERE, key, rng, sha, safe, write_new, committed, verify_freeze,diagnostic_for,read_json
 
 class Unresolved(ValueError): pass
 
@@ -32,7 +32,8 @@ def copy_certificate(parent, log, L, *, baseline=True):
     regs = [[set(),set()] for _ in range(8)]  # low/high byte dependencies
     held = [[None,None] for _ in range(8)]
     def sources(r): return regs[r][0] | regs[r][1]
-    flags = set(); dependencies = set(); fetched_roots = set(); moves = []
+    flags = {k:set() for k in ('CF','PF','AF','ZF','SF','OF')}
+    dependencies = set(); fetched_roots = set(); moves = []
     pending_rep = None
     for step in np.unique(log[:,0]):
         group = log[log[:,0] == step]
@@ -66,8 +67,12 @@ def copy_certificate(parent, log, L, *, baseline=True):
         if 0xb8 <= op <= 0xbf:
             regs[op-0xb8] = [set(),set()]; held[op-0xb8] = [None,None]
         elif 0x40 <= op <= 0x4f:
-            flags = sources(op & 7).copy()
-            regs[op & 7] = [flags.copy(),flags.copy()]; held[op & 7] = [None,None]
+            low=regs[op & 7][0].copy(); word=sources(op & 7).copy()
+            # Word INC/DEC preserve CF; low result does not depend on the old
+            # high byte. Carries/borrows affect the new high byte.
+            flags.update({'PF':low.copy(),'AF':low.copy(),'ZF':word.copy(),
+                          'SF':word.copy(),'OF':word.copy()})
+            regs[op & 7] = [low,word]; held[op & 7] = [None,None]
         elif op in (0x90,0xfc): pass
         elif op in (0xa4,0xa5):
             dependencies |= sources(6) | sources(7) | sources(1)
@@ -97,10 +102,12 @@ def copy_certificate(parent, log, L, *, baseline=True):
                 else: copy_reads = held[reg][:1 if byte else 2]
         elif op in (0xe0,0xe1,0xe2,0xe3):
             dependencies |= sources(1)
-            if op in (0xe0,0xe1): dependencies |= flags
+            if op in (0xe0,0xe1): dependencies |= flags['ZF']
             held[1] = [None,None]
         elif 0x70 <= op <= 0x7f:
-            dependencies |= flags
+            used=(('OF',),('OF',),('CF',),('CF',),('ZF',),('ZF',),('CF','ZF'),('CF','ZF'),
+                  ('SF',),('SF',),('PF',),('PF',),('SF','OF'),('SF','OF'),('ZF','SF','OF'),('ZF','SF','OF'))[op-0x70]
+            for name in used: dependencies |= flags[name]
         elif op in (0xeb,0xe9): pass
         elif op == 0xf4:
             if rr or ww: raise Unresolved('halt_access')
@@ -202,6 +209,7 @@ def freeze_candidates(scored, out, machine, diagnostic=None, tick=lambda:None):
     result = {'schema':'s2-eligibility/1','world':world,'certificates':certs,'selection':selections,
               'candidates':scored['candidates'], 'scored_sha256':sha(json.dumps(scored,sort_keys=True).encode()),
               'extractor_sha256':sha(Path(__file__).read_bytes())}
+    if Path(out).suffix!='.gz': out=Path(str(out)+'.gz')
     write_new(out,result); return result
 
 def controls(out, machines, tick=lambda:None):
@@ -263,6 +271,12 @@ def family_report(eligibility, outcomes, controls_complete, family, *, arm, excl
             'selected':len(selected),'completed':sum(r['status']=='complete-zero-mismatch' for r in cases.values()),
             'unresolved_extractions':unresolved,'denominators':dict(coverage)}
 
+def report(eligibility,outcomes,controls_complete,out):
+    from s8086 import ARMS
+    rows=[family_report(eligibility,outcomes,controls_complete,f,arm=a,exclude_L1=exclude)
+          for a in ARMS for f,exclude in (('L1',False),('L2',False),('L2',True))]
+    write_new(out,{'families':rows,'L2_never_rescues_L1':True}); return rows
+
 def variants(parent, geometry, arm, seed):
     L,d = len(parent),geometry['d']; free = geometry['free']; tape = parent.tobytes().hex()
     for pos in free:
@@ -291,11 +305,13 @@ def diagnosis(machine, diagnostic, memory, expected, geometry):
     identical = np.array_equal(r1.record,r2.record) and np.array_equal(r1.memory,r2.memory)
     same = same_execution(r1,q,machine.record_words)
     log = diagnostic.logs(q)[0]
-    reason = None; resolved = False
+    reason = None; resolved = False; invalid_trace = False
     try:
         g = copy_certificate(memory[:len(expected)],log,len(expected),baseline=False)
         resolved = True
         reason = check_descendant(r1.memory[0,len(expected):],expected,g['source_map'],geometry)
+    except Unresolved as exc:
+        reason = str(exc); invalid_trace = True
     except ValueError as exc:
         reason = str(exc)
     return safe({'input':memory.tobytes().hex(),'expected':expected.tobytes().hex(),
@@ -305,7 +321,7 @@ def diagnosis(machine, diagnostic, memory, expected, geometry):
                  # Static baseline promise breaking in a mutant is a failed application,
                  # not an outcome-driven removal from the selected panel.
                  'status':'failed application' if identical and same and log is not None
-                          and reason and not reason.startswith('unmodelled_') else 'incomplete/invalid'})
+                          and reason and not invalid_trace else 'incomplete/invalid'})
 
 def assay_case(parent, geometry, arm, seed, machine, diagnostic, emit, *, control=None, tick=lambda:None):
     """Batch deterministic cases; save actual serial partners and every output hash.
@@ -373,7 +389,7 @@ def assay_case(parent, geometry, arm, seed, machine, diagnostic, emit, *, contro
 
 def assay_frozen(path, out, machine, diagnostic=None, tick=lambda:None):
     verify_freeze(); committed(path)
-    data = json.loads(Path(path).read_text())
+    data = read_json(path)
     if data['extractor_sha256'] != sha(Path(__file__).read_bytes()): raise ValueError('extractor changed')
     t = diagnostic or diagnostic_for(machine)
     world = data['world']; outcomes = {}
@@ -403,7 +419,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('stage',choices=('extract','assay')); ap.add_argument('--input',type=Path,required=True)
     ap.add_argument('--out',type=Path,required=True); a = ap.parse_args()
-    data = json.loads(a.input.read_text()); L = data['world']['L']
+    data = read_json(a.input); L = data['world']['L']
     m = load_machine(f'i8086_pair_maps_L{L}')
     if a.stage == 'extract': freeze_candidates(data,a.out,m)
     else: assay_frozen(a.input,a.out,m)

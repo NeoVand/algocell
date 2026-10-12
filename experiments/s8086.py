@@ -1,6 +1,7 @@
 """S2 immutable inputs, random streams, identities and conservative file helpers."""
 from __future__ import annotations
 import hashlib
+import gzip
 import json
 import math
 import os
@@ -54,8 +55,13 @@ def safe(value):
 def write_new(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open('x') as f:
-        f.write(json.dumps(safe(value), indent=2, allow_nan=False) + '\n')
+    raw=(json.dumps(safe(value),indent=2,allow_nan=False)+'\n').encode()
+    with path.open('xb') as f:
+        f.write(gzip.compress(raw,mtime=0) if path.suffix=='.gz' else raw)
+
+def read_json(path):
+    path=Path(path); raw=path.read_bytes()
+    return json.loads(gzip.decompress(raw) if path.suffix=='.gz' else raw)
 
 def committed(path):
     path = Path(path).resolve()
@@ -101,9 +107,10 @@ def fixed_burst(fn):
 def diagnostic_for(machine):
     """Explicit Modal trace backend; no silent execution fallback.
 
-    NVIDIA Vulkan lost the device compiling the census's 8192-event private
-    trace. The unchanged instrumented WGSL runs on Mesa, and every complete
-    lane record/memory is checked against the uninstrumented L4 machine.
+    NVIDIA lost the device compiling the 8192-event private array; Mesa also
+    timed out. The bit-identical storage observer avoids that array on L4.
+    The original private mode and explicit Mesa mode remain available for
+    fixed-input validation. Every full original lane/memory must match raw execution.
     """
     from algocell_exp.census8086_trace import DiagnosticMachine
     backend=os.environ.get('S2_TRACE_BACKEND','')

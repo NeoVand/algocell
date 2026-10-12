@@ -1,0 +1,27 @@
+{
+  "metered_preparation_usd": 0.13974218,
+  "whole_app_resource_bound_usd": 0.7999038189802217,
+  "preparation_with_overhead_reserve_usd": 1.2999038189802217,
+  "approved_preparation_ceiling_usd": 2,
+  "billing_may_lag": true,
+  "all_apps_stopped": true,
+  "population_calls": 0,
+  "successful_function_wall_s": 79.748149255,
+  "complete_projected_usd": 138.72109138536507,
+  "hard_cap_usd": 60,
+  "status": "STOP: complete design exceeds cap; no population launch",
+  "components_usd": {
+    "world": 111.88043559999998,
+    "score": 5.749244816308229,
+    "extract": 3.211349699288254,
+    "law": 11.760848537017829,
+    "controls": 0.11724781350418882,
+    "diagnosis": 0.20206110026636157,
+    "preparation": 0.7999038189802217
+  },
+  "storage_termination_reserve_usd": 5.0,
+  "world_throughput_min": {
+    "A": 350.202033605153,
+    "B": 425.41870373537887
+  }
+}

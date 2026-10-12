@@ -13,6 +13,7 @@ from s8086 import ARMS, HORIZON, SEEDS, SNAPSHOTS, PERSISTENCE, samples, key, rn
 
 def endpoints(records, judge):
     first = closed = None; occurrence = []; persistence = {}; unresolved = []
+    blocked_rep = blocked_closed = False
     previous = None
     for sample in records:
         events = []
@@ -21,12 +22,14 @@ def endpoints(records, judge):
             r = judge(tape)
             if r.get('gen2') is None or not math.isfinite(r['gen2']):
                 unresolved.append({'step':sample['step'],'tape':tape,'reason':'unassessable_culture'})
+                blocked_rep = blocked_rep or first is None
+                blocked_closed = blocked_closed or closed is None
                 continue
             if not r['heritable']: continue
             event = {'step':sample['step'],'preceding_step':previous,'baseline':sample['step']==0,
                      'tape':tape,'share':share,**r}
-            if first is None: first = event
-            if closed is None and r['confined']: closed = event
+            if first is None and not blocked_rep: first = event
+            if closed is None and not blocked_closed and r['confined']: closed = event
             if r['open_memory_fed']: events.append(event); occurrence.append(event)
         if sample['step'] in PERSISTENCE: persistence[sample['step']] = {r['tape'] for r in events}
         previous = sample['step']
@@ -176,34 +179,46 @@ def km(rows, field):
         if median is None and survival<=.5: median=t
     return {'curve':curve,'median':median,'right_censored':at_risk,'censor_step':HORIZON}
 
+def binomial_interval(k,n):
+    if not n: return None
+    z=1.959963984540054; p=k/n; den=1+z*z/n
+    center=(p+z*z/(2*n))/den
+    half=z*math.sqrt(p*(1-p)/n+z*z/(4*n*n))/den
+    return {'count':k,'n':n,'wilson95':[max(0.,center-half),min(1.,center+half)],
+            'descriptive_only':True}
+
 def arm_verdict(results, arm):
     rows=[r['world'] for r in results if r['world']['arm']==arm]
     if len({r['seed'] for r in rows})!=len(rows): raise ValueError('duplicate world')
     complete=(len(rows)==20 and {r['seed'] for r in rows}==set(SEEDS)
               and all(r['scoreable'] and r['horizon']==HORIZON and r['L']==ARMS[arm]['L'] for r in rows))
-    rep=[r for r in rows if r['t_rep'] is not None]; D=len(rep)
+    scoreable=[r for r in rows if r['scoreable']]
+    rep=[r for r in scoreable if r['t_rep'] is not None]; D=len(rep)
     O=sum(r['first']['open'] for r in rep); closed=sum(r['first']['confined'] for r in rep)
     occurrence=sum(r['open_memory_occurrence'] for r in rows); persistent=sum(r['persistent_open_memory'] for r in rows)
     counts=Counter((r['first']['fetch_class'],r['first']['majority_mechanism'] or 'heterogeneous') for r in rep)
-    encounter_counts=Counter((e['open'],e['mechanism']) for r in rep for e in r['first']['encounters'])
+    encounter_counts=Counter((r['first']['fetch_class'],e['open'],e['mechanism']) for r in rep for e in r['first']['encounters'])
     return {'arm':arm,'role':'primary' if arm=='A' else 'secondary separate scope','status':'complete' if complete else 'incomplete/provisional',
-            'worlds':len(rows),'D':D,'O':O,'first_confined':closed,'occurrence_worlds':occurrence,'persistence_worlds':persistent,
+            'worlds':len(rows),'scoreable_worlds':len(scoreable),'unscoreable_worlds':len(rows)-len(scoreable),
+            'D':D,'O':O,'first_confined':closed,'occurrence_worlds':occurrence,'persistence_worlds':persistent,
             'R0':D>=10 if complete else None,'R1':O>=math.ceil(.8*D) if complete and D>=10 else None,
             'R2a':occurrence>=2 if complete else None,'R2b':persistent>=1 if complete else None,
             'R2_joint':occurrence>=2 and persistent>=1 if complete else None,
             'kill':closed>=math.ceil(.25*D) if complete and D>=10 else None,
-            'km_rep':km(rows,'t_rep'),'km_closed':km(rows,'t_closed'),
+            'km_rep':km(scoreable,'t_rep'),'km_closed':km(scoreable,'t_closed'),
+            'descriptive_binomial_intervals':{'R0':binomial_interval(D,20),'R1':binomial_interval(O,D),
+                    'R2a':binomial_interval(occurrence,20),'R2b':binomial_interval(persistent,20)} if complete else None,
             'first_tape_distribution':[{'fetch':k[0],'mechanism':k[1],'count':v} for k,v in sorted(counts.items())],
-            'first_encounter_distribution':[{'open':k[0],'mechanism':k[1],'count':v} for k,v in sorted(encounter_counts.items())]}
+            'first_encounter_distribution':[{'tape_fetch':k[0],'open':k[1],'mechanism':k[2],'count':v} for k,v in sorted(encounter_counts.items())]}
 
 def report(results,out):
     out=Path(out); out.mkdir(parents=True,exist_ok=False)
     write_new(out/'route_verdicts.json',{'arms':[arm_verdict(results,a) for a in ARMS]})
-    import gzip
-    with gzip.open(out/'worlds.jsonl.gz','xt') as f:
-        for r in results: f.write(json.dumps(safe(r),allow_nan=False)+'\n')
+    for r in results: write_new(out/'worlds'/f"{r['world']['world']}.json.gz",r)
 
 if __name__ == '__main__':
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--input',type=Path,required=True); ap.add_argument('--out',type=Path,required=True)
-    a=ap.parse_args(); write_new(a.out,score_world(a.input))
+    a=ap.parse_args()
+    out=a.out if a.out.suffix=='.gz' else Path(str(a.out)+'.gz')
+    write_new(out,score_world(a.input))

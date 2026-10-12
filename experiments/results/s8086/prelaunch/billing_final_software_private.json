@@ -1,0 +1,34 @@
+{
+  "app_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+  "query_start_epoch": 1791792000,
+  "query_end_epoch": 1791799200,
+  "metered_usd": 0.11543881,
+  "rows": [
+    {
+      "object_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+      "description": "algocell-s8086-prelaunch",
+      "environment_name": "main",
+      "interval": "2026-10-12T08:00:00Z",
+      "cost": "0.08961741",
+      "cost_by_resource": {
+        "CPU": "0.00465726",
+        "L4": "0.07866681",
+        "Memory": "0.00629334"
+      }
+    },
+    {
+      "object_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+      "description": "algocell-s8086-prelaunch",
+      "environment_name": "main",
+      "interval": "2026-10-12T09:00:00Z",
+      "cost": "0.02582140",
+      "cost_by_resource": {
+        "CPU": "0.00134155",
+        "L4": "0.02266653",
+        "Memory": "0.00181332"
+      }
+    }
+  ],
+  "queried_utc": "2026-10-12T09:23:44.902346+00:00",
+  "billing_may_lag": true
+}

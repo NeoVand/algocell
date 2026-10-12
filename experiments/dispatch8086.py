@@ -132,7 +132,7 @@ def dispatch_scoring(stage,release,ledger,projection):
         for _,arm,seed,_ in jobs:
             from run8086 import world_name
             name=world_name(arm,seed)
-            local=HERE/f'results/s8086/eligibility/{arm}/{name}.json'
+            local=HERE/f'results/s8086/eligibility/{arm}/{name}.json.gz'
             if committed(local)!=receipt.get('eligibility_sha256',{}).get(name):
                 raise ValueError('eligibility ledger differs from released data commit')
     bounded=[]

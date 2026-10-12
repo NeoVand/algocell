@@ -1,0 +1,279 @@
+{
+  "schema": "s2-input-schemas/1",
+  "runtime_validator": "score8086.read_input additionally enforces exact cadence, complete summary/checkpoints, integer-count share identity, ordering, arm/machine/source hashes and all checkpoint bytes",
+  "world_jsonl_record": {
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "kind",
+          "schema",
+          "arm",
+          "seed",
+          "L",
+          "steps",
+          "machine_name",
+          "machine",
+          "initial_sha256",
+          "sample_steps",
+          "snapshot_steps",
+          "freeze_sha256"
+        ],
+        "properties": {
+          "kind": {
+            "const": "condition"
+          },
+          "schema": {
+            "const": "s2-world/1"
+          },
+          "arm": {
+            "enum": [
+              "A",
+              "B"
+            ]
+          },
+          "seed": {
+            "enum": [
+              8086001,
+              8086002,
+              8086003,
+              8086004,
+              8086005,
+              8086006,
+              8086007,
+              8086008,
+              8086009,
+              8086010,
+              8086011,
+              8086012,
+              8086013,
+              8086014,
+              8086015,
+              8086016,
+              8086017,
+              8086018,
+              8086019,
+              8086020
+            ]
+          },
+          "L": {
+            "enum": [
+              16,
+              32
+            ]
+          },
+          "steps": {
+            "const": 3000000
+          },
+          "initial_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "freeze_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": true
+      },
+      {
+        "type": "object",
+        "required": [
+          "kind",
+          "step",
+          "top3",
+          "soup_sha256",
+          "pair_draws_total",
+          "active_pairs_total"
+        ],
+        "properties": {
+          "kind": {
+            "const": "sample"
+          },
+          "step": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3000000
+          },
+          "soup_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "top3": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "required": [
+                "tape",
+                "sha256",
+                "count",
+                "share"
+              ],
+              "properties": {
+                "tape": {
+                  "type": "string",
+                  "pattern": "^(?:[0-9a-f]{2})+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 20000
+                },
+                "share": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      {
+        "type": "object",
+        "required": [
+          "kind",
+          "step",
+          "file",
+          "shape",
+          "raw_bytes",
+          "sha256_raw",
+          "sha256_compressed"
+        ],
+        "properties": {
+          "kind": {
+            "const": "snapshot"
+          },
+          "shape": {
+            "enum": [
+              [
+                20000,
+                16
+              ],
+              [
+                20000,
+                32
+              ]
+            ]
+          },
+          "sha256_raw": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "sha256_compressed": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": true
+      },
+      {
+        "type": "object",
+        "required": [
+          "kind",
+          "steps_run",
+          "samples",
+          "snapshots"
+        ],
+        "properties": {
+          "kind": {
+            "const": "summary"
+          },
+          "steps_run": {
+            "const": 3000000
+          },
+          "samples": {
+            "const": 585
+          },
+          "snapshots": {
+            "const": 5
+          }
+        },
+        "additionalProperties": true
+      },
+      {
+        "type": "object",
+        "required": [
+          "kind",
+          "steps_run",
+          "reason"
+        ],
+        "properties": {
+          "kind": {
+            "const": "incomplete"
+          }
+        },
+        "additionalProperties": true
+      }
+    ]
+  },
+  "score": {
+    "type": "object",
+    "required": [
+      "schema",
+      "world",
+      "endpoints",
+      "candidates",
+      "random_cell_indices",
+      "judged_tapes",
+      "input_sha256"
+    ],
+    "properties": {
+      "schema": {
+        "const": "s2-score/1"
+      },
+      "input_sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "random_cell_indices": {
+        "type": "array",
+        "minItems": 64,
+        "maxItems": 64,
+        "uniqueItems": true,
+        "items": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 19999
+        }
+      }
+    },
+    "additionalProperties": true
+  },
+  "eligibility_gzip_json": {
+    "type": "object",
+    "required": [
+      "schema",
+      "world",
+      "certificates",
+      "selection",
+      "candidates",
+      "scored_sha256",
+      "extractor_sha256"
+    ],
+    "properties": {
+      "schema": {
+        "const": "s2-eligibility/1"
+      },
+      "scored_sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "extractor_sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "additionalProperties": true
+  },
+  "assay_gzip_jsonl": "assay-input certificate/geometry/partners; exact challenge rows and saved serial partner bytes; candidate-mismatch full input/output/trace/record/replays; terminal summary with coordinate, assignment, partner, generation and encounter denominators",
+  "launch_receipt": "population_launch_approved=true, independent_design_review, exact freeze_sha256; absent at freeze. Retention additionally requires eligibility_commit and per-world committed gzip eligibility_sha256."
+}

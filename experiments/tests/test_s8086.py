@@ -50,6 +50,15 @@ def test_full_horizon_persistence_share_and_zero():
     result=Score.endpoints([{'step':0,'top3':[('01',.0049)]}],lambda _:judgement())
     assert result['t_rep'] is None
 
+def test_unknown_culture_cannot_create_later_first_or_censor():
+    records=[{'step':0,'top3':[('01',.005)]},{'step':50,'top3':[('02',.005)]}]
+    result=Score.endpoints(records,lambda t:judgement(gen2=None) if t=='01' else judgement(confined=True))
+    assert not result['scoreable'] and result['t_rep'] is None and result['t_closed'] is None
+    row={'arm':'A','seed':S.SEEDS[0],'L':16,'horizon':S.HORIZON,'scoreable':False,
+         't_rep':None,'t_closed':None,'first':None,'open_memory_occurrence':True,'persistent_open_memory':False}
+    v=Score.arm_verdict([{'world':row}],'A')
+    assert v['unscoreable_worlds']==1 and v['km_rep']['right_censored']==0
+
 def test_persistence_after_both_first_events():
     records=[{'step':s,'top3':[('01',.1)]} for s in S.samples()]
     records[-1]['top3']=[('02',.1)]
@@ -106,6 +115,9 @@ def test_known_payload_core_erasure_mismatches_reject():
         wrong=expected.copy(); wrong[p]^=1
         assert Law.check_descendant(wrong,expected,roots,g)=='exact_offspring_mismatch'
     assert Law.check_descendant(expected,expected,[16,*range(1,16)],g)=='parent_source_identity_mismatch'
+    erased_expected=np.tile(np.arange(8,dtype=np.uint8),2)
+    erased_roots=[i%8 for i in range(16)]; erased_roots[0]=8
+    assert Law.check_descendant(erased_expected,erased_expected,erased_roots,{'d':8})=='parent_source_identity_mismatch'
     assert Law.verdict([],{},True)=='evolved law untested'
     assert Law.verdict(['x'],{'x':{'status':'failed application'}},False)=='failed application'
     assert Law.verdict(['x'],{},True)=='incomplete/invalid'
@@ -237,7 +249,7 @@ def test_injected_pipeline_mismatch_stops(position,monkeypatch):
     parent=parents(16,16,0xa4)
     class Fault:
         def run(self,mem,**kw):
-            result=mem.copy(); result[:,16:]=parent
+            result=mem.copy(); result[:,16:]=mem[:,:16]
             result[0,16+position]^=1
             return SimpleNamespace(memory=result)
     monkeypatch.setattr(Law,'diagnosis',lambda *a:{'status':'failed application','saved_input':True})
@@ -261,6 +273,48 @@ def test_manual_recovery_retains_failed_liability_and_cap(tmp_path):
     assert result['projected_liabilities_usd']==1.5
     with pytest.raises(ValueError): guard.transact({'kind':'plan_extension','jobs':{'manual':.5},'reason':'retry'})
     with pytest.raises(RuntimeError): guard.transact({'kind':'plan_extension','jobs':{'over':1},'reason':'over cap'})
+
+def test_gzip_freeze_identity_and_exclusive_write(tmp_path):
+    path=tmp_path/'fixed.json.gz'; payload={'primary':[0,1,2],'unknown':None}
+    S.write_new(path,payload); assert S.read_json(path)==payload
+    with pytest.raises(FileExistsError): S.write_new(path,payload)
+
+def test_cf_preserved_by_inc_does_not_promote_payload_to_core():
+    # Semantic fixed trace: MOV DI,32; LODSW; STOSW; INC AX; JNC back.
+    # CF remains reset zero. Payload affects arithmetic flags but not JNC.
+    L=32; parent=np.arange(L,dtype=np.uint8)
+    parent[:8]=[0xbf,L,0,0xad,0xab,0x40,0x73,0xfb]
+    memory=np.concatenate((parent,np.zeros(L,np.uint8))); rows=[]; saved=[]; src=0
+    for step in range(128):
+        pc=0 if step==0 else (3,4,5,6)[(step-1)%4]; op=int(memory[pc])
+        rows.extend([(step,0,pc,op,0),(step,4,pc+1,op,0),(step,3,pc+1,op,0)])
+        if step==0:
+            rows.extend((step,0,p,int(memory[p]),0) for p in (1,2))
+        elif pc==3:
+            saved=[]
+            for _ in range(2):
+                pos=src%(2*L); v=int(memory[pos]); saved.append((pos,v))
+                rows.append((step,1,pos,v,0)); src+=1
+        elif pc==4:
+            for pos,v in saved:
+                dst=(pos+L)%(2*L); rows.append((step,2,dst,v,0)); memory[dst]=v
+        elif pc==6: rows.append((step,0,7,int(memory[7]),0))
+    g=Law.copy_certificate(parent,np.asarray(rows,np.uint32),L)
+    assert g['C']==list(range(8)) and g['free']==list(range(8,32))
+
+def test_unresolved_diagnosis_is_invalid_not_scientific_failure(monkeypatch):
+    from types import SimpleNamespace
+    memory=np.zeros(32,np.uint8)
+    class Raw:
+        record_words=1
+        def run(self,*a,**kw): return SimpleNamespace(memory=memory[None],record=np.zeros((1,1),np.uint32))
+    class Diagnostic(Raw):
+        def logs(self,q): return [np.zeros((1,5),np.uint32)]
+    def unresolved(*a,**kw): raise Law.Unresolved('decode_byte_discrepancy')
+    monkeypatch.setattr(Law,'copy_certificate',unresolved)
+    result=Law.diagnosis(Raw(),Diagnostic(),memory,np.ones(16,np.uint8),{'d':16})
+    assert result['identical_replays'] and result['diagnostic_identity']
+    assert result['status']=='incomplete/invalid'
 
 def test_frozen_pair_bridge_and_active_total(machines):
     from run8086 import S2Soup
@@ -327,7 +381,7 @@ def test_storage_observer_matches_original_and_chunking(machines):
             for op in (0xa4,0xa5):
                 mem=pairs(parents(d,L,op)[None],L)
                 old=original.run(mem,budget=128); new=storage.run(mem,budget=128)
-                assert np.array_equal(old.record,new.record)
+                assert np.array_equal(old.record,new.record) and np.array_equal(old.memory,new.memory)
         p=np.arange(L,dtype=np.uint8); p[:10]=[0xbf,L,0,0xb9,255,255,0xad,0xab,0xe2,0xfc]
         mem=pairs(p[None],L); budgets=np.array([0,1,3,128]+[512]*13,np.uint32)
         old=original.run(mem,budget=budgets,lane_base=444,chunk=4)
@@ -343,9 +397,10 @@ def test_storage_observer_matches_original_and_chunking(machines):
         if m.m.get('resumable'):
             mem=pairs(parents(L,L,0xa4)[None],L)
             first_old=original.run(mem,budget=3); first_new=storage.run(mem,budget=3)
+            assert np.array_equal(first_old.memory,first_new.memory)
             resumed_old=original.run(first_old.memory,budget=5,resume=first_old.record,step_base=3)
             resumed_new=storage.run(first_new.memory,budget=5,resume=first_new.record,step_base=3)
-            assert np.array_equal(resumed_old.record,resumed_new.record)
+            assert np.array_equal(resumed_old.record,resumed_new.record) and np.array_equal(resumed_old.memory,resumed_new.memory)
 
 def test_instruction_and_retained_rep_boundaries(machines):
     from census8086 import pairs

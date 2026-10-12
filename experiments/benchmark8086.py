@@ -203,13 +203,22 @@ def project(bench,preparation_bound):
             jobs[f'law:{arm}:{seed}']=(law_s+60+120)*RATE
     rate=min(r['law_encounters_per_s'] for r in bench['records'])
     jobs['controls']= (1_185_792/rate*1.5+240)*RATE
+    diagnosis_s=1290*max(r['extraction_s_per_tape'] for r in bench['records'])*2+240
+    jobs['diagnosis']=(diagnosis_s+120)*RATE
     jobs['preparation']=preparation_bound
-    total=sum(jobs.values())+1.
+    # Packed full-control outputs measured locally; twofold volume margin,
+    # plus2 GB for checkpoints/certificates, one paid month and one export.
+    sizes=json.loads((PRE/'output_size_validation.json').read_text())
+    output_gib=(185_505_792*sizes['worst_gzip_bytes_per_encounter']*2)/(1024**3)+2
+    storage_reserve=max(5.,math.ceil(output_gib*(.09+.04)+.5))
+    total=sum(jobs.values())+storage_reserve
     return {'schema':'s2-cost/1','gpu':'L4','cpu':1,'memory_gib':8,'rate_usd_per_s':RATE,
             'rates_source':'https://modal.com/pricing','rates_checked':'2026-10-12',
             'components':components,'job_liabilities_usd':jobs,'projection_usd':total,
             'world_deadline_s':deadlines,'longest_world_container_s':slowest,
-            'storage_termination_reserve_usd':1.,'cap_usd':60,'launch_fits':total<=60,
+            'storage_termination_reserve_usd':storage_reserve,'projected_output_gib':output_gib,
+            'storage_assumption':'twofold measured gzip volume +2 GiB overhead; one paid month and one export; no credits',
+            'diagnostic_replays_cap':1290,'cap_usd':60,'launch_fits':total<=60,
             'L1_total_evolved_encounters_cap':81_920_000,'L2_total_evolved_encounters_cap':102_400_000,
             'constructed_encounters':1_185_792,
             'warning':'Fixed-input timing cannot prove a worst-case population runtime; allocation stops are incomplete experiments.'}

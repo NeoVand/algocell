@@ -1,9 +1,9 @@
 {
   "date": "2026-10-12",
   "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q",
-  "passed": 39,
+  "passed": 40,
   "failed": 0,
-  "wall_s": 34.54,
+  "wall_s": 64.14,
   "warnings": [
     "Existing Modal-local mock test warning"
   ],
@@ -32,5 +32,32 @@
   "compileall": "passed",
   "diff_check": "passed",
   "manual_recovery_guard": "passed in full suite",
-  "remote_trace_backend": "explicit CPU software Vulkan, cross-checked against L4 memory/full record during final benchmark"
+  "remote_trace_backend": "storage-vulkan on L4; unchanged event format and full raw-record/memory parity validated; original private WGSL remains byte-identical",
+  "post_full_checks": [
+    {
+      "command": "pytest tests/test_s8086.py -q -k storage_observer",
+      "passed": 1,
+      "deselected": 28,
+      "wall_s": 13.15,
+      "purpose": "explicit REP/resume memory as well as full record parity"
+    },
+    {
+      "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q -k 'not exact_census and not constructed_rep_and_non_rep and not all_ten_full and not l2_nonzero and not byte_granular_count and not frozen_pair_bridge and not storage_observer and not instruction_and_retained and not culture_n64'",
+      "passed": 35,
+      "deselected": 9,
+      "wall_s": 0.5,
+      "purpose": "final gzip, flag-specific footprint, unknown-history/censoring and unresolved-diagnosis safeguards; all nine GPU checks already covered",
+      "warnings": [
+        "Existing Modal-local mock test warning"
+      ]
+    },
+    {
+      "command": "pytest tests/test_s8086.py -q -k cf_preserved",
+      "passed": 1,
+      "deselected": 32,
+      "wall_s": 0.09,
+      "purpose": "Corrected fixed JNC displacement FB; flag-specific CF dependency regression; included in final 35 CPU passes"
+    }
+  ],
+  "unique_test_cases_covered": 44
 }

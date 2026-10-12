@@ -42,14 +42,14 @@ def score(arm,seed,stage,receipt,deadline_s,eligibility_commit=''):
         if time.monotonic()-start>deadline_s-30: raise TimeoutError('scoring spend stop; incomplete')
     try:
         if stage=='score':
-            result=score8086.score_world(Path(source),tick=tick); s8086.write_new(Path(str(out)+'.json'),result)
+            result=score8086.score_world(Path(source),tick=tick); s8086.write_new(Path(str(out)+'.json.gz'),result)
         else:
             m=load_machine(ARMS[arm]['machine'])
-            scored=Path(f'/vol/s8086_score/{arm}/{out.name}.json')
+            scored=Path(f'/vol/s8086_score/{arm}/{out.name}.json.gz')
             if stage=='extract':
-                result=law8086.freeze_candidates(json.loads(scored.read_text()),Path(str(out)+'.json'),m,tick=tick)
+                result=law8086.freeze_candidates(s8086.read_json(scored),Path(str(out)+'.json.gz'),m,tick=tick)
             else:
-                eligibility=Path(f'/vol/s8086_extract/{arm}/{out.name}.json')
+                eligibility=Path(f'/vol/s8086_extract/{arm}/{out.name}.json.gz')
                 # The later local data commit must be attested in the release;
                 # remote extraction alone never authorizes retention assays.
                 digest=sha(eligibility.read_bytes())
