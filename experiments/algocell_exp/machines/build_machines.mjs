@@ -40,7 +40,7 @@ if (!existsSync(join(zdir, "dist/index.js"))) {
 const Z = await import(dist("index.js"));
 const { m6502 } = await import(dist("cores/m6502/index.js"));
 const { bff } = await import(dist("cores/bff/index.js"));
-const CORES = { z80: Z.z80, m6502, bff };
+const CORES = { z80: Z.z80, m6502, bff, ...(Z.i8086 ? { i8086: Z.i8086 } : {}) };
 
 const git = (...a) => execFileSync("git", ["-C", zdir, ...a], { encoding: "utf8" }).trim();
 const head = git("rev-parse", "HEAD");

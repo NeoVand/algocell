@@ -1,0 +1,158 @@
+{
+  "seed": 2156314846,
+  "random_partners": 16,
+  "panel_shared_across_words": true,
+  "budgets": [
+    128,
+    512
+  ],
+  "enumeration": "big-endian word index; both phases and constants included",
+  "machines": {
+    "16": {
+      "machine": "i8086_pair_maps_L16",
+      "zilion": "0.3.0-dev",
+      "core": "i8086 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+      "sha256_core": "cc05989457d50c769c204f6c6213bc5f9da27c5c4637d40556618ba5cdf477af",
+      "sha256_world": "49dc7897ad949b92a9b4dada09d206c66ef75307e6fa682c7d45d89299c3fcac",
+      "sha256_wgsl": "4fee1c7c0ce17f0a4ec7d6ad425b0ebe10342336cb55acbe86ebfe663525a694",
+      "ring": 32,
+      "segments": [
+        [
+          "A",
+          16
+        ],
+        [
+          "B",
+          16
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 23,
+        "stack": {
+          "convention": {
+            "kind": "firstPushAt",
+            "position": 31,
+            "values": {
+              "sp": 1
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": null,
+      "ablation": "none",
+      "diagnostic_sha256": "a9e50f856e01b51821244ae0b7b745e5c2e37ae9090205db64bdc914d6a23ef8"
+    },
+    "32": {
+      "machine": "i8086_pair_maps_L32",
+      "zilion": "0.3.0-dev",
+      "core": "i8086 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+      "sha256_core": "cc05989457d50c769c204f6c6213bc5f9da27c5c4637d40556618ba5cdf477af",
+      "sha256_world": "ba1ecae7ca965ce4a8be3de870643234813060600e2bf5613aa4206fadbc6f97",
+      "sha256_wgsl": "f031d3a7d217c9eed92d0e080da90399c3fd88ff8c40869d14739f99b98f9966",
+      "ring": 64,
+      "segments": [
+        [
+          "A",
+          32
+        ],
+        [
+          "B",
+          32
+        ]
+      ],
+      "init": {
+        "perLane": false,
+        "stateWords": 23,
+        "stack": {
+          "convention": {
+            "kind": "firstPushAt",
+            "position": 63,
+            "values": {
+              "sp": 1
+            }
+          }
+        }
+      },
+      "budget": {
+        "unit": "steps",
+        "perLane": true,
+        "default": null
+      },
+      "halting": null,
+      "ablation": "none",
+      "diagnostic_sha256": "320adb01633932b3e604d8785a4991e61ac8753d074a7bb612d7feefdc442b2f"
+    }
+  },
+  "runs": [
+    {
+      "L": 16,
+      "k": 1,
+      "budget": 128,
+      "words": 256,
+      "execution_sha256": "5b839ee9d4d6b701163f05547aacb0f127b72609d6f12f15e363a899e0959d1e",
+      "csv": "words_L16_k1_b128.csv"
+    },
+    {
+      "L": 16,
+      "k": 1,
+      "budget": 512,
+      "words": 256,
+      "execution_sha256": "11769222550c1033980fb5cc7fa92f02279bd44b90db5ba4fb39c2092e0bb482",
+      "csv": "words_L16_k1_b512.csv"
+    },
+    {
+      "L": 16,
+      "k": 2,
+      "budget": 128,
+      "words": 65536,
+      "execution_sha256": "70e91d6f81f30631c4c9994170860740d7e71bb6c8da6cfecac7f38ecf7469c4",
+      "csv": "words_L16_k2_b128.csv"
+    },
+    {
+      "L": 16,
+      "k": 2,
+      "budget": 512,
+      "words": 65536,
+      "execution_sha256": "eb32bf973cc56b17489a964008c16c3f376f75066ab04ec10c7afe1204fa7cdc",
+      "csv": "words_L16_k2_b512.csv"
+    },
+    {
+      "L": 32,
+      "k": 1,
+      "budget": 128,
+      "words": 256,
+      "execution_sha256": "038b6090181660980c32727a1ba1b9028b4fa0739474c06cff181b6e00fbebcf",
+      "csv": "words_L32_k1_b128.csv"
+    },
+    {
+      "L": 32,
+      "k": 1,
+      "budget": 512,
+      "words": 256,
+      "execution_sha256": "7f3b795d786d0cd4391760260637558bc5e145071bc7fe3aaf00263f13c03e72",
+      "csv": "words_L32_k1_b512.csv"
+    },
+    {
+      "L": 32,
+      "k": 2,
+      "budget": 128,
+      "words": 65536,
+      "execution_sha256": "4d98c227a90fa071eeef2642459d0c8280793d0efc977e7cdb45f30ce3528b6a",
+      "csv": "words_L32_k2_b128.csv"
+    },
+    {
+      "L": 32,
+      "k": 2,
+      "budget": 512,
+      "words": 65536,
+      "execution_sha256": "bc537d1dd6fc72c9ae5b1347305272f4a67d188ae20c7a8f6a1f8114d514eeb3",
+      "csv": "words_L32_k2_b512.csv"
+    }
+  ]
+}

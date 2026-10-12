@@ -1,0 +1,116 @@
+{
+ "i8086_pair_maps_L16": {
+  "note": "8086/8088 instruction semantics, validated against hardware 8088 vectors, with coherent fetch. Paper contract 2026-10-12: zero-ea hidden-latch abstraction; SP=1 via firstPushAt:lastByte on P=32/64; zero initial segments and pointers, DF=TF=0. Each REP iteration is a step and retains decode. Census and fixed-input smoke only; no population pilot.",
+  "core": {
+   "isa": "i8086",
+   "variant": "nmos",
+   "compat": "0.3",
+   "params": {
+    "prefetch": "coherent",
+    "hidden_latch": "zero_ea"
+   }
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 16,
+      "name": "A"
+     },
+     {
+      "bytes": 16,
+      "name": "B"
+     }
+    ],
+    "ring": 32
+   },
+   "init": {
+    "stack": {
+     "firstPushAt": "lastByte"
+    },
+    "set": {
+     "ax": 0,
+     "cx": 0,
+     "dx": 0,
+     "bx": 0,
+     "bp": 0,
+     "si": 0,
+     "di": 0,
+     "ds": 0,
+     "es": 0,
+     "ss": 0,
+     "cs": 0,
+     "ip": 0,
+     "flags": 61442
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ },
+ "i8086_pair_maps_L32": {
+  "note": "8086/8088 instruction semantics, validated against hardware 8088 vectors, with coherent fetch. Paper contract 2026-10-12: zero-ea hidden-latch abstraction; SP=1 via firstPushAt:lastByte on P=32/64; zero initial segments and pointers, DF=TF=0. Each REP iteration is a step and retains decode. Census and fixed-input smoke only; no population pilot.",
+  "core": {
+   "isa": "i8086",
+   "variant": "nmos",
+   "compat": "0.3",
+   "params": {
+    "prefetch": "coherent",
+    "hidden_latch": "zero_ea"
+   }
+  },
+  "world": {
+   "memory": {
+    "kind": "segments",
+    "segments": [
+     {
+      "bytes": 32,
+      "name": "A"
+     },
+     {
+      "bytes": 32,
+      "name": "B"
+     }
+    ],
+    "ring": 64
+   },
+   "init": {
+    "stack": {
+     "firstPushAt": "lastByte"
+    },
+    "set": {
+     "ax": 0,
+     "cx": 0,
+     "dx": 0,
+     "bx": 0,
+     "bp": 0,
+     "si": 0,
+     "di": 0,
+     "ds": 0,
+     "es": 0,
+     "ss": 0,
+     "cs": 0,
+     "ip": 0,
+     "flags": 61442
+    }
+   },
+   "budget": {
+    "unit": "steps",
+    "value": "perLane"
+   },
+   "outputs": {
+    "writeCounts": true,
+    "fetchMap": true,
+    "startMap": true
+   }
+  }
+ }
+}
