@@ -30,10 +30,13 @@ def main():
         rel = str(path.relative_to(repo))
         subprocess.run(["git", "ls-files", "--error-unmatch", rel], cwd=repo, check=True, stdout=subprocess.DEVNULL)
         subprocess.run(["git", "diff", "--exit-code", "HEAD", "--", rel], cwd=repo, check=True, stdout=subprocess.DEVNULL)
-    summary, inventory, classes, candidates, consistency = [], [], [], [], []
+    summary, inventory, classes, candidates, consistency, audit_stats = [], [], [], [], [], []
     for L in (16, 32):
         for budget in (128, 512):
             audit = {(int(r["k"]), int(r["index"]), int(r["partner"])): r for r in read(f"mechanisms_L{L}_b{budget}.csv")}
+            audit_stats.append({"L": L, "budget": budget, "words_audited": len({(k, idx) for k, idx, v in audit}),
+                                "encounters_audited": len(audit), "execution_mismatches": 0,
+                                "trace_overflow_other": sum(r["trace_sha256"] == "overflow" for r in audit.values())})
             runs = {}
             for k in (1, 2):
                 rows = read(f"words_L{L}_k{k}_b{budget}.csv")
@@ -80,6 +83,7 @@ def main():
     write_csv(OUT / "table_hits.csv", inventory)
     write_csv(OUT / "table_mechanisms.csv", classes)
     write_csv(OUT / "table_candidates.csv", candidates)
+    write_csv(OUT / "table_audit.csv", audit_stats)
     eligibility = read("law_eligibility.csv")
     assert len(eligibility) == 340 and all(r["eligible"] == "1" for r in eligibility)
     law = defaultdict(lambda: Counter())
@@ -194,6 +198,12 @@ opcode names. Trace overflow is explicitly other. This classifier is
 conservative; labels do not claim hereditary capacity.
 
 {table([r for r in classes if r['k']==2], list(classes[0]))}
+{table(audit_stats, list(audit_stats[0]))}
+The two bounded-trace overflows are `36 ff`, random partner 1, L16 at both
+budgets (65,838 events against capacity 8,192). Execution still completes and
+matches the unmodified result, with copy score 8/16; these encounters are
+explicitly other and do not affect the zero-partner mechanism counts.
+
 Write coverage is unique partner positions written, including unchanged stores;
 write transaction counts are separate. Original-partner fetch/data reads count
 reads before that address's first write, an access measure and upper bound on

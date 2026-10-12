@@ -1,0 +1,9 @@
+L,budget,k,words,unevaluated,primitive,zero_exact_nonzero,random_exact_any_nonzero,random75_ge8_nonzero,zero_word_exact
+16,128,1,256,0,256,0,1,0,True
+16,128,2,65536,0,65280,20,281,29,True
+16,512,1,256,0,256,0,1,0,True
+16,512,2,65536,0,65280,29,416,29,True
+32,128,1,256,0,256,0,1,0,True
+32,128,2,65536,0,65280,26,110,36,True
+32,512,1,256,0,256,0,1,0,True
+32,512,2,65536,0,65280,26,368,25,True
