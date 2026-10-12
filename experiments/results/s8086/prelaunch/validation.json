@@ -30,7 +30,7 @@
   ],
   "no_population_runs": true,
   "compileall": "passed",
-  "diff_check": "passed",
+  "diff_check": "passed for implementation source, tests and registration; verbatim generated WGSL archives retain inherited trailing whitespace and carried registration-body archive retains its terminal blank line",
   "manual_recovery_guard": "passed in full suite",
   "remote_trace_backend": "storage-vulkan on L4; unchanged event format and full raw-record/memory parity validated; original private WGSL remains byte-identical",
   "post_full_checks": [
@@ -59,5 +59,7 @@
       "purpose": "Corrected fixed JNC displacement FB; flag-specific CF dependency regression; included in final 35 CPU passes"
     }
   ],
-  "unique_test_cases_covered": 44
+  "unique_test_cases_covered": 44,
+  "diff_check_scope": "git diff --check 80426a4 -- experiments/REVISION_PREREG.md experiments/s8086.py experiments/run8086.py experiments/score8086.py experiments/law8086.py experiments/dispatch8086.py experiments/benchmark8086.py experiments/modal_s8086.py experiments/modal_score8086.py experiments/meter8086.py experiments/algocell_exp/census8086_trace.py experiments/tests/test_s8086.py",
+  "archival_whitespace": "Full staged check reports six inherited whitespace-only shader lines and one terminal blank line in S2_REGISTRATION_BASE.md. These archived exact bytes are deliberately preserved; no execution or normative substance changes."
 }
