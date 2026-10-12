@@ -1,0 +1,36 @@
+status,comparison,endpoint,arm_n,control_n,arm_events,control_events,arm_km,control_km,km_ratio_arm_over_control,event_risk_difference,caveat
+EXPLORATORY,C all-ld / C none,t_rep,10,10,2,10,,200.0,,-0.8,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C all-ld / C none,successor family proxy,10,10,4,10,,18500.0,,-0.6,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C block-copy / C none,t_rep,10,10,10,10,350.0,200.0,1.75,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C block-copy / C none,successor family proxy,10,10,10,10,20000.0,18500.0,1.0810810810810811,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C call-rst / C none,t_rep,10,10,10,10,250.0,200.0,1.25,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C call-rst / C none,successor family proxy,10,10,10,10,23500.0,18500.0,1.2702702702702702,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C cb-page / C none,t_rep,10,10,10,10,1300.0,200.0,6.5,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C cb-page / C none,successor family proxy,10,10,10,10,29000.0,18500.0,1.5675675675675675,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ed-loads / C none,t_rep,10,10,10,10,450.0,200.0,2.25,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ed-loads / C none,successor family proxy,10,10,10,10,35500.0,18500.0,1.9189189189189189,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ex-sp-only / C none,t_rep,10,10,10,10,700.0,200.0,3.5,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ex-sp-only / C none,successor family proxy,10,10,8,10,120000.0,18500.0,6.486486486486487,-0.19999999999999996,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ld-imm / C none,t_rep,10,10,2,10,,200.0,,-0.8,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ld-imm / C none,successor family proxy,10,10,3,10,,18500.0,,-0.7,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ld-mem / C none,t_rep,10,10,10,10,200.0,200.0,1.0,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ld-mem / C none,successor family proxy,10,10,10,10,19000.0,18500.0,1.027027027027027,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ld-reg / C none,t_rep,10,10,10,10,150.0,200.0,0.75,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C ld-reg / C none,successor family proxy,10,10,10,10,19500.0,18500.0,1.054054054054054,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C no-copy / C none,t_rep,10,10,0,10,,200.0,,-1.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C no-copy / C none,successor family proxy,10,10,0,10,,18500.0,,-1.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C none / C none,t_rep,10,10,10,10,200.0,200.0,1.0,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C none / C none,successor family proxy,10,10,10,10,18500.0,18500.0,1.0,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C push-only / C none,t_rep,10,10,6,10,198500.0,200.0,992.5,-0.4,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C push-only / C none,successor family proxy,10,10,8,10,97000.0,18500.0,5.243243243243243,-0.19999999999999996,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C rmw-only / C none,t_rep,10,10,0,10,,200.0,,-1.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C rmw-only / C none,successor family proxy,10,10,0,10,,18500.0,,-1.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C stack-read-only / C none,t_rep,10,10,10,10,600.0,200.0,3.0,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C stack-read-only / C none,successor family proxy,10,10,10,10,29500.0,18500.0,1.5945945945945945,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C stack-write-only / C none,t_rep,10,10,8,10,76500.0,200.0,382.5,-0.19999999999999996,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C stack-write-only / C none,successor family proxy,10,10,10,10,66000.0,18500.0,3.5675675675675675,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C stack-writes / C none,t_rep,10,10,8,10,32000.0,200.0,160.0,-0.19999999999999996,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,C stack-writes / C none,successor family proxy,10,10,10,10,15500.0,18500.0,0.8378378378378378,0.0,closure unscored; instruction and horizon confounds; proxy is not t_closed
+EXPLORATORY,Z80 I16 / G16,t_closed,10,20,10,20,38000.0,21000.0,1.8095238095238095,0.0,lethality and seeds differ; first-replicator mechanism differs
+EXPLORATORY,6502 A / Z80 G16,t_closed,20,20,20,20,1125000.0,21000.0,53.57142857142857,0.0,"ISA, loops, addressing, horizons and sample cadence differ"
+EXPLORATORY,dial p=0.3: first-not-open / first-open,t_closed,8,2,8,2,57500.0,40000.0,1.4375,0.0,"post-outcome stratification; same p, tiny unbalanced groups; no intervention on openness"

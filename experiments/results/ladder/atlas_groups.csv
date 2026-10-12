@@ -1,0 +1,339 @@
+status,stage,label,L,budget,k,mem_length,n,literal_loadpush_removed,suppress,first_pusher_proxy_n,first_mechanisms,t_rep_n,t_rep_km,tq_10_n,tq_10_km,successor_proxy_n,successor_proxy_km,ldir_proxy_n,ldir_proxy_km,steps_run_min,steps_run_max,stopped_early_n,closure_status,closure_scored_n,t_closed_n,t_closed_km,closed_random_population_seen_n
+EXPLORATORY,A,all-ld,16,32,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,no event:10,0,,1,,4,,4,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,32,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,block-copy:2; no event:8,2,,0,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,32,6,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,block-copy:2; no event:8,2,,2,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,128,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,no event:10,0,,0,,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,128,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,block-copy:1; no event:9,1,,0,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,128,6,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,block-copy:1; no event:9,1,,2,,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,512,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,no event:10,0,,1,,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,512,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,-:1; block-copy:1; no event:8,2,,0,,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,all-ld,16,512,6,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,block-copy:1; no event:9,1,,1,,1,,1,,136500,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,32,2,32,10,False,family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,32,4,32,10,False,family:block-copy,10,stack:10,10,15000.0,10,16000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,32,6,32,10,False,family:block-copy,10,stack:10,10,13500.0,10,6000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,128,2,32,10,False,family:block-copy,10,stack:10,10,1500.0,10,3500.0,8,140000.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,128,4,32,10,False,family:block-copy,10,stack:10,10,500.0,10,1000.0,10,33500.0,0,,15000,109000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,128,6,32,10,False,family:block-copy,10,stack:10,10,1000.0,10,500.0,4,,0,,15500,300000,9,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,512,2,32,10,False,family:block-copy,10,stack:10,10,500.0,10,1000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,512,4,32,10,False,family:block-copy,10,stack:10,10,500.0,10,1000.0,10,24500.0,0,,36500,175500,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,block-copy,16,512,6,32,10,False,family:block-copy,10,stack:10,10,1500.0,10,2000.0,4,,0,,9000,300000,4,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,32,2,32,10,False,family:ld8-mem; family:ld16-mem,0,block-copy:7; block-copy+stack:2; no event:1,9,144500.0,8,209000.0,10,42000.0,10,42000.0,27500,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,32,4,32,10,False,family:ld8-mem; family:ld16-mem,0,block-copy:8; no event:1; stack:1,9,102500.0,5,163500.0,9,98500.0,9,98500.0,179000,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,32,6,32,10,False,family:ld8-mem; family:ld16-mem,9,block-copy+stack:1; stack:9,10,13000.0,10,16000.0,1,,1,,4000,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,128,2,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,1000.0,10,3000.0,9,57000.0,8,57000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,128,4,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,1000.0,10,2500.0,10,13500.0,1,,10500,300000,9,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,128,6,32,10,False,family:ld8-mem; family:ld16-mem,9,block-copy:1; stack:9,10,2500.0,9,4000.0,10,17000.0,4,99500.0,16000,300000,8,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,512,2,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,500.0,10,1000.0,1,,1,,85000,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,512,4,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,500.0,10,1000.0,10,11000.0,0,,8000,300000,8,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,ld-mem,16,512,6,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,1000.0,10,1000.0,10,19000.0,0,,9500,195000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,32,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,32,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,32,6,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,128,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,128,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,128,6,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,512,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,512,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,no-copy,16,512,6,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,32,2,32,10,False,,0,block-copy:10,10,70500.0,0,,10,68000.0,10,68000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,32,4,32,10,False,,7,block-copy:3; stack:7,10,11000.0,9,12000.0,10,44000.0,10,44000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,32,6,32,10,False,,9,block-copy:1; stack:9,10,10000.0,10,6000.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,128,2,32,10,False,,10,stack:10,10,1000.0,10,3500.0,10,24000.0,9,24000.0,126000,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,128,4,32,10,False,,10,stack:10,10,500.0,9,1500.0,10,24000.0,2,49000.0,9000,300000,8,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,128,6,32,10,False,,9,block-copy+ld-mem+stack:1; stack:9,10,1000.0,10,500.0,6,29000.0,3,,14500,300000,8,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,512,2,32,10,False,,10,stack:10,10,500.0,10,1000.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,512,4,32,10,False,,10,stack:10,10,1000.0,9,1500.0,10,9500.0,1,,16500,300000,9,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,none,16,512,6,32,10,False,,9,block-copy+ld-mem:1; stack:9,10,500.0,10,1000.0,5,171000.0,2,,15500,300000,3,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,32,2,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,32,4,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,32,6,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,128,2,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,128,4,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,128,6,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,512,2,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,512,4,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,rmw-only,16,512,6,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,32,2,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:4; no event:6,4,,1,,10,4500.0,10,4500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,32,4,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,-:1; block-copy:9,10,32000.0,3,,10,9000.0,10,9000.0,102500,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,32,6,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:9; ld-mem:1,10,17500.0,6,48500.0,10,18000.0,10,18000.0,268000,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,128,2,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:3; no event:7,3,,2,,10,21500.0,10,21500.0,37000,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,128,4,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:9; no event:1,9,50500.0,1,,10,35000.0,10,35000.0,49500,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,128,6,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,-:1; block-copy:8; block-copy+ld-mem:1,10,26000.0,9,61000.0,10,26500.0,10,26500.0,27500,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,512,2,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:3; no event:7,3,,2,,10,20500.0,10,20500.0,38500,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,512,4,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,-:2; block-copy:6; no event:2,8,61500.0,1,,10,30500.0,10,30500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,A,stack-writes,16,512,6,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:7; block-copy+ld-mem:1; block-copy+rmw:2,10,41500.0,6,111000.0,10,42000.0,10,42000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,4,128,4,8,10,False,family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,4,512,4,8,10,False,family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,9,128,4,18,10,False,family:block-copy,0,no event:10,0,,10,2000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,9,512,4,18,10,False,family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,25,128,4,50,10,False,family:block-copy,10,stack:10,10,1000.0,10,2500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,25,512,4,50,10,False,family:block-copy,10,stack:10,10,500.0,10,1500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,36,128,4,72,10,False,family:block-copy,10,stack:10,10,500.0,10,1000.0,0,,0,,3500,32000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,36,512,4,72,10,False,family:block-copy,10,stack:10,10,500.0,10,1500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,49,128,4,98,10,False,family:block-copy,10,stack:10,10,1500.0,10,2500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,49,512,4,98,10,False,family:block-copy,10,stack:10,10,500.0,10,500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,64,128,4,128,10,False,family:block-copy,10,stack:10,10,1000.0,10,1500.0,0,,0,,4000,300000,5,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,64,512,4,128,10,False,family:block-copy,10,stack:10,10,500.0,10,500.0,0,,0,,2500,9000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,81,128,4,162,10,False,family:block-copy,10,stack:10,10,1000.0,10,1500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,81,512,4,162,10,False,family:block-copy,10,stack:10,10,500.0,10,500.0,0,,0,,3000,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,100,128,4,200,10,False,family:block-copy,10,stack:10,10,1500.0,10,1500.0,0,,0,,4500,17500,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,block-copy,100,512,4,200,10,False,family:block-copy,10,stack:10,10,500.0,10,500.0,0,,0,,2500,3000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,4,128,4,8,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,4,512,4,8,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,9,128,4,18,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,9,512,4,18,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,25,128,4,50,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,25,512,4,50,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,36,128,4,72,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,36,512,4,72,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,10,2000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,49,128,4,98,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,49,512,4,98,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,64,128,4,128,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,64,512,4,128,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,81,128,4,162,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,81,512,4,162,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,100,128,4,200,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,no-copy,100,512,4,200,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,4,128,4,8,10,False,,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,4,512,4,8,10,False,,0,block-copy:1; no event:9,1,,1,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,9,128,4,18,10,False,,0,-:1; block-copy:3; no event:6,4,,10,14500.0,4,,4,,52500,300000,3,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,9,512,4,18,10,False,,0,block-copy:1; no event:9,1,,1,,1,,1,,139500,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,25,128,4,50,10,False,,10,stack:10,10,1500.0,10,3000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,25,512,4,50,10,False,,10,stack:10,10,500.0,10,1500.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,36,128,4,72,10,False,,10,stack:10,10,500.0,10,1000.0,0,,0,,3500,28000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,36,512,4,72,10,False,,10,stack:10,10,500.0,10,1500.0,3,,3,,11000,300000,4,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,49,128,4,98,10,False,,10,stack:10,10,1500.0,10,2000.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,49,512,4,98,10,False,,10,stack:10,10,500.0,10,500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,64,128,4,128,10,False,,10,stack:10,10,1000.0,10,1500.0,0,,0,,4500,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,64,512,4,128,10,False,,10,stack:10,10,500.0,10,500.0,0,,0,,3000,9500,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,81,128,4,162,10,False,,10,stack:10,10,1500.0,10,1500.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,81,512,4,162,10,False,,10,stack:10,10,500.0,10,500.0,0,,0,,3000,300000,4,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,100,128,4,200,10,False,,8,block-copy:2; stack:8,10,1500.0,9,2000.0,5,2500.0,5,2500.0,4500,300000,7,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,none,100,512,4,200,10,False,,10,stack:10,10,500.0,10,500.0,0,,0,,2500,7000,10,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,4,128,4,8,10,True,family:stack; family:ex; family:call-ret; family:rst,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,4,512,4,8,10,True,family:stack; family:ex; family:call-ret; family:rst,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,9,128,4,18,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:9; no event:1,9,92000.0,8,102500.0,9,93500.0,9,93500.0,11500,300000,5,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,9,512,4,18,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:9; block-copy+ld-mem:1,10,91500.0,8,104500.0,10,90500.0,10,90500.0,52000,300000,7,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,25,128,4,50,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:10,10,8500.0,6,73000.0,10,8500.0,10,8500.0,74500,300000,2,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,25,512,4,50,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:10,10,25000.0,9,30000.0,10,25500.0,10,25500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,36,128,4,72,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:10,10,15500.0,9,28000.0,10,13000.0,10,13000.0,18000,300000,9,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,36,512,4,72,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:9; block-copy+ld-mem:1,10,26500.0,6,44500.0,10,26500.0,10,26500.0,28500,300000,6,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,49,128,4,98,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:5; block-copy+ld-mem:1; no event:4,6,21500.0,1,,10,4500.0,10,4500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,49,512,4,98,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:8; block-copy+ld-mem:2,10,48000.0,2,,10,38000.0,10,38000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,64,128,4,128,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:8; block-copy+ld-mem:2,10,23500.0,5,136000.0,10,14000.0,10,14000.0,118500,300000,5,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,64,512,4,128,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:4; block-copy+ld-mem:6,10,17500.0,5,263000.0,10,13500.0,10,13500.0,155000,300000,3,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,81,128,4,162,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:6; block-copy+ld-mem:1; no event:3,7,22500.0,1,,10,2000.0,10,2000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,81,512,4,162,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:9; no event:1,9,6500.0,4,,10,6500.0,10,6500.0,7500,300000,1,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,100,128,4,200,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:6; block-copy+ld-mem:4,10,16500.0,7,113500.0,10,1000.0,10,1000.0,64000,300000,3,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,B,stack-writes,100,512,4,200,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:8; block-copy+ld-mem:2,10,5000.0,7,12000.0,10,4500.0,10,4500.0,6500,300000,5,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,all-ld,16,32,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,block-copy:1; block-copy+stack:1; no event:8,2,,2,,9,492000.0,9,492000.0,1000000,1000000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,all-ld,16,128,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special,0,-:1; block-copy+stack:1; no event:8,2,,1,,4,,4,,1000000,1000000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,block-copy,16,128,2,32,10,False,family:block-copy,10,stack:10,10,850.0,10,3500.0,4,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,block-copy,16,128,4,32,10,False,family:block-copy,10,stack:10,10,350.0,10,1200.0,10,20000.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,block-copy,16,128,6,32,10,False,family:block-copy,10,stack:10,10,4100.0,10,200.0,6,174000.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,block-copy,16,512,2,32,10,False,family:block-copy,10,stack:10,10,350.0,10,950.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,block-copy,16,512,4,32,10,False,family:block-copy,10,stack:10,10,250.0,10,650.0,10,51500.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,block-copy,16,512,6,32,10,False,family:block-copy,10,stack:10,10,1050.0,10,1300.0,3,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,call-rst,16,32,2,32,10,False,family:call-ret; family:rst,4,block-copy:1; block-copy+stack:1; no event:4; stack:4,6,42500.0,5,239000.0,10,18000.0,10,18000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,call-rst,16,128,4,32,10,False,family:call-ret; family:rst,10,stack:10,10,250.0,10,1400.0,10,23500.0,10,23500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,cb-page,16,32,2,32,10,False,family:rotate; family:rotate-mem; family:bit; family:bit-set; family:bit-set-mem; -RLD; -RRD,0,block-copy:9; no event:1,9,99000.0,0,,9,93000.0,9,93000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,cb-page,16,128,4,32,10,False,family:rotate; family:rotate-mem; family:bit; family:bit-set; family:bit-set-mem; -RLD; -RRD,10,stack:10,10,1300.0,10,2200.0,10,29000.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ed-loads,16,32,2,32,10,False,ed:43; ed:53; ed:63; ed:73; ed:4B; ed:5B; ed:6B; ed:7B,0,block-copy:9; no event:1,9,60500.0,0,,10,59500.0,10,59500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ed-loads,16,128,4,32,10,False,ed:43; ed:53; ed:63; ed:73; ed:4B; ed:5B; ed:6B; ed:7B,10,stack:10,10,450.0,10,1250.0,10,35500.0,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ex-sp-only,16,32,2,32,10,False,"EX (SP),HL",0,block-copy:10,10,74000.0,0,,10,67500.0,10,67500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ex-sp-only,16,128,4,32,10,False,"EX (SP),HL",10,stack:10,10,700.0,10,1500.0,8,120000.0,8,120000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-imm,16,32,2,32,10,True,family:ld8-imm; family:ld16-imm,0,block-copy:9; no event:1,9,67500.0,0,,9,61000.0,9,61000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-imm,16,128,4,32,10,True,family:ld8-imm; family:ld16-imm,0,block-copy:2; no event:8,2,,10,100.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-mem,16,128,2,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,1150.0,10,2850.0,10,68500.0,7,115500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-mem,16,128,4,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,200.0,10,1000.0,10,19000.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-mem,16,128,6,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,850.0,10,1400.0,10,42500.0,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-mem,16,512,2,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,200.0,10,700.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-mem,16,512,4,32,10,False,family:ld8-mem; family:ld16-mem,10,stack:10,10,200.0,10,900.0,10,18000.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-mem,16,512,6,32,10,False,family:ld8-mem; family:ld16-mem,9,block-copy:1; stack:9,10,150.0,10,450.0,10,29000.0,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-reg,16,32,2,32,10,False,family:ld8; family:ld-special,0,block-copy:10,10,104500.0,0,,10,98000.0,10,98000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,ld-reg,16,128,4,32,10,False,family:ld8; family:ld-special,10,stack:10,10,150.0,10,950.0,10,19500.0,4,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,no-copy,16,32,2,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,1000000,1000000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,no-copy,16,128,4,32,10,True,family:ld8; family:ld8-imm; family:ld8-mem; family:ld16-imm; family:ld16-mem; family:ld-special; family:stack; family:ex; family:block-copy,0,no event:10,0,,0,,0,,0,,1000000,1000000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,32,2,32,10,False,,0,block-copy:8; block-copy+stack:1; no event:1,9,68500.0,2,,9,64000.0,9,64000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,128,2,32,10,False,,10,stack:10,10,650.0,10,2950.0,10,63500.0,8,64000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,128,4,32,10,False,,10,stack:10,10,200.0,10,950.0,10,18500.0,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,128,6,32,10,False,,10,stack:10,10,200.0,10,150.0,10,45000.0,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,512,2,32,10,False,,10,stack:10,10,350.0,10,850.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,512,4,32,10,False,,10,stack:10,10,350.0,10,1000.0,10,22000.0,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,16,512,6,32,10,False,,10,stack:10,10,450.0,10,1300.0,4,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,36,128,4,72,10,False,,10,stack:10,10,350.0,10,800.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,none,100,128,4,200,10,False,,9,block-copy+ld-mem:1; stack:9,10,1200.0,10,1450.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,push-only,16,32,2,32,10,True,family:stack,0,block-copy:9; no event:1,9,93000.0,0,,9,75500.0,9,75500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,push-only,16,128,4,32,10,True,family:stack,0,block-copy:5; block-copy+ld-mem:1; no event:4,6,198500.0,7,150.0,8,97000.0,8,97000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,rmw-only,16,32,2,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,1000000,1000000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,rmw-only,16,128,4,32,10,True,family:writes-mem; -family:incdec-mem; -family:rotate-mem; -family:bit-set-mem,0,no event:10,0,,0,,0,,0,,1000000,1000000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-read-only,16,32,2,32,10,False,"POP; RET; EX DE,HL; EXX; EX AF,AF'",0,block-copy:10,10,98000.0,1,,10,92000.0,10,92000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-read-only,16,128,4,32,10,False,"POP; RET; EX DE,HL; EXX; EX AF,AF'",10,stack:10,10,600.0,10,1300.0,10,29500.0,10,29500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-write-only,16,32,2,32,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,21500.0,1,,10,9000.0,10,9000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-write-only,16,128,4,32,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:2; block-copy:6; no event:2,8,76500.0,1,,10,66000.0,10,66000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-writes,16,32,2,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:5; no event:5,5,228000.0,0,,10,6000.0,10,6000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-writes,16,128,4,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,-:2; block-copy:5; ld-mem:1; no event:2,8,32000.0,1,,10,15500.0,10,15500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-writes,36,128,4,72,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:10,10,12000.0,7,44000.0,10,10000.0,10,10000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,C,stack-writes,100,128,4,200,10,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:5; block-copy+ld-mem:4; block-copy+rmw:1,10,8500.0,8,107000.0,10,1000.0,10,1000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,call-rst-write,9,128,4,18,20,False,CALL; RST N,0,-:1; block-copy:10; no event:8; stack:1,12,192000.0,18,150.0,12,191000.0,12,191000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,call-rst-write,9,512,4,18,20,False,CALL; RST N,0,-:2; block-copy:12; no event:6,14,160500.0,12,161000.0,14,162500.0,14,162500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,none,9,32,4,18,20,False,,0,block-copy:4; no event:16,4,,20,250.0,4,,4,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,none,9,128,4,18,20,False,,0,block-copy:6; no event:14,6,,20,100.0,6,,6,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,none,9,128,6,18,20,False,,0,block-copy:3; no event:17,3,,20,50.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,none,9,512,4,18,20,False,,0,block-copy:5; no event:15,5,,15,100.0,5,,5,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,push,9,128,4,18,20,True,PUSH,0,block-copy:11; no event:9,11,226500.0,10,287500.0,12,228000.0,12,228000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,push,9,512,4,18,20,True,PUSH,0,block-copy:8; no event:12,8,,8,,9,,9,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,stack-read-only,9,128,4,18,20,False,"POP; RET; EX DE,HL; EXX; EX AF,AF'",0,block-copy:8; no event:12,8,,20,100.0,8,,8,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,stack-read-only,9,512,4,18,20,False,"POP; RET; EX DE,HL; EXX; EX AF,AF'",0,-:1; block-copy:9; no event:10,10,252000.0,14,200.0,10,237500.0,10,237500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,stack-write-only,9,128,4,18,20,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:11; no event:8,12,138500.0,9,,11,140000.0,11,140000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,stack-write-only,9,512,4,18,20,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:18; no event:1,19,90000.0,16,91000.0,19,91500.0,19,91500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,stack-writes,9,128,4,18,20,True,family:stack; family:ex; family:call-ret; family:rst,0,-:1; block-copy:10; ld-mem:1; no event:8,12,152000.0,11,210500.0,13,153500.0,13,153500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,D,stack-writes,9,512,4,18,20,True,family:stack; family:ex; family:call-ret; family:rst,0,block-copy:18; no event:2,18,82500.0,16,131000.0,18,84500.0,18,84500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,block-copy@x32k2,16,32,2,32,20,False,family:block-copy,0,no event:20,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@budget,100,32,4,200,10,False,,0,no event:10,0,,0,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@budget,100,64,4,200,10,False,,0,no event:10,0,,10,1300.0,7,208000.0,7,208000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@budget,100,256,4,200,10,False,,10,stack:10,10,450.0,10,650.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@budget,100,1024,4,200,10,False,,10,stack:10,10,150.0,10,300.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@budget,100,2048,4,200,10,False,,10,stack:10,10,100.0,10,250.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,4,128,4,8,10,False,,0,block-copy:1; no event:9,1,,1,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,9,128,4,18,10,False,,0,-:2; block-copy:3; ld-mem:1; no event:4,6,172500.0,10,100.0,7,138000.0,7,138000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,16,128,4,32,10,False,,10,stack:10,10,150.0,10,750.0,10,25500.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,25,128,4,50,10,False,,10,stack:10,10,900.0,10,2450.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,36,128,4,72,10,False,,10,stack:10,10,800.0,10,1150.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,49,128,4,98,10,False,,10,stack:10,10,1200.0,10,1650.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,64,128,4,128,10,False,,10,stack:10,10,1500.0,10,1700.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,81,128,4,162,10,False,,10,stack:10,10,700.0,10,850.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@bytes,100,128,4,200,10,False,,10,stack:10,10,2150.0,10,2200.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,4,128,4,8,10,False,,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,9,128,4,18,10,False,,0,block-copy+ld-mem:1; no event:9,1,,10,50.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,16,128,4,32,10,False,,10,stack:10,10,200.0,10,750.0,10,15000.0,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,25,128,4,50,10,False,,10,stack:10,10,1000.0,10,3250.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,36,128,4,72,10,False,,10,stack:10,10,650.0,10,1150.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,49,128,4,98,10,False,,10,stack:10,10,1700.0,10,2850.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,64,128,4,128,10,False,,10,stack:10,10,1400.0,10,1650.0,7,186500.0,7,186500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,81,128,4,162,10,False,,7,no event:3; stack:7,7,2950.0,8,1650.0,6,20500.0,6,20500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@mubyte,100,128,4,200,10,False,,5,block-copy:5; stack:5,10,3950.0,10,2000.0,10,3100.0,10,3100.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@musweep,100,128,1,200,10,False,,2,block-copy:7; no event:1; stack:2,9,12000.0,10,2500.0,10,6000.0,10,6000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@musweep,100,128,2,200,10,False,,8,block-copy:2; stack:8,10,2450.0,10,1950.0,5,154500.0,5,154500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@musweep,100,128,3,200,10,False,,8,block-copy:1; block-copy+ld-mem:1; stack:8,10,2100.0,10,2400.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@musweep,100,128,5,200,10,False,,10,stack:10,10,1050.0,9,1450.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@musweep,100,128,8,200,10,False,,9,block-copy:1; stack:9,10,950.0,10,1600.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,3,128,4,6,10,False,,0,no event:10,0,,10,5.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,4,128,4,8,10,False,,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,5,128,4,10,10,False,,0,-:7; block-copy:2; no event:1,9,49000.0,10,5.0,9,49500.0,9,49500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,6,128,4,12,10,False,,0,block-copy:9; no event:1,9,151500.0,9,152500.0,9,152500.0,9,152500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,7,128,4,14,10,False,,0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,8,128,4,16,10,False,,10,stack:10,10,500.0,10,20500.0,9,113000.0,6,138000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,9,128,4,18,10,False,,0,-:2; block-copy:2; no event:6,4,,10,100.0,4,,4,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,10,128,4,20,10,False,,1,block-copy:3; no event:6; stack:1,4,,1,,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,12,128,4,24,10,False,,0,-:1; block-copy:5; no event:4,6,245500.0,3,,6,245500.0,6,245500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,16,128,4,32,10,False,,10,stack:10,10,200.0,10,1250.0,10,24500.0,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,18,128,4,36,10,False,,9,block-copy:1; stack:9,10,2100.0,10,250.0,8,106500.0,8,106500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,20,128,4,40,10,False,,10,stack:10,10,950.0,10,59000.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,24,128,4,48,10,False,,10,stack:10,10,250.0,10,850.0,4,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,25,128,4,50,10,False,,10,stack:10,10,900.0,10,2400.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,32,128,4,64,10,False,,10,stack:10,10,350.0,10,50.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,36,128,4,72,10,False,,10,stack:10,10,500.0,10,1000.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,49,128,4,98,10,False,,10,stack:10,10,1100.0,10,2150.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,50,128,4,100,10,False,,10,stack:10,10,500.0,10,850.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,64,128,4,128,10,False,,10,stack:10,10,750.0,10,1100.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,81,128,4,162,10,False,,9,block-copy:1; stack:9,10,950.0,10,1150.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@nominal,100,128,4,200,10,False,,9,block-copy+ld-mem:1; stack:9,10,1650.0,8,2400.0,5,2800.0,5,2800.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,4,32,4,8,10,False,,0,block-copy:1; no event:9,1,,1,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,9,72,4,18,10,False,,0,block-copy:2; no event:8,2,,10,50.0,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,16,128,4,32,10,False,,10,stack:10,10,150.0,10,1050.0,10,33500.0,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,25,200,4,50,10,False,,9,block-copy:1; stack:9,10,900.0,10,2350.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,36,288,4,72,10,False,,10,stack:10,10,200.0,10,100.0,8,42000.0,8,42000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,49,392,4,98,10,False,,10,stack:10,10,150.0,10,400.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,64,512,4,128,10,False,,10,stack:10,10,100.0,10,300.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,81,648,4,162,10,False,,10,stack:10,10,150.0,10,350.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@steps8L,100,800,4,200,10,False,,10,stack:10,10,150.0,10,300.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@var,9,128,4,18,10,False,,0,block-copy:3; no event:7,3,,10,100.0,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@var,16,128,4,32,10,False,,10,stack:10,10,150.0,6,1200.0,10,1100.0,9,1100.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,none@x32k2,16,32,2,32,20,False,,0,block-copy:18; no event:2,18,71000.0,0,,18,64500.0,18,64500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@budget,100,32,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,no event:10,0,,0,,3,,3,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@budget,100,64,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,no event:10,0,,0,,10,37000.0,10,37000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@budget,100,256,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; block-copy+ld-mem:2,10,7500.0,9,9000.0,10,2800.0,10,2800.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@budget,100,1024,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:6; block-copy+ld-mem:4,10,6500.0,8,24000.0,10,6000.0,10,6000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@budget,100,2048,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:5; block-copy+ld-mem:4; block-copy+ld-mem+rmw:1,10,2950.0,9,37000.0,10,3050.0,10,3050.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,4,128,4,8,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:3; no event:7,3,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,9,128,4,18,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,52500.0,8,128000.0,10,55500.0,10,55500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,16,128,4,32,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:7; ld-mem:1; no event:1,9,58000.0,0,,10,9500.0,10,9500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,25,128,4,50,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,53500.0,8,61500.0,10,49500.0,10,49500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,36,128,4,72,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,15500.0,10,34500.0,10,12500.0,10,12500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,49,128,4,98,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:4; block-copy+ld-mem:1; block-copy+rmw:2; no event:3,7,39500.0,6,107500.0,10,35500.0,10,35500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,64,128,4,128,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:3; block-copy+ld-mem:7,10,49500.0,8,50000.0,10,50000.0,10,50000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,81,128,4,162,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; block-copy+ld-mem:2,10,7500.0,8,9500.0,10,3100.0,10,3100.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@bytes,100,128,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:5; block-copy+ld-mem:5,10,3850.0,9,17500.0,10,4100.0,10,4100.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,4,128,4,8,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:1; no event:9,1,,1,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,9,128,4,18,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:6; block-copy+ld-mem:1; no event:3,7,175000.0,7,176500.0,7,177000.0,7,177000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,16,128,4,32,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; no event:2,8,85500.0,1,,10,12500.0,10,12500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,25,128,4,50,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,17000.0,8,49500.0,10,17500.0,10,17500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,36,128,4,72,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,14500.0,8,31500.0,10,8000.0,10,8000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,49,128,4,98,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,10500.0,1,,10,8000.0,10,8000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,64,128,4,128,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:9; block-copy+ld-mem:1,10,20000.0,9,35000.0,10,5500.0,10,5500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,81,128,4,162,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:2; no event:8,2,,0,,10,2050.0,10,2050.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@mubyte,100,128,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,16500.0,8,19500.0,10,1200.0,10,1200.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@musweep,100,128,1,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:9; no event:1,9,9500.0,9,18000.0,10,1700.0,10,1700.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@musweep,100,128,2,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,15500.0,9,21000.0,10,1350.0,10,1350.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@musweep,100,128,3,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,6000.0,8,28000.0,10,1650.0,10,1650.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@musweep,100,128,5,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:4; block-copy+ld-mem:5; block-copy+ld-mem+rmw:1,10,1050.0,9,1500.0,10,1250.0,10,1250.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@musweep,100,128,8,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:4; block-copy+ld-mem:4; block-copy+ld-mem+rmw:2,10,1250.0,10,9500.0,10,1100.0,10,1100.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,3,128,4,6,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,4,128,4,8,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,no event:10,0,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,5,128,4,10,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:5; block-copy:3; no event:2,8,161000.0,8,161000.0,8,161500.0,8,161500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,6,128,4,12,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:9,10,107500.0,10,107500.0,10,108000.0,10,108000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,7,128,4,14,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:2; block-copy:2; block-copy+ld-mem:1; no event:5,5,265500.0,5,267500.0,5,266500.0,5,266500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,8,128,4,16,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:4; ld-mem:1; no event:4,6,105000.0,3,,7,98000.0,7,98000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,9,128,4,18,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:2; block-copy:7; no event:1,9,108000.0,7,172000.0,9,101000.0,9,101000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,10,128,4,20,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:2; block-copy:5; ld-mem:1; no event:2,8,189500.0,5,224500.0,8,142000.0,8,142000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,12,128,4,24,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:3; block-copy:6; block-copy+ld-mem:1,10,42000.0,4,,10,28000.0,10,28000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,16,128,4,32,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:2; block-copy:8,10,33000.0,2,,10,28000.0,10,28000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,18,128,4,36,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:7; no event:3,7,41000.0,7,42000.0,10,30500.0,10,30500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,20,128,4,40,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:9; block-copy+ld-mem:1,10,31000.0,10,39500.0,10,25500.0,10,25500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,24,128,4,48,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; no event:2,8,16000.0,8,35000.0,10,5500.0,10,5500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,25,128,4,50,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,56500.0,8,71000.0,10,57500.0,10,57500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,32,128,4,64,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; block-copy+ld-mem:1; block-copy+rmw:1,10,51500.0,9,73000.0,10,43000.0,10,43000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,36,128,4,72,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,8500.0,10,26000.0,10,5500.0,10,5500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,49,128,4,98,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:7; no event:3,7,46500.0,1,,10,9500.0,10,9500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,50,128,4,100,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,18500.0,9,45500.0,10,15000.0,10,15000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,64,128,4,128,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; block-copy+ld-mem:2,10,22500.0,7,139000.0,10,11500.0,10,11500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,81,128,4,162,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:6; block-copy+ld-mem:2; no event:2,8,13000.0,1,,10,1750.0,10,1750.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@nominal,100,128,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:7; block-copy+ld-mem:3,10,2150.0,6,152500.0,10,1300.0,10,1300.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,4,32,4,8,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:1; no event:9,1,,0,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,9,72,4,18,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:7; no event:2,8,63500.0,4,,8,53500.0,8,53500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,16,128,4,32,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; block-copy:8; no event:1,9,27000.0,3,,10,23000.0,10,23000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,25,200,4,50,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,23500.0,9,68500.0,10,24500.0,10,24500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,36,288,4,72,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; block-copy+ld-mem:1; block-copy+rmw:1,10,26000.0,6,86500.0,10,26500.0,10,26500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,49,392,4,98,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,22000.0,4,,10,19500.0,10,19500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,64,512,4,128,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:2; block-copy+ld-mem:4; block-copy+ld-mem+rmw:1; block-copy+rmw:1; no event:2,8,17500.0,7,148500.0,10,9500.0,10,9500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,81,648,4,162,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:9; block-copy+ld-mem:1,10,28000.0,6,52000.0,10,22000.0,10,22000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-write-only@steps8L,100,800,4,200,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:8; block-copy+ld-mem:1; no event:1,9,17000.0,8,28500.0,10,9500.0,10,9500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,E,stack-writes@var,16,128,4,32,10,True,family:stack; family:ex; family:call-ret; family:rst,0,-:1; block-copy:7; no event:2,8,86500.0,2,,10,33500.0,10,33500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring28,10,128,4,28,10,False,,10,stack:10,10,500.0,10,1500.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring28,12,128,4,28,10,False,,10,stack:10,10,350.0,10,600.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring32,8,128,4,32,10,False,,0,block-copy:2; no event:8,2,,1,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring33,16,128,4,33,10,False,,10,stack:10,10,1150.0,10,200.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring34,16,128,4,34,10,False,,10,stack:10,10,500.0,10,100.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring35,16,128,4,35,10,False,,10,stack:10,10,3150.0,10,200.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring36,12,128,4,36,10,False,,10,stack:10,10,600.0,10,900.0,6,182000.0,6,182000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring37,16,128,4,37,10,False,,3,stack:10,10,800.0,10,250.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring40,10,128,4,40,10,False,,0,block-copy:1; block-copy+stack:1; no event:8,2,,3,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring73,36,128,4,73,10,False,,10,stack:10,10,1100.0,10,3250.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring74,36,128,4,74,10,False,,10,stack:10,10,250.0,10,650.0,1,,1,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring75,36,128,4,75,10,False,,10,stack:10,10,950.0,1,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,none@ring79,36,128,4,79,10,False,,9,stack:10,10,400.0,10,950.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring33,16,128,4,33,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:2; no event:8,2,,2,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring34,16,128,4,34,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:4; ld-mem:2; no event:4,6,229500.0,3,,5,282000.0,5,282000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring35,16,128,4,35,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:2; no event:8,2,,1,,2,,2,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring37,16,128,4,37,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,-:1; no event:9,1,,1,,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring73,36,128,4,73,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:6; no event:4,6,67000.0,5,166500.0,9,46500.0,9,46500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring74,36,128,4,74,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:10,10,24000.0,10,38000.0,10,11500.0,10,11500.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring75,36,128,4,75,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:9; no event:1,9,119500.0,7,164000.0,9,58000.0,9,58000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,F,stack-write-only@ring79,36,128,4,79,10,True,"PUSH; EX (SP),HL; CALL; RST N",0,block-copy:7; block-copy+ld-mem:1; no event:2,8,88000.0,2,,10,47000.0,10,47000.0,300000,300000,0,UNSCORED top-3 endpoint,0,0,,0
+EXPLORATORY,G,none@closure,16,128,4,32,20,False,,20,stack:20,20,450.0,20,1150.0,20,22000.0,3,,300000,300000,0,SCORED top-3 endpoint,20,20,21000.0,20
+EXPLORATORY,G,none@closure,50,128,4,100,20,False,,20,stack:20,20,600.0,20,1000.0,0,,0,,300000,300000,0,UNSCORED top-3 endpoint,0,0,,20
+EXPLORATORY,G,none@closure1M,20,128,4,40,20,False,,20,stack:20,20,700.0,19,60000.0,16,284000.0,16,284000.0,1000000,1000000,0,SCORED top-3 endpoint,20,17,261000.0,19
+EXPLORATORY,G,none@closure1M,64,128,4,128,20,False,,20,stack:20,20,750.0,20,1150.0,7,,7,,1000000,1000000,0,SCORED top-3 endpoint,20,8,,20
+EXPLORATORY,H,mixed@closure,16,128,4,32,10,False,,10,stack:10,10,100.0,10,150.0,5,30500.0,1,,300000,300000,0,SCORED top-3 endpoint,10,5,30500.0,0
+EXPLORATORY,I,lethal@closure,16,128,4,32,10,False,,0,block-copy:10,10,38000.0,0,,10,26500.0,10,26500.0,300000,300000,0,SCORED top-3 endpoint,10,10,38000.0,10
