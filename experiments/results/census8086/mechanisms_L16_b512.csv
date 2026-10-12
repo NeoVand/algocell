@@ -429,7 +429,7 @@ L,budget,k,index,word,partner,match,mechanism,evidence,write_coverage,original_p
 16,512,2,2794,0aea,2,2,other,no_partner_write,0,14,0,64,38cf2433a8ef83fdc744cc4529d85f77eb2ff111b66ca0380e307c60347d38d9
 16,512,2,2794,0aea,3,0,other,no_partner_write,0,202,0,2351,1051301e5de2e00af7ca82775ea65278314275918bfb0c19b123deb794e9b8bc
 16,512,2,2794,0aea,4,0,other,no_partner_write,0,481,131,2383,2e02aa7ae61c1f342fcbb8484bed5f66f72c1026188d585b318aa5af71a9b8b9
-16,512,2,2794,0aea,5,16,other,mixed_or_unresolved_write_provenance,16,172,10,3239,438ddfb498e2e13eb658518a0d1b3c9609d32906f1b52f28fd6e0b733c2f9902
+16,512,2,2794,0aea,5,16,literal writer,partner_writes_from_reset_or_immediate_registers,16,172,10,3239,438ddfb498e2e13eb658518a0d1b3c9609d32906f1b52f28fd6e0b733c2f9902
 16,512,2,2794,0aea,6,1,other,mixed_or_unresolved_write_provenance,3,215,131,2437,3f11eea42ede25e081008b35cfe1a370260b916714af678fd1d64e904e32a7be
 16,512,2,2794,0aea,7,0,other,no_partner_write,0,757,0,1799,fa7b0b9e60ffefa063e02c0106d1b03c935bc958b391ae942de4b20d815fd116
 16,512,2,2794,0aea,8,2,other,mixed_or_unresolved_write_provenance,9,250,0,2299,11bb712eff4bba37f97bb5ce1f7d815a4c92b962c00ac79c0fa0ca94e31f7539
@@ -1232,7 +1232,7 @@ L,budget,k,index,word,partner,match,mechanism,evidence,write_coverage,original_p
 16,512,2,3818,0eea,6,6,literal writer,partner_writes_from_reset_or_immediate_registers,16,17,0,3164,93511bb6e2180030ea862f0210ee8b024396a3dc2db54fa29bc98b92b66fb2ce
 16,512,2,3818,0eea,7,8,other,mixed_or_unresolved_write_provenance,16,15,0,2599,ec0eca028ebab61110bc9ed9f949efd8abbb8c12ba91c9aa2083eda39e629404
 16,512,2,3818,0eea,8,1,other,mixed_or_unresolved_write_provenance,7,91,81,2724,b66ea593854e11e922cb6c9b7aaf4e21cf00335bb1d275658df183a6556d43c5
-16,512,2,3818,0eea,9,9,other,mixed_or_unresolved_write_provenance,16,13,0,3555,eb2445affb36b25fdc8fe47b1d59ee1d42443e0eda09d4c7acb01ef795ef277c
+16,512,2,3818,0eea,9,9,literal writer,partner_writes_from_reset_or_immediate_registers,16,13,0,3555,eb2445affb36b25fdc8fe47b1d59ee1d42443e0eda09d4c7acb01ef795ef277c
 16,512,2,3818,0eea,10,15,literal writer,partner_writes_from_reset_or_immediate_registers,16,24,0,3564,9e9da7984435ab35747d654c83bd2859fe6faa4f1f0123ee54a516af6b09cbc4
 16,512,2,3818,0eea,11,15,literal writer,partner_writes_from_reset_or_immediate_registers,16,24,0,3564,e5e6f01beac3b6fb0e45bf29b9645319313d7086f24d2c7a6d71ce0050022527
 16,512,2,3818,0eea,12,12,literal writer,partner_writes_from_reset_or_immediate_registers,16,13,0,3546,09f9b22e1451164487c3be41fc032f206c8ac903082a0e93ed24e1c65eb99d58
@@ -5301,7 +5301,7 @@ L,budget,k,index,word,partner,match,mechanism,evidence,write_coverage,original_p
 16,512,2,44368,ad50,12,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,2556,ec68c0188d5d205697af13fd9bd244f45baa21c9d340c03cbba4fb19346787ea
 16,512,2,44368,ad50,13,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,2556,5add141e9315b3de419c090c1cbc3d73ac4881a06f052e3bfb759998e4bb6ccd
 16,512,2,44368,ad50,14,10,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,2560,fec06fa126256784103c4fbf5c052b95daa182c9e56150ecfd5a6d0ed460d9f0
-16,512,2,44368,ad50,15,8,other,mixed_or_unresolved_write_provenance,16,1,0,2559,06db70ac9575c6a08f9bd9b9feff34cd2c643b259d9de2059e6322bbd3e6111a
+16,512,2,44368,ad50,15,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,0,2559,06db70ac9575c6a08f9bd9b9feff34cd2c643b259d9de2059e6322bbd3e6111a
 16,512,2,44368,ad50,16,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,2556,6b549e5380920647c006d027e97f722e670c227628ad28e2d42770c6966165ea
 16,512,2,44370,ad52,0,0,other,mixed_or_unresolved_write_provenance,16,1,1,3048,90510b04766b57fc22d485d7ddab97db39a8e3389119b9eab3c05b80d10cb29d
 16,512,2,44370,ad52,1,0,other,mixed_or_unresolved_write_provenance,16,1,1,3046,21e2619114b7cae5c633055a85dec654ee5a57d1078c7c368bd82a750b43274c

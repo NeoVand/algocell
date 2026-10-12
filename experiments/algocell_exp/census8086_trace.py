@@ -12,6 +12,7 @@ import re
 import numpy as np
 
 from .zmachine import ZMachine
+from .i8086_provenance_spec import OPCODE_CLASS
 
 
 class DiagnosticMachine(ZMachine):
@@ -127,7 +128,7 @@ def same_execution(base_result, diagnostic_result, base_words):
             and np.array_equal(base_result.record, diagnostic_result.record[:, :base_words]))
 
 
-def mechanism(log, L):
+def mechanism(log, L, *, audit_channels=False):
     """Conservative trace classification; memory copies require read/write evidence.
 
     One-pass means source/destination movement without repeated instruction-start
@@ -135,10 +136,10 @@ def mechanism(log, L):
     The episode ends at the last partner write. Unrecognized writers stay other.
     """
     if log is None:
-        return "other", "trace_overflow"
+        return [] if audit_channels else ("other", "trace_overflow")
     writes = log[(log[:, 1] == 2) & (log[:, 2] >= L)]
     if not len(writes):
-        return "other", "no_partner_write"
+        return [] if audit_channels else ("other", "no_partner_write")
     end = int(writes[-1, 0])
     episode = log[log[:, 0] <= end]
     reads = episode[episode[:, 1] == 1]
@@ -163,12 +164,17 @@ def mechanism(log, L):
         return regs[reg][:] if word else [regs[reg & 3][int(reg >= 4)]]
 
     def put(reg, word, value):
+        value = (value + [other,other])[:2 if word else 1]
         if word: regs[reg] = value[:]
         else: regs[reg & 3][int(reg >= 4)] = value[0]
 
+    # Diagnostic events are ordered by execution step. Partition once rather
+    # than rescanning a full 8192-event episode for each retained REP step.
+    boundaries = np.flatnonzero(np.diff(episode[:,0])) + 1
+    groups = {int(g[0,0]):g for g in np.split(episode,boundaries) if len(g)}
     for step in sorted(ops):
         op = ops[step]
-        group = episode[episode[:, 0] == step]
+        group = groups[step]
         fetched = list(map(int, group[group[:, 1] == 0, 3]))
         prefixes = []
         while fetched and fetched[0] in (0x26, 0x2e, 0x36, 0x3e, 0xf0, 0xf1, 0xf2, 0xf3):
@@ -183,6 +189,7 @@ def mechanism(log, L):
         mode = modrm >> 6 if modrm is not None else None
         reg = (modrm >> 3) & 7 if modrm is not None else None
         rm = modrm & 7 if modrm is not None else None
+        policy = OPCODE_CLASS[op]
         if 0x50 <= op <= 0x57:
             # The kernel implements 8086 PUSH SP's decremented stored value.
             if op == 0x54: arithmetic(4)
@@ -211,24 +218,25 @@ def mechanism(log, L):
         # Explicit writes and every implicit general-register update in the
         # vendored execute/string/repeat/push/pop helpers. Unknown semantics
         # poison all registers and segments, including trap/interrupt paths.
-        if 0xb0 <= op <= 0xbf: put(op&7,op>=0xb8,[literal]*(2 if op>=0xb8 else 1))
+        if policy == 'immediate': put(op&7,op>=0xb8,[literal]*(2 if op>=0xb8 else 1))
+        elif op in (0xac,0xad) and pending_rep and not len(rr): pass
         elif op in (0xac,0xad,0xa0,0xa1): put(0,word,read[:1+word] or [other]*(1+word))
-        elif 0x58 <= op <= 0x5f:
+        elif policy == 'register_pop':
             arithmetic(4); put(op-0x58,True,read[:2] if len(read)>=2 else [other]*2)
-        elif op in (7,15,23,31):
+        elif policy == 'segment_pop':
             arithmetic(4); segments[(op>>3)&3] = read[:2] if len(read)>=2 else [other]*2
-        elif op in (0x88,0x89,0x8a,0x8b) and modrm is not None:
+        elif policy == 'mov' and modrm is not None:
             if op in (0x8a,0x8b): put(reg,word,get(rm,word) if mode==3 else read[:1+word])
             elif mode==3: put(rm,word,get(reg,word))
-        elif op in (0xc4,0xc5) and modrm is not None:
+        elif policy == 'far_load' and mode != 3 and len(read) >= 4:
             put(reg,True,read[:2]); segments[0 if op==0xc4 else 3] = read[2:4]
         elif op == 0x8e and modrm is not None: segments[reg&3] = get(rm,True) if mode==3 else read[:2]
         elif op == 0x8c and mode==3: put(rm,True,segments[reg&3])
-        elif 0x40 <= op <= 0x4f: arithmetic(op&7)
+        elif policy == 'inc_dec': arithmetic(op&7)
         elif op in (0xc6,0xc7) and mode==3: put(rm,word,[literal]*(1+word))
-        elif 0x90 <= op <= 0x97:
+        elif policy == 'ax_exchange':
             regs[0],regs[op&7] = regs[op&7],regs[0]
-        elif op in (0x86,0x87) and modrm is not None:
+        elif policy == 'xchg' and modrm is not None:
             old = get(reg,word)
             put(reg,word,get(rm,word) if mode==3 else read[:1+word])
             if mode==3: put(rm,word,old)
@@ -237,7 +245,8 @@ def mechanism(log, L):
             if mode==3: put(rm,True,read[:2])
         elif op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xae,0xaf): pass
         elif op in (0xe0,0xe1,0xe2): arithmetic(1)
-        elif op in (0xe3,0xe9,0xea,0xeb,0x9b,0xa8,0xa9,0xf4,0xf5,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd) or 0x60 <= op <= 0x7f: pass
+        elif policy == 'immediate_far_jump': segments[1] = [literal,literal]
+        elif op in (0xe3,0xe9,0xeb,0x9b,0xa8,0xa9,0xf4,0xf5,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd) or 0x60 <= op <= 0x7f: pass
         elif 0x50 <= op <= 0x57 or op in (6,14,22,30): pass
         elif op in (0xfe,0xff) and reg in (6,7): pass
         elif op < 0x40 and (op&7)<4 and modrm is not None and (op&7)<2 and mode!=3: pass
@@ -245,11 +254,21 @@ def mechanism(log, L):
         else:
             regs = [[other,other] for _ in range(8)]
             segments = [[other,other] for _ in range(4)]
-        if op in (0xa4,0xa5,0xa6,0xa7,0xac,0xad): arithmetic(6)
-        if op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xae,0xaf): arithmetic(7)
-        if pending_rep and op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xac,0xad,0xae,0xaf): arithmetic(1)
+        executed_string = not pending_rep or bool(len(rr) or len(ww))
+        if executed_string and op in (0xa4,0xa5,0xa6,0xa7,0xac,0xad): arithmetic(6)
+        if executed_string and op in (0xa4,0xa5,0xa6,0xa7,0xaa,0xab,0xae,0xaf): arithmetic(7)
+        if executed_string and pending_rep and policy == 'string': arithmetic(1)
         if 0x50 <= op <= 0x57 or op in (6,14,22,30) or (op in (0xfe,0xff) and reg in (6,7)):
             arithmetic(4)
+        # TF can vector after an otherwise admitted instruction. Interrupt bus
+        # traffic includes four IVT reads and six stack writes. No admitted
+        # transfer above generates six stores; poison the post-interrupt state
+        # even when the instruction's own stores happened to be recognizable.
+        if len(ww) >= 6:
+            regs = [[other,other] for _ in range(8)]
+            segments = [[other,other] for _ in range(4)]
+    if audit_channels:
+        return channels
     if channels and all(c == "literal" for c in channels):
         return "literal writer", "partner_writes_from_reset_or_immediate_registers"
     if channels and all(c == "memory" for c in channels):

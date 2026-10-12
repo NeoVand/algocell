@@ -1,0 +1,1277 @@
+opcode,reg_field,mode,class,WGSL_anchor,writes,provenance_policy
+00,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+00,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+01,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+02,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+03,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+04,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+05,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+06,-1,implicit,segment_push,"case 6u, 14u",SP decrement; segment value unchanged,exact segment source; SP arithmetic
+07,-1,implicit,segment_pop,"case 7u, 15u",SP increment; ES/CS/SS/DS overwrite,two ordered reads; SP arithmetic
+08,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+08,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+09,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0a,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0b,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0c,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0d,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+0e,-1,implicit,segment_push,"case 6u, 14u",SP decrement; segment value unchanged,exact segment source; SP arithmetic
+0f,-1,implicit,segment_pop,"case 7u, 15u",SP increment; ES/CS/SS/DS overwrite,two ordered reads; SP arithmetic
+10,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+10,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+11,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+12,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+13,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+14,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+15,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+16,-1,implicit,segment_push,"case 6u, 14u",SP decrement; segment value unchanged,exact segment source; SP arithmetic
+17,-1,implicit,segment_pop,"case 7u, 15u",SP increment; ES/CS/SS/DS overwrite,two ordered reads; SP arithmetic
+18,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+18,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+19,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1a,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1b,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1c,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1d,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+1e,-1,implicit,segment_push,"case 6u, 14u",SP decrement; segment value unchanged,exact segment source; SP arithmetic
+1f,-1,implicit,segment_pop,"case 7u, 15u",SP increment; ES/CS/SS/DS overwrite,two ordered reads; SP arithmetic
+20,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+20,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+21,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+22,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+23,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+24,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+25,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+26,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+27,-1,implicit,decimal_adjust,"case 39u, 47u",AL or AX and flags,invalidate all
+28,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+28,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+29,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2a,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2b,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2c,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2d,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+2e,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+2f,-1,implicit,decimal_adjust,"case 39u, 47u",AL or AX and flags,invalidate all
+30,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+30,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+31,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+32,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+33,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+34,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+35,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+36,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+37,-1,implicit,decimal_adjust,"case 39u, 47u",AL or AX and flags,invalidate all
+38,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+38,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+39,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3a,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3b,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3c,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3d,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+3e,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+3f,-1,implicit,decimal_adjust,"case 39u, 47u",AL or AX and flags,invalidate all
+40,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+41,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+42,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+43,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+44,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+45,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+46,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+47,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+48,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+49,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+4a,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+4b,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+4c,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+4d,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+4e,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+4f,-1,implicit,inc_dec,op >= 64u && op <= 79u,named word GPR,"literal stays literal, memory becomes unresolved"
+50,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+51,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+52,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+53,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+54,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+55,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+56,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+57,-1,implicit,register_push,op >= 80u && op <= 87u,SP decrement; PUSH SP stores decremented SP,exact source except SP arithmetic
+58,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+59,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+5a,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+5b,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+5c,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+5d,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+5e,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+5f,-1,implicit,register_pop,op >= 88u && op <= 95u,"SP increment then named GPR overwrite, including POP SP",two ordered reads; overwritten SP replaces increment tag
+60,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+61,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+62,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+63,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+64,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+65,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+66,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+67,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+68,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+69,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+6a,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+6b,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+6c,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+6d,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+6e,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+6f,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+70,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+71,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+72,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+73,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+74,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+75,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+76,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+77,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+78,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+79,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+7a,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+7b,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+7c,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+7d,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+7e,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+7f,-1,implicit,conditional_jump,op >= 96u && op <= 127u,IP only (60..6F aliases included),preserve
+80,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+80,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+81,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+82,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+83,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+84,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,0,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,0,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,1,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,1,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,2,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,2,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,3,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,3,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,4,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,4,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,5,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,5,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,6,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,6,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,7,register,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+85,7,memory,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+86,0,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,0,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,1,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,1,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,2,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,2,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,3,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,3,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,4,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,4,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,5,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,5,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,6,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,6,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,7,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+86,7,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,0,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,0,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,1,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,1,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,2,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,2,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,3,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,3,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,4,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,4,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,5,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,5,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,6,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,6,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,7,register,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+87,7,memory,xchg,op == 134u || op == 135u,reg plus rm; byte/word,exact register exchange; memory store conservatively unresolved
+88,0,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,0,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,1,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,1,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,2,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,2,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,3,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,3,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,4,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,4,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,5,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,5,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,6,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,6,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,7,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+88,7,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,0,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,0,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,1,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,1,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,2,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,2,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,3,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,3,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,4,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,4,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,5,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,5,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,6,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,6,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,7,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+89,7,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,0,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,0,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,1,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,1,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,2,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,2,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,3,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,3,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,4,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,4,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,5,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,5,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,6,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,6,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,7,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8a,7,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,0,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,0,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,1,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,1,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,2,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,2,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,3,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,3,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,4,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,4,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,5,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,5,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,6,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,6,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,7,register,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8b,7,memory,mov,op == 136u || op == 137u,"reg/rm, byte or word",exact byte transfer
+8c,0,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,0,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,1,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,1,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,2,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,2,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,3,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,3,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,4,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,4,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,5,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,5,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,6,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,6,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,7,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8c,7,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8d,0,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,0,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,1,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,1,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,2,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,2,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,3,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,3,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,4,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,4,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,5,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,5,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,6,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,6,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,7,register,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8d,7,memory,lea,op == 141u,"word GPR, register mode traps",invalidate all
+8e,0,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,0,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,1,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,1,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,2,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,2,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,3,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,3,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,4,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,4,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,5,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,5,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,6,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,6,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,7,register,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8e,7,memory,segment_mov,op == 140u,8C word rm; 8E word segment reg&3,exact two-byte transfer (8C forces word)
+8f,0,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,0,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,1,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,1,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,2,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,2,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,3,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,3,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,4,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,4,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,5,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,5,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,6,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,6,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,7,register,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+8f,7,memory,pop_rm,op == 143u,SP increment then word rm,ordered stack reads; SP arithmetic
+90,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+91,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+92,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+93,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+94,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+95,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+96,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+97,-1,implicit,ax_exchange,op >= 144u && op <= 151u,AX and named word GPR,"swap exact tags, including NOP"
+98,-1,implicit,sign_extend,case 152u,CBW AX; CWD DX,invalidate all
+99,-1,implicit,sign_extend,case 152u,CBW AX; CWD DX,invalidate all
+9a,-1,implicit,immediate_far_call,case 154u,two SP decrements; CS immediate; IP immediate,invalidate all
+9b,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+9c,-1,implicit,flags_stack,case 156u,PUSHF SP; POPF SP and flags (TF possible),invalidate all
+9d,-1,implicit,flags_stack,case 156u,PUSHF SP; POPF SP and flags (TF possible),invalidate all
+9e,-1,implicit,flags_transfer,case 158u,SAHF flags; LAHF AH,invalidate all
+9f,-1,implicit,flags_transfer,case 158u,SAHF flags; LAHF AH,invalidate all
+a0,-1,implicit,accumulator_memory,op >= 160u && op <= 163u,AL/AX or memory,exact byte transfer
+a1,-1,implicit,accumulator_memory,op >= 160u && op <= 163u,AL/AX or memory,exact byte transfer
+a2,-1,implicit,accumulator_memory,op >= 160u && op <= 163u,AL/AX or memory,exact byte transfer
+a3,-1,implicit,accumulator_memory,op >= 160u && op <= 163u,AL/AX or memory,exact byte transfer
+a4,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+a5,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+a6,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+a7,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+a8,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+a9,-1,implicit,alu,shared arithmetic phase,destination GPR/rm or flags; CMP/TEST no destination,conservative except memory-destination RMW
+aa,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+ab,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+ac,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+ad,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+ae,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+af,-1,implicit,string,fn i8086_string,SI/DI; LODS AL/AX; REP CX only if CX nonzero,"exact data, pointer/count arithmetic; zero REP preserves all tags"
+b0,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b1,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b2,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b3,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b4,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b5,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b6,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b7,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b8,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+b9,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+ba,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+bb,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+bc,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+bd,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+be,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+bf,-1,implicit,immediate,op >= 176u && op <= 191u,named byte/word GPR,literal overwrite
+c0,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+c1,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+c2,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+c3,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+c4,0,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,0,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,1,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,1,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,2,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,2,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,3,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,3,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,4,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,4,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,5,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,5,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,6,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,6,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,7,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c4,7,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,0,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,0,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,1,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,1,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,2,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,2,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,3,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,3,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,4,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,4,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,5,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,5,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,6,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,6,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,7,register,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c5,7,memory,far_load,op == 196u || op == 197u,word reg then ES/DS; register mode traps,four ordered reads
+c6,0,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,0,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,1,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,1,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,2,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,2,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,3,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,3,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,4,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,4,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,5,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,5,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,6,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,6,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,7,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c6,7,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,0,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,0,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,1,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,1,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,2,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,2,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,3,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,3,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,4,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,4,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,5,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,5,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,6,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,6,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,7,register,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c7,7,memory,immediate_rm,op == 198u || op == 199u,byte/word rm (all reg fields accepted),literal overwrite
+c8,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+c9,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+ca,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+cb,-1,implicit,return,"case 192u, 193u",SP pops+extra; far return CS overwrite,invalidate all
+cc,-1,implicit,interrupt,case 204u,"IVT reads, SP decrements, CS; IRET pops SP/CS/flags",invalidate all; TF after any opcode also invalidates
+cd,-1,implicit,interrupt,case 204u,"IVT reads, SP decrements, CS; IRET pops SP/CS/flags",invalidate all; TF after any opcode also invalidates
+ce,-1,implicit,interrupt,case 204u,"IVT reads, SP decrements, CS; IRET pops SP/CS/flags",invalidate all; TF after any opcode also invalidates
+cf,-1,implicit,interrupt,case 204u,"IVT reads, SP decrements, CS; IRET pops SP/CS/flags",invalidate all; TF after any opcode also invalidates
+d0,0,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,0,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,1,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,1,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,2,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,2,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,3,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,3,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,4,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,4,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,5,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,5,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,6,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,6,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,7,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d0,7,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,0,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,0,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,1,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,1,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,2,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,2,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,3,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,3,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,4,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,4,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,5,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,5,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,6,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,6,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,7,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d1,7,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,0,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,0,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,1,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,1,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,2,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,2,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,3,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,3,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,4,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,4,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,5,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,5,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,6,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,6,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,7,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d2,7,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,0,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,0,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,1,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,1,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,2,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,2,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,3,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,3,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,4,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,4,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,5,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,5,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,6,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,6,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,7,register,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d3,7,memory,shift,op >= 208u && op <= 211u,byte/word rm and flags; count zero preserves numeric value,invalidate all; unchanged address-paired RMW ignored
+d4,-1,implicit,aam_aad_salc,case 212u,AX/AL and flags; AAM zero can vector,invalidate all
+d5,-1,implicit,aam_aad_salc,case 212u,AX/AL and flags; AAM zero can vector,invalidate all
+d6,-1,implicit,aam_aad_salc,case 212u,AX/AL and flags; AAM zero can vector,invalidate all
+d7,-1,implicit,xlat,case 215u,AL,invalidate all (not admitted)
+d8,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d8,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+d9,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+da,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+db,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dc,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+dd,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+de,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,0,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,0,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,1,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,1,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,2,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,2,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,3,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,3,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,4,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,4,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,5,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,5,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,6,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,6,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,7,register,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+df,7,memory,escape,op >= 216u && op <= 223u,no GPR/segment writes; may read word memory,invalidate all (not admitted)
+e0,-1,implicit,loop,case 224u,CX decrement except JCXZ; IP,CX arithmetic; JCXZ preserve
+e1,-1,implicit,loop,case 224u,CX decrement except JCXZ; IP,CX arithmetic; JCXZ preserve
+e2,-1,implicit,loop,case 224u,CX decrement except JCXZ; IP,CX arithmetic; JCXZ preserve
+e3,-1,implicit,loop,case 224u,CX decrement except JCXZ; IP,CX arithmetic; JCXZ preserve
+e4,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+e5,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+e6,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+e7,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+e8,-1,implicit,near_call,case 232u,SP decrement; IP,invalidate all
+e9,-1,implicit,near_jump,case 233u,IP,preserve
+ea,-1,implicit,immediate_far_jump,case 234u,CS immediate overwrite and IP,CS literal overwrite; GPRs and other segments preserve
+eb,-1,implicit,near_jump,case 233u,IP,preserve
+ec,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+ed,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+ee,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+ef,-1,implicit,io,case 228u,IN AL/AX=FF/FFFF; OUT no GPR/segment writes,invalidate all (not admitted)
+f0,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+f1,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+f2,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+f3,-1,implicit,unsupported,default: { i8086_raise(ZIL_TRAP_UNIMPLEMENTED,trap/halt,invalidate all
+f4,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+f5,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+f6,0,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,0,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,1,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,1,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,2,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,2,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,3,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,3,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,4,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,4,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,5,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,5,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,6,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,6,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,7,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f6,7,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,0,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,0,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,1,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,1,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,2,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,2,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,3,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,3,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,4,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,4,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,5,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,5,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,6,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,6,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,7,register,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f7,7,memory,muldiv_group,op == 246u || op == 247u,TEST flags; NOT/NEG rm; MUL/DIV AX and word DX; divide trap CS/SP,invalidate all
+f8,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+f9,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+fa,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+fb,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+fc,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+fd,-1,implicit,neutral,case 244u,"flags, halt or IP only",preserve
+fe,0,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,0,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,1,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,1,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,2,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,2,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,3,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,3,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,4,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,4,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,5,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,5,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,6,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,6,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,7,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+fe,7,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,0,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,0,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,1,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,1,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,2,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,2,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,3,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,3,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,4,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,4,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,5,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,5,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,6,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,6,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,7,register,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"
+ff,7,memory,inc_transfer_push_group,op == 254u || op == 255u,"INC/DEC rm; calls SP; far transfers CS; /6,/7 SP decrement","exact /6,/7 push; all other forms invalidate all"

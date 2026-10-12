@@ -1512,6 +1512,34 @@ word, and partner. Zero-partner summaries are regenerated, not replayed.
 | 32 | 512 | 2 | faa5 | 11 | other | literal writer |
 | 32 | 512 | 2 | fba5 | 11 | other | literal writer |
 
+## B6 correction — 2026-10-12
+
+Immediate far JMP overwrites CS provenance with its immediate operand. Trapped
+register LES/LDS invalidate provenance; zero-count REP preserves untouched
+registers. Post-instruction TF vector traffic invalidates the register/segment
+bank. The total WGSL instruction table and per-class regressions are archived
+in the S2 prelaunch evidence. An independent flat value-tag bank agrees on
+every ordered partner-write channel and mechanism over all 21,182
+archived candidate encounters (1,246 settings), with zero mismatches.
+The two trace overflows remain other. Random fixed-program evidence is in
+b6_validation.json; no population or paid compute was used.
+
+7 additional encounter labels change relative to e96abc0.
+Every exact nonzero zero-partner word retains its label and all R0–R2 rationale
+counts remain unchanged. 07 A5 remains memory-fed one-pass in all 68 encounters,
+with B fetches in all 64 random encounters. R2 is unchanged. Raw exhaustive
+word tables, trace bytes and output/access/count columns are unchanged.
+
+| L | budget | k | word | partner | old | new |
+|---|---|---|---|---|---|---|
+| 16 | 128 | 2 | 0eea | 9 | other | literal writer |
+| 16 | 128 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | 0aea | 5 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 9 | other | literal writer |
+| 16 | 512 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+
 
 ## Machine, provenance and method
 
@@ -1754,7 +1782,9 @@ per-encounter trace hashes and serial partner/offspring hashes bind finer units.
 | file | bytes | sha256 |
 |---|---|---|
 | LAW_CONTRACT.md | 2887 | 028d41fa1fb60980cb3525ce12d548268d9783083adab142b32dfe708a985795 |
-| MECHANISM_CONTRACT.md | 2734 | 0c00d87e39504788b532f8b89144c4279c1698b3c319a5aa3bf23fa2194a367a |
+| MECHANISM_CONTRACT.md | 3620 | 8a5ed6baaa261e5a24c95fd988e86449de24e26f1a5eb5fb381871da128f7efa |
+| b6_correction_labels.csv | 351 | 0fd2c58215d385fc89add60a7e642347691ac68d11c7341c9bd19813d38158c7 |
+| b6_correction_provenance.json | 1711 | 5e385396ff702ab89f94223701b53ba946b2c08cb4d74749305e1d905cc9abfb |
 | bursts.csv | 385813 | 985445792bdcb8e59dcb3d1058d2b531c1e452b77dc7f03e7021bf3cabb3f76a |
 | correction_labels.csv | 129140 | 63155d35ea3e2e6b668fad3129960bc38d4db4398c39a4e3c91d819387593803 |
 | correction_provenance.json | 24079 | e241900f7dafaf8c5281f7ff747549c9cec150c426f1d81da10baec61b362486 |
@@ -1763,10 +1793,10 @@ per-encounter trace hashes and serial partner/offspring hashes bind finer units.
 | law_erased.csv | 1367486 | 5f1e6513a07ef677a01d4e6ae11a398a9859296234bce3fe6b484aec137609fa |
 | law_geometry_traces.csv | 146869 | 8bcc9ad2a55c718f65b40f1a2e41ab8b56f38eef7ae81ef8016f6e49677e45d7 |
 | law_serial.csv.gz | 39448913 | 3e4f4d8bdc3c2f9fa7214afea1fd1521802419d2c421f87c6f05f98bee0871cc |
-| mechanisms_L16_b128.csv | 720073 | 19fedf3c694c20a347e31a90cc42198785d9309f4098eb40e8db544fef637ff3 |
-| mechanisms_L16_b512.csv | 1066680 | 37fa497a36c6745eebf00e6cec26bd62d1950bcfabed5462e48b73837250d1bf |
-| mechanisms_L32_b128.csv | 330905 | ea919cd8142ede0ec3911165655cc000219fbcf2e5ad66db789de0399d1f382e |
-| mechanisms_L32_b512.csv | 973534 | 06a6afae603a8ca59c6c834e479e90e20c3e7664175f85189169da6eacd79d16 |
+| mechanisms_L16_b128.csv | 720114 | aee20415b8085489034e3c39fada3d565c994634e5c12bdbcd014c025c358cce |
+| mechanisms_L16_b512.csv | 1066742 | 24e6a91a16c7758a85db42c4a3ddce5b8eaabe71f96741c1e60ad0d25f8ea66f |
+| mechanisms_L32_b128.csv | 330925 | dc1e1669d8d42143f797f53f372c34f5dd4639c7926afbc9f00cb40eef22c131 |
+| mechanisms_L32_b512.csv | 973554 | d33e7bc1215803388462b752ba34149871811f4548fa9b0d6590fc5a99bb4824 |
 | partners.csv | 4497 | 555a4b8b3b3a747ddd11690f5d179bd59c9ab3aef2e57ee3d9dc503fc6076b77 |
 | provenance.json | 4180 | 08dd9fce7923363ff8ba06ae948eb5bc200e740756b9d6bb02df6f7a85d425dc |
 | smoke.json | 2791 | 01b12fd092b0a8ce59255fa501acc15af149846b4f2fb4b3739142fbccf45366 |
@@ -1817,7 +1847,7 @@ per-encounter trace hashes and serial partner/offspring hashes bind finer units.
 | words_L32_k2_b512.csv | 30904822 | 1b6852134229637b29a458a438ea7c83daafbaf0fdc64032f1cd2f68b027bbbb |
 | source:experiments/census8086.py | 10195 | d1b24fa7806fa3ce5e008dcc876d8cf06f7ff81449df71bfb4079042de9c1e33 |
 | source:experiments/census8086_law.py | 9584 | e99e6c53c22d3549149cb923f0214eca30af7f6cc6b09d597ecedb82bd9a665d |
-| source:experiments/census8086_report.py | 21519 | 1385fd6383418940c7e23e7c79027a1c4fd6e232baa38f05799edce3f5505164 |
-| source:experiments/algocell_exp/census8086_trace.py | 12863 | d7515aaa15df4276c50c8bbcf3d02476eef5e4d419386131ea8469535e43c476 |
+| source:experiments/census8086_report.py | 23059 | 8969a0131d02a769d1f34f72f56183aba293afb2c881b297128bb554735ccf05 |
+| source:experiments/algocell_exp/census8086_trace.py | 14103 | 0538dbaa000bc14e32e826f67f77c9fa098d17a0cb74f1f2bc5193930f997564 |
 | source:experiments/reaudit8086.py | 4576 | a8f058739cbf90e9bf3d77e169735a1e2ed04cca8e071e42d8cf48bbc44db2d2 |
 

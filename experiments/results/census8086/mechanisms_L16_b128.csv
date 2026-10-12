@@ -773,7 +773,7 @@ L,budget,k,index,word,partner,match,mechanism,evidence,write_coverage,original_p
 16,128,2,3818,0eea,6,6,literal writer,partner_writes_from_reset_or_immediate_registers,16,17,0,784,35e45504d064abe434e789fd6cc8350caa15542899cac2a2f995718cef6520e3
 16,128,2,3818,0eea,7,8,other,mixed_or_unresolved_write_provenance,16,15,0,679,ca58ae50cd9f744f86dfbea199031eef37fdbf1095a73e79ce8b9b5e8ae27392
 16,128,2,3818,0eea,8,1,other,mixed_or_unresolved_write_provenance,7,91,9,676,5d17a95bf0e58704db9da6c6626cdb390bc83b331d5d8466b941dee7d558293f
-16,128,2,3818,0eea,9,9,other,mixed_or_unresolved_write_provenance,16,13,0,867,27798802055703ef9bce110d0dc7975f9d8611da6e0cb66cb043fd2cadfe18f6
+16,128,2,3818,0eea,9,9,literal writer,partner_writes_from_reset_or_immediate_registers,16,13,0,867,27798802055703ef9bce110d0dc7975f9d8611da6e0cb66cb043fd2cadfe18f6
 16,128,2,3818,0eea,10,15,literal writer,partner_writes_from_reset_or_immediate_registers,16,24,0,876,4174c3b82e2cf4e9bda0c2999db2e8dc2e549598dd0fcb779ad8f83e963afd6f
 16,128,2,3818,0eea,11,15,literal writer,partner_writes_from_reset_or_immediate_registers,16,24,0,876,bcb956da25c66e0df3c1d3bc3d41924fbd5784cc48c030d61d7c201ef4da14d8
 16,128,2,3818,0eea,12,12,literal writer,partner_writes_from_reset_or_immediate_registers,16,13,0,858,dcce86d4db6a51303606a78c89de1065be150dffb5013d41e9af5b2602ca82e2
@@ -3380,7 +3380,7 @@ L,budget,k,index,word,partner,match,mechanism,evidence,write_coverage,original_p
 16,128,2,44368,ad50,12,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,636,a8993c4b4b9e6234e84873e907bbdcec8cbd6d6078253e996a21fc1759e7adad
 16,128,2,44368,ad50,13,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,636,159fe096eec27f1a8607df75a31dbb438011b2355ce476f1fdd2e1b5312e2540
 16,128,2,44368,ad50,14,13,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,640,7e22bcf0210eb71b01da458d5b620e19536bcd6e4212203c1f0db25430ac21a9
-16,128,2,44368,ad50,15,10,other,mixed_or_unresolved_write_provenance,16,1,0,639,c71aafcb0d8438a9272f1ea3189dcbe48eabbad10383733c24b39009fa693f50
+16,128,2,44368,ad50,15,10,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,0,639,c71aafcb0d8438a9272f1ea3189dcbe48eabbad10383733c24b39009fa693f50
 16,128,2,44368,ad50,16,8,memory-fed one-pass copier,paired_memory_moves_distinct_starts,16,1,1,636,7f7e4847e33740c51ce6be55c1a83b7a40ebc2ff0bd4527af0e58f18ab78a3dd
 16,128,2,44370,ad52,0,0,other,mixed_or_unresolved_write_provenance,16,1,1,744,c31f6eaf3802a5b8c19ef9fa41dd4ac56dfac5da90af401db3a7c9b4744a26d8
 16,128,2,44370,ad52,1,0,other,mixed_or_unresolved_write_provenance,16,1,1,742,f22726f48bc2a9df59535af277c0222694ee6d47c7559da46c797acb803c4746

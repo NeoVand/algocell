@@ -39,3 +39,16 @@ All push/pop helpers, segment stack operations, strings, REP and LOOP,
 call/return/interrupt paths, and implicit accumulator/DX transformations were
 audited; unsupported transfers poison provenance. See correction_labels.csv
 and correction_provenance.json for the complete fresh census re-audit.
+
+B6 correction 2026-10-12: immediate far JMP (EA) sets CS's two tags to
+literal, independently of the old CS and of coincidental operand equality.
+Register LES/LDS traps invalidate the bank; no absent read creates an empty
+register tag. A zero-count REP leaves AX/SI/DI/CX untouched. TF vector traffic
+following an admitted instruction invalidates the post-instruction bank.
+The total opcode/ModRM table is b6_instruction_audit.csv in S2 prelaunch;
+per-class regression tests and a separate flat value-tag oracle cover the
+conservative contract. The differential compares ordered effective write
+channels as well as final classes, over every archived census candidate and
+seeded random fixed programs. Raw census outcomes and the registered R0–R2
+counts and 07 A5 witness are unchanged; additional non-exact/random label
+corrections are listed separately in b6_correction_labels.csv.
