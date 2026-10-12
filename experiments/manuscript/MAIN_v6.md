@@ -23,7 +23,7 @@ survive while losing every one of 512 tested mutations, whereas later copiers tr
 copying family, the overlap of a copy with itself determines which parental bytes reach descendants, and the
 displacement that sets this overlap is itself inherited, so that one copying rule controls how much arbitrary payload
 survives: after 101 registered edits of it, descendants transmitted exactly the predicted payload, from none to 60
-bytes. The chemistry of the environment shifts which reproductive designs prevail. Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
+bytes. The same law holds exactly for copiers that evolved on a second processor. The chemistry of the environment shifts which reproductive designs prevail. Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
 restricted experimental analogue of Woese's Darwinian threshold.
 
 ## Main text
@@ -242,8 +242,13 @@ was 1,125,000 steps, against hundreds of steps on the Z80, although the two mach
 channels [results/s6502/v2/S1_v2.md; results/s6502/v2/arm_comparison.csv, arm A]. Only 14 of the 20 met the registered
 loop criterion, so that component of the prediction (P1) failed. A post hoc ring-position analysis explains the other
 six [results/s6502/CORRECTION.md]. Constructed 6502 copy loops reproduced the predicted d − 6 payload in all 296
-qualifying cases [results/census6502/table_closers_law.csv]. Whether evolved 6502 copiers obey the law remains to be
-measured [PENDING; fill: evolved 6502 retention panel].
+qualifying cases [results/census6502/table_closers_law.csv]. The registered retention panel (C2) then asked whether copiers that evolved on the
+6502 obey it [results/evolved6502/RETENTION.md; REVISION_PREREG.md, C2]. From all 80 S1 worlds we sampled 942 first,
+final top-three and random final cells; a frozen extractor, applied before any retention test, found 42 that copy
+forward with a constant displacement, with core footprints of 6 to 10 bytes taken from their code and predicted free
+payloads of 0 to 9 positions. Every prediction held exactly: across 91,428 interventions and 731,424 serial
+observations through eight generations there was no mismatch. The route into replication differs between the two
+processors, but the copying law, applied to evolved copiers, does not.
 
 The 8086 is the prospective test (Fig. 5). Under the declared reset with coherent instruction fetch, the period-two
 tile `B9 51` executes `MOV CX,$B951; PUSH CX` and writes its own tiling [/Users/neo/repos/zilion/test/world/cases_i8086.mjs].
@@ -283,7 +288,7 @@ possibilities. The mechanism we describe is not a claim that chemistry uses a di
 inspectable case in which the question has an exact answer: which alternatives does a reproductive process preserve,
 and which does its own operation remove?
 
-Two tests define what comes next. The law has held exactly in edited Z80 descendants, and it must now be tested
+Two tests define what comes next. The law has held exactly in edited Z80 descendants and in evolved 6502 copiers, and it must now be tested
 prospectively on evolved copiers of a third processor, in the registered 8086 experiment. Beyond capacity lies
 function. These experiments establish that payload is
 transmitted, but not that the transmitted variation does anything useful. To show adaptive use, an inherited
