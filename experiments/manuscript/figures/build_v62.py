@@ -14,6 +14,7 @@ import textwrap
 import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
+from matplotlib.transforms import ScaledTranslation
 import numpy as np
 import pandas as pd
 
@@ -181,19 +182,32 @@ def fig3b(p):
     pop=table('law_population');c1=table('law_z80_c1');c2=table('law_6502_c2');controls=table('law_6502_controls')
     ax=p.ax(.17,.20,.79,.69)
     ax.plot([0,60],[0,60],color=LIGHT,lw=.75,zorder=0)
-    ax.scatter(pop.predicted,pop.n_unexec,s=pop.cells*120/pop.cells.max(),color=GREY,alpha=.65,lw=0,zorder=1)
-    ax.scatter(controls['d − 6'],controls['payload carried (sites ≥ 6)'],s=21,facecolors='none',edgecolors=INK,marker='s',lw=.6,zorder=3)
-    ax.scatter(c1.predicted_free,c1.measured_free,s=12,color=TEAL,marker='o',edgecolors='white',lw=.35,zorder=4)
-    ax.scatter(c2.predicted_free,c2.measured_free,s=12,color=TEAL,marker='^',edgecolors='white',lw=.3,zorder=5)
-    ax.set(xlim=(-3,63),ylim=(-3,63))
+    # Draw large discs first so a smaller population coordinate stays visible
+    # inside a larger one. The same area scale is used for the three-size key.
+    pop=pop.sort_values('cells',ascending=False)
+    population_area=.20
+    population_colour='#CBD0D5'
+    ax.scatter(pop.predicted,pop.n_unexec,s=pop.cells*population_area,
+               facecolors=population_colour,edgecolors='#9AA5AE',lw=.20,zorder=1)
+    # Fixed display offsets separate the series without changing source values.
+    def offset(dx,dy):
+        return ax.transData+ScaledTranslation(dx/72,dy/72,p.fig.dpi_scale_trans)
+    ax.scatter(controls['d − 6'],controls['payload carried (sites ≥ 6)'],s=16,facecolors='none',edgecolors=INK,marker='s',lw=.6,zorder=3,transform=offset(3,-3))
+    ax.scatter(c1.predicted_free,c1.measured_free,s=9,color=TEAL,marker='o',edgecolors='white',lw=.3,zorder=4,transform=offset(-3,3))
+    ax.scatter(c2.predicted_free,c2.measured_free,s=9,color=TEAL,marker='^',edgecolors='white',lw=.3,zorder=5,transform=offset(3,3))
+    ax.set(xlim=(-5,65),ylim=(-5,65))
     axis(ax,'Predicted free payload (positions)','Measured capacity / sampled\nretention score (positions)',[0,20,40,60],[0,20,40,60])
-    handles=[Line2D([],[],marker='o',ms=4,color=GREY,ls='none',label='Z80 population'),
+    handles=[Line2D([],[],marker='o',ms=4,mfc=population_colour,mec='#9AA5AE',mew=.2,ls='none',label='Z80 population'),
              Line2D([],[],marker='o',ms=3,color=TEAL,ls='none',label='Z80 C1'),
              Line2D([],[],marker='^',ms=3,color=TEAL,ls='none',label='6502 C2'),
              Line2D([],[],marker='s',ms=3,mfc='none',mec=INK,ls='none',label='6502 controls'),
              Line2D([],[],marker='D',ms=3,mfc='none',mec=GREY,ls='none',label='8086')]
     ax.legend(handles=handles,loc='upper left',bbox_to_anchor=(.02,.97),frameon=False,
               fontsize=5.7,labelspacing=.30,handletextpad=.5,borderpad=0,handlelength=1)
+    ax.scatter([31,41,54],[9]*3,s=np.array([1,100,2000])*population_area,
+               facecolors=population_colour,edgecolors='#9AA5AE',lw=.20,zorder=2)
+    for x,label in zip([31,41,54],['1','100','2,000 cells']):
+        ax.text(x,1,label,fontsize=5.5,ha='center',va='center')
 
 
 def fig3c(p):
@@ -215,16 +229,44 @@ def fig3c(p):
 
 
 def fig3d(p):
-    d=table('dial_coordinates');working=d[d.culture_replicator]
-    ax=p.ax(.17,.20,.79,.69)
-    for inherited in (False,True):
-        q=working[working.inherited_aligned==inherited]
-        ax.scatter(q.value,q.nominal_d_minus_c,s=11,facecolors=TEAL if inherited else 'white',
-                   edgecolors=TEAL,lw=.6,zorder=3)
-    nonworking=d[~d.culture_replicator]
-    ax.plot(nonworking.value,[-4]*len(nonworking),'|',color=GREY,ms=1.8,mew=.4,ls='none')
-    ax.set(xlim=(-3,258),ylim=(-5,58))
-    axis(ax,'Displacement byte value','Nominal free payload (positions)',[0,64,128,192,255],[0,28,56])
+    d=table('dial_coordinates')
+    eligible=d.culture_replicator & d.prop8_eligible
+    formal=d[eligible]
+    assert set(d.value)==set(range(256)) and len(d)==256
+    assert formal.effective_d.between(4,32).all() and (32%formal.effective_d==0).all()
+    assert (formal.predicted_payload==formal.effective_d-4).all()
+    assert formal.predicted_payload.between(0,28).all()
+    assert d.loc[~d.prop8_eligible,'predicted_payload'].isna().all()
+    cmap=mcolors.LinearSegmentedColormap.from_list('free_payload',['#A7D5D5',TEAL])
+    norm=mcolors.Normalize(vmin=0,vmax=28)
+    # Keep the map and its colourbar square/registered at both export sizes.
+    height=.68
+    width=height*(p.rect[3]*p.fig.get_figheight())/(p.rect[2]*p.fig.get_figwidth())
+    x=(1-width-.19)/2
+    ax=p.ax(x,.22,width,height)
+    for row in d.itertuples():
+        if not row.culture_replicator:
+            fill,edge,lw='#F1F2F3','white',.25
+        elif row.prop8_eligible:
+            fill,edge,lw=cmap(norm(row.predicted_payload)),'white',.25
+        else:
+            fill,edge,lw='white',TEAL,.40
+        ax.add_patch(Rectangle((row.value%16-.45,row.value//16-.45),.9,.9,
+                               facecolor=fill,edgecolor=edge,lw=lw))
+    for value in (0x04,0x60):
+        ax.add_patch(Rectangle((value%16-.45,value//16-.45),.9,.9,
+                               facecolor='none',edgecolor='black',lw=.85))
+    ax.set(xlim=(-.5,15.5),ylim=(15.5,-.5),aspect='equal')
+    axis(ax,'Low nibble','High nibble',range(16),range(16))
+    ax.set_xticklabels(list('0123456789ABCDEF'))
+    ax.set_yticklabels(list('0123456789ABCDEF'))
+    ax.tick_params(length=0)
+    for spine in ax.spines.values():spine.set_visible(False)
+    cax=p.ax(x+width+.045,.31,.022,.48)
+    colourbar=p.fig.colorbar(plt.cm.ScalarMappable(norm=norm,cmap=cmap),cax=cax,ticks=[0,14,28])
+    colourbar.set_label('free payload (positions)',fontsize=6.5,labelpad=3)
+    colourbar.ax.tick_params(length=2,pad=2)
+    colourbar.outline.set_visible(False)
 
 
 def fig4a(p):

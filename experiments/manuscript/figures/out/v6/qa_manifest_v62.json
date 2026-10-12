@@ -50,23 +50,23 @@
   {
     "figure": "fig3",
     "figcheck": "clean",
-    "critic_rounds": 1,
+    "critic_rounds": 2,
     "last_critic_verdict": "NO SUBSTANTIVE DEFECTS",
     "independent_clearance": true,
     "current_images_match_last_review": true,
     "reviewed_png_sha256": {
-      "fig3.png": "e068031cf8473cbcf83385294ccd72439b88e3854fe211432bf084c4422962a3",
-      "fig3b.png": "14c9500cc7aad04177c03cc8b22f0f523291fc4e8daf507142918bb63e971478",
+      "fig3.png": "0b4d3d86ea5bc80425b5d5396afe8ee909bd31ea7d56fa2e91834f41a5497964",
+      "fig3b.png": "7945eb7396ba146f0f8defc928fad51229b79cb813cce2e05ce2c413eeceb160",
       "fig3c.png": "e34a1bd330f34adf581adfdd9cec4b308b4b7693a2fafae56b40bee07a21b4c8",
-      "fig3d.png": "bbaca225a3bfd1abdf7a9c9330e8c00dd61e3b7d906c7c31931b43904d00441a",
-      "fig3_legend.png": "f065b9f894a8e66cac5465f3b51cd3e152b5f3908a1ffce5ef3dd90d954553fc"
+      "fig3d.png": "ef43e3cf295124dc0ae82d0bd9655f9b150af7948e362ce4457059d6a6ff9ae7",
+      "fig3_legend.png": "28418c2eef33034e2a84c26527c77352b9544e89d497d5c54eb1a8ee036b120d"
     },
     "current_png_sha256": {
-      "fig3.png": "e068031cf8473cbcf83385294ccd72439b88e3854fe211432bf084c4422962a3",
-      "fig3b.png": "14c9500cc7aad04177c03cc8b22f0f523291fc4e8daf507142918bb63e971478",
+      "fig3.png": "0b4d3d86ea5bc80425b5d5396afe8ee909bd31ea7d56fa2e91834f41a5497964",
+      "fig3b.png": "7945eb7396ba146f0f8defc928fad51229b79cb813cce2e05ce2c413eeceb160",
       "fig3c.png": "e34a1bd330f34adf581adfdd9cec4b308b4b7693a2fafae56b40bee07a21b4c8",
-      "fig3d.png": "bbaca225a3bfd1abdf7a9c9330e8c00dd61e3b7d906c7c31931b43904d00441a",
-      "fig3_legend.png": "f065b9f894a8e66cac5465f3b51cd3e152b5f3908a1ffce5ef3dd90d954553fc"
+      "fig3d.png": "ef43e3cf295124dc0ae82d0bd9655f9b150af7948e362ce4457059d6a6ff9ae7",
+      "fig3_legend.png": "28418c2eef33034e2a84c26527c77352b9544e89d497d5c54eb1a8ee036b120d"
     },
     "width_mm": 180,
     "dpi": 600

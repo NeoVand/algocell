@@ -52,6 +52,15 @@ def main():
     assert (edited.query("state=='transmitted'").position==edited.query("state=='transmitted'").source_position).all()
     dial=pd.read_csv(data/'dial_coordinates.csv');working=dial[dial.culture_replicator]
     assert len(dial)==256 and len(working)==99 and working.predicted_payload.notna().sum()==11
+    assert dial.value.is_unique and set(dial.value)==set(range(256))
+    assert (dial.prop8_eligible==dial.predicted_payload.notna()).all()
+    formal=working[working.prop8_eligible]
+    assert formal.effective_d.between(4,32).all() and (32%formal.effective_d==0).all()
+    assert (formal.predicted_payload==formal.effective_d-4).all() and formal.predicted_payload.between(0,28).all()
+    assert formal.set_index('value').loc[[0x04,0x60],'predicted_payload'].tolist()==[0,28]
+    source=pd.read_csv(OUT.parents[3]/'results/crystal/alleles_ldir32.csv')
+    columns=['value','effective_d','culture_replicator','prop8_eligible','predicted_payload']
+    pd.testing.assert_frame_equal(dial[columns],source[columns])
     assert len(pd.read_csv(data/'ed_parent_environment.csv'))==36
     summary=pd.read_csv(data/'lethality_summary.csv').query("cohort=='C1'").sort_values('p')
     registered=pd.read_csv(data/'c1_dial_summary.csv').sort_values('p')
