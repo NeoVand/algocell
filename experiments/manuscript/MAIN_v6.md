@@ -6,298 +6,293 @@
 
 # Working title: What spontaneous replicators pass on
 
-*Manuscript v6, 2026-10-12. Abstract and main text: Claude's narrative pass over Astra's v5, keeping v5's numbers
-and sources. Figure legends, Methods and the ED/SI map: Astra's v5, unchanged. Source brackets follow
-`manuscript/NUMBERS_INDEX.md`. `[fill: …]` marks a missing table, and PENDING marks work without an outcome. Every
-sentence is one of: theorem, registered result, exploratory analysis, construction or pending. Methods gives the
-status of each.*
+*Manuscript v6.1, 2026-10-12. Abstract and main text: Claude's narrative pass over Astra's v5, revised to address
+all 51 rows of `MAIN_v6_REVIEW.md`. Figure legends, Methods and the ED/SI map: Astra's v5, unchanged. Source brackets
+follow `manuscript/NUMBERS_INDEX.md`. Historical Algocell results, fresh C1 reruns and Zilion implementations are
+named separately. `[fill: …]` marks a missing table, and PENDING marks work without an outcome.*
 
 ## Abstract
 
-Darwinian evolution needs more than reproduction: descendants must inherit the differences on which selection acts.
-How a copying process first comes to preserve differences, rather than merely making more of itself, is a central
-question for the origin of life. However, in systems where replication arises spontaneously, it has not been possible
-to measure what reproduction passes on, or to identify the mechanism that decides. Here we introduce Zilion, a
-validated multi-processor execution substrate, and use it to intervene on replicators that evolve in soups of random
-machine code. Lineages of the first Z80 replicator survive while losing all 512 tested single mutations. We show that a copy's
-overlap with itself determines which parental bytes reach descendants, and that the displacement setting this overlap
-is itself inherited, so that one copying rule controls how much else is inherited. Changing the chemistry of the
-environment shifts which designs prevail. Closure to the environment and heredity of variation are thus distinct
-thresholds, giving Woese's Darwinian threshold an experimental form.
+Darwinian evolution requires more than reproduction: descendants must inherit the differences on which selection
+acts [Maynard Smith & Szathmáry 1995; Szathmáry & Maynard Smith 1997]. Soups of interacting programs show that
+replicators can arise spontaneously [Agüera y Arcas et al. 2024; Cicala et al. 2026]. However, how a spontaneously
+evolved copying mechanism comes to preserve introduced differences across repeated reproduction, rather than merely
+making more of itself, remains unresolved. Here we use Zilion, a validated multi-processor execution substrate that we
+introduce, to show the following.
+- **Survival without retention.** In soups of Z80 machine code, branching lineages of a representative first
+  replicator survive while losing every one of 512 tested mutations, whereas later copiers transmit variation.
+- **The copying rule.** In a recurring copying family, the overlap of a copy with itself determines which parental
+  bytes reach descendants. The displacement that sets this overlap is itself inherited, so that one copying rule
+  controls how much arbitrary payload survives.
+- **The environment.** The chemistry of the environment shifts which reproductive designs prevail.
+
+Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
+restricted experimental analogue of Woese's Darwinian threshold.
 
 ## Main text
 
-### Introduction
-
 Natural selection acts on differences, so a lineage can evolve only if reproduction preserves the differences that
-arise within it. This requirement separates replication from heredity. A crystal, an autocatalytic network or a
-self-reproducing automaton can make more of itself without carrying forward the particular variants that appear in its
-parents [von Neumann 1966; Szathmáry & Maynard Smith 1997]. Compositional replicators that reconstruct a preferred
-state have limited heredity for exactly this reason [Vasas, Szathmáry & Santos 2010; Vasas et al. 2012]. Woese placed
-the start of Darwinian evolution proper at a threshold, the point where cells became integrated enough that vertical
-descent dominated the horizontal exchange of an earlier communal regime [Woese 2002].
+arise within it. This requirement separates replication from heredity. Von Neumann's self-reproducing automaton
+copies a description that it also interprets [von Neumann 1966], and the distinction between limited and unlimited
+heredity asks how many alternatives a reproducing system can carry [Szathmáry & Maynard Smith 1997]. Some
+compositional systems return towards built-in states and fail to preserve selectable variants [Vasas, Szathmáry &
+Santos 2010]. Appropriately organized autocatalytic networks, by contrast, can support limited heredity and adaptation
+[Vasas et al. 2012]. Woese placed the onset of Darwinian evolution proper at a threshold, where cellular organization
+became integrated enough for vertical descent to dominate the horizontal exchange of an earlier communal regime
+[Woese 2002].
 
 Artificial chemistries of interacting programs have made the origin of replication itself observable. In soups of
-random programs that execute on each other's memory, self-replicators arise without any fitness function, and
+random programs that execute on each other's memory, self-replicators arise without a fitness function, and
 replicating architectures succeed one another as the soup evolves [Agüera y Arcas et al. 2024; Cicala et al. 2026].
-These systems show how replication begins. They have not been used to ask what the resulting replicators pass on.
+These studies already trace where copied bytes come from, describe compact copying cores, and show that some cores
+copy random tails faithfully and survive repeated rounds of mutation and replication [Agüera y Arcas et al. 2024;
+Cicala et al. 2026].
 
-That question cannot be answered by watching. The most abundant genotype in a soup can be a copier that restores its
-own pattern so effectively that it erases every variant that arises in it. Faithful copying of an unmodified parent
-says nothing about copying of its mutants, and the reappearance of a sequence may reflect transmission,
-reconstruction or recapture from the surroundings. Distinguishing these requires intervention: introduce a difference
-into a parent, let reproduction proceed, and follow the difference separately from the lineage. It also requires a
-substrate in which every copying operation can be traced and the same experiment repeated on different processors.
+What has not been established is which introduced differences a spontaneously evolved copier preserves across
+generations, separately from the survival of its carriers, and what in the copying operation decides. Abundance
+alone cannot answer this. A successful copier can restore its pattern so effectively that it erases most variants
+introduced into it, and faithful copying of an unmodified parent says nothing about copying of its mutants. Answering
+the question requires an intervention that introduces a difference into a parent, lets reproduction proceed, and
+follows the difference separately from the lineage. It also requires a way to trace each copying operation and to
+repeat the experiment on processors with different instruction sets.
 
-Here we build that substrate and use it to show that heredity in spontaneous replicators is a measurable property of
-the copying mechanism. Zilion executes real 8-bit and 16-bit instruction sets (the Zilog Z80, the MOS 6502 and the
-Intel 8086) under a versioned semantic contract validated against hardware-recorded instruction tests. In Z80 soups,
-we find that:
-- the first replicators survive while erasing every tested mutation;
-- a single geometric property of the evolved copy explains which parental bytes reach descendants;
-- the parameter that sets this geometry is itself inherited;
-- the environment determines which hereditary designs prevail.
+Here we build that substrate and use it to show that, in soups of Z80 machine code, what reproduction preserves is a
+measurable property of the copying mechanism. The first replicators persist while losing the variants introduced into
+them. In a recurring family of later copiers, a single geometric property of the copy decides which parental bytes
+reach descendants, the parameter that sets this geometry is itself inherited, and the chemistry of the environment
+shifts which designs prevail. Comparing processors separates how replication begins from what it transmits.
 
-Comparing processors separates how replication begins from what it transmits.
-
-### Reproduction as an experiment
+### Reproduction, made inspectable
 
 Zilion separates a processor's instruction semantics from the world in which programs meet (Fig. 1a). An encounter
 places two tapes of L bytes on a ring of 2L bytes, resets the processor to a declared state, executes a bounded number
 of instructions starting in the first tape, and writes both tapes back. The soup supplies encounters between lattice
-neighbours and background mutation, and nothing else: there is no fitness function and no replacement of unsuccessful
-programs. A program reproduces only if its execution writes, into some partner, a tape that reproduces in turn.
+neighbours and background mutation. It has no fitness function and does not replace unsuccessful programs, so a
+program reproduces only if its execution writes, into some partner, a tape that reproduces in turn.
 
-The contract specifies everything a reproductive claim depends on:
-- address reduction on the ring and the initial registers and stack phase;
-- what counts as one unit of execution;
-- the handling of undefined instructions and interrupts.
+A versioned semantic contract specifies everything such a claim depends on: address reduction on the ring, initial
+registers and stack phase, the unit of execution and the treatment of undefined instructions. Cell boundaries,
+execution time and reset state are supplied by the world, while the code that exploits them evolves. This matters
+because an evolved copier can depend on a register value supplied at reset as strongly as on an instruction in its own
+tape (Methods).
 
-Cell boundaries, execution time and reset state are supplied by the world. The code that exploits them evolves. This
-distinction matters because an evolved copier can depend on a register value supplied at reset as strongly as on an
-instruction encoded in its own tape (Methods). We validated each processor core against hardware-recorded single-step
-instruction tests. Re-running the registered experiments with a corrected Z80 core changed 4 of 36 registered
-components, none of which reverses a conclusion reported here; we report the corrected values
-[results/impact/README.md; results/tier2/T2.md] (Methods).
+We validated the processor cores against per-instruction reference tests. These are emulator-generated vectors for
+the Z80 and 6502 and hardware-recorded vectors for the 8088. The historical populations analysed here were produced
+with Algocell kernels, and we identify their assays, fresh reruns with a corrected Z80 core (C1) and current Zilion
+implementations separately. The C1 reruns retained 19 of 22 claim verdicts and changed 4 of 36 registered components,
+and we report historical failures and C1 outcomes side by side [results/impact/README.md; results/tier2/T2.md]
+(Methods).
 
-Four measurements, kept separate throughout, turn a soup into an experiment (Fig. 1b,c):
-- **Culture test:** does a tape's offspring itself reproduce?
-- **Trace:** does execution stay within the replicator's own bytes?
-- **Inflow:** how much does the offspring depend on which partner was overwritten, with the parent held fixed?
-- **Transfer assays:** does a deliberately introduced parental difference persist through repeated reproduction?
+Four measurements, kept separate throughout, turn a soup into an experiment (Fig. 1b,c).
+- **Culture test:** asks whether a tape's offspring itself reproduces.
+- **Execution trace:** asks whether execution stays within the replicator's own bytes.
+- **Inflow:** with the parent fixed, the variation of offspring across partners measures how much the partner
+  contributes.
+- **Transfer assays:** follow a deliberately introduced parental difference through repeated reproduction.
 
-These properties come apart in both directions. A program can read a partner's bytes without executing them, and can
-execute partner addresses after overwriting their contents. So none of them stands in for another (Methods).
+These properties dissociate in both directions. A program can read a partner's bytes without executing them, and it
+can execute partner addresses after overwriting their contents, so none of the measurements stands in for another
+(Methods).
 
 ### Lineages survive while alleles vanish
 
-In all 80 worlds of the registered benign-chemistry cohort, the first replicator is open: its execution runs on into
-the partner it is overwriting [results/inflow_insoup/INFLOW_INSOUP.md, X2-2]. Its most common form tiles the tape with a two-byte word such as
-`01 c5` [results/stageG/stageG/NUMBERS_G.md], which is both the instruction `LD BC,$01C5` and the literal data that the following `PUSH BC` writes into
-the partner's memory, as first described by Agüera y Arcas and colleagues [Agüera y Arcas et al. 2024]. Every byte of
-this replicator is, in turn, an instruction and the datum it copies.
+In all 80 historical worlds of the registered benign-chemistry cohort, the first detected replicator was open in the
+sampled encounters: its execution ran on into the partner it was overwriting [results/inflow_insoup/INFLOW_INSOUP.md,
+X2-2]. Its most common form tiles the tape with the word `01 c5` [results/stageG/stageG/NUMBERS_G.md], first described
+by Agüera y Arcas and colleagues [Agüera y Arcas et al. 2024]. The tile decodes as `01 c5 01`, the instruction
+`LD BC,$01C5`, followed by `c5`, `PUSH BC`, so the same byte values serve as the opcodes and as the literal data
+pushed into the partner's memory.
 
-To ask what such a replicator transmits, we performed a registered branching-transfer experiment (X1), designed so
-that a mutation could not be lost merely because its lineage died out (Fig. 2a). Each surviving member of a
-population reproduced against two fresh partners per generation. Under uniform random partners:
-- **Unmutated lineages:** 48 of 64 pusher populations survived for eight generations.
-- **Mutant lineages:** none of 512 single-site mutants left a population still carrying its mutation at generation
-  eight. Mutant populations did not simply die out: 38% of them were still alive at generation eight, none carrying their
-mutation.
+To ask what such a replicator transmits, we carried out a registered branching-transfer experiment (X1). In it, every
+surviving member of a population reproduced against two fresh partners per generation, so that loss of a mutation
+could be distinguished from extinction of its lineage (Fig. 2a). Under uniform random partners, 48 of 64 unmutated
+populations of the 16-byte pusher survived for eight generations. Among mutant populations, 38% were still alive at
+generation eight, yet none of the 512 tested mutation types had a population that met the registered criterion for
+carrying its mutation. The registered prediction that the open replicator would retain heritable variation (X1-2)
+therefore failed, and we report it as failed [results/branching/branching_summary.csv, pusher16, arm U;
+results/branching/SUPP_TABLE.md; REVISION_PREREG.md, X1]. The pusher rebuilds its form while losing the variants
+introduced into it.
 
-The registered prediction that the open replicator would retain heritable variation (X1-2) therefore failed, and we
-report it as failed [results/branching/branching_summary.csv, pusher16, arm U; results/branching/SUPP_TABLE.md;
-REVISION_PREREG.md, X1]. The replicator persists because it rebuilds its form, not because it passes on what it
-carries.
+Three closed Z80 replicators gave contrasting results under the same protocol (Fig. 2a,b). Two regenerators, one
+returning control to itself and one using a block copy, preserved every unmutated population and scored no
+transmissible site, whereas an evolved block-copy transmitter carried nine scored sites through all eight generations
+[results/branching/branching_summary.csv, ret16, ldir32, genome20_s6003]. A site scores when at least half of the
+tested alternative values at that position meet the registered retention criterion. This is demanding, and rare
+variants can persist below it: the 64-byte pusher retained 5 of 2,048 tested mutant types with uniform partners, and
+the block-copy regenerator retained a few working core variants [results/branching/SUPP_TABLE.md].
 
-Two closed replicators from the same soups give contrasting results under the identical protocol (Fig. 2a,b).
-- **Two regenerators** (one returning control to itself, one using block copying) preserved every unmutated
-  population and scored no transmissible site.
-- **An evolved block-copy transmitter** carried nine scored sites through all eight generations
-  [results/branching/branching_summary.csv, ret16, ldir32, genome20_s6003].
-
-A scored site is a demanding criterion: most alternative values at that position must persist. Rare variants can
-still slip through; the 64-byte pusher retained 5 of 2,048 tested mutant types with uniform partners
-[results/branching/SUPP_TABLE.md]. The contrast is therefore between copiers that preserve broad classes of
-alternatives at specific positions and copiers that preserve almost none, not between all and nothing.
-
-These replicators differ in what they preserve, and none differs much in how well it reproduces. That separates a
-property that abundance and copying fidelity cannot reveal. It also raises the question of what, in the copying
-operation, decides which differences survive.
+The contrast is therefore not between all and nothing. It is between copiers that preserve broad classes of
+alternatives at specific positions and copiers that preserve almost none. Because the closed regenerators and the
+transmitter all kept every unmutated population alive, this is a difference in what reproduction preserves, not in
+how well it reproduces. That raises the question of what, in the copying operation, decides which differences
+survive.
 
 ### Overlap sets what is inherited
 
-The answer for the most tractable evolved copier is geometric (Fig. 3a). Consider a copy that moves bytes around the
-ring, each byte written a fixed displacement d ahead of where it was read.
-- **The first d reads** obtain original parental bytes.
-- **After that, the read pointer reaches bytes already written,** and from then on it copies copies. The first d bytes
-  are therefore propagated around the entire ring, and every byte beyond them is overwritten before it can be read.
-- **A small displacement** regenerates a short pattern regardless of what else the parent held. **A displacement that
-  spans the whole parent** reproduces it entire.
+For the most tractable family of evolved copiers, the answer is geometric (Fig. 3a). Consider a copy that moves bytes
+around the ring, each written a fixed displacement d ahead of where it was read. The first d reads obtain original
+parental bytes. After that, the read pointer reaches bytes already written and copies copies, so the first d bytes
+are propagated around the whole ring and every byte beyond them is overwritten before it can be read. A small
+displacement therefore regenerates a short pattern regardless of what else the parent held, whereas a displacement
+spanning the whole parent reproduces it entire.
 
-If the copying machinery occupies c bytes inside the first d, the number of parental positions that can vary freely
-and still be transmitted is r = d − c (Methods). The proof follows the provenance of every byte of the final ring back
-to its source and holds for jointly arbitrary payload values. Its hypotheses are stated in Methods:
-- the direction of the copy;
-- coverage;
-- that d divides the tape length;
-- protection of the copying core.
+With the copying core of c bytes held fixed inside the first d, and with the stated initialization, offspring
+alignment and forward coverage, the number of independently free payload positions is r = d − c (Methods). The proof
+follows every byte of the final ring back to its source and holds for jointly arbitrary payload values. It counts free
+payload only; working variants of the core itself are additional possibilities that it does not count.
 
 The Z80 soups evolve exactly this machine. In the four-byte core `XX 5e ed b0`, the first byte executes as a harmless
-instruction and is then read as data by `LD E,(HL)` to set the displacement; `LDIR` performs the overlapping copy.
+instruction and is then read as data by `LD E,(HL)` to set the displacement, and `LDIR` performs the overlapping copy.
 The variant `1e NN ed b0` carries the displacement as an immediate operand. Cicala and colleagues identified this
-compact core and noted its partner offset [Cicala et al. 2026]; what the theorem adds is its hereditary consequence:
-r = d − 4. The core occurs in 2,347 of 15,655 sampled confined heritable cells, a recurring architecture rather than
-the whole ecology [results/offset/CORE_FAMILIES.md].
+compact core and noted its partner offset [Cicala et al. 2026]. What the theorem adds is its hereditary consequence,
+r = d − 4. The core occurs in 2,347 of 15,655 sampled confined heritable cells, so it is a recurring architecture
+rather than the whole ecology [results/offset/CORE_FAMILIES.md].
 
-Where the theorem's conditions apply, it predicts the measurements almost without exception.
-- **Unexecuted positions:** among 2,343 evolved cells whose displacement divides the tape length, 2,342 carried
-  exactly d − 4 scored unexecuted transmissible positions.
-- **Total scored sites:** in all 53 cells whose total exceeded d − 4, the excess lay at executed positions that
-  tolerate some alternative values.
-- **The one deficit:** the single exception preserves its predicted payload in targeted transfers but fails the
-  whole-tape similarity gate of the population assay [exploratory: results/crystal/cells.csv,
-  results/crystal/cell_exceptions.csv, results/crystal/offset_examples.csv; results/offset/offset_cells.csv].
+In an exploratory regrouping of the cells that carry this motif with a displacement dividing the tape length, sampled
+site scores closely match the prediction. Of 2,343 such cells, 2,342 had exactly d − 4 scored unexecuted transmissible
+positions. In all 53 cells whose total score exceeded d − 4, the additional sites lay at positions that are fetched as
+part of the instruction stream. The single deficit preserves its predicted payload in targeted transfers but fails the
+whole-tape similarity gate of the population assay [exploratory: results/crystal/cells.csv,
+results/crystal/cell_exceptions.csv, results/crystal/offset_examples.csv; results/offset/offset_cells.csv]. Motif and
+divisibility alone do not certify every hypothesis of the theorem, and these are sampled scores, not exhaustive
+capacities (Methods).
 
-The law also corrects a tempting intuition: what matters is the displacement of the copy, not the visible period of
-the tape. One evolved tape repeats every four bytes, all of them core, yet carries four transmissible positions,
-because its copy displacement is eight [exploratory: results/crystal/cell_exceptions.csv, K, L = 32, seed 5006].
-Heredity belongs to the family of sequences a copying operation preserves, not to the appearance of any one member.
+The law also corrects a tempting intuition: what matters is the displacement of the copy, not the visible period of the
+tape. One evolved tape repeats every four bytes, all of them core, yet carries four transmissible positions, because its
+copy displacement is eight [exploratory: results/crystal/cell_exceptions.csv, K, L = 32, seed 5006]. Hereditary
+capacity belongs to the family of sequences that a copying operation preserves, not to the appearance of any one
+member.
 
-The same operation explains the threshold that the first replicators failed to cross. Under the theorem's hypotheses,
-every byte of the offspring comes from the parent's protected prefix, whatever the partner held. A regenerator is
-therefore closed to its environment, contributing no partner information to its offspring, while erasing nearly all
-parental variation. Closure removes an external source of difference. Heredity preserves an internal one.
+The same operation separates two properties that are easily run together. Under the theorem's hypotheses, every byte of
+the offspring descends from the parent's protected prefix, whatever the partner initially held. Such an overlapping
+regenerator can therefore exclude partner information entirely while erasing variation outside its protected prefix.
+Closure removes an external source of difference, and transmission preserves an internal one.
 
 ### The copying rule is inherited
 
 If the displacement is encoded in the replicator's own bytes, it should be copied with the core, and a change in it
-should be inherited. Archived serial-transfer interventions on an evolved regenerator, ldir32, show this directly
-(Fig. 3c). Changing its displacement byte from `04` to `08` or to `60` produced lineages that still carried the new
-value after eight transfers [results/serial_retention/sr_mutants.csv.gz, ldir32, gen 8, pos 0, val 8 and 96]. Under
-the theorem these changes raise the displacement from 4 to 8 and 32 bytes, and the predicted free payload from zero to
-4 and 28 positions. A copier that inherited nothing can thus, by one inherited change to its copying rule, become one
-that inherits most of its tape.
+should be inherited. Archived serial-transfer interventions on an evolved regenerator, ldir32, show that it is (Fig.
+3c). When its displacement byte was changed from `04` to `08` or to `60`, the mutant markers persisted through eight
+transfers [results/serial_retention/sr_mutants.csv.gz, ldir32, gen 8, pos 0, val 8 and 96]. Under the theorem these
+changes raise the displacement from 4 to 8 or 32 bytes, so the predicted free payload rises from none to 4 or 28
+positions. A copier with no free payload under its original core can thus acquire, by one inherited change to its
+copying rule, the predicted capacity to transmit most of its tape. Measuring that expanded capacity directly in the
+descendants, with reciprocal edits, is the next assay [PENDING; fill: targeted descendant-capacity table].
 
-An exhaustive exploratory scan of the displacement byte shows how wide this dial is [exploratory:
-results/crystal/alleles_ldir32.csv].
-- **Working values:** 99 of the 256 values give a working replicator.
-- **Inherited values:** 50 of those are carried into aligned offspring.
-- **Range:** among those meeting the theorem's eligibility checks, the displacement ranges from 4 to 32 bytes, so the
-  predicted payload ranges from none to 28 positions.
+An exploratory scan of all 256 values of this byte shows how wide the dial is [exploratory:
+results/crystal/alleles_ldir32.csv]. Ninety-nine values give a working replicator, and 50 of these reappear at the
+aligned position in at least half of first-generation offspring. The 11 values that pass the sampled eligibility
+checks span displacements of 4 to 32 bytes and predicted payloads of 0 to 28 positions. The dial is specific to this
+family. In the same exploratory scan, an evolved transmitter that copies backwards with `LDDR` had only 15 working
+values, and it lies outside the forward theorem [results/crystal/alleles_genome20_s6003.csv].
 
-The dial is not universal. An evolved transmitter that copies backwards with `LDDR` lies outside the forward theorem
-and has only 15 working values [results/crystal/alleles_genome20_s6003.csv]. Measuring the descendants' expanded
-capacity directly, with reciprocal edits, is the next step [PENDING; fill: targeted descendant-capacity table].
+This is an evolved instance of an old architectural idea. Von Neumann's automaton requires a description that is both
+used and copied [von Neumann 1966]. The displacement byte is used to construct the copy and copied along with it.
+Within this copying family it is a heritable trait whose predicted phenotype is the capacity to transmit arbitrary
+payload. We do not claim that selection favours it for that reason: whether a larger payload benefits a lineage
+depends on the environment.
 
-This makes concrete an old idea in an evolved form. Von Neumann's self-reproducing automaton needed a description
-that is both copied and used [von Neumann 1966]. The displacement byte is used to construct the copy and is copied
-along with it, and in being inherited it sets how much of the remaining tape is inherited too. It is a heritable trait
-whose phenotype is the capacity for heredity itself. We do not claim that selection favours it for that reason:
-whether a larger payload benefits a lineage depends on the environment, to which we now turn.
-
-### The environment sorts hereditary designs
+### Environments sort hereditary designs
 
 Without mutation, mixtures of regenerators and transmitters drift, with no consistent winner
-[results/tier2/scored/E/REPORT.md, mutation off]. With mutation, the soup does not treat them equally. In
-registered competitions at tape length 32, with mutation on and equal starting shares of the two designs, the
-chemistry of the soup's abundant by-product decided the outcome (Fig. 4a,b) [results/tier2/scored/E/REPORT.md;
-results/tier2/T2_COMPONENTS.csv, E-L32L].
-- **Benign zeros:** where the zero byte executes harmlessly, transmitters ended at a median share of 0.05 among
-  core-bearing cells.
-- **Lethal zeros:** where fetching a zero halts execution, they ended at 0.76, and all ten worlds finished above
-  one half.
+[results/tier2/scored/E/REPORT.md, mutation off]. With mutation, the environment decides. In the C1 reruns of the
+registered competitions at tape length 32, started with equal shares, median transmitter shares among core-bearing
+cells were 0.05 where a zero opcode executes harmlessly and 0.76 where fetching a zero opcode halts execution. All ten
+lethal worlds exceeded one half, meeting the registered endpoint [results/tier2/scored/E/REPORT.md, L = 32,
+mutation on; results/tier2/T2_COMPONENTS.csv, E-L32L] (Fig. 4a,b).
 
-Starting from either design invading the other, populations converged on the same environment-specific share:
-0.09 and 0.08 under benign tar, and 0.81 and 0.77 under lethal tar [results/tier2/scored/E/REPORT.md, L = 32]. That
-is the signature of an equilibrium set by the environment, not of a race won by the first arrival.
+Both invasion directions ended at similar environment-specific medians: 0.09 and 0.08 under benign tar, and 0.81 and
+0.77 under lethal tar, with five worlds per direction. This is consistent with an environmental balance reached from
+either rare starting design [results/tier2/scored/E/REPORT.md, L = 32]. In the C1 lethality dial, transmitters formed
+a majority of heritable cells in 8 of 10 fully lethal worlds, against 6 of 10 historically, when this registered
+endpoint failed [results/tier2/T2_DZ.csv; REVISION_PREREG.md, DZ3].
 
-A graded dial of zero-lethality reproduced the shift: transmitter-majority populations formed in 8 of 10 fully
-lethal worlds [results/tier2/T2_DZ.csv]. The same dial ends the open beginning. Under lethal tar the first detected
-replicators were already closed in all ten worlds, and no open phase was observed [results/crystal/first_cells.csv, Z80
-I] (Fig. 4c).
+The environment also changes the routes that populations are observed to take (Fig. 4c), although it does not impose
+a fixed sequence.
+- **Benign chemistry.** Short-tape worlds often remain dominated by regenerators: they were the final majority in 17
+  of 20 worlds at L = 16 and 14 of 20 at L = 20, whereas at L = 50 every world remained dominated by open cells
+  [results/ladder/population_worlds.csv].
+  In an exploratory analysis, regenerators were detected before transmitters in 30 of the 42 benign worlds that
+  contained both. This describes order of detection, not ancestry [exploratory: results/ladder/LADDER.md].
+- **Lethal chemistry.** In an exploratory assay of the separate historical lethal-tar cohort, all ten first detected
+  tapes were confined, had zero sampled partner inflow and carried at most four scored sites. By the final sample,
+  transmitters were a majority of heritable cells in nine of the ten worlds [exploratory:
+  results/crystal/first_cells.csv, Z80 I; results/ladder/population_worlds.csv, stage I].
 
-The environment therefore sets the route through the two thresholds:
-- **Benign worlds** are typically entered by an open copier, close and then remain dominated by regenerators. In an
-  exploratory reanalysis, regenerators were detected before transmitters in 30 of the 42 benign worlds in which both
-  appeared [exploratory: results/ladder/LADDER.md].
-- **Lethal worlds** begin closed, with first tapes that still carry little payload, and are later taken over by
-  designs that carry much more [results/crystal/first_cells.csv].
+Why lethal chemistry favours transmitters remains open. Registered tests rejected a toxin mechanism
+[results/toxin/CAUSAL.md], backup cores [results/n2/BACKUP.md] and isolated mutational flows
+[results/offset/OFFSET_FLOW.md; REVISION_PREREG.md, N1, N2 and E-mech]. Exploratory encounter assays locate an
+asymmetry in how the two designs fare against core-free intruders, but they do not yet explain the balance
+[exploratory: results/offset/INTRUDER.md]. Because a tape is both a copier and material that other programs execute
+and overwrite, what a replicator preserves changes what its neighbours encounter. A mechanism for the balance will have
+to predict how the balance moves after an intervention.
 
-Why lethal tar favours transmitters remains open.
-- **Rejected mechanisms:** registered tests rejected a toxin mechanism, backup cores and isolated mutational flows
-  [REVISION_PREREG.md, E-mech; results/offset/OFFSET_ENCOUNTER.md].
-- **Where the answer probably lies:** in encounters with core-free intruders, where the two designs fare differently.
+### Processors change the route into copying
 
-Because a tape is both a copier and the material that other programs execute and overwrite, what a replicator
-preserves changes what its neighbours encounter. A mechanism for the balance will have to predict how it moves after
-an intervention.
+A second processor tests which findings belong to the Z80. The 6502's accumulator load-and-push channel is one byte
+wide. We prove that no infinite periodic stream of one-byte literal loads and pushes through a single register can
+write itself (Methods). This theorem was derived after the 6502 experiment, constrains which mechanisms are available,
+and does not predict the order in which they arrive.
 
-### Other machines, other beginnings
+Before the soups were run, a validated census found no nonzero exact self-writer of period one to four into an all-zero
+partner at L = 16 under the declared 128- and 512-step arms [results/census6502/CENSUS.md]. In the registered
+experiment (S1), all 20 first detected replicators of the primary arm were confined, and the median detection time
+was 1,125,000 steps, against hundreds of steps on the Z80, although the two machines differ in more than their literal
+channels [results/s6502/v2/S1_v2.md; results/s6502/v2/arm_comparison.csv, arm A]. Only 14 of the 20 met the registered
+loop criterion, so that component of the prediction (P1) failed. A post hoc ring-position analysis explains the other
+six [results/s6502/CORRECTION.md]. Constructed 6502 copy loops reproduced the predicted d − 6 payload in all 296
+qualifying cases [results/census6502/table_closers_law.csv]. Whether evolved 6502 copiers obey the law remains to be
+measured [PENDING; fill: evolved 6502 retention panel].
 
-A second processor tests which of these findings belong to the Z80. The 6502's only literal channel loads and pushes a
-single byte, and we prove that no periodic stream of one-byte literal loads and pushes through one register can write
-itself (Methods). This theorem was derived after the 6502 experiment and explains it in retrospect.
-- **Before any soup:** an exhaustive census registered that no 6502 tape of period one to four writes itself
-  unaided [results/census6502/table_main.csv].
-- **In the registered soups:** every one of 20 first replicators in the primary arm was confined from the start.
-  Replication arrived after a median of 1,125,000 steps, against hundreds of steps on the Z80, although the two
-  machines differ in more than their literal channels [results/ladder/LADDER.md, closure cohorts]. Only 14 of the 20 met
-  the registered loop criterion, which missed forward branches that wrap around the ring, so that component of the
-  prediction (P1) failed as registered [results/s6502/v2/S1_v2.md; results/s6502/CORRECTION.md].
-- **Copying law:** constructed 6502 copy loops reproduced the predicted d − 6 payload in all 296 qualifying cases
-  [results/census6502/table_closers_law.csv]. Whether evolved 6502 copiers obey it remains to be measured
-  [PENDING; fill: evolved 6502 retention panel].
+The 8086 is the prospective test (Fig. 5). Under the declared reset with coherent instruction fetch, the period-two
+tile `B9 51` executes `MOV CX,$B951; PUSH CX` and writes its own tiling [/Users/neo/repos/zilion/test/world/cases_i8086.mjs].
+The proposed six-byte construction `MOV DI,d; DEC CX; REP MOVSB` predicts d − 6 free payload positions under stated
+overlap conditions (Methods). Across 3,137,000 hardware-recorded 8088 cases, the coherent-fetch core had 3,126,917
+architectural passes, 10,083 expected divergences confined to a hidden-latch rule and no unexpected divergence.
+Prefetch-queue state and cycle timing are not modelled [/Users/neo/repos/zilion/test/baselines/8086-architectural.md;
+8086-gate1.md].
 
-The route into replication therefore depends on the instruction set, while the copying law, where its conditions
-hold, does not.
+After a validated census, we will register route and heredity predictions separately, before any 8086 soup is run. A
+wrong route distribution would refute the route prediction without touching the law. A reproducible loss of a predicted
+payload coordinate in independently eligible, viable descendants would falsify the law's application under that
+contract [PENDING: census, registration and results] (Methods).
 
-The 8086 provides the prospective test (Fig. 5).
-- **Its literal channel** is two bytes wide, like the Z80's, and a two-byte self-writer (`B9 51`, `MOV CX,$51B9; PUSH
-  CX`) exists.
-- **Its block move** (`REP MOVSB`) admits a six-byte overlapping copier, for which the law predicts the payload in
-  advance; the census will verify this construction under the final contract (Methods).
-- **Validation:** its Zilion core passes 3,137,000 hardware-recorded instruction tests without an unexplained
-  divergence under coherent instruction fetch [/Users/neo/repos/zilion-wt-8086/test/baselines/8086-architectural.md].
+### Closure and heredity are distinct
 
-We register route and heredity predictions separately, from a validated census, before any 8086 soup is run. A wrong
-route would refute the first prediction without touching the law; an eligible evolved copier that loses a predicted
-payload position would refute the law [PENDING: census, registration and results] (Methods).
+In soups of Z80 machine code, spontaneous replicators differ in what they pass on, and for a recurring family of
+copiers this difference has an exact mechanism. The overlap of a copy with itself decides which parental bytes reach
+descendants. The displacement setting that overlap is inherited, so a copying rule controls how much arbitrary payload
+survives. The environment shifts the prevalence of the resulting designs.
 
-### Discussion
+The results separate two achievements of reproduction. The first is closure to partner information: with the parent
+and encounter contract fixed, the offspring no longer depends on the partner's initial contents. The second is broad
+transmission of parental variation. A qualifying regenerator achieves the first while preserving few tested
+alternatives. Transmitters preserve broad classes of variants at specific sites. Rare inherited core variants mean the
+boundary between them is not a sharp line between zero and nonzero heredity. Zero partner inflow is our deliberately
+strict analogue of Woese's transition towards stable vertical descent; Woese did not require horizontal transfer to
+disappear [Woese 2002]. With that restriction, the analogue has content: a population can achieve stable,
+genealogically continuous reproduction while transmitting little of the variation that selection would need. Whether
+a population crosses one threshold, both or neither depends on the instruction set and the chemistry of the
+environment.
 
-Spontaneous replicators differ in what they pass on, and in the Z80 soups this difference has a mechanism. The overlap
-of a copy with itself decides which parental bytes reach descendants. The displacement setting that overlap is itself
-inherited, so one copying rule controls how much else is inherited, and the environment decides which rules prevail.
+The same distinction applies wherever replication is studied without genes. Repeated recovery of a sequence or
+composition could reflect transmission, reconstruction or recapture from the environment. Following an introduced
+difference, together with the survival of its carriers and the source of the recovered material, distinguishes these
+possibilities. The mechanism we describe is not a claim that chemistry uses a displacement byte. It is a fully
+inspectable case in which the question has an exact answer: which alternatives does a reproductive process preserve,
+and which does its own operation remove?
 
-The results separate two thresholds that are usually treated as one.
-- **Closure:** the offspring no longer depends on the environment it overwrites.
-- **Heredity of variation:** the offspring preserves differences in its parent.
+Three tests define what comes next.
+- **Expanded capacity.** It must be measured directly in descendants of displacement mutants.
+- **Generality of the law.** It must be shown in evolved copiers on a second processor: the evolved 6502 panel and the
+  registered 8086 experiment.
+- **Payload function.** These experiments establish that payload is transmitted, but not that the transmitted
+  variation does anything useful. To show adaptive use, an inherited difference must alter performance in a specified
+  environment. Copied material that is later also read as machinery, as von Neumann's description is both copied and
+  interpreted, offers one route. Whether such use evolves in these soups without an imposed task remains open.
 
-The first replicators in benign Z80 soups cross neither. Regenerators cross the first but not the second. Only
-transmitters cross both. Woese's Darwinian threshold, the transition to stable vertical descent, corresponds to the
-first in our system, and Darwinian evolution in the strict sense needs the second as well [Woese 2002]. We do not
-equate a closed program with a biological individual, or claim a universal order. The 6502 begins closed, and lethal
-chemistry lets the Z80 skip its open phase. But the separation is general: a population can achieve stable
-reproduction, even genealogical continuity, while lacking the heredity that selection requires.
-
-The same separation applies wherever replication is studied without genes.
-- **Repeated recovery of a composition** in a chemical or prebiotic system could reflect transmission, reconstruction
-  or recapture from the environment. Only an introduced difference, followed through reproduction, distinguishes them.
-- **The mechanism we describe** is not a claim that chemistry uses a displacement byte. It is a fully inspectable case
-  in which the question has an exact answer: which alternatives does a reproductive process preserve, and which does
-  its own operation remove?
-
-Two limits define what comes next.
-- **Capacity is not function.** The payload of these transmitters is copied but never read for any other purpose. An
-  inherited difference can matter to selection only if something reads it in a second way, as von Neumann's
-  description is both copied and interpreted. Whether such dual reading arises spontaneously is the next question
-  these soups can answer.
-- **The ecology is incomplete.** We know that lethal chemistry favours transmitters, but not yet why.
-
-Zilion makes both questions experimental. Together with the prospective 8086 test, it provides what has been
-missing: a way to ask of any spontaneous replicator, on any processor, not only whether it reproduces but what its
-reproduction preserves.
+Zilion makes these questions testable across explicitly specified processor contracts. It asks not only whether a
+program reproduces, but which differences its reproduction preserves.
 
 ## Figure legends
 
