@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "58a2f4b",
+  "scope": "Complete L16/128 diagnostic correction only; mandatory R2-label stop before remaining settings",
+  "production_tables_unchanged": true,
+  "all_raw_records_memory_traces_unchanged": true,
+  "label_changes": 231,
+  "transitions": {
+    "literal writer -> other": 212,
+    "memory-fed one-pass copier -> other": 19
+  },
+  "open_memory_label_changes": 19,
+  "changes_csv_sha256": "de6d8ff8b9ae57252ad88e38061aaee76f6da3e17c0d301c07fe15f5886c2295",
+  "counts_csv_sha256": "e407181534c2fb079d61904da8b2d6f3a177049bbbd28a4058bde16052eac120",
+  "runs": [
+    {
+      "L": 16,
+      "budget": 128,
+      "encounters": 4998,
+      "before": {
+        "other": 4165,
+        "literal writer": 488,
+        "memory-fed one-pass copier": 339,
+        "confined copy loop": 6
+      },
+      "after": {
+        "other": 4396,
+        "literal writer": 276,
+        "memory-fed one-pass copier": 320,
+        "confined copy loop": 6
+      },
+      "zero_exact_before": {
+        "memory-fed one-pass copier": 2,
+        "other": 6,
+        "literal writer": 12
+      },
+      "zero_exact_after": {
+        "memory-fed one-pass copier": 2,
+        "other": 15,
+        "literal writer": 3
+      },
+      "alternative_checks": 76226,
+      "failed_checks": 5685,
+      "full_record_memory_trace_mismatches": 0
+    }
+  ]
+}

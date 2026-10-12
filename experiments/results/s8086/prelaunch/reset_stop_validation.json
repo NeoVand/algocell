@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-12",
+  "status": "STOP: open-memory labels changed",
+  "cpu_tests_passed": 22,
+  "cpu_tests_failed": 0,
+  "execution_trace_mismatches": 0,
+  "existing_freeze_sha256": "353d57feec44548be1552704872aacf924b84249c9fe0aa99872e6ddee39c1c0",
+  "unchanged_existing_freeze_files": 270,
+  "source_parse": "passed",
+  "nonclassifier_columns_unchanged": true,
+  "correction_label_changes": 231,
+  "open_memory_label_changes": 19,
+  "focused_gpu_bursts": 73,
+  "max_focused_gpu_burst_s": 1.0345080409897491,
+  "census_gpu_timing": "Every burst passed the <=60s wrapper and equal pause. Early gate return did not archive individual timing rows; focused diagnosis timings are archived separately.",
+  "no_paid_compute": true,
+  "no_provider_calls": true,
+  "no_population_runs": true,
+  "freeze_superseded": false,
+  "cap95_frozen": false,
+  "source_archive_whitespace_exceptions": "six trailing-space lines inherited from frozen observer in each new exported WGSL"
+}
