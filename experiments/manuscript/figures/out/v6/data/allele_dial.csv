@@ -1,0 +1,257 @@
+status,key,site,value,hex,effective_d,core_c,prop8_eligible,eligibility_reason,predicted_payload,nominal_d_minus_c,score,gen2_score,culture_replicator,copy_fraction,faithful,offspring_periods,allele_aligned_frac,allele_at_original_pos_frac,causally_changed_fraction,causal_inherited_frac
+EXPLORATORY,ldir32,0,0,00,0,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-4,0.0,0.009828629032258,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,1,01,1,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-3,0.166015625,0.005859375,False,0.0,False,32,0.5,0.0625,1.0,0.5
+EXPLORATORY,ldir32,0,2,02,2,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-2,0.0,-0.0060483870967741,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,3,03,3,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-1,0.5871975806451613,0.4485257056451613,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,4,04,4,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",0.0,0,1.0,1.0,True,1.0,True,4,1.0,1.0,0.0,
+EXPLORATORY,ldir32,0,5,05,5,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,1,0.3055695564516129,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,6,06,6,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,2,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,7,07,7,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,3,0.4939516129032258,0.3623991935483871,True,0.0,False,8,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,8,08,8,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",4.0,4,0.905304939516129,0.9045488911290324,True,1.0,True,8,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,9,09,9,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,5,0.366179435483871,0.2098664314516129,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,10,0a,10,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,6,0.5265246975806452,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,11,0b,11,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,7,0.5879074260752688,0.3030493951612903,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,12,0c,12,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,8,0.6520455309139785,0.4098454301075269,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,13,0d,13,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,9,0.4644657258064516,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,14,0e,14,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,10,0.0550655241935483,-6.300403225806446e-05,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,15,0f,15,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,11,0.4622521841397849,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,16,10,16,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,12,0.4357988911290323,0.1447202620967742,False,0.375,False,16 32,0.3125,0.25,1.0,0.3125
+EXPLORATORY,ldir32,0,17,11,17,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,13,0.5274697580645161,0.2488659274193548,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,18,12,18,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,14,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,19,13,19,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,15,0.4959677419354839,0.4591103830645161,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,20,14,20,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,16,0.9683089717741936,0.9681829637096776,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,21,15,21,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,17,0.5246345766129032,0.8408938172043011,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,22,16,22,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,18,0.0,-0.0021421370967741,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,23,17,23,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,19,0.3041834677419355,0.2696572580645161,False,0.0,False,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,24,18,24,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,20,0.4545740927419355,0.1290952620967742,False,0.375,False,32,0.375,0.25,1.0,0.375
+EXPLORATORY,ldir32,0,25,19,25,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,21,0.621219758064516,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,26,1a,26,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,22,0.5246345766129032,0.2244203629032258,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,27,1b,27,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,23,0.3371345766129032,0.2208291330645161,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,28,1c,28,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,24,1.0,0.9682459677419356,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,29,1d,29,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,25,0.4949596774193548,0.1463583669354838,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,30,1e,30,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,26,0.7464717741935484,0.0,False,1.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,31,1f,31,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,27,0.5265246975806452,0.3324932795698925,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,32,20,32,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,28,0.4625756048387097,0.146547379032258,False,0.375,False,32,0.4375,0.25,1.0,0.4375
+EXPLORATORY,ldir32,0,33,21,33,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,29,0.3244077620967742,0.2519489247311828,False,0.0625,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,34,22,34,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,30,0.6353326612903226,0.3166582661290322,True,0.375,False,32,0.8125,0.0,1.0,0.8125
+EXPLORATORY,ldir32,0,35,23,35,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,31,0.4949596774193548,0.1414566532258064,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,36,24,36,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,32,0.8755040322580645,0.9682417674731184,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,37,25,37,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,33,0.4259702620967742,0.1569430443548387,False,0.125,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,38,26,38,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,34,0.0,-0.0060483870967741,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,39,27,39,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,35,0.6141633064516129,0.3750630040322581,True,0.0625,False,32,0.875,0.0,1.0,0.875
+EXPLORATORY,ldir32,0,40,28,40,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,36,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,41,29,41,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,37,0.4339717741935484,0.1910282258064516,False,0.0,False,32,0.5,0.0,1.0,0.5
+EXPLORATORY,ldir32,0,42,2a,42,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,38,0.3275579637096774,0.0793220766129032,False,0.0625,False,32,0.4375,0.0625,1.0,0.4375
+EXPLORATORY,ldir32,0,43,2b,43,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,39,0.6001134072580645,0.5699974798387097,True,0.4375,False,4 16 32,0.5,0.125,0.9375,0.5
+EXPLORATORY,ldir32,0,44,2c,44,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,40,0.4929435483870967,0.1466733870967742,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,45,2d,45,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,41,0.5970262096774194,0.5443548387096775,True,0.4375,False,4 16 32,0.4375,0.125,0.9375,0.4375
+EXPLORATORY,ldir32,0,46,2e,46,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,42,0.2043220766129032,0.1062247983870967,False,0.0625,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,47,2f,47,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,43,0.4140625,0.3170992943548387,True,0.1875,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,48,30,48,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,44,0.4112903225806451,0.1909022177419354,False,0.3125,False,4 32,0.3125,0.0625,0.9375,0.3125
+EXPLORATORY,ldir32,0,49,31,49,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,45,0.295866935483871,0.02734375,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,50,32,50,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,46,0.5896547379032258,0.2061491935483871,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,51,33,51,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,47,0.6204637096774193,0.4272177419354839,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,52,34,52,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,48,0.4499117943548387,0.2048261088709677,False,0.125,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,53,35,53,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,49,0.9684349798387096,0.9682459677419356,True,1.0,True,4,0.0,0.0,0.0,0.0
+EXPLORATORY,ldir32,0,54,36,54,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,50,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,55,37,55,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,51,0.621219758064516,0.233429939516129,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,56,38,56,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,52,0.0,-0.0080645161290322,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,57,39,57,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,53,0.6206401209677419,0.545803931451613,True,0.4375,False,4 16 32,0.4375,0.125,0.9375,0.4375
+EXPLORATORY,ldir32,0,58,3a,58,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,54,0.5572076612903225,0.1485635080645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,59,3b,59,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,55,0.3041834677419355,0.0241935483870967,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,60,3c,60,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,56,0.3727318548387097,0.0454259072580645,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,61,3d,61,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,57,0.4606224798387096,0.2380922379032258,False,0.0625,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,62,3e,62,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,58,0.0,-0.0040322580645161,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,63,3f,63,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,59,0.021484375,-0.0060483870967741,False,0.0,False,32,0.75,0.0,1.0,0.75
+EXPLORATORY,ldir32,0,64,40,0,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-4,0.0,-0.0081989247311827,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,65,41,1,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-3,0.0531754032258064,0.0100806451612903,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,66,42,2,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-2,0.5255796370967742,0.3989247311827957,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,67,43,3,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-1,0.5265246975806452,0.5880166330645161,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,68,44,4,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",0.0,0,0.7772807459677419,0.777280745967742,True,1.0,True,4,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,69,45,5,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,1,0.3069556451612903,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,70,46,6,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,2,0.4633946572580645,0.2999621975806451,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,71,47,7,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,3,0.4959677419354839,0.366179435483871,True,0.0,False,8,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,72,48,8,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",4.0,4,0.9049269153225808,0.9045488911290324,True,1.0,True,8,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,73,49,9,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,5,0.3660954301075269,0.2000378024193548,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,74,4a,10,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,6,0.5274697580645161,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,75,4b,11,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,7,0.5880166330645161,0.3279989919354839,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,76,4c,12,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,8,0.9367439516129032,0.9358450940860216,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,77,4d,13,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,9,0.4633946572580645,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,78,4e,14,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,10,0.3069556451612903,0.4612525201612903,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,79,4f,15,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,11,0.4623235887096774,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,80,50,16,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",12.0,12,0.9684979838709676,0.9683089717741936,True,1.0,True,16,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,81,51,17,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,13,0.4622521841397849,0.1783182123655914,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,82,52,18,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,14,0.5572076612903225,0.8090977822580645,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,83,53,19,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,15,0.4939516129032258,0.3978704637096774,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,84,54,20,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,16,0.9684349798387096,0.9682459677419356,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,85,55,21,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,17,0.5265246975806452,0.8412298387096775,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,86,56,22,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,18,0.9366179435483872,0.4879662298387097,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,87,57,23,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,19,0.3055695564516129,0.2696572580645161,False,0.0,False,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,88,58,24,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,20,0.9684349798387096,0.9682417674731184,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,89,59,25,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,21,0.6204133064516129,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,90,5a,26,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,22,0.5255796370967742,0.2240423387096774,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,91,5b,27,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,23,0.3370463709677419,0.2205141129032258,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,92,5c,28,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,24,1.0,0.9682459677419356,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,93,5d,29,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,25,0.4949596774193548,0.1466733870967742,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,94,5e,30,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,26,0.747983870967742,0.0,False,1.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,95,5f,31,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,27,0.5255796370967742,0.3366935483870967,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,96,60,32,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",28.0,28,1.0,1.0,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,97,61,33,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,29,0.905304939516129,0.4337197580645161,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,98,62,34,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,30,0.7012978830645161,0.401335685483871,True,0.5625,True,4 32,0.5,0.0,1.0,0.5
+EXPLORATORY,ldir32,0,99,63,35,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,31,0.6215977822580645,0.3227696572580645,True,0.375,False,4 32,0.5625,0.0,1.0,0.5625
+EXPLORATORY,ldir32,0,100,64,36,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,32,0.8757560483870968,0.9683089717741936,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,101,65,37,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,33,0.4245211693548387,0.1549899193548387,False,0.125,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,102,66,38,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,34,0.9369959677419356,0.9681157594086022,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,103,67,39,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,35,0.613407258064516,0.374978998655914,True,0.0625,False,32,0.875,0.0,1.0,0.875
+EXPLORATORY,ldir32,0,104,68,40,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,36,0.7179309475806452,0.6197076612903225,True,0.0625,False,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,105,69,41,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,37,0.4240171370967742,0.193359375,False,0.0,False,32,0.5,0.0,1.0,0.5
+EXPLORATORY,ldir32,0,106,6a,42,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,38,0.7153477822580645,0.616633064516129,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,107,6b,43,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,39,0.4622521841397849,0.2716103830645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,108,6c,44,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,40,0.4807711693548386,0.459992439516129,True,0.125,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,109,6d,45,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,41,0.4644657258064516,0.4272177419354839,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,110,6e,46,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,42,0.3689516129032257,0.2610257056451612,False,0.0,False,32,0.1875,0.0625,1.0,0.1875
+EXPLORATORY,ldir32,0,111,6f,47,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,43,0.4143775201612903,0.3254158266129032,True,0.1875,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,112,70,48,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,44,0.0,-0.0040322580645161,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,113,71,49,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,45,0.0,-0.0060483870967741,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,114,72,50,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,46,0.0,-0.0102150537634408,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,115,73,51,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,47,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,116,74,52,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,48,0.0,-0.0040322580645161,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,117,75,53,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,49,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,118,76,54,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,50,0.0,-0.0061827956989247,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,119,77,55,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,51,0.0,-0.0040322580645161,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,120,78,56,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,52,0.7484543010752689,0.1704175067204301,False,1.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,121,79,57,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,53,0.484375,0.2386592741935484,False,0.125,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,122,7a,58,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,54,0.5265246975806452,0.3084047379032258,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,123,7b,59,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,55,0.3069556451612903,0.0282258064516129,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,124,7c,60,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,56,0.3727318548387097,0.0452368951612903,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,125,7d,61,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,57,0.4592993951612903,0.2368321572580645,False,0.0625,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,126,7e,62,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,58,0.6843497983870968,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,127,7f,63,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,59,0.01953125,-0.0061827956989247,False,0.0,False,32,0.75,0.0625,1.0,0.75
+EXPLORATORY,ldir32,0,128,80,0,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-4,0.0,-0.0060483870967741,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,129,81,1,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-3,0.0550655241935483,0.0100806451612903,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,130,82,2,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-2,0.5255796370967742,0.4037928427419355,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,131,83,3,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-1,0.5589717741935484,0.4242061491935484,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,132,84,4,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",0.0,0,0.7790448588709677,0.7781628024193548,True,1.0,True,4,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,133,85,5,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,1,0.3055695564516129,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,134,86,6,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,2,0.4633946572580645,0.2980090725806451,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,135,87,7,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,3,0.4959677419354839,0.3635752688172043,True,0.0,False,8,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,136,88,8,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",4.0,4,0.9054939516129032,0.9047379032258064,True,1.0,True,8,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,137,89,9,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,5,0.3699596774193548,0.1949344758064516,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,138,8a,10,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,6,0.5255166330645161,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,139,8b,11,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,7,0.5896547379032258,0.3024193548387096,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,140,8c,12,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,8,0.9367439516129032,0.9360971102150538,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,141,8d,13,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,9,0.4612525201612903,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,142,8e,14,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,10,0.4612525201612903,0.4590389784946236,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,143,8f,15,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,11,0.463323252688172,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,144,90,16,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",12.0,12,0.9684349798387096,0.9683089717741936,True,1.0,True,16,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,145,91,17,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,13,0.4633946572580645,0.1784274193548387,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,146,92,18,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,14,0.5563256048387096,0.8090977822580645,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,147,93,19,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,15,0.4949596774193548,0.458039314516129,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,148,94,20,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,16,0.9683719758064516,0.9683089717741936,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,149,95,21,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,17,0.5274697580645161,0.8402847782258065,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,150,96,22,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,18,0.9368699596774194,0.4909904233870967,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,151,97,23,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,19,0.3069556451612903,0.2711063508064516,False,0.0,False,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,152,98,24,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,20,0.9683719758064516,0.9681829637096776,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,153,99,25,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,21,0.6204637096774193,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,154,9a,26,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,22,0.5265246975806452,0.2220262096774193,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,155,9b,27,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,23,0.3371345766129032,0.2201990927419355,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,156,9c,28,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,24,1.0,0.9681787634408604,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,157,9d,29,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,25,0.4949596774193548,0.1463583669354838,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,158,9e,30,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,26,0.7474798387096775,0.0,False,1.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,159,9f,31,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,27,0.5246345766129032,0.3366935483870967,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,160,a0,32,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",28.0,28,1.0,1.0,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,161,a1,33,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,29,0.905304939516129,0.4337197580645161,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,162,a2,34,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,30,0.6846396169354838,0.3798513104838709,True,0.5,True,4 32,0.4375,0.0,1.0,0.4375
+EXPLORATORY,ldir32,0,163,a3,35,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,31,0.6224168346774194,0.3227696572580645,True,0.375,False,4 32,0.5625,0.0,1.0,0.5625
+EXPLORATORY,ldir32,0,164,a4,36,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,32,0.876008064516129,0.9681829637096776,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,165,a5,37,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,33,0.4257182459677419,0.1502016129032258,False,0.125,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,166,a6,38,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,34,0.9368699596774194,0.9682459677419356,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,167,a7,39,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,35,0.613407258064516,0.3739289314516129,True,0.0625,False,32,0.875,0.0,1.0,0.875
+EXPLORATORY,ldir32,0,168,a8,40,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,36,0.716796875,0.6197076612903225,True,0.0625,False,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,169,a9,41,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,37,0.4231980846774194,0.1726184475806451,False,0.0,False,32,0.4375,0.0,1.0,0.4375
+EXPLORATORY,ldir32,0,170,aa,42,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,38,0.7153477822580645,0.6189516129032258,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,171,ab,43,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,39,0.4611811155913978,0.2730594758064516,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,172,ac,44,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,40,0.4758694556451612,0.434601814516129,True,0.0625,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,173,ad,45,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,41,0.4612525201612903,0.4261592741935484,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,174,ae,46,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,42,0.4318296370967742,0.2757686491935484,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,175,af,47,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,43,0.4123613911290322,0.3177923387096774,True,0.1875,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,176,b0,48,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,44,0.602444556451613,0.3463961693548387,True,0.375,False,4 32,0.75,0.625,0.9375,0.75
+EXPLORATORY,ldir32,0,177,b1,49,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,45,0.4517389112903226,0.1769027217741935,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,178,b2,50,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,46,0.4002646169354839,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,179,b3,51,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,47,0.6211693548387096,0.4284274193548387,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,180,b4,52,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,48,0.9684979838709676,0.9683089717741936,True,1.0,True,4,0.0,0.0,0.0,0.0
+EXPLORATORY,ldir32,0,181,b5,53,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,49,0.4504158266129032,0.202179939516129,False,0.125,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,182,b6,54,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,50,0.428351814516129,0.9683089717741936,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,183,b7,55,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,51,0.6181451612903226,0.2313508064516129,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,184,b8,56,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,52,0.7484879032258065,0.1757182459677419,False,1.0,False,32,1.0,0.125,1.0,1.0
+EXPLORATORY,ldir32,0,185,b9,57,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,53,0.4841229838709677,0.2387852822580645,False,0.125,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,186,ba,58,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,54,0.5274697580645161,0.3065146169354839,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,187,bb,59,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,55,0.3055695564516129,0.0282258064516129,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,188,bc,60,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,56,0.3702116935483871,0.0452368951612903,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,189,bd,61,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,57,0.4618279569892473,0.2380922379032258,False,0.0625,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,190,be,62,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,58,0.6849798387096774,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,191,bf,63,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,59,0.01953125,-0.0020791330645161,False,0.0,False,32,0.75,0.0,1.0,0.75
+EXPLORATORY,ldir32,0,192,c0,0,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-4,0.08203125,0.0291078629032258,False,0.0625,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,193,c1,1,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-3,0.0549395161290322,0.0100806451612903,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,194,c2,2,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-2,0.0,-0.0040322580645161,False,0.0,False,32,0.125,0.0625,1.0,0.125
+EXPLORATORY,ldir32,0,195,c3,3,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,-1,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,196,c4,4,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,0,0.0,-0.0061827956989247,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,197,c5,5,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,1,0.3014112903225806,0.0,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,198,c6,6,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,2,0.0,-0.0060483870967741,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,199,c7,7,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,3,-0.0100806451612903,-0.0060483870967741,False,0.0,False,2,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,200,c8,8,4,True,"sampled first-instruction prerequisites met; forward core, dividing d and coverage",4.0,4,0.9051159274193548,0.9049269153225808,True,1.0,True,8,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,201,c9,9,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,5,0.2485509072580645,0.1287802419354838,False,0.25,False,8 32,0.25,0.0,1.0,0.25
+EXPLORATORY,ldir32,0,202,ca,10,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,6,0.6197076612903225,0.618195564516129,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,203,cb,11,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,7,0.0,-0.0060483870967741,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,204,cc,12,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,8,0.9366179435483872,0.9363659274193548,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,205,cd,13,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,9,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,206,ce,14,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,10,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,207,cf,15,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,11,0.4611811155913978,0.2374621975806451,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,208,d0,16,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,12,0.2890625,0.1794984879032258,False,0.3125,False,16 32,0.375,0.25,1.0,0.375
+EXPLORATORY,ldir32,0,209,d1,17,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,13,0.4633946572580645,0.1784274193548387,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,210,d2,18,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,14,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,211,d3,19,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,15,0.0,-0.0020791330645161,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,212,d4,20,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,16,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,213,d5,21,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,17,0.5265246975806452,0.8408938172043011,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,214,d6,22,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,18,0.0,-0.0060483870967741,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,215,d7,23,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,19,0.7159148185483871,0.5226814516129032,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,216,d8,24,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,20,0.9684349798387096,0.9683089717741936,True,1.0,True,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,217,d9,25,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,21,0.6204637096774193,0.0,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,218,da,26,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,22,0.7153477822580645,0.5043472782258065,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,219,db,27,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,23,0.0,-0.0040322580645161,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,220,dc,28,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,24,1.0,0.9682459677419356,True,1.0,True,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,221,dd,29,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,25,0.683719758064516,0.524508568548387,True,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,222,de,30,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,26,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,223,df,31,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,27,0.9051159274193548,0.3966733870967742,True,1.0,True,32,0.0,1.0,1.0,0.0
+EXPLORATORY,ldir32,0,224,e0,32,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,28,0.36328125,0.2186239919354838,False,0.3125,False,32,0.375,0.3125,1.0,0.375
+EXPLORATORY,ldir32,0,225,e1,33,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,29,0.3793472782258064,0.2478578629032258,False,0.1875,False,32,0.3125,0.0,1.0,0.3125
+EXPLORATORY,ldir32,0,226,e2,34,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,30,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,227,e3,35,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,31,0.4792716733870967,0.370148689516129,True,0.1875,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,228,e4,36,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,32,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,229,e5,37,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,33,0.4253402217741935,0.15625,False,0.125,False,32,0.375,0.0,1.0,0.375
+EXPLORATORY,ldir32,0,230,e6,38,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,34,0.0,-0.0040322580645161,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,231,e7,39,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,35,0.304750504032258,0.2184349798387097,False,0.125,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,232,e8,40,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,36,0.7179309475806452,0.6189012096774194,True,0.0625,False,32,1.0,1.0,1.0,1.0
+EXPLORATORY,ldir32,0,233,e9,41,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,37,0.0,-0.0061827956989247,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,234,ea,42,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,38,0.9367439516129032,0.9681199596774194,True,1.0,True,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,235,eb,43,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,39,0.4601814516129032,0.2730594758064516,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,236,ec,44,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,40,0.6252520161290323,0.9681199596774194,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,237,ed,45,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,41,0.0,-0.0040322580645161,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,238,ee,46,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,42,0.0,-0.0102150537634408,False,0.0,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,239,ef,47,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,43,0.2384072580645161,0.0905367943548387,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,240,f0,48,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,44,0.2806829637096774,0.0795110887096774,False,0.25,False,32,0.3125,0.1875,1.0,0.3125
+EXPLORATORY,ldir32,0,241,f1,49,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,45,0.4528729838709677,0.1980846774193548,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,242,f2,50,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,46,0.0,-0.0040322580645161,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,243,f3,51,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,47,0.621219758064516,0.4295614919354839,True,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,244,f4,52,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,48,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0625,1.0,0.1875
+EXPLORATORY,ldir32,0,245,f5,53,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,49,0.4381300403225807,0.2336189516129032,False,0.125,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,246,f6,54,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,50,0.0,-0.0040322580645161,False,0.0,False,32,0.1875,0.0,1.0,0.1875
+EXPLORATORY,ldir32,0,247,f7,55,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,51,0.387726814516129,0.1478074596774193,False,0.1875,False,16 32,0.4375,0.0,1.0,0.4375
+EXPLORATORY,ldir32,0,248,f8,56,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,52,0.75,0.177734375,False,1.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,249,f9,57,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,53,0.462953629032258,0.2144027217741935,False,0.125,False,32,0.0625,0.0,1.0,0.0625
+EXPLORATORY,ldir32,0,250,fa,58,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,54,0.5580897177419355,0.1467993951612903,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,251,fb,59,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,55,0.3069556451612903,0.0282258064516129,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,252,fc,60,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,56,0.3397555443548387,0.0139868951612903,False,0.0,False,32,1.0,0.0,1.0,1.0
+EXPLORATORY,ldir32,0,253,fd,61,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,57,0.3629032258064516,0.1476016465053763,False,0.0,False,32,0.0,0.0,1.0,0.0
+EXPLORATORY,ldir32,0,254,fe,62,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,58,0.0,-0.0020791330645161,False,0.0,False,32,0.125,0.0,1.0,0.125
+EXPLORATORY,ldir32,0,255,ff,63,4,False,first-instruction/protected-prefix or dividing-d conditions fail,,59,0.0767389112903225,-0.0040322580645161,False,0.0625,False,16 32,0.25,0.0625,1.0,0.25

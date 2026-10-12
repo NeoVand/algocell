@@ -1,0 +1,17 @@
+At the composed figure’s 180-mm print width, one substantive encoding defect remains. The enlarged panels make it easier to inspect, but do not resolve it at publication size.
+
+**Required fix**
+
+- **Panel a, both C1 endpoint plots:** All six chemistry × starting-mixture summaries occupy the same x-coordinate. Several symbols overlap, particularly the purple endpoints in the T-fraction plot and the upper cluster in the core-bearing plot. Readers cannot reliably recover the three starting mixtures from the circle/square/triangle encoding; the latter cluster also overlaps colours. Separate endpoints with small, explicitly explained horizontal offsets, or use a compact endpoint strip with distinct positions for the starting mixtures. Preserve their actual y-values and identify all positions as measurements at 300,000 steps. Do not add unavailable trajectories.
+
+**Optional polish**
+
+- **Panel a, historical traces:** At final size, the overlapping purple trajectories make solid/dashed/dotted identification difficult after convergence. Direct labels near the initially separated trajectories, or a small graphical legend showing actual line samples, would improve correspondence with the starting mixtures.
+- **Panel b, left plot:** “20 worlds / group” describes the registered cohort, while the C1-benign ratio has 19 defined observations. The footnote discloses this correctly, so this is not an undisclosed denominator error. Adding “19 defined + 1 undefined” locally would make the exception easier to find. Any missing-value symbol should sit outside the quantitative axis rather than imply a zero ratio.
+- **Panel c, below all three plots:** “DZ1/DZ3/DZ2” and “PASS/FAILED component” introduce unexplained assessment terminology and compete with the scientific results. Move these to the caption with their criteria, or replace them with short, interpretable outcome descriptions.
+- **Across the composition:** The explanatory prose is approximately at the smaller end of the requested 5–7 pt range. It remains readable, but its volume weakens hierarchy. Consolidate repeated sample-size statements and move procedural details into the caption; retain the encoding keys and missing-observation disclosure close to the plots.
+- **Panel c, probability axes:** The equally spaced tested levels are presented consistently. Explicitly identifying the spacing as categorical would further discourage interpreting segment slopes as change per unit probability.
+
+I see no clear text clipping, broken glyphs, label collisions, or inappropriate truncation of the quantitative ranges. The explicitly unavailable C1 traces are clearly disclosed. Colour changes meaning between rows, but the accompanying explanations make this recoverable.
+
+SUBSTANTIVE DEFECTS

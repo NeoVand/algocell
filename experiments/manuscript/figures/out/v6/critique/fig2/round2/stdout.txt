@@ -1,0 +1,19 @@
+At the composed figure’s stated 180-mm width, substantive defects remain. I see no clear clipping, text collisions, or malformed glyphs. Most text appears near the intended 5–7 pt range; the main problems concern distinguishable encodings and interpretation.
+
+**Required fixes**
+
+- **Panel b — rare outcomes are inadequately resolved at final size.** The narrow maps compress 256 alternative rows into roughly 33 mm of height. Individual rows are therefore only about 0.13 mm high. In particular, the rare teal outcomes in Block-copy R are difficult to locate in the composition. The numerical “16 core carriers” annotation supplies a count but does not make their positions readable. Add a targeted enlargement or an aligned position summary that explicitly locates these rare outcomes while retaining the full maps.
+
+- **Panel b — white has insufficient contrast against grey.** White “unchanged, untested” marks nearly disappear in the grey Pusher map and grey regions of the other maps. This makes those entries difficult to distinguish from tested, universally lethal alternatives. Use a contrasting neutral symbol or outline for untested entries, with a matching legend key. Preserve the distinction without enlarging marks in a way that exaggerates their frequency.
+
+- **Panel a — the dataset key does not clearly correspond to the plotted traces.** The note promises “C1: open markers/dashes; historical: solid,” but the visible result is predominantly solid traces with open circles. Distinct dashed trajectories cannot be reliably identified at print size. If the datasets coincide, explicitly say so and use open markers for C1 with solid lines for historical results; otherwise make the dashed traces visibly separable. Include actual symbol samples rather than relying entirely on prose.
+
+- **Panels a, b and d — counting units and aggregation rules need clarification.** In **a**, “512×4 mutant starts” does not explain what the four represents, and “carriage” should specify whether its denominator is all mutant starts or surviving mutants. In **b**, “core carriers” does not identify whether the counts refer to alternative–position combinations, sites, or replicate lines. In **d**, “retained sites /16” does not explain how retention is aggregated across the stated 16 lines per allele. Define these units and rules in concise keys or the accompanying caption. Also explain the relationship between the site totals in a and d; their differing denominators cannot be interpreted from these images alone.
+
+- **Panel c — the illustrated case is unidentified.** The panel names neither the parent/program being traced nor the scope of this example. Identify the illustrated parent and state whether this is one representative execution. That information is needed to connect the mechanistic example to the surrounding comparisons.
+
+**Optional polish**
+
+Replace the prose colour descriptions with compact swatches and line samples, and move procedural notes into the caption where possible. This would strengthen hierarchy and reduce the reading burden at print size. The visible axis limits themselves do not show an obvious substantive defect.
+
+SUBSTANTIVE DEFECTS

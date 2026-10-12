@@ -1,0 +1,12 @@
+check,result,detail
+impact tests,passed,"174 passed in 41.69 s; tests/test_impact{,_q,_registry,_report,_confirm,_i1_report,_assay_supplement}.py; followed by at least 45 s without local GPU work"
+frozen code,passed,"impact.py, impact_corpus.py, impact_worlds.py byte-identical to bdcdcb6; run_condition, _cat and masks_of AST-identical"
+exclusion,passed,787 conditions; zero overlap; dry draw and pair digests match transported/executed inputs
+claim mapping,passed,all 787 conditions resolve to NUMBERS_INDEX and REVISION_PREREG references
+report CPU tests,passed,"7 passed in 0.09 s after checking actual figure filters, unplotted controls, and bold C4c registration references"
+local assay completion,passed,119 additional source-table cases; 6.822168 s GPU burst followed by 7.008649 s pause; all 417 catalogue cases covered
+unit table C0 regression,passed,All 126 cited source-table cases; 630 published score comparisons; zero mismatches (unit_table_c0_validation.csv)
+completed-table reconciliation,passed,"787 distinct conditions; 2,361 rate rows; 1,574 C1/C2 decisions; 417 assays / 1,251 raw score rows; all 3,149 affected-pair records unique and class-accounted"
+independent interval validation,passed,"All 2,361 CI rows checked via 39 distinct binomial-PMF recurrences; maximum CDF residual 8.54e-12 (interval_validation.csv)"
+actual billing and cap,passed,"App-only billing USD 2.32766004 < 8; GPU, CPU and memory each reconcile to 3,974 billed seconds, covering 3,957.553378 worker seconds plus allocation overhead (billing_validation.csv)"
+teardown,passed,Own Modal app already stopped at 2026-10-11 09:14:27 UTC; local watcher exited 0 after complete retrieval (teardown.csv)

@@ -1,0 +1,15 @@
+{
+  "status": "EXPLORATORY",
+  "source": "results/branching/branching_summary.csv",
+  "source_sha256": "dd363cf965d116c6217c2d0e5c2f2968fbaa504b9c8397c7cd874912320106fd",
+  "executor_sha256": "69b5f23c9cfdf31df3b4bdb3558cc909b8fc191c5365b3dd28396489d6f2ddc5",
+  "observational_shader_sha256": "ed3bce168529c04dee58e555ef531bcd17e8f09696a6f87f3f8386a0d5957821",
+  "position": 8,
+  "marker": 167,
+  "L": 32,
+  "steps_per_encounter": 128,
+  "events": 1014,
+  "complete": true,
+  "partner": "all zero; benign chemistry",
+  "ordered_csv_sha256": "55952d7d0873b61449ac27fa9cc6048e576e5b748e4fca70fd4c724cea74cd84"
+}

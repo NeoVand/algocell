@@ -1,0 +1,21 @@
+Required fixes:
+
+- **Panel b — residuals are not interpretable as labelled.** The point near predicted payload 4 has measured payload 0, implying a measured-minus-predicted residual near −4; the lower plot places the apparent exception near −0.8. If residuals are normalized or transformed, state the formula and units. Otherwise correct the values and limits. Identify which observations the residual plot represents: its uniformly grey circles do not preserve the upper plot’s copier encodings.
+
+- **Panels b and c — the relationship between markers and reported sample sizes is missing.** A handful of markers accompanies 2,343 cells, 42 evolved copiers, 296 constructed cases, or 101 edits. The images do not establish whether markers represent individual observations, unique coordinate pairs, examples, or summaries. State this explicitly and disclose multiplicities or the selection rule. Otherwise the apparent agreement cannot be interpreted against the reported denominators.
+
+- **Panel b — the low-payload observations overlap substantially at final size.** Circles, triangles and squares around 0–10 obscure one another, especially near the origin. This is consequential because that region contains much of the visible cross-copier comparison. Add a magnified inset or a separate low-range view while retaining the full-range plot and equality reference.
+
+- **Panel d — the fractions lack a defined outcome and counting unit.** “Challenge” and copier names do not explain what counts as a numerator success or denominator trial. Define these for each row, particularly “Beyond protected prefix.” Clarify how “17 partners/case” and “64/edit or copier” relate to the displayed totals. Likewise, panel c should distinguish its 25,856 serial records from independent edits or lineages.
+
+- **Composed figure — qualification text has insufficient hierarchy.** At 180 mm, much of the annotation is approximately 6 pt: readable, but dense relative to the very small plotting areas. Panel b gives cohort counts, assay descriptions, exclusions and pending status nearly equal prominence; panel c similarly intermixes its main result and exploratory offset result. Retain essential sample sizes and qualifications beside the relevant result, move procedural detail to the caption, and use the recovered space to enlarge the plots. Preserve clear exploratory and pending labels.
+
+Optional polish:
+
+- **Panels b and c:** label the pale diagonal as the equality reference and slightly strengthen its contrast for print.
+- **Panel a:** the reserved area is intentional, but “Designer brief: DESIGNER_ROUND6” reads as production metadata. A single restrained reservation label would present it more cleanly.
+- **Panel d:** subtle table rules or tighter row spacing would improve scanning.
+
+I see no substantive clipping, text collisions, broken glyphs or cropped markers. The main-plot symbol descriptions correspond to the visible shapes, and there is no evident substantive colour misuse. The intentional empty slots do not require fabricated data.
+
+SUBSTANTIVE DEFECTS

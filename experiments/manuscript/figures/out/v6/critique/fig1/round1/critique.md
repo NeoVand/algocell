@@ -1,0 +1,19 @@
+At the composed width of 180 mm, the figure is readable but has two substantive ambiguities in panel **c**. The enlarged panel renders should not be taken as evidence of comfortable print-size readability.
+
+**Required fixes**
+
+- **c — The plotted fractions have unspecified denominators.** “Fraction” and “Teal: dominant neighbourhood; grey: zero bytes” identify neither the counted quantity nor its reference population clearly enough. The shared axis invites comparison between the two curves. Define each fraction explicitly in the axis label, key or caption. If their denominators differ, state that distinction clearly.
+- **c — Partner-entry percentages lack denominators.** “100%” and “0%” appear beside counts with two different denominators—64 controls and 16 sites—so the relevant sample size cannot be inferred safely. Give partner entry as **n/N (%)** for each reference assay and identify the eligible unit. Use the actual counts; do not assume either adjacent denominator applies.
+
+**Presentation checks**
+
+- **Across the composition:** No visible text overlaps, clipping, broken glyphs or displaced symbols. The smallest assay text appears near the lower end of the requested 5–7 pt range at final size; it remains readable, but should not be reduced further.
+- **c:** Both curves remain within the displayed plot limits. The grey trace near zero is distinguishable from the horizontal axis. The written colour key corresponds to the visible curves. The note appropriately distinguishes the illustrative world from the separate reference assays.
+- **d:** The displayed counts are internally consistent where complements are provided. Different validation units are explicitly acknowledged; there is no common quantitative encoding falsely equating them. The pending ecology row clearly reports an absence of plotted results.
+- **a–b:** The reserved areas are conspicuous and dominate the upper half, but their intentional placeholder status is unambiguous. No additional data or artwork is required for this assessment.
+
+**Optional polish**
+
+Replace panel c’s colour-name sentence with short labelled line samples, and align its assay values into compact comparison rows. Subtle row spacing or rules could improve scanning in d. These are improvements to hierarchy, not repairs to demonstrated rendering defects.
+
+SUBSTANTIVE DEFECTS

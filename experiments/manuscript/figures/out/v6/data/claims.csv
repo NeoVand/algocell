@@ -1,0 +1,23 @@
+claim,status,components
+DZ1,stands,open_p0_ge8: met -> met; open_p1_le2: met -> met; falling_rank_trend: met -> met
+DZ2,changed,KM_medians_le1_reversal: not met -> met; positive_spearman_perm_lt05: met -> met
+DZ3,changed,positive_transmitter_trend_perm_lt05: met -> met; p0_transmitter_majority_le3: met -> met; p1_transmitter_majority_ge7: not met -> met
+E1,stands,L16_benign_off_mix50_7of10_in_03_07: not met -> not met; L32_benign_off_mix50_7of10_in_03_07: not met -> not met
+E2,stands,L16_benign_on_mix50_7of10_below_start_in_005_04: not met -> not met; L16_lethal_on_mix50_7of10_below_start_in_005_04: not met -> not met; L32_benign_on_mix50_7of10_below_start_in_005_04: not met -> not met
+E3,stands,lethal_direction: no direction registered -> no direction registered
+E-L32L,stands,7of10_Tshare_gt_half: met -> met; kill_7of10_Tshare_lt04: not fired -> not fired
+L1,stands,L16_recovery_ge5of10: not met -> not met; L20_recovery_ge5of10: not met -> not met
+L2,changed,L16_block_and_unexecuted_recovery: not met -> n/a (no recovery); L20_block_and_unexecuted_recovery: n/a (no recovery) -> not met
+L3,stands,L16_nonblock_dominant_le1_all_snapshots: not met -> not met; L20_nonblock_dominant_le1_all_snapshots: not met -> not met
+L,stands,joint_kill_both_lengths: fired -> fired
+C4b,stands,SI13_motif_gt50_and_confined_4of5: not met -> not met; most_heritable_confined_4of5: met -> met; reverse_pusher_lt05_4of5: met -> met
+C4c,stands,invasion_direction: no direction registered -> no direction registered
+F4c,stands,heritable_lt10of10_OR_KM_gt2000: met -> met
+S1,stands,complete_registered_genotype_panel: not met -> not met
+S2,stands,complete_registered_genotype_panel: met -> met
+S3,stands,complete_registered_genotype_panel: met -> met
+S4,stands,complete_registered_genotype_panel: met -> met
+S5,stands,complete_registered_genotype_panel: met (descriptive) -> met (descriptive)
+X1-1,stands,registered_U_endpoint: met -> met
+X1-2,stands,registered_U_endpoint: not met -> not met
+X1-3,stands,registered_U_endpoint: met -> met

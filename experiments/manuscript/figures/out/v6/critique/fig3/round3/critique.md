@@ -1,0 +1,10 @@
+One substantive issue remains in **panel b’s outcome labeling**.
+
+- **Required — distinguish score from capacity.** The shared y-axis, “Measured payload,” presents all symbols as measurements of the same outcome. The caption instead identifies Z80 circles as **unexecuted-site scores** and evolved 6502 triangles as **exact descendant capacities**. This matters at the circle near **(4, 0)**: the caption says that cell retains its predicted payload in targeted transfers but fails the population similarity gate. The plotted zero therefore risks communicating a payload loss that the caption does not establish. Use an axis label such as “Observed score or capacity (positions),” identify each outcome explicitly in the symbol key, and annotate the exceptional circle as a gate-related score deficit. Apply that distinction to the detail view as well.
+- **Required within the same correction — define the square ordinate.** “Constructed 6502 cases” identifies the population, but the caption does not explicitly establish what numerical outcome the squares represent. State whether their ordinate is a score or an exact descendant capacity.
+
+At the **180-mm composed size**, I do not see substantive overlaps, clipping, broken glyphs, or clearly illegible text. Panel b is compact, but its detail view resolves the low-value observations and its limits retain the exceptional point. Panel c’s symbols and equality line are readable. The caption adequately distinguishes merged observations, cluster means, repeated records, and intervention-case denominators; panel d’s large counts should therefore not be criticized as an asserted number of independent replicates.
+
+**Optional polish:** Panel d would scan more easily with tighter row spacing and subtle horizontal rules. Its beyond-prefix row could say “Beyond protected prefix: predicted erasure,” making the caption’s outcome distinction immediately visible. Panel a’s reservation and the pending 8086 slots are clearly intentional; they do not require invented content.
+
+SUBSTANTIVE DEFECTS

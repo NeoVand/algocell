@@ -1,0 +1,37 @@
+claim,registered_component,published_verdict,source,C1_verdict,evidence,comparison
+DZ1,open_p0_ge8,met,REVISION_PREREG.md:633–637; results/dial/dial_worlds.csv,met,10/10 open first (threshold >=8),same
+DZ1,open_p1_le2,met,REVISION_PREREG.md:633–637; results/dial/dial_worlds.csv,met,0/10 open first (threshold <=2),same
+DZ1,falling_rank_trend,met,REVISION_PREREG.md:633–637; results/dial/dial_worlds.csv,met,z=-5.78752; one-sided P=3.57162e-09,same
+DZ2,KM_medians_le1_reversal,not met,REVISION_PREREG.md:638–641,met,"1 reversal; medians=32500, 42500, 60000, 80000, 212500, 115000",changed
+DZ2,positive_spearman_perm_lt05,met,REVISION_PREREG.md:638–641,met,rho=0.591431; frozen 20000-permutation P=0,same
+DZ3,positive_transmitter_trend_perm_lt05,met,REVISION_PREREG.md:642–645,met,rho=0.613371; frozen 20000-permutation P=0,same
+DZ3,p0_transmitter_majority_le3,met,REVISION_PREREG.md:642–645,met,0/10 transmitter-majority worlds,same
+DZ3,p1_transmitter_majority_ge7,not met,REVISION_PREREG.md:642–645,met,8/10 transmitter-majority worlds,changed
+E1,L16_benign_off_mix50_7of10_in_03_07,not met,REVISION_PREREG.md:434–436; results/offset/offset_switch.csv,not met,"4/10 in [.3,.7]",same
+E1,L32_benign_off_mix50_7of10_in_03_07,not met,REVISION_PREREG.md:434–436; results/offset/offset_switch.csv,not met,"4/10 in [.3,.7]",same
+E2,L16_benign_on_mix50_7of10_below_start_in_005_04,not met,REVISION_PREREG.md:437–443; script prints interval part; register conjunction separately,not met,literal below-start AND interval 2/10; frozen printed interval count 2/10,same
+E2,L16_lethal_on_mix50_7of10_below_start_in_005_04,not met,REVISION_PREREG.md:437–443; script prints interval part; register conjunction separately,not met,literal below-start AND interval 0/10; frozen printed interval count 0/10,same
+E2,L32_benign_on_mix50_7of10_below_start_in_005_04,not met,REVISION_PREREG.md:437–443; script prints interval part; register conjunction separately,not met,literal below-start AND interval 5/10; frozen printed interval count 5/10,same
+E3,lethal_direction,no direction registered,REVISION_PREREG.md:402–403,no direction registered,All lethal-arm tables descriptive; no winner test,same
+E-L32L,7of10_Tshare_gt_half,met,REVISION_PREREG.md:625–630,met,"10/10 T share >.5; median 0.760314, range 0.589966–0.865845",same
+E-L32L,kill_7of10_Tshare_lt04,not fired,REVISION_PREREG.md:625–630,not fired,0/10 T share <.4,same
+L1,L16_recovery_ge5of10,not met,results/stageL/SCORING.md,not met,0/10 recover; final <=1 site 8/10,same
+L2,L16_block_and_unexecuted_recovery,not met,results/stageL/SCORING.md; freeze ≥half implementation vs all-sites wording,n/a (no recovery),0 recoveries; literal all-site verdict n/a (no recovery); frozen >=half verdict n/a (no recovery),changed
+L3,L16_nonblock_dominant_le1_all_snapshots,not met,results/stageL/SCORING.md (as registered),not met,8 violating snapshots; 0 closed-only violations (restriction unregistered),same
+L1,L20_recovery_ge5of10,not met,results/stageL/SCORING.md,not met,1/10 recover; final <=1 site 8/10,same
+L2,L20_block_and_unexecuted_recovery,n/a (no recovery),results/stageL/SCORING.md; freeze ≥half implementation vs all-sites wording,not met,"1 recoveries; literal all-site verdict not met; frozen >=half verdict not met; seed 6010: reference 2 -> final 3 sites, 0 unexecuted",changed
+L3,L20_nonblock_dominant_le1_all_snapshots,not met,results/stageL/SCORING.md (as registered),not met,85 violating snapshots; 13 closed-only violations (restriction unregistered),same
+L,joint_kill_both_lengths,fired,results/stageL/SCORING.md; REVISION_PREREG.md:202–207,fired,"L16: recovery 0/10, final <=1 8/10; L20: recovery 1/10, final <=1 8/10",same
+C4b,SI13_motif_gt50_and_confined_4of5,not met,published_r4_endpoints.csv; results/r4/r4_inv.csv; REVISION_PREREG.md:500–506; motif majority not reported as met in original prose,not met,literal SI13 motif >.5 0/5 (decision 3 motif component); descriptive motif AND confinement 0/5,same
+C4b,most_heritable_confined_4of5,met,published_r4_endpoints.csv; results/r4/r4_inv.csv; REVISION_PREREG.md:500–506; motif majority not reported as met in original prose,met,5/5 most heritable confined; range 0.928571–0.980769,same
+C4b,reverse_pusher_lt05_4of5,met,published_r4_endpoints.csv; results/r4/r4_inv.csv; REVISION_PREREG.md:500–506; motif majority not reported as met in original prose,met,5/5 pusher <.05; horizon share range 0–0,same
+C4c,invasion_direction,no direction registered,"REVISION_PREREG.md:427–432,507–513",no direction registered,C4c tables descriptive; closed-descendant reading is not a winner test,same
+F4c,heritable_lt10of10_OR_KM_gt2000,met,"PLAN.md:274–275,397; results/stageF/stage_f/rings.csv",met,3/10 heritable; KM median inf (not reached if inf),same
+S1,complete_registered_genotype_panel,not met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329,not met,"pusher50: g1=16, g4=0; pusher64: g1=30, g4=7",same
+S2,complete_registered_genotype_panel,met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329,met,ret16: g4=0; erased/retained g1=0.5967/0; ldir20: g4=0; erased/retained g1=0.8055/0.01261; ldir32: g4=0; erased/retained g1=0.8789/0.008287; jr50: g4=0; erased/retained g1=0.7169/0.1651,same
+S3,complete_registered_genotype_panel,met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329,met,closer32_8080_p1: payload=12/12; control alive=1; closer32_8080_p2: payload=12/12; control alive=1,same
+S4,complete_registered_genotype_panel,met,results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329,met,genome16_s6006: g4=10; genome20_s6003: g4=9; genome20_s6004: g4=12,same
+S5,complete_registered_genotype_panel,met (descriptive),results/serial_retention/REPORT.md; REVISION_PREREG.md:328–329,met (descriptive),pusher16: g4=0,same
+X1-1,registered_U_endpoint,met,results/branching/BRANCHING.md; REVISION_PREREG.md:1113–1122,met,pusher16 U: 48/64 alive at g8,same
+X1-2,registered_U_endpoint,not met,results/branching/BRANCHING.md; REVISION_PREREG.md:1113–1122,not met,pusher16 U: 0 sites at g8; K: 0 sites,same
+X1-3,registered_U_endpoint,met,results/branching/BRANCHING.md; REVISION_PREREG.md:1113–1122,met,ret16: 0 sites at g8; ldir32: 0 sites at g8; genome20_s6003: 9 sites at g8,same

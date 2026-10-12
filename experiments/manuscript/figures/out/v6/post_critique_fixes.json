@@ -1,0 +1,34 @@
+{
+  "fig3": {
+    "after_round": 3,
+    "changes": [
+      "Ordinate labels explicitly distinguish sampled scores, exact capacity and constructed carriage scores.",
+      "Gate-related Z80 score deficit annotated in both explanatory text and the full-range view.",
+      "Caption defines constructed carriage score and distinguishes zero sampled score from demonstrated retained-payload capacity."
+    ],
+    "independent_recheck": "Not run: user cap is three rounds.",
+    "current_png_sha256": {
+      "fig3.png": "fe71c1e6ebb961c1580666cb9dcdf3a97cf47afa70a3167805765fe95e06637b",
+      "fig3_legend.png": "4a3ad2bf7e9e9cb9c44d3d6273966951a8d9097d4471627d089f5291132e260b",
+      "fig3b.png": "49bd096f1f01860c15ac9ba3827e68f6bdb43db31dcb7a014f06f6e2c33370d1",
+      "fig3c.png": "053d5b44feda81db4aadb5c0b6bd6bbcd562e26ce2555eea0ccac978038402bf",
+      "fig3d.png": "5583f9ab2b34b760c31294df29cd7024260f826c1ed894cac7b88b6c7728302c"
+    }
+  },
+  "fig4": {
+    "after_round": 3,
+    "changes": [
+      "Caption defines first-open tape, confinement event, trace denominator, abundance threshold and time origin.",
+      "Caption gives DZ1/DZ2/DZ3 thresholds and the identical reversal rule applied to both cohorts.",
+      "Restored the documented house lethal-tar purple #7B3294 from make_figures.py."
+    ],
+    "independent_recheck": "Not run: user cap is three rounds.",
+    "current_png_sha256": {
+      "fig4.png": "fb9f3eccb67824561fff7189886fd13e0931ede182ebfcab59f9a7eb30894764",
+      "fig4_legend.png": "00d5eb07c9a9484f17602193a16880acba7e6f358283a37d16a4e1beec51fe34",
+      "fig4a.png": "2cc50ead0e615a6b81864c0761485c89bcf56c979394f6b3172cd6a5a591f75f",
+      "fig4b.png": "b19cde4d0713cebcece7a238fefc756fc8d3d4dca144c7a30ded87722b83c191",
+      "fig4c.png": "cad263e00d0bc5b86a54ad096595e34be7983aee342d9922a1eb10dd7981f17e"
+    }
+  }
+}

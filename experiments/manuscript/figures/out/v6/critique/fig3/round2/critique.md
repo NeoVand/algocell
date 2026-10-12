@@ -1,0 +1,21 @@
+At the composed figure’s final width of 180 mm, I find substantive problems with interpretation and hierarchy. I do **not** see definite clipping, text collisions, broken glyphs or truncated markers. Most supporting text appears approximately 5–6 pt: readable, but already near the lower end of the intended range. The enlarged panel renders should not justify further reduction.
+
+Required fixes:
+
+- **d — The constructed-boundary result has no clear numerator definition.** “5,848/6,144 outside hypotheses (exploratory)” does not establish whether 5,848 counts exact successes, failures or cases outside the hypotheses. Its placement beneath an “Exact successes / intervention cases” table encourages readers to apply that definition automatically. State explicitly what each number counts and separate this result from the table if its outcome definition differs.
+
+- **b and d — The intentional empty 8086 slot needs a readable status explanation.** “8086 evolved: EMPTY, S2” appears alongside “53 fetched-excess cells / 4 exclusions; 1 gate deficit.” These statements do not explain what is empty or how the listed counts relate to eligibility. Replace the internal shorthand with a short description of the empty analysis slot; define S2 and the count categories in the caption. No additional data are needed.
+
+- **c — The exploratory counts lack identifiable populations and criteria.** “Exploratory dial: 99/256 working; 50 aligned at g1” leaves “working,” “aligned,” and the denominator for 50 unspecified. Clarify whether 50 is a subset of 99 or of 256, and spell out the generation notation. Keep this exploratory result visually subordinate to the inherited-capacity result.
+
+- **b–d — Too much methodological annotation competes with the results at print size.** Panel c has two introductory lines and several separate explanatory statements below its axes; d combines a table with six lines of qualifications and procedural detail. Their similar size and weight make the reading order weak. Retain outcome definitions, essential sample sizes and symbol keys beside the data; move archival statements, procedural detail and expanded eligibility explanations to the caption. Preserve the current minimum text size.
+
+Optional polish:
+
+- **b:** Label the grey reference line as equality, as c already does.
+- **d:** Consider a clearly headed success percentage plus case count to avoid repeating identical large numerators and denominators.
+- **a:** The reserved area is intentional and clearly identified. Its production-brief text could be visually quieter.
+
+The merged-coordinate disclosures, explicit symbol keys and displayed plot limits do not themselves constitute defects. Different symbol meanings across b and c are adequately disclosed, although a compact graphical legend would speed reading.
+
+SUBSTANTIVE DEFECTS

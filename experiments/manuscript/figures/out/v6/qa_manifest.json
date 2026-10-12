@@ -1,0 +1,98 @@
+[
+  {
+    "figure": 1,
+    "figcheck": "clean",
+    "critic_rounds": 3,
+    "last_critic_verdict": "NO SUBSTANTIVE DEFECTS",
+    "independent_clearance": true,
+    "reviewed_png_sha256": {
+      "fig1.png": "7c063237d9c578fb8e15b3add7904304002b85c8ed4972afc8c1636cdcbf277e",
+      "fig1c.png": "c94dbb2ddd814fc244d09327cf9b3a2793d8faa5903dc8a9535888d5a05cb276",
+      "fig1d.png": "af21f256eb5199e302bdc7d1ed3883b1fc724b1280622bc60d84c41239135dda",
+      "fig1_legend.png": "b106502d73ac8221264b8812da35bfa92459a3f5cdbe662c4b2c48836db1fdd7"
+    },
+    "current_png_sha256": {
+      "fig1.png": "7c063237d9c578fb8e15b3add7904304002b85c8ed4972afc8c1636cdcbf277e",
+      "fig1c.png": "c94dbb2ddd814fc244d09327cf9b3a2793d8faa5903dc8a9535888d5a05cb276",
+      "fig1d.png": "af21f256eb5199e302bdc7d1ed3883b1fc724b1280622bc60d84c41239135dda",
+      "fig1_legend.png": "b106502d73ac8221264b8812da35bfa92459a3f5cdbe662c4b2c48836db1fdd7"
+    },
+    "current_images_match_last_review": true,
+    "width_mm": 180,
+    "dpi": 600
+  },
+  {
+    "figure": 2,
+    "figcheck": "clean",
+    "critic_rounds": 3,
+    "last_critic_verdict": "NO SUBSTANTIVE DEFECTS",
+    "independent_clearance": true,
+    "reviewed_png_sha256": {
+      "fig2.png": "140ce6476eeff8535b487c22f3eddfbe8f5e27ddc53c20aba76f1c31ebe83dc2",
+      "fig2a.png": "d240745faccb58b1b5d8eecbfa9ad61972dd96bb778f7160205f3dc455dd82dc",
+      "fig2b.png": "2e6bde5c8c2aae45e4a4a415fbd3a2275ae4f0024e6656e0a5d085b1bdf2d23f",
+      "fig2c.png": "d524abfa3f6e3570d08793bbb5ca77e9a97a593c3de4110db4ce256460c08b29",
+      "fig2d.png": "392e732f7dcb1e70ddc5a4083c6944cff07f7ae381f62443758199cf222cbe3a",
+      "fig2_legend.png": "74682253666360ca948e1bab95be186ce1064facc3c48593f624d466c67c35d1"
+    },
+    "current_png_sha256": {
+      "fig2.png": "140ce6476eeff8535b487c22f3eddfbe8f5e27ddc53c20aba76f1c31ebe83dc2",
+      "fig2a.png": "d240745faccb58b1b5d8eecbfa9ad61972dd96bb778f7160205f3dc455dd82dc",
+      "fig2b.png": "2e6bde5c8c2aae45e4a4a415fbd3a2275ae4f0024e6656e0a5d085b1bdf2d23f",
+      "fig2c.png": "d524abfa3f6e3570d08793bbb5ca77e9a97a593c3de4110db4ce256460c08b29",
+      "fig2d.png": "392e732f7dcb1e70ddc5a4083c6944cff07f7ae381f62443758199cf222cbe3a",
+      "fig2_legend.png": "74682253666360ca948e1bab95be186ce1064facc3c48593f624d466c67c35d1"
+    },
+    "current_images_match_last_review": true,
+    "width_mm": 180,
+    "dpi": 600
+  },
+  {
+    "figure": 3,
+    "figcheck": "clean",
+    "critic_rounds": 3,
+    "last_critic_verdict": "SUBSTANTIVE DEFECTS",
+    "independent_clearance": false,
+    "reviewed_png_sha256": {
+      "fig3.png": "d2dbdd41478307695e1d4f9cfce876ccf66f93189ec453503d5aec4a427bcc7d",
+      "fig3b.png": "af5505ed136664eb4dbc74124e536635cc045a0936f4cc8842475a9f36def516",
+      "fig3c.png": "053d5b44feda81db4aadb5c0b6bd6bbcd562e26ce2555eea0ccac978038402bf",
+      "fig3d.png": "5583f9ab2b34b760c31294df29cd7024260f826c1ed894cac7b88b6c7728302c",
+      "fig3_legend.png": "5d37b7240ee7ac34165f4902eda6a61f7b33a9d11c0f38eb2c84f49b817fed82"
+    },
+    "current_png_sha256": {
+      "fig3.png": "fe71c1e6ebb961c1580666cb9dcdf3a97cf47afa70a3167805765fe95e06637b",
+      "fig3b.png": "49bd096f1f01860c15ac9ba3827e68f6bdb43db31dcb7a014f06f6e2c33370d1",
+      "fig3c.png": "053d5b44feda81db4aadb5c0b6bd6bbcd562e26ce2555eea0ccac978038402bf",
+      "fig3d.png": "5583f9ab2b34b760c31294df29cd7024260f826c1ed894cac7b88b6c7728302c",
+      "fig3_legend.png": "4a3ad2bf7e9e9cb9c44d3d6273966951a8d9097d4471627d089f5291132e260b"
+    },
+    "current_images_match_last_review": false,
+    "width_mm": 180,
+    "dpi": 600
+  },
+  {
+    "figure": 4,
+    "figcheck": "clean",
+    "critic_rounds": 3,
+    "last_critic_verdict": "SUBSTANTIVE DEFECTS",
+    "independent_clearance": false,
+    "reviewed_png_sha256": {
+      "fig4.png": "b93be84f9f0eee34121f938460ec00764a839a0b80f5587c1c3e1366966e0155",
+      "fig4a.png": "5cada0d947564de73b7c7012176e084c0acf5df7abcf1e7b19201af45090309f",
+      "fig4b.png": "33ac0b9b4482b01c19be8a8261a321599d20daa7702575b983f60ffa215d5ef9",
+      "fig4c.png": "ddec7d5ded7842a72797875c7a63cfe4c852b2358e314029ebb5f21ceb738a7d",
+      "fig4_legend.png": "dbb1b7cdc84adfc39f0f47a4c68374756dc9ffbced3218e48eb612b4158368b7"
+    },
+    "current_png_sha256": {
+      "fig4.png": "fb9f3eccb67824561fff7189886fd13e0931ede182ebfcab59f9a7eb30894764",
+      "fig4a.png": "2cc50ead0e615a6b81864c0761485c89bcf56c979394f6b3172cd6a5a591f75f",
+      "fig4b.png": "b19cde4d0713cebcece7a238fefc756fc8d3d4dca144c7a30ded87722b83c191",
+      "fig4c.png": "cad263e00d0bc5b86a54ad096595e34be7983aee342d9922a1eb10dd7981f17e",
+      "fig4_legend.png": "00d5eb07c9a9484f17602193a16880acba7e6f358283a37d16a4e1beec51fe34"
+    },
+    "current_images_match_last_review": false,
+    "width_mm": 180,
+    "dpi": 600
+  }
+]
