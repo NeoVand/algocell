@@ -1,0 +1,164 @@
+# Claude, Round 3 — thinking deeper: crystals, unit cells and the role-orbit theorem (2026-10-11, late)
+
+The user asked: *is this the best story; did we stumble on anything no one has thought about; can we be more creative
+and deeper?* Here is my answer. It sharpens the "dependence principle" of R2 into something exact. That principle
+was half wrong: the single-encounter version mispredicts the pusher (see §2). The new version unifies X1,
+Proposition 8, Proposition 9 and the regenerator/transmitter switch under one law.
+
+## 1. The observation hiding in plain sight
+
+Every replicator we have characterised writes an offspring that is **periodic**:
+
+| class | offspring | period p | machinery c | persistent heritable sites | measured |
+|---|---|---|---|---|---|
+| pusher (`01 c5`) | tiling of the literal pair | 2 | 2 | 0 | X1: 0 of 512 at g = 8 |
+| return closer (ret16, `ad e3 21 e3 21 c0 ad c0`) | tiling | 8 | 8 | 0 | X1-3: 0 |
+| LDIR regenerator (offset d < L) | overlapping block copy = periodic fill | d | 4 | d − 4 | Prop 8; ldir32: 0 |
+| LDIR transmitter (d = L) | verbatim copy | L | 4 | L − 4 (when d ∣ L) | Prop 8, 2,289 of 2,343 cells; genome20: 9 of 9 unexecuted |
+
+**Law (candidate): persistent heredity = unit cell − machinery, p − c.** A periodic offspring is a crystal, so every
+replicator here makes a crystal. They differ only in the size of the unit cell. Heredity is whatever part of the
+unit cell the machinery does not occupy.
+
+- **Pusher.** The unit cell *is* the machine, so it has zero heredity. Fine–Wilf (Proposition 9) is what forces the
+  unit cell down to 2.
+- **Regenerator.** A small unit cell gives almost none.
+- **Transmitter.** The unit cell is the whole organism. That is an *aperiodic crystal* in exactly Schrödinger's
+  sense (1944): aperiodic within the organism, repeated across organisms.
+
+The origin of heredity is then **the unit cell outgrowing the machine**. In the dominant Z80 copier one byte (d)
+sets the unit cell. One heritable byte decides whether a lineage is a crystal or a genome, and the environment
+selects that byte (benign tar: transmitters 0.03–0.37; lethal tar: 0.55–0.87).
+
+## 2. Why the literal channel cannot carry a genome: the role-orbit theorem
+
+My R2 principle ("heritable = what one encounter's reproduction does not depend on") is **wrong for the pusher**.
+Inside one encounter, `LD BC,nn; PUSH BC` writes nn whatever its value, so the literal bytes are parametric. The data
+show it:
+
+- pusher64: 29 sites heritable at g = 1, 21 at g = 2, **0 at g = 4** (arm U; arm K: 32 → 14 → 0).
+- pusher16: 1 → 0 → 0.
+
+Heredity is **transient**. The reason is the copy map, not one encounter.
+
+- **The copy map.** Define φ: (child position) → (parent position it was copied from).
+- **Roles.** Give each position a role, *machinery* (fetched as an opcode, or used in an address, count or
+  condition) or *payload*.
+- **Theorem.** A site is persistently heritable if and only if its ancestry orbit under φ never enters a machinery
+  role (modulo machinery sites that are neutral for a set of values; see below).
+  - **Transmitter:** φ is the identity, so payload stays payload forever. Heredity = L − c.
+  - **Regenerator:** φ maps every child site into the first unit cell, so payload outside it has no ancestors and
+    payload inside it is in-register. Heredity = d − c. This is Proposition 8.
+  - **Pusher:** the copy is a *decimation*. Each frame of ℓ = w + 2 bytes writes w bytes, so φ compresses by
+    w/ℓ = 1/2 and then the tiling re-expands. Literal bytes land on positions that are opcodes in the child's frame.
+    Every orbit visits machinery, so persistent heredity is 0. Transient heredity decays at a rate fixed by the
+    alignment arithmetic of φ.
+
+**Prediction to check (no GPU).** Compute φ exactly for pusher16 and pusher64 under the branching protocol's
+alignments, and predict the per-generation site counts (29/32 → 21/14 → 0). If φ reproduces the registered
+BRANCHING numbers, a registered empirical null becomes a quantitative theorem.
+
+**The deep reading.** Heredity requires **role-preserving, in-register copying**: the copy must send a payload byte
+to a payload position. A literal self-writer cannot do this, because it needs more code bytes than it writes
+(ℓ > w). Its copy is a compression, and a compression scrambles roles. Every byte is, across generations, both
+template and catalyst. This is the template/catalyst conflict of the RNA world in its most extreme exact form. The
+pusher is not a gene; it is closer to a **prion or an amyloid crystal**: it imposes its form on a partner's
+substrate, and its few "strains" (`01 c5`, `11 d5`, `21 e5`) are the only heritable distinctions it has.
+
+## 3. Three sources of an offspring's bytes, and the information plane
+
+Every offspring byte is one of three kinds:
+- **inherited:** copied in register from the parent's payload;
+- **imported:** determined by the partner (inflow; Lemma 7);
+- **imposed:** regenerated by the replicator's own form, the same whatever the parent's variable sites or the
+  partner.
+
+The three classes occupy different corners of the plane spanned by heredity and inflow:
+
+| class | heredity | inflow | offspring bytes |
+|---|---|---|---|
+| pusher | 0 | > 0 | imposed + imported (open, prion-like) |
+| regenerator | 0 to small | 0 | imposed (closed crystal) |
+| transmitter | p − c | 0 | imposed core + inherited payload |
+| starved budget (64 steps, Stage E: heritable, no clone, partial copies) | > 0 | > 0? | the communal corner, closest to Woese |
+
+**Two thresholds.** This separates two thresholds that the literature runs together:
+- **individuality:** inflow → 0, which is closure (Lemma 7; prior art owns the succession, but not the information
+  quantity);
+- **heredity:** the unit cell exceeds the machine.
+
+They are crossed separately, and the environment orders them. The ladder mining (EXPLORATORY, LADDER.md) shows:
+- benign Stage G: regenerators before transmitters in 30 of 42 worlds with both;
+- lethal Stage I: transmitters first in 8 of 10;
+- benign long-horizon cohorts (L16, M16): mostly never reach transmitters.
+
+**The Darwinian threshold, in this system, is the second crossing.** Most benign worlds become individuals and stay
+crystals.
+
+## 4. The first Darwinian locus
+
+- A payload site that is heritable for every value is neutral by construction: fitness here is reproduction, and
+  reproduction does not depend on it.
+- A pure machinery site is not heritable.
+- **Heritable variation in fitness**, Darwin's actual requirement, can therefore live only on sites that are
+  machinery but tolerate a set of self-copying alleles.
+
+In the dominant Z80 copier, the outstanding such site is **d**:
+- it is copied with the core (the mode belongs to the parent);
+- its alleles have phenotypes (R or T);
+- the environment selects among them.
+
+**So the first heritable trait with a phenotype is the size of the heritable region itself.** This is evolvability
+evolving in its most atomic form. Wagner and Altenberg posed the question abstractly; here it is one byte.
+
+**Caveat.** Executed-but-neutral core sites (Stage L seed 6010: 3 sites, 0 unexecuted) are other candidates. The
+claim must be "outstanding", not "only", until a scan of d's allele set is done.
+
+**The question this creates (a Deutsch "reach" item).** Payload heredity without phenotype cannot drive open-ended
+evolution. A payload byte can matter only if something reads it in a *second mode*, other than copying: expressed by
+the cell itself, or by others. That is von Neumann's double use of the description, which this view *derives as a
+necessity* rather than assumes. Biology solved it with separate polymerase and translation machinery. **Prediction:**
+open-ended evolution in these soups requires the appearance of a dual-mode reading. Whether any world has one is a
+cheap census question.
+
+## 5. The story, in one paragraph
+
+We introduce Zilion, a contract-verified emulator for three real CPUs, and use it to watch heredity originate in
+soups of random machine code. The first replicators are crystals. Their copying compresses and re-tiles them, which
+scrambles code and data, so they pass on nothing (a theorem; measured 0 of 512). Heredity appears only when evolution
+enlarges the crystal's unit cell beyond its copying machinery; in the dominant copier one inherited byte sets the
+unit cell, and the persistent heredity is unit cell minus machine (2,289 of 2,343 cells exactly). Whether a machine's
+replication can begin as an open crystal is set by one property of its instruction set: Fine–Wilf rules it out for a
+one-byte literal channel (6502), and the 8086 is the prospective test. Individuality and heredity are separate
+thresholds, and the chemistry of the environment decides their order and whether the second is crossed at all.
+
+**Title shortlist.**
+- *Crystals before genomes in a primordial soup of machine code* (my favourite)
+- *A single byte turns a crystal into a genome*
+- *Heredity is the unit cell minus the machine*
+- *The origin of heredity in spontaneously evolving machine code* (safe)
+
+## 6. Honest risks
+
+- **"Crystal" must be defined, not evoked:** offspring period p, T[i] = T[i + p]. The 54 cells that fail Prop 8, and
+  executed-neutral sites, are the exceptions to state.
+- **The law is retrospective on the Z80 and 6502.** The prospective test is the 8086's REP MOVSB cores: predict
+  p − c_8086 from its census before running.
+- **"First replicators are crystals" is forced only on the literal route.** On the read-channel route (the 6502),
+  whether first closers have small unit cells is an open empirical question. It is cheap to check from the S1
+  archives (minimal period of first-replicator tapes).
+- **The prion and Schrödinger analogies are analogies.** The law and the theorem are the claim.
+- **Novelty check needed.** Overlapping memmove as periodic fill is folklore. "Unit cell − machinery" as a heredity
+  law, the role-orbit theorem, and transient heredity in literal writers: I know no prior statement of these, but a
+  literature check must be done (Cairns-Smith's crystal genes, which carry heritable *defects*, are the closest).
+
+## 7. Cheap checks (CPU only, existing archives, EXPLORATORY)
+
+1. Exact copy map φ for pusher16 and pusher64 under the BRANCHING protocol, predicting per-generation heritable site
+   counts. Compare with `results/branching/branching_summary.csv`.
+2. Minimal offspring period p and core c for every scanned cell (Z80 mutscan/population, 6502 S1 final scans). Test
+   *persistent sites = p − c* across all of them; list and classify the exceptions.
+3. Minimal period of first-replicator tapes: Z80 Stage G/I, 6502 S1 (all arms). Are the first replicators crystals
+   with small unit cells on both machines?
+4. The allele set of d: for the transmitter and regenerator exemplars, which values of the offset byte give working,
+   self-copying cells, and with which p?
