@@ -176,7 +176,7 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
     """Worst input/candidate ceilings, both separate law families, 20% slowdown
     and 10% runner margin; startup and CPU scoring/serialization are included.
     """
-    from lifecycle8086 import envelope_seconds,LIFECYCLE_EXTRA_S
+    from lifecycle8086 import dispatch_seconds,LIFECYCLE_EXTRA_S,SETUP_TIMEOUT_S,PREBUILD_TIMEOUT_S
     jobs={}; execution={}; components=[]; deadlines={}; slowest=0
     n=len(registration.sample_steps); k=len(registration.snapshots)
     for r in bench['records']:
@@ -185,7 +185,7 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
         world_s=registration.horizon/min(r['world_steps_per_s'])/.8*1.1 + n*r['sample_s']*1.5 + k*r['snapshot_s']*1.5
         startup=max(120,r['compile_s']*2)
         deadline=math.ceil(world_s+startup+60); deadlines[arm]=deadline; slowest=max(slowest,deadline)
-        world_usd=envelope_seconds(deadline)*RATE
+        world_usd=dispatch_seconds(deadline)*RATE
         # At most 3 tapes at each of 585 samples plus 69 source records.
         tapes=n*3+69
         scoring_s=tapes*r['culture_route_s_per_tape']*1.5+startup
@@ -203,13 +203,15 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
             for stage,seconds in (('world',deadline),('score',scoring_s+60),('extract',extracting_s+60),('law',law_s+60)):
                 job=f'{stage}:{arm}:{seed}'
                 execution[job]=math.ceil(seconds)
-                jobs[job]=envelope_seconds(seconds)*RATE
+                jobs[job]=dispatch_seconds(seconds)*RATE
     rate=min(r['law_encounters_per_s'] for r in bench['records'])
     execution['controls']=math.ceil(1_185_792/rate*1.5+120)
-    jobs['controls']=envelope_seconds(execution['controls'])*RATE
+    jobs['controls']=dispatch_seconds(execution['controls'])*RATE
     diagnosis_s=1290*max(r['extraction_s_per_tape'] for r in bench['records'])*2+240
     execution['diagnosis']=math.ceil(diagnosis_s)
-    jobs['diagnosis']=envelope_seconds(diagnosis_s)*RATE
+    jobs['diagnosis']=dispatch_seconds(diagnosis_s)*RATE
+    execution['prebuild']=PREBUILD_TIMEOUT_S
+    jobs['prebuild']=dispatch_seconds(PREBUILD_TIMEOUT_S)*RATE
     jobs['preparation']=preparation_bound
     # Packed full-control outputs measured locally; twofold volume margin,
     # plus2 GB for checkpoints/certificates, one paid month and one export.
@@ -217,9 +219,13 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
     output_gib=(185_505_792*sizes['worst_gzip_bytes_per_encounter']*2)/(1024**3)+2
     storage_reserve=max(5.,math.ceil(output_gib*(.09+.04)+.5))
     total=sum(jobs.values())+storage_reserve
-    return {'schema':'s2-cost/2-lifecycle','registration':registration.as_dict(),'population_worlds':20*len(registration.arms),
+    return {'schema':'s2-cost/3-dynamic-attempts','registration':registration.as_dict(),'population_worlds':20*len(registration.arms),
             'execution_deadline_s':execution,'lifecycle_extra_s':LIFECYCLE_EXTRA_S,
-            'lifecycle_policy':{'startup_timeout_s':120,'startup_attempt_allowance':2,'max_containers_per_job':1,
+            'lifecycle_policy':{'startup_timeout_s':120,'nominal_startup_allowance_s':240,'max_containers_per_job':1,
+                'setup_timeout_s':SETUP_TIMEOUT_S,'setup_reserved_each_app':True,'prebuild_timeout_s':PREBUILD_TIMEOUT_S,
+                'provider_restart_count_bound':None,'dynamic_complete_cap_usd':CAP,
+                'attempts_observed_via':'cursor AppGetLogs task/container state plus TaskList and AppGetLifecycle',
+                'attempt_liability':'elapsed + remaining startup/body server time + 121s termination/control',
                 'termination_grace_s':60,'watchdog_poll_s':1,'bounded_rpc_allowance_s':60,
                 'one_app_per_job':True,'restart_renews_clock':False,'settlement_requires_stopped_and_no_tasks':True},'gpu':'L4','cpu':1,'memory_gib':8,'rate_usd_per_s':RATE,
             'rates_source':'https://modal.com/pricing','rates_checked':'2026-10-12',

@@ -2771,5 +2771,25 @@
     "mutable_erasure": "E\\K",
     "held_erased": "E intersect K",
     "physical_entry": 0
+  },
+  "infrastructure_recovery": {
+    "policy": "restart_step_0",
+    "checkpoint_resume": false,
+    "required_attempt_fields": [
+      "attempt_id",
+      "prior_attempt_ids",
+      "policy",
+      "frozen_seed_unchanged",
+      "selection"
+    ],
+    "selection": "first_complete_durable_trajectory",
+    "partial_histories": "archived; unscoreable; never spliced",
+    "disclosure": [
+      "provider_task/container identity where available",
+      "all attempt counts",
+      "selected attempt",
+      "charged spend",
+      "discarded partial histories"
+    ]
   }
 }

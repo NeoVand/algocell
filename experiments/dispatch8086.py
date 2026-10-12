@@ -22,12 +22,12 @@ class SpendGuard:
             raise ValueError('invalid spend plan')
         self.path.parent.mkdir(parents=True,exist_ok=True)
 
-    def transact(self, event):
+    def transact(self, event, *, nonblocking=False):
         if 'usd' in event and (not isinstance(event['usd'],(int,float)) or
                                not math.isfinite(event['usd']) or event['usd']<0):
             raise ValueError('nonfinite/negative spend')
         with self.path.open('a+') as f:
-            fcntl.flock(f,fcntl.LOCK_EX); f.seek(0)
+            fcntl.flock(f,fcntl.LOCK_EX | (fcntl.LOCK_NB if nonblocking else 0)); f.seek(0)
             lines=[json.loads(s) for s in f if s.strip()]; previous='0'*64
             jobs={}; billed={}; known_cost=0.; reserved=0.; plan=dict(self.plan)
             for row in lines:
@@ -43,6 +43,9 @@ class SpendGuard:
                 elif row['kind']=='lifecycle': jobs[row['job']]['app_id']=row['app_id']
                 elif row['kind']=='stopped': jobs[row['job']]['stopped']=True
                 elif row['kind']=='uncertain': jobs[row['job']]['unknown_bound']=True
+                elif row['kind']=='terminal': jobs[row['job']]['experiment_stopped']=True
+                elif row['kind']=='liability':
+                    jobs[row['job']].update(liability=row['usd'],elapsed_usd=row.get('elapsed_usd',0),app_id=row.get('app_id',jobs[row['job']].get('app_id')))
                 elif row['kind']=='settled':
                     jobs[row['job']]['status']='settled'; jobs[row['job']]['cost']=row['usd']
                 elif row['kind']=='metered': billed[row['app_id']]=row['usd']
@@ -51,15 +54,27 @@ class SpendGuard:
                 init={'kind':'plan','plan':self.plan,'cap':self.cap,'overhead':self.overhead,'previous':previous,'time':time.time()}
                 previous=sha(json.dumps(init,sort_keys=True,separators=(',',':')).encode())
                 f.write(json.dumps({**init,'hash':previous})+'\n'); f.flush(); os.fsync(f.fileno())
-            for name,j in jobs.items():
-                if j['status']=='settled': known_cost+=j['cost']
-                else: reserved+=j['reservation']
-            unstarted=sum(v for k,v in plan.items() if k not in jobs)
-            total=max(known_cost,sum(billed.values()))+reserved+unstarted+self.overhead
+            def complete_projection():
+                # Observed elapsed cost is a spend floor. Billing for that same
+                # app overlaps elapsed cost; it is never added twice. Remaining
+                # server/termination liabilities and all future work are added.
+                total=self.overhead+sum(v for k,v in plan.items() if k not in jobs)
+                accounted_apps=set()
+                for j in jobs.values():
+                    app=j.get('app_id');meter=billed.get(app,0);accounted_apps.add(app)
+                    if j['status']=='settled':total+=max(j['cost'],meter)
+                    else:
+                        liability=j.get('liability',j['reservation']);elapsed=j.get('elapsed_usd',0)
+                        total+=max(meter,elapsed)+(liability-elapsed)
+                total+=sum(v for app,v in billed.items() if app not in accounted_apps)
+                return total
+            total=complete_projection()
             unknown=[name for name,j in jobs.items() if j.get('unknown_bound')]
+            experiment_stopped=any(j.get('experiment_stopped') for j in jobs.values())
             kind=event['kind']
             if unknown and kind in ('reserve','plan_extension'):
                 raise RuntimeError('spend stop: unknown physical liabilities require reconciliation')
+            if experiment_stopped and kind=='reserve':raise RuntimeError('INCOMPLETE experiment; dispatch stopped')
             if kind=='reserve':
                 name=event['job']
                 if name in jobs: raise FileExistsError('job already reserved; no automatic retry')
@@ -78,13 +93,22 @@ class SpendGuard:
                 unknown=sorted(set(unknown)|{event['job']})
             elif kind=='terminal':
                 if event['job'] not in jobs: raise ValueError('unknown terminal job')
+            elif kind=='check': pass
+            elif kind=='liability':
+                j=jobs.get(event['job'])
+                if not j or j['status']=='settled': raise ValueError('unknown/live liability job')
+                elapsed=event.get('elapsed_usd',0)
+                if not math.isfinite(elapsed) or not 0<=elapsed<=event['usd']:raise ValueError('invalid observed elapsed cost')
+                j.update(liability=event['usd'],elapsed_usd=elapsed,app_id=event.get('app_id',j.get('app_id')))
+                total=complete_projection()
             elif kind=='settled':
                 if event['job'] not in jobs or jobs[event['job']]['status']=='settled': raise ValueError('invalid settlement')
-                if not math.isfinite(event['usd']) or event['usd']<0 or event['usd']>jobs[event['job']]['reservation']:
+                if not math.isfinite(event['usd']) or event['usd']<0 or event['usd']>max(jobs[event['job']]['reservation'],jobs[event['job']].get('liability',0)):
                     raise ValueError('resource-time bound exceeded reservation')
                 if not jobs[event['job']].get('stopped'): raise ValueError('confirmed stopping required before settlement')
                 if jobs[event['job']].get('unknown_bound'): raise ValueError('physical resource bound unresolved; liability retained')
-                total=max(known_cost+event['usd'],sum(billed.values()))+reserved-jobs[event['job']]['reservation']+unstarted+self.overhead
+                jobs[event['job']].update(status='settled',cost=event['usd'])
+                total=complete_projection()
             elif kind=='started':
                 if event['job'] not in jobs or jobs[event['job']]['status']!='reserved': raise ValueError('invalid start')
                 if not event.get('call_id') or not event.get('app_id'): raise ValueError('call/app provenance required')
@@ -92,7 +116,7 @@ class SpendGuard:
                 if not math.isfinite(event['usd']) or event['usd']<billed.get(event['app_id'],0):
                     raise ValueError('billing must be cumulative/nondecreasing')
                 billed[event['app_id']]=event['usd']
-                total=max(known_cost,sum(billed.values()))+reserved+unstarted+self.overhead
+                total=complete_projection()
             elif kind=='plan_extension':
                 extra=event['jobs']
                 if (not event.get('reason') or not extra or set(extra)&set(plan)
@@ -104,7 +128,7 @@ class SpendGuard:
             row={'previous':previous,'time':time.time(),**safe(event)}
             row['hash']=sha(json.dumps(row,sort_keys=True,separators=(',',':')).encode())
             f.seek(0,2); f.write(json.dumps(row)+'\n'); f.flush(); os.fsync(f.fileno())
-            return {'projected_liabilities_usd':total,'cap':self.cap,'stop_required':total>self.cap or bool(unknown),'unknown_physical_liabilities':unknown}
+            return {'projected_liabilities_usd':total,'cap':self.cap,'stop_required':total>self.cap or bool(unknown) or experiment_stopped,'unknown_physical_liabilities':unknown}
 
     def reserve(self,job,usd,**provenance): return self.transact({'kind':'reserve','job':job,'usd':usd,**provenance})
     def start(self,job,call_id,app_id): return self.transact({'kind':'started','job':job,'call_id':call_id,'app_id':app_id})
@@ -116,17 +140,20 @@ def bounded_call(app,function,args,guard,job,execution_s,*,watchdog_factory=None
     The independent process is armed before spawn/get, and continues when
     either blocks or the dispatcher dies. Body results never settle a live app.
     """
-    from lifecycle8086 import WatchdogProcess,envelope_seconds
+    from lifecycle8086 import WatchdogProcess,dispatch_seconds
     factory=watchdog_factory or WatchdogProcess
-    if guard.plan[job]+1e-12<envelope_seconds(execution_s)*RATE:
+    if guard.plan[job]+1e-12<dispatch_seconds(execution_s)*RATE:
         raise ValueError('lifecycle envelope underreserved')
-    guard.reserve(job,guard.plan[job],execution_s=execution_s,lifecycle_s=envelope_seconds(execution_s))
+    guard.reserve(job,guard.plan[job],execution_s=execution_s,lifecycle_s=dispatch_seconds(execution_s))
     monitor=None; call=None; result=None; failure=None; acknowledged={'phase':'reserved','step':None}
     try:
-        with app.run():
+        # Clock/independent app discovery are armed before app.run setup.
+        monitor=factory(guard,job,None,execution_s)
+        with app.run(name=monitor.app_name):
             guard.transact({'kind':'lifecycle','job':job,'app_id':app.app_id})
-            monitor=factory(guard,job,app.app_id,execution_s)
+            monitor.bind_app(app.app_id)
             try:
+                monitor.permit()  # current complete-cap decision before spawn
                 call=function.spawn(*args)
                 monitor.bind(call.object_id)
                 guard.start(job,call.object_id,app.app_id)
@@ -150,12 +177,14 @@ def bounded_call(app,function,args,guard,job,execution_s,*,watchdog_factory=None
                                     'last_acknowledged_progress':acknowledged,'liability_retained':True})
                     if failure is None: failure=exc
     except BaseException as exc:
+        if monitor: monitor.finish()
         guard.transact({'kind':'terminal','job':job,'status':'incomplete/invalid','error':type(exc).__name__,
                         'reason':str(exc),'last_acknowledged_progress':acknowledged,'liability_retained':True})
         raise
     if failure is not None: raise failure
-    guard.settle(job,guard.plan[job],app_id=app.app_id,call_id=call.object_id,
-                 stopping_confirmed=True,accounting='full reserved lifecycle bound, including all attempts and termination')
+    charged=max(guard.plan[job],monitor.confirmation().get('charged_usd',0))
+    guard.settle(job,charged,app_id=app.app_id,call_id=call.object_id,
+                 stopping_confirmed=True,accounting='dynamic task-attempt liabilities and confirmed stopping')
     return result
 
 
@@ -164,7 +193,10 @@ def dispatch_worlds(release, ledger, projection):
     frozen=json.loads((Path(__file__).parent/'results/s8086/prelaunch/projection.json').read_text())
     if projection!=frozen or projection.get('registration')!=registration.as_dict():
         raise ValueError('projection differs from prospective registered allocation plan')
-    from modal_s8086 import app,world
+    from prebuild8086 import require_prebuild
+    image_id=require_prebuild()
+    from modal_s8086 import app,world,PREBUILT_IMAGE_ID
+    if PREBUILT_IMAGE_ID!=image_id:raise ValueError('fresh dispatcher must load the prebuilt image; builds forbidden')
     from s8086 import SEEDS,HERE
     import subprocess
     guard=SpendGuard(ledger,projection['job_liabilities_usd'],overhead=projection['storage_termination_reserve_usd'])
@@ -181,6 +213,10 @@ def dispatch_scoring(stage,release,ledger,projection):
     frozen=json.loads((Path(__file__).parent/'results/s8086/prelaunch/projection.json').read_text())
     if projection!=frozen or projection.get('registration')!=registration.as_dict():
         raise ValueError('projection differs from prospective registered allocation plan')
+    from prebuild8086 import require_prebuild
+    image_id=require_prebuild()
+    from modal_s8086 import PREBUILT_IMAGE_ID
+    if PREBUILT_IMAGE_ID!=image_id:raise ValueError('fresh dispatcher must load the prebuilt image; builds forbidden')
     from modal_score8086 import app,score,positive_controls
     from s8086 import SEEDS,HERE,committed
     import subprocess

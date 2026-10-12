@@ -101,6 +101,7 @@ def test_lifecycle_watchdog_stops_blocked_dispatcher_and_keeps_unknown(tmp_path)
     clock[0]+=2; mock.confirm=True; mock.tasks=[]; state.poll(mock)
     assert state.confirmed and not state.liability_retained
     assert state.confirmed_at<state.expires_at
+    assert state.flush_log()
     events=[json.loads(x) for x in state.path.read_text().splitlines()]
     assert any(e['kind']=='attempt_observed' and e['task']=='attempt-2' for e in events)
 
@@ -151,7 +152,7 @@ def test_option_b_cohort_forecast_and_85_dollar_guard(tmp_path):
     expected=project(S.read_json(S.PRE/'benchmark.json'),projection['job_liabilities_usd']['preparation'])
     assert expected['job_liabilities_usd']==projection['job_liabilities_usd']
     assert projection['cap_usd']==S.CAP==85 and projection['launch_fits']
-    assert projection['projection_usd']==pytest.approx(81.03232790536507)
+    assert projection['projection_usd']==pytest.approx(83.79381223898022)
     assert all(':B:' not in job for job in projection['job_liabilities_usd'])
     limits=S.read_json(S.PRE/'guard_limits.json')
     assert limits['cap_usd']==85 and limits['includes_preparation']
@@ -199,6 +200,7 @@ state=Lifecycle(root/'events.jsonl',app_id='mock',call_id='call',execution_s=1,
                 started=time.monotonic()-240.8)
 while not state.confirmed:
     state.poll(provider); time.sleep(.01)
+state.flush_log()
 ''')
     process=subprocess.Popen([sys.executable,str(script),str(tmp_path)],start_new_session=True)
     try:
@@ -215,12 +217,12 @@ while not state.confirmed:
 def test_dispatch_failure_persists_original_and_does_not_settle(tmp_path):
     from contextlib import contextmanager
     from dispatch8086 import bounded_call
-    from lifecycle8086 import envelope_seconds
+    from lifecycle8086 import dispatch_seconds
     events=[]
     class App:
         app_id='ap-mock'
         @contextmanager
-        def run(self): yield
+        def run(self,**kwargs): yield
     class Call:
         object_id='fc-mock'
         def get(self): raise RuntimeError('original device failure')
@@ -228,16 +230,18 @@ def test_dispatch_failure_persists_original_and_does_not_settle(tmp_path):
         def spawn(self,*args): events.append('spawn'); return Call()
     class Monitor:
         def __init__(self,guard,job,app,execution):
-            self.guard,self.job,self.app=guard,job,app; events.append('armed')
+            self.guard,self.job,self.app=guard,job,app; self.app_name='mock'; events.append('armed')
+        def bind_app(self,app): self.app=app; events.append('setup_bound')
+        def permit(self): events.append('permit')
         def bind(self,call): events.append('bind')
         def finish(self): events.append('finish')
         def wait_confirmed(self):
             events.append('confirmed')
             self.guard.transact({'kind':'stopped','job':self.job,'app_id':self.app,'confirmed':True,'tasks_empty':True})
-    guard=SpendGuard(tmp_path/'ledger',{'a':envelope_seconds(1)*S.RATE},overhead=0)
+    guard=SpendGuard(tmp_path/'ledger',{'a':dispatch_seconds(1)*S.RATE},overhead=0)
     with pytest.raises(RuntimeError,match='original device failure'):
         bounded_call(App(),Function(),(),guard,'a',1,watchdog_factory=Monitor)
-    assert events==['armed','spawn','bind','finish','confirmed']
+    assert events==['armed','setup_bound','permit','spawn','bind','finish','confirmed']
     ledger=[json.loads(row) for row in guard.path.read_text().splitlines()]
     terminal=next(row for row in ledger if row['kind']=='terminal')
     assert terminal['call_id']=='fc-mock' and terminal['last_acknowledged_progress']['phase']=='spawn_acknowledged'
@@ -251,6 +255,7 @@ def test_stop_state_with_live_tasks_cannot_release_liability(tmp_path):
         def stop(self,app): pass
     state=Lifecycle(tmp_path/'life.jsonl',app_id='mock',execution_s=1,started=0,now=lambda:1000)
     assert not state.poll(Mock()) and state.liability_retained
+    assert state.flush_log()
     assert any(json.loads(x)['kind']=='unconfirmed_overrun' for x in state.path.read_text().splitlines())
 
 

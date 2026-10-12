@@ -65,7 +65,7 @@ def exact_tapes(cells, hashes):
 
 def world_name(arm, seed): return f's8086_{arm}_s{seed}'
 
-def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_output=lambda: None):
+def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_output=lambda: None, recovery=None):
     receipt=launch_receipt(release); registration=released_registration(receipt)
     if arm not in registration.arms or seed not in SEEDS or not 0 < deadline_s:
         raise ValueError('invalid registered world/allocation')
@@ -90,7 +90,8 @@ def run_world(arm, seed, out, *, release, deadline_s, git_commit=None, commit_ou
                   'registration':registration.as_dict(), 'git_commit': git_commit,
                   'initial_sha256': sha(initial), 'adapter': adapter_summary(), 'started': utc_now(),
                   'allocation': {'gpu': 'L4', 'cpu': 1, 'memory_mib': 8192, 'deadline_s': deadline_s},
-                  'freeze_sha256': sha((HERE / 'results/s8086/prelaunch/freeze.json').read_bytes())})
+                  'freeze_sha256': sha((HERE / 'results/s8086/prelaunch/freeze.json').read_bytes()),
+                  'infrastructure_recovery':recovery or {'policy':'restart_step_0','checkpoint_resume':False}})
             commit_output()
             for target in registration.sample_steps:
                 while step < target:

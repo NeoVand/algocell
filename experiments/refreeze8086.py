@@ -22,13 +22,18 @@ def inputs():
     preparation = old['job_liabilities_usd']['preparation']
     projection = project(read_json(PRE / 'benchmark.json'), preparation, registration)
     prior_option = read_json(PRE / 'forecast_options_repaired.json')['b']
-    if projection['job_liabilities_usd'] != prior_option['job_liabilities_usd']:
-        raise ValueError('repaired option (b) allocation changed')
+    if projection['execution_deadline_s'] != {**prior_option['execution_deadline_s'],'prebuild':600}:
+        raise ValueError('registered body allocations changed')
     if projection['projection_usd'] > CAP:
         raise ValueError(f'complete option (b) forecast exceeds ${CAP:g}; STOP')
     projection.update(option='b', approval_date='2026-10-12', launch_status='STOPPED: coordinator review required',
                       benchmark_sha256=sha((PRE / 'benchmark.json').read_bytes()),
-                      component_totals_usd=prior_option['component_totals_usd'])
+                      component_totals_usd={**prior_option['component_totals_usd'],
+                          'new_setup_usd':82*120*projection['rate_usd_per_s'],
+                          'new_prebuild_usd':projection['job_liabilities_usd']['prebuild']},
+                      forecast_kind='nominal complete, single attempt per input; dynamic restart liabilities; not a provider worst case')
+    projection['component_totals_usd']={stage:sum(v for k,v in projection['job_liabilities_usd'].items() if k.startswith(stage+':')) for stage in ('world','score','extract','law')}
+    projection['component_totals_usd']['fixed']=sum(v for k,v in projection['job_liabilities_usd'].items() if ':' not in k)+projection['storage_termination_reserve_usd']
     save('projection.json', projection)
     save('cohort.json', {'option':'b', 'arms':{a:ARMS[a] for a in registration.arms},
          'seeds':SEEDS, 'horizon':registration.horizon, 'registration':registration.as_dict(),
@@ -60,6 +65,10 @@ def inputs():
         'raw_dependencies':'K; c=1+max(K)<=d; no modulo reduction',
         'source_map':'r(q)=s+((L+q-s) mod d); composed generation-zero ancestry',
         'mutable_erasure':'E\\K', 'held_erased':'E intersect K', 'physical_entry':0}
+    schemas['infrastructure_recovery']={'policy':'restart_step_0','checkpoint_resume':False,
+        'required_attempt_fields':['attempt_id','prior_attempt_ids','policy','frozen_seed_unchanged','selection'],
+        'selection':'first_complete_durable_trajectory','partial_histories':'archived; unscoreable; never spliced',
+        'disclosure':['provider_task/container identity where available','all attempt counts','selected attempt','charged spend','discarded partial histories']}
     schemas['launch_receipt'] = ('population_launch_approved=true, independent_design_review, exact freeze_sha256, '
         'exact registered horizon/arm schedules; option (b) only; absent at freeze. '
         'Retention additionally requires eligibility_commit and per-world committed gzip eligibility_sha256.')
@@ -122,13 +131,15 @@ def manifest():
                'experiments/results/census8086','experiments/tests'], cwd=HERE.parent, text=True).splitlines()
     paths.update(str((HERE.parent / p).relative_to(HERE)) for p in tracked)
     paths.update(('refreeze8086.py','reforecast8086.py','reaudit8086.py','lifecycle8086.py','score6502.py',
+                  'prebuild8086.py','b6audit8086.py','i8086_value_tags.py','recovery8086.py',
+                  'algocell_exp/i8086_provenance_spec.py','tests/test_b6_provenance.py','tests/test_b5_enforcement.py',
                   'tests/test_s8086_repairs.py','tests/test_score6502.py','results/s8086/prelaunch/guard_limits.json',
                   'results/s8086/prelaunch/S2_REGISTRATION_OPTION_B.md',
                   'results/s8086/prelaunch/refreeze_local_bursts.jsonl',
                   'results/s8086/prelaunch/refreeze_test_runner.py'))
     paths.discard('results/s8086/prelaunch/freeze.json')
     files = {p:sha((HERE / p).read_bytes()) for p in sorted(paths)}
-    freeze.update(schema='s2-freeze/2-option-b', amended_date='2026-10-12', option='b',
+    freeze.update(schema='s2-freeze/3-dynamic-attempts', amended_date='2026-10-12', option='b',
         approved_cap_usd=CAP, projection_usd=projection['projection_usd'], population_worlds=20,
         registration=DEFAULT_REGISTRATION.as_dict(), registered_arms=['A'], withdrawn_arms=['B'],
         original_normative_body_sha256=freeze.get('original_normative_body_sha256',freeze['normative_body_sha256']),
@@ -142,8 +153,9 @@ def manifest():
         independent_review='results/s8086/prelaunch/ASTRA_PRELAUNCH_REVIEW.md',
         independent_refreeze_review='pending coordinator review; previous reviews do not release this freeze',
         repairs_commit='5309961b56d4eef177bcec43744cab05c7f6cb9f',
+        B6_closure_commit='17abd2f',B5_acceptance='coordinator dynamic $85 cap; no finite provider restart bound claimed',
         limitations=['arbitrary 8086 proof extraction remains unresolved outside explicitly modeled instructions',
-                     'physical stop requires functioning host/provider control; unknown overruns retain liabilities'],
+                     'provider failing to honour server limits or app-stop remains disclosed residual risk; unknown overruns retain liabilities'],
         files=files)
     save('freeze.json', freeze)
     return sha((PRE / 'freeze.json').read_bytes()), len(files)

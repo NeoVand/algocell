@@ -1,55 +1,57 @@
 {
   "date": "2026-10-12",
   "option": "b",
-  "suite": "all experiments/tests",
-  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /Users/neo/repos/algocell/experiments/.venv/bin/python results/s8086/prelaunch/refreeze_test_runner.py",
-  "passed": 840,
+  "suite": "all experiments/tests plus final environment-discovery regression",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=experiments /Users/neo/repos/algocell/experiments/.venv/bin/python experiments/results/s8086/prelaunch/refreeze_test_runner.py",
+  "passed": 931,
   "failed": 0,
   "skipped": 3,
-  "total_collected": 843,
-  "wall_s": 325.3868071670295,
+  "total_collected": 934,
+  "wall_s": 324.5894492499647,
   "module_case_counts": {
-    "tests.test_assays_any_isa": 28,
-    "tests.test_bff": 15,
-    "tests.test_impact": 147,
-    "tests.test_impact_assay_supplement": 1,
-    "tests.test_impact_confirm": 10,
-    "tests.test_impact_i1_report": 7,
-    "tests.test_impact_q": 5,
-    "tests.test_impact_registry": 4,
-    "tests.test_impact_report": 3,
-    "tests.test_lethal": 7,
-    "tests.test_mixed": 6,
-    "tests.test_pipeline": 46,
-    "tests.test_port": 3,
-    "tests.test_py65_ring": 44,
-    "tests.test_run6502": 11,
-    "tests.test_s8086": 36,
-    "tests.test_s8086_repairs": 29,
-    "tests.test_score6502": 42,
-    "tests.test_tier2": 6,
-    "tests.test_zcensus": 7,
-    "tests.test_zsoup": 386
+    "test_assays_any_isa": 27,
+    "test_b5_enforcement": 23,
+    "test_b6_provenance": 68,
+    "test_bff": 15,
+    "test_impact": 146,
+    "test_impact_assay_supplement": 1,
+    "test_impact_confirm": 10,
+    "test_impact_i1_report": 7,
+    "test_impact_q": 5,
+    "test_impact_registry": 4,
+    "test_impact_report": 3,
+    "test_lethal": 7,
+    "test_mixed": 6,
+    "test_pipeline": 46,
+    "test_port": 3,
+    "test_py65_ring": 44,
+    "test_run6502": 11,
+    "test_s8086": 36,
+    "test_s8086_repairs": 29,
+    "test_score6502": 42,
+    "test_tier2": 6,
+    "test_zcensus": 7,
+    "test_zsoup": 385
   },
   "skip_details": [
     {
-      "case": "tests.test_assays_any_isa.test_assay_machines_regenerate",
+      "case": "test_assays_any_isa.test_assay_machines_regenerate",
       "reason": "Zilion checkout at 3c3534d76f22, assay machines vendored from 183ff5c74294"
     },
     {
-      "case": "tests.test_impact.test_vendored_machines_match_zilion",
+      "case": "test_impact.test_vendored_machines_match_zilion",
       "reason": "zilion checkout at 3c3534d76f22, machines from 183ff5c74294"
     },
     {
-      "case": "tests.test_zsoup.test_vendored_machines_regenerate",
+      "case": "test_zsoup.test_vendored_machines_regenerate",
       "reason": "Zilion checkout at 3c3534d76f22, machines vendored from 183ff5c74294 (run build_machines.mjs --check by hand)"
     }
   ],
-  "S2_and_inherited_runner_cases": 76,
+  "S2_and_inherited_runner_cases": 167,
   "gpu_policy": "synchronous queue buffer readback after every submit; equal pause after every submit/pipeline compilation; existing S2 foreground equal-pause wrapper retained",
   "gpu_bursts": 34243,
-  "maximum_gpu_burst_s": 0.21577020804397762,
-  "gpu_burst_sum_s": 80.05051244219067,
+  "maximum_gpu_burst_s": 0.2141473339870572,
+  "gpu_burst_sum_s": 79.98886762879556,
   "equal_pauses_verified": true,
   "source_compile": "passed; no bytecode writes",
   "diff_check": "passed",
@@ -59,7 +61,7 @@
   "no_hardware_benchmark": true,
   "no_population_runs": true,
   "launch_receipt_created": false,
-  "launch_status": "STOPPED: coordinator refreeze review required",
+  "launch_status": "STOPPED: coordinator review required; no launch",
   "warnings": [
     "One inherited Modal-local mock execution warning; no provider calls"
   ],
@@ -71,6 +73,14 @@
   "repair_validation": "repair_validation.json; STOPPED_REPAIR_REPORT.md; corrected census re-audit remains frozen",
   "known_limits": [
     "unresolved arbitrary 8086 proof extraction",
-    "physical stop needs functioning host/provider controls; unknown overruns retain liabilities"
-  ]
+    "provider failing to honour server limits or app-stop is residual risk; no finite provider restart certificate"
+  ],
+  "full_suite_passed": 930,
+  "full_suite_skipped": 3,
+  "full_suite_collected": 933,
+  "final_focused_passed": 120,
+  "final_focused_added_cases": 1,
+  "B6_validation": "b6_validation.json; 17abd2f",
+  "B5_validation": "b5_validation.json; coordinator dynamic enforcement standard",
+  "final_focused_note": "After full-suite collection, environment-specific setup discovery gained one regression. Final focused run covers all B5/B6/repair CPU paths, including that final source change; XML union has all 934 current cases, 931 passed and 3 inherited skips."
 }

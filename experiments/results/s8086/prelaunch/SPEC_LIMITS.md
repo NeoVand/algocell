@@ -8,7 +8,11 @@ withdrawn with no population data collected. The validated B2 source-root/core/
 phase amendment supersedes the original L2 prediction; L1 and all A endpoints,
 including 2.75–3M R2b, remain unchanged. B3/B4 corrected census evidence and the
 B5 lifecycle watchdog are included in the replacement freeze. Complete option
-(b) forecast: $81.032328 including preparation and all repaired allowances.
+(b) nominal complete forecast: $83.793812 including preparation, timed prebuild,
+all setup reservations and repaired allowances. B6 is closed in 17abd2f; the
+coordinator B5 standard uses dynamically charged attempts and an independent
+lock-free stop path. No finite provider restart bound is claimed. Provider
+failure to honour server limits or app-stop is disclosed residual risk.
 Stay on measured L4; no hardware benchmark or paid compute during refreeze.
 **STOPPED: coordinator refreeze review required; no launch receipt or dispatch.**
 The remaining sections preserve the earlier repair-stage and historical limits;
