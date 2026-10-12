@@ -112,7 +112,10 @@ def main():
                         "serial_passed": c["serial_passed"], "erased_assays": c["erased_cases"]*17, "erased_passed": c["erased_passed"]})
     write_csv(OUT / "table_law.csv", lawrows)
     hashes = [{"file": str(p.relative_to(OUT)), "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in
-              sorted(inputs + [OUT / n for n in ("provenance.json", "smoke.json", "LAW_CONTRACT.md")])]
+              sorted(inputs + [OUT / n for n in ("provenance.json", "smoke.json", "LAW_CONTRACT.md", "MECHANISM_CONTRACT.md")])]
+    for rel in ("experiments/census8086.py", "experiments/census8086_law.py", "experiments/census8086_report.py", "experiments/algocell_exp/census8086_trace.py"):
+        p = repo / rel
+        hashes.append({"file": "source:"+rel, "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
     write_csv(OUT / "table_hashes.csv", hashes)
     bursts = read("bursts.csv")
     elapsed = sum(float(r["burst_seconds"]) for r in bursts)
