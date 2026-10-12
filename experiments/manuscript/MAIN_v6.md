@@ -22,7 +22,8 @@ introduce, to show that in soups of Z80 machine code, branching lineages of a re
 survive while losing every one of 512 tested mutations, whereas later copiers transmit variation. In a recurring
 copying family, the overlap of a copy with itself determines which parental bytes reach descendants, and the
 displacement that sets this overlap is itself inherited, so that one copying rule controls how much arbitrary payload
-survives. The chemistry of the environment shifts which reproductive designs prevail. Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
+survives: after 101 registered edits of it, descendants transmitted exactly the predicted payload, from none to 60
+bytes. The chemistry of the environment shifts which reproductive designs prevail. Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
 restricted experimental analogue of Woese's Darwinian threshold.
 
 ## Main text
@@ -169,9 +170,17 @@ should be inherited. Archived serial-transfer interventions on an evolved regene
 3c). When its displacement byte was changed from `04` to `08` or to `60`, the mutant markers persisted through eight
 transfers [results/serial_retention/sr_mutants.csv.gz, ldir32, gen 8, pos 0, val 8 and 96]. Under the theorem these
 changes raise the displacement from 4 to 8 or 32 bytes, so the predicted free payload rises from none to 4 or 28
-positions. A copier with no free payload under its original core can thus acquire, by one inherited change to its
-copying rule, the predicted capacity to transmit most of its tape. Measuring that expanded capacity directly in the
-descendants, with reciprocal edits, is the next assay [PENDING; fill: targeted descendant-capacity table].
+positions. We tested this prediction directly in a registered assay (C1) [results/capacity/CAPACITY.md; REVISION_PREREG.md, C1].
+From 22 archived parents of the forward copying family we made 101 edits of the displacement, each to a value meeting
+the theorem's conditions and including reciprocal edits back to the original. Eligibility and the predicted
+coordinates were fixed from code and traces before any outcome was observed. In 16 lineages per edit, followed for
+eight generations against fresh partners, the edited displacement and the whole core were inherited. In the
+generation-eight descendants, every one of the 255 alternative values at every predicted free coordinate was
+transmitted, joint assignments were transmitted, and every coordinate beyond the new displacement was erased. Across
+about 1.07 million direct interventions there was not a single mismatch, with descendant capacities ranging from none
+at d′ = 4 to 60 positions at d′ = 64. A copier with no free payload under its original core thus acquires, by one
+inherited change to its copying rule, the capacity to transmit most of its tape, and an edit back restores the
+original erasure.
 
 An exploratory scan of all 256 values of this byte shows how wide the dial is [exploratory:
 results/crystal/alleles_ldir32.csv]. Ninety-nine values give a working replicator, and 50 of these reappear at the
@@ -274,9 +283,9 @@ possibilities. The mechanism we describe is not a claim that chemistry uses a di
 inspectable case in which the question has an exact answer: which alternatives does a reproductive process preserve,
 and which does its own operation remove?
 
-Three tests define what comes next. The expanded capacity predicted for displacement mutants must be measured directly
-in their descendants, and the law must be shown in evolved copiers on a second processor, in the evolved 6502 panel
-and the registered 8086 experiment. Beyond capacity lies function. These experiments establish that payload is
+Two tests define what comes next. The law has held exactly in edited Z80 descendants, and it must now be tested
+prospectively on evolved copiers of a third processor, in the registered 8086 experiment. Beyond capacity lies
+function. These experiments establish that payload is
 transmitted, but not that the transmitted variation does anything useful. To show adaptive use, an inherited
 difference must alter performance in a specified environment. Copied material that is later also read as machinery,
 as von Neumann's description is both copied and interpreted, offers one route; whether such use evolves in these
