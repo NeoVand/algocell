@@ -1,0 +1,409 @@
+{
+ "schema": "zilion.manifest/2",
+ "zilion": "0.3.0-dev",
+ "hostContract": 2,
+ "mode": "kernel",
+ "entryPoint": "main",
+ "workgroupSize": 64,
+ "core": {
+  "id": "i8086",
+  "name": "8086/8088 instruction semantics, validated against hardware 8088 vectors, with coherent fetch",
+  "coreVersion": "0.3.0",
+  "status": "experimental",
+  "variant": "nmos",
+  "compat": "0.3",
+  "addressBits": 20,
+  "fetchUnitBytes": 1,
+  "hooks": [
+   "fetch",
+   "instructionStart"
+  ],
+  "params": {
+   "prefetch": "coherent",
+   "hidden_latch": "zero_ea"
+  }
+ },
+ "world": {
+  "budget": {
+   "unit": "steps",
+   "value": "perLane"
+  },
+  "init": {
+   "set": {
+    "ax": 0,
+    "bp": 0,
+    "bx": 0,
+    "cs": 0,
+    "cx": 0,
+    "di": 0,
+    "ds": 0,
+    "dx": 0,
+    "es": 0,
+    "flags": 61442,
+    "ip": 0,
+    "si": 0,
+    "ss": 0
+   },
+   "stack": {
+    "firstPushAt": "lastByte"
+   }
+  },
+  "memory": {
+   "kind": "segments",
+   "ring": 32,
+   "segments": [
+    {
+     "bytes": 16,
+     "name": "A"
+    },
+    {
+     "bytes": 16,
+     "name": "B"
+    }
+   ]
+  },
+  "outputs": {
+   "fetchMap": true,
+   "startMap": true,
+   "writeCounts": true
+  }
+ },
+ "sha256": {
+  "wgsl": "4fee1c7c0ce17f0a4ec7d6ad425b0ebe10342336cb55acbe86ebfe663525a694",
+  "core": "cc05989457d50c769c204f6c6213bc5f9da27c5c4637d40556618ba5cdf477af",
+  "world": "49dc7897ad949b92a9b4dada09d206c66ef75307e6fa682c7d45d89299c3fcac",
+  "options": "cc65ca9298520fa3d12e89ce0758b3bad47384c7faa0440eddf87a4c773affa5"
+ },
+ "params": {
+  "bytes": 32,
+  "fields": [
+   {
+    "name": "lane_count",
+    "role": "laneCount",
+    "offset": 0,
+    "words": 1
+   },
+   {
+    "name": "lane_base",
+    "role": "laneBase",
+    "offset": 4,
+    "words": 1
+   },
+   {
+    "name": "budget",
+    "role": "budget",
+    "offset": 8,
+    "words": 1
+   },
+   {
+    "name": "seed",
+    "role": "seed",
+    "offset": 12,
+    "words": 1
+   },
+   {
+    "name": "step_base",
+    "role": "stepBase",
+    "offset": 16,
+    "words": 2
+   },
+   {
+    "name": "resume",
+    "role": "resume",
+    "offset": 24,
+    "words": 1
+   },
+   {
+    "name": "_pad1",
+    "role": "pad",
+    "offset": 28,
+    "words": 1
+   }
+  ]
+ },
+ "bindings": [
+  {
+   "group": 0,
+   "binding": 0,
+   "name": "zil_params",
+   "role": "params",
+   "type": "uniform"
+  },
+  {
+   "group": 0,
+   "binding": 1,
+   "name": "zil_mem",
+   "role": "memory",
+   "type": "storage",
+   "wordsPerLane": 8
+  },
+  {
+   "group": 0,
+   "binding": 2,
+   "name": "zil_out",
+   "role": "record",
+   "type": "storage",
+   "wordsPerLane": 30
+  },
+  {
+   "group": 0,
+   "binding": 4,
+   "name": "zil_budget_in",
+   "role": "budgetIn",
+   "type": "read-only-storage",
+   "wordsPerLane": 1
+  }
+ ],
+ "memory": {
+  "model": "segments",
+  "ringBytes": 32,
+  "position": "addr % 32u",
+  "hostBytesPerLane": 32,
+  "storageWordsPerLane": 8,
+  "packing": "little-endian bytes",
+  "segments": [
+   {
+    "name": "A",
+    "position": 0,
+    "bytes": 16,
+    "hostOffset": 0,
+    "storageWord": 0,
+    "storageWords": 4
+   },
+   {
+    "name": "B",
+    "position": 16,
+    "bytes": 16,
+    "hostOffset": 16,
+    "storageWord": 4,
+    "storageWords": 4
+   }
+  ],
+  "padding": null,
+  "stored": true
+ },
+ "record": {
+  "wordsPerLane": 30,
+  "fields": [
+   {
+    "name": "steps",
+    "offset": 0,
+    "words": 1
+   },
+   {
+    "name": "haltReason",
+    "offset": 1,
+    "words": 1
+   },
+   {
+    "name": "trapCause",
+    "offset": 2,
+    "words": 1
+   },
+   {
+    "name": "state",
+    "offset": 3,
+    "words": 23,
+    "items": [
+     "ax",
+     "cx",
+     "dx",
+     "bx",
+     "sp",
+     "bp",
+     "si",
+     "di",
+     "es",
+     "cs",
+     "ss",
+     "ds",
+     "ip",
+     "flags",
+     "halted",
+     "trap",
+     "rep",
+     "rep_op",
+     "rep_seg",
+     "rep_start",
+     "rep_end",
+     "rep_first",
+     "rep_interrupt_ip"
+    ]
+   },
+   {
+    "name": "writeCounts",
+    "offset": 26,
+    "words": 2,
+    "items": [
+     "A",
+     "B"
+    ]
+   },
+   {
+    "name": "fetchMap",
+    "offset": 28,
+    "words": 1
+   },
+   {
+    "name": "startMap",
+    "offset": 29,
+    "words": 1
+   }
+  ]
+ },
+ "state": [
+  {
+   "name": "ax",
+   "bits": 16,
+   "offset": 0
+  },
+  {
+   "name": "cx",
+   "bits": 16,
+   "offset": 1
+  },
+  {
+   "name": "dx",
+   "bits": 16,
+   "offset": 2
+  },
+  {
+   "name": "bx",
+   "bits": 16,
+   "offset": 3
+  },
+  {
+   "name": "sp",
+   "bits": 16,
+   "offset": 4
+  },
+  {
+   "name": "bp",
+   "bits": 16,
+   "offset": 5
+  },
+  {
+   "name": "si",
+   "bits": 16,
+   "offset": 6
+  },
+  {
+   "name": "di",
+   "bits": 16,
+   "offset": 7
+  },
+  {
+   "name": "es",
+   "bits": 16,
+   "offset": 8
+  },
+  {
+   "name": "cs",
+   "bits": 16,
+   "offset": 9
+  },
+  {
+   "name": "ss",
+   "bits": 16,
+   "offset": 10
+  },
+  {
+   "name": "ds",
+   "bits": 16,
+   "offset": 11
+  },
+  {
+   "name": "ip",
+   "bits": 16,
+   "offset": 12
+  },
+  {
+   "name": "flags",
+   "bits": 16,
+   "offset": 13
+  },
+  {
+   "name": "halted",
+   "bits": 8,
+   "offset": 14
+  },
+  {
+   "name": "trap",
+   "bits": 8,
+   "offset": 15
+  },
+  {
+   "name": "rep",
+   "bits": 16,
+   "offset": 16
+  },
+  {
+   "name": "rep_op",
+   "bits": 16,
+   "offset": 17
+  },
+  {
+   "name": "rep_seg",
+   "bits": 16,
+   "offset": 18
+  },
+  {
+   "name": "rep_start",
+   "bits": 16,
+   "offset": 19
+  },
+  {
+   "name": "rep_end",
+   "bits": 16,
+   "offset": 20
+  },
+  {
+   "name": "rep_first",
+   "bits": 16,
+   "offset": 21
+  },
+  {
+   "name": "rep_interrupt_ip",
+   "bits": 16,
+   "offset": 22
+  }
+ ],
+ "haltReasons": {
+  "running": 0,
+  "halt-insn": 1,
+  "host": 2,
+  "trap": 3
+ },
+ "trapCauses": {
+  "illegal": 1,
+  "halt-insn": 2,
+  "unmatched": 3,
+  "bounds": 4,
+  "misaligned": 5,
+  "div-zero": 6,
+  "syscall": 7,
+  "unimplemented": 8
+ },
+ "resumable": true,
+ "ablation": {
+  "kind": "none"
+ },
+ "budget": {
+  "unit": "steps",
+  "perLane": true,
+  "default": null
+ },
+ "init": {
+  "perLane": false,
+  "stateWords": 23,
+  "stack": {
+   "convention": {
+    "kind": "firstPushAt",
+    "position": 31,
+    "values": {
+     "sp": 1
+    }
+   }
+  }
+ }
+}

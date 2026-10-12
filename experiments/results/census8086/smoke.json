@@ -1,0 +1,98 @@
+[
+  {
+    "L": 16,
+    "fixed_input": "90909090909090909090909090909090",
+    "steps": 1,
+    "pairs": 1,
+    "mutations": 0,
+    "output_sha256": "86d09c486a52e2fbaa2e62defaa96531891730cfd4ae74e7a1b1f182d4cdb850",
+    "machine": "i8086_pair_maps_L16",
+    "zilion": "0.3.0-dev",
+    "core": "i8086 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+    "sha256_core": "cc05989457d50c769c204f6c6213bc5f9da27c5c4637d40556618ba5cdf477af",
+    "sha256_world": "49dc7897ad949b92a9b4dada09d206c66ef75307e6fa682c7d45d89299c3fcac",
+    "sha256_wgsl": "4fee1c7c0ce17f0a4ec7d6ad425b0ebe10342336cb55acbe86ebfe663525a694",
+    "ring": 32,
+    "segments": [
+      [
+        "A",
+        16
+      ],
+      [
+        "B",
+        16
+      ]
+    ],
+    "init": {
+      "perLane": false,
+      "stateWords": 23,
+      "stack": {
+        "convention": {
+          "kind": "firstPushAt",
+          "position": 31,
+          "values": {
+            "sp": 1
+          }
+        }
+      }
+    },
+    "budget": {
+      "unit": "steps",
+      "perLane": true,
+      "default": null
+    },
+    "halting": null,
+    "ablation": "none",
+    "soup_kernels_from": "sim_square_L16.wgsl",
+    "soup_source_sha256": "043bc5fb48a2d104077f5e0ba93931a1438954d3811935b4a99fad6a18dba7f1",
+    "zsoup_shader_sha256": "0388472ba00ed6693bfedd64ee38678c1bc13fad637d2ebcbd2da06c86222d6a"
+  },
+  {
+    "L": 32,
+    "fixed_input": "9090909090909090909090909090909090909090909090909090909090909090",
+    "steps": 1,
+    "pairs": 1,
+    "mutations": 0,
+    "output_sha256": "12ed94d83afad4fa623c7903b33a52cb0f8580be5e01aab0d919993a39f39a57",
+    "machine": "i8086_pair_maps_L32",
+    "zilion": "0.3.0-dev",
+    "core": "i8086 0.3.0 (experimental; variant nmos; compat 0.3; hooks fetch,instructionStart)",
+    "sha256_core": "cc05989457d50c769c204f6c6213bc5f9da27c5c4637d40556618ba5cdf477af",
+    "sha256_world": "ba1ecae7ca965ce4a8be3de870643234813060600e2bf5613aa4206fadbc6f97",
+    "sha256_wgsl": "f031d3a7d217c9eed92d0e080da90399c3fd88ff8c40869d14739f99b98f9966",
+    "ring": 64,
+    "segments": [
+      [
+        "A",
+        32
+      ],
+      [
+        "B",
+        32
+      ]
+    ],
+    "init": {
+      "perLane": false,
+      "stateWords": 23,
+      "stack": {
+        "convention": {
+          "kind": "firstPushAt",
+          "position": 63,
+          "values": {
+            "sp": 1
+          }
+        }
+      }
+    },
+    "budget": {
+      "unit": "steps",
+      "perLane": true,
+      "default": null
+    },
+    "halting": null,
+    "ablation": "none",
+    "soup_kernels_from": "sim_square_L32.wgsl",
+    "soup_source_sha256": "7600ff7bcb22aa640c1a153c7b0043dcb32f55a05244f3c79e94d13f669ca0d1",
+    "zsoup_shader_sha256": "4eafc86418b1edae3866915cfa5c2cef654d04e8dd9116a70e7dc40719dd31f9"
+  }
+]
