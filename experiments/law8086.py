@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 from algocell_exp.census8086_trace import DiagnosticMachine, same_execution
 from census8086 import panel, pairs
-from s8086 import HERE, key, rng, sha, safe, write_new, committed, verify_freeze
+from s8086 import HERE, key, rng, sha, safe, write_new, committed, verify_freeze,diagnostic_for
 
 class Unresolved(ValueError): pass
 
@@ -143,7 +143,7 @@ def extract(parent, machine, diagnostic=None):
     parent = np.asarray(parent,dtype=np.uint8); L = len(parent)
     if L not in (16,32) or machine.name != f'i8086_pair_maps_L{L}':
         raise ValueError('wrong_parent_or_machine')
-    t = diagnostic or DiagnosticMachine(machine,events=8192)
+    t = diagnostic or diagnostic_for(machine)
     mem = pairs(parent[None], L)
     raw = machine.run(mem,budget=128); obs = t.run(mem,budget=128)
     if not same_execution(raw,obs,machine.record_words): raise Unresolved('observation_changed_execution')
@@ -364,7 +364,7 @@ def assay_frozen(path, out, machine, diagnostic=None, tick=lambda:None):
     verify_freeze(); committed(path)
     data = json.loads(Path(path).read_text())
     if data['extractor_sha256'] != sha(Path(__file__).read_bytes()): raise ValueError('extractor changed')
-    t = diagnostic or DiagnosticMachine(machine,events=8192)
+    t = diagnostic or diagnostic_for(machine)
     world = data['world']; outcomes = {}
     Path(out).mkdir(parents=True,exist_ok=False)
     for family in ('L1','L2'):

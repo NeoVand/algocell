@@ -70,7 +70,7 @@ def positive_controls(receipt,deadline_s):
     sys.path.insert(0,'/root/experiments')
     import law8086
     from algocell_exp.zmachine import load_machine
-    from algocell_exp.census8086_trace import DiagnosticMachine
+    from s8086 import diagnostic_for
     freeze=json.loads((PRE/'freeze.json').read_text())
     for filename,digest in freeze['files'].items():
         if sha((HERE/filename).read_bytes())!=digest: raise ValueError('control frozen source differs')
@@ -82,7 +82,7 @@ def positive_controls(receipt,deadline_s):
         if time.monotonic()-start>deadline_s-30: raise TimeoutError('control allocation stop')
     machines={}
     for L in (16,32):
-        tick(); m=load_machine(f'i8086_pair_maps_L{L}'); machines[L]=(m,DiagnosticMachine(m,events=8192))
+        tick(); m=load_machine(f'i8086_pair_maps_L{L}'); machines[L]=(m,diagnostic_for(m))
     try: result=law8086.controls(Path('/vol/s8086_controls'),machines,tick=tick)
     finally: volume.commit()
     return {'results':result,'resource_time_bound_usd':(deadline_s+120)*RATE}

@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -96,6 +97,25 @@ def fixed_burst(fn):
                                 'foreground':True})+'\n')
     if elapsed > 60: raise RuntimeError('local GPU burst exceeded 60s')
     return result
+
+def diagnostic_for(machine):
+    """Explicit Modal trace backend; no silent execution fallback.
+
+    NVIDIA Vulkan lost the device compiling the census's 8192-event private
+    trace. The unchanged instrumented WGSL runs on Mesa, and every complete
+    lane record/memory is checked against the uninstrumented L4 machine.
+    """
+    from algocell_exp.census8086_trace import DiagnosticMachine
+    if os.environ.get('S2_TRACE_BACKEND') == 'software-vulkan':
+        import wgpu
+        from algocell_exp.zmachine import load_machine
+        adapter=wgpu.gpu.request_adapter_sync(force_fallback_adapter=True)
+        if str(adapter.info.get('adapter_type'))!='CPU' or str(adapter.info.get('backend_type'))!='Vulkan':
+            raise RuntimeError('declared trace backend requires CPU software Vulkan')
+        device=adapter.request_device_sync()
+        base=load_machine(machine.name,device=device)
+        return DiagnosticMachine(base,events=8192)
+    return DiagnosticMachine(machine,events=8192)
 
 def fixtures():
     rows = []

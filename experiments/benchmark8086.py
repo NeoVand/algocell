@@ -58,7 +58,9 @@ def benchmark():
     from score8086 import judge_tape
     from census8086_law import parents
     from law8086 import extract,assay_case
-    from s8086 import fixtures
+    from census8086 import pairs as census_pairs
+    from algocell_exp.census8086_trace import same_execution
+    from s8086 import fixtures,diagnostic_for
     start=time.perf_counter(); records=[]
     manifest=json.loads((PRE/'benchmark_inputs.json').read_text())
     if manifest!=input_manifest(): raise ValueError('fixed benchmark input identity changed')
@@ -68,8 +70,20 @@ def benchmark():
         L=cfg['L']; t0=time.perf_counter()
         s=S2Soup(cfg['machine'],seed=1,noise_exp=4,z80_steps=128)
         ex=E.ZilionExecutor(cfg['machine'],device=s.device)
-        m=ex.machine_for(L,zero_halts=False,maps=True); diagnostic=DiagnosticMachine(m,events=8192)
+        m=ex.machine_for(L,zero_halts=False,maps=True); diagnostic=diagnostic_for(m)
         compilation=time.perf_counter()-t0
+        backend_validation=[]
+        for word in ('b951','51b9','07a5','a507','ff30','30ff','ad50','50ad'):
+            parent=np.tile(np.frombuffer(bytes.fromhex(word),np.uint8),L//2)
+            memory=census_pairs(parent[None],L)
+            for budget in (128,512):
+                uninstrumented=m.run(memory,budget=budget)
+                traced=diagnostic.run(memory,budget=budget)
+                if not same_execution(uninstrumented,traced,m.record_words):
+                    raise ValueError('L4/software diagnostic census replay differs')
+                backend_validation.append({'word':word,'budget':budget,'partners':17,
+                                           'output_sha256':sha(uninstrumented.memory[:,L:].tobytes()),
+                                           'record_sha256':sha(uninstrumented.record.tobytes()),'same_execution':True})
         fixed,pair,active=fixed_inputs(L); q=s.device.queue; B=wgpu.BufferUsage
         def buf(data): return s.device.create_buffer_with_data(data=data,usage=B.COPY_SRC)
         sb,pb,ab=buf(fixed),buf(pair),buf(active)
@@ -142,11 +156,13 @@ def benchmark():
                              'law_encounters_per_s':law['encounters']/law_s})
         records.append({'arm':arm,'L':L,'compile_s':compilation,'world_steps_per_s':rates,
                         'world_panels':world_times,'assay_panels':measured,
+                        'backend_validation':backend_validation,
                         'sample_s':sample_s,'snapshot_s':snapshot_s,
                         'culture_route_s_per_tape':max(r['culture_route_s_per_tape'] for r in measured),
                         'extraction_s_per_tape':max(r['extraction_s_per_tape'] for r in measured),
                         'law_encounters_per_s':min(r['law_encounters_per_s'] for r in measured),
                         'diagnostic_identity':True,'adapter':dict(s.device.adapter.info),
+                        'diagnostic_adapter':dict(diagnostic.dev.adapter.info),
                         'machine':m.describe(),'judged_fixed_input_sha256':sha(tape.tobytes())})
     import sys,platform
     return safe({'schema':'s2-benchmark/1','input_manifest':manifest,'records':records,

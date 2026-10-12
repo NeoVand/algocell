@@ -11,7 +11,9 @@ from s8086 import HERE,PRE,RATE,sha,write_new
 FILES=('s8086.py','run8086.py','score8086.py','law8086.py','benchmark8086.py','run6502.py',
        'census8086.py','census8086_law.py','dispatch8086.py','modal_s8086.py','modal_score8086.py')
 image=(modal.Image.from_id('im-T2VaU4HVHQXvzDSkbRye1y')
-       .env({'WGPU_BACKEND_TYPE':'Vulkan','XDG_RUNTIME_DIR':'/tmp','PYTHONPATH':'/root/experiments'})
+       .apt_install('mesa-vulkan-drivers')
+       .env({'WGPU_BACKEND_TYPE':'Vulkan','XDG_RUNTIME_DIR':'/tmp','PYTHONPATH':'/root/experiments',
+             'S2_TRACE_BACKEND':'software-vulkan'})
        .add_local_dir(str(HERE/'algocell_exp'),remote_path='/root/experiments/algocell_exp')
        .add_local_dir(str(PRE),remote_path='/root/experiments/results/s8086/prelaunch'))
 for name in FILES: image=image.add_local_file(str(HERE/name),remote_path=f'/root/experiments/{name}')
@@ -60,20 +62,23 @@ def world(arm,seed,commit,receipt,deadline):
     return {'summary':result,'resource_time_bound_usd':(deadline+120)*RATE}
 
 @app.local_entrypoint()
-def main(recovery: bool = False):
+def main(recovery: bool = False, trace_recovery: bool = False):
     """The only entrypoint is the authorized <=$2 fixed-input benchmark."""
     from dispatch8086 import SpendGuard
     from benchmark8086 import project
     # No retries; an existing reservation makes a second invocation fail.
     guard=SpendGuard(PRE/'spend.jsonl',{'preparation-benchmark':.50},cap=2.,overhead=.50)
-    job='preparation-benchmark-recovery' if recovery else 'preparation-benchmark'
-    if recovery:
+    if recovery and trace_recovery: raise ValueError('choose only one explicit manual recovery')
+    job=('preparation-benchmark-software-trace' if trace_recovery else
+         'preparation-benchmark-recovery' if recovery else 'preparation-benchmark')
+    if recovery or trace_recovery:
         guard.transact({'kind':'plan_extension','jobs':{job:.50},
-                        'reason':'Explicit manual recovery after stopped import failure; fixed inputs unchanged; no automatic retry'})
+                        'reason':'Explicit manual packaging/trace-backend recovery; fixed inputs unchanged; no automatic retry'})
     guard.reserve(job,.50,inputs_sha256=sha((PRE/'benchmark_inputs.json').read_bytes()))
     started=time.time(); call=fixed_benchmark.spawn()
     guard.start(job,call.object_id,app.app_id)
-    write_new(PRE/('benchmark_recovery_call.json' if recovery else 'benchmark_call.json'),{'app_id':app.app_id,'call_id':call.object_id,
+    filename=('benchmark_trace_call.json' if trace_recovery else 'benchmark_recovery_call.json' if recovery else 'benchmark_call.json')
+    write_new(PRE/filename,{'app_id':app.app_id,'call_id':call.object_id,
                                        'started_epoch':started,'timeout_s':BENCHMARK_TIMEOUT,
                                        'rate_usd_per_s':RATE,'resource_reservation_usd':.50})
     result=call.get(); result['app_id']=app.app_id; result['call_id']=call.object_id
@@ -85,7 +90,7 @@ def main(recovery: bool = False):
     write_new(PRE/'benchmark.json',result)
     guard.settle(job,bound,app_id=app.app_id,call_id=call.object_id,
                  function_wall_s=result['function_wall_s'])
-    preparation=bound+(.50 if recovery else 0.)
+    preparation=bound+(1. if trace_recovery else .50 if recovery else 0.)
     write_new(PRE/'projection.json',project(result,preparation))
     print(json.dumps({'app_id':app.app_id,'resource_bound_usd':bound,
                       'projection_usd':project(result,preparation)['projection_usd']}))

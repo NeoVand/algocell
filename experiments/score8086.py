@@ -9,7 +9,7 @@ import brotli
 import numpy as np
 from algocell_exp import assay as A, executor as E
 from algocell_exp.census8086_trace import DiagnosticMachine, mechanism, same_execution
-from s8086 import ARMS, HORIZON, SEEDS, SNAPSHOTS, PERSISTENCE, samples, key, rng, partners, sha, safe, write_new, verify_freeze
+from s8086 import ARMS, HORIZON, SEEDS, SNAPSHOTS, PERSISTENCE, samples, key, rng, partners, sha, safe, write_new, verify_freeze,diagnostic_for
 
 def endpoints(records, judge):
     first = closed = None; occurrence = []; persistence = {}; unresolved = []
@@ -140,7 +140,7 @@ def score_world(path, *, device=None, tick=lambda:None):
         if m.describe()[k]!=c['machine'][k]: raise ValueError('world machine hash mismatch')
     if c['freeze_sha256']!=sha((Path(__file__).parent/'results/s8086/prelaunch/freeze.json').read_bytes()):
         raise ValueError('world freeze identity mismatch')
-    trace=DiagnosticMachine(m,events=8192); cache={}
+    trace=diagnostic_for(m); cache={}
     def judge(tape):
         tick()
         if tape not in cache: cache[tape]=judge_tape(tape,arm,seed,ex,trace)
