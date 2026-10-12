@@ -18,15 +18,11 @@ acts [Maynard Smith & Szathmáry 1995; Szathmáry & Maynard Smith 1997]. Soups o
 replicators can arise spontaneously [Agüera y Arcas et al. 2024; Cicala et al. 2026]. However, how a spontaneously
 evolved copying mechanism comes to preserve introduced differences across repeated reproduction, rather than merely
 making more of itself, remains unresolved. Here we use Zilion, a validated multi-processor execution substrate that we
-introduce, to show the following.
-- **Survival without retention.** In soups of Z80 machine code, branching lineages of a representative first
-  replicator survive while losing every one of 512 tested mutations, whereas later copiers transmit variation.
-- **The copying rule.** In a recurring copying family, the overlap of a copy with itself determines which parental
-  bytes reach descendants. The displacement that sets this overlap is itself inherited, so that one copying rule
-  controls how much arbitrary payload survives.
-- **The environment.** The chemistry of the environment shifts which reproductive designs prevail.
-
-Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
+introduce, to show that in soups of Z80 machine code, branching lineages of a representative first replicator
+survive while losing every one of 512 tested mutations, whereas later copiers transmit variation. In a recurring
+copying family, the overlap of a copy with itself determines which parental bytes reach descendants, and the
+displacement that sets this overlap is itself inherited, so that one copying rule controls how much arbitrary payload
+survives. The chemistry of the environment shifts which reproductive designs prevail. Closure to partner information and transmission of variation are thus distinct achievements. Together they provide a
 restricted experimental analogue of Woese's Darwinian threshold.
 
 ## Main text
@@ -83,12 +79,10 @@ implementations separately. The C1 reruns retained 19 of 22 claim verdicts and c
 and we report historical failures and C1 outcomes side by side [results/impact/README.md; results/tier2/T2.md]
 (Methods).
 
-Four measurements, kept separate throughout, turn a soup into an experiment (Fig. 1b,c).
-- **Culture test:** asks whether a tape's offspring itself reproduces.
-- **Execution trace:** asks whether execution stays within the replicator's own bytes.
-- **Inflow:** with the parent fixed, the variation of offspring across partners measures how much the partner
-  contributes.
-- **Transfer assays:** follow a deliberately introduced parental difference through repeated reproduction.
+Four measurements, kept separate throughout, turn a soup into an experiment (Fig. 1b,c). A culture test asks whether a
+tape's offspring itself reproduces. An execution trace asks whether execution stays within the replicator's own bytes.
+Inflow, measured with the parent fixed, is the variation of offspring across partners: how much the partner
+contributes. Transfer assays follow a deliberately introduced parental difference through repeated reproduction.
 
 These properties dissociate in both directions. A program can read a partner's bytes without executing them, and it
 can execute partner addresses after overwriting their contents, so none of the measurements stands in for another
@@ -208,16 +202,14 @@ a majority of heritable cells in 8 of 10 fully lethal worlds, against 6 of 10 hi
 endpoint failed [results/tier2/T2_DZ.csv; REVISION_PREREG.md, DZ3].
 
 The environment also changes the routes that populations are observed to take (Fig. 4c), although it does not impose
-a fixed sequence.
-- **Benign chemistry.** Short-tape worlds often remain dominated by regenerators: they were the final majority in 17
-  of 20 worlds at L = 16 and 14 of 20 at L = 20, whereas at L = 50 every world remained dominated by open cells
-  [results/ladder/population_worlds.csv].
-  In an exploratory analysis, regenerators were detected before transmitters in 30 of the 42 benign worlds that
-  contained both. This describes order of detection, not ancestry [exploratory: results/ladder/LADDER.md].
-- **Lethal chemistry.** In an exploratory assay of the separate historical lethal-tar cohort, all ten first detected
-  tapes were confined, had zero sampled partner inflow and carried at most four scored sites. By the final sample,
-  transmitters were a majority of heritable cells in nine of the ten worlds [exploratory:
-  results/crystal/first_cells.csv, Z80 I; results/ladder/population_worlds.csv, stage I].
+a fixed sequence. Under benign chemistry, short-tape worlds often remain dominated by regenerators: they were the final
+majority in 17 of 20 worlds at L = 16 and 14 of 20 at L = 20, whereas at L = 50 every world remained dominated by open
+cells [results/ladder/population_worlds.csv]. In an exploratory analysis, regenerators were detected before
+transmitters in 30 of the 42 benign worlds that contained both, an order of detection rather than of ancestry
+[exploratory: results/ladder/LADDER.md]. Under lethal chemistry the picture differs. In an exploratory assay of the
+separate historical lethal-tar cohort, all ten first detected tapes were confined, had zero sampled partner inflow and
+carried at most four scored sites, yet by the final sample transmitters were a majority of heritable cells in nine of
+the ten worlds [exploratory: results/crystal/first_cells.csv, Z80 I; results/ladder/population_worlds.csv, stage I].
 
 Why lethal chemistry favours transmitters remains open. Registered tests rejected a toxin mechanism
 [results/toxin/CAUSAL.md], backup cores [results/n2/BACKUP.md] and isolated mutational flows
@@ -282,14 +274,13 @@ possibilities. The mechanism we describe is not a claim that chemistry uses a di
 inspectable case in which the question has an exact answer: which alternatives does a reproductive process preserve,
 and which does its own operation remove?
 
-Three tests define what comes next.
-- **Expanded capacity.** It must be measured directly in descendants of displacement mutants.
-- **Generality of the law.** It must be shown in evolved copiers on a second processor: the evolved 6502 panel and the
-  registered 8086 experiment.
-- **Payload function.** These experiments establish that payload is transmitted, but not that the transmitted
-  variation does anything useful. To show adaptive use, an inherited difference must alter performance in a specified
-  environment. Copied material that is later also read as machinery, as von Neumann's description is both copied and
-  interpreted, offers one route. Whether such use evolves in these soups without an imposed task remains open.
+Three tests define what comes next. The expanded capacity predicted for displacement mutants must be measured directly
+in their descendants, and the law must be shown in evolved copiers on a second processor, in the evolved 6502 panel
+and the registered 8086 experiment. Beyond capacity lies function. These experiments establish that payload is
+transmitted, but not that the transmitted variation does anything useful. To show adaptive use, an inherited
+difference must alter performance in a specified environment. Copied material that is later also read as machinery,
+as von Neumann's description is both copied and interpreted, offers one route; whether such use evolves in these
+soups without an imposed task remains open.
 
 Zilion makes these questions testable across explicitly specified processor contracts. It asks not only whether a
 program reproduces, but which differences its reproduction preserves.
