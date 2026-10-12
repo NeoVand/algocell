@@ -162,3 +162,36 @@ thresholds, and the chemistry of the environment decides their order and whether
    with small unit cells on both machines?
 4. The allele set of d: for the transmitter and regenerator exemplars, which values of the offset byte give working,
    self-copying cells, and with which p?
+
+## Addendum, 2026-10-12: what the check did to this (`results/crystal/CRYSTAL.md`, EXPLORATORY)
+
+The check refuted most of this round. Recorded as is.
+
+- **The unit-cell law p − c is false.**
+  - `(c8 5e ed b0)×8` has minimal period 4, which is all core, yet it carries 4 payload sites, because its copy
+    displacement is 8.
+  - Capacity belongs to the *copy displacement and its invariant family*, not to the minimal period of the
+    unmutated tape. That is Proposition 8 and Astra's copy-provenance certificate, so the generalisation added
+    nothing.
+  - Across non-offset confined cells the count is exact in only 1,230 of 13,308, with 2,928 deficits and 9,145 that
+    cannot be addressed.
+- **The copy map does not explain X1 quantitatively.**
+  - The decimation signature is visible in the path-only forecast for pusher64: 32 → 16 → 8 → 4, halving each
+    generation.
+  - Neither forecast matches X1. The path-only forecast is 32 → 16 → 8 → 4 and the strict forecast is 14 → 0; X1
+    measured 29 → 21 → 0.
+  - It can be a mechanism illustration at most.
+- **"Lethal tar makes transmitters first" is false for first tapes.** All 10 Stage I first tapes have period 4 or 8
+  and at most 4 sites. Transmitters dominate only the earliest *random-cell* samples (109 of 161 with ≥ 5 sites).
+- **Survives, descriptively.**
+  - First *modal* replicators have small unit cells on both machines:
+    - Z80 Stage G: period 2 in 80 of 80;
+    - Z80 Stage I: period 4–8;
+    - 6502 arms A, C and D: period 8 in 58 of 58;
+    - 6502 arm B: 2 of 4 have period 32.
+  - **Caveat:** modal-tape detection favours clonal regenerators, so this may partly be a detection effect.
+- **Survives, supported.** The offset byte is a dial with many working alleles:
+  - ldir32: 99 of 256 values culture-working, 50 inherited when aligned, d from 4 to 32, payload 0–28;
+  - genome20, an LDDR transmitter outside Proposition 8: 15 of 256.
+- **Net.** Astra's charter is the core. Of this round, only "the offset byte is the first heritable control
+  parameter" and the two-threshold *framing* survive, and the framing is a framing, not a law.
