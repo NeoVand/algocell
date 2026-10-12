@@ -1471,3 +1471,8 @@ carrying fraction >=0.5 for >=half identifiable values/site. This serial scan
 describes evolved transmission; it is not an exact-law or branching result.
 Same local burst/pause and total-compute limits as C1.
 
+C2 clarification before any new 6502 runs: the descriptive final tapes must have
+the archived corrected S1 `heritable=True` call. This makes that scan a panel of
+ineligible copiers, as requested. Noncopiers remain in the full geometry ledger;
+no new retention result determines inclusion. The same hash ordering applies.
+

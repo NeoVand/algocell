@@ -26,14 +26,14 @@ def sample(archive):
     worlds=pd.read_csv(V2/'s1_worlds.csv',keep_default_na=False)
     finals=pd.read_csv(V2/'final_cultures.csv')
     for w in worlds.to_dict('records'):
-        common={k:w[k] for k in ('world','arm','seed','L','machine')}
+        common={k:w[k] for k in ('world','arm','seed','L','machine')};common['archived_heritable']=''
         if w['first_tape']:
-            rows.append({**common,'role':'first','cell':-1,'tape':w['first_tape'],'key':w['world']+':first'})
+            rows.append({**common,'archived_heritable':1,'role':'first','cell':-1,'tape':w['first_tape'],'key':w['world']+':first'})
         selected=finals[finals.world==w['world']].to_dict('records')
         selected.sort(key=lambda r:sha(f'C2:{SEED}:{r["world"]}:{r["cell"]}'.encode()))
         assert len(selected)==64
         for f in selected[:8]:
-            rows.append({**common,'role':'final_random','cell':f['cell'],'tape':hx(parse(f['tape'])),'key':f'{w["world"]}:cell{f["cell"]}'})
+            rows.append({**common,'archived_heritable':int(f['heritable']),'role':'final_random','cell':f['cell'],'tape':hx(parse(f['tape'])),'key':f'{w["world"]}:cell{f["cell"]}'})
         log=archive/(w['world']+'.jsonl')
         expected=json.loads((V2/'worlds'/f'{w["world"]}.json').read_text())['input_sha256']
         available=log.exists()
@@ -130,7 +130,7 @@ def qualify(archive):
     descriptive=[]
     for arm in 'ABCD':
         for role in ('first','final_random'):
-            choices=sorted([r for r in ledger if r['arm']==arm and r['role']==role and not r['eligible']],key=lambda r:r['sampling_hash'])[:2]
+            choices=sorted([r for r in ledger if r['arm']==arm and r['role']==role and not r['eligible'] and r['archived_heritable']==1],key=lambda r:r['sampling_hash'])[:2]
             descriptive.extend(choices)
     write(OUT/'descriptive_panel.csv',descriptive)
     print(f'C2 {len(ledger)} sampled roles, eligible {sum(r["eligible"] for r in ledger)}, descriptive {len(descriptive)}',flush=True)
