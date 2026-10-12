@@ -1384,3 +1384,95 @@ The independent audit (results/s6502/AUDIT.md) found a multi-byte sequential-PC-
   (collision races). A component near its threshold can change without any effect of the core, so the changes are
   reported as changes under re-run with C1, not as caused by C1.
 - **Spend.** $19.56 of the $40 cap: runs plus scoring.
+## C1 — inherited Z80 displacement and descendant capacity (2026-10-12)
+
+Registered before new geometry or retention runs. Prediction from MAIN_v6 Methods,
+Proposition 8: an eligible edit to d' inherits its complete four-byte core and
+actual displacement through g=1..8, has exactly d'-4 fixed-core free coordinates
+4..d'-1, and erases independent information at original coordinates d'..L-1.
+There is zero tolerance for an exact, provenance-resolved mismatch.
+
+Parents are archived serial-panel ldir32 and ldir20, plus up to 20 eligible rows
+of offset/offset_cells.csv, ordered by SHA256 of UTF-8 `C1:20261012:` followed by
+the zero-based CSV row number. Eligibility is determined before selection from
+code and read/write traces against zero plus 16 uniform partners (numpy seed
+20261012, keyed by L), budget 128, frozen serial_retention default Z80 shaders.
+Require forward four-byte core at entry zero; 4<=d<=L, d|L; harmless initial
+instruction, PC=1, HL=0 modulo 2L, 256D=0 modulo 2L, BC=0 or >=126
+(immediate form has PC=2); writes before copying outside the protected prefix;
+constant displacement through increments; sequential forward LDIR writes,
+coverage >=2L-d, no original partner inflow or interference, and copied core at
+entry zero. Initial nonperiodic tails are allowed: their regeneration is not a
+copy-gate failure. The first d bytes define the invariant offspring family.
+
+For each parent and each divisor d' of L in [4,L], choose the smallest byte value
+passing the above code/trace contract; also include the original byte. Excluded
+values and rows remain in the ledger. Freeze selected parents, all edits,
+predicted coordinates, traces and executor hashes in Git before retention.
+Edit only the primary displacement byte, pass 16 lineages with independently
+seeded fresh uniform partners to g=8, recording every full offspring, core,
+actual displacement and source labels. Revert each g8 lineage's displacement
+to the original byte and repeat eight generations. No post-outcome exclusions.
+
+In each forward and reverted g8 descendant, test all 255 alternatives at every
+free coordinate, 64 seeded joint assignments, and all 255 alternatives at each
+erased coordinate, against the frozen zero+16 partner panel. Expected offspring
+is the primary d'-byte seed tiled to L, at fixed entry phase zero. Require every
+byte and every source-coordinate label to match, including core and offset;
+partner equality never counts as inheritance. Descendant identity is the partner
+half, without cyclic realignment or 75% gate. Any mismatch fails the conditional
+prediction and is diagnosed as loss of core/offset, payload loss, incomplete
+coverage, partner substitution or executor/instrumentation error. Preserve all
+failures and distinguish a failed application from a theorem contradiction.
+Joint samples do not exhaust the product space. All work is local, <=60-second
+GPU bursts with equal pauses, <=30 minutes total GPU; no paid compute.
+
+## C2 — evolved 6502 geometry and retention (2026-10-12)
+
+Registered before new geometry or retention runs. Conditional prediction from
+the overlap theorem: an eligible forward constant-displacement copier preserves
+the protected primary seed, has d-c arbitrary payload coordinates, erases
+original coordinates beyond d, and repeats through g=8. c is the constrained
+code/address/control footprint extracted from code, never fitted to site scores.
+No directional prediction is made for ineligible copiers' descriptive scan.
+
+Panel: corrected S1 v2 all four arms, every detected first replicator, final
+top-3 tapes in every world, and eight of the archived 64 uniform final-snapshot
+draws per world, ordered by SHA256(`C2:20261012:WORLD:CELL`). Preserve duplicate
+sampling roles. Raw logs supply top-3; match their SHA256 to v2 input_sha256.
+Unavailable raw logs are recorded as missing, never replaced with modal tapes
+estimated from the 64 draws; the complete-panel claim remains incomplete.
+
+Use each world's frozen vendored 6502 machine, budget 128, zero plus 16 uniform
+partners seeded [20261012,L]. Add observational read/write/fetch/source-label
+tracing; require unchanged memory and architectural records against the raw
+machine. Require unchanged byte-copy channels, consecutive forward source and
+destination movement, constant d, c<=d<=L, d|L, complete partner coverage, no
+original partner input or other interfering writes, constrained footprint wholly
+inside the protected prefix, copied core at entry phase zero and an invariant
+execution family under arbitrary payload. Unknown or value-dependent channels
+cannot qualify by byte equality. Archive all exclusions and trace evidence;
+freeze the ledger and predicted free coordinates before any intervention.
+
+If none qualifies, report "no eligible architecture" for the observed panel and
+stop the exact-law assay. Missing panel components stay explicit. For eligible
+cases, test every alternative at every free and erased coordinate, 64 joint
+assignments, and eight serial passages with fresh uniform partners; score all
+offspring coordinates and causal labels exactly, with zero tolerance and no
+post-outcome reclassification, as C1. Separate failed application from missing
+architecture and from instrumentation failure.
+
+Descriptive ineligible panel: two first tapes and two sampled final tapes per
+arm, ordered by the same SHA256 key (or all if fewer), excluding no case for its
+retention result. X1-style scan: 32 seeded alternatives per coordinate, four
+lineages per mutant, 64 controls, g=1..8 fresh uniform partners, 75% best-shift
+survival, identifiable five-byte cyclic mutant window, background-corrected
+carrying fraction >=0.5 for >=half identifiable values/site. This serial scan
+describes evolved transmission; it is not an exact-law or branching result.
+Same local burst/pause and total-compute limits as C1.
+
+C2 clarification before any new 6502 runs: the descriptive final tapes must have
+the archived corrected S1 `heritable=True` call. This makes that scan a panel of
+ineligible copiers, as requested. Noncopiers remain in the full geometry ledger;
+no new retention result determines inclusion. The same hash ordering applies.
+
