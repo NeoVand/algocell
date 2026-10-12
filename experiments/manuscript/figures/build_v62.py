@@ -14,7 +14,7 @@ import textwrap
 import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
-from matplotlib.transforms import ScaledTranslation
+from matplotlib.transforms import Affine2D
 import numpy as np
 import pandas as pd
 
@@ -181,7 +181,7 @@ def fig2d(p):
 def fig3b(p):
     pop=table('law_population');c1=table('law_z80_c1');c2=table('law_6502_c2');controls=table('law_6502_controls')
     ax=p.ax(.17,.20,.79,.69)
-    ax.plot([0,60],[0,60],color=LIGHT,lw=.75,zorder=0)
+    ax.plot([-5,65],[-5,65],color=LIGHT,lw=.75,zorder=0)
     # Draw large discs first so a smaller population coordinate stays visible
     # inside a larger one. The same area scale is used for the three-size key.
     pop=pop.sort_values('cells',ascending=False)
@@ -189,12 +189,17 @@ def fig3b(p):
     population_colour='#CBD0D5'
     ax.scatter(pop.predicted,pop.n_unexec,s=pop.cells*population_area,
                facecolors=population_colour,edgecolors='#9AA5AE',lw=.20,zorder=1)
-    # Fixed display offsets separate the series without changing source values.
-    def offset(dx,dy):
-        return ax.transData+ScaledTranslation(dx/72,dy/72,p.fig.dpi_scale_trans)
-    ax.scatter(controls['d − 6'],controls['payload carried (sites ≥ 6)'],s=16,facecolors='none',edgecolors=INK,marker='s',lw=.6,zorder=3,transform=offset(3,-3))
-    ax.scatter(c1.predicted_free,c1.measured_free,s=9,color=TEAL,marker='o',edgecolors='white',lw=.3,zorder=4,transform=offset(-3,3))
-    ax.scatter(c2.predicted_free,c2.measured_free,s=9,color=TEAL,marker='^',edgecolors='white',lw=.3,zorder=5,transform=offset(3,3))
+    # Equal data-coordinate translations preserve y - x at either panel size.
+    # Screen-space (point) translations do not follow the unequal axis scales.
+    def offset(delta):
+        return Affine2D().translate(delta,delta)+ax.transData
+    ax.scatter(controls['d − 6'],controls['payload carried (sites ≥ 6)'],s=16,facecolors='none',edgecolors=INK,marker='s',lw=.6,zorder=3,transform=offset(1))
+    ax.scatter(c1.predicted_free,c1.measured_free,s=9,color=TEAL,marker='o',edgecolors='white',lw=.3,zorder=4,transform=offset(-1))
+    ax.scatter(c2.predicted_free,c2.measured_free,s=9,color=TEAL,marker='^',edgecolors='white',lw=.3,zorder=5,transform=offset(2))
+    # Highlight real score deficits without enlarging their count-scaled discs.
+    deficits=pop[pop.predicted!=pop.n_unexec]
+    ax.scatter(deficits.predicted,deficits.n_unexec,s=9,facecolors='none',
+               edgecolors='#9AA5AE',lw=.6,zorder=2)
     ax.set(xlim=(-5,65),ylim=(-5,65))
     axis(ax,'Predicted free payload (positions)','Measured capacity / sampled\nretention score (positions)',[0,20,40,60],[0,20,40,60])
     handles=[Line2D([],[],marker='o',ms=4,mfc=population_colour,mec='#9AA5AE',mew=.2,ls='none',label='Z80 population'),
