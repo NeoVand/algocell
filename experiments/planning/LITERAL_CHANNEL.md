@@ -117,3 +117,18 @@ None gives an exact straight-line self-writer at k ≤ 4.
      to prove Conjecture 9′ or to find a counterexample.
    - Have the proof of Proposition 9 checked by an independent reviewer, and against the census word lists for the Z80
      and 8086, period 2.
+
+## Correction after the independent check (2026-10-11 night; `results/literal_channel/CHECK.md`, merged)
+
+- **Proposition 9's proof holds** with the copy-length bound corrected: 2w + 1 for odd w, 2w for even w. It is best
+  read as an independent characterisation of Theorem 6's (H3) for a single repeated pair.
+- **Parity is the wrong general line.**
+  - Width-3 *mixtures* do self-write: `a [b b a]; b; b` writes a shift of `(a b b)^∞`.
+  - Width 1 is the special case. For any mixture of width-1 loads and pushes sharing one register, no infinite
+    periodic self-writer exists. This is **proved**, and an exact symbolic search through k = 64 plus enumeration
+    through k = 40 (165,580,120 token orders) agree.
+  - A finite coincidence exists in the abstract model (a period-16 mixture matching exactly 16 bytes, then diverging).
+    It fails in the real 6502 harness, so the finite statement must carry the copy-length condition.
+- **The substrate invariant is therefore the literal-channel *width*.** A one-byte channel cannot write its own
+  instruction stream as literals; channels of two or more bytes can. The Z80 and 8086 (width 2) admit a pusher; the
+  6502 (width 1) does not. "Parity" survives only as the statement about one repeated pair.
