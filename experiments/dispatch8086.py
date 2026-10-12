@@ -14,9 +14,14 @@ import time
 from pathlib import Path
 from s8086 import CAP, RATE, sha, safe, launch_receipt, released_registration
 
+def clone_accounting(jobs,billed,plan):
+    # The replay state contains only scalar fields, not the event payloads.
+    return {name:dict(job) for name,job in jobs.items()},dict(billed),dict(plan)
+
 class SpendGuard:
     def __init__(self, path, plan, *, cap=CAP, overhead=1.):
         self.path=Path(path); self.plan=dict(plan); self.cap=cap; self.overhead=overhead
+        self._replay=None
         if (not math.isfinite(cap) or not 0<cap<=CAP or not math.isfinite(overhead) or overhead<0
                 or any(not math.isfinite(v) or v<0 for v in plan.values())):
             raise ValueError('invalid spend plan')
@@ -28,8 +33,17 @@ class SpendGuard:
             raise ValueError('nonfinite/negative spend')
         with self.path.open('a+') as f:
             fcntl.flock(f,fcntl.LOCK_EX | (fcntl.LOCK_NB if nonblocking else 0)); f.seek(0)
-            lines=[json.loads(s) for s in f if s.strip()]; previous='0'*64
+            raw=f.read(); previous='0'*64
             jobs={}; billed={}; known_cost=0.; reserved=0.; plan=dict(self.plan)
+            offset=0
+            if self._replay:
+                cached=self._replay; offset=cached['offset']
+                if cached['config']!=(self.plan,self.cap,self.overhead):
+                    raise ValueError('spend plan changed')
+                if len(raw)<offset or sha(raw[:offset].encode())!=cached['digest']:
+                    raise ValueError('ledger hash chain corrupt: verified prefix changed')
+                jobs,billed,plan=clone_accounting(*cached['state']);previous=cached['previous']
+            lines=[json.loads(s) for s in raw[offset:].splitlines() if s.strip()]
             for row in lines:
                 digest=row.pop('hash')
                 if row['previous']!=previous or sha(json.dumps(row,sort_keys=True,separators=(',',':')).encode())!=digest:
@@ -50,7 +64,11 @@ class SpendGuard:
                     jobs[row['job']]['status']='settled'; jobs[row['job']]['cost']=row['usd']
                 elif row['kind']=='metered': billed[row['app_id']]=row['usd']
                 elif row['kind']=='plan_extension': plan.update(row['jobs'])
-            if not lines:
+            if raw:
+                self._replay={'offset':len(raw),'digest':sha(raw.encode()),'previous':previous,
+                              'config':(dict(self.plan),self.cap,self.overhead),
+                              'state':clone_accounting(jobs,billed,plan)}
+            if not raw:
                 init={'kind':'plan','plan':self.plan,'cap':self.cap,'overhead':self.overhead,'previous':previous,'time':time.time()}
                 previous=sha(json.dumps(init,sort_keys=True,separators=(',',':')).encode())
                 f.write(json.dumps({**init,'hash':previous})+'\n'); f.flush(); os.fsync(f.fileno())

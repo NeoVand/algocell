@@ -1,7 +1,7 @@
 {
   "approved_date": "2026-10-12",
   "option": "b",
-  "cap_usd": 85.0,
+  "cap_usd": 95.0,
   "includes_preparation": true,
   "forecast_usd": 83.79381223898022,
   "guard": "dispatch8086.SpendGuard; independent lifecycle8086.WatchdogProcess",
@@ -15,7 +15,7 @@
     "setup_reserved_each_app": true,
     "prebuild_timeout_s": 600,
     "provider_restart_count_bound": null,
-    "dynamic_complete_cap_usd": 85.0,
+    "dynamic_complete_cap_usd": 95.0,
     "attempts_observed_via": "cursor AppGetLogs task/container state plus TaskList and AppGetLifecycle",
     "attempt_liability": "elapsed + remaining startup/body server time + 121s termination/control",
     "termination_grace_s": 60,
@@ -23,6 +23,12 @@
     "bounded_rpc_allowance_s": 60,
     "one_app_per_job": true,
     "restart_renews_clock": false,
+    "world_recovery_full_restarts": 3,
+    "world_fixed_recovery_s": {
+      "A": 37389
+    },
+    "recovery_charged_as_incurred": true,
+    "recovery_shared_cap": true,
     "settlement_requires_stopped_and_no_tasks": true
   },
   "execution_deadline_s": {
@@ -197,5 +203,8 @@
     "preparation": 0.7999038189802217
   },
   "storage_termination_reserve_usd": 5.0,
+  "recovery_budget_usd": 9.45418254,
+  "full_world_restarts_absorbed": 3,
+  "cap_headroom_usd": 11.206187761019777,
   "launch_status": "STOPPED: coordinator review required; no launch receipt"
 }

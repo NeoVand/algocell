@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-12",
+  "programs": 8192,
+  "runs": [
+    {
+      "L": 16,
+      "programs": 4096,
+      "input_sha256": "64b0838b778e49f9a286656b120fa4a0da7d8a5f4e8d6c534b48aa19ffd4a747",
+      "counts": {
+        "other": 3944,
+        "memory-fed one-pass copier": 36,
+        "literal writer": 100,
+        "confined copy loop": 16
+      },
+      "prefix_comparisons": 8204,
+      "scalar_predictions": 8204,
+      "overflow_other": 0,
+      "full_record_memory_mismatches": 0,
+      "causal_differential_mismatches": 0
+    },
+    {
+      "L": 32,
+      "programs": 4096,
+      "input_sha256": "4112fb08b715355919f6505019b8a0532f22a2362bf50b18b768cf1f606e2367",
+      "counts": {
+        "other": 3967,
+        "memory-fed one-pass copier": 33,
+        "literal writer": 82,
+        "confined copy loop": 14
+      },
+      "prefix_comparisons": 7438,
+      "scalar_predictions": 7438,
+      "overflow_other": 0,
+      "full_record_memory_mismatches": 0,
+      "causal_differential_mismatches": 0
+    }
+  ],
+  "mismatches": 0,
+  "no_population": true,
+  "no_paid_compute": true,
+  "oracle_scope": "Independent random-program causal differential; fixed inputs, local bursts only.\n\nThe scalar oracle uses a separately written prefix comparison, source-expression\narithmetic, and class decision. Production extractors supply hypotheses, not\ntruth: every admitted claim is checked by two actual isolated interventions.\nThis validates causal verification, not arbitrary unmodeled 8086 semantics.\n",
+  "classifier_sha256": "cf52e33f875a0586ec890323615bd2d329ed5d6f1f604dd3f41762147655eb8a",
+  "oracle_sha256": "58a28cd3e2737d791b2860ebb799008ee845fb9471f6847e67c364978aac65d1",
+  "gpu_bursts": 1126,
+  "max_gpu_burst_s": 0.2902379169827327
+}

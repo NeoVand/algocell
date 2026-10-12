@@ -434,3 +434,89 @@ The coordinator's acceptance standard supersedes certification of a finite provi
 #### Replacement freeze identities and stopped disposition
 
 results/s8086/prelaunch/freeze.json is the authoritative replacement manifest and binds the exact amended registration, option (b) registration/schedules, A-only cohort and schemas, unchanged RNG streams and fixtures, repaired observer exports, source hashes, corrected census/controls, dependencies, the complete projection and validation. Its own hash is excluded to avoid a cycle and is attested by the same Git commit as this amendment. The historical first-freeze hashes above are superseded. projection.json contains the repaired option (b) allocation plan, cap_usd=85 and launch_fits=true; guard_limits.json binds all-in guard cap 85 to the same plan. These cost-gate facts do not authorize dispatch. No Modal call or paid computation occurs during this refreeze. **STOP: await coordinator review; do not launch.**
+
+#### Prospective R2 withdrawal and $95 cap amendment — 2026-10-12
+
+Recorded before any S2 population data. The coordinator withdraws R2a and R2b
+as confirmatory predictions. R2 has descriptive status only: no pass, failure,
+joint success, or scientific withdrawal claim may depend on these mechanism
+labels. The reason is that causal verification repeatedly changed labels on
+which R2 depended, including reset-source and open memory-fed classifications.
+The causally verified classifier is frozen for descriptive use: the current
+prefix-causal operand-fetch, memory-read and reset-value interventions, both
+alternative substitutions, and fail-safe `other` for unsupported, mixed,
+overflowed or failed claims. Label changes impose no audit stop condition.
+
+For every detected copier, publish the literal writer, memory-fed one-pass
+copier, confined copy loop and other encounter tables, all 16 partner labels,
+and every `other` case with its reason and evidence. Retain occurrence and the
+11-point persistence counts as descriptive summaries, with same-genotype
+persistence separate. R0, R1's full-encounter fetch-based openness, the route
+kill rule, L1 and the amended L2 remain unchanged and confirmatory. A remains
+20 worlds at 3M; B remains withdrawn. Eligibility and law proof obligations
+are unchanged.
+
+The user approved the all-in Modal cap of **$95 on 2026-10-12**, including
+preparation. This supersedes the $85 cap. Successful terminal attempts do not
+create fictitious pending-restart reservations. Restarted attempts retain
+their costs; a finite charged recovery-time budget extends the world lifetime
+without renewing it on each restart. The exact forecast, recovery allowance,
+simulation and identities will be recorded in the replacement freeze.
+Preparation remains local only. **STOP before launch for the coordinator's
+final independent check; no launch receipt is created.**
+
+
+#### Final operational amendment — 2026-10-12, before population data
+
+This supersedes the B5 $85 policy and historical freeze annex. The all-in cap
+is $95. The allocation forecast is $83.79381223898022, including incurred
+preparation, unchanged body deadlines, prebuild, controls, diagnosis, both law
+families and $5 storage/termination reserve. Headroom is $11.206187761019777.
+One full A-world envelope is 12,463 resource seconds / $3.15139418; the cap
+absorbs three such full-world restarts ($9.45418254), leaving $1.752005221019777.
+No finite provider restart-count bound is assumed. Each world has a fixed
+49,852-second app lifetime from initial arming, with stop requests beginning
+121 seconds before expiry. This equals its original 12,463 seconds plus three
+full-world recovery envelopes; restarts do not renew it. Recovery exposure is
+charged as observed and shares the all-in cap with every remaining required
+job. This lifetime allowance is not reserved twenty times as expenditure.
+The body timeout for each new attempt remains 11,982 seconds. The prospective
+step-0/same-seed/first-complete-durable-trajectory policy is unchanged.
+
+A successful completed-task cursor event marks work complete before the
+asynchronous host finish acknowledgement: no pending retry reservation is
+invented in either event order. Preempted/failed attempts still retain elapsed
+and termination liabilities, and unfinished input retains a full next-attempt
+reservation between attempts. Settlement still requires confirmed STOPPED and
+no active tasks. Failures, unknown bounds and cap stops remain INCOMPLETE with
+null scientific verdicts and retained liabilities; no negative is inferred.
+
+The guard authenticates the entire previously verified ledger prefix, then
+parses and verifies only appended rows using its cached accounting state.
+Configuration changes, prefix corruption and truncation are rejected. Initial
+reconciliation and incremental transactions have the existing bounded 10-second
+RPC allowance, replacing the 50 ms deadline. Provider stop/cancel processes
+remain independent of ledger locks and journal writes. The full-experiment
+750,000-row regression, real-lock suspension, blocked I/O and stop-independence
+checks are part of the replacement validation.
+
+The frozen score allocation now includes the descriptive causal verification
+work. The earlier cloud timings measured the legacy classifier; no new cloud
+causal-throughput measurement is claimed or purchased. This is an allocation
+forecast with enforced body limits, not a guarantee that arbitrary detected
+programs fit those limits. Exhausting a score allocation makes the experiment
+incomplete. No shortening of the 3M horizon, omitted mechanism cases or altered
+law denominator is permitted to make a run fit.
+
+The randomized fault-injection simulation uses the production lifecycle and
+hash-chained accounting transitions, a separately accumulated actual-resource
+ledger, delayed finish/terminal orders, setup and termination delays, and
+preemptions through the shared recovery/cap policy. Its provider model honours
+single-container/server/stop limits. Real file I/O, locking and full ledger
+scale are tested separately. Its exact sequence count and zero-violation
+result are archived in `results/s8086/prelaunch/spend_simulation.json`; this
+validates the policy, not an unconditional physical guarantee against a
+provider that ignores its limits. The replacement freeze binds the simulation,
+all tests, complete causal census correction and random-program differential.
+**STOP before launch. Only a later independent coordinator review and exact
+freeze-bound launch receipt can authorize population compute.**

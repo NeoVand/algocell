@@ -1851,3 +1851,17 @@ per-encounter trace hashes and serial partner/offspring hashes bind finer units.
 | source:experiments/algocell_exp/census8086_trace.py | 14103 | 0538dbaa000bc14e32e826f67f77c9fa098d17a0cb74f1f2bc5193930f997564 |
 | source:experiments/reaudit8086.py | 4576 | a8f058739cbf90e9bf3d77e169735a1e2ed04cca8e071e42d8cf48bbc44db2d2 |
 
+
+## Final descriptive correction — 2026-10-12
+
+The final dated [descriptive correction](DESCRIPTIVE_CORRECTION_2026-10-12.md)
+supersedes earlier labels and mechanism counts. 1,247 labels change in
+21,182 audited encounters; all changes and every other case
+are listed. R2a/R2b are descriptive only. Current exact-zero classes:
+
+| L/budget | Literal | Memory-fed | Confined loop | Other |
+|---|---:|---:|---:|---:|
+| 16/128 | 3 | 2 | 0 | 15 |
+| 16/512 | 3 | 1 | 0 | 25 |
+| 32/128 | 3 | 5 | 0 | 18 |
+| 32/512 | 3 | 4 | 0 | 19 |

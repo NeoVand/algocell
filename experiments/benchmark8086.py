@@ -176,7 +176,7 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
     """Worst input/candidate ceilings, both separate law families, 20% slowdown
     and 10% runner margin; startup and CPU scoring/serialization are included.
     """
-    from lifecycle8086 import dispatch_seconds,LIFECYCLE_EXTRA_S,SETUP_TIMEOUT_S,PREBUILD_TIMEOUT_S
+    from lifecycle8086 import dispatch_seconds,LIFECYCLE_EXTRA_S,SETUP_TIMEOUT_S,PREBUILD_TIMEOUT_S,FULL_WORLD_RECOVERIES
     jobs={}; execution={}; components=[]; deadlines={}; slowest=0
     n=len(registration.sample_steps); k=len(registration.snapshots)
     for r in bench['records']:
@@ -219,7 +219,7 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
     output_gib=(185_505_792*sizes['worst_gzip_bytes_per_encounter']*2)/(1024**3)+2
     storage_reserve=max(5.,math.ceil(output_gib*(.09+.04)+.5))
     total=sum(jobs.values())+storage_reserve
-    return {'schema':'s2-cost/3-dynamic-attempts','registration':registration.as_dict(),'population_worlds':20*len(registration.arms),
+    return {'schema':'s2-cost/4-descriptive-recovery','registration':registration.as_dict(),'population_worlds':20*len(registration.arms),
             'execution_deadline_s':execution,'lifecycle_extra_s':LIFECYCLE_EXTRA_S,
             'lifecycle_policy':{'startup_timeout_s':120,'nominal_startup_allowance_s':240,'max_containers_per_job':1,
                 'setup_timeout_s':SETUP_TIMEOUT_S,'setup_reserved_each_app':True,'prebuild_timeout_s':PREBUILD_TIMEOUT_S,
@@ -227,9 +227,16 @@ def project(bench,preparation_bound,registration=DEFAULT_REGISTRATION):
                 'attempts_observed_via':'cursor AppGetLogs task/container state plus TaskList and AppGetLifecycle',
                 'attempt_liability':'elapsed + remaining startup/body server time + 121s termination/control',
                 'termination_grace_s':60,'watchdog_poll_s':1,'bounded_rpc_allowance_s':60,
-                'one_app_per_job':True,'restart_renews_clock':False,'settlement_requires_stopped_and_no_tasks':True},'gpu':'L4','cpu':1,'memory_gib':8,'rate_usd_per_s':RATE,
+                'one_app_per_job':True,'restart_renews_clock':False,
+                'world_recovery_full_restarts':FULL_WORLD_RECOVERIES,
+                'world_fixed_recovery_s':{a:FULL_WORLD_RECOVERIES*dispatch_seconds(d) for a,d in deadlines.items()},
+                'recovery_charged_as_incurred':True,
+                'recovery_shared_cap':True,'settlement_requires_stopped_and_no_tasks':True},'gpu':'L4','cpu':1,'memory_gib':8,'rate_usd_per_s':RATE,
             'rates_source':'https://modal.com/pricing','rates_checked':'2026-10-12',
             'components':components,'job_liabilities_usd':jobs,'projection_usd':total,
+            'recovery_budget_usd':FULL_WORLD_RECOVERIES*max(jobs[j] for j in jobs if j.startswith('world:')),
+            'full_world_restarts_absorbed':int((CAP-total)//max(jobs[j] for j in jobs if j.startswith('world:'))),
+            'cap_headroom_usd':CAP-total,
             'world_deadline_s':deadlines,'longest_world_container_s':slowest,
             'storage_termination_reserve_usd':storage_reserve,'projected_output_gib':output_gib,
             'storage_assumption':'twofold measured gzip volume +2 GiB overhead; one paid month and one export; no credits',

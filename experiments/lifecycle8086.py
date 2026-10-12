@@ -16,9 +16,15 @@ PREBUILD_TIMEOUT_S=600
 TERMINATION_GRACE_S=60
 WATCHDOG_POLL_S=1
 RPC_TIMEOUT_S=10
-BOOKKEEP_TIMEOUT_S=.05
+BOOKKEEP_TIMEOUT_S=RPC_TIMEOUT_S  # incremental replay; bounded independently of stop requests
 LIFECYCLE_EXTRA_S=STARTUP_TIMEOUT_S*2+TERMINATION_GRACE_S+WATCHDOG_POLL_S+6*RPC_TIMEOUT_S
 ATTEMPT_TERMINATION_S=TERMINATION_GRACE_S+WATCHDOG_POLL_S+6*RPC_TIMEOUT_S
+FULL_WORLD_RECOVERIES=3
+
+def recovery_seconds(execution_s, job=None):
+    # Shared cap, charged as incurred. Each world's fixed lifetime can absorb
+    # the entire cohort's three-full-world recovery allowance at that seed.
+    return FULL_WORLD_RECOVERIES*dispatch_seconds(execution_s) if job and job.startswith('world:') else 0
 
 def envelope_seconds(execution_s):
     if not math.isfinite(execution_s) or execution_s<=0: raise ValueError('invalid execution envelope')
@@ -72,7 +78,8 @@ class Lifecycle:
         self.started=now() if started is None else started
         self.execution_s=execution_s;self.setup=setup;self.body_started=None if setup else self.started
         self.reservation_seconds=dispatch_seconds(execution_s) if setup else envelope_seconds(execution_s)
-        self.expires_at=self.started+self.reservation_seconds
+        self.recovery_seconds=recovery_seconds(execution_s,job)
+        self.expires_at=self.started+self.reservation_seconds+self.recovery_seconds
         self.stop_at=self.expires_at-ATTEMPT_TERMINATION_S
         self.confirmed=False;self.confirmed_at=None;self.requested=False;self.stop_reason=None;self.incomplete=False
         self.tasks=set();self.attempts={};self.last_meter=0.;self.last_progress=None;self.unknown_bound=False
@@ -91,7 +98,7 @@ class Lifecycle:
             except BaseException as exc: result.put((False,exc))
         threading.Thread(target=transact,daemon=True).start()
         try:ok,value=result.get(timeout=BOOKKEEP_TIMEOUT_S)
-        except queue.Empty: raise TimeoutError('watchdog ledger IO exceeded 50ms')
+        except queue.Empty: raise TimeoutError('watchdog ledger IO exceeded bounded RPC allowance')
         if not ok: raise value
         return value
     def uncertainty(self,reason):
@@ -128,6 +135,7 @@ class Lifecycle:
             attempt['observed_at']=self.now()
             attempt['live']=event.get('state') not in ('completed','preempted','failed')
             self.emit('attempt_state',**event)
+            if event.get('state')=='completed': self.work_complete=True
         # A vanished task is retained at its FULL server liability until an
         # explicit terminal cursor event confirms the end of that attempt.
         limit=self.execution_s+STARTUP_TIMEOUT_S

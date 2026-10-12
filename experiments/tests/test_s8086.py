@@ -73,7 +73,7 @@ def test_route_cutoffs_separate_arms():
                          'open_memory_occurrence':seed==S.SEEDS[0],'persistent_open_memory':False}}
     rows=[make('A',s,i<16,i>=16) for i,s in enumerate(S.SEEDS)]
     v=Score.arm_verdict(rows,'A')
-    assert v['R0'] and v['R1'] and not v['kill'] and not v['R2a'] and not v['R2b']
+    assert v['R0'] and v['R1'] and not v['kill'] and v['R2a'] is None and v['R2b'] is None
     rows=[make('A',s,i<15,i>=15) for i,s in enumerate(S.SEEDS)]
     v=Score.arm_verdict(rows,'A'); assert not v['R1'] and v['kill']
     assert Score.arm_verdict(rows[:-1],'A')['R1'] is None
@@ -147,8 +147,10 @@ def machines():
 def test_exact_census_replay_both_phases(machines):
     from census8086 import pairs,matches
     from algocell_exp.census8086_trace import same_execution,mechanism
+    from prefix_causality8086 import Interventions,verify_batch
     wanted={'b951','51b9','07a5','a507','ff30','30ff','ad50','50ad'}
     for L,(m,t) in machines.items():
+        intervention=S.fixed_burst(lambda:Interventions(t))
         for budget in (128,512):
             census={r['word']:r for r in csv.DictReader((S.HERE/f'results/census8086/words_L{L}_k2_b{budget}.csv').open()) if r['word'] in wanted}
             mechanisms={(r['word'],int(r['partner'])):r for r in csv.DictReader((S.HERE/f'results/census8086/mechanisms_L{L}_b{budget}.csv').open()) if r['word'] in wanted}
@@ -159,9 +161,11 @@ def test_exact_census_replay_both_phases(machines):
                 b=raw.memory[:,L:]; r=census[word]
                 assert S.sha(b.tobytes())==r['output_sha256']
                 assert matches(b.reshape(1,17,L),p,2)[0].tolist()==list(map(int,r['matches'].split(';')))
-                for v,log in enumerate(t.logs(obs)):
+                logs=t.logs(obs)
+                labels,_,_=verify_batch(t,intervention,mem,logs,L,budget,execute=lambda name,fn:fn())
+                for v,log in enumerate(logs):
                     if (word,v) in mechanisms:
-                        assert mechanism(log,L)[0]==mechanisms[word,v]['mechanism']
+                        assert labels[v]==mechanisms[word,v]['mechanism']
 
 def test_constructed_rep_and_non_rep_certificates(machines):
     from census8086_law import GEOMETRIES,parents

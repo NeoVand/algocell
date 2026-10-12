@@ -141,7 +141,7 @@ def test_parameterized_projection_and_schedule(horizon,arms,n,k):
     assert result['L1_total_evolved_encounters_cap']==40960000*len(arms)
 
 
-def test_option_b_cohort_forecast_and_85_dollar_guard(tmp_path):
+def test_option_b_cohort_forecast_and_95_dollar_guard(tmp_path):
     from benchmark8086 import project
     reg=S.DEFAULT_REGISTRATION
     cohort=S.read_json(S.PRE/'cohort.json')
@@ -151,19 +151,19 @@ def test_option_b_cohort_forecast_and_85_dollar_guard(tmp_path):
     assert cohort['seeds']==list(range(8086001,8086021)) and cohort['population_worlds']==20
     expected=project(S.read_json(S.PRE/'benchmark.json'),projection['job_liabilities_usd']['preparation'])
     assert expected['job_liabilities_usd']==projection['job_liabilities_usd']
-    assert projection['cap_usd']==S.CAP==85 and projection['launch_fits']
+    assert projection['cap_usd']==S.CAP==95 and projection['launch_fits']
     assert projection['projection_usd']==pytest.approx(83.79381223898022)
     assert all(':B:' not in job for job in projection['job_liabilities_usd'])
     limits=S.read_json(S.PRE/'guard_limits.json')
-    assert limits['cap_usd']==85 and limits['includes_preparation']
+    assert limits['cap_usd']==95 and limits['includes_preparation']
     assert limits['job_liabilities_usd']==projection['job_liabilities_usd']
     guard=SpendGuard(tmp_path/'approved',projection['job_liabilities_usd'],
                      overhead=projection['storage_termination_reserve_usd'])
     job=f'world:A:{S.SEEDS[0]}'
-    assert guard.reserve(job,guard.plan[job])['cap']==85
-    with pytest.raises(ValueError): SpendGuard(tmp_path/'too-high',{},cap=85.01)
-    over=SpendGuard(tmp_path/'over',{'work':85},overhead=.01)
-    with pytest.raises(RuntimeError): over.reserve('work',85)
+    assert guard.reserve(job,guard.plan[job])['cap']==95
+    with pytest.raises(ValueError): SpendGuard(tmp_path/'too-high',{},cap=95.01)
+    over=SpendGuard(tmp_path/'over',{'work':95},overhead=.01)
+    with pytest.raises(RuntimeError): over.reserve('work',95)
 
 
 def test_option_b_schemas_and_stopped_release_gate(tmp_path,monkeypatch):
@@ -173,7 +173,7 @@ def test_option_b_schemas_and_stopped_release_gate(tmp_path,monkeypatch):
     assert condition['registration']['const']==S.DEFAULT_REGISTRATION.as_dict()
     assert schemas['score']['properties']['schema']['const']=='s2-score/2-registration'
     assert schemas['eligibility_gzip_json']['properties']['schema']['const']=='s2-eligibility/2-source-root-phase'
-    freeze={'approved_cap_usd':85,'projection_usd':81.032328,'registration':S.DEFAULT_REGISTRATION.as_dict()}
+    freeze={'approved_cap_usd':95,'projection_usd':81.032328,'registration':S.DEFAULT_REGISTRATION.as_dict()}
     monkeypatch.setattr(S,'verify_freeze',lambda:freeze)
     release=tmp_path/'unapproved.json'
     release.write_text(json.dumps({'population_launch_approved':False}))

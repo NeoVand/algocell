@@ -52,3 +52,24 @@ channels as well as final classes, over every archived census candidate and
 seeded random fixed programs. Raw census outcomes and the registered R0–R2
 counts and 07 A5 witness are unchanged; additional non-exact/random label
 corrections are listed separately in b6_correction_labels.csv.
+
+
+## Prospective descriptive correction — 2026-10-12
+
+The preceding trace-only class implementation is historical. For S2 and the
+final census correction, a writing claim must additionally pass both isolated
+55/AA source substitutions in `prefix_causality8086.py`: operand-fetch returns,
+memory-read returns, or the exact reset register/segment source. The actual
+ordered instruction-start/fetch/data-read/write addresses must be identical
+through each claimed write, and its value must follow the source expression.
+Later structural divergence is permitted. Every partner store, including a
+neutral RMW store, has to be supported and verified; neutral stores contribute
+coverage but cannot supply a new writing channel. Mixed, unsupported, failed,
+interrupt/vector and overflow cases are `other`, with reasons retained.
+
+All four mechanism classes are descriptive. R2a/R2b are withdrawn as
+confirmatory predictions before population data because causal verification
+repeatedly changed their supporting labels. No label change stops the audit.
+The latest dated correction and complete `descriptive_correction_labels.csv`
+are authoritative for labels and counts; raw machine outputs, fetch-based
+openness, R0/R1/kill and L1/L2 proof obligations are unchanged.

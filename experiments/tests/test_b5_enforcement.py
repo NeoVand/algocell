@@ -70,6 +70,7 @@ def test_logging_and_bookkeeping_cannot_delay_stop(tmp_path,monkeypatch):
 
 def test_timed_ledger_io_stops_even_after_nonblocking_lock_acquired(tmp_path,monkeypatch):
     g=SpendGuard(tmp_path/'ledger',{'a':1},overhead=0);g.reserve('a',1)
+    monkeypatch.setattr('lifecycle8086.BOOKKEEP_TIMEOUT_S',.05)
     monkeypatch.setattr(g,'transact',lambda *a,**kw:time.sleep(10))
     s=Lifecycle(tmp_path/'events',app_id='app',call_id='call',execution_s=1,guard=g,job='a')
     p=Provider();start=time.monotonic();s.poll(p)
@@ -78,18 +79,18 @@ def test_timed_ledger_io_stops_even_after_nonblocking_lock_acquired(tmp_path,mon
 
 @pytest.mark.parametrize('terminal',['preempted','completed','failed'])
 def test_every_short_attempt_between_polls_is_charged(tmp_path,terminal):
-    g=SpendGuard(tmp_path/'ledger',{'a':.5,'remaining':84.4},overhead=0);g.reserve('a',.5)
+    g=SpendGuard(tmp_path/'ledger',{'a':.5,'remaining':94.4},overhead=0);g.reserve('a',.5)
     s=Lifecycle(tmp_path/'events',app_id='app',call_id='call',execution_s=100,guard=g,job='a',started=0,now=lambda:1)
     p=Provider();p.events=[{'attempt':f'attempt-{i}','task':f'task-{i}','state':terminal,'elapsed_s':.01} for i in range(25)]
     s.poll(p)
     assert len(s.attempts)==25 and s.charged_usd>=25*ATTEMPT_TERMINATION_S*S.RATE
-    assert p.stops and s.incomplete and s.account['projected_liabilities_usd']>85
+    assert p.stops and s.incomplete and s.account['projected_liabilities_usd']>S.CAP
     assert s.flush_log()
     assert sum(json.loads(x)['kind']=='attempt_observed' for x in s.path.read_text().splitlines())==25
 
 
 def test_restarts_share_deadline_and_accumulate_live_liabilities(tmp_path):
-    g=SpendGuard(tmp_path/'ledger',{'a':1,'remaining':83},overhead=0);g.reserve('a',1)
+    g=SpendGuard(tmp_path/'ledger',{'a':1,'remaining':93},overhead=0);g.reserve('a',1)
     clock=[0];s=Lifecycle(tmp_path/'events',app_id='app',call_id='call',execution_s=5000,guard=g,job='a',started=0,now=lambda:clock[0])
     p=Provider();p.tasks=['first'];s.poll(p);deadline=s.expires_at
     assert not p.stops
@@ -99,7 +100,7 @@ def test_restarts_share_deadline_and_accumulate_live_liabilities(tmp_path):
 
 
 def test_meter_and_liabilities_are_both_enforced_and_no_new_work(tmp_path):
-    g=SpendGuard(tmp_path/'ledger',{'a':1,'remaining':83},overhead=0);g.reserve('a',1)
+    g=SpendGuard(tmp_path/'ledger',{'a':1,'remaining':93},overhead=0);g.reserve('a',1)
     s=Lifecycle(tmp_path/'events',app_id='app',execution_s=100,guard=g,job='a')
     p=Provider();p.meter=2;p.tasks=['live'];s.poll(p)
     assert p.stops and s.incomplete
@@ -186,7 +187,7 @@ def test_image_prebuild_receipt_gate_and_nominal_forecast(tmp_path,monkeypatch):
     with pytest.raises(ValueError):validated_image_id(p)
     forecast=project(S.read_json(S.PRE/'benchmark.json'),.7999038189802217)
     assert forecast['projection_usd']==pytest.approx(83.79381223898022)
-    assert forecast['projection_usd']<=85 and 'prebuild' in forecast['job_liabilities_usd']
+    assert forecast['projection_usd']<=S.CAP and 'prebuild' in forecast['job_liabilities_usd']
     assert forecast['lifecycle_policy']['setup_reserved_each_app']
 
 
@@ -236,7 +237,7 @@ def test_nominal_single_attempt_complete_plan_does_not_double_bill_elapsed(tmp_p
         clock[0]=120+deadline;p.tasks=[];p.stopped=True;p.meter=deadline*S.RATE
         p.events=[{'attempt':'task','task':'task','state':'completed','elapsed_s':deadline}]
         s.poll(p,finish=True)
-        assert not s.incomplete and s.confirmed and s.account['projected_liabilities_usd']<=85
+        assert not s.incomplete and s.confirmed and s.account['projected_liabilities_usd']<=S.CAP
         g.settle(job,g.plan[job]);assert s.flush_log()
     result=g.transact({'kind':'check'})
     assert result['projected_liabilities_usd']==pytest.approx(projection['projection_usd']) and not result['stop_required']

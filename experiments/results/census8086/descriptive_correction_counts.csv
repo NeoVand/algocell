@@ -1,0 +1,17 @@
+L,budget,mechanism,before,after
+16,128,literal writer,488,276
+16,128,memory-fed one-pass copier,339,320
+16,128,confined copy loop,6,6
+16,128,other,4165,4396
+16,512,literal writer,728,402
+16,512,memory-fed one-pass copier,439,415
+16,512,confined copy loop,6,6
+16,512,other,6188,6538
+32,128,literal writer,364,252
+32,128,memory-fed one-pass copier,154,140
+32,128,confined copy loop,0,0
+32,128,other,1709,1835
+32,512,literal writer,1048,523
+32,512,memory-fed one-pass copier,254,239
+32,512,confined copy loop,2,2
+32,512,other,5292,5832

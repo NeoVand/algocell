@@ -57,14 +57,24 @@ def judge_tape(tape, arm, seed, ex, diagnostic):
     if not same_execution(raw,obs,m.record_words): raise ValueError('diagnostic execution differs from full lane record')
     entered = raw.fetch_map[1:,L:].any(axis=1)
     logs = diagnostic.logs(obs); diags = diagnostic.diagnostics(obs)
+    from prefix_causality8086 import Interventions, verify_batch
+    if not hasattr(diagnostic, 'causal_interventions'):
+        diagnostic.causal_interventions = Interventions(diagnostic)
+    labels, hypotheses, evidence = verify_batch(diagnostic, diagnostic.causal_interventions,
+        mem, logs, L, 128, execute=lambda name, fn: fn())
+    def causal_reason(v):
+        if any(not all(c['passes'] for c in e['checks']) for e in evidence if e['lane']==v):
+            return 'failed_two_alternative_prefix_causality'
+        return hypotheses[v][1] if labels[v]!='other' or hypotheses[v][1]!='exact_event_claims_only' else 'mixed_unsupported_or_noncopy_episode'
     rows = []
     for v in range(1,17):
-        cls,reason = mechanism(logs[v],L)
+        cls,reason = labels[v], causal_reason(v)
         rows.append({'partner':v-1,'mechanism':cls,'reason':reason,'open':bool(entered[v-1]),
                      'partner_write_coverage':int(diags[v,4]),'write_transactions':int(raw.writes('B')[v]),
                      'original_partner_fetch_reads':int(diags[v,0]),'original_partner_data_reads':int(diags[v,1]),
                      'trace_sha256':sha(logs[v].tobytes()) if logs[v] is not None else None,
-                     'record_sha256':sha(raw.record[v].tobytes()),'output_sha256':sha(raw.memory[v].tobytes())})
+                     'record_sha256':sha(raw.record[v].tobytes()),'output_sha256':sha(raw.memory[v].tobytes()),
+                     'causal_checks':[e for e in evidence if e['lane']==v]})
     counts = Counter(r['mechanism'] for r in rows)
     majority = next((k for k,v in counts.items() if v >= 9),None)
     numerator = sum(r['open'] and r['mechanism']=='memory-fed one-pass copier' for r in rows)
@@ -78,7 +88,7 @@ def judge_tape(tape, arm, seed, ex, diagnostic):
                  'zero_reference':{'coverage':int(diags[0,4]),'write_transactions':int(raw.writes('B')[0]),
                                    'original_partner_fetch_reads':int(diags[0,0]),
                                    'original_partner_data_reads':int(diags[0,1]),
-                                   'mechanism':mechanism(logs[0],L)},
+                                   'mechanism':[labels[0],causal_reason(0)]},
                  'max_B_hamming_from_zero':int((raw.memory[1:,L:]!=raw.memory[0,L:]).sum(axis=1).max()),
                  'input_sha256':sha(mem.tobytes()),'record_sha256':sha(raw.record.tobytes()),
                  'diagnostic_identity':True})
@@ -205,8 +215,7 @@ def arm_verdict(results, arm, registration=DEFAULT_REGISTRATION):
             'worlds':len(rows),'scoreable_worlds':len(scoreable),'unscoreable_worlds':len(rows)-len(scoreable),
             'D':D,'O':O,'first_confined':closed,'occurrence_worlds':occurrence,'persistence_worlds':persistent,
             'R0':D>=10 if complete else None,'R1':O>=math.ceil(.8*D) if complete and D>=10 else None,
-            'R2a':occurrence>=2 if complete else None,'R2b':persistent>=1 if complete else None,
-            'R2_joint':occurrence>=2 and persistent>=1 if complete else None,
+            'R2a':None,'R2b':None,'R2_joint':None,'R2_status':'descriptive; confirmatory prediction withdrawn 2026-10-12',
             'kill':closed>=math.ceil(.25*D) if complete and D>=10 else None,
             'km_rep':km(scoreable,'t_rep',registration),'km_closed':km(scoreable,'t_closed',registration),
             'descriptive_binomial_intervals':{'R0':binomial_interval(D,20),'R1':binomial_interval(O,D),

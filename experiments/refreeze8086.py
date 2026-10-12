@@ -31,7 +31,7 @@ def inputs():
                       component_totals_usd={**prior_option['component_totals_usd'],
                           'new_setup_usd':82*120*projection['rate_usd_per_s'],
                           'new_prebuild_usd':projection['job_liabilities_usd']['prebuild']},
-                      forecast_kind='nominal complete, single attempt per input; dynamic restart liabilities; not a provider worst case')
+                      forecast_kind='nominal complete, single attempt per input; finite charged recovery budget; not a provider worst case')
     projection['component_totals_usd']={stage:sum(v for k,v in projection['job_liabilities_usd'].items() if k.startswith(stage+':')) for stage in ('world','score','extract','law')}
     projection['component_totals_usd']['fixed']=sum(v for k,v in projection['job_liabilities_usd'].items() if ':' not in k)+projection['storage_termination_reserve_usd']
     save('projection.json', projection)
@@ -81,7 +81,10 @@ def inputs():
          'execution_deadline_s':projection['execution_deadline_s'],
          'job_liabilities_usd':projection['job_liabilities_usd'],
          'storage_termination_reserve_usd':projection['storage_termination_reserve_usd'],
-         'launch_status':'STOPPED: coordinator review required; no launch receipt'})
+         'recovery_budget_usd':projection['recovery_budget_usd'],
+        'full_world_restarts_absorbed':projection['full_world_restarts_absorbed'],
+        'cap_headroom_usd':projection['cap_headroom_usd'],
+        'launch_status':'STOPPED: coordinator review required; no launch receipt'})
     # Export the current generator without allocating a device or compiling WGSL.
     from algocell_exp.zmachine import ZMachine
     from algocell_exp.census8086_trace import DiagnosticMachine
@@ -126,6 +129,22 @@ def manifest():
         raise ValueError('forecast/cap validation failed; STOP')
     if validation['failed'] or not validation['passed']:
         raise ValueError('validation failed; STOP')
+    census=read_json(PRE/'descriptive_census_validation.json')
+    differential=read_json(PRE/'descriptive_random_validation.json')
+    simulation=read_json(PRE/'spend_simulation.json')
+    ledger=read_json(PRE/'ledger_scale_validation.json')
+    if (not census['disposition'].startswith('COMPLETE:')
+            or sum(r['encounters'] for r in census['runs'])!=21182
+            or any(r['full_record_memory_trace_mismatches'] for r in census['runs'])
+            or census['classifier_sha256']!=sha((HERE/'prefix_causality8086.py').read_bytes())
+            or differential['programs']!=8192 or differential['mismatches']
+            or differential['classifier_sha256']!=census['classifier_sha256']
+            or differential['oracle_sha256']!=sha((HERE/'descriptive8086.py').read_bytes())
+            or simulation['sequences']<1000 or simulation['violations']
+            or simulation['projection_sha256']!=sha((PRE/'projection.json').read_bytes())
+            or simulation['simulation_sha256']!=sha((HERE/'spend_sim8086.py').read_bytes())
+            or ledger['history_rows']<750000 or ledger['false_stops']):
+        raise ValueError('final audit/simulation/ledger validation missing or stale; STOP')
     paths = set(freeze['files'])
     tracked = subprocess.check_output(['git','ls-files','experiments/results/s8086/prelaunch',
                'experiments/results/census8086','experiments/tests'], cwd=HERE.parent, text=True).splitlines()
@@ -137,9 +156,11 @@ def manifest():
                   'results/s8086/prelaunch/S2_REGISTRATION_OPTION_B.md',
                   'results/s8086/prelaunch/refreeze_local_bursts.jsonl',
                   'results/s8086/prelaunch/refreeze_test_runner.py'))
+    paths.update(('audit_reset8086.py','audit_prefix8086.py','prefix_causality8086.py','descriptive8086.py','descriptive_report8086.py','spend_sim8086.py','tests/test_s2_final.py'))
+    paths.update(str(p.relative_to(HERE)) for folder in (PRE,HERE/'results/census8086') for p in folder.iterdir() if p.is_file())
     paths.discard('results/s8086/prelaunch/freeze.json')
     files = {p:sha((HERE / p).read_bytes()) for p in sorted(paths)}
-    freeze.update(schema='s2-freeze/3-dynamic-attempts', amended_date='2026-10-12', option='b',
+    freeze.update(schema='s2-freeze/4-descriptive-recovery', amended_date='2026-10-12', option='b',
         approved_cap_usd=CAP, projection_usd=projection['projection_usd'], population_worlds=20,
         registration=DEFAULT_REGISTRATION.as_dict(), registered_arms=['A'], withdrawn_arms=['B'],
         original_normative_body_sha256=freeze.get('original_normative_body_sha256',freeze['normative_body_sha256']),
@@ -153,7 +174,17 @@ def manifest():
         independent_review='results/s8086/prelaunch/ASTRA_PRELAUNCH_REVIEW.md',
         independent_refreeze_review='pending coordinator review; previous reviews do not release this freeze',
         repairs_commit='5309961b56d4eef177bcec43744cab05c7f6cb9f',
-        B6_closure_commit='17abd2f',B5_acceptance='coordinator dynamic $85 cap; no finite provider restart bound claimed',
+        B6_closure_commit='17abd2f',B5_acceptance='user approved $95 cap; three full-world charged recoveries; no provider restart-count bound claimed',
+        R2_status='descriptive; R2a/R2b confirmatory predictions withdrawn 2026-10-12',
+        descriptive_classifier='prefix_causality8086.py: operand, memory, reset prefix interventions; fail-safe other',
+        descriptive_classifier_identity={
+            'source_sha256':files['prefix_causality8086.py'],
+            'alternatives':[0x55,0xaa],
+            'prefix':'ordered full starts and fetch/data-read/write addresses through each claimed write',
+            'exports':{str(L):{'wgsl_sha256':files[f'results/s8086/prelaunch/reset_intervention_L{L}.wgsl'],
+                              'manifest_sha256':files[f'results/s8086/prelaunch/reset_intervention_L{L}.manifest.json']} for L in (16,32)}},
+        full_world_restarts_absorbed=projection['full_world_restarts_absorbed'],
+        recovery_budget_usd=projection['recovery_budget_usd'],
         limitations=['arbitrary 8086 proof extraction remains unresolved outside explicitly modeled instructions',
                      'provider failing to honour server limits or app-stop remains disclosed residual risk; unknown overruns retain liabilities'],
         files=files)

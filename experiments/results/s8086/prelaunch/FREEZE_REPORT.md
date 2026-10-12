@@ -1,17 +1,72 @@
-# S2 B6/B5 refreeze — STOP before launch, 2026-10-12
+# Final S2 preparation and replacement freeze — 2026-10-12
 
-B6 was fully closed and committed first in **17abd2f**. B5 is now closed under the coordinator's dynamic-enforcement standard, which supersedes the earlier request for a certified finite provider restart bound. The old provider-limit stop report and Astra recheck remain historical evidence, unchanged. No Modal calls, paid prebuild/compute, population observations, push or launch receipt occurred.
+**STOPPED before launch. No Modal call, paid compute, population trajectory,
+launch receipt or push occurred in this preparation. Coordinator final
+independent review is pending.**
 
-B6 fixes immediate far-JMP CS provenance and audits all 256 opcodes / 1,276 ModRM/implicit table rows against L16/L32 WGSL, with per-class regressions. Astra's witness is literal writer with writing-episode starts [0,36,42]. The independent flat value-tag differential has zero ordered write-channel/mechanism mismatches across all 21,182 census encounters / 1,246 settings and 8,192 random fixed programs. Seven random-partner labels changed (3 literal, 4 memory-fed); raw word/trace identities, every exact nonzero zero-partner contributor, all registered rationale counts and 07 A5 (68/68 one-pass, 64/64 random B fetches) are unchanged. R2 was not altered.
+The prospective R2 withdrawal and approved $95 cap were committed as
+`39de676` before the full census re-audit and before population data. R2a/R2b
+are descriptive and their verdict fields are null. Every detected copier has
+all 16 causal encounter labels/checks, four class counts and every other case
+with a reason. R0, fetch-based R1, the kill rule, L1 and amended L2 remain
+confirmatory and unchanged; A remains 20×3M and B withdrawn.
 
-B5 uses nonblocking shared ledger locks and a 50ms timeout for the entire ledger operation, a separate asynchronous append-only watchdog journal/status writer, and independent app-stop CLI and cancellation processes launched before bookkeeping. Real SIGSTOP plus dispatcher-held flock, a blocked journal FIFO and blocked ledger IO regressions pass. The clock/unique app discovery begin before app.run; 120s setup is reserved per app. A separate 600s accounted prebuild must produce a freeze/recipe-bound stopped receipt; a fresh dispatcher uses only Image.from_id and rejects absent/stale receipts or a previously imported build recipe. Declared function server controls are explicit timeout/startup_timeout=120/retries=0/single-use/max1/min0/buffer0; dynamic invocations inherit those controls and override their body deadline using the pinned SDK's supported options. Apps are ephemeral.
+The complete census re-audit covers 1,246 settings / 21,182 encounters.
+Exactly 1,247 labels change: 1,175 literal writer→other and 72 memory-fed
+one-pass→other. All 18,601 other cases and all changes/counts are published in
+`../../census8086/DESCRIPTIVE_CORRECTION_2026-10-12.md` and its CSVs. Raw word
+tables, original full records, memory and archived traces are unchanged.
+The 8,192 random-program scalar prefix/expression/class differential has zero
+mismatches. Longest census burst: 0.739119s; longest random
+burst: 0.290238s. All bursts are below 60 seconds.
 
-The cursor app/task stream observes short starts/restarts/preemptions between live TaskList polls and tracks new container/task generations. At observation each attempt charges elapsed + remaining startup/body time + 121s termination/control allowance; disappeared unconfirmed attempts retain full liabilities and pending required work retains a full next-attempt reservation. Per-app metering reconciles with observed elapsed cost without double counting. Metered/observed spend, live/ended liabilities and all remaining required work must fit $85 before every spawn and continuously. Cap/accounting/infrastructure stops are INCOMPLETE, prohibit further reservations/scoring dispatch, and retain uncertain liabilities. A complete output file alone never overrides an operational cap stop.
+The N2 completion race is repaired in both event orders. Incremental ledger
+replay authenticates the prior prefix, verifies new rows and retains rollback
+isolation; a bounded 10-second accounting allowance replaces 50 ms. Real
+locks, blocked I/O and independent stop/cancel paths remain tested. The
+750,000-row / 216,643,537-byte full-cap scale regression passes
+with zero false stops: 3.171025s cold and
+0.341510s incremental reconciliation.
 
-The new complete **nominal single-attempt forecast is $83.79381223898022 / $85**, with $1.20618776101978 headroom: old $81.03232817898021 + $2.4881424 setup + $0.27334166 prebuild. All prior body allocations and the $5 reserve remain. This is not an unconditional provider worst-case certificate. The registration explicitly discloses provider failure to honour its server limits or app-stop/cancellation as residual risk that cannot be eliminated client-side. The frozen billing rate remains $0.00025286/s, consistent with the official [Modal pricing](https://modal.com/pricing) checked 2026-10-12; [timeouts](https://modal.com/docs/guide/timeouts), [infrastructure retries](https://modal.com/docs/guide/retries) and [preemption](https://modal.com/docs/guide/preemption) distinguish per-attempt controls from restarts.
+Forecast: **$83.793812238980 / $95**, all-in including preparation
+and $5 storage/termination reserve. Headroom: $11.206187761020.
+One full-world envelope: $3.15139418 / 12,463s. Three full-world restarts cost
+$9.45418254; forecast plus three is
+$93.247994778980, leaving
+$1.752005221020. Each world has a fixed
+49,852s lifetime including its recovery allowance; restarts do not renew it.
+Recoveries share the all-in cap and use the unchanged same-seed step-0 and
+first-complete durable selection policy. No provider restart-count bound is
+claimed.
 
-Prospective recovery restarts a world at step 0 with its frozen seed. Checkpoints lack the full RNG/execution state for an exact resume, so partial histories are never spliced. Every attempt gets an exclusive directory/recovery record, prior attempt and provider identities, and charged spend. The first complete durable registered trajectory is selected prospectively; later complete retries acknowledge it. Partial attempts remain archived and unscoreable; a prevented completion is incomplete, not a negative. Cohort, horizons, schedules, R0–R2/kill criteria, source-root amendment and separate law-family estimands remain unchanged.
+The cloud timings remain historical legacy-classifier measurements. Causal
+verification is included within the unchanged bounded scoring allocation;
+no new cloud causal-throughput measurement or completion guarantee is claimed.
+Exhausting any allocation or stopping at the cap yields INCOMPLETE and null
+scientific verdicts, never a negative. No cases or law denominators are dropped
+to make the budget fit. Provider failure to honour server/stop limits remains
+the explicitly registered residual risk.
 
-Validation: full suite **930 passed, 3 inherited skips, 0 failures**; final focused suite **120 passed**, including the final environment-discovery regression added after full-suite collection. Combined evidence covers **931 unique passing cases and all 934 current collected cases**. GPU harness: 34,243 foreground bursts, maximum 0.214147s, every burst ≤60s with equal pause. Final source compilation, registration extraction, input generation idempotence and manifest/hash checks are required before this commit. The manifests archive both XML runs and all B6/B5 evidence.
+The production-state-machine simulation ran **1,000 randomized
+sequences with 0 violations** of invariants (a)–(d): no successful-completion
+false stop within forecast; charged and actual spend within cap; all worlds
+complete when the conservative budget allows; cap stops are INCOMPLETE.
+830 sequences complete and
+170 stop as INCOMPLETE. Both asynchronous event
+orders, startup/termination delays and preemptions are covered. Actual resource
+seconds are accumulated separately. Real I/O and ledger scale are checked
+separately from the simulation's in-memory I/O adapter.
 
-Exact identities are in freeze.json, projection.json, guard_limits.json and validation.json and are attested by this commit. The freeze does not include itself; its SHA-256 is reported with the commit to the coordinator. No launch release is created. **STOPPED. Do not launch.**
+Full suite: **959 passed, 3 inherited skips, 0 failures**, in
+701.73s; the expanded ledger case additionally passes after
+its row-count increase. Complete JUnit reports, burst journals and validation
+identities are archived. Longest full-suite GPU burst:
+3.532221s. The three inherited skips concern
+vendored-machine regeneration against a different Zilion checkout.
+
+`freeze.json` is the authoritative replacement manifest, attested by the same
+Git commit. It binds this report, the registration/schedules, classifier,
+corrected census, differential, simulation, complete tests, cost plan, machine
+exports, dependencies and exact file identities. Its own hash is excluded to
+avoid a cycle and is reported to the coordinator after commitment. Previous
+review receipts do not release this freeze. **STOP; do not launch.**

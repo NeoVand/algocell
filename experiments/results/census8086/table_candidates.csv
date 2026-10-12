@@ -1,17 +1,17 @@
 L,budget,word,zero_match,random_exact,random75,zero_mechanism,zero_write_coverage,zero_original_fetch_reads,zero_original_data_reads,max_partner_difference
-16,128,b951,16/16,13/16,13/16,literal writer,16,9,0,16
+16,128,b951,16/16,13/16,13/16,other,16,9,0,16
 16,128,07a5,16/16,16/16,16/16,memory-fed one-pass copier,16,0,0,0
 16,128,ff30,9/16,0/16,0/16,memory-fed one-pass copier,16,1,0,2
-16,128,ad50,9/16,0/16,2/16,memory-fed one-pass copier,16,1,1,14
-16,512,b951,16/16,13/16,13/16,literal writer,16,9,0,16
+16,128,ad50,9/16,0/16,2/16,other,16,1,1,14
+16,512,b951,16/16,13/16,13/16,other,16,9,0,16
 16,512,07a5,16/16,16/16,16/16,memory-fed one-pass copier,16,0,0,0
 16,512,ff30,9/16,0/16,0/16,memory-fed one-pass copier,16,1,0,2
-16,512,ad50,8/16,0/16,0/16,memory-fed one-pass copier,16,1,1,16
-32,128,b951,32/32,6/16,11/16,literal writer,32,17,0,32
+16,512,ad50,8/16,0/16,0/16,other,16,1,1,16
+32,128,b951,32/32,6/16,11/16,other,32,17,0,32
 32,128,07a5,32/32,16/16,16/16,memory-fed one-pass copier,32,0,0,0
 32,128,ff30,17/32,0/16,0/16,memory-fed one-pass copier,32,1,0,1
-32,128,ad50,29/32,0/16,16/16,memory-fed one-pass copier,32,1,0,9
-32,512,b951,32/32,10/16,10/16,literal writer,32,17,0,32
+32,128,ad50,29/32,0/16,16/16,other,32,1,0,9
+32,512,b951,32/32,10/16,10/16,other,32,17,0,32
 32,512,07a5,32/32,16/16,16/16,memory-fed one-pass copier,32,0,0,0
 32,512,ff30,17/32,0/16,0/16,memory-fed one-pass copier,32,1,0,1
-32,512,ad50,26/32,0/16,1/16,memory-fed one-pass copier,32,1,0,18
+32,512,ad50,26/32,0/16,1/16,other,32,1,0,18

@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "2b06edb",
+  "scope": "all archived 1246 candidate settings / 21182 encounters; zero+16 frozen random partners; all four L/budget settings",
+  "status": "descriptive; no label-change stop conditions",
+  "settings": 1246,
+  "encounters": 21182,
+  "label_changes": 1247,
+  "transitions": [
+    {
+      "old": "literal writer",
+      "new": "other",
+      "count": 1175
+    },
+    {
+      "old": "memory-fed one-pass copier",
+      "new": "other",
+      "count": 72
+    }
+  ],
+  "runs": [
+    {
+      "L": 16,
+      "budget": 128,
+      "encounters": 4998,
+      "before": {
+        "other": 4165,
+        "literal writer": 488,
+        "memory-fed one-pass copier": 339,
+        "confined copy loop": 6
+      },
+      "after": {
+        "other": 4396,
+        "literal writer": 276,
+        "memory-fed one-pass copier": 320,
+        "confined copy loop": 6
+      },
+      "zero_exact_before": {
+        "memory-fed one-pass copier": 2,
+        "other": 6,
+        "literal writer": 12
+      },
+      "zero_exact_after": {
+        "memory-fed one-pass copier": 2,
+        "other": 15,
+        "literal writer": 3
+      },
+      "alternative_checks": 76226,
+      "failed_checks": 5685,
+      "full_record_memory_trace_mismatches": 0
+    },
+    {
+      "L": 16,
+      "budget": 512,
+      "encounters": 7361,
+      "before": {
+        "other": 6188,
+        "literal writer": 728,
+        "memory-fed one-pass copier": 439,
+        "confined copy loop": 6
+      },
+      "after": {
+        "other": 6538,
+        "literal writer": 402,
+        "memory-fed one-pass copier": 415,
+        "confined copy loop": 6
+      },
+      "zero_exact_before": {
+        "other": 16,
+        "memory-fed one-pass copier": 1,
+        "literal writer": 12
+      },
+      "zero_exact_after": {
+        "other": 25,
+        "memory-fed one-pass copier": 1,
+        "literal writer": 3
+      },
+      "alternative_checks": 338630,
+      "failed_checks": 27580,
+      "full_record_memory_trace_mismatches": 0
+    },
+    {
+      "L": 32,
+      "budget": 128,
+      "encounters": 2227,
+      "before": {
+        "other": 1709,
+        "literal writer": 364,
+        "memory-fed one-pass copier": 154
+      },
+      "after": {
+        "other": 1835,
+        "literal writer": 252,
+        "memory-fed one-pass copier": 140
+      },
+      "zero_exact_before": {
+        "memory-fed one-pass copier": 5,
+        "other": 10,
+        "literal writer": 11
+      },
+      "zero_exact_after": {
+        "memory-fed one-pass copier": 5,
+        "other": 18,
+        "literal writer": 3
+      },
+      "alternative_checks": 43146,
+      "failed_checks": 2964,
+      "full_record_memory_trace_mismatches": 0
+    },
+    {
+      "L": 32,
+      "budget": 512,
+      "encounters": 6596,
+      "before": {
+        "other": 5292,
+        "literal writer": 1048,
+        "memory-fed one-pass copier": 254,
+        "confined copy loop": 2
+      },
+      "after": {
+        "other": 5832,
+        "literal writer": 523,
+        "memory-fed one-pass copier": 239,
+        "confined copy loop": 2
+      },
+      "zero_exact_before": {
+        "memory-fed one-pass copier": 4,
+        "other": 11,
+        "literal writer": 11
+      },
+      "zero_exact_after": {
+        "memory-fed one-pass copier": 4,
+        "other": 19,
+        "literal writer": 3
+      },
+      "alternative_checks": 205424,
+      "failed_checks": 22772,
+      "full_record_memory_trace_mismatches": 0
+    }
+  ],
+  "full_record_memory_trace_mismatches": 0,
+  "classifier_sha256": "cf52e33f875a0586ec890323615bd2d329ed5d6f1f604dd3f41762147655eb8a",
+  "audit_sha256": "5de43fc58576c11807a66d31d791021adfdb58979eea8ddac895a7e5048283cf",
+  "evidence_sha256": "7c14185ff703dc0a676d6fcb77d461ea9ed7e80fb13114eaa934369335223673",
+  "no_population": true,
+  "no_paid_compute": true,
+  "R0_R1_kill_L1_L2_unchanged": true
+}
