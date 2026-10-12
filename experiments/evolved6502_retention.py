@@ -25,6 +25,10 @@ def sample(archive):
     rows=[];coverage=[]
     worlds=pd.read_csv(V2/'s1_worlds.csv',keep_default_na=False)
     finals=pd.read_csv(V2/'final_cultures.csv')
+    # The table repeats each of the 64 draws under 32- and 64-partner
+    # evaluations. Use corrected S1's frozen32 primary calls, not 128 draws.
+    assert (finals.groupby(['world','cell']).tape.nunique()==1).all()
+    finals=finals[finals.partners==32]
     for w in worlds.to_dict('records'):
         common={k:w[k] for k in ('world','arm','seed','L','machine')};common['archived_heritable']=''
         if w['first_tape']:
