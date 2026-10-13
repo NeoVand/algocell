@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-12",
+  "world_observed_minutes": 63,
+  "measurement_source": "infrastructure completion timing supplied before scientific inspection",
+  "registration_unchanged": true,
+  "frozen_projection_sha256": "6063d8e7810a60e847ed111f1a9c24da802c126542fcf23bd71e7df0648c09a7",
+  "frozen_per_world_body_timeout_s": 11982,
+  "frozen_reservation_per_world_usd": 3.15139418,
+  "frozen_reservations_unchanged": true,
+  "carried_historical_bounds_usd": 4.497981318980222,
+  "metered_snapshot_usd": 1.03704597,
+  "nominal_complete_reserved_usd": 88.39025976898021,
+  "remaining_registered_full_world_recoveries": 2,
+  "remaining_recovery_reserve_usd": 6.30278836,
+  "complete_reserved_with_remaining_recovery_usd": 94.69304812898021,
+  "measured_world_cost_with_frozen_lifecycle_margin_usd": 21.5487292,
+  "measured_complete_spend_forecast_usd": 46.911105368980216,
+  "serial_body_hours": 29.023333333333333,
+  "parallel_body_hours": 1.8797222222222223,
+  "parallel_stage_deadlines_s": {
+    "score": 437,
+    "extract": 198,
+    "law": 728
+  },
+  "concurrency": 20,
+  "provider_queue_delay": "additional; server limits remain per container, shared clock allows serial queueing",
+  "cap": 95.0,
+  "serial_eta_hours": 40.113055555555555,
+  "parallel_eta_hours": 2.815,
+  "parallel_conservative_allocation_eta_hours": 5.093333333333334,
+  "historical_metering_verified": "experiments/results/s8086/launch/run-20261012-volume-parallel/historical_billing_verified.json",
+  "failed_historical_reservations_retained_unsettled": true
+}

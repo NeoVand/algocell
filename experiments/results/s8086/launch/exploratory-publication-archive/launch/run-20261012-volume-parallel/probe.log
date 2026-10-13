@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-volume-parallel/probe_invocation.py", line 21, in <module>
+    result=call.get(timeout=100)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_object.py", line 49, in wrapped
+    return await method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_functions.py", line 2405, in get
+    return await self._invocation().poll_function(timeout=timeout, index=index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_functions.py", line 348, in poll_function
+    return await _process_result(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_utils/function_utils.py", line 572, in _process_result
+    raise exc_with_hints(exc)
+  File "<ta-01M4RYHTSH8TCH4CZMAXE4QTTR>:/root/volume_probe8086.py", line 87, in probe
+    if len(attempts) != 1: raise ValueError('archive requires one unambiguous failed attempt')
+  ^^^^^^^^^^^^^^^^^
+ValueError: archive requires one unambiguous failed attempt

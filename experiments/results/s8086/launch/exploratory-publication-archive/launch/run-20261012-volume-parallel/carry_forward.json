@@ -1,0 +1,28 @@
+{
+  "prior_ledger": "experiments/results/s8086/launch/run-20261012-relaunch/spend.jsonl",
+  "prior_sha256": "59e605a4f085519529702d374087afa38efabe3e412e17c741ced28dce4ad4ae",
+  "prior_chain_hash": "e39f73aa9290a875b6427786e314efa023d7b5b6745127bc440fa6e68dbc9c83",
+  "carried_bounds": {
+    "carry:relaunch:carry:preparation:ap-3yv8gfnaUhIahlAjZ7ZbF9": 0.13615844559320928,
+    "carry:relaunch:carry:preparation:ap-sCeRhIXHr8Hn8g5NSjXSpy": 0.32965967688591,
+    "carry:relaunch:carry:preparation:ap-UKKBebIo8fZoAiCzWaIN4q": 0.2319970067962599,
+    "carry:relaunch:carry:preparation:ap-3PIHGikI8Kpb05rvJkI7aW": 0.10208868970484257,
+    "carry:relaunch:carry:run-20261012:prebuild": 0.27334166,
+    "carry:relaunch:prebuild": 0.27334166,
+    "carry:relaunch:world:A:8086001": 3.15139418,
+    "preparation:volume-probe": 0.01
+  },
+  "carried_usd": 4.497981318980222,
+  "metered_usd": 1.01718359,
+  "nominal_complete_usd": 88.37933114898023,
+  "remaining_full_world_recoveries": 2,
+  "remaining_recovery_usd": 6.30278836,
+  "complete_with_remaining_recovery_usd": 94.68211950898022,
+  "cap": 95,
+  "check": {
+    "projected_liabilities_usd": 88.37933114898023,
+    "cap": 95.0,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  }
+}

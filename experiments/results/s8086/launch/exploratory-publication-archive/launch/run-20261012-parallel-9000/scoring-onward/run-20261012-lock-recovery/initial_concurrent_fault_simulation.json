@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-12",
+  "sequences": 1000,
+  "seed": 539394182,
+  "concurrent_worlds": 20,
+  "violations": 0,
+  "violation_details": [],
+  "invariants": {
+    "a": "successful completions within conservative complete budget never cause a stop",
+    "b": "simultaneous charged current/settled and independently accumulated actual spend stay below cap <= $95",
+    "c": "all 20 worlds complete whenever the conservative full-run plus registered recovery budget fits",
+    "d": "a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch"
+  },
+  "outcomes": {
+    "COMPLETE": 800,
+    "INCOMPLETE": 200
+  },
+  "restarts": 2282,
+  "timeout_step0_same_seed_recoveries": 563,
+  "faults": {
+    "slow_startups": 5928,
+    "rate_limited_billing_reads": 7928,
+    "ledger_lock_contentions": 8950,
+    "failed_stop_rpcs": 1021,
+    "failed_cancel_rpcs": 1019,
+    "successful_shared_app_billing_reads": 6125,
+    "billing_recoveries": 3241,
+    "rate_limit_recoveries": 2330,
+    "unknown_billing_reads": 722,
+    "world_timeouts": 592,
+    "failed_billing_reads": 1391
+  },
+  "shared_app_jobs": 20,
+  "interleaved_job_transitions": 32310,
+  "available_gpu_limits": {
+    "8": 179,
+    "20": 197,
+    "2": 233,
+    "4": 207,
+    "1": 184
+  },
+  "carried_usd": 4.499165268980222,
+  "max_charged_usd": 73.03210133913588,
+  "max_actual_usd": 65.20053096135594,
+  "world_timeout_s": 9000,
+  "projection_sha256": "c6538caa76853c594a8f5c655006ded6b87b925e7a87c2719777d75d9e6b8364",
+  "simulation_sha256": "f75be0685d11a8fe2d2378901847a8719034e4914bc6dd3b4bba2e6b45ed53af",
+  "no_paid_compute": true,
+  "no_population": true,
+  "wall_s": 18.368739791971166
+}

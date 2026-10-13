@@ -1,0 +1,18 @@
+{
+  "pipeline_pid": 70164,
+  "started_epoch": 1791841063.408892,
+  "session": 70164,
+  "stdin": "DEVNULL",
+  "stdout": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/pipeline.log",
+  "stderr": "same logfile",
+  "python": "/Users/neo/repos/algocell/experiments/.venv/bin/python",
+  "refreeze_commit": "50c077887f352174a646038285ec89cb2ab723b0",
+  "verified_freeze_files": 356,
+  "freeze_sha256": "6921b37fcbab2004031005a5aeb13929318bf32120e019aa3f3883ee3a726d70",
+  "complete_projection": {
+    "projected_liabilities_usd": 72.41250328898022,
+    "cap": 95.0,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  }
+}

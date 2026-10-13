@@ -1,0 +1,48 @@
+{
+  "files": 356,
+  "changed_prior_files": [
+    "dispatch8086.py",
+    "lifecycle8086.py",
+    "recovery8086.py",
+    "results/s8086/prelaunch/guard_limits.json",
+    "results/s8086/prelaunch/projection.json",
+    "spend_sim8086.py",
+    "tests/test_s8086_repairs.py"
+  ],
+  "new_files": [
+    "results/s8086/prelaunch/S2_VOLUME_PARALLEL_AMENDMENT_2026-10-12.md",
+    "results/s8086/prelaunch/operational_parallel_9000_fault_simulation_2026-10-12.json",
+    "results/s8086/prelaunch/operational_parallel_9000_ledger_scale_2026-10-12.json",
+    "results/s8086/prelaunch/operational_parallel_9000_publication_probe_2026-10-12.json",
+    "results/s8086/prelaunch/operational_parallel_9000_serial_simulation_2026-10-12.json",
+    "results/s8086/prelaunch/operational_parallel_9000_tests_2026-10-12.txt",
+    "results/s8086/prelaunch/operational_parallel_9000_tests_2026-10-12.xml.gz",
+    "results/s8086/prelaunch/operational_parallel_9000_validation_2026-10-12.json",
+    "results/s8086/prelaunch/operational_parallel_9000_volume_probe_2026-10-12.json",
+    "tests/test_volume_parallel8086.py",
+    "volume_probe8086.py"
+  ],
+  "scientific_registration_unchanged": true,
+  "freeze_sha256": "6921b37fcbab2004031005a5aeb13929318bf32120e019aa3f3883ee3a726d70",
+  "commit_paths": [
+    "experiments/dispatch8086.py",
+    "experiments/lifecycle8086.py",
+    "experiments/recovery8086.py",
+    "experiments/results/s8086/prelaunch/S2_VOLUME_PARALLEL_AMENDMENT_2026-10-12.md",
+    "experiments/results/s8086/prelaunch/freeze.json",
+    "experiments/results/s8086/prelaunch/guard_limits.json",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_fault_simulation_2026-10-12.json",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_ledger_scale_2026-10-12.json",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_publication_probe_2026-10-12.json",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_serial_simulation_2026-10-12.json",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_tests_2026-10-12.txt",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_tests_2026-10-12.xml.gz",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_validation_2026-10-12.json",
+    "experiments/results/s8086/prelaunch/operational_parallel_9000_volume_probe_2026-10-12.json",
+    "experiments/results/s8086/prelaunch/projection.json",
+    "experiments/spend_sim8086.py",
+    "experiments/tests/test_s8086_repairs.py",
+    "experiments/tests/test_volume_parallel8086.py",
+    "experiments/volume_probe8086.py"
+  ]
+}

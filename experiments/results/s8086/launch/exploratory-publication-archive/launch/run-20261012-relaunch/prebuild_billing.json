@@ -1,0 +1,21 @@
+{
+  "app_id": "ap-WrP0TDnnkk8I8SLYcdgPD6",
+  "query_start_epoch": 1791831600,
+  "query_end_epoch": 1791835200,
+  "metered_usd": 1.152e-05,
+  "rows": [
+    {
+      "object_id": "ap-WrP0TDnnkk8I8SLYcdgPD6",
+      "description": "s2-ef499fbd427042768544465db515354a",
+      "environment_name": "main",
+      "interval": "2026-10-12T19:00:00Z",
+      "cost": "0.00001152",
+      "cost_by_resource": {
+        "Memory": "0.00000167",
+        "CPU": "0.00000985"
+      }
+    }
+  ],
+  "queried_utc": "2026-10-12T19:41:31.603898+00:00",
+  "billing_may_lag": true
+}

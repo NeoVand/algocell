@@ -1,0 +1,93 @@
+{
+  "verified_utc": "2026-10-12T21:46:41.441229+00:00",
+  "pipeline_pid": 70164,
+  "worlds_pid": 70931,
+  "watchdog_pid": 71708,
+  "processes": [
+    "70164     1 70164 Ss   /Users/neo/repos/algocell/experiments/.venv/bin/python -u /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/pipeline_invocation.py",
+    "70931 70164 70164 S    /Users/neo/repos/algocell/experiments/.venv/bin/python -u /Users/neo/repos/algocell-wt-s2/experiments/dispatch8086.py --release /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/launch_receipt.json --ledger /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/spend.jsonl --projection /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/prelaunch/projection.json --stage worlds",
+    "71708 70931 71708 Rs   /Users/neo/repos/algocell/experiments/.venv/bin/python /Users/neo/repos/algocell-wt-s2/experiments/lifecycle8086.py --watch /Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/lifecycle-3d60801e5d3bd3f1.control.json"
+  ],
+  "world_app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+  "app_state": "APP_STATE_EPHEMERAL",
+  "submitted_world_calls": 20,
+  "live_tasks": 8,
+  "task_ids": [
+    "ta-01M4S11Q9DBPCAC62XY74NW6NR",
+    "ta-01M4S11AWATXJJ70NS0VW06APR",
+    "ta-01M4S0ZP75T7GZYC97Z3VBZM1R",
+    "ta-01M4S11Q9D4888BCB862AG1EZR",
+    "ta-01M4S11A6PFYW6C2MSDY0CRN8R",
+    "ta-01M4S11AWAEFNAQSFWY9NJZ3VR",
+    "ta-01M4S11KJYG0DWC58ACYVX6TQR",
+    "ta-01M4S11J12N0Y1FMKJJP0WYJ7R"
+  ],
+  "concurrent_running_world_inputs": 8,
+  "functions": [
+    {
+      "function_id": "fu-brKJqFSd2COM8Us7XEW1br",
+      "num_total_tasks": 8,
+      "num_running_inputs": 8,
+      "backlog": 12,
+      "server_timeout_s": 9000,
+      "max_containers": 20
+    }
+  ],
+  "world_server_timeout_s": 9000,
+  "world1_fresh_step0_seed": 8086001,
+  "failed_world1_archived_unused": true,
+  "watchdog_status": {
+    "ready": true,
+    "heartbeat": 329741.342778708,
+    "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+    "confirmed": false,
+    "confirmed_at": null,
+    "within_envelope": false,
+    "stop_required": false,
+    "incomplete": false,
+    "charged_usd": 47.947313199999996,
+    "dispatch_permitted": true
+  },
+  "prebuilt_image": {
+    "image_id": "im-gES4xYFZgcBmNDyVLjXrxx",
+    "freeze_sha256": "6921b37fcbab2004031005a5aeb13929318bf32120e019aa3f3883ee3a726d70",
+    "recipe_sha256": "437ff73cb338d837d201d7578164e9d58d66136931e65b53b5f11710affc39a7",
+    "app_id": "ap-jp21jIEOItxTeW5JR2iC78",
+    "stopped_confirmed": true,
+    "accounted_job": "prebuild",
+    "policy": "timed separate prebuild; dispatch from_id only"
+  },
+  "historical_metered_usd": 1.03704597,
+  "new_meter_records": [
+    {
+      "app_id": "ap-jp21jIEOItxTeW5JR2iC78",
+      "metered_usd": 2.304e-05
+    },
+    {
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "metered_usd": 0.48553829
+    }
+  ],
+  "metered_spend_so_far_usd": 1.5226073,
+  "billing_may_lag": true,
+  "carried_bounds_usd": 4.499165268980222,
+  "complete_projection": {
+    "projected_liabilities_usd": 72.41250328898023,
+    "cap": 95.0,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  },
+  "complete_with_two_remaining_recoveries_usd": 77.20723460898022,
+  "measured_eta_chicago": "2026-10-12T19:26:37.408892-05:00",
+  "conservative_eta_chicago": "2026-10-12T20:53:37.408892-05:00",
+  "refreeze_commit": "50c077887f352174a646038285ec89cb2ab723b0",
+  "freeze_sha256": "6921b37fcbab2004031005a5aeb13929318bf32120e019aa3f3883ee3a726d70",
+  "paths": {
+    "run_directory": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000",
+    "pipeline_log": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/pipeline.log",
+    "worlds_log": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/worlds.log",
+    "spend_ledger": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/spend.jsonl",
+    "watchdog_control": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/lifecycle-3d60801e5d3bd3f1.control.json",
+    "watchdog_status": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/lifecycle-3d60801e5d3bd3f1.status.json"
+  }
+}

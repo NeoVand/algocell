@@ -1,0 +1,6 @@
+{"time": 1791833813.487328, "kind": "pipeline_started", "pipeline_pid": 47579, "registered_worlds": 20, "seeds": [8086001, 8086002, 8086003, 8086004, 8086005, 8086006, 8086007, 8086008, 8086009, 8086010, 8086011, 8086012, 8086013, 8086014, 8086015, 8086016, 8086017, 8086018, 8086019, 8086020], "stages": ["prebuild", "worlds", "score", "extract", "eligibility_commit_release", "assay", "controls"], "projected_liabilities_usd": 84.06715389898022}
+{"time": 1791833813.4889019, "kind": "stage_started", "pipeline_pid": 47579, "stage": "prebuild", "child_pid": 47927}
+{"time": 1791833835.280457, "kind": "stage_complete", "pipeline_pid": 47579, "stage": "prebuild", "child_pid": 47927}
+{"time": 1791833835.281635, "kind": "image_receipt_validated", "pipeline_pid": 47579, "image_id": "im-7cqReP44xe1Ns0lCbVrLOS"}
+{"time": 1791833835.283226, "kind": "stage_started", "pipeline_pid": 47579, "stage": "worlds", "child_pid": 48343}
+{"time": 1791837621.3102741, "kind": "pipeline_incomplete", "pipeline_pid": 47579, "error": "RuntimeError", "reason": "worlds exited 1; no retry, review logs and retained liabilities", "scientific_verdict": null, "no_retry": true}

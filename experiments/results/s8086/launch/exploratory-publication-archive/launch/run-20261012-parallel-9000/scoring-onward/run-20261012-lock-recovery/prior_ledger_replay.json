@@ -1,0 +1,499 @@
+{
+  "jobs": {
+    "preparation": {
+      "reservation": 0.7999038189802217,
+      "status": "settled",
+      "app": "historical-aggregate-repartition",
+      "call": "historical-repartition",
+      "stopped": true,
+      "cost": 0
+    },
+    "carry:carry:relaunch:carry:preparation:ap-3yv8gfnaUhIahlAjZ7ZbF9": {
+      "reservation": 0.13615844559320928,
+      "status": "settled",
+      "app": "ap-3yv8gfnaUhIahlAjZ7ZbF9",
+      "call": "historical:carry:relaunch:carry:preparation:ap-3yv8gfnaUhIahlAjZ7ZbF9",
+      "stopped": true,
+      "cost": 0.13615844559320928
+    },
+    "carry:carry:relaunch:carry:preparation:ap-sCeRhIXHr8Hn8g5NSjXSpy": {
+      "reservation": 0.32965967688591,
+      "status": "settled",
+      "app": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "call": "historical:carry:relaunch:carry:preparation:ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "stopped": true,
+      "cost": 0.32965967688591
+    },
+    "carry:carry:relaunch:carry:preparation:ap-UKKBebIo8fZoAiCzWaIN4q": {
+      "reservation": 0.2319970067962599,
+      "status": "settled",
+      "app": "ap-UKKBebIo8fZoAiCzWaIN4q",
+      "call": "historical:carry:relaunch:carry:preparation:ap-UKKBebIo8fZoAiCzWaIN4q",
+      "stopped": true,
+      "cost": 0.2319970067962599
+    },
+    "carry:carry:relaunch:carry:preparation:ap-3PIHGikI8Kpb05rvJkI7aW": {
+      "reservation": 0.10208868970484257,
+      "status": "settled",
+      "app": "ap-3PIHGikI8Kpb05rvJkI7aW",
+      "call": "historical:carry:relaunch:carry:preparation:ap-3PIHGikI8Kpb05rvJkI7aW",
+      "stopped": true,
+      "cost": 0.10208868970484257
+    },
+    "carry:carry:relaunch:carry:run-20261012:prebuild": {
+      "reservation": 0.27334166,
+      "status": "running",
+      "app": "ap-yeH7c7tuWHnJ2pmjmb3GKP",
+      "call": "historical:carry:relaunch:carry:run-20261012:prebuild",
+      "stopped": true,
+      "liability": 0.27334166,
+      "elapsed": 0.27334166
+    },
+    "carry:carry:relaunch:prebuild": {
+      "reservation": 0.27334166,
+      "status": "settled",
+      "app": "ap-WrP0TDnnkk8I8SLYcdgPD6",
+      "call": "historical:carry:relaunch:prebuild",
+      "stopped": true,
+      "cost": 0.27334166
+    },
+    "carry:carry:relaunch:world:A:8086001": {
+      "reservation": 3.15139418,
+      "status": "running",
+      "app": "ap-OA10sRnKgZFM20rzDcsuZj",
+      "call": "historical:carry:relaunch:world:A:8086001",
+      "stopped": true,
+      "liability": 3.15139418,
+      "elapsed": 3.15139418
+    },
+    "carry:preparation:volume-probe": {
+      "reservation": 0.00039464999999999997,
+      "status": "settled",
+      "app": "ap-r9eOs1cleFWGxTvSjkTOyd",
+      "call": "historical:preparation:volume-probe",
+      "stopped": true,
+      "cost": 0.00039464999999999997
+    },
+    "carry:preparation:volume-probe-verified": {
+      "reservation": 0.00039464999999999997,
+      "status": "settled",
+      "app": "ap-AawWLpOdEAKefnoMEyt4oG",
+      "call": "historical:preparation:volume-probe-verified",
+      "stopped": true,
+      "cost": 0.00039464999999999997
+    },
+    "carry:preparation:publication-verification": {
+      "reservation": 0.00039464999999999997,
+      "status": "settled",
+      "app": "ap-X2PqHW0j9NrmN83lUKuziS",
+      "call": "historical:preparation:publication-verification",
+      "stopped": true,
+      "cost": 0.00039464999999999997
+    },
+    "prebuild": {
+      "reservation": 0.27334166,
+      "status": "settled",
+      "app": "ap-jp21jIEOItxTeW5JR2iC78",
+      "liability": 0.03295414919759863,
+      "elapsed": 0.0023580891975986257,
+      "stopped": true,
+      "cost": 0.27334166
+    },
+    "world:A:8086001": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TMY96CV85M8TMCTFEHJD",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086002": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TN17EH15ZV3A896AQKGN",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086003": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TN42TMYXMWH2XQP7VB0M",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086004": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TN70Y12EKPVJAQA72KFT",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086005": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TN9Y9BQFT87HSG3N5P60",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086006": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNCSYHR3N54EHEDBG5S5",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086007": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNFBCMKKZ7HQPKPBSBD8",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086008": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNJBKJDBC6WH1G2TSP3Q",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086009": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNNGVNW7X1K7ZDBNNSPJ",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086010": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNRJB2HHHZD0K5CN0VA8",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086011": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNVB1HJN65CA6PF9VX15",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086012": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TNY328CSDT4MK3E5B0S4",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086013": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TP0Q0MMPKNRGX57BQV63",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086014": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TP3RCX0CXF68W15V4R33",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086015": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TP6SJYBEPGF2Q9WB6Z7C",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086016": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TPA0S69P4KPW6KQ949JB",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086017": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TPCX6KEQ8HAH655J712S",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086018": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TPFZPQ0JZ7EJ645H3DJJ",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086019": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TPJPWBFY2HXSWZEKBF2D",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "world:A:8086020": {
+      "reservation": 2.3973656599999997,
+      "status": "settled",
+      "app": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "liability": 2.3973656599999997,
+      "elapsed": 0.6209944048041901,
+      "call": "fc-01M4S0TPN638H3RSJ6ZSHHZXBT",
+      "stopped": true,
+      "cost": 2.3973656599999997
+    },
+    "score:A:8086001": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJ53SR8XW3J762CRTSZJ",
+      "terminal": "watchdog spend/observation stop; INCOMPLETE",
+      "stopped": true
+    },
+    "score:A:8086002": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJ8QZH9XXQ4YEG833XM7",
+      "stopped": true
+    },
+    "score:A:8086003": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJDY55RQQYHYX6M4GM98",
+      "stopped": true
+    },
+    "score:A:8086004": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJHF7Y3JNSGGXG9W69W4",
+      "stopped": true
+    },
+    "score:A:8086005": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJN40KAR8NEXYW87CSC7",
+      "stopped": true
+    },
+    "score:A:8086006": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJRJYCFFJHG72KW0FAPM",
+      "stopped": true
+    },
+    "score:A:8086007": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJVWXG5YQD0TC7GMXTB2",
+      "stopped": true
+    },
+    "score:A:8086008": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XJZKV287ZT3JCV1RP24C",
+      "stopped": true
+    },
+    "score:A:8086009": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XK2ZQBJVRBMNXCP4X3RX",
+      "stopped": true
+    },
+    "score:A:8086010": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XK6G6Z6XW6WBGAN85MDJ",
+      "stopped": true
+    },
+    "score:A:8086011": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKA8GJ3CFVWCZW19RZW0",
+      "stopped": true
+    },
+    "score:A:8086012": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKDN65TNGY8B5KZNANT0",
+      "stopped": true
+    },
+    "score:A:8086013": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKH8Z45PD6BH7992J8MW",
+      "stopped": true
+    },
+    "score:A:8086014": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKMS2CZGZD1HFNJC2D43",
+      "stopped": true
+    },
+    "score:A:8086015": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKR4CHPNG0WCTRG1PAN7",
+      "stopped": true
+    },
+    "score:A:8086016": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKVNW763G5TNQQFDKTWR",
+      "stopped": true
+    },
+    "score:A:8086017": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XKZDP7QXKHA8HWZTB713",
+      "stopped": true
+    },
+    "score:A:8086018": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XM3K5E9SBSJQX0BZMJW7",
+      "stopped": true
+    },
+    "score:A:8086019": {
+      "reservation": 0.23212548,
+      "status": "running",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "call": "fc-01M4S3XM7ZVNNQ827HC3Y5DSXG",
+      "stopped": true
+    },
+    "score:A:8086020": {
+      "reservation": 0.23212548,
+      "status": "reserved",
+      "app": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "liability": 0.23212548,
+      "elapsed": 0.014630062713225884,
+      "stopped": true
+    }
+  },
+  "meters": {
+    "ap-3yv8gfnaUhIahlAjZ7ZbF9": 0,
+    "ap-sCeRhIXHr8Hn8g5NSjXSpy": 0.00354413,
+    "ap-UKKBebIo8fZoAiCzWaIN4q": 0.11543881,
+    "ap-3PIHGikI8Kpb05rvJkI7aW": 0.02075924,
+    "ap-yeH7c7tuWHnJ2pmjmb3GKP": 5.76e-05,
+    "ap-WrP0TDnnkk8I8SLYcdgPD6": 1.152e-05,
+    "ap-OA10sRnKgZFM20rzDcsuZj": 0.89712848,
+    "ap-r9eOs1cleFWGxTvSjkTOyd": 1.775e-05,
+    "ap-AawWLpOdEAKefnoMEyt4oG": 4.399e-05,
+    "ap-X2PqHW0j9NrmN83lUKuziS": 4.445e-05,
+    "ap-jp21jIEOItxTeW5JR2iC78": 0,
+    "ap-YsuzxXb8wGjPHh4PbWuUQx": 11.224004919999999,
+    "ap-wQRyRHah2aSZE1XSxfUxml": 0
+  },
+  "ledger_rows": 5564
+}

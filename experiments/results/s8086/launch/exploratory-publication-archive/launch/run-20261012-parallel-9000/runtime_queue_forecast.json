@@ -1,0 +1,15 @@
+{
+  "verified_utc": "2026-10-12T21:46:41.441229+00:00",
+  "available_running_slots_observed": 8,
+  "submitted_worlds": 20,
+  "queued_inputs": 12,
+  "assumption": "observed slot availability persists for independent world/scoring/extraction/assay cohorts; existing lifecycle allowances and diagnosis retained; queue delays may add time",
+  "waves_per_parallel_world_stage": 3,
+  "measured_eta_hours": 6.7411111111111115,
+  "conservative_eta_hours": 11.091111111111111,
+  "measured_eta_chicago": "2026-10-12T23:22:11.408892-05:00",
+  "conservative_eta_chicago": "2026-10-13T03:43:11.408892-05:00",
+  "20_slot_baseline_measured_hours": 2.815,
+  "complete_spend_with_two_recoveries_usd": 77.20723460898022,
+  "worlds_reserved_and_submitted_before_result_wait": 20
+}

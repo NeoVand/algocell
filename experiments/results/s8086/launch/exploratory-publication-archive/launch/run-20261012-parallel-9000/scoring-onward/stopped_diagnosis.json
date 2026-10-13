@@ -1,0 +1,85 @@
+{
+  "status": "STOPPED_ON_TEST_FAILURE; no refreeze, no commit, no relaunch",
+  "diagnosis": {
+    "original_code_identity": "HEAD before uncommitted edits",
+    "first_cause": "nonblocking ledger flock contention",
+    "original_lifecycle_lines": [
+      104,
+      109,
+      208,
+      214,
+      318
+    ],
+    "original_dispatch_lines": [
+      202,
+      322
+    ],
+    "watchdog_event_lines": [
+      21,
+      22,
+      40,
+      41
+    ],
+    "first_error": "BlockingIOError: [Errno 35] Resource temporarily unavailable",
+    "first_terminal_ledger_line": 5524,
+    "cap": 95,
+    "projection_throughout_usd": 72.41250328898022,
+    "score_app_last_metered_usd": 0,
+    "no_numerical_cap_crossing": true,
+    "shared_app_meter_already_grouped_once": true,
+    "watchdog_stderr_log_empty": true
+  },
+  "spend": {
+    "latest_successful_billing_file": "billing_attempt_1.json",
+    "cumulative_known_metered_usd": 12.28942546,
+    "billing_may_lag": true,
+    "conservative_resource_time_upper_bound_usd": 17.48499627932854,
+    "upper_bound_components": {
+      "historical_retained": 4.499165268980222,
+      "completed_prebuild_retained": 0.27334166,
+      "worlds_recorded_lifetimes_plus_cleanup": 12.419888096083803,
+      "stopped_score_recorded_lifetimes_plus_cleanup": 0.2926012542645177
+    },
+    "all_in_forecast_with_full_old_allocations_and_fresh_prebuild_usd": 77.32835454898022,
+    "forecast_is_not_a_release": true
+  },
+  "validation": {
+    "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_meter8086.py tests/test_volume_parallel8086.py tests/test_b5_enforcement.py -q -p no:cacheprovider",
+    "cwd": "experiments",
+    "passed": 39,
+    "failed": 4,
+    "new_failures": "rate_limit/timeout/unknown fallback: tests/test_meter8086.py:70 expected >= 0.0606864 USD resource accrual; observed 0",
+    "existing_failure": "SIGSTOP test subprocess ModuleNotFoundError: dispatch8086; launch lacked PYTHONPATH",
+    "standalone_1000_sequence_simulation_run": false
+  },
+  "uncommitted_files": [
+    "experiments/meter8086.py",
+    "experiments/lifecycle8086.py",
+    "experiments/dispatch8086.py",
+    "experiments/spend_sim8086.py",
+    "experiments/tests/test_meter8086.py"
+  ],
+  "pending": [
+    "Correct TaskList-only fallback elapsed accumulation; synthetic zero events reset observed_at and erase accrual. Preserve previous accrued lifetime before applying new observation.",
+    "Use PYTHONPATH pointing at experiments for subprocess tests.",
+    "Revalidate unit/fault tests and >=1000 concurrent sequences after coordinator authorization to resume.",
+    "Record operational-only amendment, exact refreeze, explicit-path coauthored commit.",
+    "Reconcile stopped historical allocations into fresh ledger without carrying terminal flag; keep completed world jobs accounted once.",
+    "New frozen image requires separately accounted prebuild.",
+    "Read/verify completed volume worlds and failed-score output markers; never modify world data.",
+    "Detached scoring/extraction/eligibility commit-release/assays/controls only."
+  ],
+  "new_pids": [],
+  "eta": null,
+  "worlds_rerun_or_modified": false,
+  "science_scoring_rules_eligibility_endpoints_changed": false,
+  "ledger_audit_note": "One hash-chained check row appended during accounting replay; prior rows preserved. No ledger terminal cleared.",
+  "ledger_sha256": "4955d62a45a26039559866abd302a135748fd567bf516b68d0035eff9cd80f42",
+  "last_ledger_row": {
+    "previous": "46220d14fdfce27b4d3ab331a6417006db629cff60a18c0707f9401ffd82c89f",
+    "time": 1791844448.1414442,
+    "kind": "check",
+    "reason": "read-only accounting audit",
+    "hash": "7fbf9d7ffb0db69ae492202766705985502503adb510b25938c6aa52296a1f3f"
+  }
+}

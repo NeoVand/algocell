@@ -1,0 +1,177 @@
+..........................s............................................. [  7%]
+........................................................................ [ 14%]
+........................................................................ [ 22%]
+.............s.......................................................... [ 29%]
+........................................................................ [ 36%]
+........................................................................ [ 44%]
+........................................................................ [ 51%]
+........................................................................ [ 59%]
+....F......................s............................................ [ 66%]
+........................................................................ [ 73%]
+........................................................................ [ 81%]
+........................................................................ [ 88%]
+........................................................................ [ 96%]
+......................................                                   [100%]
+=================================== FAILURES ===================================
+________________________ test_parallel_fault_simulation ________________________
+
+    def permit(self):pass
+    def bind_call(self,name,call):pass
+>   def finish(self):order.append('finish')
+       ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_volume_parallel8086.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sequences = 64, seed = 539394182, output = False
+
+    def simulate_parallel(sequences=1000,seed=0x20268086,*,output=False):
+        """Interleaved 20-world completions/preemptions/restarts, shared app/guard.
+    
+        The oracle accumulates actual resource seconds from separately generated
+        attempt birth/end intervals, including termination delay. No Modal calls.
+        """
+        projection=read_json(PRE/'projection.json');plan=projection['job_liabilities_usd']
+        jobs={n:d for n,d in projection['execution_deadline_s'].items() if n.startswith('world:')}
+        deadline=max(jobs.values());overhead=projection['storage_termination_reserve_usd']
+        rng=random.Random(seed);violations=[];outcomes=Counter();restarts=0;max_charge=max_actual=0.;interleavings=0;queue_limits=Counter()
+        with tempfile.TemporaryDirectory() as temp,patch('lifecycle8086.AsyncJournal',Journal),patch('dispatch8086.fcntl.flock'),patch('dispatch8086.os.fsync'),patch('lifecycle8086.Lifecycle.bookkeep',lambda self,event:self.guard.transact(event,nonblocking=True)):
+          for sequence in range(sequences):
+            cap=projection['projection_usd']+1e-7 if sequence%4==0 else CAP
+            guard=SpendGuard(Path(temp)/'parallel',plan,cap=cap,overhead=overhead);guard.path=Ledger()
+            for name in jobs:guard.reserve(name,plan[name]);guard.start(name,'call-'+name,'shared-app')
+            clock=[0.];state=Lifecycle(Path(temp)/'events',app_id='shared-app',job=next(iter(jobs)),execution_s=deadline,
+                                      guard=guard,jobs=jobs,max_containers=20,started=0,now=lambda:clock[0],setup=True)
+            state.body_started=0.;state.call_ids=['call-'+n for n in jobs]
+            provider=Provider();schedule=[];intervals={};termination_delays={};active={};finished=set();failure_seconds=0.
+            failure_count=0 if sequence%5==0 else rng.randint(1,6)
+            failures=Counter(rng.choices(list(jobs),k=failure_count));restarts+=failure_count
+            slots=rng.choice((1,2,4,8,20));queue_limits[slots]+=1;available=[0.]*slots
+            for name in jobs:
+                slot=min(range(slots),key=lambda i:available[i]);born=available[slot]
+                for attempt in range(failures[name]+1):
+                    key=name+'-'+str(attempt);failed=attempt<failures[name]
+                    duration=(deadline+120)*rng.uniform(.02,1.) if failed else deadline*rng.uniform(.75,1.)
+                    end=born+duration;intervals[key]=(born,end)
+                    termination_delays[key]=rng.uniform(0,30)
+                    schedule.append((born,'live',key,name,0.))
+                    schedule.append((end,'preempted' if failed else 'completed',key,name,duration))
+                    if failed:
+                        failure_seconds+=duration+ATTEMPT_TERMINATION_S
+                        born=end+rng.uniform(0,30)
+                available[slot]=end+termination_delays[key]
+            schedule.sort(key=lambda e:(e[0],e[1]!='live',rng.random()))
+            expected=projection['projection_usd']+failure_seconds*RATE
+            stopped=False;last_job=None
+            for timestamp,kind,key,name,duration in schedule:
+                clock[0]=timestamp
+                if kind=='live':active[key]=name
+                else:
+                    active.pop(key,None)
+                    if kind=='completed':finished.add(name)
+                if last_job and last_job!=name:interleavings+=1
+                last_job=name
+                provider.tasks=list(active)
+                provider.events=[{'attempt':key,'task':key,'state':kind,'elapsed_s':duration}]
+                provider.events.extend({'attempt':k,'task':k,'state':'live','elapsed_s':timestamp-intervals[k][0]} for k in active if k!=key)
+                actual_seconds=sum(max(0,min(timestamp,end)-born)+max(0,min(timestamp-end,termination_delays[k])) for k,(born,end) in intervals.items())
+                # App metering is cumulative across all worlds, once per app.
+                if rng.random()<.3:provider.meter=max(provider.meter,actual_seconds*RATE)
+                state.poll(provider)
+                charged=overhead+plan['preparation']+state.charged_usd
+                actual=overhead+plan['preparation']+actual_seconds*RATE
+                max_charge=max(max_charge,charged);max_actual=max(max_actual,actual)
+                if charged>cap+1e-8 or actual>charged+1e-8 or actual>cap+1e-8:
+                    violations.append((sequence,'b',charged,actual,cap))
+                if state.incomplete:
+                    if expected<=cap+1e-8:violations.append((sequence,'a/c sufficient complete recovery budget stopped',expected,cap))
+                    stopped=True;provider.stopped=True;provider.tasks=[];provider.events=[]
+                    state.poll(provider)
+                    guard.transact({'kind':'terminal','job':next(iter(jobs)),'status':'INCOMPLETE','route_verdict':None,'law_verdict':None})
+                    if not guard.transact({'kind':'check'})['stop_required']:violations.append((sequence,'d nonterminal'))
+                    try:guard.reserve('controls',plan['controls'])
+                    except RuntimeError:pass
+                    else:violations.append((sequence,'d further dispatch allowed'))
+                    break
+            if stopped:outcomes['INCOMPLETE']+=1
+            else:
+                provider.tasks=[];provider.events=[];provider.stopped=True
+                clock[0]=max(end+termination_delays[k] for k,(_,end) in intervals.items())
+                state.poll(provider,finish=True)
+                actual=overhead+plan['preparation']+sum(end-born+termination_delays[k] for k,(born,end) in intervals.items())*RATE
+                charged=overhead+plan['preparation']+state.charged_usd
+                max_charge=max(max_charge,charged);max_actual=max(max_actual,actual)
+                if actual>charged+1e-8 or actual>cap+1e-8:violations.append((sequence,'b termination delay',actual,charged,cap))
+                if not state.confirmed or state.incomplete or len(finished)!=20:violations.append((sequence,'c incomplete cohort'))
+                base=sum(plan[n] for n in jobs)
+                for name in jobs:guard.settle(name,state.charged_usd*(plan[name]/base))
+                if guard.transact({'kind':'check'})['stop_required']:violations.append((sequence,'a completion stop'))
+                outcomes['COMPLETE']+=1
+        result={'date':'2026-10-12','sequences':sequences,'seed':seed,'concurrent_worlds':20,
+                'violations':len(violations),'violation_details':violations[:30],
+                'invariants':{'a':'successful completions within conservative complete budget never cause a stop',
+                              'b':'simultaneous charged current/settled and independently accumulated actual spend stay below cap <= $95',
+                              'c':'all 20 worlds complete whenever the conservative full-run plus recovery budget fits',
+                              'd':'a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch'},
+                'outcomes':dict(outcomes),'restarts':restarts,'interleaved_job_transitions':interleavings,
+                'available_gpu_limits':dict(queue_limits),
+                'max_charged_usd':max_charge,'max_actual_usd':max_actual,
+>               'projection_sha256':sha((PRE/'projection.json').read_bytes()),'simulation_sha256':sha(Path(__file__).read_bytes()),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                'no_paid_compute':True,'no_population':True}
+E       AssertionError: {"date": "2026-10-12", "sequences": 64, "seed": 539394182, "concurrent_worlds": 20, "violations": 4, "violation_details": [[0, "a/c sufficient complete recovery budget stopped", 83.79381223898022, 83.79381233898022], [20, "a/c sufficient complete recovery budget stopped", 83.79381223898022, 83.79381233898022], [40, "a/c sufficient complete recovery budget stopped", 83.79381223898022, 83.79381233898022], [60, "a/c sufficient complete recovery budget stopped", 83.79381223898022, 83.79381233898022]], "invariants": {"a": "successful completions within conservative complete budget never cause a stop", "b": "simultaneous charged current/settled and independently accumulated actual spend stay below cap <= $95", "c": "all 20 worlds complete whenever the conservative full-run plus recovery budget fits", "d": "a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch"}, "outcomes": {"INCOMPLETE": 17, "COMPLETE": 47}, "restarts": 155, "interleaved_job_transitions": 2306, "max_charged_usd": 80.3590980532651, "max_actual_usd": 69.53892422672756, "projection_sha256": "6063d8e7810a60e847ed111f1a9c24da802c126542fcf23bd71e7df0648c09a7", "simulation_sha256": "dd7081a266d28c50eb517e4b46679d52791b41be73f0db7f4d9df5ecde93ae54", "no_paid_compute": true, "no_population": true}
+
+spend_sim8086.py:236: AssertionError
+=============================== warnings summary ===============================
+tests/test_run6502.py::test_modal_reload_skip_and_incomplete_reporting
+  /Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_functions.py:2139: UserWarning: The world function is executing locally and will not have access to the mounted Volume or NetworkFileSystem data
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_volume_parallel8086.py::test_parallel_fault_simulation - As...
+1 failed, 970 passed, 3 skipped, 1 warning in 728.83s (0:12:08)
+Traceback (most recent call last):
+  File "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-volume-parallel/test_runner.py", line 41, in <module>
+    code=pytest.main(['tests','-q','-p','no:cacheprovider','--junitxml=/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-volume-parallel/full_tests.xml'])
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 201, in main
+    return _main(args=args, plugins=plugins, prog="pytest.main()")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 229, in _main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/main.py", line 377, in pytest_cmdline_main
+    return wrap_session(config, _main)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/main.py", line 372, in wrap_session
+    config._ensure_unconfigure()
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1212, in _ensure_unconfigure
+    self.hook.pytest_unconfigure(config=self)
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/unraisableexception.py", line 172, in pytest_unconfigure
+    gc_collect_harder(gc_collect_iterations)
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/_pytest/unraisableexception.py", line 33, in gc_collect_harder
+    gc.collect()
+KeyboardInterrupt

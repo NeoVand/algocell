@@ -1,0 +1,18 @@
+{
+  "pipeline_pid": 92573,
+  "freeze_sha256": "e98812d555b1632d07e5c561f786c1d129917f05eff676d87ea7acdbd722f3d9",
+  "refreeze_commit": "4c0dbebe00f7f1a4fa2da8e8741ae52aa726e3bd",
+  "detached_session": true,
+  "forecast_usd": 77.3283545489802,
+  "cap": 95,
+  "stages": [
+    "prebuild",
+    "score",
+    "extract",
+    "eligibility data commit and release",
+    "assay",
+    "controls"
+  ],
+  "completed_input_worlds": 20,
+  "worlds_rerun": false
+}

@@ -1,0 +1,82 @@
+{
+  "apps": [
+    "ap-3PIHGikI8Kpb05rvJkI7aW",
+    "ap-3yv8gfnaUhIahlAjZ7ZbF9",
+    "ap-AawWLpOdEAKefnoMEyt4oG",
+    "ap-OA10sRnKgZFM20rzDcsuZj",
+    "ap-UKKBebIo8fZoAiCzWaIN4q",
+    "ap-WrP0TDnnkk8I8SLYcdgPD6",
+    "ap-X2PqHW0j9NrmN83lUKuziS",
+    "ap-YsuzxXb8wGjPHh4PbWuUQx",
+    "ap-jp21jIEOItxTeW5JR2iC78",
+    "ap-r9eOs1cleFWGxTvSjkTOyd",
+    "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+    "ap-wQRyRHah2aSZE1XSxfUxml",
+    "ap-yeH7c7tuWHnJ2pmjmb3GKP"
+  ],
+  "query_start_epoch": 1791838800,
+  "query_end_epoch": 1791846000,
+  "queried_epoch": 1791844492.100666,
+  "billing_may_lag": true,
+  "rows": [
+    {
+      "object_id": "ap-X2PqHW0j9NrmN83lUKuziS",
+      "description": "s2-volume-probe-20261012",
+      "environment_name": "main",
+      "interval": "2026-10-12T21:00:00Z",
+      "cost": "0.00004445",
+      "cost_by_resource": {
+        "CPU": "0.00003334",
+        "Memory": "0.00001111"
+      }
+    },
+    {
+      "object_id": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "description": "s2-95969fc970f44a4f985203e56d210aca",
+      "environment_name": "main",
+      "interval": "2026-10-12T21:00:00Z",
+      "cost": "3.68944313",
+      "cost_by_resource": {
+        "CPU": "0.19151685",
+        "Memory": "0.25910565",
+        "L4": "3.23882063"
+      }
+    },
+    {
+      "object_id": "ap-YsuzxXb8wGjPHh4PbWuUQx",
+      "description": "s2-95969fc970f44a4f985203e56d210aca",
+      "environment_name": "main",
+      "interval": "2026-10-12T22:00:00Z",
+      "cost": "7.55886294",
+      "cost_by_resource": {
+        "CPU": "0.39233427",
+        "Memory": "0.53085398",
+        "L4": "6.63567469"
+      }
+    },
+    {
+      "object_id": "ap-jp21jIEOItxTeW5JR2iC78",
+      "description": "s2-8c43c236b2984b118ab77de8224d5d41",
+      "environment_name": "main",
+      "interval": "2026-10-12T21:00:00Z",
+      "cost": "0.00002304",
+      "cost_by_resource": {
+        "CPU": "0.00001971",
+        "Memory": "0.00000333"
+      }
+    },
+    {
+      "object_id": "ap-wQRyRHah2aSZE1XSxfUxml",
+      "description": "s2-ef8b798b507e47fb891af13c90f01448",
+      "environment_name": "main",
+      "interval": "2026-10-12T22:00:00Z",
+      "cost": "0.00405038",
+      "cost_by_resource": {
+        "CPU": "0.00021023",
+        "Memory": "0.00028446",
+        "L4": "0.00355569"
+      }
+    }
+  ],
+  "metered_usd": 11.25242394
+}

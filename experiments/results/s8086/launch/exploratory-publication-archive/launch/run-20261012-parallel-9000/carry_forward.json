@@ -1,0 +1,34 @@
+{
+  "prior_ledger": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-volume-parallel/spend.jsonl",
+  "prior_sha256": "021ce19582202beb0786cee17ff251ddedb3e7f3cce41d25d7a2aa78ee4c23be",
+  "carried_bounds": {
+    "carry:carry:relaunch:carry:preparation:ap-3yv8gfnaUhIahlAjZ7ZbF9": 0.13615844559320928,
+    "carry:carry:relaunch:carry:preparation:ap-sCeRhIXHr8Hn8g5NSjXSpy": 0.32965967688591,
+    "carry:carry:relaunch:carry:preparation:ap-UKKBebIo8fZoAiCzWaIN4q": 0.2319970067962599,
+    "carry:carry:relaunch:carry:preparation:ap-3PIHGikI8Kpb05rvJkI7aW": 0.10208868970484257,
+    "carry:carry:relaunch:carry:run-20261012:prebuild": 0.27334166,
+    "carry:carry:relaunch:prebuild": 0.27334166,
+    "carry:carry:relaunch:world:A:8086001": 3.15139418,
+    "carry:preparation:volume-probe": 0.00039464999999999997,
+    "carry:preparation:volume-probe-verified": 0.00039464999999999997,
+    "carry:preparation:publication-verification": 0.00039464999999999997
+  },
+  "carried_usd": 4.499165268980222,
+  "metered_usd": 1.03704597,
+  "nominal_complete_usd": 72.41250328898022,
+  "remaining_full_world_recoveries": 2,
+  "remaining_recovery_usd": 4.7947313199999995,
+  "complete_with_remaining_recovery_usd": 77.20723460898022,
+  "restart_headroom_usd": 22.58749671101978,
+  "full_world_recoveries_fitting_headroom": 9,
+  "registered_recoveries_remaining": 2,
+  "failed_historical_reservations_retained_unsettled": true,
+  "no_bill_added_above_same_retained_historical_bound": true,
+  "cap": 95,
+  "check": {
+    "projected_liabilities_usd": 72.41250328898022,
+    "cap": 95.0,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  }
+}

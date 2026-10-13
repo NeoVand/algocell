@@ -1,0 +1,412 @@
+{
+  "prior_ledger": "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/spend.jsonl",
+  "prior_ledger_sha256": "4955d62a45a26039559866abd302a135748fd567bf516b68d0035eff9cd80f42",
+  "old_terminal_rows_preserved": true,
+  "carried_allocations": [
+    {
+      "job": "preparation",
+      "source_job": "preparation",
+      "usd": 0.7999038189802217,
+      "status": "settled",
+      "app_id": "historical-aggregate-repartition"
+    },
+    {
+      "job": "carry:carry:relaunch:carry:preparation:ap-3yv8gfnaUhIahlAjZ7ZbF9",
+      "source_job": "carry:carry:relaunch:carry:preparation:ap-3yv8gfnaUhIahlAjZ7ZbF9",
+      "usd": 0.13615844559320928,
+      "status": "settled",
+      "app_id": "ap-3yv8gfnaUhIahlAjZ7ZbF9"
+    },
+    {
+      "job": "carry:carry:relaunch:carry:preparation:ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "source_job": "carry:carry:relaunch:carry:preparation:ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "usd": 0.32965967688591,
+      "status": "settled",
+      "app_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy"
+    },
+    {
+      "job": "carry:carry:relaunch:carry:preparation:ap-UKKBebIo8fZoAiCzWaIN4q",
+      "source_job": "carry:carry:relaunch:carry:preparation:ap-UKKBebIo8fZoAiCzWaIN4q",
+      "usd": 0.2319970067962599,
+      "status": "settled",
+      "app_id": "ap-UKKBebIo8fZoAiCzWaIN4q"
+    },
+    {
+      "job": "carry:carry:relaunch:carry:preparation:ap-3PIHGikI8Kpb05rvJkI7aW",
+      "source_job": "carry:carry:relaunch:carry:preparation:ap-3PIHGikI8Kpb05rvJkI7aW",
+      "usd": 0.10208868970484257,
+      "status": "settled",
+      "app_id": "ap-3PIHGikI8Kpb05rvJkI7aW"
+    },
+    {
+      "job": "carry:carry:relaunch:carry:run-20261012:prebuild",
+      "source_job": "carry:carry:relaunch:carry:run-20261012:prebuild",
+      "usd": 0.27334166,
+      "status": "running",
+      "app_id": "ap-yeH7c7tuWHnJ2pmjmb3GKP"
+    },
+    {
+      "job": "carry:carry:relaunch:prebuild",
+      "source_job": "carry:carry:relaunch:prebuild",
+      "usd": 0.27334166,
+      "status": "settled",
+      "app_id": "ap-WrP0TDnnkk8I8SLYcdgPD6"
+    },
+    {
+      "job": "carry:carry:relaunch:world:A:8086001",
+      "source_job": "carry:carry:relaunch:world:A:8086001",
+      "usd": 3.15139418,
+      "status": "running",
+      "app_id": "ap-OA10sRnKgZFM20rzDcsuZj"
+    },
+    {
+      "job": "carry:preparation:volume-probe",
+      "source_job": "carry:preparation:volume-probe",
+      "usd": 0.00039464999999999997,
+      "status": "settled",
+      "app_id": "ap-r9eOs1cleFWGxTvSjkTOyd"
+    },
+    {
+      "job": "carry:preparation:volume-probe-verified",
+      "source_job": "carry:preparation:volume-probe-verified",
+      "usd": 0.00039464999999999997,
+      "status": "settled",
+      "app_id": "ap-AawWLpOdEAKefnoMEyt4oG"
+    },
+    {
+      "job": "carry:preparation:publication-verification",
+      "source_job": "carry:preparation:publication-verification",
+      "usd": 0.00039464999999999997,
+      "status": "settled",
+      "app_id": "ap-X2PqHW0j9NrmN83lUKuziS"
+    },
+    {
+      "job": "carry:completed-prebuild:prebuild",
+      "source_job": "prebuild",
+      "usd": 0.27334166,
+      "status": "settled",
+      "app_id": "ap-jp21jIEOItxTeW5JR2iC78"
+    },
+    {
+      "job": "world:A:8086001",
+      "source_job": "world:A:8086001",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086002",
+      "source_job": "world:A:8086002",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086003",
+      "source_job": "world:A:8086003",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086004",
+      "source_job": "world:A:8086004",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086005",
+      "source_job": "world:A:8086005",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086006",
+      "source_job": "world:A:8086006",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086007",
+      "source_job": "world:A:8086007",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086008",
+      "source_job": "world:A:8086008",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086009",
+      "source_job": "world:A:8086009",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086010",
+      "source_job": "world:A:8086010",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086011",
+      "source_job": "world:A:8086011",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086012",
+      "source_job": "world:A:8086012",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086013",
+      "source_job": "world:A:8086013",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086014",
+      "source_job": "world:A:8086014",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086015",
+      "source_job": "world:A:8086015",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086016",
+      "source_job": "world:A:8086016",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086017",
+      "source_job": "world:A:8086017",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086018",
+      "source_job": "world:A:8086018",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086019",
+      "source_job": "world:A:8086019",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "world:A:8086020",
+      "source_job": "world:A:8086020",
+      "usd": 2.3973656599999997,
+      "status": "settled",
+      "app_id": "ap-YsuzxXb8wGjPHh4PbWuUQx"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086001",
+      "source_job": "score:A:8086001",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086002",
+      "source_job": "score:A:8086002",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086003",
+      "source_job": "score:A:8086003",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086004",
+      "source_job": "score:A:8086004",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086005",
+      "source_job": "score:A:8086005",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086006",
+      "source_job": "score:A:8086006",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086007",
+      "source_job": "score:A:8086007",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086008",
+      "source_job": "score:A:8086008",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086009",
+      "source_job": "score:A:8086009",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086010",
+      "source_job": "score:A:8086010",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086011",
+      "source_job": "score:A:8086011",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086012",
+      "source_job": "score:A:8086012",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086013",
+      "source_job": "score:A:8086013",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086014",
+      "source_job": "score:A:8086014",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086015",
+      "source_job": "score:A:8086015",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086016",
+      "source_job": "score:A:8086016",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086017",
+      "source_job": "score:A:8086017",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086018",
+      "source_job": "score:A:8086018",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086019",
+      "source_job": "score:A:8086019",
+      "usd": 0.23212548,
+      "status": "running",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    },
+    {
+      "job": "carry:stopped-scoring:score:A:8086020",
+      "source_job": "score:A:8086020",
+      "usd": 0.23212548,
+      "status": "reserved",
+      "app_id": "ap-wQRyRHah2aSZE1XSxfUxml"
+    }
+  ],
+  "carried_full_bounds_usd": 58.16223354796044,
+  "metered_usd": 12.28942546,
+  "billing_may_lag": true,
+  "conservative_recorded_lifetime_bound_usd": 17.48499627932854,
+  "complete_forecast_usd": 77.3283545489802,
+  "remaining_stages": [
+    "prebuild",
+    "score",
+    "extract",
+    "eligibility_commit_release",
+    "assay",
+    "controls"
+  ],
+  "worlds_completed": 20,
+  "worlds_rerun": false,
+  "cap": 95,
+  "shared_reserve_usd": 5.0,
+  "check": {
+    "projected_liabilities_usd": 77.3283545489802,
+    "cap": 95.0,
+    "cap_exceeded": false,
+    "app_liabilities_usd": {
+      "historical-aggregate-repartition": 0.0,
+      "ap-3yv8gfnaUhIahlAjZ7ZbF9": 0.13615844559320928,
+      "ap-sCeRhIXHr8Hn8g5NSjXSpy": 0.32965967688591,
+      "ap-UKKBebIo8fZoAiCzWaIN4q": 0.2319970067962599,
+      "ap-3PIHGikI8Kpb05rvJkI7aW": 0.10208868970484257,
+      "ap-yeH7c7tuWHnJ2pmjmb3GKP": 0.27334166,
+      "ap-WrP0TDnnkk8I8SLYcdgPD6": 0.27334166,
+      "ap-OA10sRnKgZFM20rzDcsuZj": 3.15139418,
+      "ap-r9eOs1cleFWGxTvSjkTOyd": 0.00039464999999999997,
+      "ap-AawWLpOdEAKefnoMEyt4oG": 0.00039464999999999997,
+      "ap-X2PqHW0j9NrmN83lUKuziS": 0.00039464999999999997,
+      "ap-jp21jIEOItxTeW5JR2iC78": 0.27334166,
+      "ap-YsuzxXb8wGjPHh4PbWuUQx": 47.94731319999998,
+      "ap-wQRyRHah2aSZE1XSxfUxml": 4.6425096
+    },
+    "experiment_stopped": false,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  }
+}
