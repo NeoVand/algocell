@@ -65,9 +65,9 @@ export const GUIDE_SECTIONS: DocumentationSection[] = [
 			'Random-code experiments begin without a planted copier. Demonstrations begin with known tapes so you can inspect a mechanism immediately. Starting with a demonstration is useful for learning the tools; it is not evidence of spontaneous discovery.'
 		],
 		steps: [
-			'Open Settings and choose Full-tape copier. Read its condition and what to look for.',
+			'Open Experiments and choose Full-tape copier. Read its condition and what to look for, then choose Start new world with these settings.',
 			'Select Bytes and zoom in. Open Probe, select a cell and inspect its tape.',
-			'Open the tape inspector and run a culture. Compare first and second transfers, then inspect the fetched bytes, instruction starts and writes.',
+			'Open the encounter bench in Measure and run a culture. Compare first and second transfers, then inspect the fetched bytes, instruction starts and writes. The live world keeps running.',
 			'Compare a changed byte with the original parent in the encounter bench. Record the result, including its seed, position and value.',
 			'Try Short-prefix copier with the same marker position. Ask whether copying and retention give the same answer.'
 		]
@@ -77,7 +77,7 @@ export const GUIDE_SECTIONS: DocumentationSection[] = [
 		title: 'Run, pause and reset',
 		paragraphs: [
 			'One population update proposes a batch of neighbouring pairs, executes accepted encounters, returns writes and attempts mutations. It is not a synchronized generation. Pair attempts and instruction slots include inactive pairs and early stops; throughput is not a count of executed hardware instructions.',
-			'Play schedules updates; Pause stops new work. Reset starts the current condition again. Changing a processor or geometry begins a new population. Display tools do not change the bytes. Runs pause after 55 seconds and when the tab is hidden; start another burst when ready.'
+			'Play schedules updates; Pause stops new work; Step advances one update. Restart begins the applied condition again. Core, mutation and chemistry changes apply to the existing tapes. Seed and geometry edits are staged until you choose Start new world with these settings. Tabs, views and tools preserve playback. Hidden tabs suspend GPU work while keeping your playback choice.'
 		]
 	},
 	{
@@ -112,7 +112,7 @@ export const GUIDE_SECTIONS: DocumentationSection[] = [
 		title: 'Probe a cell or measure a region',
 		paragraphs: [
 			'Wheel or pinch to zoom; drag to pan; Fit returns to the whole lattice. Probe keeps the selected cell visible and reads only its small tape. Use an address or arrow keys when pointing is inconvenient. Open the tape inspector for per-ISA disassembly and tests.',
-			'Region selects a rectangle in lattice coordinates. Its sample pauses the population and counts exact complete sequences, zero fraction and marker matches. Endpoints are inclusive. The update stamp says when the measurement was taken; it does not silently follow later changes.'
+			'Region selects a rectangle in lattice coordinates. A sample counts exact complete sequences, zero fraction and marker matches without changing playback. Endpoints are inclusive. The update stamp identifies the sampled population; the result does not silently follow later changes.'
 		]
 	},
 	{
@@ -137,7 +137,7 @@ export const GUIDE_SECTIONS: DocumentationSection[] = [
 		id: 'visual-records',
 		title: 'History, comparison and recordings',
 		paragraphs: [
-			'History is an optional, bounded collection of view images sampled at most once per second. Scrubbing or replaying shows those observations, with their update labels; it does not rewind the simulation. Return to live to see the present population.',
+			'History is an optional, bounded collection of view images sampled at most once per second. Scrubbing or replaying shows those observations, with their update labels. The world continues if it was playing; history does not rewind it. Return live to see the present population.',
 			'Pin a reference to compare its captured appearance with the live field. Camera or display changes can make the images unlike; read the reference mode and update. This is not an independent control world.',
 			'Snapshot downloads a PNG. Timelapse exports sampled frames through browser media support; it records visible observations rather than every update. Save a checkpoint to keep actual population bytes, and export assay evidence to keep settings, results and manifests.'
 		]
@@ -155,7 +155,7 @@ export const GUIDE_SECTIONS: DocumentationSection[] = [
 		title: 'Support and shortcuts',
 		paragraphs: [
 			'Execution needs a WebGPU-enabled browser on localhost or HTTPS. Documentation remains available if the device cannot be created. Try a browser with WebGPU support if initialization fails.',
-			'Space toggles play, R resets, F fits, H opens help, and Escape closes the active overlay. Cmd/Ctrl-S saves a checkpoint and Cmd/Ctrl-O opens one. Shortcuts yield to text inputs. Touch users can pinch, drag and use the labelled controls.'
+			'Space toggles play and . steps. V selects navigation, P probes, R selects a region, M marks a byte and C compares. Keys 1–5 open World, Measure, Experiments, Guide and About; ? shows shortcuts. F fits; + and − zoom. Cmd/Ctrl-S saves a checkpoint and Cmd/Ctrl-O opens one. Single-key shortcuts yield to text inputs. Touch users can pinch, drag and use the labelled controls.'
 		]
 	}
 ];

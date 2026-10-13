@@ -1,19 +1,47 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
+	import InstrumentSelect from './InstrumentSelect.svelte';
 	import type { GPUEngine } from '$lib/gpu/engine';
 	import type { CultureResult, EncounterObservation } from '$lib/lab/types';
 	import { stoppingReason, type AssayResult } from '$lib/gpu/assays';
-	let { engine, tape, seed, onpause, onbusy, byteColor } = $props<{
+	let {
+		engine,
+		tape,
+		seed,
+		sampleId,
+		sampleCell = null,
+		sampleUpdate,
+		sampleLabel,
+		onbusy,
+		byteColor
+	} = $props<{
 		engine: GPUEngine;
 		tape: Uint8Array;
 		seed: number;
-		onpause: () => void;
+		sampleId?: string;
+		sampleCell?: number | null;
+		sampleUpdate?: number;
+		sampleLabel?: string;
+		onpause?: () => void;
 		onbusy: (busy: boolean) => void;
 		byteColor: (byte: number) => string;
 	}>();
-	const inspectedCondition = untrack(() => JSON.stringify(engine.settings));
 	type Test = 'culture' | 'self' | 'inflow' | 'marker';
 	type Lens = 'fetch' | 'starts' | 'writes';
+	type EvidenceSource = {
+		key: string;
+		label: string;
+		cell: number | null;
+		selectedAtUpdate: number | null;
+		assayStartedAtUpdate: number;
+		seed: number;
+	};
+	type Evidence<T> = { source: EvidenceSource; result: T };
+	const sampleKey = $derived(
+		sampleId ?? `${sampleCell ?? 'tape'}:${sampleUpdate ?? 'unknown'}:${Array.from(tape).join(',')}`
+	);
+	const sampleName = $derived(
+		sampleLabel ?? (sampleCell === null ? 'Selected tape' : `Cell ${sampleCell}`)
+	);
 	const tabs: { id: Test; name: string }[] = [
 		{ id: 'culture', name: 'Culture' },
 		{ id: 'self', name: 'Self-pair' },
@@ -22,10 +50,28 @@
 	];
 	let active = $state<Test>('culture');
 	let lens = $state<Lens>('fetch');
-	let culture = $state.raw<CultureResult | null>(null);
-	let assays = $state.raw<AssayResult | null>(null);
+	let cultureEvidence = $state.raw<Evidence<CultureResult> | null>(null);
+	let assaysEvidence = $state.raw<Evidence<AssayResult> | null>(null);
+	const culture = $derived(
+		cultureEvidence && cultureEvidence.source.key === sampleKey ? cultureEvidence.result : null
+	);
+	const assays = $derived(
+		assaysEvidence && assaysEvidence.source.key === sampleKey ? assaysEvidence.result : null
+	);
+	const evidenceSource = $derived(
+		active === 'culture'
+			? culture
+				? cultureEvidence!.source
+				: null
+			: assays
+				? assaysEvidence!.source
+				: null
+	);
+	let runningSource = $state.raw<EvidenceSource | null>(null);
 	let busy = $state(false);
 	let error = $state('');
+	let errorSampleKey = $state('');
+	const currentError = $derived(errorSampleKey === sampleKey ? error : '');
 	let trials = $state(16);
 	let position = $state(8);
 	let value = $state(126);
@@ -53,27 +99,47 @@
 	const writeMax = $derived(Math.max(1, ...writes.map(([, count]) => count)));
 	async function run() {
 		if (busy) return;
-		if (JSON.stringify(engine.settings) !== inspectedCondition) {
-			error = 'The condition changed. Close the bench and inspect a tape again before testing.';
+		errorSampleKey = sampleKey;
+		if (tape.length !== engine.settings.length) {
+			error =
+				'This sample has a different tape length. Select a tape from the current world to test it.';
 			return;
 		}
-		onpause();
+		const source: EvidenceSource = {
+			key: sampleKey,
+			label: sampleName,
+			cell: sampleCell,
+			selectedAtUpdate: sampleUpdate ?? null,
+			assayStartedAtUpdate: engine.batchCount,
+			seed
+		};
+		const parent = tape.slice();
+		const test = active;
+		runningSource = source;
 		busy = true;
 		onbusy(true);
 		error = '';
 		try {
-			if (active === 'culture')
-				culture = await engine.runCulture(tape, { trials, seed, generations: 2 });
+			position = Math.max(0, Math.min(tape.length - 1, Math.trunc(position || 0)));
+			value = Math.max(0, Math.min(255, Math.trunc(value || 0)));
+			if (test === 'culture')
+				cultureEvidence = {
+					source,
+					result: await engine.runCulture(parent, { trials, seed, generations: 2 })
+				};
 			else
-				assays = await engine.runAssays(tape, {
-					seed,
-					trials,
-					position: Math.min(position, tape.length - 1),
-					value:
-						active !== 'marker' && tape[Math.min(position, tape.length - 1)] === value
-							? (value + 1) % 256
-							: value
-				});
+				assaysEvidence = {
+					source,
+					result: await engine.runAssays(parent, {
+						seed,
+						trials,
+						position: Math.min(position, tape.length - 1),
+						value:
+							test !== 'marker' && parent[Math.min(position, parent.length - 1)] === value
+								? (value + 1) % 256
+								: value
+					})
+				};
 		} catch (cause) {
 			error = cause instanceof Error ? cause.message : String(cause);
 		} finally {
@@ -84,17 +150,22 @@
 	function saveEvidence() {
 		const result = active === 'culture' ? culture : assays;
 		if (!result) return;
-		const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+		const blob = new Blob([JSON.stringify({ ...result, source: evidenceSource }, null, 2)], {
+			type: 'application/json'
+		});
 		const url = URL.createObjectURL(blob),
 			a = document.createElement('a');
 		a.href = url;
-		a.download = `algocell-${active}-seed-${seed}.json`;
+		a.download = `algocell-${active}-seed-${result.seed}.json`;
 		a.click();
 		setTimeout(() => URL.revokeObjectURL(url), 1000);
 	}
 </script>
 
 <section class="bench" aria-label="Encounter bench">
+	<p class="sample-source" aria-label="Selected assay sample">
+		{sampleName}{#if sampleUpdate !== undefined}<span>Selected at update {sampleUpdate}</span>{/if}
+	</p>
 	<nav class="test-tabs" aria-label="Encounter tests">
 		{#each tabs as tab (tab.id)}<button
 				class:active={active === tab.id}
@@ -112,12 +183,16 @@
 					: 'Does a changed byte persist through fresh partners?'}
 	</div>
 	<div class="test-controls">
-		<label
-			>Partners <select aria-label="Test partners" bind:value={trials} disabled={busy}
-				><option value={16}>16</option><option value={32}>32</option><option value={64}>64</option
-				></select
-			></label
-		><span>Seed {seed} · mutation off</span><button
+		<div class="partner-count">
+			<span>Partners</span><InstrumentSelect
+				label="Test partners"
+				value={String(trials)}
+				options={[16, 32, 64].map((value) => ({ value: String(value), label: String(value) }))}
+				onchange={(next) => (trials = Number(next))}
+				disabled={busy}
+			/>
+		</div>
+		<span>Seed {seed} · mutation off</span><button
 			class="primary"
 			disabled={busy}
 			onclick={() => void run()}
@@ -154,9 +229,16 @@
 				transfers. They use a separate machine.
 			</p>
 		</details>{/if}
-	{#if error}<p class="error" role="alert">{error}</p>{/if}
+	{#if currentError}<p class="error" role="alert">{currentError}</p>{/if}
 	{#if busy}<p class="note" role="status">
-			Testing the selected tape. The population is paused.
+			Testing {runningSource?.label.toLowerCase()} on a separate machine. The live world continues.{#if runningSource?.key !== sampleKey}
+				This test belongs to the previous sample.{/if}
+		</p>{/if}
+	{#if evidenceSource}<p class="evidence-source" aria-label="Assay evidence source">
+			Evidence for {evidenceSource.label.toLowerCase()}{#if evidenceSource.selectedAtUpdate !== null},
+				selected at update {evidenceSource.selectedAtUpdate}{/if}.<span
+				>Test launched at update {evidenceSource.assayStartedAtUpdate} · seed {evidenceSource.seed}</span
+			>
 		</p>{/if}
 	{#if active === 'culture' && culture}
 		<p class="verdict">
@@ -280,7 +362,7 @@
 				{@const offset = lane * L}
 				{@const count = lane === 2 ? ring - 2 * L : L}
 				<div class="lane-label">{name}<span>{offset}–{offset + count - 1}</span></div>
-				<div class="lane" style:--lane-columns={Math.min(count, 16)}>
+				<div class="lane" style:--lane-columns={Math.min(count, 8)}>
 					{#each Array.from({ length: count }, (_, i) => offset + i) as address (address)}<span
 							class:lit={(lens === 'fetch' ? record.fetched : record.starts).includes(address)}
 							class:started={record.starts.includes(address)}
@@ -296,7 +378,7 @@
 		{/if}
 		<details class="after-tape">
 			<summary>Partner after encounter</summary>
-			<div class="lane" style:--lane-columns={Math.min(L, 16)}>
+			<div class="lane" style:--lane-columns={Math.min(L, 8)}>
 				{#each record.after.slice(L, L * 2) as byte, index (index)}<span
 						class:changed={byte !== record.before[L + index]}
 						style:--byte-color={byteColor(byte)}><small>{index}</small>{hex(byte)}</span
@@ -316,9 +398,8 @@
 
 <style>
 	.bench {
-		margin-top: 13px;
-		padding-top: 11px;
-		border-top: 1px solid var(--border-muted);
+		min-width: 0;
+		font-variant-numeric: tabular-nums;
 		color: var(--text-secondary);
 		font-size: 12px;
 	}
@@ -330,7 +411,6 @@
 		flex-wrap: wrap;
 	}
 	button,
-	select,
 	input {
 		font: inherit;
 		color: inherit;
@@ -342,6 +422,11 @@
 		padding: 6px 8px;
 		cursor: pointer;
 		white-space: nowrap;
+		min-height: 32px;
+		transition:
+			background 160ms ease,
+			color 160ms ease,
+			border-color 160ms ease;
 	}
 	button:hover {
 		background: var(--bg-hover);
@@ -356,8 +441,12 @@
 		opacity: 0.45;
 		cursor: default;
 	}
+	.test-tabs {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
 	.test-tabs button {
-		flex: 1;
+		min-width: 0;
 		font-size: 11px;
 	}
 	.test-question {
@@ -368,23 +457,13 @@
 	}
 	.test-controls {
 		display: flex;
-		gap: 9px;
-		align-items: center;
+		gap: 8px;
+		align-items: end;
 		flex-wrap: wrap;
 	}
-	.test-controls label {
+	.partner-count > span {
 		font-size: 11px;
 		color: var(--text-muted);
-	}
-	select {
-		appearance: auto;
-		color-scheme: dark;
-		background: #1b1b1b;
-		background-image: none;
-		border: 1px solid var(--border-muted);
-		border-radius: 4px;
-		padding: 3px 5px;
-		margin-left: 5px;
 	}
 	.test-controls > span {
 		font: 10px monospace;
@@ -392,7 +471,8 @@
 		flex: 1;
 	}
 	.test-controls > button {
-		font-size: 11px;
+		width: 100%;
+		font-size: 12px;
 	}
 	.test-options {
 		margin: 11px 0;
@@ -404,18 +484,22 @@
 	}
 	.marker-inputs {
 		display: flex;
-		gap: 12px;
-		margin: 9px 0;
+		gap: 8px;
+		flex-wrap: wrap;
+		margin: 12px 0;
 		align-items: center;
 	}
 	.marker-inputs label {
+		flex: 1;
 		display: flex;
+		flex-direction: column;
 		gap: 6px;
-		align-items: center;
+		align-items: stretch;
 		font-size: 11px;
 	}
 	.marker-inputs input {
-		width: 55px;
+		width: 100%;
+		min-height: 32px;
 		background: var(--bg-subtle);
 		border: 1px solid var(--border-muted);
 		border-radius: 4px;
@@ -423,6 +507,8 @@
 		font: 12px monospace;
 	}
 	.marker-inputs > span {
+		align-self: end;
+		padding-bottom: 10px;
 		font: 11px monospace;
 		color: var(--accent-warm);
 	}
@@ -505,6 +591,7 @@
 	}
 	.retention-key {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 12px;
 		font-size: 9px;
@@ -569,6 +656,7 @@
 	}
 	.encounter-header {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 8px;
 		justify-content: space-between;
@@ -589,11 +677,13 @@
 		margin: 10px 0;
 	}
 	.lens-tabs button {
-		font-size: 10px;
+		font-size: 11px;
+		white-space: normal;
 		flex: 1;
 	}
 	.lane-key {
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: space-between;
 		gap: 10px;
 		font-size: 9px;
@@ -687,8 +777,9 @@
 	}
 	.evidence-footer {
 		display: flex;
-		gap: 10px;
-		align-items: center;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 8px;
 		justify-content: space-between;
 		border-top: 1px solid var(--border-muted);
 		margin-top: 12px;
@@ -749,8 +840,45 @@
 		.test-controls > button {
 			min-height: 36px;
 		}
-		.test-controls select {
-			min-height: 32px;
+	}
+	.sample-source,
+	.evidence-source {
+		margin: 0 0 12px;
+		font-size: 11px;
+		color: var(--text-secondary);
+		line-height: 1.6;
+	}
+	.sample-source span,
+	.evidence-source span {
+		display: block;
+		color: var(--text-muted);
+		font-variant-numeric: tabular-nums;
+	}
+	.evidence-source {
+		margin: 16px 0 12px;
+		padding: 12px 0;
+		border-top: 1px solid var(--border-muted);
+		border-bottom: 1px solid var(--border-muted);
+	}
+	.partner-count {
+		display: flex;
+		flex-direction: column;
+		width: 100px;
+		gap: 4px;
+	}
+	button:focus-visible,
+	input:focus-visible,
+	summary:focus-visible {
+		outline: 1px solid var(--accent-warm);
+		outline-offset: 2px;
+	}
+	summary {
+		min-height: 32px;
+		align-content: center;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		button {
+			transition: none;
 		}
 	}
 </style>

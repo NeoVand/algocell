@@ -18,6 +18,8 @@
 		PAPER_PRESETS as EXPERIMENT_PRESETS,
 		type PaperPreset as ExperimentPreset
 	} from '$lib/lab/presets';
+	import InstrumentSelect from '$lib/components/InstrumentSelect.svelte';
+	import type { FieldMode } from '$lib/observation';
 	import ObservationTools from '$lib/components/ObservationTools.svelte';
 	import EncounterBench from '$lib/components/EncounterBench.svelte';
 	import { ABOUT_SECTIONS, GUIDE_SECTIONS, type DocumentationSection } from '$lib/lab/content';
@@ -51,7 +53,6 @@
 	let colormap = $state(createColormap('rainbow'));
 	let simpleView = $state(false);
 	let showGridLines = $state(true);
-	let showColorAdj = $state(false);
 	let brightness = $state(0);
 	let contrast = $state(1);
 	let saturation = $state(1);
@@ -67,7 +68,7 @@
 	let pairCount = $state(MAX_BATCH_PAIR_N);
 	let z80Steps = $state(Z80_STEPS);
 	let playing = $state(true);
-	let runDeadline = 0;
+
 	let speed = $state(8); // steps per frame; 8x is the default
 	let gridType = $state<GridType>('square');
 	type MachineChoice = 'z80-0.2' | 'z80-0.3' | 'z80-nmos' | 'm6502' | 'i8086';
@@ -82,7 +83,10 @@
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
 	let machineError = $state<string | null>(null);
+	let coreNotice = $state('');
 	let selectedExperimentId = $state('');
+	let appliedExperimentId = $state('');
+	let stagedExperimentPending = $state(false);
 	let initialCondition = $state.raw<InitialCondition>({ kind: 'random' });
 	const selectedExperiment = $derived(
 		EXPERIMENT_PRESETS.find((preset) => preset.id === selectedExperimentId)
@@ -98,6 +102,9 @@
 	);
 	let inspectedTape = $state.raw<Uint8Array | null>(null);
 	let inspectedCell = $state(-1);
+	let inspectedSampleId = $state(0);
+	let inspectedUpdate = $state(0);
+	let speciesSampleUpdate = $state(0);
 	let cultureBusy = $state(false);
 	let observation = $state<ObservationTools>();
 	let inspectReadPending = false;
@@ -196,50 +203,85 @@
 	}
 
 	async function updateMachine(reset = false) {
-		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
-		playing = false;
+		if (!engine || machineBusy || checkpointBusy) return;
 		machineBusy = true;
 		machineError = null;
 		try {
-			if (reset) await engine.configure(settings(), initialCondition);
-			else await engine.setMachine(settings());
-			clearMeasurements();
+			if (reset) {
+				await engine.configure(settings(), initialCondition);
+				clearMeasurements();
+			} else await engine.setMachine(settings());
+			const previous = applied;
+			applied = engine.settings;
+			syncLiveDraft(previous, applied);
 		} catch (error) {
+			assignMachineSettings(engine.settings);
 			machineError = error instanceof Error ? error.message : String(error);
 		} finally {
 			machineBusy = false;
 		}
 	}
 
-	async function chooseMachine(event: Event) {
-		const next = (event.target as HTMLSelectElement).value as MachineChoice;
-		machine = next;
-		suppressPatterns = [];
-		selectedExperimentId = '';
-		stackConvention = next === 'm6502' || next === 'i8086' ? 'first-push' : 'top';
-		dialMode = next === 'z80-0.2' ? 'historical-pcg' : 'counter';
-		initialCondition = { kind: 'random' };
-		await updateMachine(true);
+	async function chooseMachine(next: string) {
+		if (!engine || machineBusy || checkpointBusy || next === machine) return;
+		coreNotice = '';
+		const current = engine.settings;
+		const nextIsa: LabIsa = next === 'm6502' ? 'm6502' : next === 'i8086' ? 'i8086' : 'z80';
+		assignMachineSettings({
+			...current,
+			isa: nextIsa,
+			compat: next === 'z80-0.2' ? '0.2' : '0.3',
+			variant: next === 'z80-nmos' ? 'zilog-nmos' : nextIsa === 'z80' ? 'classic' : 'nmos',
+			ablation: [],
+			stack: nextIsa === 'z80' ? 'top' : 'first-push',
+			dialMode: next === 'z80-0.2' ? 'historical-pcg' : 'counter'
+		});
+		await updateMachine();
+		if (!machineError) {
+			appliedExperimentId = '';
+			const changedDefaults: string[] = [];
+			if (current.stack !== applied.stack) {
+				const placement =
+					applied.stack === 'top'
+						? 'top at B’s last byte'
+						: applied.stack === 'first-push'
+							? 'first push at B’s last byte'
+							: 'legacy SP = FFFF';
+				changedDefaults.push(`Stack: ${placement}`);
+			}
+			if (current.dialMode !== applied.dialMode)
+				changedDefaults.push(
+					`dial: ${applied.dialMode === 'counter' ? 'counter' : 'historical PCG'}`
+				);
+			if (current.ablation.length > 0) changedDefaults.push('instruction suppression cleared');
+			coreNotice = `Core changed on the existing lattice.${changedDefaults.length ? ` ${changedDefaults.join('; ')}.` : ''}`;
+		}
 	}
 
-	async function applyExperimentPreset(preset: ExperimentPreset) {
-		if (machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
-		assignMachineSettings(preset.config);
+	function applyExperimentPreset(preset: ExperimentPreset) {
+		worldDraft = structuredClone(preset.config);
+		stagedInitial = preset.initialCondition;
+		stagedPreset = null;
 		selectedExperimentId = preset.id;
-		initialCondition = preset.initialCondition;
-		await updateMachine(true);
+		stagedExperimentPending = true;
+		worldNotice = 'Condition staged. Start it when you are ready.';
 	}
 
 	async function inspectCell(index: number) {
 		if (!engine || index < 0 || inspectReadPending) return;
 		inspectReadPending = true;
 		try {
+			const sampledUpdate = engine.batchCount;
 			const bytes = await engine.readCell(index);
 			if (!bytes.length) return;
-			playing = false;
-			showSettings = false;
+			activeTab = 'measure';
+			sidebarCollapsed = false;
 			inspectedTape = bytes;
 			inspectedCell = index;
+			inspectedUpdate = sampledUpdate;
+			inspectedSampleId++;
+			speciesModal = null;
+			measureSection = 'bench';
 		} finally {
 			inspectReadPending = false;
 		}
@@ -372,14 +414,11 @@
 
 	// Stats
 	let opsPerSec = $state(0);
-	let showHelp = $state(false);
 	let helpTab = $state<
 		'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'analysis' | 'about' | 'guide'
-	>('overview');
-	let showSpeedMenu = $state(false);
-	let showSettings = $state(false);
-	let toolbarCollapsed = $state(false);
-	let openTip = $state<string | null>(null);
+	>('guide');
+	let lastGuideTab: typeof helpTab = 'guide';
+
 	let keyboardModality = $state(false);
 	let showInfoChart = $state(true);
 	let suppressPatterns: string[] = $state([]);
@@ -445,7 +484,6 @@
 	let currentSpecies = $state<SpeciesSnapshot | null>(null);
 	let speciesHoveredIdx = $state(-1);
 	let speciesModal = $state<SpeciesEntry | null>(null);
-	let speciesModalTip = $state<{ idx: number; byteVal: number; x: number; y: number } | null>(null);
 	let speciesLoading = false;
 
 	// Diversity metrics time series ring buffer
@@ -499,8 +537,6 @@
 	let hoveredCell = $state(-1);
 	let cellData = $state.raw<Uint8Array | null>(null);
 	let disasmLines: ReturnType<typeof disassemble> = $state.raw([]);
-	let mouseX = $state(0);
-	let mouseY = $state(0);
 	let canvasW = $state(800);
 	let canvasH = $state(800);
 	let tooltipRefreshTimer: ReturnType<typeof setInterval> | undefined;
@@ -553,40 +589,6 @@
 		}));
 	});
 
-	let tooltipStyle = $derived(computeTooltipStyle(mouseX, mouseY));
-
-	let genomeCells = $derived(
-		cellData && disasmLines.length > 0 ? buildGenomeGrid(cellData, disasmLines) : []
-	);
-
-	function computeTooltipStyle(mx: number, my: number): string {
-		const isHex = gridType === 'hex' && tapeLength === 19;
-		const tooltipW = isHex ? 280 : 196;
-		const tooltipH = isHex ? 260 : Math.ceil(tapeLength / 4) * 48 + 4;
-		const vw = window.innerWidth;
-		const vh = window.innerHeight;
-		const gap = 12;
-
-		// Center tooltip horizontally on the cursor
-		let x = mx - tooltipW / 2;
-		let y: number;
-
-		// Try placing above the cursor first
-		if (my - gap - tooltipH >= 4) {
-			y = my - gap - tooltipH;
-		} else {
-			// Place below
-			y = my + gap;
-		}
-
-		// Keep within viewport
-		if (x + tooltipW > vw - 4) x = vw - 4 - tooltipW;
-		if (x < 4) x = 4;
-		if (y + tooltipH > vh - 4) y = vh - 4 - tooltipH;
-		if (y < 4) y = 4;
-		return `left:${x}px;top:${y}px`;
-	}
-
 	function buildSparklinePathTyped(
 		values: Float64Array,
 		w: number,
@@ -606,11 +608,12 @@
 
 	onMount(() => {
 		if (!canvas) return;
+		sidebarCollapsed = window.innerWidth < 700;
 
 		// Compute grid dimensions from actual viewport on first mount
 		if (!gridInitialized) {
 			const initialGridType = untrack(() => gridType);
-			const dims = computeGridDimensions(window.innerWidth, window.innerHeight, initialGridType);
+			const dims = computeGridDimensions(canvas.clientWidth, canvas.clientHeight, initialGridType);
 			gridWidth = dims.w;
 			gridHeight = dims.h;
 			gridInitialized = true;
@@ -644,12 +647,19 @@
 					return;
 				}
 				engine = eng;
-				runDeadline = performance.now() + 55_000;
+				applied = eng.settings;
+				worldDraft = structuredClone(eng.settings);
 				startLoop();
 				if (import.meta.env.DEV) {
 					// Dev-only handle for headless experiments and debugging from the console.
 					(window as unknown as { __algocell?: unknown }).__algocell = {
 						engine: eng,
+						get playing() {
+							return playing;
+						},
+						setPlaying(value: boolean) {
+							playing = value;
+						},
 						resolveSuppression
 					};
 				}
@@ -693,18 +703,21 @@
 			animFrameId = requestAnimationFrame(tick);
 			if (!engine) return;
 
-			if (playing && (document.hidden || performance.now() >= runDeadline)) playing = false;
-			if (playing && !machineBusy && !observationBusy && !checkpointBusy && !cultureBusy) {
+			if (playing && !document.hidden && !machineBusy && !checkpointBusy) {
 				for (let i = 0; i < speed; i++) {
 					engine.simulateStep();
 				}
 			}
 
-			if (!machineBusy && !observationBusy && !checkpointBusy) {
+			if (!machineBusy && !checkpointBusy) {
 				engine.render(canvas);
 				flushCellRefresh();
 			}
 			frameCount++;
+			if (frameCount % 15 === 0) {
+				epoch = engine.batchCount;
+				opsPerSec = engine.opsPerSec;
+			}
 
 			// Update stats: immediately on first frame, then every 15 frames
 			if (
@@ -712,11 +725,17 @@
 				!observationBusy &&
 				playing &&
 				(frameCount === 1 || frameCount % 15 === 0) &&
-				!statsLoading
+				!statsLoading &&
+				activeTab === 'measure' &&
+				measureSection === 'charts'
 			) {
 				opsPerSec = engine.opsPerSec;
 				updateTopBytes();
-				if (infoTab === 'species' || infoTab === 'diversity') {
+				if (
+					activeTab === 'measure' &&
+					measureSection === 'charts' &&
+					(infoTab === 'species' || infoTab === 'diversity')
+				) {
 					updateSpecies();
 				}
 			}
@@ -980,8 +999,6 @@
 		const rect = canvas.getBoundingClientRect();
 		const sx = e.clientX - rect.left;
 		const sy = e.clientY - rect.top;
-		mouseX = e.clientX;
-		mouseY = e.clientY;
 
 		if (isPanning) {
 			if (Math.hypot(e.clientX - pointerDownX, e.clientY - pointerDownY) > 4) pointerMoved = true;
@@ -1018,12 +1035,30 @@
 	let cellRefreshPending = false;
 	let lastCellRefresh = 0;
 
+	function hoverPreviewVisible() {
+		return (
+			activeTab === 'measure' &&
+			measureSection === 'probe' &&
+			activeTool === 'navigate' &&
+			!sidebarCollapsed
+		);
+	}
+
 	function refreshCellData(cell: number) {
+		if (!hoverPreviewVisible()) {
+			clearInterval(tooltipRefreshTimer);
+			pendingCellRefresh = -1;
+			return;
+		}
 		// Mark for readback after next render (so data matches what's on screen)
 		pendingCellRefresh = cell;
 	}
 
 	function flushCellRefresh() {
+		if (!hoverPreviewVisible()) {
+			pendingCellRefresh = -1;
+			return;
+		}
 		if (
 			pendingCellRefresh < 0 ||
 			!engine ||
@@ -1038,7 +1073,7 @@
 		engine
 			.readCell(cell)
 			.then((data) => {
-				if (data.length === 0 || hoveredCell !== cell) return;
+				if (data.length === 0 || hoveredCell !== cell || !hoverPreviewVisible()) return;
 				cellData = data;
 				disasmLines = disassemble(data);
 			})
@@ -1201,8 +1236,6 @@
 					// Tap on a cell — preserve the hover view and open an inspector.
 					void observation?.selectCell(cell);
 					hoveredCell = cell;
-					mouseX = touchStartX;
-					mouseY = touchStartY;
 					engine.setHoverCell(cell);
 					clearInterval(tooltipRefreshTimer);
 					tooltipRefreshTimer = setInterval(() => refreshCellData(cell), 500);
@@ -1244,17 +1277,26 @@
 		engine?.resetView(canvasW, canvasH);
 	}
 
-	function handleReset() {
-		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
-		if (initialCondition.kind !== 'random') {
-			void updateMachine(true);
-			return;
+	async function handleReset() {
+		if (!engine || machineBusy || checkpointBusy) return;
+		machineBusy = true;
+		try {
+			await engine.configure(engine.settings, initialCondition);
+			clearMeasurements();
+		} catch (error) {
+			machineError = error instanceof Error ? error.message : String(error);
+		} finally {
+			machineBusy = false;
 		}
-		engine.reset(seed);
-		clearMeasurements();
 	}
 
 	function clearMeasurements() {
+		coreNotice = '';
+		lastProbeTarget = -1;
+		pendingCellRefresh = -1;
+		cellData = null;
+		hoveredCell = -1;
+		clearInterval(tooltipRefreshTimer);
 		observation?.resetSelection();
 		inspectedTape = null;
 		opsPerSec = 0;
@@ -1280,7 +1322,6 @@
 	async function handleSave() {
 		if (!engine || !canvas || machineBusy || observationBusy || checkpointBusy || cultureBusy)
 			return;
-		playing = false;
 		checkpointBusy = true;
 		machineError = null;
 		try {
@@ -1336,15 +1377,29 @@
 		}
 	}
 
+	let pendingCheckpoint = $state.raw<{
+		name: string;
+		metadata: CheckpointMetadata;
+		soupData: Uint8Array;
+	} | null>(null);
 	async function handleLoadFile(file: File) {
-		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
-		playing = false;
-		machineBusy = true;
+		if (!engine || machineBusy || checkpointBusy) return;
 		machineError = null;
 		try {
 			const result = await loadCheckpoint(new Uint8Array(await file.arrayBuffer()));
 			if (!result) throw new Error('This file does not contain an Algocell checkpoint.');
-			const { metadata, soupData } = result;
+			pendingCheckpoint = { name: file.name, metadata: result.metadata, soupData: result.soupData };
+			showMeasure('record');
+		} catch (error) {
+			machineError = error instanceof Error ? error.message : String(error);
+		}
+	}
+	async function restoreCheckpoint() {
+		if (!engine || !pendingCheckpoint || machineBusy || checkpointBusy) return;
+		machineBusy = true;
+		machineError = null;
+		try {
+			const { metadata, soupData } = pendingCheckpoint;
 			const restored: LabSettings = metadata.machineSettings ?? {
 				...ORIGINAL_SETTINGS,
 				width: metadata.gridWidth,
@@ -1358,12 +1413,21 @@
 				pairAttempts: metadata.pairCount,
 				ablation: [...metadata.suppressPatterns]
 			};
-			assignMachineSettings(restored);
-			initialCondition = metadata.initialCondition ?? { kind: 'random' };
-			selectedExperimentId = '';
-			await engine.configure(restored, initialCondition);
+			const restoredInitial = metadata.initialCondition ?? { kind: 'random' };
+			await engine.configure(restored, restoredInitial);
 			engine.writeSoupData(soupData);
+			assignMachineSettings(restored);
+			initialCondition = restoredInitial;
+			applied = engine.settings;
+			worldDraft = structuredClone(applied);
+			stagedInitial = initialCondition;
+			selectedExperimentId = '';
+			appliedExperimentId = '';
+			stagedExperimentPending = false;
+			stagedPreset = null;
 			clearMeasurements();
+			pendingCheckpoint = null;
+			worldNotice = 'Checkpoint restored. Playback state preserved.';
 		} catch (error) {
 			machineError = error instanceof Error ? error.message : String(error);
 		} finally {
@@ -1385,45 +1449,14 @@
 		if (file) handleLoadFile(file);
 	}
 
-	function handleSeedChange(e: Event) {
-		const val = parseInt((e.target as HTMLInputElement).value);
-		if (!isNaN(val) && val >= 0) {
-			seed = val;
-		}
-	}
-
-	function handlePairCountChange(e: Event) {
-		const val = parseInt((e.target as HTMLInputElement).value);
-		if (!isNaN(val) && engine) {
-			pairCount = val;
-			engine.pairCount = val;
-		}
-	}
-
 	function handleColormapChange(name: ColormapName) {
 		colormapName = name;
 		colormap = createColormap(name);
 		engine?.updateColormap(colormap);
 	}
 
-	function handleGridTypeChange(type: GridType) {
-		gridType = type;
-		tapeLength = type === 'hex' ? 19 : 16;
-		pairLength = tapeLength * 2;
-		selectedExperimentId = '';
-		initialCondition = { kind: 'random' };
-		// Recompute grid dimensions for the new grid type
-		const dims = computeGridDimensions(window.innerWidth, window.innerHeight, type);
-		gridWidth = dims.w;
-		gridHeight = dims.h;
-		applyGridConfig();
-	}
-
-	function applyGridConfig() {
-		void updateMachine(true);
-	}
-
 	function addSuppressPattern(pattern: string) {
+		if (machineBusy || checkpointBusy) return;
 		// Support multiple patterns separated by semicolons
 		// (commas are NOT delimiters because Z80 mnemonics contain commas, e.g. LD A,B)
 		const parts = pattern
@@ -1445,14 +1478,18 @@
 		if (added) {
 			// Svelte needs identity change for array reactivity
 			suppressPatterns = [...suppressPatterns];
+			commitAblation();
 		}
 	}
 
 	function removeSuppressPattern(pattern: string) {
+		if (machineBusy || checkpointBusy) return;
 		suppressPatterns = suppressPatterns.filter((p) => p !== pattern);
+		commitAblation();
 	}
 
 	function toggleSuppressOpcode(opcode: number) {
+		if (machineBusy || checkpointBusy) return;
 		tileTooltip = null;
 		chartHoveredByte = -1;
 		const mnemonic = isa === 'z80' ? mnemonicOf('base', opcode) : `opcode:${hexByte(opcode)}`;
@@ -1469,7 +1506,9 @@
 	}
 
 	function clearSuppressedOpcodes() {
+		if (machineBusy || checkpointBusy) return;
 		suppressPatterns = [];
+		commitAblation();
 	}
 
 	// ── Presets ────────────────────────────────────────────────────────────
@@ -1642,43 +1681,45 @@
 		return null;
 	});
 
-	async function applyPreset(preset: Preset) {
-		if (machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
-		let disruption: ApplyMode | 'none' = 'none';
-		const rank: Record<ApplyMode | 'none', number> = { none: 0, live: 0, reset: 1, grid: 2 };
-		if (!('machine' in preset.values)) {
-			// Original .acell-era presets retain their original processor and reset contract.
-			if (
-				machine !== 'z80-0.2' ||
-				lethalProbability !== 0 ||
-				randomRegisters ||
-				stackConvention !== 'legacy-sp'
-			)
-				disruption = 'grid';
-			machine = 'z80-0.2';
-			lethalProbability = 0;
-			randomRegisters = false;
-			stackConvention = 'legacy-sp';
-			dialMode = 'historical-pcg';
-			if (preset.id === 'builtin:classic' || preset.id === 'builtin:hex-organic') {
-				const topology = preset.values.gridType === 'hex' ? 'hex' : 'square';
-				if (tapeLength !== (topology === 'hex' ? 19 : 16)) disruption = 'grid';
-				tapeLength = topology === 'hex' ? 19 : 16;
-				pairLength = tapeLength * 2;
-				initialCondition = { kind: 'random' };
-			}
-		}
-		for (const def of SETTINGS) {
-			if (!(def.key in preset.values)) continue;
-			const nextVal = preset.values[def.key];
-			if (valuesEqual(def.get(), nextVal)) continue;
-			def.set(nextVal);
-			if (rank[def.mode] > rank[disruption]) disruption = def.mode;
-		}
+	function applyPreset(preset: Preset) {
+		const values = preset.values;
+		const choice = String(values.machine ?? 'z80-0.2');
+		const presetIsa: LabIsa = choice === 'm6502' ? 'm6502' : choice === 'i8086' ? 'i8086' : 'z80';
+		const topology = (values.gridType ?? applied.topology) as GridType;
+		const legacyGeometry = preset.id === 'builtin:classic' || preset.id === 'builtin:hex-organic';
+		worldDraft = {
+			...structuredClone(applied),
+			isa: presetIsa,
+			compat: choice === 'z80-0.2' ? '0.2' : '0.3',
+			variant: choice === 'z80-nmos' ? 'zilog-nmos' : presetIsa === 'z80' ? 'classic' : 'nmos',
+			topology,
+			width: Number(values.gridWidth ?? applied.width),
+			height: Number(values.gridHeight ?? applied.height),
+			length: Number(
+				values.tapeLength ?? (legacyGeometry ? (topology === 'hex' ? 19 : 16) : applied.length)
+			),
+			ring: Number(
+				values.pairLength ?? (legacyGeometry ? (topology === 'hex' ? 38 : 32) : applied.ring)
+			),
+			seed: Number(values.seed ?? applied.seed),
+			steps: Number(values.z80Steps ?? applied.steps),
+			pairAttempts: Number(values.pairCount ?? applied.pairAttempts),
+			mutationExponent: Number(values.noiseExp ?? applied.mutationExponent),
+			lethalProbability: Number(values.lethalProbability ?? 0),
+			randomRegisters: Boolean(values.randomRegisters ?? false),
+			stack: (values.stackConvention ?? 'legacy-sp') as LabSettings['stack'],
+			dialMode: (values.dialMode ?? 'historical-pcg') as LabSettings['dialMode'],
+			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
+		};
+		stagedInitial = values.initialCondition
+			? JSON.parse(String(values.initialCondition))
+			: legacyGeometry
+				? { kind: 'random' }
+				: initialCondition;
+		stagedPreset = preset;
 		selectedExperimentId = '';
-		if (disruption === 'grid' || disruption === 'reset') await updateMachine(true);
-		else if (engine && JSON.stringify(engine.settings) !== JSON.stringify(settings()))
-			await updateMachine();
+		stagedExperimentPending = false;
+		worldNotice = `${preset.name} staged. Start it when you are ready.`;
 	}
 
 	// Case-insensitive name match so "Classic" and "classic" are the same preset.
@@ -1729,11 +1770,13 @@
 		if (activePresetId) deletePreset(activePresetId);
 	}
 
-	// Sync the derived suppression sets to the GPU engine
-	$effect(() => {
-		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
+	function commitAblation() {
+		if (!engine || machineBusy || checkpointBusy) return;
 		engine.setAblation(suppressPatterns);
-	});
+		const previous = applied;
+		applied = engine.settings;
+		syncLiveDraft(previous, applied);
+	}
 
 	// Sync simple view mode to GPU engine
 	$effect(() => {
@@ -1792,14 +1835,12 @@
 	});
 
 	function togglePlay() {
-		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
+		if (!engine) return;
 		playing = !playing;
-		if (playing) runDeadline = performance.now() + 55_000;
 	}
 
 	function setSpeed(s: number) {
 		speed = s;
-		showSpeedMenu = false;
 	}
 
 	function formatNumber(n: number): string {
@@ -2080,107 +2121,333 @@
 		}
 		return cells;
 	}
+
+	type SidebarTab = 'world' | 'measure' | 'experiments' | 'guide' | 'about';
+	type DirectTool = 'navigate' | 'probe' | 'region' | 'marker' | 'history' | 'compare' | 'record';
+	let activeTab = $state<SidebarTab>('world');
+	let sidebarCollapsed = $state(false);
+	let measureSection = $state('probe');
+	let fieldMode = $state<FieldMode>('bytes');
+	let activeMarkerPosition = $state(0);
+	let activeMarkerValue = $state(165);
+	let activeTool = $state<DirectTool>('navigate');
+	let epoch = $state(0);
+	let applied = $state.raw<LabSettings>({ ...ORIGINAL_SETTINGS });
+	let worldDraft = $state<LabSettings>({ ...ORIGINAL_SETTINGS });
+	let stagedInitial = $state.raw<InitialCondition>({ kind: 'random' });
+	let stagedPreset = $state.raw<Preset | null>(null);
+	let worldNotice = $state('');
+	let worldSection = $state<'condition' | 'look'>('condition');
+	const pendingWorld = $derived(
+		JSON.stringify(worldDraft) !== JSON.stringify(applied) ||
+			Boolean(stagedPreset) ||
+			stagedExperimentPending
+	);
+	const machineOptions = [
+		{ value: 'z80-0.2', label: 'Z80 · compat 0.2' },
+		{ value: 'z80-0.3', label: 'Z80 · 0.3 classic' },
+		{ value: 'z80-nmos', label: 'Z80 · 0.3 Zilog NMOS' },
+		{ value: 'm6502', label: 'NMOS 6502' },
+		{ value: 'i8086', label: '8086 · coherent fetch' }
+	];
+	const fieldOptions = [
+		{ value: 'bytes', label: 'Bytes' },
+		{ value: 'identity', label: 'Tape identity' },
+		{ value: 'confinement', label: 'Open / confined' },
+		{ value: 'zeros', label: 'Zero density' },
+		{ value: 'diversity', label: 'Local diversity' },
+		{ value: 'marker', label: 'Marker matches' }
+	];
+	const shellTabs: { id: SidebarTab; name: string; glyph: string }[] = [
+		{ id: 'world', name: 'World', glyph: '◎' },
+		{ id: 'measure', name: 'Measure', glyph: '⌖' },
+		{ id: 'experiments', name: 'Experiments', glyph: '⏣' },
+		{ id: 'guide', name: 'Guide', glyph: '?' },
+		{ id: 'about', name: 'About', glyph: 'i' }
+	];
+	const railTools: { id: DirectTool; label: string; key: string; path: string }[] = [
+		{ id: 'navigate', label: 'Select / pan', key: 'V', path: 'M5 3v13l4-4 4 6 3-2-4-6 6-1Z' },
+		{
+			id: 'probe',
+			label: 'Probe',
+			key: 'P',
+			path: 'M10 2v4m0 8v4M2 10h4m8 0h4M10 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8'
+		},
+		{ id: 'region', label: 'Region', key: 'R', path: 'M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4' },
+		{ id: 'marker', label: 'Marker', key: 'M', path: 'M6 3h8l-2 5 3 3H5l3-3-2-5Zm4 8v7' },
+		{ id: 'compare', label: 'Compare', key: 'C', path: 'M10 2v16M7 4H3v12h4m6-12h4v12h-4' }
+	];
+	function selectTab(tab: SidebarTab) {
+		activeTab = tab;
+		sidebarCollapsed = false;
+		if (tab === 'guide' && helpTab === 'about') helpTab = lastGuideTab;
+		if (tab === 'about') {
+			if (helpTab !== 'about') lastGuideTab = helpTab;
+			helpTab = 'about';
+		}
+	}
+	function activateTool(tool: DirectTool) {
+		if (machineBusy || observationBusy || checkpointBusy) return;
+		activeTool = tool;
+		if (tool !== 'navigate') {
+			selectTab('measure');
+			measureSection = tool;
+		}
+		observation?.activateTool(tool);
+	}
+	function showMeasure(section: string) {
+		selectTab('measure');
+		measureSection = section;
+		if (section !== 'charts' && section !== 'bench') activateTool(section as DirectTool);
+	}
+	function jumpWorld(section: 'condition' | 'look' = 'condition', target?: string) {
+		selectTab('world');
+		worldSection = section;
+		if (target) requestAnimationFrame(() => document.getElementById(target)?.focus());
+	}
+	let lastProbeTarget = -1;
+	function observationState(next: {
+		tool: string;
+		mode: FieldMode;
+		update: number;
+		selected: number | null;
+		markerPosition?: number;
+		markerValue?: number;
+	}) {
+		const toolChanged = activeTool !== next.tool;
+		activeTool = next.tool as DirectTool;
+		if (toolChanged && activeTab === 'measure' && !sidebarCollapsed && next.tool !== 'navigate')
+			measureSection = next.tool;
+		fieldMode = next.mode;
+		if (next.markerPosition !== undefined) activeMarkerPosition = next.markerPosition;
+		if (next.markerValue !== undefined) activeMarkerValue = next.markerValue;
+		if (next.selected !== null && next.selected >= 0 && next.selected !== lastProbeTarget) {
+			lastProbeTarget = next.selected;
+			if (measureSection === 'bench' && inspectedTape && next.selected !== inspectedCell)
+				void inspectCell(next.selected);
+			else {
+				selectTab('measure');
+				measureSection = next.tool === 'marker' ? 'marker' : 'probe';
+			}
+		}
+	}
+	async function startNewWorld() {
+		if (!engine || machineBusy || checkpointBusy) return;
+		machineBusy = true;
+		machineError = null;
+		const next = $state.snapshot(worldDraft);
+		const nextInitial = structuredClone(stagedInitial);
+		const nextPreset = stagedPreset ? structuredClone(stagedPreset) : null;
+		const nextExperimentId = selectedExperimentId;
+		const stagedSignature = JSON.stringify([next, nextInitial, nextPreset, nextExperimentId]);
+		try {
+			await engine.configure(next, nextInitial);
+			assignMachineSettings(next);
+			applied = engine.settings;
+			initialCondition = nextInitial;
+			if (nextPreset)
+				for (const def of SETTINGS)
+					if (
+						[
+							'colormapName',
+							'brightness',
+							'contrast',
+							'saturation',
+							'showGridLines',
+							'simpleView'
+						].includes(def.key) &&
+						def.key in nextPreset.values
+					)
+						def.set(nextPreset.values[def.key]);
+			appliedExperimentId = nextExperimentId;
+			const draftUnchanged =
+				stagedSignature ===
+				JSON.stringify([
+					$state.snapshot(worldDraft),
+					stagedInitial,
+					stagedPreset,
+					selectedExperimentId
+				]);
+			if (draftUnchanged) {
+				worldDraft = structuredClone(applied);
+				stagedPreset = null;
+				stagedExperimentPending = false;
+			}
+			clearMeasurements();
+			worldNotice = 'New world started. Your playback state is preserved.';
+		} catch (error) {
+			machineError = error instanceof Error ? error.message : String(error);
+		} finally {
+			machineBusy = false;
+		}
+	}
+	function discardDraft() {
+		worldDraft = structuredClone(applied);
+		stagedInitial = initialCondition;
+		stagedPreset = null;
+		selectedExperimentId = '';
+		stagedExperimentPending = false;
+		worldNotice = '';
+	}
+	function stepOnce() {
+		if (engine && !machineBusy && !checkpointBusy) {
+			engine.simulateStep();
+			epoch = engine.batchCount;
+		}
+	}
+	function liveBudget(key: 'noiseExp' | 'pairCount' | 'z80Steps', value: number) {
+		if (!engine || machineBusy || checkpointBusy) return;
+		const previous = applied;
+		if (key === 'noiseExp') noiseExp = engine.noiseExp = value;
+		if (key === 'pairCount') pairCount = engine.pairCount = value;
+		if (key === 'z80Steps') z80Steps = engine.z80Steps = value;
+		applied = engine.settings;
+		syncLiveDraft(previous, applied);
+	}
+	function syncLiveDraft(previous: LabSettings, next: LabSettings) {
+		if (stagedPreset || stagedExperimentPending) return;
+		const patch: Partial<LabSettings> = {};
+		for (const key of [
+			'isa',
+			'compat',
+			'variant',
+			'mutationExponent',
+			'pairAttempts',
+			'steps',
+			'lethalProbability',
+			'ablation',
+			'stack',
+			'dialMode'
+		] as const) {
+			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
+				Object.assign(patch, { [key]: next[key] });
+		}
+		worldDraft = { ...$state.snapshot(worldDraft), ...patch };
+	}
+	function keyboard(event: KeyboardEvent) {
+		keyboardModality = true;
+		if (event.metaKey || event.ctrlKey) {
+			if (event.code === 'KeyS') {
+				event.preventDefault();
+				void handleSave();
+			}
+			if (event.code === 'KeyO') {
+				event.preventDefault();
+				fileInput?.click();
+			}
+			return;
+		}
+		const target = event.target;
+		if (
+			target instanceof HTMLElement &&
+			target.closest(
+				'input, textarea, select, [contenteditable=true], [role=combobox], [role=listbox]'
+			)
+		)
+			return;
+		if (event.code === 'Space') {
+			event.preventDefault();
+			togglePlay();
+		} else if (event.key === '.') {
+			event.preventDefault();
+			stepOnce();
+		} else if (event.key === '?') {
+			selectTab('guide');
+			helpTab = 'keys';
+		} else if (event.key >= '1' && event.key <= '5') selectTab(shellTabs[Number(event.key) - 1].id);
+		else if (event.code === 'KeyF') observation?.fitView();
+		else if (event.key === '+' || event.key === '=') observation?.zoomBy(1 / 1.5);
+		else if (event.key === '-') observation?.zoomBy(1.5);
+		else if (event.code === 'KeyS') showMeasure('charts');
+		else if (event.code === 'KeyH') selectTab('guide');
+		else if (event.key === 'Escape') {
+			inspectedTape = null;
+			speciesModal = null;
+			overwriteTarget = null;
+			activateTool('navigate');
+		} else {
+			const tool = railTools.find((entry) => entry.key.toLowerCase() === event.key.toLowerCase());
+			if (tool) {
+				event.preventDefault();
+				activateTool(tool.id);
+			}
+		}
+	}
 </script>
 
-<svelte:window
-	onpointerdown={() => {
-		keyboardModality = false;
-	}}
-	onkeydown={(e) => {
-		keyboardModality = true;
-		if (e.code === 'Escape') {
-			showHelp = false;
-			showSettings = false;
-			speciesModal = null;
-			inspectedTape = null;
-			overwriteTarget = null;
-		}
-		if (e.target !== document.body) return;
-		// Ctrl/Cmd shortcuts
-		if (e.metaKey || e.ctrlKey) {
-			if (e.code === 'KeyS') {
-				e.preventDefault();
-				handleSave();
-				return;
-			}
-			if (e.code === 'KeyO') {
-				e.preventDefault();
-				fileInput?.click();
-				return;
-			}
-		}
-		switch (e.code) {
-			case 'Space':
-				e.preventDefault();
-				togglePlay();
-				break;
-			case 'KeyR':
-				handleReset();
-				break;
-			case 'KeyH':
-				showHelp = !showHelp;
-				break;
-			case 'KeyS':
-				toggleChart();
-				break;
-			case 'KeyF':
-				engine?.resetView(canvasW, canvasH);
-				break;
-			case 'Escape':
-				if (overwriteTarget) {
-					overwriteTarget = null;
-					break;
-				}
-				showHelp = false;
-				showSpeedMenu = false;
-				showSettings = false;
-				speciesModal = null;
-				break;
-		}
-	}}
-/>
+<svelte:window onpointerdown={() => (keyboardModality = false)} onkeydown={keyboard} />
+<svelte:head><title>Algocell · Digital primordial soup</title></svelte:head>
 
-<svelte:head>
-	<title>Algocell · Digital primordial soup</title>
-</svelte:head>
-
-<svelte:document
-	onvisibilitychange={() => {
-		if (document.hidden) playing = false;
-	}}
-/>
-<div class="legacy-scope" class:pointer-focus={!keyboardModality}>
-	<!-- Hidden file input for checkpoint load -->
+<div
+	class="legacy-scope unified-shell"
+	class:pointer-focus={!keyboardModality}
+	class:sidebar-collapsed={sidebarCollapsed}
+>
 	<input
 		bind:this={fileInput}
 		type="file"
 		accept=".acell,.png"
-		style="display:none"
 		onchange={handleFileInputChange}
+		class="sr-only"
+		aria-label="Import checkpoint file"
 	/>
-
-	<!-- Full-screen canvas -->
+	<header class="app-header">
+		<div class="wordmark">
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"
+				><path
+					d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"
+					fill="currentColor"
+					opacity=".7"
+				/><path d="M10 10h4v4h-4z" fill="currentColor" /></svg
+			><span>Algocell</span>
+		</div>
+		<div class="field-choice">
+			<InstrumentSelect
+				options={fieldOptions}
+				value={fieldMode}
+				label="Field view"
+				disabled={!engine || machineBusy || observationBusy || checkpointBusy}
+				onchange={(value) => void observation?.changeMode(value as FieldMode)}
+			/>
+		</div>
+		<button
+			class="header-look"
+			class:chosen={activeTab === 'world' && worldSection === 'look'}
+			onclick={() => jumpWorld('look')}>Look</button
+		>
+		<div class="camera-controls">
+			<button aria-label="Zoom out" title="Zoom out (−)" onclick={() => observation?.zoomBy(1.5)}
+				>−</button
+			><button aria-label="Zoom in" title="Zoom in (+)" onclick={() => observation?.zoomBy(1 / 1.5)}
+				>+</button
+			><button title="Fit lattice (F)" onclick={() => observation?.fitView()}>Fit</button>
+		</div>
+		<div class="header-space"></div>
+	</header>
 	<div
 		bind:this={canvasContainer}
-		role="region"
-		aria-label="Soup viewport"
-		class="fixed inset-0"
-		style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none"
-		ondragover={(e) => e.preventDefault()}
+		class="canvas-viewport"
+		ondragover={(event) => event.preventDefault()}
 		ondrop={handleDrop}
+		role="region"
+		aria-label="Live lattice"
 	>
-		{#if gpuError}
-			<div
-				class="absolute inset-0 z-50 flex items-center justify-center"
-				style="background:var(--bg-panel)"
-			>
-				<p class="max-w-md px-8 text-center text-red-400">{gpuError}</p>
-			</div>
-		{/if}
+		{#if gpuError}<div class="gpu-message">
+				<h2>A local machine-code world</h2>
+				<p>{gpuError}</p>
+				<button onclick={() => selectTab('guide')}>Open guide</button>
+			</div>{/if}
 		<canvas
 			bind:this={canvas}
-			class="block h-full w-full"
-			style="cursor:{isPanning ? 'grabbing' : 'crosshair'};touch-action:none"
+			class="lattice-canvas"
+			tabindex="0"
+			aria-label="Lattice canvas"
+			onpointerdown={(event) => event.currentTarget.focus({ preventScroll: true })}
+			style="cursor:{isPanning
+				? 'grabbing'
+				: activeTool === 'navigate'
+					? 'grab'
+					: 'crosshair'};touch-action:none"
 			onmousemove={handleCanvasMouseMove}
 			onmouseleave={handleCanvasMouseLeave}
 			onmousedown={handleCanvasMouseDown}
@@ -2190,2208 +2457,1107 @@
 			ontouchstart={handleTouchStart}
 			ontouchmove={handleTouchMove}
 			ontouchend={handleTouchEnd}
-			oncontextmenu={(e) => e.preventDefault()}
+			oncontextmenu={(event) => event.preventDefault()}
 		></canvas>
-	</div>
-
-	{#if engine}
-		<ObservationTools
-			bind:this={observation}
-			{engine}
-			{canvas}
-			{playing}
-			externalBusy={machineBusy || cultureBusy || checkpointBusy}
-			benchOpen={Boolean(inspectedTape || speciesModal)}
-			onbusy={(value) => {
-				observationBusy = value;
-			}}
-			condition={selectedExperiment?.name ?? ''}
-			{byteColor}
-			onpause={() => {
-				playing = false;
-			}}
-			oninspect={(index) => {
-				void inspectCell(index);
-			}}
-		/>
-	{/if}
-
-	<!-- Toolbar -->
-	<div class="toolbar" class:collapsed={toolbarCollapsed}>
-		<div class="toolbar-buttons" class:hidden={toolbarCollapsed}>
-			<!-- Play/Pause -->
-			<button
-				class="tb"
-				class:active={!playing}
-				style="color:var(--accent)"
-				title="{playing ? 'Pause' : 'Play'} (Space)"
-				onclick={togglePlay}
-			>
-				{#if playing}
-					<svg width="16" height="16" viewBox="0 0 14 14" fill="currentColor">
-						<rect x="2" y="1" width="3.5" height="12" rx="1" />
-						<rect x="8.5" y="1" width="3.5" height="12" rx="1" />
-					</svg>
-				{:else}
-					<svg width="16" height="16" viewBox="0 0 14 14" fill="currentColor">
-						<path d="M3 1.5v11l9-5.5z" />
-					</svg>
-				{/if}
-			</button>
-
-			<!-- Speed -->
-			<div class="relative">
-				<button
-					class="tb mono"
-					style="color:var(--text-secondary);min-width:32px"
-					title="Speed"
-					onclick={() => (showSpeedMenu = !showSpeedMenu)}
+		<div class="viewport-caption" aria-label="Field legend">
+			{#if fieldMode === 'confinement'}<div class="viewport-key">
+					<span><i style="background:rgb(12% 12% 15%)"></i>Unknown</span><span
+						><i style="background:rgb(25% 52% 72%)"></i>No exit</span
+					><span><i style="background:rgb(90% 58% 28%)"></i>Outside A</span>
+				</div>{:else if fieldMode === 'zeros' || fieldMode === 'diversity'}<div
+					class="viewport-key"
 				>
-					{speed}x
-				</button>
-				{#if showSpeedMenu}
-					<div class="speed-menu">
-						{#each [1, 2, 4, 8] as s (s)}
-							<button class="speed-opt" class:active={speed === s} onclick={() => setSpeed(s)}
-								>{s}x</button
-							>
-						{/each}
-					</div>
-				{/if}
-			</div>
-
-			<div class="tb-sep"></div>
-
-			<!-- Reset -->
-			<button class="tb" style="color:var(--accent-amber)" title="Reset (R)" onclick={handleReset}>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 14 14"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.5"
-				>
-					<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
-					<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
-				</svg>
-			</button>
-
-			<div class="tb-sep"></div>
-
-			<!-- Save checkpoint -->
-			<button
-				class="tb"
-				style="color:var(--text-subtle)"
-				title="Save checkpoint (Cmd+S)"
-				onclick={handleSave}
-			>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 14 14"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.4"
-				>
-					<rect x="2" y="1" width="10" height="12" rx="1" />
-					<path d="M4 1v4h6V1" />
-					<path d="M4 8h6M4 10h4" stroke-linecap="round" />
-				</svg>
-			</button>
-
-			<!-- Load checkpoint -->
-			<button
-				class="tb"
-				style="color:var(--text-subtle)"
-				title="Load checkpoint (Cmd+O)"
-				onclick={() => fileInput?.click()}
-			>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 14 14"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.4"
-				>
-					<path
-						d="M2 6V3a1 1 0 0 1 1-1h3l1.5 1.5H11a1 1 0 0 1 1 1V11a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6z"
-					/>
-					<path d="M7 6v4M5 8l2-2 2 2" stroke-linecap="round" stroke-linejoin="round" />
-				</svg>
-			</button>
-
-			<div class="tb-sep"></div>
-
-			<!-- Settings -->
-			<button
-				class="tb"
-				class:active={showSettings}
-				style="color:{showSettings ? 'var(--accent)' : 'var(--text-subtle)'}"
-				title="Settings"
-				onclick={() => (showSettings = !showSettings)}
-			>
-				<svg
-					width="16"
-					height="16"
-					viewBox="0 0 14 14"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.4"
-				>
-					<path d="M2 3.5h10M2 7h10M2 10.5h10" stroke-linecap="round" />
-					<circle cx="5" cy="3.5" r="1.3" fill="currentColor" stroke="none" />
-					<circle cx="9" cy="7" r="1.3" fill="currentColor" stroke="none" />
-					<circle cx="6" cy="10.5" r="1.3" fill="currentColor" stroke="none" />
-				</svg>
-			</button>
-
-			<!-- Help -->
-			<button
-				class="tb"
-				style="color:var(--text-subtle)"
-				title="Help (H)"
-				onclick={() => (showHelp = !showHelp)}
-			>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 14 14"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.5"
-				>
-					<circle cx="7" cy="7" r="5.5" />
-					<path d="M5.5 5.5a1.75 1.75 0 0 1 3.25 1c0 1-1.5 1.25-1.5 2.25" stroke-linecap="round" />
-					<circle cx="7" cy="10.5" r="0.5" fill="currentColor" stroke="none" />
-				</svg>
-			</button>
-		</div>
-
-		<!-- Collapse/expand toggle: shows X when expanded, + when collapsed -->
-		<button
-			class="tb collapse-btn"
-			class:collapsed={toolbarCollapsed}
-			title={toolbarCollapsed ? 'Expand toolbar' : 'Collapse toolbar'}
-			onclick={() => {
-				toolbarCollapsed = !toolbarCollapsed;
-				if (toolbarCollapsed) {
-					showSpeedMenu = false;
-					showSettings = false;
-				}
-			}}
-		>
-			<svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.5">
-				<path d="M3 3l6 6M9 3l-6 6" stroke-linecap="round" />
-			</svg>
-		</button>
-	</div>
-
-	<!-- Bottom-left info bar -->
-	<div class="info-bar">
-		<div class="info-row">
-			<span
-				class="info-item"
-				title="Instruction-slot budget per second, including unused slots in halted encounters"
-			>
-				<span class="info-label">ops/s</span>
-				<span class="info-value">{formatNumber(opsPerSec)}</span>
-			</span>
-			<span class="info-sep"></span>
-			<span class="info-item">
-				<span class="info-label">mut</span>
-				<span class="info-value"
-					>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
-				>
-			</span>
-			<button class="info-chart-toggle" onclick={toggleChart} title="Toggle chart">
-				<svg
-					width="10"
-					height="10"
-					viewBox="0 0 10 10"
-					fill="currentColor"
-					style="opacity:{showInfoChart ? 1 : 0.4}"
-				>
-					<polyline
-						points="0,8 3,4 6,6 10,1"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-					/>
-				</svg>
-			</button>
-		</div>
-		{#if showInfoChart}
-			<div class="info-tabs">
-				<button
-					class="info-tab"
-					class:active={infoTab === 'opcodes'}
-					onclick={() => (infoTab = 'opcodes')}
-					title="Opcode frequency — most common byte values for the selected processor over time"
-					>Opcodes</button
-				>
-				<button
-					class="info-tab"
-					class:active={infoTab === 'species'}
-					onclick={() => (infoTab = 'species')}
-					title="Species — distinct cell genomes (by content hash) and their populations"
-					>Species</button
-				>
-				<button
-					class="info-tab"
-					class:active={infoTab === 'diversity'}
-					onclick={() => (infoTab = 'diversity')}
-					title="Diversity — richness and Shannon/Simpson indices of the species distribution"
-					>Diversity</button
-				>
-			</div>
-		{/if}
-		{#if showInfoChart && infoTab === 'opcodes' && chartVersion > 0 && chartLen > 1}
-			<div class="info-chart">
-				<svg
-					viewBox="0 0 200 120"
-					class="info-chart-svg"
-					role="img"
-					aria-label="Historical measurement trend"
-					preserveAspectRatio="none"
-					onmouseleave={() => {
-						chartHoveredByte = -1;
-					}}
-				>
-					{#each freqLines as fl (fl.byte)}
-						{#if fl.path}
-							<polyline
-								points={fl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
-								fill="none"
-								stroke={fl.color}
-								stroke-width={chartHoveredByte === fl.byte ? '4' : '2.5'}
-								opacity={chartHoveredByte >= 0
-									? chartHoveredByte === fl.byte
-										? '1'
-										: '0.15'
-									: '0.8'}
-							/>
-						{/if}
-					{/each}
-				</svg>
-				<div class="freq-grid">
-					{#each displayTiles as tile, i (tile.type === 'suppressed' ? 'suppressed' : tile.byte)}
-						{#if tile.type === 'suppressed'}
-							<div class="freq-cell freq-cell-suppressed-group" role="button" tabindex="0">
-								<span class="freq-label">{tile.mnemonic}</span>
-							</div>
-						{:else}
-							<div
-								class="freq-cell"
-								class:dimmed={chartHoveredByte >= 0 && chartHoveredByte !== tile.byte}
-								class:highlighted={chartHoveredByte === tile.byte}
-								style="background:{byteColor(tile.byte)};color:{cellTextColor(tile.byte)}"
-								role="button"
-								tabindex="0"
-								onclick={() => toggleSuppressOpcode(tile.byte)}
-								onkeydown={(e) => {
-									if (e.key === 'Enter' || e.key === ' ') {
-										e.preventDefault();
-										toggleSuppressOpcode(tile.byte);
-									}
-								}}
-								onmouseenter={(e) => {
-									chartHoveredByte = tile.byte;
-									showTileTooltip(e, tile.byte, tile.mnemonic, i + 1);
-								}}
-								onmouseleave={() => {
-									chartHoveredByte = -1;
-									hideTileTooltip();
-								}}
-							>
-								<span class="freq-rank">{i + 1}</span>
-								<span class="freq-label">{tile.mnemonic || hexByte(tile.byte)}</span>
-							</div>
-						{/if}
-					{/each}
-				</div>
-				{#if suppressPatterns.length > 0}
-					<div class="freq-suppressed-row">
-						{#each suppressPatterns as pat (pat)}
-							<button
-								class="freq-suppress-chip"
-								onclick={() => removeSuppressPattern(pat)}
-								title="Remove pattern: {pat}"
-							>
-								{pat}
-								<svg
-									width="7"
-									height="7"
-									viewBox="0 0 8 8"
-									stroke="currentColor"
-									stroke-width="1.5"
-								>
-									<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
-								</svg>
-							</button>
-						{/each}
-						<span class="freq-suppress-count" title={describeSuppression(suppression)}
-							>⊘ {suppressedTotal}</span
-						>
-					</div>
-				{/if}
-			</div>
-		{:else if showInfoChart && infoTab === 'species'}
-			<div class="info-chart">
-				{#if speciesLen > 1 && speciesLines.length > 0}
-					<svg
-						viewBox="0 0 200 120"
-						class="info-chart-svg"
-						role="img"
-						aria-label="Historical measurement trend"
-						preserveAspectRatio="none"
-						onmouseleave={() => {
-							speciesHoveredIdx = -1;
-						}}
-					>
-						{#each speciesLines as sl, idx (sl.hash)}
-							{#if sl.path}
-								<!-- Thick invisible hit area for hover -->
-								<polyline
-									points={sl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
-									fill="none"
-									stroke="transparent"
-									role="presentation"
-									stroke-width="12"
-									onmouseenter={() => {
-										speciesHoveredIdx = idx;
-									}}
-								/>
-								<polyline
-									points={sl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
-									fill="none"
-									stroke={sl.color}
-									stroke-width={speciesHoveredIdx === idx ? '4' : '2.5'}
-									opacity={speciesHoveredIdx >= 0
-										? speciesHoveredIdx === idx
-											? '1'
-											: '0.15'
-										: '0.8'}
-									style="pointer-events:none"
-								/>
-							{/if}
-						{/each}
-					</svg>
-				{:else}
-					<div class="species-waiting">Collecting species data...</div>
-				{/if}
-				{#if currentSpecies}
-					<div class="freq-grid">
-						{#each currentSpecies.species.slice(0, MAX_SPECIES_DISPLAY) as sp, i (sp.hash)}
-							{@const chartIdx = speciesHashOrder.indexOf(sp.hash)}
-							<div
-								class="freq-cell"
-								class:dimmed={speciesHoveredIdx >= 0 && speciesHoveredIdx !== chartIdx}
-								class:highlighted={speciesHoveredIdx === chartIdx}
-								style="background:{sp.color};color:{sp.textColor}"
-								role="button"
-								tabindex="0"
-								title="Click to inspect"
-								onmouseenter={() => {
-									speciesHoveredIdx = chartIdx;
-								}}
-								onmouseleave={() => {
-									speciesHoveredIdx = -1;
-								}}
-								onclick={() => {
-									speciesModal = sp;
-								}}
-								onkeydown={(e) => {
-									if (e.key === 'Enter' || e.key === ' ') {
-										e.preventDefault();
-										speciesModal = sp;
-									}
-								}}
-							>
-								<span class="freq-rank">{i + 1}</span>
-								<span class="freq-label">{(sp.fraction * 100).toFixed(1)}%</span>
-							</div>
-						{/each}
-					</div>
-				{/if}
-				{#if suppressPatterns.length > 0}
-					<div class="freq-suppressed-row">
-						{#each suppressPatterns as pat (pat)}
-							<button
-								class="freq-suppress-chip"
-								onclick={() => removeSuppressPattern(pat)}
-								title="Remove pattern: {pat}"
-							>
-								{pat}
-								<svg
-									width="7"
-									height="7"
-									viewBox="0 0 8 8"
-									stroke="currentColor"
-									stroke-width="1.5"
-								>
-									<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
-								</svg>
-							</button>
-						{/each}
-						<span class="freq-suppress-count" title={describeSuppression(suppression)}
-							>⊘ {suppressedTotal}</span
-						>
-					</div>
-				{/if}
-			</div>
-		{:else if showInfoChart && infoTab === 'diversity'}
-			<div class="info-chart">
-				{#if diversityLen > 1 && diversityLines.length > 0}
-					<svg
-						viewBox="0 0 200 120"
-						class="info-chart-svg"
-						role="img"
-						aria-label="Historical measurement trend"
-						preserveAspectRatio="none"
-						onmouseleave={() => {
-							diversityHoveredIdx = -1;
-						}}
-					>
-						{#each diversityLines as dl (dl.idx)}
-							{#if dl.path}
-								<polyline
-									points={dl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
-									fill="none"
-									stroke="transparent"
-									role="presentation"
-									stroke-width="12"
-									onmouseenter={() => {
-										diversityHoveredIdx = dl.idx;
-									}}
-								/>
-								<polyline
-									points={dl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
-									fill="none"
-									stroke={dl.color}
-									stroke-width={diversityHoveredIdx === dl.idx ? '4' : '2'}
-									opacity={diversityHoveredIdx >= 0
-										? diversityHoveredIdx === dl.idx
-											? '1'
-											: '0.15'
-										: '0.8'}
-									style="pointer-events:none"
-								/>
-							{/if}
-						{/each}
-					</svg>
-				{:else}
-					<div class="species-waiting">Collecting diversity data...</div>
-				{/if}
-				<div class="diversity-grid">
-					{#each diversityLines as dl (dl.idx)}
-						<div
-							class="diversity-card"
-							role="group"
-							class:dimmed={diversityHoveredIdx >= 0 && diversityHoveredIdx !== dl.idx}
-							class:highlighted={diversityHoveredIdx === dl.idx}
-							onmouseenter={() => {
-								diversityHoveredIdx = dl.idx;
-							}}
-							onmouseleave={() => {
-								diversityHoveredIdx = -1;
-							}}
-						>
-							<span class="diversity-swatch" style="background:{dl.color}"></span>
-							<span class="diversity-label">{dl.label}</span>
-							<span class="diversity-value"
-								>{dl.current < 100
-									? dl.current.toFixed(dl.current < 10 ? 2 : 1)
-									: formatNumber(dl.current)}</span
-							>
-						</div>
-					{/each}
-				</div>
-				{#if suppressPatterns.length > 0}
-					<div class="freq-suppressed-row">
-						{#each suppressPatterns as pat (pat)}
-							<button
-								class="freq-suppress-chip"
-								onclick={() => removeSuppressPattern(pat)}
-								title="Remove pattern: {pat}"
-							>
-								{pat}
-								<svg
-									width="7"
-									height="7"
-									viewBox="0 0 8 8"
-									stroke="currentColor"
-									stroke-width="1.5"
-								>
-									<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
-								</svg>
-							</button>
-						{/each}
-						<span class="freq-suppress-count" title={describeSuppression(suppression)}
-							>⊘ {suppressedTotal}</span
-						>
-					</div>
-				{/if}
-			</div>
-		{/if}
-	</div>
-
-	{#snippet disassemblyPanel(tape: Uint8Array)}
-		<details class="inspector-disassembly">
-			<summary>Disassembly</summary>
-			{#each disassemble(tape) as line (line.offset)}<div class="disassembly-line">
-					<span>{line.offset.toString(16).toUpperCase().padStart(2, '0')}</span><span
-						>{line.bytes.map(hexByte).join(' ')}</span
-					><span>{line.mnemonic}</span>
-				</div>{/each}
-		</details>
-	{/snippet}
-
-	{#snippet culturePanel(tape: Uint8Array)}
-		{#if engine}
-			{#key tape}
-				<EncounterBench
-					{engine}
-					{tape}
-					{seed}
-					{byteColor}
-					onpause={() => {
-						playing = false;
-					}}
-					onbusy={(value) => {
-						cultureBusy = value;
-					}}
-				/>
-			{/key}
-		{/if}
-	{/snippet}
-
-	{#if inspectedTape}
-		{@const tape = inspectedTape}
-		{@const cells = buildGenomeGrid(tape, disassemble(tape))}
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div
-			class="species-modal-backdrop bench-backdrop"
-			onclick={() => {
-				inspectedTape = null;
-			}}
-			role="presentation"
-		>
-			<div
-				class="species-modal tape-inspector"
-				onclick={(event) => event.stopPropagation()}
-				role="dialog"
-				aria-modal="false"
-				aria-label="Tape inspector"
-				tabindex="-1"
-			>
-				<div class="species-modal-header">
+					<span>0%</span><i class="field-gradient" class:diversity={fieldMode === 'diversity'}
+					></i><span>100%</span>
+				</div>{:else if fieldMode === 'marker'}<div class="viewport-key">
 					<span
-						>Encounter bench <small
-							>Cell {inspectedCell} · {isa.toUpperCase()} · {tape.length} bytes</small
-						></span
-					><button
-						class="species-modal-close"
-						aria-label="Close tape inspector"
-						onclick={() => {
-							inspectedTape = null;
-						}}>×</button
+						><i style="background:rgb(98% 68% 35%)"></i>Byte {activeMarkerPosition} = {hexByte(
+							activeMarkerValue
+						)}</span
+					><span><i style="background:rgb(12% 13% 15%)"></i>Other</span>
+				</div>{/if}<span
+				>{fieldMode === 'bytes'
+					? 'Inherited byte values'
+					: fieldMode === 'identity'
+						? 'Complete-tape fingerprints · collisions possible'
+						: fieldMode === 'confinement'
+							? 'Last initiating encounter · outside A includes padding'
+							: fieldMode === 'zeros'
+								? 'Zero bytes per tape · 0–100%'
+								: fieldMode === 'diversity'
+									? 'Distinct tapes in 3 × 3 coordinates · 0–100%'
+									: 'Same-position value matches · not ancestry'}</span
+			>
+		</div>
+	</div>
+	<nav class="tool-rail" aria-label="Lattice tools">
+		{#each railTools as tool (tool.id)}<button
+				class:active={activeTool === tool.id}
+				aria-label={tool.label}
+				disabled={!engine || machineBusy || observationBusy || checkpointBusy}
+				aria-pressed={activeTool === tool.id}
+				title={`${tool.label} (${tool.key})`}
+				onclick={() => activateTool(tool.id)}
+				><svg
+					width="20"
+					height="20"
+					viewBox="0 0 20 20"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.2"
+					stroke-linejoin="round"
+					stroke-linecap="round"
+					aria-hidden="true"><path d={tool.path} /></svg
+				></button
+			>{/each}
+		<div class="rail-space"></div>
+		<button
+			aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+			title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+			onclick={() => (sidebarCollapsed = !sidebarCollapsed)}
+			><span aria-hidden="true">{sidebarCollapsed ? '‹' : '›'}</span></button
+		>
+	</nav>
+	<aside class="app-sidebar" aria-label="Instrument sidebar">
+		<div class="sidebar-tabs" role="tablist" aria-label="Workspace">
+			{#each shellTabs as tab (tab.id)}<button
+					role="tab"
+					aria-label={tab.name}
+					aria-selected={activeTab === tab.id}
+					class:active={activeTab === tab.id}
+					title={`${tab.name} (${shellTabs.indexOf(tab) + 1})`}
+					onclick={() => selectTab(tab.id)}
+					><span class="tab-glyph" aria-hidden="true">{tab.glyph}</span><span class="tab-label"
+						>{tab.name}</span
+					></button
+				>{/each}
+		</div>
+		<div class="sidebar-scroll">
+			<section
+				class="world-panel sidebar-section"
+				hidden={activeTab !== 'world' || sidebarCollapsed}
+				aria-label="World settings"
+			>
+				<div class="section-heading">
+					<h1>
+						{worldSection === 'look' ? 'Look' : 'World'}
+					</h1>
+					<span class="section-context"
+						>{worldSection === 'condition'
+							? 'A continuous experiment'
+							: 'The same living lattice'}</span
 					>
 				</div>
-				<div class="species-modal-body">
-					<div class="tip-grid species-modal-grid">
-						{#each cells as cell, index (index)}<div
-								class="tip-cell"
-								class:operand={!cell.isOpcode}
-								style="background:{byteColor(cell.byteVal)};color:{cellTextColor(cell.byteVal)}"
-								title="Byte {index} · {hexByte(cell.byteVal)} · {cell.label}"
-							>
-								{cell.label}
-							</div>{/each}
-					</div>
-					{@render disassemblyPanel(tape)}
-					{@render culturePanel(tape)}
-				</div>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Species inspect modal -->
-	{#if speciesModal}
-		{@const sp = speciesModal}
-		{@const cells = sp.exemplarCells}
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div
-			class="species-modal-backdrop"
-			onclick={() => {
-				speciesModal = null;
-				speciesModalTip = null;
-			}}
-			role="presentation"
-		>
-			<div
-				class="species-modal"
-				onclick={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				aria-label="Algocell details"
-				tabindex="-1"
-			>
-				<div class="species-modal-header" style="background:{sp.color};color:{sp.textColor}">
-					<span>{(sp.fraction * 100).toFixed(1)}% &mdash; {sp.count} cells</span>
+				<nav class="section-tabs" aria-label="World sections">
 					<button
-						class="species-modal-close"
-						aria-label="Close tape inspector"
-						onclick={() => (speciesModal = null)}
+						class:active={worldSection === 'condition'}
+						onclick={() => (worldSection = 'condition')}>Condition</button
+					><button class:active={worldSection === 'look'} onclick={() => (worldSection = 'look')}
+						>Appearance</button
 					>
-						<svg
-							width="10"
-							height="10"
-							viewBox="0 0 10 10"
-							stroke="currentColor"
-							stroke-width="1.5"
-						>
-							<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
-						</svg>
-					</button>
-				</div>
-				{#if cells.length > 0}
-					<div class="species-modal-body">
-						{#if gridType === 'hex' && tapeLength === 19}
-							<div
-								class="hex-byte-grid species-modal-hex"
-								role="group"
-								onmouseleave={() => {
-									speciesModalTip = null;
-								}}
+				</nav>
+				{#if worldSection === 'condition'}
+					<p class="intro-copy">
+						Small programs meet and change each other. Follow the lattice, or begin with a question.
+					</p>
+					<button class="text-action" onclick={() => selectTab('experiments')}
+						>Explore guided experiments <span>↗</span></button
+					>
+					<div class="section-divider"></div>
+					<fieldset class="control-lock" disabled={!engine || machineBusy || checkpointBusy}>
+						<div class="section-title">
+							<h2>Live condition</h2>
+							<span class="live-label">Applies while running</span>
+						</div>
+						<div class="control-field">
+							<label for="machine-select">Processor</label><InstrumentSelect
+								id="machine-select"
+								label="Processor"
+								options={machineOptions}
+								value={machine}
+								disabled={machineBusy || checkpointBusy || !engine}
+								onchange={(value) => void chooseMachine(value)}
+							/>
+							<p class="control-note">Switch cores using the bytes already on the lattice.</p>
+							{#if coreNotice}<p class="inline-notice core-notice" role="status">
+									{coreNotice}
+								</p>{/if}
+						</div>
+						<div class="control-field">
+							<div class="label-row">
+								<label for="lethal-probability">Lethal zero</label><output
+									>{Math.round(lethalProbability * 100)}%</output
+								>
+							</div>
+							<input
+								id="lethal-probability"
+								aria-label="Lethal zero"
+								type="range"
+								min="0"
+								max="1"
+								step="0.01"
+								bind:value={lethalProbability}
+								onchange={() => void updateMachine()}
+								disabled={machineBusy || checkpointBusy}
+							/>
+							<p class="control-note">Chance that a zero instruction stops an encounter.</p>
+						</div>
+						<div class="control-field">
+							<div class="label-row">
+								<label for="noise-input">Mutation rate</label><output
+									>{noiseExp >= 31 ? 'Off' : `1 / ${2 ** noiseExp}`}</output
+								>
+							</div>
+							<input
+								id="noise-input"
+								aria-label="Mutation rate"
+								type="range"
+								min="1"
+								max="12"
+								value={noiseExp >= 31 ? 1 : 13 - noiseExp}
+								oninput={(event) => liveBudget('noiseExp', 13 - Number(event.currentTarget.value))}
+							/><label class="inline-check"
+								><input
+									type="checkbox"
+									checked={noiseExp >= 31}
+									onchange={(event) => liveBudget('noiseExp', event.currentTarget.checked ? 31 : 4)}
+								/> Mutation off</label
 							>
-								{#each cells as cell, i (i)}
-									<div
-										class="hex-byte-cell hex-byte-pos-{i}"
-										class:operand={!cell.isOpcode}
-										class:modal-cell-hovered={speciesModalTip?.idx === i}
-										role="group"
-										onmouseenter={(e) => {
-											const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-											speciesModalTip = {
-												idx: i,
-												byteVal: cell.byteVal,
-												x: rect.left + rect.width / 2,
-												y: rect.top
-											};
-										}}
-									>
-										<div
-											class="hex-byte-inner"
-											style="background:{byteColor(cell.byteVal)};color:{byteLuminance(
-												cell.byteVal
-											) > 0.4
-												? 'rgba(0,0,0,0.85)'
-												: 'rgba(255,255,255,0.9)'}"
+						</div>
+						<details class="shell-disclosure">
+							<summary>Budgets & instruction ablation</summary>
+							<div class="disclosure-body">
+								<div class="control-field">
+									<div class="label-row">
+										<label for="pairs-input">Pairs / update</label><output
+											>{pairCount.toLocaleString()}</output
 										>
-											{cell.label}
-										</div>
 									</div>
-								{/each}
-							</div>
-						{:else}
-							<div
-								class="tip-grid species-modal-grid"
-								role="group"
-								onmouseleave={() => {
-									speciesModalTip = null;
-								}}
-							>
-								{#each cells as cell, i (i)}
-									<div
-										class="tip-cell"
-										class:operand={!cell.isOpcode}
-										class:modal-cell-hovered={speciesModalTip?.idx === i}
-										role="group"
-										style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) >
-										0.4
-											? 'rgba(0,0,0,0.85)'
-											: 'rgba(255,255,255,0.9)'}"
-										onmouseenter={(e) => {
-											const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-											speciesModalTip = {
-												idx: i,
-												byteVal: cell.byteVal,
-												x: rect.left + rect.width / 2,
-												y: rect.top
-											};
-										}}
-									>
-										{cell.label}
+									<input
+										id="pairs-input"
+										aria-label="Pairs per update"
+										type="range"
+										min="256"
+										max={MAX_BATCH_PAIR_N}
+										step="256"
+										value={pairCount}
+										oninput={(event) => liveBudget('pairCount', Number(event.currentTarget.value))}
+									/>
+								</div>
+								<div class="control-field">
+									<div class="label-row">
+										<label for="steps-input">Execution steps</label><output>{z80Steps}</output>
 									</div>
-								{/each}
-							</div>
-						{/if}
-						{#if sp.exemplar}{@render disassemblyPanel(sp.exemplar)}{@render culturePanel(
-								sp.exemplar
-							)}{/if}
-						<div class="species-modal-hash">
-							{(sp.hash >>> 0).toString(16).padStart(8, '0')}
-						</div>
-					</div>
-				{/if}
-			</div>
-		</div>
-	{/if}
-
-	<!-- Species byte tooltip (floating above modal) -->
-	{#if speciesModalTip}
-		{@const sb = speciesModalTip.byteVal}
-		{@const sdesc = opcodeDescription(sb)}
-		{@const sbg = byteColor(sb)}
-		{@const slum = byteLuminance(sb)}
-		<div
-			class="tile-tip"
-			style="left:{speciesModalTip.x}px;top:{speciesModalTip.y}px;transform:translate(-50%,-100%) translateY(-8px);z-index:70"
-		>
-			<div
-				class="tile-tip-header"
-				style="background:{sbg};color:{slum > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)'}"
-			>
-				<span class="tile-tip-mnemonic">{byteToMnemonic(sb) || hexByte(sb)}</span>
-				<span class="tile-tip-hex">0x{hexByte(sb)}</span>
-			</div>
-			<div class="tile-tip-body">
-				<p class="tile-tip-desc">{sdesc}</p>
-				{#if suppressedOpcodes.has(sb)}
-					<span class="tile-tip-status suppressed">⊘ Suppressed</span>
-				{/if}
-			</div>
-		</div>
-	{/if}
-
-	<!-- Tile tooltip -->
-	{#if tileTooltip}
-		{@const tt = tileTooltip}
-		{@const desc = opcodeDescription(tt.byte)}
-		{@const bg = byteColor(tt.byte)}
-		{@const lum = byteLuminance(tt.byte)}
-		<div class="tile-tip" style="left:{tt.x}px;top:{tt.y}px">
-			<div
-				class="tile-tip-header"
-				style="background:{bg};color:{lum > 0.4 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)'}"
-			>
-				<span class="tile-tip-mnemonic">{tt.mnemonic}</span>
-				<span class="tile-tip-hex">0x{hexByte(tt.byte)}</span>
-			</div>
-			<div class="tile-tip-body">
-				<p class="tile-tip-desc">{desc}</p>
-				{#if suppressedOpcodes.has(tt.byte)}
-					<span class="tile-tip-status suppressed">⊘ Suppressed</span>
-				{/if}
-				<span class="tile-tip-hint"
-					>Click to {suppressedOpcodes.has(tt.byte) ? 'enable' : 'suppress'}</span
-				>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Settings panel -->
-	{#if showSettings}
-		<div class="panel settings-panel">
-			<div class="panel-header">
-				<span class="panel-title"
-					><svg
-						width="12"
-						height="12"
-						viewBox="0 0 14 14"
-						fill="none"
-						stroke="var(--accent)"
-						stroke-width="1.4"
-						><path d="M2 3.5h10M2 7h10M2 10.5h10" stroke-linecap="round" /><circle
-							cx="5"
-							cy="3.5"
-							r="1.3"
-							fill="var(--accent)"
-							stroke="none"
-						/><circle cx="9" cy="7" r="1.3" fill="var(--accent)" stroke="none" /><circle
-							cx="6"
-							cy="10.5"
-							r="1.3"
-							fill="var(--accent)"
-							stroke="none"
-						/></svg
-					>Parameters</span
-				>
-				<button
-					class="panel-close"
-					aria-label="Close settings"
-					onclick={() => (showSettings = false)}
-				>
-					<svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.5">
-						<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
-					</svg>
-				</button>
-			</div>
-
-			<fieldset
-				class="settings-fields"
-				disabled={machineBusy || observationBusy || checkpointBusy || cultureBusy}
-			>
-				<!-- Presets -->
-				<div class="param">
-					<div class="param-head">
-						<span class="param-label"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z" /></svg
-							> Presets</span
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'presets'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'presets';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'presets' ? null : 'presets';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>Save and switch between full setting configurations. Applying a preset that only
-								changes live parameters (mutation, pairs, steps, suppression, appearance) steers the
-								running simulation without resetting it. Grid or seed changes reset the soup.</span
-							>
-						</span>
-						<div class="preset-header-actions">
-							{#if activePresetId}
-								<button
-									class="preset-delete-active"
-									onclick={deleteActivePreset}
-									title="Delete selected preset"
-									aria-label="Delete selected preset"
-								>
-									<svg
-										width="12"
-										height="12"
-										viewBox="0 0 14 14"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.4"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									>
-										<path d="M2.5 3.5h9M5.5 3.5V2.5h3v1M4 3.5l.5 8h5l.5-8M6 5.5v4M8 5.5v4" />
-									</svg>
-								</button>
-							{/if}
-							<button
-								class="preset-save-toggle"
-								class:active={showPresetSave}
-								onclick={() => {
-									showPresetSave = !showPresetSave;
-									if (showPresetSave) newPresetName = '';
-								}}
-								title="Save current settings as a preset"
-							>
-								<svg
-									width="11"
-									height="11"
-									viewBox="0 0 12 12"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.4"
-								>
-									<path d="M6 2v8M2 6h8" stroke-linecap="round" />
-								</svg>
-							</button>
-						</div>
-					</div>
-					{#if showPresetSave}
-						<div class="preset-save-row">
-							<input
-								class="preset-name-input"
-								type="text"
-								placeholder="Preset name…"
-								bind:value={newPresetName}
-								onkeydown={(e) => {
-									if (e.key === 'Enter' && newPresetName.trim()) {
-										requestSavePreset(newPresetName);
-									} else if (e.key === 'Escape') {
-										showPresetSave = false;
-										newPresetName = '';
-									}
-								}}
-							/>
-							<button
-								class="preset-name-save"
-								disabled={!newPresetName.trim()}
-								onclick={() => requestSavePreset(newPresetName)}
-								title="Save preset">Save</button
-							>
-						</div>
-					{/if}
-					<label class="experiment-preset-label" for="experiment-preset">Experiments</label>
-					<select
-						id="experiment-preset"
-						class="instrument-select"
-						value={selectedExperimentId}
-						disabled={machineBusy || observationBusy || !engine}
-						onchange={(event) => {
-							const preset = EXPERIMENT_PRESETS.find(
-								(entry) => entry.id === event.currentTarget.value
-							);
-							if (preset) void applyExperimentPreset(preset);
-						}}
-					>
-						<option value="">Choose an experiment…</option>
-						{#each ['discovery', 'intervention', 'demonstration'] as category (category)}
-							<optgroup label={category.charAt(0).toUpperCase() + category.slice(1)}>
-								{#each EXPERIMENT_PRESETS.filter((entry) => entry.category === category) as preset (preset.id)}
-									<option value={preset.id}>{preset.name}</option>
-								{/each}
-							</optgroup>
-						{/each}
-					</select>
-					{#if selectedExperiment}
-						<div class="experiment-condition">
-							<p>{scientificText(selectedExperiment.description)}</p>
-							<p><strong>Look for</strong> {scientificText(selectedExperiment.whatToLookFor)}</p>
-							<details>
-								<summary>Finding, limits &amp; sources</summary>
-								<p>{selectedExperiment.finding}</p>
-								<p>{scientificText(selectedExperiment.limits)}</p>
-								<p>
-									<strong>Registered condition</strong>
-									{selectedExperiment.published.width ?? 'isolated'} × {selectedExperiment.published
-										.height ?? 'culture'}, {selectedExperiment.published.pairAttempts ?? 'assay'} pair
-									attempts; horizon
-									{selectedExperiment.published.horizon.toLocaleString()}
-									{selectedExperiment.published.horizonUnit}. {scientificText(
-										selectedExperiment.published.note
-									)}
-								</p>
-								<p>{selectedExperiment.published.reset}</p>
-								<p class="source-path">{selectedExperiment.source.registration}</p>
-								{#if selectedExperiment.source.world}<p class="source-path">
-										{selectedExperiment.source.world}
+									<input
+										id="steps-input"
+										aria-label="Execution steps"
+										type="range"
+										min="16"
+										max="1024"
+										step="16"
+										value={z80Steps}
+										oninput={(event) => liveBudget('z80Steps', Number(event.currentTarget.value))}
+									/>
+								</div>
+								<label class="field-label" for="ablation-input">Suppress instructions</label><input
+									id="ablation-input"
+									class="shell-input"
+									aria-label="Suppress instructions"
+									placeholder={isa === 'z80'
+										? 'family:block-copy; LDIR; PUSH'
+										: isa === 'm6502'
+											? 'family:stack; STA; opcode:8D'
+											: 'family:block-copy; MOV; opcode:A4'}
+									bind:value={suppressInput}
+									onkeydown={(event) => {
+										if (event.key === 'Enter' && suppressInput.trim()) {
+											addSuppressPattern(suppressInput);
+											suppressInput = '';
+										}
+									}}
+								/>
+								{#if suppressInput.trim()}<p class="control-note">
+										Enter to suppress {suppressionPreview(suppressInput)} instructions.
 									</p>{/if}
-								{#each selectedExperiment.source.results as source (source)}<p class="source-path">
-										{source}
-									</p>{/each}
-								<p>
-									Sources identify the registered experiment and its archived results. This GPU run
-									is a fresh realization; equal seeds do not promise the archived scheduling
-									trajectory.
+								<div class="suppress-chips">
+									{#each suppressPatterns as pat (pat)}<button
+											class="suppress-chip"
+											title={`Remove pattern: ${pat}`}
+											onclick={() => removeSuppressPattern(pat)}>{pat} ×</button
+										>{/each}
+								</div>
+								{#if suppressPatterns.length}<div class="label-row">
+										<span class="control-note">{suppressedTotal} instructions suppressed</span
+										><button class="quiet-button" onclick={clearSuppressedOpcodes}>Clear all</button
+										>
+									</div>{/if}
+								<p class="control-note">
+									{isa === 'z80'
+										? 'Suppress a mnemonic, family or exact opcode. Bytes stay in the lattice; their execution changes.'
+										: isaSuppressionDescription}
 								</p>
-							</details>
-						</div>
-					{/if}
-					<div class="preset-chips">
-						{#each presets as preset (preset.id)}
-							<button
-								class="preset-chip"
-								class:active={activePresetId === preset.id}
-								class:builtin={preset.builtin}
-								onclick={() => applyPreset(preset)}
-								title={preset.builtin
-									? `Built-in preset: ${preset.name}`
-									: `Apply preset: ${preset.name}`}
-							>
-								{#if activePresetId === preset.id}
-									<svg
-										class="preset-chip-check"
-										width="9"
-										height="9"
-										viewBox="0 0 12 12"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-										stroke-linecap="round"
-										stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
-									>
-								{/if}
-								{preset.name}
-							</button>
-						{/each}
-					</div>
-				</div>
-
-				<div class="param machine-controls">
-					<div class="param-head">
-						<label class="param-label" for="machine-select">Processor</label>
-					</div>
-					<select
-						id="machine-select"
-						class="instrument-select"
-						value={machine}
-						onchange={chooseMachine}
-						disabled={machineBusy || observationBusy || !engine}
-					>
-						<option value="z80-0.2">Z80 · compat 0.2</option>
-						<option value="z80-0.3">Z80 · 0.3 classic</option>
-						<option value="z80-nmos">Z80 · 0.3 Zilog NMOS</option>
-						<option value="m6502">NMOS 6502</option>
-						<option value="i8086">8086 · coherent fetch</option>
-					</select>
-					<details class="world-contract">
-						<summary
-							>World contract <span class="contract-shape">L{tapeLength} / P{pairLength}</span
-							></summary
-						>
-						<div class="world-geometry-row">
-							<label for="tape-length">Tape L</label><input
-								id="tape-length"
-								class="seed-input"
-								type="number"
-								min="4"
-								max="32"
-								value={tapeLength}
-								disabled={machineBusy || observationBusy}
-								onchange={(event) => {
-									tapeLength = Math.max(4, Math.min(32, Number(event.currentTarget.value)));
-									pairLength = Math.max(pairLength, tapeLength * 2);
-									initialCondition = { kind: 'random' };
-									selectedExperimentId = '';
-									void updateMachine(true);
-								}}
-							/>
-							<label for="pair-length">Ring P</label><input
-								id="pair-length"
-								class="seed-input"
-								type="number"
-								min={tapeLength * 2}
-								max="128"
-								value={pairLength}
-								disabled={machineBusy || observationBusy}
-								onchange={(event) => {
-									pairLength = Math.max(
-										tapeLength * 2,
-										Math.min(128, Number(event.currentTarget.value))
-									);
-									void updateMachine(true);
-								}}
-							/>
-						</div>
-						<label class="world-control-label" for="stack-convention">Stack placement</label>
-						<select
-							id="stack-convention"
-							class="instrument-select"
-							bind:value={stackConvention}
-							disabled={machineBusy || observationBusy}
-							onchange={() => {
-								void updateMachine(true);
-							}}
-						>
-							<option value="top">Top at B’s last byte</option><option value="first-push"
-								>First push at B’s last byte</option
-							>{#if isa === 'z80'}<option value="legacy-sp">Original SP = FFFF</option>{/if}
-						</select>
-						<label class="instrument-check"
-							><input
-								type="checkbox"
-								bind:checked={randomRegisters}
-								disabled={machineBusy || observationBusy}
-								onchange={() => {
-									void updateMachine();
-								}}
-							/> Random registers</label
-						>
-						<label class="world-control-label" for="dial-mode">Dial stream</label>
-						<select
-							id="dial-mode"
-							class="instrument-select"
-							bind:value={dialMode}
-							disabled={machineBusy || observationBusy}
-							onchange={() => {
-								void updateMachine();
-							}}
-							><option value="historical-pcg">Historical PCG</option><option value="counter"
-								>Counter</option
-							></select
-						>
-					</details>
-					<div class="param-head chemistry-head">
-						<label class="param-label" for="lethal-probability">Lethal zero</label><span
-							class="param-val"
-							>{(lethalProbability * 100).toFixed(
-								lethalProbability && lethalProbability < 0.01 ? 1 : 0
-							)}%</span
-						>
-					</div>
-					<input
-						id="lethal-probability"
-						class="slider"
-						type="range"
-						min="0"
-						max="1"
-						step="0.01"
-						bind:value={lethalProbability}
-						disabled={machineBusy || observationBusy}
-						onchange={() => {
-							void updateMachine();
-						}}
-					/>
-					{#if machineBusy}<p class="instrument-note" role="status">
-							Preparing the processor…
-						</p>{/if}
-					{#if machineError}<p class="instrument-error" role="alert">{machineError}</p>{/if}
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<span class="param-label"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="3" y="3" width="8" height="8" /><rect
-									x="13"
-									y="3"
-									width="8"
-									height="8"
-								/><rect x="3" y="13" width="8" height="8" /><rect
-									x="13"
-									y="13"
-									width="8"
-									height="8"
-								/></svg
-							> Grid</span
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'grid'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'grid';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'grid' ? null : 'grid';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>Grid topology and dimensions. Hex grids produce more organic patterns. Changing
-								resets simulation.</span
-							>
-						</span>
-						<div class="grid-type-toggle">
-							<button
-								class="grid-type-btn"
-								class:active={gridType === 'square'}
-								onclick={() => handleGridTypeChange('square')}
-								title="Square grid — 4 neighbors"
-								><svg
-									width="10"
-									height="10"
-									viewBox="0 0 10 10"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.2"
-									><rect x="1" y="1" width="3.5" height="3.5" /><rect
-										x="5.5"
-										y="1"
-										width="3.5"
-										height="3.5"
-									/><rect x="1" y="5.5" width="3.5" height="3.5" /><rect
-										x="5.5"
-										y="5.5"
-										width="3.5"
-										height="3.5"
-									/></svg
-								></button
-							>
-							<button
-								class="grid-type-btn"
-								class:active={gridType === 'hex'}
-								onclick={() => handleGridTypeChange('hex')}
-								title="Hex grid — 6 neighbors"
-								><svg
-									width="10"
-									height="10"
-									viewBox="0 0 10 10"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.2"><path d="M5 1L8.5 3V7L5 9L1.5 7V3Z" /></svg
-								></button
+							</div>
+						</details>
+						<div class="section-divider"></div>
+						<div class="section-title">
+							<h2>Next world</h2>
+							<span class:pending={pendingWorld} class="draft-state"
+								>{pendingWorld ? 'Changes staged' : 'Current settings'}</span
 							>
 						</div>
-					</div>
-					<div class="grid-size-row">
-						<label class="grid-size-label">
-							W
-							<input
+						<p class="control-note">
+							Edit the starting condition. Your current world keeps running until you apply it.
+						</p>
+						<div class="control-field">
+							<label for="seed-input">Seed</label><input
+								id="seed-input"
+								class="shell-input"
+								aria-label="Seed"
 								type="number"
-								class="grid-size-input"
-								bind:value={gridWidth}
-								min="50"
-								max="500"
-								step="10"
+								min="0"
+								bind:value={worldDraft.seed}
 							/>
-						</label>
-						<span class="grid-size-x">&times;</span>
-						<label class="grid-size-label">
-							H
-							<input
-								type="number"
-								class="grid-size-input"
-								bind:value={gridHeight}
-								min="50"
-								max="500"
-								step="10"
-							/>
-						</label>
-						<button class="seed-apply" onclick={applyGridConfig} title="Apply & Reset">
-							<svg
-								width="12"
-								height="12"
-								viewBox="0 0 14 14"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
-								<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
-							</svg>
-						</button>
-					</div>
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<label class="param-label" for="seed-input"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="2" y="2" width="20" height="20" rx="3" /><circle
-									cx="8"
-									cy="8"
-									r="1.5"
-									fill="currentColor"
-									stroke="none"
-								/><circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" /><circle
-									cx="8"
-									cy="16"
-									r="1.5"
-									fill="currentColor"
-									stroke="none"
-								/><circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" /><circle
-									cx="12"
-									cy="12"
-									r="1.5"
-									fill="currentColor"
-									stroke="none"
-								/></svg
-							> Seed</label
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'seed'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'seed';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'seed' ? null : 'seed';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>Random seed for initial soup generation. Changing seed requires reset.</span
-							>
-						</span>
-					</div>
-					<div class="seed-row">
-						<input
-							id="seed-input"
-							type="number"
-							class="seed-input"
-							value={seed}
-							min="0"
-							onchange={handleSeedChange}
-						/>
-						<button class="seed-apply" aria-label="Reset with seed" onclick={handleReset}>
-							<svg
-								width="12"
-								height="12"
-								viewBox="0 0 14 14"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
-								<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
-							</svg>
-						</button>
-					</div>
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<label class="param-label" for="noise-input"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path
-									d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
-								/></svg
-							> Mutation rate</label
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'mutation'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'mutation';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'mutation' ? null : 'mutation';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>Random byte flips per batch. Higher = more mutations = faster evolution. Applied
-								live.</span
-							>
-						</span>
-						<span class="param-val"
-							>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
-						>
-					</div>
-					<div class="slider-track-wrap">
-						<input
-							id="noise-input"
-							type="range"
-							class="slider"
-							value={noiseExp >= 31 ? 1 : 13 - noiseExp}
-							min="1"
-							max="12"
-							step="1"
-							oninput={(e) => {
-								const val = 13 - parseInt((e.target as HTMLInputElement).value);
-								if (!isNaN(val) && engine) {
-									noiseExp = val;
-									engine.noiseExp = val;
-								}
-							}}
-						/>
-					</div>
-					<label class="instrument-check"
-						><input
-							type="checkbox"
-							checked={noiseExp >= 31}
-							onchange={(event) => {
-								noiseExp = event.currentTarget.checked ? 31 : 4;
-								if (engine) engine.noiseExp = noiseExp;
-							}}
-						/> Mutation off</label
-					>
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<label class="param-label" for="pairs-input"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="3" y="3" width="7" height="7" /><rect
-									x="14"
-									y="3"
-									width="7"
-									height="7"
-								/><rect x="3" y="14" width="7" height="7" /><rect
-									x="14"
-									y="14"
-									width="7"
-									height="7"
-								/></svg
-							> Pairs/batch</label
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'pairs'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'pairs';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'pairs' ? null : 'pairs';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>Cell pairs evaluated per step. More = faster evolution, higher GPU load. Applied
-								live.</span
-							>
-						</span>
-						<span class="param-val">{pairCount}</span>
-					</div>
-					<div class="slider-track-wrap">
-						<input
-							id="pairs-input"
-							type="range"
-							class="slider"
-							bind:value={pairCount}
-							min={256}
-							max={MAX_BATCH_PAIR_N}
-							step={256}
-							oninput={handlePairCountChange}
-						/>
-					</div>
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<label class="param-label" for="steps-input"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg
-							>
-							{isa === 'z80' ? 'Z80 steps' : 'Execution steps'}</label
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'steps'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'steps';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'steps' ? null : 'steps';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>Instruction slots per pair execution. More steps = longer programs can run, slower
-								throughput. Applied live.</span
-							>
-						</span>
-						<span class="param-val">{z80Steps}</span>
-					</div>
-					<div class="slider-track-wrap">
-						<input
-							id="steps-input"
-							type="range"
-							class="slider"
-							bind:value={z80Steps}
-							min={16}
-							max={1024}
-							step={16}
-							oninput={(e) => {
-								const val = parseInt((e.target as HTMLInputElement).value);
-								if (!isNaN(val) && engine) {
-									z80Steps = val;
-									engine.z80Steps = val;
-								}
-							}}
-						/>
-					</div>
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<span class="param-label"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="12" cy="12" r="10" /><line
-									x1="4.93"
-									y1="4.93"
-									x2="19.07"
-									y2="19.07"
-								/></svg
-							> Suppress opcodes</span
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'suppress'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'suppress';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'suppress' ? null : 'suppress';
-								}}>?</button
-							>
-							<span class="param-tip"
-								>{#if isa === 'z80'}Remove instructions from the CPU. A pattern is a mnemonic
-									substring (LDIR, LD (HL), PUSH), a whole family (family:block-copy, family:stack,
-									family:writes-mem) or one opcode (ed:B0, cb:FF, 3E). Prefixed ED/CB instructions
-									are reachable individually. A suppressed opcode executes as a NOP; its operand
-									bytes run as the next instruction. Use it to take the usual replication machinery
-									away and see what else evolves.{:else}{isaSuppressionDescription}{/if}</span
-							>
-						</span>
-						{#if suppressPatterns.length > 0}
-							<button class="suppress-clear" onclick={clearSuppressedOpcodes} title="Clear all">
-								<svg
-									width="10"
-									height="10"
-									viewBox="0 0 10 10"
-									stroke="currentColor"
-									stroke-width="1.5"
-								>
-									<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
-								</svg>
-							</button>
-						{/if}
-					</div>
-					<div class="suppress-input-wrap">
-						<input
-							class="suppress-input"
-							type="text"
-							placeholder={isa === 'z80'
-								? 'family:block-copy; LDIR; PUSH; ed:B0'
-								: isa === 'm6502'
-									? 'family:stack; STA; opcode:8D'
-									: 'family:block-copy; MOV; opcode:A4'}
-							bind:value={suppressInput}
-							onkeydown={(e) => {
-								if (e.key === 'Enter' && suppressInput.trim()) {
-									addSuppressPattern(suppressInput);
-									suppressInput = '';
-								}
-							}}
-						/>
-						{#if suppressInput.trim()}
-							{@const preview = suppressionPreview(suppressInput)}
-							<span class="suppress-preview"
-								>↵ to suppress {preview} instruction{preview !== 1 ? 's' : ''}</span
-							>
-						{/if}
-					</div>
-					{#if suppressPatterns.length > 0}
-						<div class="suppress-chips">
-							{#each suppressPatterns as pat (pat)}
+						</div>
+						<div class="control-field">
+							<span class="field-label">Lattice</span>
+							<div class="segmented">
 								<button
-									class="suppress-chip"
-									onclick={() => removeSuppressPattern(pat)}
-									title="Remove pattern: {pat} (click to remove)"
+									class:active={worldDraft.topology === 'square'}
+									onclick={() => (worldDraft.topology = 'square')}>Square</button
+								><button
+									class:active={worldDraft.topology === 'hex'}
+									onclick={() => (worldDraft.topology = 'hex')}>Hexagonal</button
 								>
-									{pat}
-									<svg
-										width="8"
-										height="8"
-										viewBox="0 0 8 8"
-										stroke="currentColor"
-										stroke-width="1.5"
-									>
-										<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
-									</svg>
-								</button>
-							{/each}
-							<span class="suppress-count" title={describeSuppression(suppression)}
-								>{suppressedTotal} instruction{suppressedTotal !== 1 ? 's' : ''}</span
+							</div>
+						</div>
+						<div class="field-pair">
+							<label
+								>Width<input
+									class="shell-input"
+									aria-label="Lattice width"
+									type="number"
+									min="2"
+									max="400"
+									bind:value={worldDraft.width}
+								/></label
+							><span>×</span><label
+								>Height<input
+									class="shell-input"
+									aria-label="Lattice height"
+									type="number"
+									min="2"
+									max="400"
+									bind:value={worldDraft.height}
+								/></label
 							>
 						</div>
-					{/if}
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<span class="param-label"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="12" cy="12" r="10" /><path
-									d="M12 2a7 7 0 0 0 0 20 4 4 0 0 1 0-8 4 4 0 0 0 0-8z"
-								/><circle cx="12" cy="9" r="1" fill="var(--accent)" /></svg
-							> Appearance</span
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'cmap'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'cmap';
-								}}
-								onmouseleave={() => {
-									openTip = null;
-								}}
-								onclick={() => {
-									openTip = openTip === 'cmap' ? null : 'cmap';
-								}}>?</button
+						<div class="field-pair">
+							<label
+								>Tape length<input
+									id="tape-length"
+									class="shell-input"
+									aria-label="Tape length"
+									type="number"
+									min="4"
+									max="128"
+									bind:value={worldDraft.length}
+									oninput={(event) => {
+										const length = event.currentTarget.valueAsNumber;
+										if (Number.isInteger(length) && length >= 4 && length <= 128)
+											worldDraft.ring = Math.max(worldDraft.ring, length * 2);
+									}}
+								/></label
+							><span>/</span><label
+								>Ring length<input
+									id="pair-length"
+									class="shell-input"
+									aria-label="Ring length"
+									type="number"
+									min={worldDraft.length * 2}
+									max="256"
+									bind:value={worldDraft.ring}
+								/></label
 							>
-							<span class="param-tip"
-								>Color scheme for byte values. Each Z80 opcode category gets a distinct color
-								family.</span
+						</div>
+						<details class="shell-disclosure">
+							<summary>Encounter reset</summary>
+							<div class="disclosure-body">
+								<label class="field-label" for="stack-convention">Stack placement</label
+								><InstrumentSelect
+									id="stack-convention"
+									label="Stack placement"
+									value={worldDraft.stack}
+									options={[
+										{ value: 'top', label: 'Top at B’s last byte' },
+										{ value: 'first-push', label: 'First push at B’s last byte' },
+										...(worldDraft.isa === 'z80'
+											? [{ value: 'legacy-sp', label: 'Original SP = FFFF' }]
+											: [])
+									]}
+									onchange={(value) => (worldDraft.stack = value as LabSettings['stack'])}
+								/><label class="inline-check"
+									><input type="checkbox" bind:checked={worldDraft.randomRegisters} /> Random registers</label
+								><label class="field-label" for="dial-mode">Dial stream</label><InstrumentSelect
+									id="dial-mode"
+									label="Dial stream"
+									value={worldDraft.dialMode}
+									options={[
+										{ value: 'historical-pcg', label: 'Historical PCG' },
+										{ value: 'counter', label: 'Counter' }
+									]}
+									onchange={(value) => (worldDraft.dialMode = value as LabSettings['dialMode'])}
+								/>
+							</div>
+						</details>
+						<div class="apply-world">
+							{@render nextWorldSummary()}
+							<button
+								class="primary-action"
+								disabled={!engine || machineBusy || checkpointBusy}
+								onclick={() => void startNewWorld()}>Start new world with these settings</button
+							>{#if pendingWorld}<button class="quiet-button" onclick={discardDraft}
+									>Discard staged changes</button
+								>{/if}
+						</div>
+					</fieldset>
+				{:else if worldSection === 'look'}
+					<p class="intro-copy">
+						Change how you see the world. Its bytes, time and camera stay yours.
+					</p>
+					<div class="control-field">
+						<span class="field-label">Byte palette</span>
+						<div class="palette-options">
+							{#each COLORMAP_NAMES as name (name)}<button
+									class:active={colormapName === name}
+									onclick={() => handleColormapChange(name)}
+									><span class={`cmap-preview cmap-preview-${name}`}></span>{name}</button
+								>{/each}
+						</div>
+					</div>
+					<div class="control-field">
+						<span class="field-label">Tape detail</span>
+						<div class="segmented">
+							<button
+								class:active={!simpleView}
+								title="Detailed — show individual bytes"
+								onclick={() => (simpleView = false)}>Individual bytes</button
+							><button
+								class:active={simpleView}
+								title="Simple — one color per cell"
+								onclick={() => (simpleView = true)}>Average colour</button
+							>
+						</div>
+					</div>
+					<label class="inline-check"
+						><input type="checkbox" bind:checked={showGridLines} /> Grid lines</label
+					>
+					<div class="section-divider"></div>
+					<h2>Colour adjustments</h2>
+					{#each ['Brightness', 'Contrast', 'Saturation'] as label (label)}<div
+							class="control-field"
+						>
+							<div class="label-row">
+								<label for={`colour-${label}`}>{label}</label><output
+									>{(label === 'Brightness'
+										? brightness
+										: label === 'Contrast'
+											? contrast
+											: saturation
+									).toFixed(2)}</output
+								>
+							</div>
+							<input
+								id={`colour-${label}`}
+								aria-label={label}
+								type="range"
+								min={label === 'Brightness' ? -0.5 : label === 'Contrast' ? 0.3 : 0}
+								max={label === 'Brightness' ? 0.5 : label === 'Contrast' ? 2.5 : 3}
+								step=".01"
+								value={label === 'Brightness'
+									? brightness
+									: label === 'Contrast'
+										? contrast
+										: saturation}
+								oninput={(event) => {
+									const v = Number(event.currentTarget.value);
+									if (label === 'Brightness') brightness = v;
+									else if (label === 'Contrast') contrast = v;
+									else saturation = v;
+								}}
+							/>
+						</div>{/each}
+					<button
+						class="quiet-button"
+						onclick={() => {
+							brightness = 0;
+							contrast = 1;
+							saturation = 1;
+						}}>Reset colour adjustments</button
+					>
+				{/if}
+				{#if machineBusy}<p class="inline-notice" role="status">
+						Applying the condition… playback will continue.
+					</p>{/if}{#if machineError}<p class="instrument-error" role="alert">
+						{machineError}
+					</p>{/if}{#if worldNotice && worldSection === 'condition'}<p
+						class="inline-notice"
+						role="status"
+					>
+						{worldNotice}
+					</p>{/if}
+			</section>
+			<div
+				class="measure-heading sidebar-section"
+				hidden={activeTab !== 'measure' || sidebarCollapsed}
+			>
+				<div class="section-heading">
+					<h1>Measure</h1>
+					<span class="section-context">Evidence in context</span>
+				</div>
+				<nav class="measure-sections" aria-label="Measure sections">
+					{#each [{ id: 'probe', label: 'Probe' }, { id: 'region', label: 'Region' }, { id: 'marker', label: 'Markers' }, { id: 'history', label: 'History' }, { id: 'compare', label: 'Compare' }, { id: 'charts', label: 'Charts' }, { id: 'record', label: 'Export' }] as section (section.id)}<button
+							class:active={measureSection === section.id}
+							onclick={() => showMeasure(section.id)}>{section.label}</button
+						>{/each}
+					{#if inspectedTape || speciesModal}<button
+							class:active={measureSection === 'bench'}
+							onclick={() => showMeasure('bench')}>Encounter bench</button
+						>{/if}
+				</nav>
+			</div>
+			{#if activeTab === 'measure' && measureSection === 'probe' && activeTool === 'navigate' && !sidebarCollapsed}<section
+					class="sidebar-section hover-preview"
+					aria-label="Tape preview"
+				>
+					<h2>Select a tape</h2>
+					<p class="intro-copy">
+						Click a cell on the lattice to keep its bytes in view. Use the probe tool to move
+						between neighbours.
+					</p>
+					{#if cellData && hoveredCell >= 0}<p class="control-note">
+							Hover preview · cell {hoveredCell}
+						</p>
+						<div class="tip-grid inline-tape-grid">
+							{#each buildGenomeGrid(cellData, disasmLines) as cell, index (index)}<div
+									class="tip-cell"
+									class:operand={!cell.isOpcode}
+									style={`background:${byteColor(cell.byteVal)};color:${cellTextColor(cell.byteVal)}`}
+								>
+									{cell.label}
+								</div>{/each}
+						</div>{/if}
+				</section>{/if}
+			{#if engine}<ObservationTools
+					bind:this={observation}
+					{engine}
+					{canvas}
+					{playing}
+					embedded={true}
+					panelVisible={activeTab === 'measure' &&
+						measureSection !== 'charts' &&
+						measureSection !== 'bench' &&
+						!sidebarCollapsed}
+					onstate={observationState}
+					externalBusy={machineBusy || checkpointBusy}
+					benchOpen={measureSection === 'bench'}
+					onbusy={(value) => (observationBusy = value)}
+					condition={EXPERIMENT_PRESETS.find((preset) => preset.id === appliedExperimentId)?.name ??
+						''}
+					{byteColor}
+					onpause={() => {}}
+					oninspect={(index) => void inspectCell(index)}
+				/>{/if}
+			<section
+				class="sidebar-section checkpoint-section"
+				hidden={activeTab !== 'measure' || measureSection !== 'record' || sidebarCollapsed}
+				aria-label="Checkpoints"
+			>
+				<h2>Checkpoints</h2>
+				<p class="intro-copy">
+					Save the population and its condition to continue from these bytes.
+				</p>
+				<button
+					class="primary-action"
+					title="Save checkpoint (Cmd+S)"
+					onclick={() => void handleSave()}
+					disabled={!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy}
+					>{checkpointBusy ? 'Saving checkpoint…' : 'Save checkpoint'}</button
+				><button
+					class="secondary-action"
+					title="Load checkpoint (Cmd+O)"
+					onclick={() => fileInput?.click()}>Import checkpoint</button
+				>{#if pendingCheckpoint}<div class="inline-confirmation">
+						<h2>Restore checkpoint</h2>
+						<p>{pendingCheckpoint.name}</p>
+						<p class="control-note">
+							{pendingCheckpoint.metadata.gridWidth} × {pendingCheckpoint.metadata.gridHeight} tapes ·
+							seed {pendingCheckpoint.metadata.seed}. This replaces the current population.
+						</p>
+						<button
+							class="primary-action"
+							disabled={machineBusy || checkpointBusy}
+							onclick={() => void restoreCheckpoint()}>Restore checkpoint</button
+						><button class="quiet-button" onclick={() => (pendingCheckpoint = null)}
+							>Cancel import</button
+						>
+					</div>{/if}
+				<p class="control-note">
+					Checkpoints keep bytes and settings on your computer. They do not preserve every random
+					lane’s continuation.
+				</p>
+				<p class="control-note">Download measurement data beside each result in Measure.</p>
+				{#if machineError}<p class="instrument-error" role="alert">{machineError}</p>{/if}
+			</section>
+			<section
+				class="sidebar-section charts-panel"
+				hidden={activeTab !== 'measure' || measureSection !== 'charts' || sidebarCollapsed}
+				aria-label="Population charts"
+			>
+				<!-- Bottom-left info bar -->
+				<div class="info-bar">
+					<div class="info-row">
+						<span
+							class="info-item"
+							title="Instruction-slot budget per second, including unused slots in halted encounters"
+						>
+							<span class="info-label">ops/s</span>
+							<span class="info-value" data-numeric>{formatNumber(opsPerSec)}</span>
+						</span>
+						<span class="info-sep"></span>
+						<span class="info-item">
+							<span class="info-label">mut</span>
+							<span class="info-value"
+								>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
 							>
 						</span>
-						<button
-							class="color-adj-toggle"
-							class:active={showColorAdj}
-							onclick={() => (showColorAdj = !showColorAdj)}
-							title="Color adjustments"
-						>
+						<button class="info-chart-toggle" onclick={toggleChart} title="Toggle chart">
 							<svg
 								width="10"
 								height="10"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
+								viewBox="0 0 10 10"
+								fill="currentColor"
+								style="opacity:{showInfoChart ? 1 : 0.4}"
 							>
-								<path
-									d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-								/><circle cx="12" cy="12" r="3" />
+								<polyline
+									points="0,8 3,4 6,6 10,1"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+								/>
 							</svg>
 						</button>
 					</div>
-					<div class="cmap-row">
-						{#each COLORMAP_NAMES as name (name)}
+					{#if showInfoChart}
+						<div class="info-tabs">
 							<button
-								class="cmap-btn"
-								class:active={colormapName === name}
-								onclick={() => handleColormapChange(name)}
+								class="info-tab"
+								class:active={infoTab === 'opcodes'}
+								onclick={() => (infoTab = 'opcodes')}
+								title="Opcode frequency — most common byte values for the selected processor over time"
+								>Opcodes</button
 							>
-								<span class="cmap-preview cmap-preview-{name}"></span>
-								{name}
-							</button>
-						{/each}
-					</div>
-					{#if showColorAdj}
-						<div class="color-adj-panel">
-							<div class="color-adj-row">
-								<span class="color-adj-label">Brightness</span>
-								<input
-									type="range"
-									class="slider color-adj-slider"
-									min="-0.5"
-									max="0.5"
-									step="0.01"
-									bind:value={brightness}
-								/>
-							</div>
-							<div class="color-adj-row">
-								<span class="color-adj-label">Contrast</span>
-								<input
-									type="range"
-									class="slider color-adj-slider"
-									min="0.3"
-									max="2.5"
-									step="0.01"
-									bind:value={contrast}
-								/>
-							</div>
-							<div class="color-adj-row">
-								<span class="color-adj-label">Saturation</span>
-								<input
-									type="range"
-									class="slider color-adj-slider"
-									min="0"
-									max="3"
-									step="0.01"
-									bind:value={saturation}
-								/>
-							</div>
 							<button
-								class="color-adj-reset"
-								onclick={() => {
-									brightness = 0;
-									contrast = 1;
-									saturation = 1;
-								}}>Reset</button
+								class="info-tab"
+								class:active={infoTab === 'species'}
+								onclick={() => (infoTab = 'species')}
+								title="Species — distinct cell genomes (by content hash) and their populations"
+								>Species</button
+							>
+							<button
+								class="info-tab"
+								class:active={infoTab === 'diversity'}
+								onclick={() => (infoTab = 'diversity')}
+								title="Diversity — richness and Shannon/Simpson indices of the species distribution"
+								>Diversity</button
 							>
 						</div>
 					{/if}
-					<label class="grid-lines-toggle">
-						<input type="checkbox" bind:checked={showGridLines} class="sr-only" />
-						<span class="check-box" class:checked={showGridLines}>
-							{#if showGridLines}
-								<svg
-									width="8"
-									height="8"
-									viewBox="0 0 12 12"
-									fill="none"
-									stroke="var(--accent)"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
-								>
-							{/if}
-						</span>
-						<span>Grid lines</span>
-					</label>
-				</div>
-
-				<div class="param">
-					<div class="param-head">
-						<span class="param-label"
-							><svg
-								width="12"
-								height="12"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="var(--accent)"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="3" y="3" width="18" height="18" rx="2" /><line
-									x1="3"
-									y1="12"
-									x2="21"
-									y2="12"
-								/><line x1="12" y1="3" x2="12" y2="21" /></svg
-							> Detail</span
-						>
-						<span class="param-info-wrap" class:show-tip={openTip === 'detail'}>
-							<button
-								class="param-info"
-								onmouseenter={() => {
-									openTip = 'detail';
-								}}
+					{#if showInfoChart && infoTab === 'opcodes' && chartVersion > 0 && chartLen > 1}
+						<div class="info-chart">
+							<svg
+								viewBox="0 0 200 120"
+								class="info-chart-svg"
+								role="img"
+								aria-label="Historical measurement trend"
+								preserveAspectRatio="none"
 								onmouseleave={() => {
-									openTip = null;
+									chartHoveredByte = -1;
 								}}
-								onclick={() => {
-									openTip = openTip === 'detail' ? null : 'detail';
-								}}>?</button
 							>
-							<span class="param-tip"
-								>Toggle between detailed view (showing individual bytes within each cell) and simple
-								view (one averaged color per cell). Hover tooltip always shows full detail.</span
-							>
-						</span>
-						<div class="detail-toggle">
-							<button
-								class="grid-type-btn"
-								class:active={!simpleView}
-								onclick={() => (simpleView = false)}
-								title="Detailed — show individual bytes"
-								><svg
-									width="10"
-									height="10"
-									viewBox="0 0 10 10"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1"
-									><rect x="0.5" y="0.5" width="4" height="4" /><rect
-										x="5.5"
-										y="0.5"
-										width="4"
-										height="4"
-									/><rect x="0.5" y="5.5" width="4" height="4" /><rect
-										x="5.5"
-										y="5.5"
-										width="4"
-										height="4"
-									/></svg
-								></button
-							>
-							<button
-								class="grid-type-btn"
-								class:active={simpleView}
-								onclick={() => (simpleView = true)}
-								title="Simple — one color per cell"
-								><svg
-									width="10"
-									height="10"
-									viewBox="0 0 10 10"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.2"><rect x="1" y="1" width="8" height="8" rx="1" /></svg
-								></button
-							>
-						</div>
-					</div>
-					<p class="instrument-note">
-						Choose a field view in the observation strip to measure composition or fetching.
-					</p>
-				</div>
-			</fieldset>
-		</div>
-	{/if}
-
-	<!-- Preset overwrite confirmation -->
-	{#if overwriteTarget}
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div class="confirm-backdrop" onclick={() => (overwriteTarget = null)} role="presentation">
-			<div
-				class="confirm-dialog"
-				onclick={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				aria-label="Algocell details"
-				tabindex="-1"
-			>
-				<div class="confirm-title">Overwrite preset?</div>
-				<div class="confirm-body">
-					A preset named <strong>{overwriteTarget.name}</strong> already exists. Replace its saved settings
-					with the current configuration?
-				</div>
-				<div class="confirm-actions">
-					<button class="confirm-btn confirm-cancel" onclick={() => (overwriteTarget = null)}
-						>Cancel</button
-					>
-					<button class="confirm-btn confirm-ok" onclick={confirmOverwrite}>Overwrite</button>
-				</div>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Genome tooltip -->
-	{#if hoveredCell >= 0 && cellData && !isPanning && (!observation || observation.isNavigating())}
-		{#if gridType === 'hex' && tapeLength === 19}
-			<!-- Hex byte tooltip: 19 hex-shaped bytes in 3-4-5-4-3 hexagonal arrangement -->
-			<div class="genome-tip hex-tip" style={tooltipStyle}>
-				<div class="hex-byte-grid">
-					{#each genomeCells as cell, i (i)}
-						<div class="hex-byte-cell hex-byte-pos-{i}" class:operand={!cell.isOpcode}>
-							<div
-								class="hex-byte-inner"
-								style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4
-									? 'rgba(0,0,0,0.85)'
-									: 'rgba(255,255,255,0.9)'}"
-							>
-								{cell.label}
-							</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-		{:else}
-			<!-- Square grid tooltip -->
-			<div class="genome-tip" style={tooltipStyle}>
-				<div class="tip-grid">
-					{#each genomeCells as cell, i (i)}
-						<div
-							class="tip-cell"
-							class:operand={!cell.isOpcode}
-							style="background:{byteColor(cell.byteVal)};color:{byteLuminance(cell.byteVal) > 0.4
-								? 'rgba(0,0,0,0.85)'
-								: 'rgba(255,255,255,0.9)'}"
-						>
-							{cell.label}
-						</div>
-					{/each}
-				</div>
-			</div>
-		{/if}
-	{/if}
-
-	<!-- Help modal -->
-	{#if showHelp}
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div class="modal-backdrop" onclick={() => (showHelp = false)} role="presentation">
-			<div
-				class="modal"
-				onclick={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				aria-label="Algocell details"
-				tabindex="-1"
-			>
-				<div class="modal-header">
-					<div class="modal-tabs">
-						<button
-							class="modal-tab"
-							aria-label="Overview"
-							class:active={helpTab === 'overview'}
-							onclick={() => (helpTab = 'overview')}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line
-									x1="12"
-									y1="8"
-									x2="12.01"
-									y2="8"
-								/></svg
-							>
-							Overview
-						</button>
-						<button
-							class="modal-tab"
-							aria-label="Guide"
-							class:active={helpTab === 'guide'}
-							onclick={() => (helpTab = 'guide')}>Guide</button
-						>
-						<button
-							class="modal-tab"
-							aria-label="Visuals"
-							class:active={helpTab === 'visuals'}
-							onclick={() => (helpTab = 'visuals')}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="13.5" cy="6.5" r="2.5" /><circle cx="19" cy="17" r="2.5" /><circle
-									cx="6"
-									cy="18"
-									r="2.5"
-								/></svg
-							>
-							Visuals
-						</button>
-						<button
-							class="modal-tab"
-							aria-label="Z80"
-							class:active={helpTab === 'z80'}
-							onclick={() => (helpTab = 'z80')}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="4" y="4" width="16" height="16" rx="2" /><rect
-									x="9"
-									y="9"
-									width="6"
-									height="6"
-								/><line x1="9" y1="1" x2="9" y2="4" /><line x1="15" y1="1" x2="15" y2="4" /><line
-									x1="9"
-									y1="20"
-									x2="9"
-									y2="23"
-								/><line x1="15" y1="20" x2="15" y2="23" /><line
-									x1="20"
-									y1="9"
-									x2="23"
-									y2="9"
-								/><line x1="20" y1="14" x2="23" y2="14" /><line x1="1" y1="9" x2="4" y2="9" /><line
-									x1="1"
-									y1="14"
-									x2="4"
-									y2="14"
-								/></svg
-							>
-							Z80
-						</button>
-						<button
-							class="modal-tab"
-							aria-label="Parameters"
-							class:active={helpTab === 'params'}
-							onclick={() => (helpTab = 'params')}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" /><line
-									x1="12"
-									y1="21"
-									x2="12"
-									y2="12"
-								/><line x1="12" y1="8" x2="12" y2="3" /><line
-									x1="20"
-									y1="21"
-									x2="20"
-									y2="16"
-								/><line x1="20" y1="12" x2="20" y2="3" /><line x1="1" y1="14" x2="7" y2="14" /><line
-									x1="9"
-									y1="8"
-									x2="15"
-									y2="8"
-								/><line x1="17" y1="16" x2="23" y2="16" /></svg
-							>
-							Params
-						</button>
-						<button
-							class="modal-tab"
-							aria-label="Analysis"
-							class:active={helpTab === 'analysis'}
-							onclick={() => (helpTab = 'analysis')}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+								{#each freqLines as fl (fl.byte)}
+									{#if fl.path}
+										<polyline
+											points={fl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+											fill="none"
+											stroke={fl.color}
+											stroke-width={chartHoveredByte === fl.byte ? '4' : '2.5'}
+											opacity={chartHoveredByte >= 0
+												? chartHoveredByte === fl.byte
+													? '1'
+													: '0.15'
+												: '0.8'}
+										/>
+									{/if}
+								{/each}
 							</svg>
-							Analysis
-						</button>
-						<button
-							class="modal-tab tab-keys"
-							aria-label="Keys"
-							class:active={helpTab === 'keys'}
-							onclick={() => (helpTab = 'keys')}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="2" y="4" width="20" height="16" rx="2" /><line
-									x1="6"
-									y1="8"
-									x2="6.01"
-									y2="8"
-								/><line x1="10" y1="8" x2="10.01" y2="8" /><line
-									x1="14"
-									y1="8"
-									x2="14.01"
-									y2="8"
-								/><line x1="18" y1="8" x2="18.01" y2="8" /><line
-									x1="6"
-									y1="12"
-									x2="6.01"
-									y2="12"
-								/><line x1="10" y1="12" x2="10.01" y2="12" /><line
-									x1="14"
-									y1="12"
-									x2="14.01"
-									y2="12"
-								/><line x1="18" y1="12" x2="18.01" y2="12" /><line
-									x1="8"
-									y1="16"
-									x2="16"
-									y2="16"
-								/></svg
-							>
-							Keys
-						</button>
-						<button
-							class="modal-tab"
-							aria-label="About"
-							class:active={helpTab === 'about'}
-							onclick={() => (helpTab = 'about')}
-						>
-							<svg width="14" height="14" viewBox="0 0 32 32"
-								><ellipse cx="16" cy="20" rx="14" ry="14" fill="var(--accent)" /><line
-									x1="16"
-									y1="8"
-									x2="16"
-									y2="32"
-									stroke="#1a1210"
-									stroke-width="1.5"
-								/><circle cx="9" cy="16" r="2.5" fill="#1a1210" /><circle
-									cx="10.5"
-									cy="24"
-									r="2.2"
-									fill="#1a1210"
-								/><circle cx="23" cy="16" r="2.5" fill="#1a1210" /><circle
-									cx="21.5"
-									cy="24"
-									r="2.2"
-									fill="#1a1210"
-								/><circle cx="16" cy="7" r="7" fill="#1a1210" /><circle
-									cx="12.8"
-									cy="5.8"
-									r="1.5"
-									fill="#e0cfc0"
-								/><circle cx="19.2" cy="5.8" r="1.5" fill="#e0cfc0" /><path
-									d="M12 1.5 Q9 -2 5 0"
-									fill="none"
-									stroke="#1a1210"
-									stroke-width="1.8"
-									stroke-linecap="round"
-								/><path
-									d="M20 1.5 Q23 -2 27 0"
-									fill="none"
-									stroke="#1a1210"
-									stroke-width="1.8"
-									stroke-linecap="round"
-								/><circle cx="5" cy="0" r="1.8" fill="#1a1210" /><circle
-									cx="27"
-									cy="0"
-									r="1.8"
-									fill="#1a1210"
-								/></svg
-							>
-							About
-						</button>
-					</div>
-					<button class="panel-close" aria-label="Close help" onclick={() => (showHelp = false)}>
-						<svg
-							width="10"
-							height="10"
-							viewBox="0 0 10 10"
-							stroke="currentColor"
-							stroke-width="1.5"
-						>
-							<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
-						</svg>
-					</button>
+							<div class="freq-grid">
+								{#each displayTiles as tile, i (tile.type === 'suppressed' ? 'suppressed' : tile.byte)}
+									{#if tile.type === 'suppressed'}
+										<div class="freq-cell freq-cell-suppressed-group" role="button" tabindex="0">
+											<span class="freq-label">{tile.mnemonic}</span>
+										</div>
+									{:else}
+										<div
+											class="freq-cell"
+											class:dimmed={chartHoveredByte >= 0 && chartHoveredByte !== tile.byte}
+											class:highlighted={chartHoveredByte === tile.byte}
+											style="background:{byteColor(tile.byte)};color:{cellTextColor(tile.byte)}"
+											role="button"
+											tabindex="0"
+											onclick={() => toggleSuppressOpcode(tile.byte)}
+											onkeydown={(e) => {
+												if (e.key === 'Enter' || e.key === ' ') {
+													e.preventDefault();
+													toggleSuppressOpcode(tile.byte);
+												}
+											}}
+											onmouseenter={(e) => {
+												chartHoveredByte = tile.byte;
+												showTileTooltip(e, tile.byte, tile.mnemonic, i + 1);
+											}}
+											onmouseleave={() => {
+												chartHoveredByte = -1;
+												hideTileTooltip();
+											}}
+										>
+											<span class="freq-rank">{i + 1}</span>
+											<span class="freq-label">{tile.mnemonic || hexByte(tile.byte)}</span>
+										</div>
+									{/if}
+								{/each}
+							</div>
+							{#if suppressPatterns.length > 0}
+								<div class="freq-suppressed-row">
+									{#each suppressPatterns as pat (pat)}
+										<button
+											class="freq-suppress-chip"
+											onclick={() => removeSuppressPattern(pat)}
+											title="Remove pattern: {pat}"
+										>
+											{pat}
+											<svg
+												width="7"
+												height="7"
+												viewBox="0 0 8 8"
+												stroke="currentColor"
+												stroke-width="1.5"
+											>
+												<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+											</svg>
+										</button>
+									{/each}
+									<span class="freq-suppress-count" title={describeSuppression(suppression)}
+										>⊘ {suppressedTotal}</span
+									>
+								</div>
+							{/if}
+						</div>
+					{:else if showInfoChart && infoTab === 'species'}
+						<div class="info-chart">
+							{#if speciesLen > 1 && speciesLines.length > 0}
+								<svg
+									viewBox="0 0 200 120"
+									class="info-chart-svg"
+									role="img"
+									aria-label="Historical measurement trend"
+									preserveAspectRatio="none"
+									onmouseleave={() => {
+										speciesHoveredIdx = -1;
+									}}
+								>
+									{#each speciesLines as sl, idx (sl.hash)}
+										{#if sl.path}
+											<!-- Thick invisible hit area for hover -->
+											<polyline
+												points={sl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+												fill="none"
+												stroke="transparent"
+												role="presentation"
+												stroke-width="12"
+												onmouseenter={() => {
+													speciesHoveredIdx = idx;
+												}}
+											/>
+											<polyline
+												points={sl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+												fill="none"
+												stroke={sl.color}
+												stroke-width={speciesHoveredIdx === idx ? '4' : '2.5'}
+												opacity={speciesHoveredIdx >= 0
+													? speciesHoveredIdx === idx
+														? '1'
+														: '0.15'
+													: '0.8'}
+												style="pointer-events:none"
+											/>
+										{/if}
+									{/each}
+								</svg>
+							{:else}
+								<div class="species-waiting">Collecting species data...</div>
+							{/if}
+							{#if currentSpecies}
+								<div class="freq-grid">
+									{#each currentSpecies.species.slice(0, MAX_SPECIES_DISPLAY) as sp, i (sp.hash)}
+										{@const chartIdx = speciesHashOrder.indexOf(sp.hash)}
+										<div
+											class="freq-cell"
+											class:dimmed={speciesHoveredIdx >= 0 && speciesHoveredIdx !== chartIdx}
+											class:highlighted={speciesHoveredIdx === chartIdx}
+											style="background:{sp.color};color:{sp.textColor}"
+											role="button"
+											tabindex="0"
+											title="Click to inspect"
+											onmouseenter={() => {
+												speciesHoveredIdx = chartIdx;
+											}}
+											onmouseleave={() => {
+												speciesHoveredIdx = -1;
+											}}
+											onclick={() => {
+												speciesModal = sp;
+												speciesSampleUpdate = engine?.batchCount ?? 0;
+												measureSection = 'bench';
+												inspectedTape = null;
+											}}
+											onkeydown={(e) => {
+												if (e.key === 'Enter' || e.key === ' ') {
+													e.preventDefault();
+													speciesModal = sp;
+													speciesSampleUpdate = engine?.batchCount ?? 0;
+													measureSection = 'bench';
+													inspectedTape = null;
+												}
+											}}
+										>
+											<span class="freq-rank">{i + 1}</span>
+											<span class="freq-label">{(sp.fraction * 100).toFixed(1)}%</span>
+										</div>
+									{/each}
+								</div>
+							{/if}
+							{#if suppressPatterns.length > 0}
+								<div class="freq-suppressed-row">
+									{#each suppressPatterns as pat (pat)}
+										<button
+											class="freq-suppress-chip"
+											onclick={() => removeSuppressPattern(pat)}
+											title="Remove pattern: {pat}"
+										>
+											{pat}
+											<svg
+												width="7"
+												height="7"
+												viewBox="0 0 8 8"
+												stroke="currentColor"
+												stroke-width="1.5"
+											>
+												<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+											</svg>
+										</button>
+									{/each}
+									<span class="freq-suppress-count" title={describeSuppression(suppression)}
+										>⊘ {suppressedTotal}</span
+									>
+								</div>
+							{/if}
+						</div>
+					{:else if showInfoChart && infoTab === 'diversity'}
+						<div class="info-chart">
+							{#if diversityLen > 1 && diversityLines.length > 0}
+								<svg
+									viewBox="0 0 200 120"
+									class="info-chart-svg"
+									role="img"
+									aria-label="Historical measurement trend"
+									preserveAspectRatio="none"
+									onmouseleave={() => {
+										diversityHoveredIdx = -1;
+									}}
+								>
+									{#each diversityLines as dl (dl.idx)}
+										{#if dl.path}
+											<polyline
+												points={dl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+												fill="none"
+												stroke="transparent"
+												role="presentation"
+												stroke-width="12"
+												onmouseenter={() => {
+													diversityHoveredIdx = dl.idx;
+												}}
+											/>
+											<polyline
+												points={dl.path.replace(/[ML]/g, (m) => (m === 'M' ? '' : ' ')).trim()}
+												fill="none"
+												stroke={dl.color}
+												stroke-width={diversityHoveredIdx === dl.idx ? '4' : '2'}
+												opacity={diversityHoveredIdx >= 0
+													? diversityHoveredIdx === dl.idx
+														? '1'
+														: '0.15'
+													: '0.8'}
+												style="pointer-events:none"
+											/>
+										{/if}
+									{/each}
+								</svg>
+							{:else}
+								<div class="species-waiting">Collecting diversity data...</div>
+							{/if}
+							<div class="diversity-grid">
+								{#each diversityLines as dl (dl.idx)}
+									<div
+										class="diversity-card"
+										role="group"
+										class:dimmed={diversityHoveredIdx >= 0 && diversityHoveredIdx !== dl.idx}
+										class:highlighted={diversityHoveredIdx === dl.idx}
+										onmouseenter={() => {
+											diversityHoveredIdx = dl.idx;
+										}}
+										onmouseleave={() => {
+											diversityHoveredIdx = -1;
+										}}
+									>
+										<span class="diversity-swatch" style="background:{dl.color}"></span>
+										<span class="diversity-label">{dl.label}</span>
+										<span class="diversity-value"
+											>{dl.current < 100
+												? dl.current.toFixed(dl.current < 10 ? 2 : 1)
+												: formatNumber(dl.current)}</span
+										>
+									</div>
+								{/each}
+							</div>
+							{#if suppressPatterns.length > 0}
+								<div class="freq-suppressed-row">
+									{#each suppressPatterns as pat (pat)}
+										<button
+											class="freq-suppress-chip"
+											onclick={() => removeSuppressPattern(pat)}
+											title="Remove pattern: {pat}"
+										>
+											{pat}
+											<svg
+												width="7"
+												height="7"
+												viewBox="0 0 8 8"
+												stroke="currentColor"
+												stroke-width="1.5"
+											>
+												<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+											</svg>
+										</button>
+									{/each}
+									<span class="freq-suppress-count" title={describeSuppression(suppression)}
+										>⊘ {suppressedTotal}</span
+									>
+								</div>
+							{/if}
+						</div>
+					{/if}
 				</div>
-				<div class="modal-body">
+
+				{#if tileTooltip}<div class="chart-detail">
+						<strong
+							>{hexByte(tileTooltip.byte)} · {tileTooltip.mnemonic} · rank {tileTooltip.rank}</strong
+						>
+						<p>
+							{isa === 'z80'
+								? opcodeDescription(tileTooltip.byte)
+								: 'Inherited byte value in the selected processor.'}
+						</p>
+						<span>Click the tile to toggle instruction suppression.</span>
+					</div>{/if}
+			</section>
+			{#if inspectedTape || speciesModal}
+				{@const tape = inspectedTape ?? speciesModal!.exemplar}
+				<section
+					class="sidebar-section inspector-panel"
+					hidden={activeTab !== 'measure' || measureSection !== 'bench' || sidebarCollapsed}
+					aria-label="Tape inspector"
+				>
+					<div class="inspector-return">
+						<button
+							class="quiet-button"
+							aria-label="Close tape inspector"
+							title={speciesModal ? 'Return to population charts' : 'Return to live probe'}
+							onclick={() => {
+								showMeasure(speciesModal ? 'charts' : 'probe');
+							}}>‹</button
+						>
+						<h2>Encounter bench</h2>
+						<span
+							>{speciesModal
+								? `${(speciesModal.fraction * 100).toFixed(1)}% of population`
+								: `Cell ${inspectedCell}`}</span
+						>
+					</div>
+					{#if tape}
+						<p class="control-note">
+							{isa.toUpperCase()} · {tape.length} bytes. The lattice continues while you test a sample.
+						</p>
+						<div class="tip-grid inline-tape-grid">
+							{#each buildGenomeGrid(tape, disassemble(tape)) as cell, index (index)}<div
+									class="tip-cell"
+									class:operand={!cell.isOpcode}
+									style={`background:${byteColor(cell.byteVal)};color:${cellTextColor(cell.byteVal)}`}
+									title={`Byte ${index} · ${hexByte(cell.byteVal)} · ${cell.label}`}
+								>
+									{cell.label}
+								</div>{/each}
+						</div>
+						{@render disassemblyPanel(tape)}{@render culturePanel(tape)}{/if}
+				</section>
+			{/if}
+			<section
+				class="sidebar-section experiments-panel"
+				hidden={activeTab !== 'experiments' || sidebarCollapsed}
+				aria-label="Experiment presets"
+			>
+				<div class="section-heading">
+					<h1>Experiments</h1>
+					<span class="section-context">Begin with a question</span>
+				</div>
+				<p class="intro-copy">
+					Choose a condition, read what to look for, then start when you are ready.
+				</p>
+				<InstrumentSelect
+					id="experiment-preset"
+					label="Experiments"
+					placeholder="Choose an experiment…"
+					value={selectedExperimentId}
+					options={EXPERIMENT_PRESETS.map((preset) => ({
+						value: preset.id,
+						label: preset.name,
+						group: preset.category
+					}))}
+					onchange={(value) => {
+						const preset = EXPERIMENT_PRESETS.find((entry) => entry.id === value);
+						if (preset) applyExperimentPreset(preset);
+					}}
+				/>
+				{#if selectedExperiment}
+					<div class="experiment-condition">
+						<p>{scientificText(selectedExperiment.description)}</p>
+						<p><strong>Look for</strong> {scientificText(selectedExperiment.whatToLookFor)}</p>
+						<details>
+							<summary>Finding, limits &amp; sources</summary>
+							<p>{selectedExperiment.finding}</p>
+							<p>{scientificText(selectedExperiment.limits)}</p>
+							<p>
+								<strong>Registered condition</strong>
+								{selectedExperiment.published.width ?? 'isolated'} × {selectedExperiment.published
+									.height ?? 'culture'}, {selectedExperiment.published.pairAttempts ?? 'assay'} pair attempts;
+								horizon
+								{selectedExperiment.published.horizon.toLocaleString()}
+								{selectedExperiment.published.horizonUnit}. {scientificText(
+									selectedExperiment.published.note
+								)}
+							</p>
+							<p>{selectedExperiment.published.reset}</p>
+							<p class="source-path">{selectedExperiment.source.registration}</p>
+							{#if selectedExperiment.source.world}<p class="source-path">
+									{selectedExperiment.source.world}
+								</p>{/if}
+							{#each selectedExperiment.source.results as source (source)}<p class="source-path">
+									{source}
+								</p>{/each}
+							<p>
+								Sources identify the registered experiment and its archived results. This GPU run is
+								a fresh realization; equal seeds do not promise the archived scheduling trajectory.
+							</p>
+						</details>
+					</div>
+				{/if}
+
+				{#if selectedExperiment || stagedPreset}<div class="apply-world">
+						{@render nextWorldSummary()}
+						<button
+							class="primary-action"
+							disabled={!engine || machineBusy || checkpointBusy}
+							onclick={() => void startNewWorld()}>Start new world with these settings</button
+						><button class="quiet-button" onclick={() => jumpWorld()}>Review world settings</button>
+					</div>{/if}
+				<div class="section-divider"></div>
+				<div class="section-title">
+					<h2>Your presets</h2>
+					<button
+						class="quiet-button"
+						title="Save current settings as a preset"
+						onclick={() => (showPresetSave = !showPresetSave)}>Save current</button
+					>
+				</div>
+				{#if showPresetSave}<div class="preset-save-row">
+						<input
+							class="shell-input"
+							aria-label="Preset name"
+							placeholder="Preset name…"
+							bind:value={newPresetName}
+							onkeydown={(event) => {
+								if (event.key === 'Enter') requestSavePreset(newPresetName);
+							}}
+						/><button
+							class="quiet-button"
+							disabled={!newPresetName.trim()}
+							onclick={() => requestSavePreset(newPresetName)}>Save</button
+						>
+					</div>{/if}
+				<div class="saved-presets">
+					{#each presets as preset (preset.id)}<button
+							class:active={stagedPreset?.id === preset.id}
+							title={`Stage preset: ${preset.name}`}
+							onclick={() => applyPreset(preset)}
+							>{preset.name}<span>{preset.builtin ? 'Built in' : 'Saved'}</span></button
+						>{/each}
+				</div>
+				{#if activePresetId}<button
+						class="quiet-button"
+						title="Delete selected preset"
+						onclick={deleteActivePreset}>Delete current saved preset</button
+					>{/if}
+				{#if overwriteTarget}<div class="inline-confirmation">
+						<p>Replace “{overwriteTarget.name}” with your current settings?</p>
+						<button class="quiet-button" onclick={() => (overwriteTarget = null)}>Cancel</button
+						><button class="quiet-button" onclick={confirmOverwrite}>Overwrite</button>
+					</div>{/if}
+			</section>
+			<section
+				class="sidebar-section guide-panel"
+				hidden={(activeTab !== 'guide' && activeTab !== 'about') || sidebarCollapsed}
+				aria-label={activeTab === 'about' ? 'About Algocell' : 'Guide'}
+			>
+				<div class="section-heading">
+					<h1>{activeTab === 'about' ? 'About Algocell' : 'Guide'}</h1>
+					<span class="section-context"
+						>{activeTab === 'about' ? 'A world of small programs' : 'Learn by looking'}</span
+					>
+				</div>
+				{#if activeTab === 'guide'}<InstrumentSelect
+						label="Guide section"
+						value={helpTab}
+						options={[
+							{ value: 'guide', label: 'Getting started' },
+							{ value: 'overview', label: 'How the soup works' },
+							{ value: 'visuals', label: 'Visual explanations' },
+							{ value: 'z80', label: 'The Z80 machine' },
+							{ value: 'params', label: 'Parameters' },
+							{ value: 'analysis', label: 'Interpreting measurements' },
+							{ value: 'keys', label: 'Keyboard shortcuts' }
+						]}
+						onchange={(value) => (helpTab = value as typeof helpTab)}
+					/>{/if}
+				<div class="modal-body documentation-content">
 					{#if helpTab === 'guide'}
 						{#each guideSections as section (section.id)}<h4>{section.title}</h4>
 							{#each section.paragraphs as paragraph (paragraph)}<p>
@@ -5196,7 +4362,7 @@
 
 						<p class="cmap-note">
 							All other bytes get a muted tone from a continuous hue sweep. Switch colormaps in
-							Settings.
+							World → Appearance.
 						</p>
 
 						<h4>Cell Tooltips</h4>
@@ -5233,10 +4399,10 @@
 						<h4>Instruction Suppression (ablation)</h4>
 						{#if isa === 'z80'}
 							<p>
-								Type a pattern into the Suppress field in Settings and press Enter to remove the
-								matching instructions from the CPU. The Z80 then executes a suppressed opcode as a
-								NOP. Every instruction on the base, <code>CB</code> and <code>ED</code> pages is
-								addressable, so block copies like <code>LDIR</code> can be removed on their own.
+								Type a pattern in World → Budgets &amp; instruction ablation and press Enter to
+								remove the matching instructions from the CPU. The Z80 then executes a suppressed
+								opcode as a NOP. Every instruction on the base, <code>CB</code> and <code>ED</code>
+								pages is addressable, so block copies like <code>LDIR</code> can be removed on their own.
 							</p>
 							<ul class="help-list">
 								<li>
@@ -5274,7 +4440,7 @@
 							</p>
 						{:else}
 							<p>
-								Type a pattern into the Suppress field in Settings and press Enter. {isaSuppressionDescription}
+								Type a pattern in World → Budgets &amp; instruction ablation and press Enter. {isaSuppressionDescription}
 							</p>
 							<p>
 								Click an opcode frequency tile to add its exact opcode as a pattern. Remove a chip
@@ -5477,13 +4643,13 @@ graph TD
 						<p>
 							Width and height of the grid in cells. The initial grid fits roughly 20,000 cells to
 							the viewport. Larger worlds provide more encounters and use more GPU memory and
-							compute. Changing resets the simulation.
+							compute. Edits stay staged until you choose Start new world with these settings.
 						</p>
 
 						<h4>Seed</h4>
 						<p>
 							The random seed used to initialize the grid. Same seed produces the same starting
-							state. Change it and press Reset to try different initial conditions.
+							state. Edit it in Next world, then explicitly start the staged condition.
 						</p>
 
 						<h4>Mutation Rate</h4>
@@ -5533,10 +4699,11 @@ graph TD
 						<h4>Species Tracking</h4>
 						<p>
 							The <strong>Species</strong> tab identifies distinct cell types by hashing each cell's full
-							byte content (FNV-1a). Cells with identical bytes share a hash and are counted as one species.
-							The top 10 are shown as colored tiles whose color matches the cell's average appearance
-							on the grid. Click any species tile to inspect its genome (the 4x4 byte grid with Z80 disassembly).
-							Hover over individual bytes in the modal to see what each instruction does.
+							byte content (FNV-1a). Identical tapes share a fingerprint; different tapes can also collide.
+							These are composition groups, not measured species or lineages. The top 10 are shown as
+							colored tiles whose color matches the cell's average appearance on the grid. Click a tile
+							to inspect its tape and selected-processor disassembly in this sidebar. The groups use complete-tape
+							fingerprints; hash collisions are possible, and these groups do not establish ancestry.
 						</p>
 
 						<h4>Diversity Metrics</h4>
@@ -5573,8 +4740,8 @@ graph TD
 							<div class="help-metric-item">
 								<span class="help-metric-swatch" style="background:rgb(255,130,180)"></span>
 								<div>
-									<strong>UNIQ</strong> (total unique blocks) &mdash; every distinct 16-byte sequence
-									in the grid. Raw genetic diversity before any abundance threshold.
+									<strong>UNIQ</strong> (fingerprint groups) &mdash; distinct tape hashes in the grid.
+									Hash-based composition before any abundance threshold. Region samples verify exact tapes.
 								</div>
 							</div>
 						</div>
@@ -5584,11 +4751,14 @@ graph TD
 						<p>
 							<kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+S</kbd> saves a checkpoint
 							as an <code>.acell</code> file. This is a valid PNG image (viewable in any image app)
-							with the full simulation state appended after the image data. Load checkpoints with
+							with the population and its condition appended after the image data. In Measure →
+							Export, choose Import checkpoint and then Restore checkpoint. You can also choose a
+							file with
 							<kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+O</kbd> or drag &amp; drop onto
-							the canvas. The file contains the complete grid, all parameters, and suppression patterns
-							&mdash; everything needed to resume from these bytes. Legacy files do not store the complete
-							random stream, so they do not reproduce the exact historical continuation.
+							the canvas. Both paths stage the file for explicit restore. The file contains the complete
+							grid, all parameters, and suppression patterns &mdash; everything needed to resume from
+							these bytes. Legacy files do not store the complete random stream, so they do not reproduce
+							the exact historical continuation.
 						</p>
 
 						<h4>Opcode Suppression</h4>
@@ -5600,20 +4770,11 @@ graph TD
 						</p>
 					{:else if helpTab === 'keys'}
 						<div class="modal-shortcuts">
-							<div class="shortcut"><kbd>Space</kbd> Play / Pause</div>
-							<div class="shortcut"><kbd>R</kbd> Reset</div>
-							<div class="shortcut"><kbd>S</kbd> Toggle chart</div>
-							<div class="shortcut"><kbd>H</kbd> Toggle help</div>
-							<div class="shortcut"><kbd>F</kbd> Fit view</div>
-							<div class="shortcut">
-								<kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+S</kbd> Save checkpoint
-							</div>
-							<div class="shortcut">
-								<kbd>{navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+O</kbd> Load checkpoint
-							</div>
-							<div class="shortcut"><kbd>Scroll</kbd> Zoom</div>
-							<div class="shortcut"><kbd>Drag</kbd> Pan</div>
-							<div class="shortcut"><kbd>Dbl-click</kbd> Reset view</div>
+							{#each [['Space', 'Play / pause'], ['.', 'Step one update'], ['V / P / R / M / C', 'Select, probe, region, marker, compare'], ['1–5', 'World, Measure, Experiments, Guide, About'], ['F', 'Fit lattice'], ['+ / −', 'Zoom'], ['Arrow keys', 'Move the probe'], ['Cmd/Ctrl + S', 'Save checkpoint'], ['Cmd/Ctrl + O', 'Import checkpoint'], ['?', 'Show shortcuts'], ['Escape', 'Close current detail']] as shortcut (shortcut[0])}<div
+									class="shortcut"
+								>
+									<kbd>{shortcut[0]}</kbd><span>{shortcut[1]}</span>
+								</div>{/each}
 						</div>
 					{:else if helpTab === 'about'}
 						{#each ABOUT_SECTIONS as section (section.id)}
@@ -5643,19 +4804,167 @@ graph TD
 						</p>
 					{/if}
 				</div>
-			</div>
+			</section>
 		</div>
-	{/if}
+		<footer class="sidebar-footer" hidden={sidebarCollapsed}>
+			<button onclick={() => showMeasure('record')}>Export & checkpoints</button><button
+				title="Keyboard shortcuts (?)"
+				aria-label="Keyboard shortcuts"
+				onclick={() => {
+					selectTab('guide');
+					helpTab = 'keys';
+				}}>⌨</button
+			>
+		</footer>
+	</aside>
+	<footer class="status-bar" aria-label="Run and world status">
+		<div class="transport">
+			<button
+				class="play-control"
+				title={`${playing ? 'Pause' : 'Play'} (Space)`}
+				aria-label={playing ? 'Pause' : 'Play'}
+				disabled={!engine || machineBusy || checkpointBusy}
+				onclick={togglePlay}
+				><svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"
+					>{#if playing}<path d="M3 2h3v10H3zm5 0h3v10H8z" />{:else}<path
+							d="M3 1.5v11l9-5.5z"
+						/>{/if}</svg
+				><span>{playing ? 'Pause' : 'Play'}</span></button
+			><button
+				title="Step one update (.)"
+				aria-label="Step"
+				disabled={!engine || machineBusy || checkpointBusy}
+				onclick={stepOnce}>▸│</button
+			>
+			<div class="speed-control" title="Speed">
+				<InstrumentSelect
+					label="Speed"
+					value={String(speed)}
+					options={[1, 2, 4, 8].map((value) => ({ value: String(value), label: `${value}×` }))}
+					onchange={(value) => setSpeed(Number(value))}
+				/>
+			</div>
+			<button
+				title="Restart current world"
+				aria-label="Restart current world"
+				disabled={!engine || machineBusy || checkpointBusy}
+				onclick={() => void handleReset()}>↻</button
+			>
+		</div>
+		<button class="status-run" onclick={togglePlay}
+			><i class:running={playing}></i><span>{playing ? 'Running' : 'Paused'}</span></button
+		>
+		<button
+			class="status-item status-rate"
+			title="Completed population updates per second"
+			onclick={() => showMeasure('charts')}
+			><strong data-numeric>{(opsPerSec / Math.max(1, pairCount * z80Steps)).toFixed(0)}</strong
+			><span>updates/s</span></button
+		>
+		<button
+			class="status-item"
+			title="Population update count"
+			onclick={() => showMeasure('history')}
+			><span>Epoch</span><strong data-numeric>{epoch.toLocaleString()}</strong></button
+		>
+		<div class="status-spacer"></div>
+		<button class="status-item status-core" onclick={() => jumpWorld('condition', 'machine-select')}
+			><strong
+				>{applied.isa === 'z80'
+					? `Z80 ${applied.compat}${applied.variant === 'zilog-nmos' ? ' NMOS' : ''}`
+					: applied.isa === 'm6502'
+						? 'NMOS 6502'
+						: '8086'}</strong
+			></button
+		>
+		<button class="status-item status-seed" onclick={() => jumpWorld('condition', 'seed-input')}
+			><span>Seed</span><strong>{applied.seed}</strong></button
+		>
+		<button class="status-item status-size" onclick={() => jumpWorld('condition', 'tape-length')}
+			><strong>{applied.width} × {applied.height}</strong><span
+				>L{applied.length}/P{applied.ring}</span
+			></button
+		>
+		<button
+			class="status-item status-chemistry"
+			onclick={() => jumpWorld('condition', 'lethal-probability')}
+			><span>Zero</span><strong>{Math.round(applied.lethalProbability * 100)}% lethal</strong
+			></button
+		>
+	</footer>
+	{#snippet nextWorldSummary()}
+		<div class="next-world-summary" role="group" aria-label="Next world summary">
+			<strong
+				>{worldDraft.isa === 'z80'
+					? worldDraft.variant === 'zilog-nmos'
+						? 'Z80 · Zilog NMOS'
+						: 'Z80'
+					: worldDraft.isa === 'm6502'
+						? 'NMOS 6502'
+						: '8086 · coherent fetch'} · compat {worldDraft.compat}</strong
+			>
+			<p>
+				Mutation {worldDraft.mutationExponent >= 31
+					? 'off'
+					: `1 in ${2 ** worldDraft.mutationExponent}`} · Zero {Math.round(
+					worldDraft.lethalProbability * 100
+				)}% lethal
+			</p>
+			<p>
+				{worldDraft.pairAttempts.toLocaleString()} pairs/update · {worldDraft.steps} steps/encounter
+			</p>
+			<p>
+				{worldDraft.width} × {worldDraft.height} tapes · L{worldDraft.length}/P{worldDraft.ring} · seed
+				{worldDraft.seed}
+			</p>
+			<p class="replacement-note">Replaces the current population. Playback stays as it is.</p>
+		</div>
+	{/snippet}
+
+	{#snippet disassemblyPanel(tape: Uint8Array)}
+		<details class="inspector-disassembly">
+			<summary>Disassembly</summary>
+			{#each disassemble(tape) as line (line.offset)}<div class="disassembly-line">
+					<span>{line.offset.toString(16).toUpperCase().padStart(2, '0')}</span><span
+						>{line.bytes.map(hexByte).join(' ')}</span
+					><span>{line.mnemonic}</span>
+				</div>{/each}
+		</details>
+	{/snippet}
+
+	{#snippet culturePanel(tape: Uint8Array)}
+		{#if engine}
+			<EncounterBench
+				{engine}
+				{tape}
+				sampleId={inspectedTape
+					? `cell:${inspectedSampleId}`
+					: `species:${speciesModal?.hash}:${speciesSampleUpdate}`}
+				sampleCell={inspectedTape ? inspectedCell : null}
+				sampleUpdate={inspectedTape ? inspectedUpdate : speciesSampleUpdate}
+				sampleLabel={inspectedTape
+					? `Cell ${inspectedCell}`
+					: `Population fingerprint ${speciesModal?.hash}`}
+				{seed}
+				{byteColor}
+				onpause={() => {}}
+				onbusy={(value) => {
+					cultureBusy = value;
+				}}
+			/>
+		{/if}
+	{/snippet}
 </div>
 
 <style>
+	.control-lock {
+		border: 0;
+		padding: 0;
+		margin: 0;
+		min-width: 0;
+	}
 	.legacy-scope {
 		color: var(--text-primary);
-	}
-	.legacy-scope :global(button),
-	.legacy-scope :global(input),
-	.legacy-scope :global(select) {
-		min-height: 0;
 	}
 
 	.legacy-scope :global(input:focus),
@@ -5693,127 +5002,8 @@ graph TD
 	}
 
 	/* ── Toolbar ── */
-	.toolbar {
-		position: fixed;
-		top: 12px;
-		right: 12px;
-		z-index: 40;
-		display: flex;
-		align-items: center;
-		box-sizing: border-box;
-		gap: 2px;
-		padding: 3px;
-		background: var(--bg-panel);
-		border: 1px solid var(--border-subtle);
-		border-radius: 20px;
-		backdrop-filter: blur(16px);
-		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-		transition:
-			border-radius 0.2s ease,
-			width 0.2s ease,
-			height 0.2s ease,
-			gap 0.2s ease,
-			padding 0.2s ease;
-	}
-	.toolbar.collapsed {
-		/* Fixed square + centered content guarantees a perfect circle regardless
-		   of the (zero-width) hidden button row still in the flex flow. */
-		width: 40px;
-		height: 40px;
-		padding: 0;
-		gap: 0;
-		justify-content: center;
-		overflow: hidden;
-		border-radius: 50%;
-		border-color: var(--border-muted);
-	}
-	.toolbar-buttons {
-		display: flex;
-		align-items: center;
-		gap: 2px;
-		max-width: 400px;
-		opacity: 1;
-		transition:
-			max-width 0.2s ease,
-			opacity 0.15s ease,
-			gap 0.2s ease;
-	}
-	.toolbar-buttons.hidden {
-		max-width: 0;
-		opacity: 0;
-		gap: 0;
-		overflow: hidden;
-		pointer-events: none;
-	}
-	.tb {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 34px;
-		height: 34px;
-		border-radius: 17px;
-		border: none;
-		background: transparent;
-		cursor: pointer;
-		transition: background 0.15s;
-		flex-shrink: 0;
-		color: var(--text-subtle);
-	}
-	.tb:hover {
-		background: var(--bg-hover);
-	}
-	.tb.mono {
-		font-size: 13px;
-		font-family: monospace;
-	}
-	.tb-sep {
-		width: 1px;
-		height: 16px;
-		background: var(--border-subtle);
-		margin: 0 2px;
-		flex-shrink: 0;
-	}
-	.collapse-btn {
-		color: var(--text-subtle);
-		transition:
-			transform 0.2s ease,
-			background 0.15s;
-	}
-	.collapse-btn.collapsed {
-		transform: rotate(45deg);
-	}
 
 	/* Speed menu */
-	.speed-menu {
-		position: absolute;
-		top: 100%;
-		left: 50%;
-		transform: translateX(-50%);
-		margin-top: 6px;
-		display: flex;
-		flex-direction: column;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border-muted);
-		border-radius: 8px;
-		overflow: hidden;
-		min-width: 48px;
-	}
-	.speed-opt {
-		padding: 7px 14px;
-		font-size: 13px;
-		font-family: monospace;
-		color: var(--text-secondary);
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		text-align: center;
-	}
-	.speed-opt:hover {
-		background: var(--bg-hover);
-	}
-	.speed-opt.active {
-		color: var(--accent);
-	}
 
 	/* ── Info bar ── */
 	.info-bar {
@@ -5932,20 +5122,7 @@ graph TD
 		cursor: default;
 		font-size: 9px;
 	}
-	.freq-cell.suppressed::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: repeating-linear-gradient(
-			-45deg,
-			transparent,
-			transparent 3px,
-			rgba(0, 0, 0, 0.4) 3px,
-			rgba(0, 0, 0, 0.4) 5px
-		);
-		border-radius: 6px;
-		pointer-events: none;
-	}
+
 	.freq-rank {
 		position: absolute;
 		top: 2px;
@@ -6092,475 +5269,21 @@ graph TD
 	}
 
 	/* ── Species inspect modal ── */
-	.species-modal-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 60;
-		background: rgba(0, 0, 0, 0.5);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.species-modal {
-		background: var(--bg-elevated);
-		border: 1px solid var(--border-muted);
-		border-radius: 10px;
-		overflow: hidden;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-		min-width: 200px;
-	}
-	.species-modal-header {
-		padding: 8px 12px;
-		font-size: 11px;
-		font-family: monospace;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 12px;
-	}
-	.species-modal-close {
-		background: none;
-		border: none;
-		color: inherit;
-		cursor: pointer;
-		padding: 2px;
-		opacity: 0.6;
-	}
-	.species-modal-close:hover {
-		opacity: 1;
-	}
-	.species-modal-body {
-		padding: 8px;
-	}
-	.species-modal-grid {
-		margin: 0;
-	}
-	.species-modal-hex {
-		margin: 0 auto;
-	}
-	.species-modal-hex .hex-byte-cell.modal-cell-hovered .hex-byte-inner {
-		outline: 2px solid rgba(255, 255, 255, 0.8);
-		z-index: 1;
-	}
-	.species-modal-grid .tip-cell {
-		cursor: default;
-		transition: outline 0.1s;
-	}
-	.species-modal-grid .tip-cell.modal-cell-hovered {
-		outline: 2px solid rgba(255, 255, 255, 0.8);
-		z-index: 1;
-	}
-	.species-modal-hash {
-		text-align: center;
-		font-size: 8px;
-		font-family: monospace;
-		color: var(--text-muted);
-		margin-top: 6px;
-		letter-spacing: 0.1em;
-	}
 
 	/* ── Tile tooltip ── */
-	.tile-tip {
-		position: fixed;
-		z-index: 55;
-		pointer-events: none;
-		min-width: 140px;
-		max-width: 180px;
-		border-radius: 8px;
-		overflow: hidden;
-		filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
-		font-family:
-			system-ui,
-			-apple-system,
-			sans-serif;
-		transform: translateY(-100%);
-	}
-	.tile-tip-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 6px 10px;
-		gap: 8px;
-	}
-	.tile-tip-mnemonic {
-		font-family: monospace;
-		font-weight: 700;
-		font-size: 13px;
-		letter-spacing: 0.02em;
-	}
-	.tile-tip-hex {
-		font-family: monospace;
-		font-size: 11px;
-		opacity: 0.7;
-	}
-	.tile-tip-body {
-		background: var(--bg-elevated);
-		padding: 8px 10px;
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-	.tile-tip-desc {
-		margin: 0;
-		font-size: 11.5px;
-		line-height: 1.4;
-		color: var(--text-secondary, #ccc);
-	}
-	.tile-tip-status.suppressed {
-		font-size: 10px;
-		color: var(--accent-rose);
-		font-weight: 600;
-	}
-	.tile-tip-hint {
-		font-size: 9.5px;
-		color: var(--text-subtle, #666);
-		font-style: italic;
-		margin-top: 2px;
-	}
 
 	/* ── Panels (shared) ── */
-	.panel {
-		position: fixed;
-		z-index: 35;
-		background: var(--bg-panel);
-		border: 1px solid var(--border-subtle);
-		border-radius: 12px;
-		backdrop-filter: blur(16px);
-		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-		padding: 10px;
-	}
-	.panel-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 8px;
-	}
-	.panel-title {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		font-size: 10px;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--text-subtle);
-		font-weight: 600;
-	}
-	.panel-close {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 22px;
-		height: 22px;
-		border-radius: 6px;
-		border: none;
-		background: transparent;
-		color: var(--text-subtle);
-		cursor: pointer;
-	}
-	.panel-close:hover {
-		background: var(--bg-hover);
-		color: var(--text-secondary);
-	}
 
 	/* ── Settings panel ── */
-	.settings-panel {
-		top: 60px;
-		right: 12px;
-		width: 220px;
-		max-height: calc(100dvh - 72px);
-		overflow-y: auto;
-	}
-	.param {
-		margin-bottom: 8px;
-	}
-	.param:last-child {
-		margin-bottom: 0;
-	}
-	.param-head {
-		display: flex;
-		align-items: center;
-		gap: 4px;
-		margin-bottom: 3px;
-	}
-	.param-label {
-		font-size: 10px;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		color: var(--text-muted);
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-	}
-	.param-info-wrap {
-		position: relative;
-		display: inline-flex;
-		flex-shrink: 0;
-	}
-	.param-info {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 14px;
-		height: 14px;
-		border-radius: 50%;
-		background: var(--bg-muted);
-		border: none;
-		color: var(--text-subtle);
-		font-size: 9px;
-		font-family: Georgia, serif;
-		font-style: italic;
-		cursor: pointer;
-		flex-shrink: 0;
-		transition: background 0.15s;
-	}
-	.param-info:hover {
-		background: var(--bg-hover);
-		color: var(--text-secondary);
-	}
-	.param-tip {
-		display: none;
-		position: absolute;
-		top: calc(100% + 6px);
-		right: 0;
-		width: 200px;
-		padding: 8px 10px;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border-muted);
-		border-radius: 6px;
-		font-size: 11px;
-		font-style: normal;
-		font-family: -apple-system, sans-serif;
-		line-height: 1.4;
-		color: var(--text-muted);
-		z-index: 10;
-	}
-	.param-info-wrap.show-tip .param-tip {
-		display: block;
-	}
-	.param-val {
-		margin-left: auto;
-		font-size: 11px;
-		font-family: monospace;
-		color: var(--accent);
-		font-variant-numeric: tabular-nums;
-	}
 
 	/* Seed input */
-	.seed-row {
-		display: flex;
-		gap: 6px;
-	}
-	.seed-input {
-		flex: 1;
-		min-width: 0;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 4px;
-		padding: 0 7px;
-		height: 22px;
-		font-size: 11px;
-		font-family: monospace;
-		color: var(--text-primary);
-		outline: none;
-		transition: border-color 0.15s;
-		-moz-appearance: textfield;
-		appearance: textfield;
-	}
-	.seed-input::-webkit-inner-spin-button,
-	.seed-input::-webkit-outer-spin-button {
-		-webkit-appearance: none;
-		appearance: none;
-		margin: 0;
-	}
-	.seed-input:focus-visible {
-		border-color: rgba(255, 255, 255, 0.15);
-	}
-	.seed-apply {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 22px;
-		height: 22px;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-muted);
-		border-radius: 5px;
-		color: var(--accent);
-		cursor: pointer;
-		transition: all 0.15s;
-		flex-shrink: 0;
-	}
-	.seed-apply:hover {
-		background: var(--bg-hover);
-		border-color: var(--accent);
-	}
 
 	/* Grid type toggle — inline with param label */
-	.grid-type-toggle {
-		display: flex;
-		gap: 2px;
-		margin-left: 6px;
-	}
-	.grid-type-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 24px;
-		height: 20px;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-muted);
-		border-radius: 4px;
-		color: var(--text-subtle);
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-	.grid-type-btn.active {
-		background: rgba(200, 135, 90, 0.15);
-		border-color: var(--accent);
-		color: var(--accent);
-	}
-	.grid-type-btn:hover:not(.active) {
-		background: var(--bg-hover);
-	}
-	.detail-toggle {
-		display: flex;
-		gap: 2px;
-		margin-left: 6px;
-	}
-	.grid-size-row {
-		display: flex;
-		align-items: center;
-		gap: 4px;
-	}
-	.grid-size-row .seed-apply {
-		margin-left: auto;
-	}
-	.grid-size-label {
-		display: flex;
-		align-items: center;
-		gap: 3px;
-		font-size: 10px;
-		color: var(--text-subtle);
-		text-transform: uppercase;
-	}
-	.grid-size-input {
-		width: 48px;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 4px;
-		padding: 0 6px;
-		height: 20px;
-		font-size: 11px;
-		font-family: monospace;
-		color: var(--text-primary);
-		outline: none;
-		transition: border-color 0.15s;
-		-moz-appearance: textfield;
-		appearance: textfield;
-	}
-	.grid-size-input::-webkit-inner-spin-button,
-	.grid-size-input::-webkit-outer-spin-button {
-		-webkit-appearance: none;
-		appearance: none;
-		margin: 0;
-	}
-	.grid-size-x {
-		color: var(--text-subtle);
-		font-size: 12px;
-	}
 
 	/* Custom slider */
-	.slider-track-wrap {
-		position: relative;
-		padding: 2px 0;
-	}
-	.slider {
-		width: 100%;
-		height: 3px;
-		-webkit-appearance: none;
-		appearance: none;
-		background: rgba(255, 255, 255, 0.12);
-		border-radius: 2px;
-		outline: none;
-		cursor: pointer;
-	}
-	.slider::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		background: var(--accent);
-		border: none;
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-		cursor: pointer;
-		transition: transform 0.1s;
-	}
-	.slider::-webkit-slider-thumb:hover {
-		transform: scale(1.15);
-	}
-	.slider::-moz-range-thumb {
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		background: var(--accent);
-		border: none;
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-		cursor: pointer;
-	}
-	.slider::-moz-range-track {
-		height: 3px;
-		background: rgba(255, 255, 255, 0.12);
-		border-radius: 2px;
-		border: none;
-	}
 
 	/* Suppress opcodes */
-	.suppress-clear {
-		background: none;
-		border: none;
-		color: var(--text-muted);
-		cursor: pointer;
-		padding: 2px;
-		opacity: 0.6;
-		margin-left: auto;
-	}
-	.suppress-clear:hover {
-		opacity: 1;
-		color: var(--accent);
-	}
-	.suppress-input-wrap {
-		position: relative;
-	}
-	.suppress-input {
-		width: 100%;
-		box-sizing: border-box;
-		padding: 0 7px;
-		height: 22px;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 4px;
-		color: var(--text-primary);
-		font-size: 10px;
-		font-family: monospace;
-		outline: none;
-		transition: border-color 0.15s;
-	}
-	.suppress-input::placeholder {
-		color: var(--text-subtle);
-		font-size: 9.5px;
-		opacity: 1;
-	}
-	.suppress-input:focus-visible {
-		border-color: rgba(255, 255, 255, 0.15);
-		outline: none;
-	}
-	.suppress-preview {
-		display: block;
-		font-size: 9.5px;
-		color: var(--text-muted);
-		margin-top: 3px;
-		padding-left: 2px;
-	}
+
 	.suppress-chips {
 		display: flex;
 		flex-wrap: wrap;
@@ -6588,241 +5311,19 @@ graph TD
 		background: rgba(220, 80, 60, 0.25);
 		border-color: rgba(220, 80, 60, 0.5);
 	}
-	.suppress-chip svg {
-		opacity: 0.5;
-		flex-shrink: 0;
-	}
-	.suppress-chip:hover svg {
-		opacity: 1;
-	}
-	.suppress-count {
-		font-size: 9px;
-		color: var(--text-muted);
-		margin-left: 2px;
-	}
 
 	/* Presets */
-	.preset-header-actions {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		margin-left: auto;
-	}
-	.preset-delete-active {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 18px;
-		height: 18px;
-		padding: 0;
-		background: none;
-		border: none;
-		color: rgb(220, 90, 70);
-		cursor: pointer;
-		opacity: 0.85;
-		transition: opacity 0.12s;
-	}
-	.preset-delete-active:hover {
-		opacity: 1;
-	}
-	.preset-save-toggle {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 18px;
-		height: 18px;
-		padding: 0;
-		background: none;
-		border: none;
-		border-radius: 4px;
-		color: var(--text-muted);
-		cursor: pointer;
-		transition: all 0.12s;
-	}
-	.preset-save-toggle:hover {
-		color: var(--accent);
-		background: var(--bg-hover);
-	}
-	.preset-save-toggle.active {
-		color: var(--accent);
-		transform: rotate(45deg);
-	}
+
 	.preset-save-row {
 		display: flex;
 		gap: 4px;
 		margin-top: 6px;
 	}
-	.preset-name-input {
-		flex: 1;
-		min-width: 0;
-		box-sizing: border-box;
-		padding: 0 7px;
-		height: 22px;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 4px;
-		color: var(--text-primary);
-		font-size: 10px;
-		outline: none;
-		transition: border-color 0.15s;
-	}
-	.preset-name-input::placeholder {
-		color: var(--text-subtle);
-		font-size: 9.5px;
-		opacity: 1;
-	}
-	.preset-name-input:focus-visible {
-		border-color: var(--accent);
-	}
-	.preset-name-save {
-		padding: 0 10px;
-		height: 22px;
-		font-size: 10px;
-		color: var(--accent);
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-muted);
-		border-radius: 4px;
-		cursor: pointer;
-		transition: all 0.12s;
-	}
-	.preset-name-save:hover:not(:disabled) {
-		background: var(--bg-hover);
-		border-color: var(--accent);
-	}
-	.preset-name-save:disabled {
-		opacity: 0.4;
-		cursor: default;
-	}
-	.preset-chips {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 4px;
-		margin-top: 6px;
-	}
-	.preset-chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 3px;
-		padding: 3px 8px;
-		font-size: 9.5px;
-		font-weight: 600;
-		color: var(--text-secondary);
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid var(--border-subtle);
-		border-radius: 4px;
-		cursor: pointer;
-		transition: all 0.12s;
-		line-height: 1.4;
-		white-space: nowrap;
-	}
-	.preset-chip:hover {
-		background: var(--bg-hover);
-		border-color: var(--border-muted);
-		color: var(--text-primary);
-	}
-	.preset-chip.builtin {
-		font-style: italic;
-	}
-	.preset-chip.active {
-		color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 14%, transparent);
-		border-color: var(--accent);
-	}
-	.preset-chip-check {
-		flex-shrink: 0;
-	}
 
 	/* Preset overwrite confirmation dialog */
-	.confirm-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 60;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(2px);
-	}
-	.confirm-dialog {
-		width: min(320px, calc(100vw - 32px));
-		padding: 16px;
-		background: var(--bg-elevated, var(--bg-panel));
-		border: 1px solid var(--border-muted);
-		border-radius: 10px;
-		box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-	}
-	.confirm-title {
-		font-size: 13px;
-		font-weight: 600;
-		color: var(--text-primary);
-		margin-bottom: 8px;
-	}
-	.confirm-body {
-		font-size: 11.5px;
-		line-height: 1.5;
-		color: var(--text-secondary);
-		margin-bottom: 16px;
-	}
-	.confirm-body strong {
-		color: var(--text-primary);
-	}
-	.confirm-actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 8px;
-	}
-	.confirm-btn {
-		padding: 5px 14px;
-		font-size: 11px;
-		border-radius: 6px;
-		cursor: pointer;
-		transition: all 0.12s;
-	}
-	.confirm-cancel {
-		color: var(--text-secondary);
-		background: transparent;
-		border: 1px solid var(--border-muted);
-	}
-	.confirm-cancel:hover {
-		background: var(--bg-hover);
-		color: var(--text-primary);
-	}
-	.confirm-ok {
-		color: #fff;
-		background: rgb(200, 70, 55);
-		border: 1px solid rgb(200, 70, 55);
-	}
-	.confirm-ok:hover {
-		background: rgb(215, 80, 65);
-	}
 
 	/* Colormap selector */
-	.cmap-row {
-		display: flex;
-		gap: 4px;
-	}
-	.cmap-btn {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 2px;
-		padding: 3px 0 2px;
-		font-size: 8.5px;
-		font-family: monospace;
-		text-transform: capitalize;
-		color: var(--text-muted);
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-subtle);
-		border-radius: 4px;
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-	.cmap-preview {
-		width: 80%;
-		height: 4px;
-		border-radius: 2px;
-	}
+
 	.cmap-preview-rainbow {
 		background: linear-gradient(
 			90deg,
@@ -6859,133 +5360,11 @@ graph TD
 			#f8f0c0
 		);
 	}
-	.cmap-btn:hover {
-		background: var(--bg-hover);
-		color: var(--text-secondary);
-	}
-	.cmap-btn.active {
-		background: rgba(200, 135, 90, 0.12);
-		border-color: var(--accent);
-		color: var(--accent);
-	}
 
 	/* Color adjustments */
-	.color-adj-toggle {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 20px;
-		height: 20px;
-		margin-left: auto;
-		background: none;
-		border: 1px solid var(--border-muted);
-		border-radius: 4px;
-		color: var(--text-subtle);
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-	.color-adj-toggle:hover,
-	.color-adj-toggle.active {
-		color: var(--accent);
-		border-color: var(--accent);
-	}
-	.color-adj-panel {
-		margin-top: 6px;
-		padding: 8px;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.06);
-		border-radius: 6px;
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-	}
-	.color-adj-row {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-	}
-	.color-adj-label {
-		font-size: 9.5px;
-		color: var(--text-muted);
-		width: 58px;
-		flex-shrink: 0;
-	}
-	.color-adj-slider {
-		flex: 1;
-		min-width: 0;
-	}
-	.color-adj-reset {
-		align-self: flex-end;
-		padding: 2px 8px;
-		font-size: 9px;
-		color: var(--text-subtle);
-		background: none;
-		border: 1px solid var(--border-muted);
-		border-radius: 4px;
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-	.color-adj-reset:hover {
-		color: var(--text-secondary);
-		border-color: var(--text-subtle);
-	}
-
-	.grid-lines-toggle {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		margin-top: 4px;
-		font-size: 10px;
-		color: var(--text-muted);
-		cursor: pointer;
-		user-select: none;
-	}
-	.grid-lines-toggle .sr-only {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		border: 0;
-	}
-	.grid-lines-toggle .check-box {
-		width: 12px;
-		height: 12px;
-		border-radius: 3px;
-		border: 1px solid var(--border-default);
-		background: rgba(255, 255, 255, 0.03);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
-		transition:
-			border-color 0.15s,
-			background 0.15s;
-	}
-	.grid-lines-toggle .check-box.checked {
-		border-color: var(--accent);
-		background: rgba(200, 135, 90, 0.15);
-	}
-	.grid-lines-toggle:hover .check-box {
-		border-color: var(--text-subtle);
-	}
-	.grid-lines-toggle:hover .check-box.checked {
-		border-color: var(--accent-warm);
-	}
 
 	/* ── Genome tooltip ── */
-	.genome-tip {
-		position: fixed;
-		z-index: 45;
-		pointer-events: none;
-		overflow: hidden;
-		background: #0a0a0e;
-		padding: 4px;
-		border-radius: 3px;
-		filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
-	}
+
 	.tip-grid {
 		display: grid;
 		grid-template-columns: repeat(4, 46px);
@@ -7012,197 +5391,16 @@ graph TD
 	}
 
 	/* ── Hex byte tooltip: 19 hex cells in 3-4-5-4-3 hexagonal arrangement ── */
-	.hex-tip {
-		background: none;
-		padding: 2px !important;
-		overflow: visible;
-		filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
-	}
-	.hex-byte-cell::before {
-		content: '';
-		position: absolute;
-		inset: -4px;
-		background: #0a0a0e;
-		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-		z-index: -1;
-	}
-	.hex-byte-grid {
-		--hex-w: 48px;
-		--hex-gap: 2px;
-		--hex-dx: calc(var(--hex-w) + var(--hex-gap));
-		--hex-dy: calc(var(--hex-dx) * 0.866);
-		--hex-h: calc(var(--hex-w) * 1.1547);
-		display: block;
-		position: relative;
-		width: calc(var(--hex-dx) * 4 + var(--hex-w));
-		height: calc(var(--hex-dy) * 4 + var(--hex-h));
-	}
-	.hex-byte-cell {
-		position: absolute;
-		width: var(--hex-w);
-		height: var(--hex-h);
-	}
-	.hex-byte-inner {
-		width: 100%;
-		height: 100%;
-		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		font-size: 8px;
-		font-family: monospace;
-		font-weight: 600;
-		text-align: center;
-		line-height: 1.1;
-		padding: 2px;
-	}
-	.hex-byte-cell.operand .hex-byte-inner {
-		opacity: 0.75;
-		font-weight: 400;
-		font-size: 9px;
-	}
+
 	/* Byte positions in 3-4-5-4-3 hexagonal arrangement */
 	/* Byte 0: center (row 2, col 2) */
-	.hex-byte-pos-0 {
-		left: calc(var(--hex-dx) * 2);
-		top: calc(var(--hex-dy) * 2);
-	}
+
 	/* Ring 1: bytes 1-6 (clockwise from N) */
-	.hex-byte-pos-1 {
-		left: calc(var(--hex-dx) * 2.5);
-		top: calc(var(--hex-dy) * 1);
-	}
-	.hex-byte-pos-2 {
-		left: calc(var(--hex-dx) * 3);
-		top: calc(var(--hex-dy) * 2);
-	}
-	.hex-byte-pos-3 {
-		left: calc(var(--hex-dx) * 2.5);
-		top: calc(var(--hex-dy) * 3);
-	}
-	.hex-byte-pos-4 {
-		left: calc(var(--hex-dx) * 1.5);
-		top: calc(var(--hex-dy) * 3);
-	}
-	.hex-byte-pos-5 {
-		left: calc(var(--hex-dx) * 1);
-		top: calc(var(--hex-dy) * 2);
-	}
-	.hex-byte-pos-6 {
-		left: calc(var(--hex-dx) * 1.5);
-		top: calc(var(--hex-dy) * 1);
-	}
+
 	/* Ring 2: bytes 7-18 (clockwise from NE) */
-	.hex-byte-pos-7 {
-		left: calc(var(--hex-dx) * 3.5);
-		top: calc(var(--hex-dy) * 1);
-	}
-	.hex-byte-pos-8 {
-		left: calc(var(--hex-dx) * 4);
-		top: calc(var(--hex-dy) * 2);
-	}
-	.hex-byte-pos-9 {
-		left: calc(var(--hex-dx) * 3.5);
-		top: calc(var(--hex-dy) * 3);
-	}
-	.hex-byte-pos-10 {
-		left: calc(var(--hex-dx) * 3);
-		top: calc(var(--hex-dy) * 4);
-	}
-	.hex-byte-pos-11 {
-		left: calc(var(--hex-dx) * 2);
-		top: calc(var(--hex-dy) * 4);
-	}
-	.hex-byte-pos-12 {
-		left: calc(var(--hex-dx) * 1);
-		top: calc(var(--hex-dy) * 4);
-	}
-	.hex-byte-pos-13 {
-		left: calc(var(--hex-dx) * 0.5);
-		top: calc(var(--hex-dy) * 3);
-	}
-	.hex-byte-pos-14 {
-		left: calc(var(--hex-dx) * 0);
-		top: calc(var(--hex-dy) * 2);
-	}
-	.hex-byte-pos-15 {
-		left: calc(var(--hex-dx) * 0.5);
-		top: calc(var(--hex-dy) * 1);
-	}
-	.hex-byte-pos-16 {
-		left: calc(var(--hex-dx) * 1);
-		top: calc(var(--hex-dy) * 0);
-	}
-	.hex-byte-pos-17 {
-		left: calc(var(--hex-dx) * 2);
-		top: calc(var(--hex-dy) * 0);
-	}
-	.hex-byte-pos-18 {
-		left: calc(var(--hex-dx) * 3);
-		top: calc(var(--hex-dy) * 0);
-	}
 
 	/* ── Help modal ── */
-	.modal-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 50;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: rgba(0, 0, 0, 0.4);
-	}
-	.modal {
-		background: var(--bg-elevated);
-		border: 1px solid var(--border-muted);
-		border-radius: 14px;
-		max-width: 480px;
-		width: calc(100% - 32px);
-		overflow: hidden;
-	}
-	.modal-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 6px 10px 0 10px;
-		border-bottom: 1px solid var(--border-subtle);
-	}
-	.modal-tabs {
-		display: flex;
-		gap: 0;
-		overflow-x: auto;
-		min-width: 0;
-	}
-	.modal-tab {
-		background: none;
-		border: none;
-		padding: 7px 8px;
-		font-size: 10.5px;
-		color: var(--text-muted);
-		cursor: pointer;
-		border-bottom: 2px solid transparent;
-		margin-bottom: -1px;
-		display: flex;
-		align-items: center;
-		gap: 3px;
-		transition:
-			color 0.15s,
-			border-color 0.15s;
-		white-space: nowrap;
-	}
-	.modal-tab svg {
-		width: 12px;
-		height: 12px;
-		flex-shrink: 0;
-	}
-	.modal-tab:hover {
-		color: var(--text-secondary);
-	}
-	.modal-tab.active {
-		color: var(--accent);
-		border-bottom-color: var(--accent);
-	}
+
 	.modal-body {
 		padding: 16px;
 		font-size: 13px;
@@ -7449,43 +5647,6 @@ graph TD
 	/* ── Mobile ── */
 	@media (max-width: 768px) {
 		/* Toolbar: horizontal pill at bottom center */
-		.toolbar {
-			top: auto;
-			bottom: 8px;
-			right: auto;
-			left: 50%;
-			transform: translateX(-50%);
-			flex-direction: row;
-			width: auto;
-		}
-		.toolbar.collapsed {
-			left: auto;
-			right: 8px;
-			transform: none;
-		}
-		.toolbar-buttons {
-			flex-direction: row;
-			max-width: 400px;
-		}
-		.toolbar-buttons.hidden {
-			max-height: unset;
-			max-width: 0;
-			opacity: 0;
-			overflow: hidden;
-			pointer-events: none;
-		}
-		.tb-sep {
-			width: 1px;
-			height: 14px;
-			margin: 0 1px;
-		}
-		.speed-menu {
-			top: auto;
-			bottom: calc(100% + 6px);
-			left: 50%;
-			right: auto;
-			transform: translateX(-50%);
-		}
 
 		/* Info bar: compact at top-left, scaled down */
 		.info-bar {
@@ -7529,62 +5690,11 @@ graph TD
 		}
 
 		/* Settings panel: compact, anchored bottom-right above toolbar */
-		.settings-panel {
-			top: auto;
-			bottom: 52px;
-			right: 8px;
-			left: auto;
-			width: 286px;
-			max-height: calc(100vh - 120px);
-			overflow-y: auto;
-			font-size: 10px;
-		}
+
 		/* Bigger slider thumbs for touch (track stays thin) */
-		.slider::-webkit-slider-thumb {
-			width: 22px;
-			height: 22px;
-		}
-		.slider::-moz-range-thumb {
-			width: 22px;
-			height: 22px;
-		}
-		.slider-track-wrap {
-			padding: 6px 0;
-		}
 
 		/* Help modal: full-screen on mobile */
-		.modal {
-			max-width: 100%;
-			width: 100%;
-			height: 100%;
-			max-height: 100%;
-			border-radius: 0;
-			display: flex;
-			flex-direction: column;
-		}
-		.modal-header {
-			padding: 4px 8px 0 8px;
-			flex-shrink: 0;
-		}
-		.modal-tabs {
-			flex-wrap: nowrap;
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-			scrollbar-width: none;
-			gap: 0;
-		}
-		.modal-tabs::-webkit-scrollbar {
-			display: none;
-		}
-		.modal-tab {
-			padding: 6px 8px;
-			font-size: 10px;
-			white-space: nowrap;
-			flex-shrink: 0;
-		}
-		.modal-tab svg {
-			display: none;
-		}
+
 		.modal-body {
 			max-height: none;
 			flex: 1;
@@ -7592,59 +5702,14 @@ graph TD
 			padding: 12px;
 			font-size: 12px;
 		}
-		.modal-backdrop {
-			align-items: stretch;
-			justify-content: stretch;
-		}
 
 		/* Hide keys tab on mobile (no keyboard) */
-		.tab-keys {
-			display: none;
-		}
 
 		/* Prevent iOS zoom on input focus — font-size must be ≥ 16px */
-		.seed-input,
-		.suppress-input {
-			font-size: 16px;
-			height: 28px;
-		}
-		.grid-size-input {
-			font-size: 16px;
-			height: 26px;
-			width: 54px;
-		}
 
 		/* Genome tooltip: smaller on mobile */
-		.genome-tip {
-			transform: scale(0.8);
-			transform-origin: top center;
-		}
 	}
-	.instrument-select {
-		width: 100%;
-		min-height: 26px;
-		border: 1px solid var(--border-muted);
-		border-radius: 4px;
-		padding: 3px 6px;
-		background: #1b1b1b;
-		background-image: none;
-		color: var(--text-secondary);
-		font-size: 11px;
-		line-height: 1.35;
-		appearance: auto;
-		color-scheme: dark;
-		box-shadow: none;
-	}
-	.instrument-select:disabled {
-		opacity: 0.55;
-	}
-	.experiment-preset-label,
-	.world-control-label {
-		display: block;
-		font-size: 10px;
-		color: var(--text-subtle);
-		margin: 5px 0 3px;
-	}
+
 	.experiment-condition {
 		margin-top: 6px;
 		font-size: 10px;
@@ -7671,78 +5736,14 @@ graph TD
 		font-family: monospace;
 		font-size: 9px;
 	}
-	.world-geometry-row {
-		display: grid;
-		grid-template-columns: auto 1fr auto 1fr;
-		gap: 5px;
-		align-items: center;
-		margin-top: 6px;
-	}
-	.world-geometry-row label {
-		font-size: 10px;
-		color: var(--text-muted);
-	}
-	.world-geometry-row input {
-		width: 100%;
-	}
-	.instrument-check {
-		display: flex;
-		gap: 6px;
-		align-items: center;
-		margin-top: 6px;
-		font-size: 10px;
-		color: var(--text-muted);
-		cursor: pointer;
-	}
-	.instrument-check input {
-		width: 11px;
-		height: 11px;
-		color: var(--accent);
-		background: var(--bg-muted);
-		border: 1px solid var(--border-default);
-		border-radius: 2px;
-	}
-	.chemistry-head {
-		margin-top: 8px;
-	}
-	.instrument-note {
-		color: var(--text-subtle);
-		font-size: 10px;
-		line-height: 1.45;
-		margin-top: 5px;
-	}
+
 	.instrument-error {
 		color: var(--accent-rose);
 		font-size: 10px;
 		overflow-wrap: anywhere;
 		margin-top: 5px;
 	}
-	.fetch-key {
-		display: inline-block;
-		width: 6px;
-		height: 6px;
-		border-radius: 2px;
-		margin-right: 2px;
-	}
-	.fetch-key.confined {
-		background: var(--accent-emerald);
-	}
-	.fetch-key.open {
-		background: var(--accent-rose);
-	}
-	.fetch-key.unknown {
-		background: #555;
-	}
-	.tape-inspector,
-	.species-modal {
-		max-width: calc(100vw - 28px);
-		max-height: 85dvh;
-		overflow-y: auto;
-	}
-	.tape-inspector .species-modal-header {
-		color: var(--text-secondary);
-		border-bottom: 1px solid var(--border-subtle);
-	}
+
 	.guide-steps {
 		list-style: decimal;
 		padding-left: 20px;
@@ -7769,65 +5770,7 @@ graph TD
 		color: var(--text-muted);
 		overflow-wrap: anywhere;
 	}
-	.world-contract {
-		margin-top: 6px;
-	}
-	.world-contract summary {
-		color: var(--text-muted);
-		font-size: 10px;
-		cursor: pointer;
-	}
-	.contract-shape {
-		color: var(--text-subtle);
-		font: 9px monospace;
-		margin-left: 5px;
-	}
-	.settings-fields {
-		margin: 0;
-		padding: 0;
-		border: 0;
-		min-width: 0;
-	}
-	.bench-backdrop {
-		pointer-events: none;
-		background: none;
-		align-items: flex-start;
-		justify-content: flex-end;
-		padding: 64px 12px 12px;
-	}
-	.bench-backdrop .tape-inspector {
-		pointer-events: auto;
-		width: 520px;
-		max-height: calc(100dvh - 76px);
-		overflow-y: auto;
-	}
-	.tape-inspector .species-modal-header {
-		position: sticky;
-		top: 0;
-		z-index: 1;
-		background: var(--bg-elevated);
-		border-bottom: 1px solid var(--border-muted);
-		padding: 11px 13px;
-	}
-	.tape-inspector .species-modal-header small {
-		display: block;
-		font-size: 10px;
-		color: var(--text-muted);
-		margin-top: 4px;
-	}
-	.tape-inspector .species-modal-body {
-		padding: 12px;
-	}
-	.tape-inspector .tip-grid {
-		grid-template-columns: repeat(8, minmax(0, 1fr));
-		gap: 3px;
-	}
-	.tape-inspector .tip-cell {
-		width: auto;
-		height: 36px;
-		font-size: 8px;
-		border-radius: 3px;
-	}
+
 	@media (max-width: 768px) {
 		.info-bar {
 			top: auto;
@@ -7836,26 +5779,1094 @@ graph TD
 			max-width: calc(100vw - 16px);
 			padding: 5px 8px;
 		}
-		.info-bar .info-tabs {
+	}
+	.unified-shell {
+		--sidebar-width: 376px;
+		--header-height: 48px;
+		--status-height: 44px;
+		--rail-width: 40px;
+		position: fixed;
+		inset: 0;
+		overflow: hidden;
+		background: #0e0e0e;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+	}
+	.unified-shell.sidebar-collapsed {
+		--sidebar-width: 48px;
+	}
+	.app-header {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: var(--sidebar-width);
+		height: var(--header-height);
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 0 12px 0 16px;
+		background: #171715;
+		border-bottom: 1px solid #ffffff0b;
+		z-index: 30;
+	}
+	.wordmark {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 16px;
+		font-weight: 600;
+		letter-spacing: -0.5px;
+		flex-shrink: 0;
+		margin-right: 8px;
+	}
+	.wordmark svg {
+		color: var(--accent);
+	}
+	.field-choice {
+		width: 170px;
+	}
+	.header-space,
+	.rail-space,
+	.status-spacer {
+		flex: 1;
+	}
+	.unified-shell :global(button) {
+		font-family: inherit;
+	}
+	.unified-shell :global(button:disabled) {
+		opacity: 0.45;
+		cursor: default;
+	}
+	.header-look,
+	.camera-controls button {
+		min-height: 30px;
+		padding: 4px 10px;
+		color: var(--text-muted);
+		border: 1px solid transparent;
+		border-radius: 5px;
+		background: transparent;
+		font-size: 12px;
+		cursor: pointer;
+	}
+	.header-look:hover,
+	.camera-controls button:hover,
+	.header-look.chosen {
+		color: var(--text-primary);
+		background: #ffffff08;
+	}
+	.camera-controls {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+	}
+	.camera-controls button:first-child,
+	.camera-controls button:nth-child(2) {
+		width: 28px;
+		padding: 0;
+		font-size: 17px;
+	}
+	.canvas-viewport {
+		position: absolute;
+		top: var(--header-height);
+		bottom: var(--status-height);
+		left: 0;
+		right: calc(var(--sidebar-width) + var(--rail-width));
+		overflow: hidden;
+		background: #09090b;
+	}
+	.lattice-canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	.lattice-canvas:focus-visible {
+		outline: 1px solid var(--accent);
+		outline-offset: -2px;
+	}
+	.viewport-caption {
+		position: absolute;
+		left: 12px;
+		bottom: 10px;
+		max-width: calc(100% - 24px);
+		pointer-events: none;
+		color: #c8c1b8;
+		font-size: 10px;
+		line-height: 18px;
+		text-shadow: 0 1px 4px #000;
+	}
+	.viewport-caption span {
+		display: inline;
+		background: #10100fd9;
+		padding: 3px 6px;
+		border-radius: 3px;
+	}
+	.gpu-message {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 32px;
+		text-align: center;
+		gap: 12px;
+		background: #0e0e0e;
+	}
+	.gpu-message p {
+		max-width: 360px;
+		color: var(--text-muted);
+	}
+	.gpu-message button {
+		color: var(--accent);
+	}
+	.tool-rail {
+		position: absolute;
+		right: var(--sidebar-width);
+		top: var(--header-height);
+		bottom: var(--status-height);
+		width: var(--rail-width);
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		padding: 8px 4px;
+		background: #171715;
+		border-right: 1px solid #ffffff08;
+		border-left: 1px solid #ffffff0b;
+		z-index: 20;
+	}
+	.tool-rail button {
+		width: 32px;
+		height: 34px;
+		border-radius: 5px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #938d83;
+		border: 1px solid transparent;
+		background: transparent;
+		cursor: pointer;
+		transition:
+			color 160ms ease,
+			background 160ms ease;
+	}
+	.tool-rail button:hover {
+		background: #ffffff08;
+		color: #e8e4e0;
+	}
+	.tool-rail button.active {
+		color: #dda579;
+		background: #c8875a16;
+		border-color: #c8875a26;
+	}
+	.app-sidebar {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: var(--status-height);
+		width: var(--sidebar-width);
+		background: #161615;
+		border-left: 1px solid #ffffff0c;
+		display: flex;
+		flex-direction: column;
+		z-index: 35;
+		min-width: 0;
+	}
+	.sidebar-tabs {
+		flex-shrink: 0;
+		height: var(--header-height);
+		display: flex;
+		align-items: stretch;
+		padding: 0 8px;
+		gap: 2px;
+		border-bottom: 1px solid #ffffff0c;
+	}
+	.sidebar-tabs button {
+		position: relative;
+		flex: 1;
+		min-width: 0;
+		color: #aaa297;
+		font-size: 11px;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		padding: 0 4px;
+	}
+	.sidebar-tabs button.active {
+		color: #e5b18b;
+	}
+	.sidebar-tabs button.active::after {
+		content: '';
+		position: absolute;
+		height: 2px;
+		bottom: 0;
+		left: 6px;
+		right: 6px;
+		background: var(--accent);
+	}
+	.tab-glyph {
+		display: none;
+		font-size: 18px;
+	}
+	.sidebar-scroll {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		overflow-x: hidden;
+		scrollbar-gutter: stable;
+	}
+	.sidebar-section {
+		padding: 20px 20px 16px;
+	}
+	/* Canvas annotations are clipped to the viewport and sit below shell content. */
+	.unified-shell :global(.canvas-observations) {
+		z-index: 0;
+	}
+	.sidebar-section,
+	.sidebar-tabs,
+	.sidebar-footer,
+	.unified-shell :global(.observation-dock.embedded) {
+		position: relative;
+		z-index: 1;
+	}
+	.unified-shell :global(.observation-dock.embedded) {
+		inset: auto;
+	}
+	.sidebar-section:not([hidden]),
+	.unified-shell :global(.observation-dock.embedded:not([hidden])) {
+		animation: panel-reveal 160ms cubic-bezier(0.2, 0.6, 0.3, 1);
+	}
+	@keyframes panel-reveal {
+		from {
+			opacity: 0.82;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.sidebar-section[hidden],
+	.measure-heading[hidden],
+	.sidebar-footer[hidden] {
+		display: none;
+	}
+	.section-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		margin-bottom: 20px;
+	}
+	.section-heading h1 {
+		color: #e8e4e0;
+		font-size: 19px;
+		letter-spacing: -0.5px;
+		font-weight: 550;
+		margin: 0;
+	}
+	.section-context {
+		color: #817b72;
+		font-size: 10px;
+	}
+	.sidebar-section h2 {
+		font-size: 13px;
+		font-weight: 550;
+		color: var(--text-primary);
+		margin: 0;
+	}
+	.section-tabs,
+	.measure-sections,
+	.segmented {
+		display: flex;
+		padding: 3px;
+		gap: 3px;
+		background: #0e0e0d;
+		border: 1px solid #ffffff06;
+		border-radius: 6px;
+	}
+	.section-tabs button,
+	.measure-sections button,
+	.segmented button {
+		border: 0;
+		background: transparent;
+		flex: 1;
+		color: #91897f;
+		padding: 6px;
+		min-height: 28px;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 11px;
+		white-space: nowrap;
+	}
+	.section-tabs button.active,
+	.measure-sections button.active,
+	.segmented button.active {
+		color: #dbaa83;
+		background: #2a2722;
+	}
+	.measure-sections {
+		flex-wrap: wrap;
+	}
+	.measure-sections button {
+		flex: 1 0 20%;
+	}
+	.measure-heading {
+		padding-bottom: 8px;
+	}
+	.intro-copy {
+		color: #aaa298;
+		font-size: 12px;
+		line-height: 1.7;
+		margin: 16px 0 10px;
+	}
+	.text-action {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		color: #d9a681;
+		background: transparent;
+		padding: 6px 0;
+		border: 0;
+		cursor: pointer;
+		font-size: 12px;
+	}
+	.text-action span {
+		color: #786a5e;
+	}
+	.section-divider {
+		height: 1px;
+		background: #ffffff0c;
+		margin: 24px 0;
+	}
+	.world-panel > .intro-copy {
+		margin-top: 12px;
+		margin-bottom: 8px;
+	}
+	.world-panel .section-divider {
+		margin: 16px 0;
+	}
+	.checkpoint-section {
+		padding-top: 0;
+	}
+	.checkpoint-section > h2 {
+		padding-top: 16px;
+		border-top: 1px solid #ffffff0c;
+	}
+	.section-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+	.live-label,
+	.draft-state {
+		font-size: 10px;
+		color: #817b72;
+	}
+	.live-label {
+		color: #92a390;
+	}
+	.draft-state.pending {
+		color: #d2a279;
+	}
+	.control-field {
+		margin: 16px 0;
+	}
+	.control-field > label,
+	.field-label {
+		display: block;
+		color: #c4bcb1;
+		font-size: 11px;
+		margin: 0 0 8px;
+	}
+	.control-note {
+		color: #817b72;
+		font-size: 11px;
+		line-height: 1.6;
+		margin: 7px 0 0;
+	}
+	.label-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 9px;
+		color: #b9b1a6;
+		font-size: 11px;
+	}
+	.label-row output {
+		color: #d6cbbf;
+		font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+	}
+	.shell-input {
+		height: 32px;
+		width: 100%;
+		padding: 5px 9px;
+		border: 1px solid #ffffff13;
+		background: #20201e;
+		border-radius: 5px;
+		color: #ddd4c9;
+		font-size: 12px;
+		box-shadow: none;
+	}
+	.shell-input[type='number'] {
+		font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+	}
+	.unified-shell input[type='range'] {
+		display: block;
+		width: 100%;
+		height: 14px;
+		padding: 0;
+		margin: 0;
+		accent-color: var(--accent);
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+		cursor: pointer;
+	}
+	.inline-check {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: #b8b0a4;
+		font-size: 11px;
+		margin: 12px 0;
+	}
+	.unified-shell input[type='checkbox'] {
+		width: 13px;
+		height: 13px;
+		border: 1px solid #ffffff25;
+		border-radius: 3px;
+		accent-color: var(--accent);
+		background: #25251f;
+		color: var(--accent);
+		box-shadow: none;
+	}
+	.shell-disclosure {
+		border-top: 1px solid #ffffff08;
+		margin-top: 16px;
+	}
+	.shell-disclosure summary {
+		color: #bcb3a7;
+		font-size: 11px;
+		cursor: pointer;
+		padding: 12px 0;
+	}
+	.disclosure-body {
+		padding-bottom: 8px;
+	}
+	.field-pair {
+		display: flex;
+		align-items: flex-end;
+		gap: 8px;
+		margin: 14px 0;
+	}
+	.field-pair label {
+		flex: 1;
+		min-width: 0;
+		font-size: 11px;
+		color: #a9a095;
+	}
+	.field-pair label input {
+		margin-top: 7px;
+	}
+	.field-pair > span {
+		padding-bottom: 7px;
+		color: #69655e;
+	}
+	.apply-world {
+		margin: 18px 0 4px;
+		padding-top: 12px;
+		border-top: 1px solid #c8875a24;
+	}
+	.apply-world p {
+		font-size: 11px;
+		color: #968e82;
+		line-height: 1.6;
+		margin: 0 0 12px;
+	}
+	.next-world-summary {
+		margin-bottom: 12px;
+	}
+	.next-world-summary strong {
+		display: block;
+		color: #d1b194;
+		font-size: 11px;
+		font-weight: 500;
+		line-height: 1.6;
+	}
+	.next-world-summary p {
+		margin: 4px 0;
+	}
+	.next-world-summary .replacement-note {
+		margin-top: 8px;
+	}
+	.primary-action,
+	.secondary-action {
+		display: block;
+		min-height: 34px;
+		width: 100%;
+		border: 1px solid #c8875a40;
+		border-radius: 5px;
+		color: #e8c2a3;
+		background: #c8875a16;
+		font-size: 11px;
+		padding: 8px 10px;
+		cursor: pointer;
+		text-align: center;
+	}
+	.primary-action:hover {
+		background: #c8875a23;
+		border-color: #c8875a70;
+	}
+	.secondary-action {
+		margin: 12px 0;
+		color: #c8bfb4;
+		background: #ffffff04;
+		border-color: #ffffff14;
+	}
+	.quiet-button {
+		min-height: 28px;
+		font-size: 11px;
+		color: #b69a80;
+		padding: 4px 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+	.quiet-button:hover {
+		color: #e0b890;
+	}
+	.apply-world > .quiet-button {
+		display: block;
+		margin: 5px auto 0;
+	}
+	.palette-options {
+		display: flex;
+		gap: 6px;
+	}
+	.palette-options button {
+		flex: 1;
+		min-width: 0;
+		padding: 8px 6px;
+		display: flex;
+		flex-direction: column;
+		gap: 7px;
+		color: #999184;
+		font-size: 11px;
+		text-transform: capitalize;
+		border: 1px solid #ffffff10;
+		border-radius: 5px;
+		background: transparent;
+		cursor: pointer;
+	}
+	.palette-options button.active {
+		color: #d4ac88;
+		border-color: #c8875a66;
+		background: #c8875a07;
+	}
+
+	.inspector-return {
+		position: sticky;
+		top: 0;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: -4px -20px 12px;
+		padding: 4px 20px 8px;
+		background: #161615;
+		border-bottom: 1px solid #ffffff0c;
+		color: #a39789;
+		font-size: 11px;
+	}
+	.inspector-return .quiet-button {
+		width: 28px;
+		min-height: 32px;
+		padding: 0;
+		font-size: 20px;
+	}
+	.inspector-return h2 {
+		flex: 1;
+	}
+	.inspector-return > span {
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+	.inline-tape-grid {
+		margin: 12px 0;
+		grid-template-columns: repeat(8, minmax(0, 1fr));
+		gap: 4px;
+	}
+	.inline-tape-grid .tip-cell {
+		min-width: 0;
+		width: 100%;
+		height: 32px;
+		font-size: 9px;
+		border-radius: 3px;
+		overflow-wrap: anywhere;
+	}
+	.inline-notice {
+		margin: 12px 0 0;
+		color: #b8a18a;
+		font-size: 11px;
+		line-height: 1.5;
+	}
+	.saved-presets {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.saved-presets > button {
+		min-height: 34px;
+		padding: 6px 9px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border: 1px solid #ffffff0a;
+		border-radius: 5px;
+		color: #bdb5a9;
+		background: #ffffff03;
+		font-size: 12px;
+		cursor: pointer;
+	}
+	.saved-presets > button span {
+		font-size: 10px;
+		color: #746d63;
+	}
+	.saved-presets > button.active {
+		color: #d8ac87;
+		border-color: #c8875a40;
+	}
+	.inline-confirmation {
+		padding: 12px;
+		border: 1px solid #c8875a44;
+		border-radius: 5px;
+		color: #bfb4a6;
+		font-size: 12px;
+	}
+	.inline-confirmation button {
+		margin-right: 16px;
+	}
+	.sidebar-footer {
+		flex-shrink: 0;
+		display: flex;
+		height: 38px;
+		align-items: center;
+		justify-content: space-between;
+		border-top: 1px solid #ffffff0b;
+		padding: 0 16px;
+	}
+	.sidebar-footer button {
+		color: #8c8377;
+		font-size: 11px;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+	.sidebar-footer button:hover {
+		color: #d5c0ac;
+	}
+	.status-bar {
+		position: absolute;
+		bottom: 0;
+		inset-inline: 0;
+		height: var(--status-height);
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 0 8px;
+		background: #181816;
+		border-top: 1px solid #ffffff0d;
+		z-index: 40;
+		white-space: nowrap;
+	}
+	.transport {
+		display: flex;
+		align-items: center;
+		gap: 3px;
+		padding-right: 12px;
+		margin-right: 8px;
+		border-right: 1px solid #ffffff0c;
+	}
+	.transport > button {
+		height: 30px;
+		min-width: 30px;
+		padding: 0 7px;
+		border: 1px solid transparent;
+		border-radius: 4px;
+		color: #aba092;
+		background: transparent;
+		cursor: pointer;
+	}
+	.transport > .play-control {
+		display: flex;
+		gap: 7px;
+		align-items: center;
+		color: #dfae88;
+		padding: 0 8px;
+		min-width: 70px;
+	}
+	.transport > button:hover {
+		background: #ffffff08;
+	}
+	.speed-control {
+		width: 58px;
+	}
+	.speed-control :global(button[role='combobox']) {
+		min-height: 28px;
+		padding: 3px 7px;
+		border-color: transparent;
+		background: transparent;
+		font-size: 11px;
+	}
+	.speed-control :global(.choices) {
+		top: auto;
+		bottom: calc(100% + 8px);
+		min-width: 58px;
+	}
+	.status-run,
+	.status-item {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		height: 30px;
+		border: 0;
+		background: transparent;
+		color: #c6bcb0;
+		font-size: 11px;
+		padding: 0 8px;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	.status-run {
+		color: #a19b90;
+	}
+	.status-run i {
+		width: 5px;
+		height: 5px;
+		background: #726c60;
+		border-radius: 50%;
+	}
+	.status-run i.running {
+		background: #9aa589;
+		box-shadow: 0 0 0 3px #9aa5890c;
+	}
+	.status-item span {
+		color: #777166;
+	}
+	.status-item strong {
+		font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+		font-size: 11px;
+		font-weight: 400;
+	}
+	.status-item [data-numeric] {
+		min-width: 35px;
+		text-align: right;
+	}
+	.status-item:hover,
+	.status-run:hover {
+		background: #ffffff06;
+	}
+	.charts-panel .info-bar {
+		position: static;
+		width: 100%;
+		min-width: 0;
+		max-width: none;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		backdrop-filter: none;
+	}
+	.charts-panel .info-chart {
+		width: 100%;
+	}
+	.charts-panel .info-chart-svg {
+		width: 100%;
+		height: 180px;
+	}
+	.charts-panel .info-tabs {
+		margin: 12px 0;
+	}
+	.charts-panel .info-tab {
+		min-height: 32px;
+		font-size: 11px;
+	}
+	.charts-panel .freq-grid {
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+	}
+	.charts-panel .freq-cell {
+		min-width: 0;
+		min-height: 32px;
+	}
+	.charts-panel .info-row {
+		padding: 0;
+	}
+	.documentation-content {
+		padding: 16px 0 0;
+		overflow: visible;
+		max-height: none;
+		font-size: 12px;
+		line-height: 1.75;
+		color: #aaa297;
+	}
+	.documentation-content h4 {
+		font-family: inherit;
+		color: #d7c7b7;
+		margin: 24px 0 10px;
+		font-size: 13px;
+	}
+	.documentation-content > h4:first-child {
+		margin-top: 6px;
+	}
+	.documentation-content p {
+		margin: 10px 0;
+	}
+	.documentation-content :global(svg) {
+		max-width: 100%;
+	}
+	.documentation-content :global(.katex-display) {
+		overflow-x: auto;
+		overflow-y: hidden;
+		max-width: 100%;
+		font-size: 0.85em;
+	}
+	.documentation-content :global(table) {
+		width: 100%;
+		font-size: 10px;
+	}
+	.documentation-content .modal-shortcuts {
+		grid-template-columns: 1fr;
+	}
+	.documentation-content .shortcut {
+		display: flex;
+		align-items: flex-start;
+		gap: 12px;
+		margin: 10px 0;
+		line-height: 1.6;
+	}
+	.documentation-content .shortcut kbd {
+		min-width: 70px;
+		flex-shrink: 0;
+		font-size: 10px;
+	}
+	.experiments-panel .experiment-condition {
+		padding: 0;
+		background: transparent;
+		border: 0;
+		margin: 16px 0;
+		font-size: 12px;
+	}
+	.experiments-panel .experiment-condition p {
+		line-height: 1.7;
+		color: #a89f93;
+	}
+	.experiments-panel .experiment-condition details {
+		margin-top: 12px;
+		font-size: 11px;
+	}
+	.experiments-panel .source-path {
+		overflow-wrap: anywhere;
+		font-size: 10px;
+	}
+	.sidebar-collapsed .sidebar-tabs {
+		height: auto;
+		flex-direction: column;
+		padding: 8px 4px;
+		gap: 4px;
+	}
+	.sidebar-collapsed .sidebar-tabs button {
+		flex: none;
+		height: 36px;
+		border-radius: 4px;
+	}
+	.sidebar-collapsed .sidebar-tabs button.active::after {
+		width: 2px;
+		height: auto;
+		top: 8px;
+		bottom: 8px;
+		left: 0;
+		right: auto;
+	}
+	.sidebar-collapsed .tab-glyph {
+		display: inline;
+	}
+	.sidebar-collapsed .tab-label {
+		display: none;
+	}
+	@media (min-width: 1600px) {
+		.unified-shell {
+			--sidebar-width: 392px;
+		}
+	}
+	@media (max-width: 1300px) {
+		.unified-shell {
+			--sidebar-width: 352px;
+		}
+		.status-chemistry {
 			display: none;
 		}
-		.settings-panel {
-			max-height: calc(100dvh - 224px);
+	}
+	@media (max-width: 900px) {
+		.unified-shell {
+			--sidebar-width: 328px;
 		}
-		.bench-backdrop {
-			padding: 156px 8px 90px;
+		.status-seed,
+		.status-core {
+			display: none;
 		}
-		.bench-backdrop .tape-inspector {
-			width: 100%;
-			max-width: 100%;
-			max-height: calc(100dvh - 246px);
+		.section-context {
+			display: none;
 		}
-		.tape-inspector .tip-grid {
-			grid-template-columns: repeat(8, minmax(0, 1fr));
+		.app-header {
+			gap: 6px;
+			padding-left: 10px;
 		}
-		.tape-inspector .tip-cell {
-			height: 31px;
-			font-size: 7px;
+		.wordmark {
+			font-size: 14px;
+			margin: 0;
 		}
+		.wordmark svg {
+			display: none;
+		}
+		.field-choice {
+			width: 145px;
+		}
+		.header-look {
+			display: none;
+		}
+		.camera-controls button {
+			padding: 4px 6px;
+		}
+	}
+	@media (max-width: 700px) {
+		.unified-shell {
+			--sidebar-width: min(320px, calc(100vw - 48px));
+			--rail-width: 36px;
+		}
+		.unified-shell.sidebar-collapsed {
+			--sidebar-width: 44px;
+		}
+		.app-header {
+			right: 0;
+			padding-right: 8px;
+			z-index: 45;
+		}
+		.app-sidebar {
+			top: var(--header-height);
+		}
+		.sidebar-tabs {
+			height: 44px;
+		}
+		.tool-rail button {
+			width: 28px;
+		}
+		.status-size,
+		.status-run,
+		.status-rate {
+			display: none;
+		}
+		.status-bar {
+			gap: 0;
+		}
+		.transport {
+			padding-right: 4px;
+			margin-right: 4px;
+		}
+		.header-space {
+			min-width: 0;
+		}
+		.wordmark {
+			font-size: 14px;
+		}
+		.field-choice {
+			width: 145px;
+		}
+		.sidebar-section {
+			padding: 16px;
+		}
+		.app-sidebar {
+			z-index: 30;
+		}
+		.viewport-caption {
+			font-size: 9px;
+			max-width: 180px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.unified-shell :global(*) {
+			transition: none !important;
+			animation: none !important;
+		}
+	}
+
+	.viewport-caption {
+		left: 0;
+		bottom: 0;
+		right: 0;
+		max-width: none;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 8px 16px;
+		min-height: 26px;
+		padding: 4px 12px;
+		background: #141413e8;
+		border-top: 1px solid #ffffff09;
+		font-size: 10px;
+		text-shadow: none;
+	}
+	.viewport-caption > span {
+		padding: 0;
+		background: transparent;
+		color: #8e877b;
+	}
+	.viewport-key {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.viewport-key span {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		color: #b9afa1;
+		padding: 0;
+		background: transparent;
+	}
+	.viewport-key i {
+		width: 8px;
+		height: 8px;
+		border-radius: 2px;
+		border: 1px solid #ffffff14;
+	}
+	.viewport-key .field-gradient {
+		width: 72px;
+		height: 6px;
+		border: 0;
+		background: linear-gradient(90deg in srgb, rgb(9% 16% 23%), rgb(97% 87% 66%));
+	}
+	.viewport-key .field-gradient.diversity {
+		background: linear-gradient(90deg in srgb, rgb(15% 31% 43%), rgb(91% 59% 35%));
+	}
+
+	.chart-detail {
+		margin-top: 16px;
+		padding-top: 12px;
+		border-top: 1px solid #ffffff0c;
+		font-size: 11px;
+		line-height: 1.6;
+		color: #a99e90;
+	}
+	.chart-detail strong {
+		color: #d3b596;
+		font-weight: 400;
+	}
+	.chart-detail span {
+		color: #7f776b;
 	}
 </style>

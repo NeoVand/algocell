@@ -3,6 +3,7 @@
 	import type { FieldMode, RegionMeasurement } from '$lib/observation';
 	import type { LabSettings } from '$lib/lab/types';
 	import { onMount, untrack } from 'svelte';
+	import InstrumentSelect from './InstrumentSelect.svelte';
 
 	let {
 		engine,
@@ -12,7 +13,9 @@
 		benchOpen = false,
 		onbusy,
 		condition = '',
-		onpause,
+		embedded = false,
+		panelVisible = true,
+		onstate,
 		oninspect,
 		byteColor
 	} = $props<{
@@ -23,14 +26,24 @@
 		benchOpen?: boolean;
 		onbusy: (value: boolean) => void;
 		condition?: string;
-		onpause: () => void;
+		onpause?: () => void;
+		embedded?: boolean;
+		panelVisible?: boolean;
+		onstate?: (state: {
+			tool: Tool;
+			mode: FieldMode;
+			update: number;
+			selected: number | null;
+			markerPosition: number;
+			markerValue: number;
+		}) => void;
 		oninspect: (index: number) => void;
 		byteColor: (byte: number) => string;
 	}>();
 	let settings = $state.raw<LabSettings>(untrack(() => engine.settings));
 	let observationBar: HTMLDivElement;
 	let observationDock: HTMLElement | undefined;
-	type Tool = 'navigate' | 'probe' | 'region' | 'history' | 'compare' | 'record';
+	type Tool = 'navigate' | 'probe' | 'region' | 'marker' | 'history' | 'compare' | 'record';
 	type Frame = {
 		id: number;
 		url: string;
@@ -74,6 +87,7 @@
 		{ id: 'navigate', name: 'Navigate' },
 		{ id: 'probe', name: 'Probe' },
 		{ id: 'region', name: 'Region' },
+		{ id: 'marker', name: 'Marker' },
 		{ id: 'history', name: 'History' },
 		{ id: 'compare', name: 'Compare' },
 		{ id: 'record', name: 'Record' }
@@ -96,6 +110,7 @@
 	let region = $state.raw<RegionMeasurement | null>(null);
 	let dragging = $state(false);
 	let overlay = $state({ x: 0, y: 0, width: 0, height: 0 });
+	let viewport = $state({ x: 0, y: 0, width: 0, height: 0 });
 	let markerPosition = $state(0);
 	let markerValue = $state(165);
 	let recording = $state(false);
@@ -140,18 +155,41 @@
 		return tool === 'navigate';
 	}
 
+	export function activateTool(next: Tool) {
+		chooseTool(next);
+	}
+	export async function changeMode(next: FieldMode) {
+		await chooseMode(next);
+	}
+	export function zoomBy(factor: number) {
+		zoom(factor);
+	}
+	export function fitView() {
+		fit();
+	}
+	function publishState() {
+		onstate?.({
+			tool,
+			mode,
+			update,
+			selected: selected < 0 ? null : selected,
+			markerPosition,
+			markerValue
+		});
+	}
+
 	async function chooseMode(next: FieldMode) {
 		if (busy || externalBusy) return;
 		busy = true;
 		onbusy(true);
 		error = '';
 		try {
-			if (next === 'confinement') onpause();
 			if (next === 'marker') engine.setMarker({ position: markerPosition, value: markerValue });
 			await engine.setFieldMode(next);
 			mode = next;
 			frameIndex = -1;
 			replaying = false;
+			publishState();
 		} catch (cause) {
 			error = cause instanceof Error ? cause.message : String(cause);
 		} finally {
@@ -168,21 +206,26 @@
 		if (next === 'region') {
 			x1 = Math.min(x1, settings.width - 1);
 			y1 = Math.min(y1, settings.height - 1);
-			onpause();
 			updateOverlay();
 		}
-		if (next === 'probe' && selected < 0) void selectCell(cellInput);
+		if ((next === 'probe' || next === 'marker') && selected < 0) void selectCell(cellInput);
 		if (next !== 'history') {
 			frameIndex = -1;
 			replaying = false;
 		}
 		if (next !== 'compare') comparing = false;
+		updateOverlay();
+		publishState();
 	}
 	function syncSettings() {
 		const applied = engine.settings;
 		if (JSON.stringify(applied) !== JSON.stringify(settings)) {
+			const geometryChanged =
+				applied.width !== settings.width ||
+				applied.height !== settings.height ||
+				applied.length !== settings.length;
 			settings = applied;
-			resetSelection();
+			if (geometryChanged) resetSelection();
 		}
 	}
 	export function resetSelection() {
@@ -195,22 +238,25 @@
 		frameIndex = -1;
 		frames = [];
 		replaying = false;
-		if (tool === 'probe' || tool === 'region') tool = 'navigate';
+		if (tool === 'probe' || tool === 'marker' || tool === 'region') tool = 'navigate';
 		x0 = y0 = 0;
 		x1 = Math.min(9, settings.width - 1);
 		y1 = Math.min(9, settings.height - 1);
 		markerPosition = Math.min(markerPosition, settings.length - 1);
 		if (mode === 'marker') engine.setMarker({ position: markerPosition, value: markerValue });
+		updateOverlay();
+		publishState();
 	}
 	export async function selectCell(index: number) {
-		if (externalBusy || busy) return;
+		if (externalBusy || busy || !Number.isFinite(index)) return;
 		syncSettings();
 		selected = Math.max(0, Math.min(cells - 1, Math.trunc(index)));
 		cellInput = selected;
-		tool = 'probe';
+		if (tool !== 'marker') tool = 'probe';
 		engine.setHoverCell(selected);
 		await refreshProbe();
 		updateOverlay();
+		publishState();
 	}
 	async function refreshProbe() {
 		if (selected < 0 || probeBusy || externalBusy) return;
@@ -241,19 +287,19 @@
 	}
 	function frameSelection() {
 		if (busy || externalBusy || !observationDock) return;
-		if (tool === 'probe' && selected < 0) return;
+		if ((tool === 'probe' || tool === 'marker') && selected < 0) return;
 		if (tool === 'region' && ![x0, y0, x1, y1].every(Number.isFinite)) return;
 		updateOverlay();
 		const rect = canvas.getBoundingClientRect();
-		const bar = observationBar.getBoundingClientRect();
-		const dock = observationDock.getBoundingClientRect();
-		// Measure the usable field only on this explicit camera action. The dock
-		// occupies the bottom on phones and the right side on larger screens.
-		const left = rect.left + 16;
-		const top = Math.max(rect.top + 16, bar.bottom + 16);
-		const mobileDock = dock.width > rect.width * 0.6;
-		const right = mobileDock ? rect.right - 16 : Math.min(rect.right - 16, dock.left - 16);
-		const bottom = mobileDock ? Math.min(rect.bottom - 16, dock.top - 16) : rect.bottom - 16;
+		const bar = embedded ? null : observationBar?.getBoundingClientRect();
+		const dock = embedded ? null : observationDock.getBoundingClientRect();
+		const left = 16;
+		const top = bar ? Math.max(16, bar.bottom - rect.top + 16) : 16;
+		const mobileDock = dock && dock.width > rect.width * 0.6;
+		const right =
+			dock && !mobileDock ? Math.min(rect.width - 16, dock.left - rect.left - 16) : rect.width - 16;
+		const bottom =
+			dock && mobileDock ? Math.min(rect.height - 16, dock.top - rect.top - 16) : rect.height - 16;
 		if (right <= left || bottom <= top) return;
 		const scaleX = canvas.width / rect.width;
 		const scaleY = canvas.height / rect.height;
@@ -263,8 +309,8 @@
 				overlay.height / ((bottom - top) * 0.78)
 			);
 			engine.zoomAt(
-				(overlay.x + overlay.width / 2 - rect.left) * scaleX,
-				(overlay.y + overlay.height / 2 - rect.top) * scaleY,
+				(overlay.x + overlay.width / 2) * scaleX,
+				(overlay.y + overlay.height / 2) * scaleY,
 				canvas.width,
 				canvas.height,
 				factor
@@ -282,10 +328,17 @@
 	}
 	function updateOverlay() {
 		const rect = canvas.getBoundingClientRect();
+		if (
+			viewport.x !== rect.left ||
+			viewport.y !== rect.top ||
+			viewport.width !== rect.width ||
+			viewport.height !== rect.height
+		)
+			viewport = { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
 		const scaleX = rect.width / canvas.width,
 			scaleY = rect.height / canvas.height;
 		let bounds;
-		if (tool === 'probe' && selected >= 0)
+		if (tool !== 'region' && selected >= 0)
 			bounds = engine.cellBounds(selected, canvas.width, canvas.height);
 		else if (tool === 'region') {
 			const left = Math.min(x0, x1),
@@ -308,13 +361,21 @@
 				height: Math.max(...corners.map((b) => b.y + b.height)) - y
 			};
 		}
-		if (bounds)
-			overlay = {
-				x: rect.left + bounds.x * scaleX,
-				y: rect.top + bounds.y * scaleY,
+		if (bounds) {
+			const next = {
+				x: bounds.x * scaleX,
+				y: bounds.y * scaleY,
 				width: bounds.width * scaleX,
 				height: bounds.height * scaleY
 			};
+			if (
+				next.x !== overlay.x ||
+				next.y !== overlay.y ||
+				next.width !== overlay.width ||
+				next.height !== overlay.height
+			)
+				overlay = next;
+		}
 	}
 	function cellAt(clientX: number, clientY: number) {
 		const rect = canvas.getBoundingClientRect();
@@ -328,7 +389,6 @@
 	function startRegion(index: number) {
 		if (externalBusy || busy) return;
 		if (index < 0) return;
-		onpause();
 		dragging = true;
 		region = null;
 		x0 = x1 = index % settings.width;
@@ -343,7 +403,6 @@
 	}
 	async function sampleRegion() {
 		if (busy || externalBusy) return;
-		onpause();
 		busy = true;
 		onbusy(true);
 		error = '';
@@ -378,13 +437,13 @@
 	}
 	function applyMarker() {
 		if (externalBusy) return;
-		markerPosition = Math.max(0, Math.min(settings.length - 1, Math.trunc(markerPosition)));
-		markerValue = Math.max(0, Math.min(255, Math.trunc(markerValue)));
+		markerPosition = Math.max(0, Math.min(settings.length - 1, Math.trunc(markerPosition || 0)));
+		markerValue = Math.max(0, Math.min(255, Math.trunc(markerValue || 0)));
 		engine.setMarker({ position: markerPosition, value: markerValue });
+		publishState();
 	}
 	async function plantMarker() {
 		if (selected < 0 || busy || externalBusy) return;
-		onpause();
 		busy = true;
 		onbusy(true);
 		error = '';
@@ -394,6 +453,7 @@
 			await refreshProbe();
 			await engine.setFieldMode('marker');
 			mode = 'marker';
+			publishState();
 			notice = `Planted ${hex(markerValue)} at byte ${markerPosition} in cell ${selected}.`;
 		} catch (cause) {
 			error = cause instanceof Error ? cause.message : String(cause);
@@ -432,7 +492,6 @@
 		if (value && !frames.length) captureHistory();
 	}
 	function scrub(index: number) {
-		onpause();
 		replaying = false;
 		frameIndex = index;
 	}
@@ -478,7 +537,6 @@
 		if (frames.length < 2 || exporting || !mediaSupported || externalBusy) return;
 		const clip = [...frames];
 		let stream: MediaStream | undefined;
-		onpause();
 		exporting = true;
 		error = '';
 		try {
@@ -522,14 +580,17 @@
 		}
 	}
 	function keyboard(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
+		if (!embedded && event.key === 'Escape') {
 			tool = 'navigate';
 			frameIndex = -1;
 			comparing = false;
 			replaying = false;
 		}
 		if (
-			tool !== 'probe' ||
+			(tool !== 'probe' && tool !== 'marker') ||
+			(event.target instanceof HTMLElement &&
+				(event.target.isContentEditable ||
+					!!event.target.closest('[role=combobox],[role=listbox]'))) ||
 			event.target instanceof HTMLInputElement ||
 			event.target instanceof HTMLSelectElement ||
 			event.target instanceof HTMLTextAreaElement
@@ -560,7 +621,8 @@
 			update = engine.batchCount;
 			currentCamera = cameraStamp();
 			updateOverlay();
-			if (tool === 'probe' && playing) void refreshProbe();
+			if (selected >= 0 && playing) void refreshProbe();
+			publishState();
 		}, 500);
 		const historyInterval = setInterval(() => {
 			if (recording && playing) captureHistory();
@@ -569,7 +631,7 @@
 			if (replaying && frames.length) frameIndex = (frameIndex + 1) % frames.length;
 		}, 400);
 		const down = (event: MouseEvent) => {
-			if (tool !== 'region' && tool !== 'probe') return;
+			if (tool !== 'region' && tool !== 'probe' && tool !== 'marker') return;
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			const index = cellAt(event.clientX, event.clientY);
@@ -584,20 +646,29 @@
 			updateOverlay();
 		};
 		const up = (event: MouseEvent) => {
-			if (tool === 'probe' || tool === 'region') event.stopImmediatePropagation();
+			if (tool === 'probe' || tool === 'marker' || tool === 'region')
+				event.stopImmediatePropagation();
 			if (dragging) {
 				moveRegion(cellAt(event.clientX, event.clientY));
 				dragging = false;
 				void sampleRegion();
 			}
 		};
+		let touchSelection = false;
 		const touchStart = (event: TouchEvent) => {
-			if (tool !== 'region' || event.touches.length !== 1) return;
+			if (!['region', 'probe', 'marker'].includes(tool) || event.touches.length !== 1) return;
 			event.preventDefault();
 			event.stopImmediatePropagation();
-			startRegion(cellAt(event.touches[0].clientX, event.touches[0].clientY));
+			touchSelection = true;
+			const index = cellAt(event.touches[0].clientX, event.touches[0].clientY);
+			if (tool === 'region') startRegion(index);
+			else if (index >= 0) void selectCell(index);
 		};
 		const touchMove = (event: TouchEvent) => {
+			if (touchSelection && event.touches.length === 1) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
 			if (dragging && event.touches.length === 1) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
@@ -605,6 +676,11 @@
 			}
 		};
 		const touchEnd = (event: TouchEvent) => {
+			if (touchSelection) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+				touchSelection = false;
+			}
 			if (dragging) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
@@ -612,6 +688,10 @@
 				void sampleRegion();
 			}
 		};
+		const resizeObserver = new ResizeObserver(updateOverlay);
+		resizeObserver.observe(canvas);
+		updateOverlay();
+		publishState();
 		canvas.addEventListener('mousedown', down, true);
 		canvas.addEventListener('mousemove', move, true);
 		canvas.addEventListener('mouseup', up, true);
@@ -619,6 +699,7 @@
 		canvas.addEventListener('touchmove', touchMove, { capture: true, passive: false });
 		canvas.addEventListener('touchend', touchEnd, { capture: true, passive: false });
 		return () => {
+			resizeObserver.disconnect();
 			clearInterval(interval);
 			clearInterval(historyInterval);
 			clearInterval(replayInterval);
@@ -632,113 +713,123 @@
 	});
 </script>
 
-<svelte:window onkeydown={keyboard} />
-
-{#if currentFrame}
-	<div class="recorded-field">
-		<img src={currentFrame.url} alt="Recorded lattice at update {currentFrame.update}" /><span
-			class="frame-label"
-			>Recorded · update {currentFrame.update} · {modes.find(
-				(entry) => entry.id === currentFrame.mode
-			)?.name}</span
-		>
-	</div>
-{/if}
-{#if comparing && reference}
-	<div class="reference-field" style:clip-path="inset(0 {100 - divider}% 0 0)">
-		<img src={reference.url} alt="Reference lattice at update {reference.update}" />
-	</div>
-	<div class="compare-edge" style:left="{divider}%">
-		<span>Reference {reference.update} │ Live {update}</span>
-	</div>
-{/if}
-{#if (tool === 'probe' && selected >= 0) || tool === 'region'}
-	<div
-		class="selection"
-		class:region-selection={tool === 'region'}
-		style:left="{overlay.x}px"
-		style:top="{overlay.y}px"
-		style:width="{overlay.width}px"
-		style:height="{overlay.height}px"
-	>
-		<span>{tool === 'probe' ? `Cell ${selected}` : 'Selected region'}</span>
-	</div>
-{/if}
+<svelte:window onkeydown={keyboard} onresize={updateOverlay} />
 
 <div
-	class="observation-bar"
-	aria-label="Observation controls"
-	{@attach (element) => {
-		observationBar = element;
-	}}
+	class="canvas-observations"
+	style:left="{viewport.x}px"
+	style:top="{viewport.y}px"
+	style:width="{viewport.width}px"
+	style:height="{viewport.height}px"
 >
-	<div class="observation-heading">
-		<span class="wordmark">Algocell</span>
-		<select
-			aria-label="Field view"
-			value={mode}
-			disabled={busy || externalBusy}
-			onchange={(event) => void chooseMode(event.currentTarget.value as FieldMode)}
-		>
-			{#each modes as entry (entry.id)}<option value={entry.id}>{entry.name}</option>{/each}
-		</select>
-		<span class="transport-state"
-			><i class:running={playing}></i>{playing ? 'Running' : 'Paused'}
-			<span class="update-count">{update.toLocaleString()}</span></span
-		>
-		<div class="zoom-tools">
-			<button aria-label="Zoom out" title="Zoom out" onclick={() => zoom(1.5)}>−</button><button
-				aria-label="Zoom in"
-				title="Zoom in"
-				onclick={() => zoom(1 / 1.5)}>+</button
-			><button onclick={fit} title="Fit lattice (F)">Fit</button>
+	{#if currentFrame}
+		<div class="recorded-field">
+			<img src={currentFrame.url} alt="Recorded lattice at update {currentFrame.update}" /><span
+				class="frame-label"
+				>Recorded · update {currentFrame.update} · {modes.find(
+					(entry) => entry.id === currentFrame.mode
+				)?.name}</span
+			>
 		</div>
-	</div>
-	<nav class="observation-tabs" aria-label="Observation tools">
-		{#each tools as entry (entry.id)}<button
-				class:active={tool === entry.id}
-				aria-pressed={tool === entry.id}
-				onclick={() => chooseTool(entry.id)}
-				>{entry.name}{#if entry.id === 'history' && recording}<span class="record-dot"
-					></span>{/if}</button
-			>{/each}
-	</nav>
-	<div class="mobile-tool-row">
-		<select
-			aria-label="Observation tool"
-			value={tool}
-			onchange={(event) => chooseTool(event.currentTarget.value as Tool)}
-			>{#each tools as entry (entry.id)}<option value={entry.id}>{entry.name}</option
-				>{/each}</select
-		><span>{condition || `${settings.isa.toUpperCase()} · ${settings.length} bytes`}</span>
-	</div>
-	<div class="legend" aria-label="Field legend">
-		{#if mode === 'confinement'}<div class="legend-scale">
-				<span><i style="background:rgb(12% 12% 15%)"></i>Unknown</span><span
-					><i style="background:rgb(25% 52% 72%)"></i>No exit</span
-				><span><i style="background:rgb(90% 58% 28%)"></i>Outside A</span>
-			</div>
-		{:else if mode === 'zeros' || mode === 'diversity'}<div class="continuous-scale">
-				<span>0%</span><i class:diversity-scale={mode === 'diversity'}></i><span>100%</span>
-			</div>
-		{:else if mode === 'marker'}<div class="legend-scale">
-				<span
-					><i style="background:rgb(98% 68% 35%)"></i>Byte {markerPosition} = {hex(
-						markerValue
-					)}</span
-				><span><i style="background:rgb(12% 13% 15%)"></i>Other</span>
-			</div>
-		{:else if mode === 'identity'}<div class="fingerprint-scale">
-				<i></i><span>One fingerprint per complete tape</span>
-			</div>
-		{/if}
-		<p>{currentMode.description}</p>
-	</div>
+	{/if}
+	{#if comparing && reference}
+		<div class="reference-field" style:clip-path="inset(0 {100 - divider}% 0 0)">
+			<img src={reference.url} alt="Reference lattice at update {reference.update}" />
+		</div>
+		<div class="compare-edge" style:left="{divider}%">
+			<span>Reference {reference.update} │ Live {update}</span>
+		</div>
+	{/if}
+	{#if selected >= 0 || tool === 'region'}
+		<div
+			class="selection"
+			class:region-selection={tool === 'region'}
+			style:left="{overlay.x}px"
+			style:top="{overlay.y}px"
+			style:width="{overlay.width}px"
+			style:height="{overlay.height}px"
+		>
+			<span>{tool === 'region' ? 'Selected region' : `Cell ${selected}`}</span>
+		</div>
+	{/if}
 </div>
 
-{#if !benchOpen && (tool !== 'navigate' || mode === 'marker')}
+{#if !embedded}
+	<div
+		class="observation-bar"
+		aria-label="Observation controls"
+		{@attach (element) => {
+			observationBar = element;
+		}}
+	>
+		<div class="observation-heading">
+			<span class="wordmark">Algocell</span>
+			<InstrumentSelect
+				label="Field view"
+				value={mode}
+				options={modes.map((entry) => ({ value: entry.id, label: entry.name }))}
+				disabled={busy || externalBusy}
+				onchange={(next) => void chooseMode(next as FieldMode)}
+			/>
+			<span class="transport-state"
+				><i class:running={playing}></i>{playing ? 'Running' : 'Paused'}
+				<span class="update-count">{update.toLocaleString()}</span></span
+			>
+			<div class="zoom-tools">
+				<button aria-label="Zoom out" title="Zoom out" onclick={() => zoom(1.5)}>−</button><button
+					aria-label="Zoom in"
+					title="Zoom in"
+					onclick={() => zoom(1 / 1.5)}>+</button
+				><button onclick={fit} title="Fit lattice (F)">Fit</button>
+			</div>
+		</div>
+		<nav class="observation-tabs" aria-label="Observation tools">
+			{#each tools as entry (entry.id)}<button
+					class:active={tool === entry.id}
+					aria-pressed={tool === entry.id}
+					onclick={() => chooseTool(entry.id)}
+					>{entry.name}{#if entry.id === 'history' && recording}<span class="record-dot"
+						></span>{/if}</button
+				>{/each}
+		</nav>
+		<div class="mobile-tool-row">
+			<InstrumentSelect
+				label="Observation tool"
+				value={tool}
+				options={tools.map((entry) => ({ value: entry.id, label: entry.name }))}
+				onchange={(next) => chooseTool(next as Tool)}
+			/><span>{condition || `${settings.isa.toUpperCase()} · ${settings.length} bytes`}</span>
+		</div>
+		<div class="legend" aria-label="Field legend">
+			{#if mode === 'confinement'}<div class="legend-scale">
+					<span><i style="background:rgb(12% 12% 15%)"></i>Unknown</span><span
+						><i style="background:rgb(25% 52% 72%)"></i>No exit</span
+					><span><i style="background:rgb(90% 58% 28%)"></i>Outside A</span>
+				</div>
+			{:else if mode === 'zeros' || mode === 'diversity'}<div class="continuous-scale">
+					<span>0%</span><i class:diversity-scale={mode === 'diversity'}></i><span>100%</span>
+				</div>
+			{:else if mode === 'marker'}<div class="legend-scale">
+					<span
+						><i style="background:rgb(98% 68% 35%)"></i>Byte {markerPosition} = {hex(
+							markerValue
+						)}</span
+					><span><i style="background:rgb(12% 13% 15%)"></i>Other</span>
+				</div>
+			{:else if mode === 'identity'}<div class="fingerprint-scale">
+					<i></i><span>One fingerprint per complete tape</span>
+				</div>
+			{/if}
+			<p>{currentMode.description}</p>
+		</div>
+	</div>
+{/if}
+
+{#if embedded || tool !== 'navigate' || mode === 'marker'}
 	<section
 		class="observation-dock"
+		class:embedded
+		hidden={!panelVisible || benchOpen}
 		{@attach (element) => {
 			observationDock = element;
 			return () => {
@@ -747,14 +838,18 @@
 		}}
 		class:region-tool={tool === 'region'}
 		aria-label="{tool === 'navigate'
-			? 'Marker'
+			? 'Inspect'
 			: tools.find((entry) => entry.id === tool)?.name} tool"
 	>
 		<header>
 			<h2>
-				{tool === 'navigate' ? 'Marker value' : tools.find((entry) => entry.id === tool)?.name}
+				{tool === 'navigate'
+					? 'Inspect the lattice'
+					: embedded && tool === 'record'
+						? 'Images & video'
+						: tools.find((entry) => entry.id === tool)?.name}
 			</h2>
-			{#if tool === 'probe' || tool === 'region'}
+			{#if tool === 'probe' || tool === 'marker' || tool === 'region'}
 				<button
 					class="frame-selection"
 					disabled={busy || externalBusy || (tool === 'probe' && selected < 0)}
@@ -764,19 +859,20 @@
 					onclick={frameSelection}>{tool === 'region' ? 'Frame region' : 'Center probe'}</button
 				>
 			{/if}
-			<button
-				class="close"
-				aria-label="Close observation tool"
-				onclick={() => {
-					tool = 'navigate';
-					comparing = false;
-					frameIndex = -1;
-					replaying = false;
-					if (mode === 'marker') void chooseMode('bytes');
-				}}>×</button
-			>
+			{#if !embedded}<button
+					class="close"
+					aria-label="Close observation tool"
+					onclick={() => {
+						tool = 'navigate';
+						comparing = false;
+						frameIndex = -1;
+						replaying = false;
+						if (mode === 'marker') void chooseMode('bytes');
+					}}>×</button
+				>
+			{/if}
 		</header>
-		{#if tool === 'probe'}
+		{#if tool === 'probe' || tool === 'marker'}
 			<div class="input-row">
 				<label for="probe-cell">Cell</label><input
 					id="probe-cell"
@@ -798,7 +894,7 @@
 			{#if tape}
 				<div class="scope-line">
 					{selected % settings.width}, {Math.floor(selected / settings.width)} · {settings.isa.toUpperCase()}
-					· update {probeUpdate}
+					· refreshed at {probeUpdate}
 				</div>
 				<div class="byte-tape">
 					{#each Array.from(tape) as byte, index (index)}<span
@@ -814,7 +910,6 @@
 				<button
 					class="primary wide"
 					onclick={() => {
-						onpause();
 						oninspect(selected);
 					}}>Open encounter bench</button
 				>
@@ -824,7 +919,8 @@
 			{/if}
 		{:else if tool === 'region'}
 			<p class="hint">
-				Drag two corners on the lattice, or enter coordinates. Measurements pause the population.
+				Drag two corners on the lattice, or enter coordinates. Each measurement holds a snapshot
+				while the world continues.
 			</p>
 			<div class="coordinate-grid">
 				<span></span><span>x</span><span>y</span><span>From</span><input
@@ -935,7 +1031,7 @@
 				Record recent frames <span>{frames.length}/24</span></label
 			>
 			<p class="hint">
-				One image per second while running. Scrubbing pauses the world; images do not rewind it.
+				One image per second while running. Scrub recorded images while the live world continues.
 			</p>
 			{#if frames.length}<div class="history-preview">
 					<img src={(currentFrame ?? frames.at(-1)!).url} alt="History preview" />
@@ -963,7 +1059,6 @@
 									'Automatic replay follows your reduced-motion preference. Use the scrubber.';
 								return;
 							}
-							onpause();
 							replaying = !replaying;
 							if (frameIndex < 0) frameIndex = 0;
 						}}>{replaying ? 'Stop replay' : 'Replay'}</button
@@ -1030,13 +1125,15 @@
 					? 'Timelapse exports at 5 frames/s. History stores at most 24 small images.'
 					: 'WebM is unavailable in this browser; PNG export is supported.'}
 			</p>
-			<div class="record-note">
-				To save the actual bytes and condition, use <strong>Save checkpoint</strong> in the transport
-				bar.
+			<div class="record-note">Save a checkpoint below to keep the population and condition.</div>
+		{:else if tool === 'navigate'}
+			<div class="empty-state">
+				Select a tape on the lattice to inspect its bytes, or choose a measurement above.
 			</div>
+			<button class="primary wide" onclick={() => chooseTool('probe')}>Probe a tape</button>
 		{/if}
-		{#if mode === 'marker' || tool === 'probe'}
-			<details class="marker-settings" open={mode === 'marker'}>
+		{#if mode === 'marker' || tool === 'probe' || tool === 'marker'}
+			<details class="marker-settings" open={mode === 'marker' || tool === 'marker'}>
 				<summary>Follow a byte value</summary>
 				<div class="input-row">
 					<label for="marker-position">Position</label><input
@@ -1106,28 +1203,10 @@
 		letter-spacing: -0.4px;
 		color: var(--text-primary);
 	}
-	select,
 	input,
 	button {
 		font: inherit;
 		color: inherit;
-	}
-	select {
-		appearance: auto;
-		color-scheme: dark;
-		background: #1b1b1b;
-		background-image: none;
-		border: 1px solid var(--border-muted);
-		border-radius: 5px;
-		min-height: 29px;
-		padding: 3px 6px;
-		box-shadow: none;
-	}
-	select:disabled {
-		opacity: 0.55;
-	}
-	.observation-heading select {
-		width: 148px;
 	}
 	button {
 		background: var(--bg-subtle);
@@ -1575,7 +1654,7 @@
 		color: var(--accent-amber);
 	}
 	.selection {
-		position: fixed;
+		position: absolute;
 		z-index: 15;
 		pointer-events: none;
 		border: 1px solid #f3cc92;
@@ -1599,7 +1678,7 @@
 	}
 	.recorded-field,
 	.reference-field {
-		position: fixed;
+		position: absolute;
 		inset: 0;
 		z-index: 10;
 		pointer-events: none;
@@ -1624,7 +1703,7 @@
 		font: 11px monospace;
 	}
 	.compare-edge {
-		position: fixed;
+		position: absolute;
 		top: 0;
 		bottom: 0;
 		width: 1px;
@@ -1650,9 +1729,6 @@
 		.observation-heading {
 			gap: 7px;
 		}
-		.observation-heading select {
-			width: 139px;
-		}
 		.transport-state {
 			display: none;
 		}
@@ -1672,12 +1748,6 @@
 		.wordmark {
 			font-size: 14px;
 		}
-		.observation-heading select {
-			flex: 1;
-			width: auto;
-			min-height: 34px;
-			font-size: 12px;
-		}
 		.zoom-tools button {
 			min-width: 31px;
 			min-height: 34px;
@@ -1690,10 +1760,6 @@
 			gap: 10px;
 			align-items: center;
 			margin: 6px 0;
-		}
-		.mobile-tool-row select {
-			width: 111px;
-			min-height: 34px;
 		}
 		.mobile-tool-row span {
 			overflow: hidden;
@@ -1796,6 +1862,87 @@
 		}
 		.observation-dock input[type='range'] {
 			min-height: 28px;
+		}
+	}
+	.canvas-observations {
+		position: fixed;
+		z-index: 15;
+		overflow: hidden;
+		pointer-events: none;
+	}
+	.observation-dock.embedded {
+		position: static;
+		width: 100%;
+		max-height: none;
+		overflow: visible;
+		padding: 12px 20px 20px;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		backdrop-filter: none;
+		font-variant-numeric: tabular-nums;
+	}
+	.observation-dock[hidden] {
+		display: none;
+	}
+	.observation-dock.embedded header {
+		position: static;
+		margin: 0 0 16px;
+		padding: 0;
+		border-radius: 0;
+		background: transparent;
+		gap: 8px;
+	}
+	.observation-dock.embedded h2 {
+		font-size: 16px;
+		font-weight: 500;
+	}
+	.observation-dock.embedded button,
+	.observation-dock.embedded input[type='number'] {
+		min-height: 32px;
+	}
+	.observation-dock.embedded input[type='number'] {
+		font-size: 12px;
+		background: #20201e;
+	}
+	.observation-dock.embedded .frame-selection {
+		margin-right: 0;
+		font-size: 11px;
+	}
+	.observation-dock.embedded .hint:first-of-type {
+		display: block;
+	}
+	button,
+	input {
+		transition:
+			background 160ms ease,
+			border-color 160ms ease,
+			color 160ms ease;
+	}
+	button:focus-visible,
+	input:focus-visible,
+	summary:focus-visible {
+		outline: 1px solid var(--accent-warm);
+		outline-offset: 2px;
+	}
+	.canvas-observations .frame-label {
+		top: 12px;
+		left: 12px;
+		right: auto;
+	}
+	.canvas-observations .compare-edge span {
+		top: 12px;
+	}
+	@media (max-width: 700px) {
+		.observation-dock.embedded {
+			padding: 12px 16px 16px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		button,
+		input {
+			transition: none;
 		}
 	}
 </style>

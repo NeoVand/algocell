@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import type { GPUEngine } from '../src/lib/gpu/engine';
+import { choose, experiment, ready as appReady, tool as shellTool } from './helpers/unified';
 
 type TestWindow = Window & {
 	__algocell: { engine: GPUEngine };
@@ -10,21 +11,13 @@ type TestWindow = Window & {
 const modes = ['bytes', 'identity', 'confinement', 'zeros', 'diversity', 'marker'];
 
 async function ready(page: Page) {
-	await page.goto('/');
-	await page.waitForFunction(() => Boolean((window as unknown as TestWindow).__algocell?.engine));
-	await page.getByTitle('Pause (Space)', { exact: true }).click();
-	await page.getByTitle('Settings', { exact: true }).click();
-	await page.getByLabel('Experiments', { exact: true }).selectOption('displacement-32');
-	await expect(page.getByLabel('Experiments', { exact: true })).toBeEnabled();
-	await page.getByLabel('Close settings', { exact: true }).click();
-	await expect(page.getByLabel('Field view', { exact: true })).toBeVisible();
-	await page.evaluate(() => (window as unknown as TestWindow).__algocell.engine.waitForIdle());
+	await appReady(page);
+	await experiment(page, 'displacement-32');
+	await expect(page.getByRole('combobox', { name: 'Field view', exact: true })).toBeVisible();
 }
 
 async function tool(page: Page, name: string) {
-	const selector = page.getByLabel('Observation tool', { exact: true });
-	if (await selector.isVisible()) await selector.selectOption(name.toLowerCase());
-	else await page.getByRole('button', { name, exact: true }).first().click();
+	await shellTool(page, name);
 }
 
 async function probeCell(page: Page, index = 0) {
@@ -64,20 +57,12 @@ async function focusSelection(page: Page, control: string, cells: number[]) {
 		const canvas = document.querySelector('canvas')!.getBoundingClientRect();
 		return cells.map((cell) => engine.cellBounds(cell, canvas.width, canvas.height));
 	}, cells);
-	const viewport = page.viewportSize()!;
-	const panel = await page
-		.getByRole('region', {
-			name: control === 'Center probe' ? 'Probe tool' : 'Region tool',
-			exact: true
-		})
-		.boundingBox();
+	const canvas = (await page.locator('canvas').first().boundingBox())!;
 	for (const box of bounds) {
-		expect(box.x).toBeGreaterThanOrEqual(0);
-		expect(box.y).toBeGreaterThanOrEqual(0);
-		expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
-		expect(box.y + box.height).toBeLessThanOrEqual(
-			(viewport.width < 500 ? panel!.y : viewport.height) + 1
-		);
+		expect(box.x).toBeGreaterThanOrEqual(-1);
+		expect(box.y).toBeGreaterThanOrEqual(-1);
+		expect(box.x + box.width).toBeLessThanOrEqual(canvas.width + 1);
+		expect(box.y + box.height).toBeLessThanOrEqual(canvas.height + 1);
 	}
 }
 
@@ -105,7 +90,7 @@ for (const viewport of [
 	test.describe(`observation tools at ${viewport.width}×${viewport.height}`, () => {
 		test.use({ viewport });
 
-		test('all six field modes retain the paused population and native selector', async ({
+		test('all six field modes retain the paused population and custom selector', async ({
 			page
 		}) => {
 			const errors: string[] = [];
@@ -123,12 +108,12 @@ for (const viewport of [
 				};
 			});
 			const select = page.getByLabel('Field view', { exact: true });
-			expect(await select.evaluate((node) => node.tagName)).toBe('SELECT');
-			expect(await select.evaluate((node) => getComputedStyle(node).appearance)).not.toBe('none');
+			expect(await select.getAttribute('role')).toBe('combobox');
+			await expect(page.locator('select')).toHaveCount(0);
 			for (const mode of modes) {
-				await select.selectOption(mode);
+				await choose(page, 'Field view', mode);
 				await expect(select).toBeEnabled();
-				await expect(select).toHaveValue(mode);
+				await expect(select).toHaveAttribute('data-value', mode);
 				await page.evaluate(() => new Promise(requestAnimationFrame));
 				expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
 					viewport.width
@@ -165,23 +150,9 @@ for (const viewport of [
 			await expect(page.getByRole('region', { name: 'Probe tool', exact: true })).toContainText(
 				'0, 0'
 			);
-			await page.getByLabel('Field view', { exact: true }).selectOption('marker');
-			if (viewport.width < 500) {
-				const dock = page.getByRole('region', { name: 'Probe tool', exact: true });
-				expect((await dock.boundingBox())!.height).toBeLessThanOrEqual(viewport.height * 0.49 + 2);
-				await focusSelection(page, 'Center probe', [0]);
-				await dock.evaluate((element) => {
-					element.scrollTop = element.scrollHeight;
-				});
-				const center = page.getByRole('button', { name: 'Center probe', exact: true });
-				await expect(center).toBeVisible();
-				const panelBox = (await dock.boundingBox())!;
-				const headerBox = (await dock.locator(':scope > header').boundingBox())!;
-				expect(Math.abs(headerBox.y - (panelBox.y + 1))).toBeLessThanOrEqual(2);
-				const buttonBox = (await center.boundingBox())!;
-				expect(buttonBox.y).toBeGreaterThanOrEqual(panelBox.y);
-				expect(buttonBox.y + buttonBox.height).toBeLessThanOrEqual(panelBox.y + 60);
-			}
+			await choose(page, 'Field view', 'marker');
+			const dock = page.getByRole('region', { name: 'Probe tool', exact: true });
+			expect(await dock.evaluate((element) => Boolean(element.closest('.app-sidebar')))).toBe(true);
 			await page.locator('#marker-position').fill('8');
 			await page.locator('#marker-value').fill('165');
 			await page.getByRole('button', { name: 'Show matches', exact: true }).click();
@@ -334,7 +305,7 @@ for (const viewport of [
 			await ready(page);
 			await probeCell(page);
 			await page.getByRole('button', { name: 'Open encounter bench', exact: true }).click();
-			const bench = page.getByRole('dialog', { name: 'Tape inspector', exact: true });
+			const bench = page.getByRole('region', { name: 'Tape inspector', exact: true });
 			await bench.getByRole('button', { name: 'Run culture test', exact: true }).click();
 			await expect(bench.locator('.verdict')).toContainText(
 				/Continuing production in this screen/i
