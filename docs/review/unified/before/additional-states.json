@@ -1,0 +1,584 @@
+{
+	"phase": "before",
+	"round": "",
+	"source": "/tmp/algocell-unified-baseline-6484a24",
+	"viewport": {
+		"width": 1440,
+		"height": 900
+	},
+	"method": "Pointer starts at viewport center. Every clicked control and number/range edit counts once; a native select uses one click plus keyboard option choice. Setup excluded. Surfaces are independently positioned interaction containers. Pauses include requested and incidental transitions. Resets count engine.reset calls; setMachine counts configuration requests; createPipelines and createBuffers count real pipeline and population-buffer rebuilds separately from engine object replacements.",
+	"tasks": [],
+	"captures": [
+		{
+			"name": "extra-core-z80-0.2",
+			"path": "docs/review/unified/before/extra-core-z80-0.2.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-core-z80-0.3",
+			"path": "docs/review/unified/before/extra-core-z80-0.3.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-core-z80-nmos",
+			"path": "docs/review/unified/before/extra-core-z80-nmos.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-core-m6502",
+			"path": "docs/review/unified/before/extra-core-m6502.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-core-i8086",
+			"path": "docs/review/unified/before/extra-core-i8086.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-stage-g-l16",
+			"path": "docs/review/unified/before/extra-experiment-stage-g-l16.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-z80-corrected",
+			"path": "docs/review/unified/before/extra-experiment-z80-corrected.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-m6502-s1-a",
+			"path": "docs/review/unified/before/extra-experiment-m6502-s1-a.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-i8086-s2-a",
+			"path": "docs/review/unified/before/extra-experiment-i8086-s2-a.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-lethal-zero",
+			"path": "docs/review/unified/before/extra-experiment-lethal-zero.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-dial-0",
+			"path": "docs/review/unified/before/extra-experiment-dial-0.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-dial-0.01",
+			"path": "docs/review/unified/before/extra-experiment-dial-0.01.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-dial-0.03",
+			"path": "docs/review/unified/before/extra-experiment-dial-0.03.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-dial-0.1",
+			"path": "docs/review/unified/before/extra-experiment-dial-0.1.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-dial-0.3",
+			"path": "docs/review/unified/before/extra-experiment-dial-0.3.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-dial-1",
+			"path": "docs/review/unified/before/extra-experiment-dial-1.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-random-registers",
+			"path": "docs/review/unified/before/extra-experiment-random-registers.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-ring-l12-p24",
+			"path": "docs/review/unified/before/extra-experiment-ring-l12-p24.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-ring-l12-p28",
+			"path": "docs/review/unified/before/extra-experiment-ring-l12-p28.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-no-block-copy",
+			"path": "docs/review/unified/before/extra-experiment-no-block-copy.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-no-copy",
+			"path": "docs/review/unified/before/extra-experiment-no-copy.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-offset-competition-benign",
+			"path": "docs/review/unified/before/extra-experiment-offset-competition-benign.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-offset-competition-lethal",
+			"path": "docs/review/unified/before/extra-experiment-offset-competition-lethal.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-displacement-4",
+			"path": "docs/review/unified/before/extra-experiment-displacement-4.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-displacement-32",
+			"path": "docs/review/unified/before/extra-experiment-displacement-32.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-pusher",
+			"path": "docs/review/unified/before/extra-experiment-pusher.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-experiment-return-closer",
+			"path": "docs/review/unified/before/extra-experiment-return-closer.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-classic",
+			"path": "docs/review/unified/before/extra-preset-classic.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-hex-organic",
+			"path": "docs/review/unified/before/extra-preset-hex-organic.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-no-block-copy",
+			"path": "docs/review/unified/before/extra-preset-no-block-copy.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-no-copy",
+			"path": "docs/review/unified/before/extra-preset-no-copy.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-save-form",
+			"path": "docs/review/unified/before/extra-preset-save-form.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-saved",
+			"path": "docs/review/unified/before/extra-preset-saved.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-overwrite",
+			"path": "docs/review/unified/before/extra-preset-overwrite.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-overwritten",
+			"path": "docs/review/unified/before/extra-preset-overwritten.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-preset-deleted",
+			"path": "docs/review/unified/before/extra-preset-deleted.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-suppression-preview",
+			"path": "docs/review/unified/before/extra-suppression-preview.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-suppression-active",
+			"path": "docs/review/unified/before/extra-suppression-active.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-1",
+			"path": "docs/review/unified/before/extra-parameter-help-1.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-2",
+			"path": "docs/review/unified/before/extra-parameter-help-2.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-3",
+			"path": "docs/review/unified/before/extra-parameter-help-3.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-4",
+			"path": "docs/review/unified/before/extra-parameter-help-4.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-5",
+			"path": "docs/review/unified/before/extra-parameter-help-5.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-6",
+			"path": "docs/review/unified/before/extra-parameter-help-6.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-7",
+			"path": "docs/review/unified/before/extra-parameter-help-7.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-8",
+			"path": "docs/review/unified/before/extra-parameter-help-8.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-parameter-help-9",
+			"path": "docs/review/unified/before/extra-parameter-help-9.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-canvas-hover",
+			"path": "docs/review/unified/before/extra-canvas-hover.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-species",
+			"path": "docs/review/unified/before/extra-species.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-species-inspector",
+			"path": "docs/review/unified/before/extra-species-inspector.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-species-disassembly",
+			"path": "docs/review/unified/before/extra-species-disassembly.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-history-recording",
+			"path": "docs/review/unified/before/extra-history-recording.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-history-scrub",
+			"path": "docs/review/unified/before/extra-history-scrub.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-history-replay",
+			"path": "docs/review/unified/before/extra-history-replay.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-history-live",
+			"path": "docs/review/unified/before/extra-history-live.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-comparison-split",
+			"path": "docs/review/unified/before/extra-comparison-split.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "extra-species-byte-hover",
+			"path": "docs/review/unified/before/extra-species-byte-hover.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		}
+	],
+	"errors": []
+}
