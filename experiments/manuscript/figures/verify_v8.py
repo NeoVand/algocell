@@ -58,8 +58,21 @@ def main():
     for svg in OUT.glob('*.svg'):
         raw=svg.read_text().lower()
         assert 'data:image/' not in raw and 'base64,' not in raw, f'Embedded raster forbidden: {svg}'
-    from legends_v8 import LEGENDS
-    assert all(len(s.split())<=250 for s in LEGENDS)
+    import re
+    main_legend_text=(OUT/'LEGENDS_V8.md').read_text()
+    captions=re.findall(r'(?ms)^\*\*Figure (\d)\. (.*?)(?=^\*\*Figure \d\.|\Z)',main_legend_text)
+    assert [n for n,_ in captions]==['1','2','3','4','5']
+    assert all(len(f'Figure {n}. {s}'.split())<=250 for n,s in captions)
+    main_section=(HERE.parent/'MAIN_v8.md').read_text().split('## Figure legends\n',1)[1].split('## Methods\n',1)[0].strip()
+    assert main_legend_text=='# Legends for Figures v8\n\n'+main_section+'\n'
+    from build_ed_v8 import TITLES,LEGENDS as ED_LEGENDS
+    si_map={int(n):title for n,title in re.findall(r'\| (\d+)\. ([^|]+?) \| `manuscript/figures/out/v8/ed8_\d+\.pdf`', (HERE.parent/'SI_v8.md').read_text())}
+    assert TITLES==si_map, (TITLES,si_map)
+    ed_legends=(OUT/'ED_V8.md').read_text()
+    for n,legend in ED_LEGENDS.items():
+        assert len(legend.split())<=250
+        assert f'## Extended Data {n}. {TITLES[n]}' in ed_legends
+        assert f'[PDF](ed8_{n}.pdf)' in ed_legends and legend in ed_legends
     ed=json.loads((OUT/'ed_sources.json').read_text())
     assert set(ed)=={f'ed8_{n}' for n in range(1,10)}
     for item in ed.values():
@@ -95,7 +108,8 @@ def main():
         rec=dict(page_mm=[180,height],png_pixels=list(png.size),dpi=list(png.info['dpi']),pdf_text_spans=len(spans),figcheck='clean',files={ext:sha(OUT/(name+'.'+ext)) for ext in ['pdf','svg','png']})
         rec['linked_rasters']=linked
         if not args.technical_only:
-            rounds=sorted((OUT/'critique_review'/name).glob('round*'));assert 1<=len(rounds)<=2
+            rounds=sorted((OUT/'critique_review'/name).glob('round*'));assert 1<=len(rounds)<=(4 if name.startswith('ed8_') else 2)
+            assert [p.name for p in rounds]==[f'round{r}' for r in range(1,len(rounds)+1)]
             for folder in rounds:
                 m=json.loads((folder/'manifest.json').read_text());assert m['returncode']==0 and m['image_only']
                 assert m['model']=='gpt-6-astra' and m['reasoning_effort']=='high'
@@ -113,6 +127,8 @@ def main():
         print('All input/output hashes, scientific coordinates, vector exports, 600-dpi metadata and figcheck passed.');return
     manifest=dict(technical_checks='passed',figures=records,data_sha256=sha(D/'hashes.csv'),legends_sha256=sha(OUT/'LEGENDS_V8.md'),
                   scope='Full-review figure corrections and nine archived-data Extended Data displays; no simulation or GPU compute',ed_sources_sha256=sha(OUT/'ed_sources.json'),
+                  ed_legends_sha256=sha(OUT/'ED_V8.md'),ed_title_map='SI_v8.md',ed_title_mismatches=[],
+                  ed_review_record='ED_V8_REVIEW.md',ed_review_record_sha256=sha(OUT/'ED_V8_REVIEW.md'),
                   source_scripts={p.name:sha(p) for p in [HERE/(s+'.py') for s in ['prepare_v8','build_v8','build_ed_v8','legends_v8','critique_v8','verify_v8','figcheck']]})
     (OUT/'qa_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     report(records)
@@ -124,25 +140,25 @@ def report(records):
            f'Technical verification passed for all {len(records)} figures. '+
            f'Astra cleared {sum(r["cleared"] for r in records.values())}/{len(records)} delivered images. '+
            'Clearance requires a no-substantive-defects verdict and an exact reviewed/delivered PNG hash match.','',
-           '| Figure | Page (mm) | figcheck | Review rounds | Clearance |',
-           '|---|---|---|---|---|']
+           '| Figure | Page (mm) | figcheck | Review rounds | Final verdict | Clearance |',
+           '|---|---|---|---|---|---|']
     for name,r in records.items():
         state='CLEARED' if r['cleared'] else 'REVISED AFTER REVIEW; NOT CLEARED' if r['post_review_revision'] else 'NOT CLEARED'
-        lines.append(f"| [{name}]({name}.png) | {' × '.join(map(str,r['page_mm']))} | clean | {r['critique_rounds']} | [{state}]({r['final_review']}) |")
+        verdict='No substantive defects' if r['final_verdict']==PASS else 'Substantive defects'
+        lines.append(f"| [{name}]({name}.png) | {' × '.join(map(str,r['page_mm']))} | clean | {r['critique_rounds']} | {verdict} | [{state}]({r['final_review']}) |")
     lines+=['','PDF and SVG retain editable chart text; PNGs are rendered from PDF at 600 dpi. '+
             'Figure 1 links its raster render to relative companion PNG files. No delivered SVG contains embedded raster data.','',
-            'All nine Extended Data displays follow the MAIN_v7 map; legends, source paths and unavailable measurements are in [ED_V8.md](ED_V8.md). '+
+            'All nine Extended Data numbers, PDF targets and titles match the SI_v8.md Extended Data display map; no title mismatch remains. Legends, source paths and unavailable measurements are in [ED_V8.md](ED_V8.md). '+
             'Pointer randomization is unmeasured and was not an S2 arm.','',
-            'The canonical publication legends match the proposed full-review captions (235, 246, 247, 236 and 245 words). '+
+            'The canonical publication legends match MAIN_v8.md; every main and Extended Data legend is at most 250 words. '+
             'Registered 8086 law tests remain untested; post hoc results appear only in the explicitly exploratory ED9 panels.','',
-            'The prior critique archive is retained. This revision uses `critique_review/`, with at most two image-only gpt-6-astra/high rounds per figure. '+
+            'The prior critique archive is retained. This revision uses `critique_review/`, with at most two image-only gpt-6-astra/high rounds for main figures and four for Extended Data. '+
             'Both original references are attached to every review. Reviews are retained unedited. '+
-            'The ED final rounds identified additional terminology issues. Those labels and the complete constructed-control domain were corrected after round 2; '+
-            'the resulting ED images have not had a third review and are not represented as Astra-cleared.','',
+            'Each row reports the final archived verdict and whether its reviewed PNG is identical to the delivered PNG. No cleared image is revised after its clearing review.','',
             '**Reproduce:** Run `prepare_v8.py`, `build_v8.py`, `build_ed_v8.py`, `legends_v8.py`, then `verify_v8.py` with '+
             '`/Users/neo/repos/algocell/experiments/.venv/bin/python`. '+
-            'Critique: `critique_v8.py --figure N --round R` (N = 1–5 or ed8_1–ed8_9, R = 1–2).','',
-            '[Publication legends](LEGENDS_V8.md) · [QA manifest](qa_manifest.json) · [ED sources](ed_sources.json) · [Frozen main data](data/)','']
+            'Critique: `critique_v8.py --figure N --round R` (N = 1–5, R = 1–2; or ed8_1–ed8_9, R = 1–4).','',
+            '[Publication legends](LEGENDS_V8.md) · [QA manifest](qa_manifest.json) · [ED sources](ed_sources.json) · [ED corrections](ED_V8_REVIEW.md) · [Frozen main data](data/)','']
     data='\n'.join(lines)
     (OUT/'FIGURES_V8.md').write_text(data)
     import re

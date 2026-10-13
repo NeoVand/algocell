@@ -1,0 +1,22 @@
+The new **ed8_5 meets the references’ standard for substantive content and self-explanation**. Its lower half is more text-heavy and its spacing less economical, but I see no supported substantive defect, empty panel, overlap, clipping or broken glyph.
+
+At 180 mm width, the ledger and explanatory text sit near the references’ smaller body-text sizes. They are dense, but the image does not justify rejecting them against the stated 5–7 pt reference standard.
+
+The scientific information is sufficiently explicit:
+
+- **a–d:** Core, chemistry, length and mutation status are identified. Axes give the measured ratio and time units. Local keys distinguish starting mixtures, cohort sizes, individual worlds and medians, and define R and T. The contrasting benign and lethal trajectories remain understandable without a methods paragraph.
+- **e:** The endpoint ledger supplies conditions, starting mixtures, paired implementation counts and numerical outcomes. Its listed cohorts sum to **110 worlds per implementation**, consistent with the heading. The footer defines H, endpoint durations, core-share denominator and tail types. The starred entry explicitly distinguishes four defined ratios from the five-world cohort.
+- **f:** The continuation comparison identifies source chemistry, execution chemistry, cohort sizes, start/end means and continuation duration. The host control gives its encounter denominator and intervention description. The registered result states the observed counts, required threshold and qualifying endpoint interval; the final line identifies the applicable conditions.
+
+**Optional polish and concrete fixes**
+
+- **a–d — excess space above the plots:** There is a conspicuous gap between each panel heading and its plotting area. Move the plots upward or tighten these bands to improve continuity between title and data.
+- **a–d — crowded local annotation bands:** The legends and two explanatory lines are closely stacked beneath each x-axis. Give these elements slightly clearer vertical separation while retaining the useful local keys.
+- **e — weak visual grouping:** All 15 rows have nearly identical treatment, making transitions between length and chemistry conditions harder to scan than the grouped bars in reference 2. Add restrained spacing or fine rules at condition boundaries. Group the C1/H columns under shared metric headers if space permits.
+- **e — header wrapping:** “L / bytes” and “Worlds / C1/H” are less immediately readable than “L (bytes)” and a clearly grouped paired-count heading. Standardize the header structure.
+- **f — uneven hierarchy:** The continuation table is orderly, but the host control and registered verdict read as successive prose fragments. Use compact subheads for these two blocks, and place the E1 condition line directly beside or beneath the orange verdict. Preserve the threshold and observed counts.
+- **f — inconsistent emphasis:** The all-capital “EXPLORATORY” is visually abrupt beside the sentence-case headings elsewhere. Sentence case with consistent weight would produce a more unified finish.
+
+These are refinements to spacing, grouping and hierarchy; they do not require additional experiments, complete methods or an expanded supporting ledger.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

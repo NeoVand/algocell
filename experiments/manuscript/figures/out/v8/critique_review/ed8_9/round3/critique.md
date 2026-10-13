@@ -1,0 +1,30 @@
+**ed8_9 is below the references in self-explanation and editorial finish.** All six panels contain substantive content, and the tables provide useful counts. The remaining problems concern the identity of the measured outcomes, inconsistent counting units, and the presentation of separate analyses—not a need to reproduce full methods.
+
+Most body text appears comparable to the references’ small type at the stated print width. I do not see clear clipping, overlapping text, broken glyphs, or an empty panel. The ledger in **d** reconciles correctly: 558 + 55 + 724 = 1,337.
+
+**Substantive defects**
+
+- **a — The detection endpoint is not named.** “Registered S2: all 20 worlds” identifies a cohort, while “Detection / censor time” identifies a measurement format. Neither says what event was detected. “Coherent-fetch 8086 L16” does not unambiguously supply that outcome. **Fix:** name the detected event in the title or axis, retaining the compact result “14/20 detected; 6 censored at 3 million updates.”
+
+- **a — The trace key leaves its denominator insufficiently identified.** “No partner fetch in 16/16 traces” and “fetch in ≥8/16” do not say whether the 16 traces belong to each plotted detection or are pooled. The red clause also drops “partner,” making the two categories less explicitly parallel. **Fix:** identify the denominator’s level and use matching labels—for example, if accurate, “Per detection: teal, no partner fetch in all 16 traces; red, partner fetch in ≥8 of 16 traces.” This requires a short encoding key, not a methods paragraph.
+
+- **e — Tapes and genotypes are used inconsistently.** The admission sequence distinguishes **600 tapes** from **32 selected genotypes**, and the table divides those genotypes into 10 and 22. The subsequent text calls those same quantities “10 tapes” and “22 tapes.” Readers cannot tell whether these are representative tapes, distinct genotypes, or another subset. **Fix:** use “10 genotypes” and “22 genotypes” consistently, or explicitly identify representative tapes if that is the intended unit.
+
+- **e — The scope of the zero-mismatch result is unclear beside the empty challenge sets.** The table prominently reports zero mismatches across millions of encounters, while the adjacent text reports zero relevant byte positions and “empty challenge sets.” A reader cannot determine which checks had actual opportunities to fail and which proposed tests lacked eligible positions. **Fix:** label the table’s mismatch check directly and separately label the empty challenge sets. State their relationship in one short sentence. The figure should make the evidential scope clear without requiring the proofs.
+
+- **f — The title’s byte notation is unexplained and competes with the coordinate notation.** “5F A4 x y” looks like a byte sequence, but its status and the meaning of *x* and *y* are unstated; those letters can also be mistaken for plot coordinates. **Fix:** identify it explicitly as a byte pattern, mark hexadecimal notation, and define the variable bytes if that is what they represent. Expand “d4” to “copy offset d = 4 bytes” locally.
+
+- **f — A separate numerical result has no clear visual grouping or fully explicit quantity label.** The bottom text introduces snapshot fates, two architectures, and values of 94.5 and 214.5 beneath an address-mapping plot. These are substantive results, but their relationship to the plotted cohort is unclear. “Median newly tiled targets /512 encounters” also leaves the slash open to interpretation as normalization or sampling scope. **Fix:** give this comparison a distinct inline heading and two aligned labeled values; specify what is counted as a target and whether the values are counts over 512 encounters or a normalized measure. Keep the cohort distinction explicit.
+
+**Optional polish**
+
+- **a:** The pale censor ticks are considerably less conspicuous than the colored detections. Darken or slightly enlarge them and include a visible censor-symbol sample in the key.
+- **b:** Move “0/20 at all 11 terminal samples” closer to the zero series. The large empty region is scientifically legitimate, but the annotation could make it more purposeful.
+- **c:** Reduce the large gap between the table/result statements and the bottom definitions. Place the L1/L2 definitions near their rows.
+- **d:** Right-align the count column. The repeated “unresolved” entries could sit beneath a category header, following the references’ stronger grouping.
+- **e:** Replace literal `->` sequences with proper arrows and format the admission sequence as a compact progression.
+- **Across panels:** Standardize notation such as “L = 16,” “d = 4,” and thousands separators. Reduce repeated cohort statements and use the recovered space to attach definitions directly to the relevant results.
+
+No prescribed Figure 3b law statement is required for this Extended Data item. Its archived supporting-evidence scope is appropriate; the corrections above concern understanding the evidence actually displayed.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

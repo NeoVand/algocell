@@ -1,0 +1,22 @@
+**The new ed8_1 meets the reference standard for its scope as an Extended Data summary of archived evidence. I find no substantive defect in the supplied PNG.** Its presentation is more tabular than the references, but every panel contains substantive results, with useful headings, number columns and explanatory labels.
+
+At 180 mm width, the body text appears comparable to the references’ small labels. Bold headings, consistent alignment and restrained rules maintain hierarchy. I see no overlap, clipping, broken glyphs or illegible numerical entries. The generous whitespace is uneven, but it does not represent missing panels or missing evidence.
+
+Panel-specific assessment:
+
+- **a:** The different denominators are explicit, and all five “not met” counts agree with the displayed fractions. The hardware-divergence note distinguishes expected disagreement from an unexplained validation failure. The stability threshold and sampling annotation supply useful interpretation without requiring full methods.
+- **b:** Both cores have condition and assay denominators. The comparator, core descriptions and flag definition are present. The statement that the criterion remains unmet is understandable; the figure does not establish condition-by-condition correspondence between the two flagged sets.
+- **c:** All 22 claim entries are present. Exactly three are marked “changed,” consistent with 19/22 unchanged in panel a. Orange text supplies emphasis without making interpretation depend on color. Crucially, the note explains that “stands” means agreement with the archive and explicitly preserves E1’s failed status.
+- **d:** Four component changes are shown, consistent with panel a. Historical and current outcomes are directly comparable. “n/a” is defined, and the note distinguishes newly met criteria from changes in applicability.
+- **e:** The measurement names, both core columns and the /417 denominator make the result interpretable. The overlap warning prevents the 6 and 9 counts from being mistaken for 15 distinct assays. Parent roles and the copy threshold are explained.
+- **f:** Tape lengths, cohort sizes, scoreable counts and missing-snapshot counts are explicit. The annotations distinguish completed runs and retained scoring evidence from unavailable observations.
+
+Optional polish, rather than substantive corrections:
+
+- **a/b/f:** Bring explanatory notes closer to the tables they explain. The large internal gaps make readers travel farther than necessary.
+- **b:** Replace “I1: flags remain flags” with **“I1: stability criterion remains unmet.”** This states the supported conclusion more precisely and avoids suggesting that identical individual conditions remain flagged.
+- **c/d:** Standardize the brief DZ descriptions: “DZ3 transmitter trend” and “DZ timing/share” currently use different wording.
+- **e:** Bold the nonzero entries, or lightly emphasize their two rows, so the main assay differences emerge immediately.
+- **f:** Simplify the last header to **“Worlds missing snapshot at update 7,500.”** Its current compound wording is unnecessarily cumbersome.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

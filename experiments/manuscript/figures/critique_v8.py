@@ -16,7 +16,8 @@ PROMPT='''Act as an independent scientific art editor. Your ONLY evidence is the
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--figure',required=True,choices=[str(n) for n in range(1,6)]+[f'ed8_{n}' for n in range(1,10)]);ap.add_argument('--round',type=int,required=True,choices=[1,2]);a=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--figure',required=True,choices=[str(n) for n in range(1,6)]+[f'ed8_{n}' for n in range(1,10)]);ap.add_argument('--round',type=int,required=True,choices=[1,2,3,4]);a=ap.parse_args()
+    if a.figure.isdigit() and a.round>2:ap.error('Main-figure review remains limited to two rounds')
     name=f'fig{a.figure}' if a.figure.isdigit() else a.figure
     target=OUT/'critique_review'/name/f'round{a.round}'
     prompt=PROMPT.replace('where it must say untested, with no eligible certified copier','where it must say Registered 8086 law test: untested')+f" The new image is {name}. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately."

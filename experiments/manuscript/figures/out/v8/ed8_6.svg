@@ -4,7 +4,7 @@
   <rdf:RDF>
    <ns2:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-    <dc:date>2026-10-12T20:30:06.490481</dc:date>
+    <dc:date>2026-10-12T20:46:46.350364</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <ns2:Agent>
@@ -23,180 +23,184 @@
   </ns0:g>
   <ns0:g id="axes_1">
    <ns0:g id="line2d_1">
-    <ns0:path d="M 8.503937 57.543307  L 238.110236 57.543307  " clip-path="url(#pbf8117e7cb)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 8.503937 57.543307  L 238.110236 57.543307  " clip-path="url(#pba9b9d6f16)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_1">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="49.918586" transform="rotate(-0 8.503937 49.918586)">L/BRK/budget</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="49.625883" transform="rotate(-0 8.503937 49.625883)">L/BRK/budget</ns0:text>
    </ns0:g>
    <ns0:g id="text_2">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="50.07423" transform="rotate(-0 96.377953 50.07423)">Periods</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="49.755187" transform="rotate(-0 93.543307 49.755187)">Periods k</ns0:text>
    </ns0:g>
    <ns0:g id="text_3">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="50.07423" transform="rotate(-0 133.228346 50.07423)">Words done</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="49.755187" transform="rotate(-0 130.393701 49.755187)">Words tested</ns0:text>
    </ns0:g>
    <ns0:g id="text_4">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="50.07423" transform="rotate(-0 212.598425 50.07423)">Exact</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(201.259843 47.190978)">Exact</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(201.259843 52.319396)">self-writers</ns0:text>
    </ns0:g>
    <ns0:g id="text_5">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="63.841404" transform="rotate(-0 8.503937 63.841404)">16/fait/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_6">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="63.841404" transform="rotate(-0 96.377953 63.841404)">1,2,3,4</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="63.841404" transform="rotate(-0 93.543307 63.841404)">1,2,3,4</ns0:text>
    </ns0:g>
    <ns0:g id="text_7">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="63.841404" transform="rotate(-0 133.228346 63.841404)">4,311,810,304</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="63.841404" transform="rotate(-0 130.393701 63.841404)">4,311,810,304</ns0:text>
    </ns0:g>
    <ns0:g id="text_8">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="63.841404" transform="rotate(-0 212.598425 63.841404)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="63.841404" transform="rotate(-0 201.259843 63.841404)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_9">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="73.998884" transform="rotate(-0 8.503937 73.998884)">16/fait/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_10">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="73.998884" transform="rotate(-0 96.377953 73.998884)">1,2,3,4</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="73.998884" transform="rotate(-0 93.543307 73.998884)">1,2,3,4</ns0:text>
    </ns0:g>
    <ns0:g id="text_11">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="73.998884" transform="rotate(-0 133.228346 73.998884)">4,311,810,304</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="73.998884" transform="rotate(-0 130.393701 73.998884)">4,311,810,304</ns0:text>
    </ns0:g>
    <ns0:g id="text_12">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="73.998884" transform="rotate(-0 212.598425 73.998884)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="73.998884" transform="rotate(-0 201.259843 73.998884)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_13">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="84.156365" transform="rotate(-0 8.503937 84.156365)">16/halt/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_14">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="84.156365" transform="rotate(-0 96.377953 84.156365)">1,2,3,4</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="84.156365" transform="rotate(-0 93.543307 84.156365)">1,2,3,4</ns0:text>
    </ns0:g>
    <ns0:g id="text_15">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="84.156365" transform="rotate(-0 133.228346 84.156365)">4,311,810,304</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="84.156365" transform="rotate(-0 130.393701 84.156365)">4,311,810,304</ns0:text>
    </ns0:g>
    <ns0:g id="text_16">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="84.156365" transform="rotate(-0 212.598425 84.156365)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="84.156365" transform="rotate(-0 201.259843 84.156365)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_17">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="94.313845" transform="rotate(-0 8.503937 94.313845)">16/halt/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_18">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="94.313845" transform="rotate(-0 96.377953 94.313845)">1,2,3,4</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="94.313845" transform="rotate(-0 93.543307 94.313845)">1,2,3,4</ns0:text>
    </ns0:g>
    <ns0:g id="text_19">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="94.313845" transform="rotate(-0 133.228346 94.313845)">4,311,810,304</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="94.313845" transform="rotate(-0 130.393701 94.313845)">4,311,810,304</ns0:text>
    </ns0:g>
    <ns0:g id="text_20">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="94.313845" transform="rotate(-0 212.598425 94.313845)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="94.313845" transform="rotate(-0 201.259843 94.313845)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_21">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="104.471325" transform="rotate(-0 8.503937 104.471325)">20/fait/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_22">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="104.471325" transform="rotate(-0 96.377953 104.471325)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="104.471325" transform="rotate(-0 93.543307 104.471325)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_23">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="104.471325" transform="rotate(-0 133.228346 104.471325)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="104.471325" transform="rotate(-0 130.393701 104.471325)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_24">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="104.471325" transform="rotate(-0 212.598425 104.471325)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="104.471325" transform="rotate(-0 201.259843 104.471325)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_25">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="114.628806" transform="rotate(-0 8.503937 114.628806)">20/fait/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_26">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="114.628806" transform="rotate(-0 96.377953 114.628806)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="114.628806" transform="rotate(-0 93.543307 114.628806)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_27">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="114.628806" transform="rotate(-0 133.228346 114.628806)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="114.628806" transform="rotate(-0 130.393701 114.628806)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_28">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="114.628806" transform="rotate(-0 212.598425 114.628806)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="114.628806" transform="rotate(-0 201.259843 114.628806)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_29">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="124.786286" transform="rotate(-0 8.503937 124.786286)">20/halt/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_30">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="124.786286" transform="rotate(-0 96.377953 124.786286)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="124.786286" transform="rotate(-0 93.543307 124.786286)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_31">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="124.786286" transform="rotate(-0 133.228346 124.786286)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="124.786286" transform="rotate(-0 130.393701 124.786286)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_32">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="124.786286" transform="rotate(-0 212.598425 124.786286)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="124.786286" transform="rotate(-0 201.259843 124.786286)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_33">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="134.943766" transform="rotate(-0 8.503937 134.943766)">20/halt/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_34">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="134.943766" transform="rotate(-0 96.377953 134.943766)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="134.943766" transform="rotate(-0 93.543307 134.943766)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_35">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="134.943766" transform="rotate(-0 133.228346 134.943766)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="134.943766" transform="rotate(-0 130.393701 134.943766)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_36">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="134.943766" transform="rotate(-0 212.598425 134.943766)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="134.943766" transform="rotate(-0 201.259843 134.943766)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_37">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="145.101246" transform="rotate(-0 8.503937 145.101246)">32/fait/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_38">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="145.101246" transform="rotate(-0 96.377953 145.101246)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="145.101246" transform="rotate(-0 93.543307 145.101246)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_39">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="145.101246" transform="rotate(-0 133.228346 145.101246)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="145.101246" transform="rotate(-0 130.393701 145.101246)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_40">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="145.101246" transform="rotate(-0 212.598425 145.101246)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="145.101246" transform="rotate(-0 201.259843 145.101246)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_41">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="155.258727" transform="rotate(-0 8.503937 155.258727)">32/fait/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_42">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="155.258727" transform="rotate(-0 96.377953 155.258727)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="155.258727" transform="rotate(-0 93.543307 155.258727)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_43">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="155.258727" transform="rotate(-0 133.228346 155.258727)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="155.258727" transform="rotate(-0 130.393701 155.258727)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_44">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="155.258727" transform="rotate(-0 212.598425 155.258727)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="155.258727" transform="rotate(-0 201.259843 155.258727)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_45">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="165.416207" transform="rotate(-0 8.503937 165.416207)">32/halt/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_46">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="165.416207" transform="rotate(-0 96.377953 165.416207)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="165.416207" transform="rotate(-0 93.543307 165.416207)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_47">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="165.416207" transform="rotate(-0 133.228346 165.416207)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="165.416207" transform="rotate(-0 130.393701 165.416207)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_48">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="165.416207" transform="rotate(-0 212.598425 165.416207)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="165.416207" transform="rotate(-0 201.259843 165.416207)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_49">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="175.573687" transform="rotate(-0 8.503937 175.573687)">32/halt/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_50">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="96.377953" y="175.573687" transform="rotate(-0 96.377953 175.573687)">1,2,3</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="93.543307" y="175.573687" transform="rotate(-0 93.543307 175.573687)">1,2,3</ns0:text>
    </ns0:g>
    <ns0:g id="text_51">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="175.573687" transform="rotate(-0 133.228346 175.573687)">16,843,008</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="130.393701" y="175.573687" transform="rotate(-0 130.393701 175.573687)">16,843,008</ns0:text>
    </ns0:g>
    <ns0:g id="text_52">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="212.598425" y="175.573687" transform="rotate(-0 212.598425 175.573687)">0</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="201.259843" y="175.573687" transform="rotate(-0 201.259843 175.573687)">0</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_2">
    <ns0:g id="line2d_2">
-    <ns0:path d="M 269.291339 57.543307  L 498.897638 57.543307  " clip-path="url(#p8be48e3353)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 269.291339 57.543307  L 498.897638 57.543307  " clip-path="url(#pebf8e3c7f2)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_53">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="49.918586" transform="rotate(-0 269.291339 49.918586)">L/budget/k</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="49.652492" transform="rotate(-0 269.291339 49.652492)">L/budget/k</ns0:text>
    </ns0:g>
    <ns0:g id="text_54">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="337.322835" y="50.07423" transform="rotate(-0 337.322835 50.07423)">Words</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(337.322835 47.172497)">Words</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(337.322835 52.395886)">tested</ns0:text>
    </ns0:g>
    <ns0:g id="text_55">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="391.181102" y="50.07423" transform="rotate(-0 391.181102 50.07423)">Zero exact</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(391.181102 47.063571)">Exact output</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(391.181102 52.504811)">zero B</ns0:text>
    </ns0:g>
    <ns0:g id="text_56">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="442.204724" y="50.07423" transform="rotate(-0 442.204724 50.07423)">≥75% ≥8/16</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(442.204724 47.172497)">≥75% match</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(442.204724 52.395886)">in ≥8/16</ns0:text>
    </ns0:g>
    <ns0:g id="text_57">
     <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="63.870408" transform="rotate(-0 269.291339 63.870408)">16/128/1</ns0:text>
@@ -300,20 +304,20 @@
     <ns0:path d="M 45.354331 357.165354  L 229.606299 357.165354  L 229.606299 246.614173  L 45.354331 246.614173  z " style="fill: #ffffff" />
    </ns0:g>
    <ns0:g id="PathCollection_1">
-    <ns0:path d="M 61.43432 348.455444  L 66.124735 348.455444  L 66.124735 343.765028  L 61.43432 343.765028  L 61.43432 348.455444  z " clip-path="url(#p456290aab5)" style="fill: none; stroke: #6b7280; stroke-width: 0.5" />
-    <ns0:path d="M 73.717784 341.085365  L 78.4082 341.085365  L 78.4082 336.39495  L 73.717784 336.39495  L 73.717784 341.085365  z " clip-path="url(#p456290aab5)" style="fill: none; stroke: #6b7280; stroke-width: 0.5" />
-    <ns0:path d="M 110.568178 318.975129  L 115.258594 318.975129  L 115.258594 314.284713  L 110.568178 314.284713  L 110.568178 318.975129  z " clip-path="url(#p456290aab5)" style="fill: none; stroke: #6b7280; stroke-width: 0.5" />
-    <ns0:path d="M 135.135107 304.234972  L 139.825523 304.234972  L 139.825523 299.544556  L 135.135107 299.544556  L 135.135107 304.234972  z " clip-path="url(#p456290aab5)" style="fill: none; stroke: #6b7280; stroke-width: 0.5" />
-    <ns0:path d="M 208.835894 260.014499  L 213.52631 260.014499  L 213.52631 255.324083  L 208.835894 255.324083  L 208.835894 260.014499  z " clip-path="url(#p456290aab5)" style="fill: none; stroke: #6b7280; stroke-width: 0.5" />
+    <ns0:path d="M 61.43432 348.455444  L 66.124735 348.455444  L 66.124735 343.765028  L 61.43432 343.765028  L 61.43432 348.455444  z " clip-path="url(#p478fb7e934)" style="fill: none; stroke: #1c2733; stroke-width: 0.5" />
+    <ns0:path d="M 73.717784 341.085365  L 78.4082 341.085365  L 78.4082 336.39495  L 73.717784 336.39495  L 73.717784 341.085365  z " clip-path="url(#p478fb7e934)" style="fill: none; stroke: #1c2733; stroke-width: 0.5" />
+    <ns0:path d="M 110.568178 318.975129  L 115.258594 318.975129  L 115.258594 314.284713  L 110.568178 314.284713  L 110.568178 318.975129  z " clip-path="url(#p478fb7e934)" style="fill: none; stroke: #1c2733; stroke-width: 0.5" />
+    <ns0:path d="M 135.135107 304.234972  L 139.825523 304.234972  L 139.825523 299.544556  L 135.135107 299.544556  L 135.135107 304.234972  z " clip-path="url(#p478fb7e934)" style="fill: none; stroke: #1c2733; stroke-width: 0.5" />
+    <ns0:path d="M 208.835894 260.014499  L 213.52631 260.014499  L 213.52631 255.324083  L 208.835894 255.324083  L 208.835894 260.014499  z " clip-path="url(#p478fb7e934)" style="fill: none; stroke: #1c2733; stroke-width: 0.5" />
    </ns0:g>
    <ns0:g id="matplotlib.axis_1">
     <ns0:g id="xtick_1">
      <ns0:g id="line2d_3">
       <ns0:defs>
-       <ns0:path id="m5de3de4033" d="M 0 0  L 0 2.2  " style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:path id="m619f1d5a72" d="M 0 0  L 0 2.2  " style="stroke: #000000; stroke-width: 0.5" />
       </ns0:defs>
       <ns0:g>
-       <ns0:use ns4:href="#m5de3de4033" x="51.496063" y="357.165354" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#m619f1d5a72" x="51.496063" y="357.165354" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
      <ns0:g id="text_89">
@@ -323,7 +327,7 @@
     <ns0:g id="xtick_2">
      <ns0:g id="line2d_4">
       <ns0:g>
-       <ns0:use ns4:href="#m5de3de4033" x="137.480315" y="357.165354" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#m619f1d5a72" x="137.480315" y="357.165354" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
      <ns0:g id="text_90">
@@ -333,7 +337,7 @@
     <ns0:g id="xtick_3">
      <ns0:g id="line2d_5">
       <ns0:g>
-       <ns0:use ns4:href="#m5de3de4033" x="223.464567" y="357.165354" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#m619f1d5a72" x="223.464567" y="357.165354" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
      <ns0:g id="text_91">
@@ -348,10 +352,10 @@
     <ns0:g id="ytick_1">
      <ns0:g id="line2d_6">
       <ns0:defs>
-       <ns0:path id="m1aab7b3dba" d="M 0 0  L -2.2 0  " style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:path id="mcf760ee4b7" d="M 0 0  L -2.2 0  " style="stroke: #000000; stroke-width: 0.5" />
       </ns0:defs>
       <ns0:g>
-       <ns0:use ns4:href="#m1aab7b3dba" x="45.354331" y="353.480315" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#mcf760ee4b7" x="45.354331" y="353.480315" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
      <ns0:g id="text_93">
@@ -361,7 +365,7 @@
     <ns0:g id="ytick_2">
      <ns0:g id="line2d_7">
       <ns0:g>
-       <ns0:use ns4:href="#m1aab7b3dba" x="45.354331" y="301.889764" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#mcf760ee4b7" x="45.354331" y="301.889764" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
      <ns0:g id="text_94">
@@ -371,7 +375,7 @@
     <ns0:g id="ytick_3">
      <ns0:g id="line2d_8">
       <ns0:g>
-       <ns0:use ns4:href="#m1aab7b3dba" x="45.354331" y="250.299213" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#mcf760ee4b7" x="45.354331" y="250.299213" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
      <ns0:g id="text_95">
@@ -379,11 +383,11 @@
      </ns0:g>
     </ns0:g>
     <ns0:g id="text_96">
-     <ns0:text style="font-size: 6px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="31.986674" y="301.889764" transform="rotate(-90 31.986674 301.889764)">Sampled carried positions</ns0:text>
+     <ns0:text style="font-size: 6px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="31.951049" y="301.889764" transform="rotate(-90 31.951049 301.889764)">Carried payload byte positions</ns0:text>
     </ns0:g>
    </ns0:g>
    <ns0:g id="line2d_9">
-    <ns0:path d="M 51.496063 353.480315  L 223.464567 250.299213  " clip-path="url(#p456290aab5)" style="fill: none; stroke: #b4bac1; stroke-width: 0.6; stroke-linecap: square" />
+    <ns0:path d="M 51.496063 353.480315  L 223.464567 250.299213  " clip-path="url(#p478fb7e934)" style="fill: none; stroke: #b4bac1; stroke-width: 0.6; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="patch_3">
     <ns0:path d="M 45.354331 357.165354  L 45.354331 246.614173  " style="fill: none; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter; stroke-linecap: square" />
@@ -397,114 +401,115 @@
   </ns0:g>
   <ns0:g id="axes_4">
    <ns0:g id="line2d_10">
-    <ns0:path d="M 269.291339 255.968504  L 498.897638 255.968504  " clip-path="url(#pdf6c06cd71)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 269.291339 255.968504  L 498.897638 255.968504  " clip-path="url(#pb5c38e72b5)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_98">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="248.343783" transform="rotate(-0 269.291339 248.343783)">Arm L/budget</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="248.077689" transform="rotate(-0 269.291339 248.077689)">Arm L/budget</ns0:text>
    </ns0:g>
    <ns0:g id="text_99">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="248.499427" transform="rotate(-0 348.661417 248.499427)">n</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="248.209388" transform="rotate(-0 342.992126 248.209388)">Worlds</ns0:text>
    </ns0:g>
    <ns0:g id="text_100">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="377.007874" y="248.499427" transform="rotate(-0 377.007874 248.499427)">Conf.</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="374.173228" y="248.209388" transform="rotate(-0 374.173228 248.209388)">Conf.</ns0:text>
    </ns0:g>
    <ns0:g id="text_101">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="408.188976" y="248.370697" transform="rotate(-0 408.188976 248.370697)">Loop</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="405.354331" y="248.100462" transform="rotate(-0 405.354331 248.100462)">Open</ns0:text>
    </ns0:g>
    <ns0:g id="text_102">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="439.370079" y="248.370697" transform="rotate(-0 439.370079 248.370697)">Open</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="436.535433" y="248.209388" transform="rotate(-0 436.535433 248.209388)">Undet.</ns0:text>
    </ns0:g>
    <ns0:g id="text_103">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="470.551181" y="248.499427" transform="rotate(-0 470.551181 248.499427)">Undet.</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(467.716535 245.379842)">Loop</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(467.716535 250.821082)">(overlaps)</ns0:text>
    </ns0:g>
    <ns0:g id="text_104">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="262.382616" transform="rotate(-0 269.291339 262.382616)">A 16/128</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="262.295605" transform="rotate(-0 269.291339 262.295605)">A 16/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_105">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="262.382616" transform="rotate(-0 348.661417 262.382616)">20</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="262.295605" transform="rotate(-0 342.992126 262.295605)">20</ns0:text>
    </ns0:g>
    <ns0:g id="text_106">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="377.007874" y="262.382616" transform="rotate(-0 377.007874 262.382616)">20</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="374.173228" y="262.295605" transform="rotate(-0 374.173228 262.295605)">20</ns0:text>
    </ns0:g>
    <ns0:g id="text_107">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="408.188976" y="262.382616" transform="rotate(-0 408.188976 262.382616)">14</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="405.354331" y="262.295605" transform="rotate(-0 405.354331 262.295605)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_108">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="439.370079" y="262.382616" transform="rotate(-0 439.370079 262.382616)">0</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="436.535433" y="262.295605" transform="rotate(-0 436.535433 262.295605)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_109">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="470.551181" y="262.382616" transform="rotate(-0 470.551181 262.382616)">0</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="467.716535" y="262.295605" transform="rotate(-0 467.716535 262.295605)">14</ns0:text>
    </ns0:g>
    <ns0:g id="text_110">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="275.138522" transform="rotate(-0 269.291339 275.138522)">B 32/128</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="275.05151" transform="rotate(-0 269.291339 275.05151)">B 32/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_111">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="275.138522" transform="rotate(-0 348.661417 275.138522)">20</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="275.05151" transform="rotate(-0 342.992126 275.05151)">20</ns0:text>
    </ns0:g>
    <ns0:g id="text_112">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="377.007874" y="275.138522" transform="rotate(-0 377.007874 275.138522)">4</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="374.173228" y="275.05151" transform="rotate(-0 374.173228 275.05151)">4</ns0:text>
    </ns0:g>
    <ns0:g id="text_113">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="408.188976" y="275.138522" transform="rotate(-0 408.188976 275.138522)">4</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="405.354331" y="275.05151" transform="rotate(-0 405.354331 275.05151)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_114">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="439.370079" y="275.138522" transform="rotate(-0 439.370079 275.138522)">0</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="436.535433" y="275.05151" transform="rotate(-0 436.535433 275.05151)">16</ns0:text>
    </ns0:g>
    <ns0:g id="text_115">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="470.551181" y="275.138522" transform="rotate(-0 470.551181 275.138522)">16</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="467.716535" y="275.05151" transform="rotate(-0 467.716535 275.05151)">4</ns0:text>
    </ns0:g>
    <ns0:g id="text_116">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="287.894427" transform="rotate(-0 269.291339 287.894427)">C 16/512</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="287.807416" transform="rotate(-0 269.291339 287.807416)">C 16/512</ns0:text>
    </ns0:g>
    <ns0:g id="text_117">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="287.894427" transform="rotate(-0 348.661417 287.894427)">20</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="287.807416" transform="rotate(-0 342.992126 287.807416)">20</ns0:text>
    </ns0:g>
    <ns0:g id="text_118">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="377.007874" y="287.894427" transform="rotate(-0 377.007874 287.894427)">19</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="374.173228" y="287.807416" transform="rotate(-0 374.173228 287.807416)">19</ns0:text>
    </ns0:g>
    <ns0:g id="text_119">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="408.188976" y="287.894427" transform="rotate(-0 408.188976 287.894427)">15</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="405.354331" y="287.807416" transform="rotate(-0 405.354331 287.807416)">1</ns0:text>
    </ns0:g>
    <ns0:g id="text_120">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="439.370079" y="287.894427" transform="rotate(-0 439.370079 287.894427)">1</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="436.535433" y="287.807416" transform="rotate(-0 436.535433 287.807416)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_121">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="470.551181" y="287.894427" transform="rotate(-0 470.551181 287.894427)">0</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="467.716535" y="287.807416" transform="rotate(-0 467.716535 287.807416)">15</ns0:text>
    </ns0:g>
    <ns0:g id="text_122">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="300.650333" transform="rotate(-0 269.291339 300.650333)">D 16/128</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="300.563321" transform="rotate(-0 269.291339 300.563321)">D 16/128</ns0:text>
    </ns0:g>
    <ns0:g id="text_123">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="300.650333" transform="rotate(-0 348.661417 300.650333)">20</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="300.563321" transform="rotate(-0 342.992126 300.563321)">20</ns0:text>
    </ns0:g>
    <ns0:g id="text_124">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="377.007874" y="300.650333" transform="rotate(-0 377.007874 300.650333)">18</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="374.173228" y="300.563321" transform="rotate(-0 374.173228 300.563321)">18</ns0:text>
    </ns0:g>
    <ns0:g id="text_125">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="408.188976" y="300.650333" transform="rotate(-0 408.188976 300.650333)">17</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="405.354331" y="300.563321" transform="rotate(-0 405.354331 300.563321)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_126">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="439.370079" y="300.650333" transform="rotate(-0 439.370079 300.650333)">0</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="436.535433" y="300.563321" transform="rotate(-0 436.535433 300.563321)">2</ns0:text>
    </ns0:g>
    <ns0:g id="text_127">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="470.551181" y="300.650333" transform="rotate(-0 470.551181 300.650333)">2</ns0:text>
+    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="467.716535" y="300.563321" transform="rotate(-0 467.716535 300.563321)">17</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_5">
    <ns0:g id="line2d_11">
-    <ns0:path d="M 8.503937 454.393701  L 238.110236 454.393701  " clip-path="url(#p595a148f9a)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 8.503937 454.393701  L 238.110236 454.393701  " clip-path="url(#p67fc4294cb)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_128">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="446.768979" transform="rotate(-0 8.503937 446.768979)">Sampling role</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="446.582714" transform="rotate(-0 8.503937 446.582714)">Sampling role</ns0:text>
    </ns0:g>
    <ns0:g id="text_129">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="102.047244" y="446.795894" transform="rotate(-0 102.047244 446.795894)">Sampled</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="102.047244" y="446.606729" transform="rotate(-0 102.047244 446.606729)">Sampled</ns0:text>
    </ns0:g>
    <ns0:g id="text_130">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="150.23622" y="446.768979" transform="rotate(-0 150.23622 446.768979)">Eligible</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="150.23622" y="446.582714" transform="rotate(-0 150.23622 446.582714)">Eligible</ns0:text>
    </ns0:g>
    <ns0:g id="text_131">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="195.590551" y="446.768979" transform="rotate(-0 195.590551 446.768979)">Elig. worlds</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="195.590551" y="446.582714" transform="rotate(-0 195.590551 446.582714)">Elig. worlds</ns0:text>
    </ns0:g>
    <ns0:g id="text_132">
     <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="460.807813" transform="rotate(-0 8.503937 460.807813)">Final random cell</ns0:text>
@@ -543,10 +548,13 @@
     <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="195.590551" y="486.319624" transform="rotate(-0 195.590551 486.319624)">9</ns0:text>
    </ns0:g>
    <ns0:g id="text_144">
-    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="540.312287" transform="rotate(-0 8.503937 540.312287)">Eligible: 42 roles; 41 unique tapes; 11 worlds</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="509.131184" transform="rotate(-0 8.503937 509.131184)">Eligible: 42 roles; 41 unique tapes; 11 worlds</ns0:text>
    </ns0:g>
    <ns0:g id="text_145">
-    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="563.034139" transform="rotate(-0 8.503937 563.034139)">Pointer randomization: unmeasured (not an S2 arm)</ns0:text>
+    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="525.898746" transform="rotate(-0 8.503937 525.898746)">6502 retention experiment C2: 80 S1 worlds; fixed-core certificate</ns0:text>
+   </ns0:g>
+   <ns0:g id="text_146">
+    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="543.012538" transform="rotate(-0 8.503937 543.012538)">Pointer randomization: unmeasured; not an 8086 S2 arm</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_6">
@@ -555,125 +563,125 @@
    </ns0:g>
    <ns0:g id="PathCollection_2">
     <ns0:defs>
-     <ns0:path id="mfe85b029d2" d="M 0 -1.802776  L -1.802776 1.802776  L 1.802776 1.802776  z " style="stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:path id="m3cd03fa08b" d="M 0 -1.802776  L -1.802776 1.802776  L 1.802776 1.802776  z " style="stroke: #c98e2f; stroke-width: 0.5" />
     </ns0:defs>
-    <ns0:g clip-path="url(#p31e9534b2a)">
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="352.204724" y="527.952756" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="413.622047" y="491.102362" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="413.622047" y="491.102362" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="444.330709" y="472.677165" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="444.330709" y="472.677165" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
-     <ns0:use ns4:href="#mfe85b029d2" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+    <ns0:g clip-path="url(#pac9fe9a320)">
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="459.685039" y="463.464567" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="336.850394" y="537.165354" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="352.204724" y="527.952756" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="413.622047" y="491.102362" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="413.622047" y="491.102362" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="444.330709" y="472.677165" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="444.330709" y="472.677165" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
+     <ns0:use ns4:href="#m3cd03fa08b" x="321.496063" y="546.377953" style="fill: #c98e2f; stroke: #c98e2f; stroke-width: 0.5" />
     </ns0:g>
    </ns0:g>
    <ns0:g id="matplotlib.axis_3">
     <ns0:g id="xtick_4">
      <ns0:g id="line2d_12">
       <ns0:g>
-       <ns0:use ns4:href="#m5de3de4033" x="321.496063" y="555.590551" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#m619f1d5a72" x="321.496063" y="555.590551" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
-     <ns0:g id="text_146">
+     <ns0:g id="text_147">
       <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="321.496063" y="563.715551" transform="rotate(-0 321.496063 563.715551)">0</ns0:text>
      </ns0:g>
     </ns0:g>
     <ns0:g id="xtick_5">
      <ns0:g id="line2d_13">
       <ns0:g>
-       <ns0:use ns4:href="#m5de3de4033" x="398.267717" y="555.590551" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#m619f1d5a72" x="398.267717" y="555.590551" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
-     <ns0:g id="text_147">
+     <ns0:g id="text_148">
       <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="398.267717" y="563.715551" transform="rotate(-0 398.267717 563.715551)">5</ns0:text>
      </ns0:g>
     </ns0:g>
     <ns0:g id="xtick_6">
      <ns0:g id="line2d_14">
       <ns0:g>
-       <ns0:use ns4:href="#m5de3de4033" x="475.03937" y="555.590551" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#m619f1d5a72" x="475.03937" y="555.590551" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
-     <ns0:g id="text_148">
+     <ns0:g id="text_149">
       <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="475.03937" y="563.715551" transform="rotate(-0 475.03937 563.715551)">10</ns0:text>
      </ns0:g>
     </ns0:g>
-    <ns0:g id="text_149">
-     <ns0:text style="font-size: 6px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="398.267717" y="571.150121" transform="rotate(-0 398.267717 571.150121)">Predicted free positions</ns0:text>
+    <ns0:g id="text_150">
+     <ns0:text style="font-size: 6px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="398.267717" y="571.150121" transform="rotate(-0 398.267717 571.150121)">Predicted free byte positions</ns0:text>
     </ns0:g>
    </ns0:g>
    <ns0:g id="matplotlib.axis_4">
     <ns0:g id="ytick_4">
      <ns0:g id="line2d_15">
       <ns0:g>
-       <ns0:use ns4:href="#m1aab7b3dba" x="306.141732" y="546.377953" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#mcf760ee4b7" x="306.141732" y="546.377953" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
-     <ns0:g id="text_150">
+     <ns0:g id="text_151">
       <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="302.141732" y="548.440453" transform="rotate(-0 302.141732 548.440453)">0</ns0:text>
      </ns0:g>
     </ns0:g>
     <ns0:g id="ytick_5">
      <ns0:g id="line2d_16">
       <ns0:g>
-       <ns0:use ns4:href="#m1aab7b3dba" x="306.141732" y="500.314961" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#mcf760ee4b7" x="306.141732" y="500.314961" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
-     <ns0:g id="text_151">
+     <ns0:g id="text_152">
       <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="302.141732" y="502.377461" transform="rotate(-0 302.141732 502.377461)">5</ns0:text>
      </ns0:g>
     </ns0:g>
     <ns0:g id="ytick_6">
      <ns0:g id="line2d_17">
       <ns0:g>
-       <ns0:use ns4:href="#m1aab7b3dba" x="306.141732" y="454.251969" style="stroke: #000000; stroke-width: 0.5" />
+       <ns0:use ns4:href="#mcf760ee4b7" x="306.141732" y="454.251969" style="stroke: #000000; stroke-width: 0.5" />
       </ns0:g>
      </ns0:g>
-     <ns0:g id="text_152">
+     <ns0:g id="text_153">
       <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: end" x="302.141732" y="456.314469" transform="rotate(-0 302.141732 456.314469)">10</ns0:text>
      </ns0:g>
     </ns0:g>
-    <ns0:g id="text_153">
-     <ns0:text style="font-size: 6px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="292.774076" y="500.314961" transform="rotate(-90 292.774076 500.314961)">Measured free positions</ns0:text>
+    <ns0:g id="text_154">
+     <ns0:text style="font-size: 6px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: middle" x="292.738451" y="500.314961" transform="rotate(-90 292.738451 500.314961)">Measured free byte positions</ns0:text>
     </ns0:g>
    </ns0:g>
    <ns0:g id="line2d_18">
-    <ns0:path d="M 321.496063 546.377953  L 475.03937 454.251969  " clip-path="url(#p31e9534b2a)" style="fill: none; stroke: #b4bac1; stroke-width: 0.6; stroke-linecap: square" />
+    <ns0:path d="M 321.496063 546.377953  L 475.03937 454.251969  " clip-path="url(#pac9fe9a320)" style="fill: none; stroke: #b4bac1; stroke-width: 0.6; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="patch_6">
     <ns0:path d="M 306.141732 555.590551  L 306.141732 445.03937  " style="fill: none; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter; stroke-linecap: square" />
@@ -681,93 +689,93 @@
    <ns0:g id="patch_7">
     <ns0:path d="M 306.141732 555.590551  L 490.393701 555.590551  " style="fill: none; stroke: #000000; stroke-width: 0.5; stroke-linejoin: miter; stroke-linecap: square" />
    </ns0:g>
-   <ns0:g id="text_154">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="327.637795" y="457.015748" transform="rotate(-0 327.637795 457.015748)">Equality y = x; 42 roles overlap</ns0:text>
+   <ns0:g id="text_155">
+    <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="327.637795" y="457.015748" transform="rotate(-0 327.637795 457.015748)">Equality y = x; 42 role observations coincide</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="panel-label">
    <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="23.007874" transform="rotate(-0 5.669291 23.007874)">a</ns0:text>
   </ns0:g>
-  <ns0:g id="text_155">
+  <ns0:g id="text_156">
    <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="22.824803" transform="rotate(-0 22.677165 22.824803)">6502 finite census: all completed arms</ns0:text>
   </ns0:g>
-  <ns0:g id="text_156">
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 197.490516)">L = tape bytes; budget = CPU instructions; k = tiled-word period</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 202.99621)">fait = faithful BRK; halt = halt before BRK; Exact = self-writers</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 208.219598)">Words done sums k; each L16 k4 arm alone exhausts 256⁴ words</ns0:text>
+  <ns0:g id="text_157">
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 193.407795)">L = tape bytes; budget = execution steps; k = tiled-word period</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 199.800712)">fait = faithful BRK; halt = halt before BRK; exact output into zero B</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 206.334412)">Words tested sums k; each L16 k4 arm exhausts 256⁴ words</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
    <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="23.007874" transform="rotate(-0 266.456693 23.007874)">b</ns0:text>
   </ns0:g>
-  <ns0:g id="text_157">
+  <ns0:g id="text_158">
    <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="22.824803" transform="rotate(-0 283.464567 22.824803)">8086 finite census: declared reset</ns0:text>
   </ns0:g>
-  <ns0:g id="text_158">
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 197.262352)">L bytes; budget instructions; k = word period; SP at ring end</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 202.768046)">Counts of nonzero words: exact output into zero partner; or</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 208.20327)">≥75% byte match in ≥8 of 16 random-partner encounters</ns0:text>
+  <ns0:g id="text_159">
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 193.453341)">L bytes; budget execution steps; k = word period; SP at ring end</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 199.809822)">Counts of nonzero words: exact output into all-zero byte partner B</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 206.12324)">or ≥75% parent-byte match in ≥8/16 uniform-partner encounters</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
    <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="221.433071" transform="rotate(-0 5.669291 221.433071)">c</ns0:text>
   </ns0:g>
-  <ns0:g id="text_159">
+  <ns0:g id="text_160">
    <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="221.25" transform="rotate(-0 22.677165 221.25)">Constructed 6502: sampled carriage</ns0:text>
   </ns0:g>
-  <ns0:g id="text_160">
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 395.793467)">296 constructed copier/contract configurations; points coincide</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 401.29916)">Coordinate counts 2:96, 4:40, 10:96, 14:32, 26:32; d offset bytes</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 406.767041)">Site: ≥half tested alternatives heritable and allele retained ≥50%</ns0:text>
+  <ns0:g id="text_161">
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 391.853694)">296 constructed copier/contract configurations; points coincide</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 398.235019)">Counts 2:96, 4:40, 10:96, 14:32, 26:32; d = copy offset bytes</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 404.57328)">Carried: same-position parent byte in all 3 bodies×64 partner tests</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
    <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="221.433071" transform="rotate(-0 266.456693 221.433071)">d</ns0:text>
   </ns0:g>
-  <ns0:g id="text_161">
+  <ns0:g id="text_162">
    <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="221.25" transform="rotate(-0 283.464567 221.25)">S1: complete four-arm route ledger</ns0:text>
   </ns0:g>
-  <ns0:g id="text_162">
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 395.703877)">S1 = 6502 worlds; Conf. = zero partner fetch; Open = ≥8/16 traces</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 401.139102)">Undet. = no heritable copier detected; Loop overlaps Conf. (PC return)</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 406.574326)">20 worlds/arm; L bytes / CPU budget; A–C faithful BRK, D pre-halt</ns0:text>
+  <ns0:g id="text_163">
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 391.912491)">S1: 6502; Conf. = no partner fetch in 16/16 traces; Open = fetch ≥8/16</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 398.205206)">Undet. = no heritable copier detected; Loop = repeated instruction address</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 404.555062)">Loop overlaps routes; L bytes/budget steps; A–C faithful, D pre-BRK</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
    <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="419.858268" transform="rotate(-0 5.669291 419.858268)">e</ns0:text>
   </ns0:g>
-  <ns0:g id="text_163">
+  <ns0:g id="text_164">
    <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="419.675197" transform="rotate(-0 22.677165 419.675197)">Registered C2: complete sampling roles</ns0:text>
   </ns0:g>
-  <ns0:g id="text_164">
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 596.846686)">Eligible = certified fixed-core, pure forward-copy family</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 602.35238)">942 roles; world counts overlap across roles (do not sum)</ns0:text>
+  <ns0:g id="text_165">
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 593.448022)">Eligible = certified fixed-core, pure forward-copy family</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 599.824378)">942 roles; world counts overlap across roles (do not sum)</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
    <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="419.858268" transform="rotate(-0 266.456693 419.858268)">f</ns0:text>
   </ns0:g>
-  <ns0:g id="text_165">
+  <ns0:g id="text_166">
    <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="419.675197" transform="rotate(-0 283.464567 419.675197)">C2 exact capacities: all eligible roles</ns0:text>
   </ns0:g>
-  <ns0:g id="text_166">
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 594.131652)">Free byte positions: arbitrary alternatives retained with causal roots</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 599.599533)">Exact-copy/core/ancestry mismatches: 0/91,428 direct cases</ns0:text>
-   <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 605.067414)">and 0/731,424 serial observations; 42 roles /41 tapes /11 worlds</ns0:text>
+  <ns0:g id="text_167">
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 590.276407)">Free byte positions: arbitrary alternatives jointly inherited with causal roots</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 596.614669)">Each exact-byte/core/ancestry check: 0/91,428 direct-case mismatches</ns0:text>
+   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 602.968665)">and 0/731,424 serial-record mismatches; 42 roles /41 tapes /11 worlds</ns0:text>
   </ns0:g>
  </ns0:g>
  <ns0:defs>
-  <ns0:clipPath id="pbf8117e7cb">
+  <ns0:clipPath id="pba9b9d6f16">
    <ns0:rect x="8.503937" y="39.685039" width="232.440945" height="144.566929" />
   </ns0:clipPath>
-  <ns0:clipPath id="p8be48e3353">
+  <ns0:clipPath id="pebf8e3c7f2">
    <ns0:rect x="269.291339" y="39.685039" width="232.440945" height="144.566929" />
   </ns0:clipPath>
-  <ns0:clipPath id="p456290aab5">
+  <ns0:clipPath id="p478fb7e934">
    <ns0:rect x="45.354331" y="246.614173" width="184.251969" height="110.551181" />
   </ns0:clipPath>
-  <ns0:clipPath id="pdf6c06cd71">
+  <ns0:clipPath id="pb5c38e72b5">
    <ns0:rect x="269.291339" y="238.110236" width="232.440945" height="144.566929" />
   </ns0:clipPath>
-  <ns0:clipPath id="p595a148f9a">
+  <ns0:clipPath id="p67fc4294cb">
    <ns0:rect x="8.503937" y="436.535433" width="232.440945" height="144.566929" />
   </ns0:clipPath>
-  <ns0:clipPath id="p31e9534b2a">
+  <ns0:clipPath id="pac9fe9a320">
    <ns0:rect x="306.141732" y="445.03937" width="184.251969" height="110.551181" />
   </ns0:clipPath>
  </ns0:defs>

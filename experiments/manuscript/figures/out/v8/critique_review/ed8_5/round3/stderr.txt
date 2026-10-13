@@ -1,0 +1,43 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-1devwbwq
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132f2-f16f-7f61-b5a4-448926f32c63
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_5. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new **ed8_5 meets the references’ standard for substantive content and self-explanation**. Its lower half is more text-heavy and its spacing less economical, but I see no supported substantive defect, empty panel, overlap, clipping or broken glyph.
+
+At 180 mm width, the ledger and explanatory text sit near the references’ smaller body-text sizes. They are dense, but the image does not justify rejecting them against the stated 5–7 pt reference standard.
+
+The scientific information is sufficiently explicit:
+
+- **a–d:** Core, chemistry, length and mutation status are identified. Axes give the measured ratio and time units. Local keys distinguish starting mixtures, cohort sizes, individual worlds and medians, and define R and T. The contrasting benign and lethal trajectories remain understandable without a methods paragraph.
+- **e:** The endpoint ledger supplies conditions, starting mixtures, paired implementation counts and numerical outcomes. Its listed cohorts sum to **110 worlds per implementation**, consistent with the heading. The footer defines H, endpoint durations, core-share denominator and tail types. The starred entry explicitly distinguishes four defined ratios from the five-world cohort.
+- **f:** The continuation comparison identifies source chemistry, execution chemistry, cohort sizes, start/end means and continuation duration. The host control gives its encounter denominator and intervention description. The registered result states the observed counts, required threshold and qualifying endpoint interval; the final line identifies the applicable conditions.
+
+**Optional polish and concrete fixes**
+
+- **a–d — excess space above the plots:** There is a conspicuous gap between each panel heading and its plotting area. Move the plots upward or tighten these bands to improve continuity between title and data.
+- **a–d — crowded local annotation bands:** The legends and two explanatory lines are closely stacked beneath each x-axis. Give these elements slightly clearer vertical separation while retaining the useful local keys.
+- **e — weak visual grouping:** All 15 rows have nearly identical treatment, making transitions between length and chemistry conditions harder to scan than the grouped bars in reference 2. Add restrained spacing or fine rules at condition boundaries. Group the C1/H columns under shared metric headers if space permits.
+- **e — header wrapping:** “L / bytes” and “Worlds / C1/H” are less immediately readable than “L (bytes)” and a clearly grouped paired-count heading. Standardize the header structure.
+- **f — uneven hierarchy:** The continuation table is orderly, but the host control and registered verdict read as successive prose fragments. Use compact subheads for these two blocks, and place the E1 condition line directly beside or beneath the orange verdict. Preserve the threshold and observed counts.
+- **f — inconsistent emphasis:** The all-capital “EXPLORATORY” is visually abrupt beside the sentence-case headings elsewhere. Sentence case with consistent weight would produce a more unified finish.
+
+These are refinements to spacing, grouping and hierarchy; they do not require additional experiments, complete methods or an expanded supporting ledger.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS
+tokens used
+11,512

@@ -1,0 +1,26 @@
+The new **ed8_9 is below the references in self-explanation**, although its plots, tables and numerical summaries are substantive. Every panel contains content. The remaining problems concern undefined quantities and unclear reporting units, rather than missing methods.
+
+At 180 mm width, the body text and ticks appear broadly comparable to the references. I see no clear overlap, clipping, broken glyphs or illegible axis labels. The main visible totals reconcile: 558 + 55 + 724 = 1,337; the unresolved opcode counts sum to 724; and the encounter counts sum to 2,224,640.
+
+**Substantive defects**
+
+- **Panels e–f: “d” is never explicitly defined.** “d bytes,” “d4,” “d16” and “d = 4 bytes” organize the entire post hoc result. Panel f supplies a +4 address relationship, but readers must infer whether *d* denotes displacement, copy length or another property. Define it beside the table header and use consistent notation throughout. If it denotes displacement, explicitly connect that definition to the modulo-32 equation.
+
+- **Panel e: the empty-set findings do not clearly identify what is absent.** “Zero free byte positions,” “zero erased byte positions,” “these sets are empty” and “sets test no alternatives” leave unclear whether there are no qualifying positions, no perturbations to test, or tested positions with no successful alternatives. That distinction matters beside the zero-mismatch result. Replace these sentences with compact, explicitly named test categories and their applicable-position or alternative counts. Separate tests actually performed from tests with no applicable alternatives; this requires a result key, not a methods paragraph.
+
+- **Panel f, lower summary: the median’s reporting unit is ambiguous.** “Median target counts in 512 encounters” does not establish whether the numbers are medians of totals from 512-encounter batches or medians of individual encounter outcomes drawn from 512 encounters. The pooling line identifies conditions but does not resolve this. State exactly what each median summarizes and what the 512 counts. Give the numerical column a matching heading, such as “Median newly exact targets per [specified unit].”
+
+**Optional polish**
+
+- **Panel a:** Turn the prose encoding description into an inline key using teal and red dots and a grey censor tick. This would match the references’ immediate visual decoding more closely. Label the censor boundary directly with “3 million updates.”
+- **Panel b:** Put “20 worlds” in the y-axis label or nearby cohort label. The denominator is already supplied, so this is an improvement rather than missing information.
+- **Panels a–b and f:** Briefly expand cohort codes such as S2 and G where feasible. “R2” would also benefit from being identified as a test or criterion if that is its role.
+- **Panels c–d:** Move “d = L2 ledger” next to panel d’s title or table. Its present location under c makes the relationship unnecessarily indirect.
+- **Panel c:** Consolidate the widely separated cohort and certificate notes. The substantial blank area below the table makes the panel feel less composed than the reference tables.
+- **Panel e:** Replace slash-heavy phrases and compressed forms such as “32 genotypes /20 worlds” and “590 d16; 10 d4” with consistently spaced, directly labeled quantities.
+- **Panel f:** Give the lower snapshot summary a clearer visual separation from the address plot, and align its two numerical results beneath a column heading. Its current placement makes it resemble an extended plot footnote despite containing a separate result.
+- **Across the figure:** Reduce repeated cohort prose and use the recovered space to strengthen the keys and definitions above. The references integrate explanation into the graphics more effectively; ed8_9 still relies heavily on scattered text blocks.
+
+The exact Figure 3b wording requirement does not apply to this Extended Data item. No additional evolved-8086-law statement or full proof is needed here.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

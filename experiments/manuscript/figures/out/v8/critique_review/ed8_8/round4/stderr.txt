@@ -1,0 +1,41 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-b5g_r9_7
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132f9-e850-71f0-8c48-cf01bde83831
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_8. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**ed8_8 is close, but falls below the references in self-explanation.** All six panels contain substantive content. The tables provide useful counts and denominators, and panel d clearly exposes the failed executed-byte requirement. The main remaining problem is a missing definition underlying panels a and b.
+
+**Substantive defect**
+
+- **Panels a–b: the defining open/confined classification is incomplete.** Panel a gives “open ≥32/64; confined <32/64 partner traces,” but never states what a partner trace must show to count toward that threshold. “Genealogy fetch class” names the classifier without explaining the counted behavior. Because panel b’s founders and transitions depend on this distinction, readers cannot fully interpret the central result from the image. **Fix:** add a short direct definition identifying the qualifying fetch behavior, followed by the existing threshold. This needs one label, not a methods paragraph.
+
+**Optional polish and clarification**
+
+- **Panel a:** “only worlds with confined founders” could appear to qualify the entire table, although its “Worlds” column includes all 20 worlds. Attach this restriction explicitly to the sampled ancestry counts: “64 sampled ancestries per confined world.”
+- **Panel b:** “First confined founders” and “Later confined founder events” are clear, but the final header “Events” is less precise. Change it to **“Total founder events”** so the addition is immediately apparent.
+- **Panel c:** the mechanism tally and separate source-rule tally use different classifications, which the image acknowledges. Make the latter easier to distinguish with a compact **“Separate causal-source classification”** header. Do not imply that its 18/20 and 0/20 constitute the mechanism partition above.
+- **Panel d:** the red sentence carries the central result but reads like a compressed ledger entry. Prefer **“N6-4 executed-byte criterion: 11/20; required ≥12/20 — not met.”** Give the whole-tape result a matching sentence ending in “met.”
+- **Panel e:** several low-valued observations overlap tightly. This does not establish a missing observation, but it makes “one point per first founder, 20 worlds” difficult to verify visually. Use smaller markers, multiplicity labels for coincident points, or a small enlargement of the crowded region.
+- **Panel f:** the two pairs “18/20; 0/20” and “20/20; 11/20” require readers to match their order against adjacent requirements. Label them directly: **“Copy/rewrite 18/20; mutation 0/20”** and **“Whole-tape 20/20; executed-byte 11/20.”**
+- **Panel f:** “Mutation kill” is an unnecessarily opaque label. Spell out what the threshold triggers, retaining the displayed threshold and observation.
+- **Overall layout:** panels a–d have substantial vertical gaps between their principal results and bottom notes. Tightening these gaps would strengthen the connection between notes and results and make the page feel more deliberately composed. The references achieve stronger visual grouping.
+
+At the stated print width, the typography appears broadly comparable to the references’ small-text standard. I see no supported clipping, broken glyphs, text collisions, empty panels, arithmetic inconsistency in the displayed tables, or misleading area encoding. A supporting-evidence figure can appropriately rely on tables; additional illustrations and complete methods are unnecessary here.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+11,655

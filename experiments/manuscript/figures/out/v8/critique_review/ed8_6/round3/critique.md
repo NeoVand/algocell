@@ -1,0 +1,20 @@
+Yes. **ed8_6 meets the reference standard for its supporting-evidence scope.** It is less visually varied than the references, but all six panels contain substantive content, and the tables are appropriate to the results being summarized.
+
+**Substantive defects: none visible.**
+
+- **a–b:** The census tables identify the tested configurations, word counts, execution budgets and outcome criteria. Panel a clearly reports zero exact self-writers throughout; panel b distinguishes exact output from the repeated-encounter matching criterion. Their different criteria do not imply that one outcome column must numerically contain the other.
+- **c:** Both axes have units, the equality line is identified, and the five visible coordinate groups are explicitly reconciled with 296 configurations through multiplicities. Coincident observations are disclosed.
+- **d:** All four arms have world counts and classification counts. The note explicitly identifies loop counts as overlapping, preventing their mistaken interpretation as an additional exclusive category. The distinction between arms A and D is supplied.
+- **e:** Sampling roles, eligible observations and eligible-world counts are separated. The totals distinguish **42 roles, 41 unique tapes and 11 worlds**, and the warning about overlapping world counts resolves the apparent non-additivity.
+- **f:** Predicted and measured capacities have explicit units and an identified equality line. The figure discloses coincident observations, defines free positions and supplies denominators for both mismatch checks. Individual observation ledgers are unnecessary here.
+
+At the stated 180 mm width, the smaller text appears comparable to the references’ dense labels and notes. I see no supported clipping, collisions, broken glyphs or unreadable mathematical symbols. No panel is empty.
+
+**Optional polish, with concrete fixes:**
+
+- **b, d and e — redistribute whitespace.** Panel b has substantially more space beneath its table than panel a; panel d has a particularly large gap before its explanatory note; panel e separates its eligibility definition from the table by considerable whitespace. Bring these notes closer to their associated content while preserving the shared panel grid.
+- **a and d — reduce decoding effort.** Use “faithful” instead of “fait” in panel a if space permits. In panel d, descriptive headers such as “No partner fetch” and “No copier detected” would reduce dependence on abbreviated headings and their keys.
+- **c — clarify multiplicity notation.** Replace “Counts 2:96, 4:40…” with “Byte positions: configurations — 2:96, 4:40…” so the mapping is immediately explicit.
+- **f — strengthen small-marker visibility.** Slightly enlarge the orange triangles or add a fine darker outline. They are discernible now, but have less visual weight than panel c’s outlined squares.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

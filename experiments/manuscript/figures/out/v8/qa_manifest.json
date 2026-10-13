@@ -164,21 +164,21 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 182,
+      "pdf_text_spans": 183,
       "figcheck": "clean",
       "files": {
-        "pdf": "42bf4267237d090c1c332d734b54e2f3df2c6c2160cb548b105170ee6eb6fa00",
-        "svg": "645a07820f4aab893dcb6f62d328da8c10b5bb37c291c235506e7efdcc821ba7",
-        "png": "8e0481fa4401bec0d96b2d513cc4b4b0e0d43c06123551445da9b376cffaa8b9"
+        "pdf": "6b2a245157508c0744613450035d52bf2eed1050a8d48f2cb451c6096a6b213f",
+        "svg": "b0c5f50256934b752f6064dfcf3a545175254f257d25c4b03cc944955a549538",
+        "png": "c2a74c8626357f4c6dcd80a7d113ba119f617ed980174595b8f988ef2cc27111"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
-      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
-      "cleared": false,
-      "delivered_image_reviewed": false,
-      "post_review_revision": true,
-      "last_review_png_sha256": "b2e590059fc3f9f3a3adeb1e23240cf4fba35ee1ec055df01a15f349aabfa363",
-      "final_review": "critique_review/ed8_1/round2/critique.md"
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "post_review_revision": false,
+      "last_review_png_sha256": "c2a74c8626357f4c6dcd80a7d113ba119f617ed980174595b8f988ef2cc27111",
+      "final_review": "critique_review/ed8_1/round3/critique.md"
     },
     "ed8_2": {
       "page_mm": [
@@ -193,23 +193,23 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 239,
+      "pdf_text_spans": 255,
       "figcheck": "clean",
       "files": {
-        "pdf": "40ba2e5a9893beab3becbe3f8d0be9dc0b9af9f31cbdaa6fbd6b1acefff218c8",
-        "svg": "4a3ac2bedb6f53802a22fbb97a2297dd2ac2de02b1a331767a97d5ada113baac",
-        "png": "0b647e5e92c2dc47dcc8ba2f5c7b213a33c80a552eda73adb89f641cd3e0540a"
+        "pdf": "09373ab509d6834217b4461237ede1aeedef1fe188704a37429596136782af50",
+        "svg": "b23647cdc6bdc7f88e963c8ef008a2c494393f951f65a09550bd62e61e91a3f1",
+        "png": "6e240d813c9b0ca6efbef5fd64950bd7e031d0de67d4bddee84239e37303d99e"
       },
       "linked_rasters": {
         "ed8_2_render_1.png": "d5e24b9035efdeeb8f36d22d441be9307e06671268b8d19f44e61c30a9fc4faa"
       },
-      "critique_rounds": 2,
-      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
-      "cleared": false,
-      "delivered_image_reviewed": false,
-      "post_review_revision": true,
-      "last_review_png_sha256": "53f17ed132b380594b53c7c4286f11b4a0b44a433d82e380d6a8402e7a738eca",
-      "final_review": "critique_review/ed8_2/round2/critique.md"
+      "critique_rounds": 4,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "post_review_revision": false,
+      "last_review_png_sha256": "6e240d813c9b0ca6efbef5fd64950bd7e031d0de67d4bddee84239e37303d99e",
+      "final_review": "critique_review/ed8_2/round4/critique.md"
     },
     "ed8_3": {
       "page_mm": [
@@ -224,23 +224,23 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 113,
+      "pdf_text_spans": 116,
       "figcheck": "clean",
       "files": {
-        "pdf": "9c978be15ee3541a2f7083d60b6f6516b320e2ff29701f99b454435d9ed5b568",
-        "svg": "8576645951590af40b8a3a5e83c9f6bdaba4e7c301b955e3c8e461c8a8a6ba4e",
-        "png": "c8247f4f51ea17cd5cb4a4d3e124b632bc0910d2529888e3a1accea16989ac27"
+        "pdf": "167f71c4e5a507cd53f35ae1bcaae3c4a208d083dade3a55175ba772573e9d74",
+        "svg": "900941c6ccafa9fff1d75db1943e67b97ba0051fcfdc585515a03366a87fef93",
+        "png": "8d2c71e9aa08fe921c481c7ca14ebcae4030dd2bca13c57eca723a5995809936"
       },
       "linked_rasters": {
         "ed8_3_render_1.png": "b774ab0eb720cc3c6de65f9efe63d2e93e71903298784c85d63487b94384853b"
       },
-      "critique_rounds": 2,
-      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
-      "cleared": false,
-      "delivered_image_reviewed": false,
-      "post_review_revision": true,
-      "last_review_png_sha256": "1df40a605fbd701021dcd813e969aeaddd22e9be988d3665137eef8f7017492b",
-      "final_review": "critique_review/ed8_3/round2/critique.md"
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "post_review_revision": false,
+      "last_review_png_sha256": "8d2c71e9aa08fe921c481c7ca14ebcae4030dd2bca13c57eca723a5995809936",
+      "final_review": "critique_review/ed8_3/round3/critique.md"
     },
     "ed8_4": {
       "page_mm": [
@@ -255,21 +255,21 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 335,
+      "pdf_text_spans": 336,
       "figcheck": "clean",
       "files": {
-        "pdf": "72a4a16dc3e0d8db3eafade6a2f32faf8341a1c4b6db13f90c3d0fb99c4b46db",
-        "svg": "179bdf59a880103c2c960a986fadeeb4979fac362d35435cc7126e1da354ea5c",
-        "png": "607b6daa79f92736837bed1bdec33c6b9abd4fbd3fefc1b4ba13422890e121e1"
+        "pdf": "2e2f9c0432b712969ac6fc96cf92a951b7a48cc88efb1f3ac14ddd0a2ff8b159",
+        "svg": "3bf23ce4852ace78a1725c725d18f4b4c791a5ff58d23c947e70314b033371ce",
+        "png": "e28f44c6d319428039000a16733922f8b87e66f2fb8dbda5bf201cbadeccc8c4"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
-      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
-      "cleared": false,
-      "delivered_image_reviewed": false,
-      "post_review_revision": true,
-      "last_review_png_sha256": "34dff9eb668f465c148233ce6c980e68a6fae019acec405803fcb4d0b202f929",
-      "final_review": "critique_review/ed8_4/round2/critique.md"
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "post_review_revision": false,
+      "last_review_png_sha256": "e28f44c6d319428039000a16733922f8b87e66f2fb8dbda5bf201cbadeccc8c4",
+      "final_review": "critique_review/ed8_4/round3/critique.md"
     },
     "ed8_5": {
       "page_mm": [
@@ -284,21 +284,21 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 282,
+      "pdf_text_spans": 298,
       "figcheck": "clean",
       "files": {
-        "pdf": "fe4dc7da3bea4591cec2b097ebf8185f72bdb9a98dfa0a516de5a0efdadb1b7b",
-        "svg": "6d4a2c34818b62df178148a2457cda0e6dac9fd54a3d303ac83d099aa50dde2f",
-        "png": "4b78ae722a16f027fdbc52ae31668c6f258cbcde9040f69fea1860c82b5b2ee3"
+        "pdf": "cb02d3563331a1d196b3144a2af19e57443f05af7be40406e8411568d69c00a1",
+        "svg": "d35053aadabc14eb4ff8c2bbc9bfefca15de8e8f8a9ac95d97801c0dc4ab4818",
+        "png": "0fd79a7b76726d1944417d3261af662450369701d253e3f3805f91c8c97cfb28"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
-      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
-      "cleared": false,
-      "delivered_image_reviewed": false,
-      "post_review_revision": true,
-      "last_review_png_sha256": "365e2e4d8a11f1695d9721c5349f2eef4b41bd6b7310bc6d4b9c6e285b2cf98b",
-      "final_review": "critique_review/ed8_5/round2/critique.md"
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "post_review_revision": false,
+      "last_review_png_sha256": "0fd79a7b76726d1944417d3261af662450369701d253e3f3805f91c8c97cfb28",
+      "final_review": "critique_review/ed8_5/round3/critique.md"
     },
     "ed8_6": {
       "page_mm": [
@@ -313,21 +313,21 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 183,
+      "pdf_text_spans": 189,
       "figcheck": "clean",
       "files": {
-        "pdf": "961cc068f645d2664956d6914981d422cd799f3fdb5094b9028e3d654e6e9940",
-        "svg": "c9385b3972911515aa05b867d9e41c1c9ef54eb32ae8af84318d5e216769c358",
-        "png": "c49aac52b5a084b5af90142a457403aeda9645694e5424cb3255fe8e2b1f8555"
+        "pdf": "4474b7629e0216a00d61954f014711bcdf5c793dd1450ea729d6b2a9eb56c23d",
+        "svg": "a63df03165840ccec8ea41cef21a3f2a93cd7c4824cef0ec6bbe69c6df4aa2d3",
+        "png": "d61c56ff5089c880bd72d9f563932854807139087655457017b2355977372d94"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
-      "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
-      "cleared": false,
-      "delivered_image_reviewed": false,
-      "post_review_revision": true,
-      "last_review_png_sha256": "afe5ae5f676ece8c52c44e7060e85582c5a874e4a942581abf1ef9455e66927d",
-      "final_review": "critique_review/ed8_6/round2/critique.md"
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "post_review_revision": false,
+      "last_review_png_sha256": "d61c56ff5089c880bd72d9f563932854807139087655457017b2355977372d94",
+      "final_review": "critique_review/ed8_6/round3/critique.md"
     },
     "ed8_7": {
       "page_mm": [
@@ -342,21 +342,21 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 179,
+      "pdf_text_spans": 272,
       "figcheck": "clean",
       "files": {
-        "pdf": "bbdecaf83ab9543c6dbd99245a9691999af80d75cac30519956f00511f6adc07",
-        "svg": "383856d6d887c74730006144d275718e0c54a7cea9782fd9a07e8fb4e05dfdd6",
-        "png": "59a713736fd420c816b2207d85d9a7d6cdc5d25bfb89f7158b4694b708cacb7c"
+        "pdf": "0ea357544e695b46b0aeec0d06afe6e6a8e0b54abcd356457c30d01ea7c0b3a8",
+        "svg": "0a7df47449f04e23998368f4e9e317b1863d6619c5fba614d4efcaeb761ea1d1",
+        "png": "6f99c0b971f461d958c15cea78b0353eb55d116dc20b9b22bbbd535eb08ab6f4"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
+      "critique_rounds": 4,
       "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
       "cleared": false,
       "delivered_image_reviewed": false,
       "post_review_revision": true,
-      "last_review_png_sha256": "fcc179f6d72504c72e2b8b7aecc2472fb765c6ba4823b4f0af0b570d6a00a5d7",
-      "final_review": "critique_review/ed8_7/round2/critique.md"
+      "last_review_png_sha256": "6efda2793ff829996628b17d81a17ae74d4bd353deb92f8698a69164e8cc5066",
+      "final_review": "critique_review/ed8_7/round4/critique.md"
     },
     "ed8_8": {
       "page_mm": [
@@ -371,21 +371,21 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 120,
+      "pdf_text_spans": 141,
       "figcheck": "clean",
       "files": {
-        "pdf": "d3dafff5175e54026939f0ce4a56233e79de9dee72587ca1e4725df4ff61570a",
-        "svg": "b8e2d0cbf917b86108817de592126c859c84e9b4e85e8af7806b07e56097a7db",
-        "png": "a5fed71cd77a988cc3fe207a509269d2b3dd434c79ac7afc53f531dce6febb52"
+        "pdf": "e4e5d1ae30c33fcbae624f3c11457dc30bbfb2c9eee49a5bc55b8747a1651aab",
+        "svg": "85bf658cc9df418c5e9c95e45d5c12b053f9a638648f8c659bc65c9975e5fce7",
+        "png": "6349bfa0be605c86500dc0f25dc905348604ef1ba1770384fd688b5a16566d0d"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
+      "critique_rounds": 4,
       "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
       "cleared": false,
       "delivered_image_reviewed": false,
       "post_review_revision": true,
-      "last_review_png_sha256": "170cbddb87a24a61530db109002498f7aeb32ae8507817ffc1432faa989fc82e",
-      "final_review": "critique_review/ed8_8/round2/critique.md"
+      "last_review_png_sha256": "9e9080642c4d78a68c002660d54b20f6d490370fe0cf808c27118ddd63b72f87",
+      "final_review": "critique_review/ed8_8/round4/critique.md"
     },
     "ed8_9": {
       "page_mm": [
@@ -400,34 +400,39 @@
         599.9988,
         599.9988
       ],
-      "pdf_text_spans": 129,
+      "pdf_text_spans": 141,
       "figcheck": "clean",
       "files": {
-        "pdf": "8545ae5d5317773ad0a2b475794a602584c65d1c75c208285b6bd22b0d3c49ea",
-        "svg": "381c7e111bfc36d7c9ad6b40024e373876ba5c4bd15d8519a8fb11547838075f",
-        "png": "7c7b0788bb2db68783edb3c57a364b9a6626d87086500bcec1e03f18dd958626"
+        "pdf": "82be580a11129c25a7396de784c0c9f141f652f438a7d44886e8e61288035d7f",
+        "svg": "65cf6f59208c042d6c495a56d6b6f17bb72cff53620dc9b1e3b8f12f87f2aa30",
+        "png": "3a1b9aa49ba0cdd4805356212d161d84b30141055d7bd2c4f67deac8a6418774"
       },
       "linked_rasters": {},
-      "critique_rounds": 2,
+      "critique_rounds": 4,
       "final_verdict": "BELOW STANDARD - SUBSTANTIVE DEFECTS",
       "cleared": false,
       "delivered_image_reviewed": false,
       "post_review_revision": true,
-      "last_review_png_sha256": "28ec79138245e605d063e4d10b458e7c078c41d7eb6ed5b817695b6ca7d7362e",
-      "final_review": "critique_review/ed8_9/round2/critique.md"
+      "last_review_png_sha256": "c3f77c8c50064f9b3f43a8c55f826ab1c05276348d930cd5988b909aa742184b",
+      "final_review": "critique_review/ed8_9/round4/critique.md"
     }
   },
   "data_sha256": "bdaf847378925b864b9fb8b037bf1bf18427e212fe2adf850b3b13fa8d16de79",
-  "legends_sha256": "04233ef43677cb3b94b97bb377e429bc7debe2d70ed9b99fcaa3795c9b718340",
+  "legends_sha256": "8f61e53769bf4afb90a8cbcc85ebd2232ae79d1bab3ebb8c50e59e50523f35af",
   "scope": "Full-review figure corrections and nine archived-data Extended Data displays; no simulation or GPU compute",
-  "ed_sources_sha256": "b94671a37d720209fea7225576c4de8d5963554e510842b8fbce51f85932bdba",
+  "ed_sources_sha256": "05e8a3b268dc74554c913c56a6fa7c838a723af218e6da8f4ed4dd32c5b53712",
+  "ed_legends_sha256": "991b25832ba0988e30d878812b23cb50e1f07e3bbdeaf2846cd66f265474ef7f",
+  "ed_title_map": "SI_v8.md",
+  "ed_title_mismatches": [],
+  "ed_review_record": "ED_V8_REVIEW.md",
+  "ed_review_record_sha256": "0204a311c633e69b807d16804854573856443aa13f22969964590be2916dda63",
   "source_scripts": {
     "prepare_v8.py": "246809a5cb49bdbd667e67a40dc27f504f3a3fbe89cdb8dde2bb55a1b95fb96a",
     "build_v8.py": "6ac01d07fdaa4f7427db863bc80191a6fb0c640938a52eceb164b6e56484dc8a",
-    "build_ed_v8.py": "aee7cbb2f1fef6389596c0adcbcd9acf6d1ec5d465f948d2103f352a9754a88c",
-    "legends_v8.py": "77de154431b13ec7d03687faaf0aa8c3d6c48d698c2d49b901eb5828a05fb5ac",
-    "critique_v8.py": "f2b18b8da9e989c545833678107473ce282e0531ba44dfbe4c5e4d1dbfcecdb4",
-    "verify_v8.py": "f338f098056c4f51617ec523199c79100b700b597486b12341d0e356be66a89e",
+    "build_ed_v8.py": "77fe444396bff81204c24f5dcfbb9c414f5a8bef9af5150dd7aba86bf64c7f5c",
+    "legends_v8.py": "7cb5c3328717e974ac4e86af2fdd5043acd7196e0ade5b16285555b90926c4ef",
+    "critique_v8.py": "6deeee512b0e709495ecf9f8296c732b16edb5e97bc25feb91f120053efcc09a",
+    "verify_v8.py": "069128ba887be83cfd71d75b090b349940785408a03a3c51cc82997bc38e87f7",
     "figcheck.py": "c174f974bcd0cdfb2c3f127e5a6ca08638b9ee29dbab85b5432ff48fc4a1adf1"
   }
 }

@@ -1,0 +1,47 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-7o4htik_
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132f2-1035-7b60-b865-a3ed7e46fc13
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_3. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**ed8_3 meets the references’ substantive standard.** All six panels contain meaningful evidence, and the principal results are understandable from the direct labels, keys, counts and explanatory text. It is less visually economical than the references, but I see no supported substantive defect in the PNG.
+
+At 180 mm width, the body text and ticks appear comparable to the references’ small-text scale. The hexadecimal rows and heatmap legend deserve particular attention in production, but the image does not justify declaring them unreadable. I see no apparent clipping, overlapping labels, broken glyphs or missing panel content.
+
+The scientific presentation is sufficiently self-explanatory for an Extended Data item:
+
+- **a:** Both axes identify the measured quantities. The equality result is explicit, and the coincident-count listing accounts for all 101 settings without falsely representing overlapping markers as separate visible observations.
+- **b:** Each challenge has a case count and matching passed count. The total agrees with the six rows. The adjacent definitions explain reciprocal, single, joint and erased challenges, and identify the pass criteria and partner count.
+- **c:** Both examples identify the parental first byte, copy offset, descendant generation, byte positions and actual descendant sequence. The ancestry colors have a direct key. The distinction between byte sequence and ancestry is adequately supported.
+- **d:** The hexadecimal axes identify all 256 first-byte values. The gain description states its normalization and averaging cohort. The three category counts sum to 256. Full definitions of the prefix/offset/phase conditions can reasonably remain in the separate legend or supporting evidence.
+- **e:** The sampled cohort, motif, exclusions, exception counts and disjoint-subset relationship are stated. The notes explain both “extra” retention and the whole-tape match deficit.
+- **f:** The eligible and excluded counts reconcile with the sampled total in e. The eligibility rule defines both variables, and the mismatch result supplies its denominator.
+
+**Optional polish, with panel-specific fixes:**
+
+- **a — Improve the coincident-count inset.** The compact `0:32, 1:14…` notation is decipherable but slower to scan than the references’ aligned number columns. Use a small two-row inset labeled “Positions” and “Settings,” retaining all eight pairs.
+- **a — Clarify the controls’ accounting.** “22 original controls” does not explicitly say whether those controls are included in the 101 settings. Add “included” or “additional,” as appropriate. The main 101/101 result already has a clear denominator.
+- **b — Give the total a visual conclusion.** Add a thin rule above “Total” and bold its values. Currently the aggregate result has almost the same visual weight as an ordinary challenge row.
+- **c — Reduce the gap below the panel heading.** The substantial blank band delays the start of the evidence. Move the first example upward and use some of the recovered room to separate each byte strip from its hexadecimal rows.
+- **c — Use actual color swatches in the key.** Replace “Grey core | red … | teal …” with three small swatches and their existing labels. This would match the references’ immediate encoding-to-label connection more closely.
+- **d — Tighten the relationship between heatmap and key.** Bring the three-category key closer to the grid and align it with the grid’s left edge. The current key starts substantially farther left, weakening the visual grouping.
+- **e and f — Consolidate the scattered explanatory lines.** Their widely separated notes make the bottom third feel more like a supplementary text sheet than the references. Group related definitions directly beneath their tables, preserving the cohort statements and denominators. This is a spacing and hierarchy improvement; it does not require adding methods.
+
+No additional law-test statement is warranted for this figure’s scope.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS
+tokens used
+12,043
