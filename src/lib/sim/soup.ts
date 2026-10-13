@@ -5,12 +5,10 @@ import { Z80_STEPS, getTapeLength, getPairLength, type GridType } from './consta
 import { Z80 } from './z80';
 
 // Get a neighbor index for CPU-side trace (picks first neighbor: right for square, appropriate for hex)
-function getNeighborIndex(
-	cellIndex: number,
-	width: number,
-	height: number,
-	gridType: GridType
-): number {
+function getNeighborIndex(cellIndex: number, width: number, height: number): number {
+	if (width < 2 || height < 1 || cellIndex < 0 || cellIndex >= width * height) {
+		throw new RangeError('The trace needs a valid cell and at least two columns.');
+	}
 	const x = cellIndex % width;
 	const y = Math.floor(cellIndex / width);
 
@@ -34,7 +32,7 @@ export function traceCell(
 	const wordsPerCell = Math.ceil(tapeLength / 4);
 	const traceImage = new Uint8Array(pairLength * Z80_STEPS * 4);
 
-	const neighborIndex = getNeighborIndex(cellIndex, width, height, gridType);
+	const neighborIndex = getNeighborIndex(cellIndex, width, height);
 
 	// Read cell data from word-aligned soup buffer
 	const pairMem = new Uint8Array(pairLength);
