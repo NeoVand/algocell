@@ -1,0 +1,61 @@
+{
+	"method": "Independent median of three complete full-application samples per core/build; no samples excluded. Negative change is slower.",
+	"sources": [
+		{
+			"name": "baseline",
+			"revision": "6484a2476af50b4958526bac516f20b69fa42bca"
+		},
+		{
+			"name": "candidate",
+			"revision": "192a9265e8ac9f49307e31dc73dde18ed3747424"
+		}
+	],
+	"cores": [
+		{
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"baselineMedianUpdatesPerSecond": 479.5093392795977,
+			"candidateMedianUpdatesPerSecond": 479.3089034381374,
+			"changePercent": -0.041800195541852325,
+			"passesTwoPercentGate": true
+		},
+		{
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"baselineMedianUpdatesPerSecond": 479.70038646844125,
+			"candidateMedianUpdatesPerSecond": 479.7959671623257,
+			"changePercent": 0.019925081692795388,
+			"passesTwoPercentGate": true
+		},
+		{
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"baselineMedianUpdatesPerSecond": 480.2457071036776,
+			"candidateMedianUpdatesPerSecond": 479.1563028554373,
+			"changePercent": -0.22684309971461314,
+			"passesTwoPercentGate": true
+		},
+		{
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"baselineMedianUpdatesPerSecond": 480.67709996577366,
+			"candidateMedianUpdatesPerSecond": 479.7577303167276,
+			"changePercent": -0.19126553961308357,
+			"passesTwoPercentGate": true
+		},
+		{
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"baselineMedianUpdatesPerSecond": 402.60980267441107,
+			"candidateMedianUpdatesPerSecond": 440.0579859811438,
+			"changePercent": 9.301359047389358,
+			"passesTwoPercentGate": true
+		}
+	],
+	"allCoresWithinTwoPercent": true
+}

@@ -82,9 +82,10 @@ const results = hashes.baseline.map((baseline, i) => ({
 	identical: baseline.raw === hashes.candidate[i].raw,
 	identicalTokens: baseline.normalized === hashes.candidate[i].normalized
 }));
-await mkdir('docs/review/evolution', { recursive: true });
+const output = process.env.CONTRACT_OUTPUT ?? 'docs/review/evolution/shader-contract.json';
+await mkdir(path.dirname(output), { recursive: true });
 await writeFile(
-	'docs/review/evolution/shader-contract.json',
+	output,
 	JSON.stringify(
 		{
 			method:

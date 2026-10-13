@@ -1,0 +1,484 @@
+{
+	"sourceRevision": "192a9265e8ac9f49307e31dc73dde18ed3747424",
+	"recordedAt": "2026-10-13T19:22:10.987261+00:00",
+	"staticChecks": {
+		"svelteCheck": {
+			"files": 542,
+			"errors": 0,
+			"warnings": 0
+		},
+		"npmRunLint": "passed",
+		"npmRunBuild": "passed",
+		"gitDiffCheck": "passed"
+	},
+	"playwright": {
+		"command": "npm run test:e2e",
+		"workers": 1,
+		"browser": "installed Chrome with --enable-unsafe-webgpu",
+		"serverPort": 4183,
+		"passed": 83,
+		"failed": 0,
+		"duration": "3.9m",
+		"tests": [
+			{
+				"index": 1,
+				"test": "src/routes/demo/playwright/page.svelte.e2e.ts:3:1 \u203a has expected h1",
+				"duration": "646ms"
+			},
+			{
+				"index": 2,
+				"test": "tests/contracts.e2e.ts:8:1 \u203a paper catalogue preserves source geometry, reset choices and labelled demonstrations",
+				"duration": "345ms"
+			},
+			{
+				"index": 3,
+				"test": "tests/contracts.e2e.ts:140:1 \u203a world manifests pin paper stack phase, explicit resets and ISA contracts",
+				"duration": "360ms"
+			},
+			{
+				"index": 4,
+				"test": "tests/contracts.e2e.ts:213:1 \u203a historical no-copy masks match the frozen paper table without disabling all writes",
+				"duration": "257ms"
+			},
+			{
+				"index": 5,
+				"test": "tests/contracts.e2e.ts:256:1 \u203a ISA disassembly preserves operands, relative addresses, prefixes and truncation",
+				"duration": "263ms"
+			},
+			{
+				"index": 6,
+				"test": "tests/contracts.e2e.ts:313:1 \u203a checkpoint validation rejects incompatible contracts and malformed data before restore",
+				"duration": "292ms"
+			},
+			{
+				"index": 7,
+				"test": "tests/evolution-gpu.e2e.ts:11:1 \u203a GPU field reductions measure exact local tapes and exclude word padding",
+				"duration": "2.3s"
+			},
+			{
+				"index": 8,
+				"test": "tests/evolution-gpu.e2e.ts:102:1 \u203a field switching preserves population and camera; probe and marker sample one tape",
+				"duration": "2.4s"
+			},
+			{
+				"index": 9,
+				"test": "tests/evolution-science.e2e.ts:11:1 \u203a exact region measurements exclude padding and use inclusive normalized endpoints",
+				"duration": "2.2s"
+			},
+			{
+				"index": 10,
+				"test": "tests/evolution-science.e2e.ts:49:1 \u203a matched marker transfers distinguish short-prefix copying from full-tape retention",
+				"duration": "2.3s"
+			},
+			{
+				"index": 11,
+				"test": "tests/evolution-science.e2e.ts:93:1 \u203a partner sensitivity reports untouched partner differences without inferring execution",
+				"duration": "2.4s"
+			},
+			{
+				"index": 12,
+				"test": "tests/evolution-tools.e2e.ts:93:3 \u203a observation tools at 1440\u00d7900 \u203a all six field modes retain the paused population and custom selector",
+				"duration": "3.9s"
+			},
+			{
+				"index": 13,
+				"test": "tests/evolution-tools.e2e.ts:142:3 \u203a observation tools at 1440\u00d7900 \u203a probe and marker tools change only the explicitly selected byte",
+				"duration": "3.1s"
+			},
+			{
+				"index": 14,
+				"test": "tests/evolution-tools.e2e.ts:186:3 \u203a observation tools at 1440\u00d7900 \u203a rapid probe selection keeps the last tape when an earlier read finishes late",
+				"duration": "3.0s"
+			},
+			{
+				"index": 15,
+				"test": "tests/evolution-tools.e2e.ts:212:3 \u203a observation tools at 1440\u00d7900 \u203a a numeric region sample reports exact composition and its update",
+				"duration": "2.9s"
+			},
+			{
+				"index": 16,
+				"test": "tests/evolution-tools.e2e.ts:249:3 \u203a observation tools at 1440\u00d7900 \u203a history scrubbing and visual comparison leave simulation state intact",
+				"duration": "3.8s"
+			},
+			{
+				"index": 17,
+				"test": "tests/evolution-tools.e2e.ts:281:3 \u203a observation tools at 1440\u00d7900 \u203a PNG and sampled WebM exports download real images and video",
+				"duration": "4.0s"
+			},
+			{
+				"index": 18,
+				"test": "tests/evolution-tools.e2e.ts:302:3 \u203a observation tools at 1440\u00d7900 \u203a the encounter bench exposes measured lanes and reproducible evidence",
+				"duration": "3.4s"
+			},
+			{
+				"index": 19,
+				"test": "tests/evolution-tools.e2e.ts:93:3 \u203a observation tools at 390\u00d7844 \u203a all six field modes retain the paused population and custom selector",
+				"duration": "3.4s"
+			},
+			{
+				"index": 20,
+				"test": "tests/evolution-tools.e2e.ts:142:3 \u203a observation tools at 390\u00d7844 \u203a probe and marker tools change only the explicitly selected byte",
+				"duration": "3.0s"
+			},
+			{
+				"index": 21,
+				"test": "tests/evolution-tools.e2e.ts:186:3 \u203a observation tools at 390\u00d7844 \u203a rapid probe selection keeps the last tape when an earlier read finishes late",
+				"duration": "3.0s"
+			},
+			{
+				"index": 22,
+				"test": "tests/evolution-tools.e2e.ts:212:3 \u203a observation tools at 390\u00d7844 \u203a a numeric region sample reports exact composition and its update",
+				"duration": "2.8s"
+			},
+			{
+				"index": 23,
+				"test": "tests/evolution-tools.e2e.ts:249:3 \u203a observation tools at 390\u00d7844 \u203a history scrubbing and visual comparison leave simulation state intact",
+				"duration": "3.6s"
+			},
+			{
+				"index": 24,
+				"test": "tests/evolution-tools.e2e.ts:281:3 \u203a observation tools at 390\u00d7844 \u203a PNG and sampled WebM exports download real images and video",
+				"duration": "4.0s"
+			},
+			{
+				"index": 25,
+				"test": "tests/evolution-tools.e2e.ts:302:3 \u203a observation tools at 390\u00d7844 \u203a the encounter bench exposes measured lanes and reproducible evidence",
+				"duration": "3.3s"
+			},
+			{
+				"index": 26,
+				"test": "tests/gpu.e2e.ts:8:1 \u203a embedded soup libraries match standalone machines across ISAs and world interventions",
+				"duration": "2.9s"
+			},
+			{
+				"index": 27,
+				"test": "tests/gpu.e2e.ts:176:1 \u203a GPU confinement treats volatile padding as outside the focal tape",
+				"duration": "2.6s"
+			},
+			{
+				"index": 28,
+				"test": "tests/science.e2e.ts:15:1 \u203a historical pusher and displacement fixtures separate copy from confinement",
+				"duration": "2.3s"
+			},
+			{
+				"index": 29,
+				"test": "tests/science.e2e.ts:60:1 \u203a checkpoint continuation preserves host RNG, soup and measured counts",
+				"duration": "2.3s"
+			},
+			{
+				"index": 30,
+				"test": "tests/science.e2e.ts:120:1 \u203a 6502 and coherent 8086 execute their own instructions and expose state",
+				"duration": "2.3s"
+			},
+			{
+				"index": 31,
+				"test": "tests/science.e2e.ts:156:1 \u203a compat 0.2 matches frozen facade and chunked worlds preserve lane results",
+				"duration": "2.4s"
+			},
+			{
+				"index": 32,
+				"test": "tests/science.e2e.ts:220:1 \u203a lethal chemistry acts on instruction starts and ablation keeps its page identity",
+				"duration": "2.3s"
+			},
+			{
+				"index": 33,
+				"test": "tests/unified-engine.e2e.ts:13:1 \u203a live core, chemistry and field changes preserve the resident world and camera",
+				"duration": "2.5s"
+			},
+			{
+				"index": 34,
+				"test": "tests/unified-engine.e2e.ts:127:1 \u203a live marker patches preserve adjacent bytes without population or tape readback",
+				"duration": "2.3s"
+			},
+			{
+				"index": 35,
+				"test": "tests/unified-engine.e2e.ts:196:1 \u203a explicit new world drains existing readbacks and releases later reads onto the new condition",
+				"duration": "2.4s"
+			},
+			{
+				"index": 36,
+				"test": "tests/unified-navigation.e2e.ts:9:1 \u203a Guide remembers its selected section after visiting About",
+				"duration": "2.8s"
+			},
+			{
+				"index": 37,
+				"test": "tests/unified-navigation.e2e.ts:26:1 \u203a a live core swap explains the reset conventions and suppression it changes",
+				"duration": "2.7s"
+			},
+			{
+				"index": 38,
+				"test": "tests/unified-navigation.e2e.ts:51:1 \u203a both start actions describe the full staged condition rather than the live world",
+				"duration": "2.6s"
+			},
+			{
+				"index": 39,
+				"test": "tests/unified-navigation.e2e.ts:87:1 \u203a checkboxes visibly distinguish their checked and unchecked states",
+				"duration": "3.1s"
+			},
+			{
+				"index": 40,
+				"test": "tests/unified-navigation.e2e.ts:109:1 \u203a the initial collapsed mobile world fills its settled canvas before using Fit",
+				"duration": "2.5s"
+			},
+			{
+				"index": 41,
+				"test": "tests/unified-navigation.e2e.ts:146:1 \u203a an empty Measure panel teaches one probe action",
+				"duration": "2.5s"
+			},
+			{
+				"index": 42,
+				"test": "tests/unified-navigation.e2e.ts:158:1 \u203a starting history from Export keeps navigation and playback in sync",
+				"duration": "4.2s"
+			},
+			{
+				"index": 43,
+				"test": "tests/unified-navigation.e2e.ts:202:1 \u203a all three population chart modes remain usable at 390 by 844",
+				"duration": "2.7s"
+			},
+			{
+				"index": 44,
+				"test": "tests/unified-navigation.e2e.ts:226:1 \u203a the encounter return path and cell identity stay visible through long results",
+				"duration": "3.1s"
+			},
+			{
+				"index": 45,
+				"test": "tests/unified-shell.e2e.ts:40:1 \u203a playing survives every tab, field view and direct tool without replacing the world",
+				"duration": "7.0s"
+			},
+			{
+				"index": 46,
+				"test": "tests/unified-shell.e2e.ts:83:1 \u203a world drafts stay unapplied through navigation and apply in one explicit action",
+				"duration": "2.8s"
+			},
+			{
+				"index": 47,
+				"test": "tests/unified-shell.e2e.ts:125:1 \u203a live core and chemistry swaps preserve paused tape bytes and staged seed",
+				"duration": "3.4s"
+			},
+			{
+				"index": 48,
+				"test": "tests/unified-shell.e2e.ts:162:1 \u203a probe, encounter assay and region sampling leave the live world advancing",
+				"duration": "3.4s"
+			},
+			{
+				"index": 49,
+				"test": "tests/unified-shell.e2e.ts:184:1 \u203a history browsing and checkpoint export preserve playback",
+				"duration": "3.8s"
+			},
+			{
+				"index": 50,
+				"test": "tests/unified-shell.e2e.ts:208:1 \u203a encounter evidence retains its source across sections and clears for a new sample",
+				"duration": "3.4s"
+			},
+			{
+				"index": 51,
+				"test": "tests/unified-shell.e2e.ts:240:1 \u203a transport shortcuts step exactly once and leave focused fields editable",
+				"duration": "2.9s"
+			},
+			{
+				"index": 52,
+				"test": "tests/unified-shell.e2e.ts:288:2 \u203a shell has no overlaps or horizontal scroll at 1280\u00d7800",
+				"duration": "2.6s"
+			},
+			{
+				"index": 53,
+				"test": "tests/unified-shell.e2e.ts:288:2 \u203a shell has no overlaps or horizontal scroll at 1440\u00d7900",
+				"duration": "2.6s"
+			},
+			{
+				"index": 54,
+				"test": "tests/unified-shell.e2e.ts:288:2 \u203a shell has no overlaps or horizontal scroll at 1920\u00d71080",
+				"duration": "2.6s"
+			},
+			{
+				"index": 55,
+				"test": "tests/unified-shell.e2e.ts:321:1 \u203a playback changes numeric readouts without rebuilding or mutating controls",
+				"duration": "4.3s"
+			},
+			{
+				"index": 56,
+				"test": "tests/unified-shell.e2e.ts:374:1 \u203a all shell surfaces omit prohibited UI wording and use keyboard accessible listboxes",
+				"duration": "2.6s"
+			},
+			{
+				"index": 57,
+				"test": "tests/workspace.e2e.ts:11:1 \u203a the unified shell keeps controls stable while running",
+				"duration": "2.7s"
+			},
+			{
+				"index": 58,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: stage-g-l16",
+				"duration": "2.9s"
+			},
+			{
+				"index": 59,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: z80-corrected",
+				"duration": "2.9s"
+			},
+			{
+				"index": 60,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: lethal-zero",
+				"duration": "2.8s"
+			},
+			{
+				"index": 61,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: dial-0",
+				"duration": "2.8s"
+			},
+			{
+				"index": 62,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: dial-0.01",
+				"duration": "2.9s"
+			},
+			{
+				"index": 63,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: dial-0.03",
+				"duration": "2.9s"
+			},
+			{
+				"index": 64,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: dial-0.1",
+				"duration": "2.9s"
+			},
+			{
+				"index": 65,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: dial-0.3",
+				"duration": "2.8s"
+			},
+			{
+				"index": 66,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: dial-1",
+				"duration": "2.9s"
+			},
+			{
+				"index": 67,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: random-registers",
+				"duration": "2.9s"
+			},
+			{
+				"index": 68,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: ring-l12-p24",
+				"duration": "2.9s"
+			},
+			{
+				"index": 69,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: ring-l12-p28",
+				"duration": "2.9s"
+			},
+			{
+				"index": 70,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: no-block-copy",
+				"duration": "2.9s"
+			},
+			{
+				"index": 71,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: no-copy",
+				"duration": "2.9s"
+			},
+			{
+				"index": 72,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: m6502-s1-a",
+				"duration": "2.8s"
+			},
+			{
+				"index": 73,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: i8086-s2-a",
+				"duration": "2.8s"
+			},
+			{
+				"index": 74,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: offset-competition-benign",
+				"duration": "2.9s"
+			},
+			{
+				"index": 75,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: offset-competition-lethal",
+				"duration": "2.9s"
+			},
+			{
+				"index": 76,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: displacement-4",
+				"duration": "2.9s"
+			},
+			{
+				"index": 77,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: displacement-32",
+				"duration": "2.9s"
+			},
+			{
+				"index": 78,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: pusher",
+				"duration": "2.9s"
+			},
+			{
+				"index": 79,
+				"test": "tests/workspace.e2e.ts:49:2 \u203a guided experiment stages and runs: return-closer",
+				"duration": "2.9s"
+			},
+			{
+				"index": 80,
+				"test": "tests/workspace.e2e.ts:101:1 \u203a ISA changes, confinement and separate culture stay in one shell",
+				"duration": "4.2s"
+			},
+			{
+				"index": 81,
+				"test": "tests/workspace.e2e.ts:125:1 \u203a About and illustrated Guide occupy the sidebar on a narrow screen",
+				"duration": "2.7s"
+			},
+			{
+				"index": 82,
+				"test": "tests/workspace.e2e.ts:139:1 \u203a without WebGPU the Guide and About remain accessible",
+				"duration": "2.4s"
+			},
+			{
+				"index": 83,
+				"test": "tests/workspace.e2e.ts:147:1 \u203a acell checkpoint import restores the selected ISA and population",
+				"duration": "3.2s"
+			}
+		],
+		"scope": "Full suite after the Round 4 runtime, checkbox and empty-state corrections; followed by the CSS-only chemistry visibility breakpoint recheck below."
+	},
+	"controlMutationObserver": {
+		"windowMs": 1800,
+		"unexpected": 0,
+		"numeric": 13,
+		"details": [],
+		"stable": true
+	},
+	"layoutViewports": [
+		{
+			"width": 1280,
+			"height": 800
+		},
+		{
+			"width": 1440,
+			"height": 900
+		},
+		{
+			"width": 1920,
+			"height": 1080
+		}
+	],
+	"additionalMobileViewport": {
+		"width": 390,
+		"height": 844
+	},
+	"notes": [
+		"No horizontal page scroll or shell overlap at the three required desktop sizes.",
+		"Mobile tool, chart, export and encounter paths pass.",
+		"All 22 guided experiment presets retain their complete scientific configuration assertions.",
+		"The removed /legacy route deliberately returns 404 in its regression test.",
+		"Control mutations exclude explicitly marked numeric readouts; every original control node remains connected.",
+		"Reviewer server 5175 is not used by the test infrastructure.",
+		"Checked and unchecked controls have different rendered pixels, and native checked appearance is preserved.",
+		"Initial mobile world fills the settled canvas before Fit; later Fit retains settings and coverage.",
+		"Empty Measure presents one teaching heading and one Probe action."
+	],
+	"finalCssRecheck": {
+		"command": "npx playwright test tests/unified-shell.e2e.ts --grep 'shell has no overlaps'",
+		"passed": 3,
+		"failed": 0,
+		"duration": "11.0s",
+		"coverage": "All required status items visible and fully inside the viewport at 1280x800, 1440x900 and 1920x1080; five tabs at each size retain no overlap or horizontal scroll."
+	}
+}

@@ -1,0 +1,1240 @@
+{
+	"capturedAt": "2026-10-13T18:21:37.983Z",
+	"revisions": {
+		"baseline": "6484a2476af50b4958526bac516f20b69fa42bca",
+		"candidate": "60cab9fe0c4b2bed2973a706d40cc85843ccca5a"
+	},
+	"bundleSha256": {
+		"baseline": "c7ef7a9e205ebe27be97c20fc2c69512dc4889a72839d91e01aec0f50b4d2c70",
+		"candidate": "0f77d28cb90eaaac0e921a35514963fbddf359150aa084c5f8137e3e93f2e901"
+	},
+	"environment": {
+		"platform": "darwin",
+		"release": "25.3.0",
+		"cpu": "Apple M4",
+		"memoryGiB": 32,
+		"browser": "155.0.8059.40"
+	},
+	"settings": {
+		"grid": "200x200 square",
+		"length": 16,
+		"ring": 32,
+		"steps": 128,
+		"pairs": 8192,
+		"seed": 6,
+		"mutationExponent": 4,
+		"viewport": "1440x900",
+		"measurement": false,
+		"fieldModes": ["bytes"],
+		"fixedUpdates": 2048,
+		"alternateOrder": true,
+		"warmupUpdates": 64,
+		"drainReset": true,
+		"burstMs": 5000,
+		"pauseMs": 2500,
+		"repeats": 3
+	},
+	"method": "Minified production engine bundles. settings.warmupUpdates completed warmup updates, reset to seed 6 (settings.drainReset optionally drains reset upload before timing), batches of four updates drained through onSubmittedWorkDone. Rendered mode draws once per batch, without requestAnimationFrame throttling. No population or assay readback. Runs interleaved by repeat, core, mode, field mode, build. settings.fixedUpdates selects equal completed workload instead of equal time; alternateOrder reverses build order on odd repeats. Instruction slots include inactive slots and early halts; rendered rates measure GPU canvas cost, not UI interactions.",
+	"results": [
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.42,
+			"updatesPerSecond": 846.2809917355372,
+			"instructionSlotsPerSecond": 887389937.1900827,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.4057000000476836,
+			"updatesPerSecond": 851.3114685785453,
+			"instructionSlotsPerSecond": 892664774.4762167,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.3975,
+			"updatesPerSecond": 854.22314911366,
+			"instructionSlotsPerSecond": 895717892.8050052,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.398600000023842,
+			"updatesPerSecond": 853.8314016424761,
+			"instructionSlotsPerSecond": 895307115.808661,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.383399999976158,
+			"updatesPerSecond": 859.2766635984252,
+			"instructionSlotsPerSecond": 901016886.8093823,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.313899999976158,
+			"updatesPerSecond": 885.0857859117084,
+			"instructionSlotsPerSecond": 928079713.0481555,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.443599999964237,
+			"updatesPerSecond": 838.1077099484257,
+			"instructionSlotsPerSecond": 878819630.0668805,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.421799999952316,
+			"updatesPerSecond": 845.6519944009926,
+			"instructionSlotsPerSecond": 886730385.6810153,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.486899999976158,
+			"updatesPerSecond": 823.515219759393,
+			"instructionSlotsPerSecond": 863518295.0744252,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.410199999988079,
+			"updatesPerSecond": 849.7220147747612,
+			"instructionSlotsPerSecond": 890998111.36446,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.5575999999642374,
+			"updatesPerSecond": 800.750703795995,
+			"instructionSlotsPerSecond": 839647969.9835893,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.494,
+			"updatesPerSecond": 821.1708099438652,
+			"instructionSlotsPerSecond": 861060003.2076983,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 1.1073000000119209,
+			"updatesPerSecond": 1849.5439356795375,
+			"instructionSlotsPerSecond": 1939387381.8991067,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 1.1159000000357628,
+			"updatesPerSecond": 1835.2899004699032,
+			"instructionSlotsPerSecond": 1924440942.6751292,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 1.131899999976158,
+			"updatesPerSecond": 1809.3471155076759,
+			"instructionSlotsPerSecond": 1897237960.9905767,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 1.131899999976158,
+			"updatesPerSecond": 1809.3471155076759,
+			"instructionSlotsPerSecond": 1897237960.9905767,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 4.228100000023842,
+			"updatesPerSecond": 484.37832595928467,
+			"instructionSlotsPerSecond": 507907487.5210829,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 4.656,
+			"updatesPerSecond": 439.8625429553265,
+			"instructionSlotsPerSecond": 461229305.8419244,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "baseline",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 10.153800000011922,
+			"updatesPerSecond": 201.6978865053079,
+			"instructionSlotsPerSecond": 211495563.04018974,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 4.323699999988079,
+			"updatesPerSecond": 473.6683858745164,
+			"instructionSlotsPerSecond": 496677301.3867569,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 0
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.274700000047684,
+			"updatesPerSecond": 900.3385061577652,
+			"instructionSlotsPerSecond": 944073349.4328848,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.228,
+			"updatesPerSecond": 919.210053859964,
+			"instructionSlotsPerSecond": 963861601.4362656,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.3247000000476836,
+			"updatesPerSecond": 880.9738890859,
+			"instructionSlotsPerSecond": 923768076.7221367,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.3563000000119207,
+			"updatesPerSecond": 869.159275130348,
+			"instructionSlotsPerSecond": 911379556.0790797,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.295800000011921,
+			"updatesPerSecond": 892.0637686163279,
+			"instructionSlotsPerSecond": 935396658.2406347,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.3295,
+			"updatesPerSecond": 879.1586177291265,
+			"instructionSlotsPerSecond": 921864626.7439365,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.4167000000476837,
+			"updatesPerSecond": 847.4365870648368,
+			"instructionSlotsPerSecond": 888601666.7180983,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.4795,
+			"updatesPerSecond": 825.9729784230692,
+			"instructionSlotsPerSecond": 866095441.8229482,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.302,
+			"updatesPerSecond": 889.6611642050391,
+			"instructionSlotsPerSecond": 932877344.9174631,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.5449000000357627,
+			"updatesPerSecond": 804.7467483874494,
+			"instructionSlotsPerSecond": 843838126.4371182,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.487699999988079,
+			"updatesPerSecond": 823.2503919322321,
+			"instructionSlotsPerSecond": 863240602.9707322,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.3870999999642373,
+			"updatesPerSecond": 857.9447865739527,
+			"instructionSlotsPerSecond": 899620312.526569,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 1.083600000023842,
+			"updatesPerSecond": 1889.9963085593752,
+			"instructionSlotsPerSecond": 1981804769.2439554,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 1.0903999999761582,
+			"updatesPerSecond": 1878.2098312956527,
+			"instructionSlotsPerSecond": 1969445752.0606704,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 1.114,
+			"updatesPerSecond": 1838.420107719928,
+			"instructionSlotsPerSecond": 1927723202.8725312,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 1.108100000023842,
+			"updatesPerSecond": 1848.2086453893469,
+			"instructionSlotsPerSecond": 1937987228.5477798,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 4.144600000023842,
+			"updatesPerSecond": 494.13694928056236,
+			"instructionSlotsPerSecond": 518140145.72881496,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 6.281199999988079,
+			"updatesPerSecond": 326.0523466859656,
+			"instructionSlotsPerSecond": 341890665.47858304,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "candidate",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 3.800899999976158,
+			"updatesPerSecond": 538.8197532197233,
+			"instructionSlotsPerSecond": 564993461.5521246,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 4.749199999988079,
+			"updatesPerSecond": 431.23052303654106,
+			"instructionSlotsPerSecond": 452177976.9235641,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 1
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.2675,
+			"updatesPerSecond": 903.1973539140022,
+			"instructionSlotsPerSecond": 947071068.5777287,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.337800000011921,
+			"updatesPerSecond": 876.0373000211981,
+			"instructionSlotsPerSecond": 918591687.9070278,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.356900000035763,
+			"updatesPerSecond": 868.9380117819696,
+			"instructionSlotsPerSecond": 911147544.6422906,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.273699999988079,
+			"updatesPerSecond": 900.7344856448685,
+			"instructionSlotsPerSecond": 944488564.0195537,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.214800000011921,
+			"updatesPerSecond": 924.6884594496012,
+			"instructionSlotsPerSecond": 969606126.055825,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.337600000023842,
+			"updatesPerSecond": 876.1122518733366,
+			"instructionSlotsPerSecond": 918670280.6203358,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.388800000011921,
+			"updatesPerSecond": 857.3342263855408,
+			"instructionSlotsPerSecond": 898980093.7664448,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.4198999999761583,
+			"updatesPerSecond": 846.3159634779031,
+			"instructionSlotsPerSecond": 887426607.7198057,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.472699999988079,
+			"updatesPerSecond": 828.2444291704911,
+			"instructionSlotsPerSecond": 868477230.5618769,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 2.345199999988079,
+			"updatesPerSecond": 873.2730683994586,
+			"instructionSlotsPerSecond": 915693180.9700307,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.53,
+			"updatesPerSecond": 809.4861660079052,
+			"instructionSlotsPerSecond": 848807766.0079052,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 2.5105,
+			"updatesPerSecond": 815.7737502489545,
+			"instructionSlotsPerSecond": 855400775.9410477,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 1.1106999999880791,
+			"updatesPerSecond": 1843.882236447268,
+			"instructionSlotsPerSecond": 1933450659.9649305,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 1.113899999976158,
+			"updatesPerSecond": 1838.5851513096645,
+			"instructionSlotsPerSecond": 1927896263.6196828,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 1.1831999999880791,
+			"updatesPerSecond": 1730.8992562716649,
+			"instructionSlotsPerSecond": 1814979418.5443172,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 1.3940999999642372,
+			"updatesPerSecond": 1469.0481314486317,
+			"instructionSlotsPerSecond": 1540408613.4818804,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 4.383399999976158,
+			"updatesPerSecond": 467.2172286378472,
+			"instructionSlotsPerSecond": 489912772.73615927,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "compute",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 0,
+			"seconds": 4.438900000035763,
+			"updatesPerSecond": 461.37556601489104,
+			"instructionSlotsPerSecond": 483787345.5096304,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "baseline",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 4.704699999988079,
+			"updatesPerSecond": 435.3093714806873,
+			"instructionSlotsPerSecond": 456454959.50973314,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		},
+		{
+			"build": "candidate",
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"mode": "rendered",
+			"fieldMode": "bytes",
+			"updates": 2048,
+			"frames": 512,
+			"seconds": 4.785,
+			"updatesPerSecond": 428.00417972831764,
+			"instructionSlotsPerSecond": 448794910.7628004,
+			"gpu": {
+				"vendor": "apple",
+				"architecture": "metal-3",
+				"device": "",
+				"description": ""
+			},
+			"repeat": 2
+		}
+	]
+}

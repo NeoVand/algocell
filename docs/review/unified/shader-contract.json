@@ -1,0 +1,120 @@
+{
+	"method": "Generate the actual default uninstrumented createSimShader for each core from independent Vite bundles. SHA-256 raw WGSL and WGSL after removing comments/whitespace only; no operators, identifiers or values normalized. No GPU is acquired.",
+	"results": [
+		{
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"baseline": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"bytes": 50043,
+				"raw": "a4c8fc5f4ab2e6c8b083f48251637b3572505311ee0b4a3e36ddaae188efc7a0",
+				"normalized": "77bdbb7144d55d4474405378ef5b70d9fadfd436eb8f53e52fe8ee12489b74ff"
+			},
+			"candidate": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"bytes": 50043,
+				"raw": "a4c8fc5f4ab2e6c8b083f48251637b3572505311ee0b4a3e36ddaae188efc7a0",
+				"normalized": "77bdbb7144d55d4474405378ef5b70d9fadfd436eb8f53e52fe8ee12489b74ff"
+			},
+			"identical": true,
+			"identicalTokens": true
+		},
+		{
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"baseline": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"bytes": 55742,
+				"raw": "69bd22f8618888b0068eb6731780733edfc634e45aef4992a9ffcfb5dce597ee",
+				"normalized": "e063ece0de5fb3d8240935a9dc839d44c2d07c86189456f7fb8e6021651fa22c"
+			},
+			"candidate": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"bytes": 55742,
+				"raw": "69bd22f8618888b0068eb6731780733edfc634e45aef4992a9ffcfb5dce597ee",
+				"normalized": "e063ece0de5fb3d8240935a9dc839d44c2d07c86189456f7fb8e6021651fa22c"
+			},
+			"identical": true,
+			"identicalTokens": true
+		},
+		{
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"baseline": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"bytes": 56787,
+				"raw": "83eaeaa695f0cf827ab11b452b854f5493e1fdce500d062ba070df1d9f189dcf",
+				"normalized": "3e9a1fb662ed4c95ba977c2a62825ab27bd4ab24f19a0de5a202ffdae4dc2d58"
+			},
+			"candidate": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"bytes": 56787,
+				"raw": "83eaeaa695f0cf827ab11b452b854f5493e1fdce500d062ba070df1d9f189dcf",
+				"normalized": "3e9a1fb662ed4c95ba977c2a62825ab27bd4ab24f19a0de5a202ffdae4dc2d58"
+			},
+			"identical": true,
+			"identicalTokens": true
+		},
+		{
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"baseline": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"bytes": 34277,
+				"raw": "8108f6fe652eb0b5181648e1eb8984459a967deaa8d87a89cf18e74603677c87",
+				"normalized": "be038a48d37fa836db553ab9e78eeb5582b54389f8ad499f5b36e4da76b7d507"
+			},
+			"candidate": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"bytes": 34277,
+				"raw": "8108f6fe652eb0b5181648e1eb8984459a967deaa8d87a89cf18e74603677c87",
+				"normalized": "be038a48d37fa836db553ab9e78eeb5582b54389f8ad499f5b36e4da76b7d507"
+			},
+			"identical": true,
+			"identicalTokens": true
+		},
+		{
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"baseline": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"bytes": 41856,
+				"raw": "50795b144df0f2c23e492612cfd1c3749c1b365a435f97401c5811b4cdca9e77",
+				"normalized": "8bae04d361a4b5990ca9a851526eb57418b4f25306096abe310dd48bff8e4a15"
+			},
+			"candidate": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"bytes": 41856,
+				"raw": "50795b144df0f2c23e492612cfd1c3749c1b365a435f97401c5811b4cdca9e77",
+				"normalized": "8bae04d361a4b5990ca9a851526eb57418b4f25306096abe310dd48bff8e4a15"
+			},
+			"identical": true,
+			"identicalTokens": true
+		}
+	]
+}
