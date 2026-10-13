@@ -1,0 +1,22 @@
+Figure 3 **meets the supplied references in information and self-explanation, with comparable publication polish**. I find no supported substantive defect in the PNG. All four panels contain meaningful scientific content. The typography appears comparable to the references’ stated 5–7 pt body/tick standard at 180 mm width; I see no actual clipping, text collisions, broken glyphs, or unreadable essential labels.
+
+The mechanisms and results remain understandable without bringing the full methods into the figure:
+
+- **a:** The address ranges, two-byte box key, four-byte core, copy directions and offsets explain the mechanism. The two outcomes distinguish payload erasure from retention, and the brackets connect the diagrams to \(r=d-c\). The initially arbitrary contents of B are explicitly identified.
+- **b:** Marker shapes, colors, cohort sizes, axes and units are provided. The identity line communicates the predicted agreement; the inset makes the small values inspectable. The exceptional cell is explicitly labeled with its assay and carried-position counts. The required **8086 statement correctly says “untested” and “no eligible certified copier.”** The disc-area key distinguishes cell counts from series-only rings.
+- **c:** The displacement edit, hexadecimal-to-decimal conversion, modulo operation and resulting 28 retained payload positions are explicit. The core/payload boundaries, categorical key and offspring generation make the displayed comparison interpretable.
+- **d:** The hexadecimal axes cover the 256 byte values. The three category counts sum to 256, and the working criterion, restricted law domain, capacity scale and highlighted example values are supplied. Its relationship to the displacement edit in c is understandable.
+
+**Optional polish only:**
+
+- **a — Reduce redundant bracketing.** In the \(d=4\) example, the core and retained-prefix brackets span the same two boxes and sit close together. A combined label such as “Retained prefix: d = c = 4 bytes” would simplify this without losing information.
+- **a — Tighten the lower whitespace.** The equation is separated from the schematic key, followed by a substantial blank region before c. Moving the equation closer to the key would make the explanation feel more cohesive.
+- **b — Shorten the inset title.** “Detail: 0–10 on both axes” would state its range more precisely than “Same points: 0-10.” Explicit inset axis titles are unnecessary here.
+- **b — Consolidate the size key.** Bringing its explanatory sentence, example discs and numerical labels slightly closer together would improve grouping.
+- **c — Clarify the mutation location inline.** “Edit byte 0: 0x04 → 0x60” would connect the intervention to the preceding sentence more immediately.
+- **d — Make the final category label parallel.** “11 working, within law domain; shade = capacity” would remove the small inference currently needed to distinguish it from the 88 working values outside the domain.
+- **Overall — Align the right-column headings.** Panel d’s letter and title begin slightly left of b’s. Matching their horizontal positions would improve the grid.
+
+These are refinements, not missing scientific content or barriers to understanding.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

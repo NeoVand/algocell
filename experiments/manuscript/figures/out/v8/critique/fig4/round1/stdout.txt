@@ -1,0 +1,30 @@
+The new figure is readable at the stated print size and contains substantial content in all three panels. Its typography is broadly comparable to the references; there is no supported reason to impose a larger minimum font size. The main contrast—low transmitter share under benign tar and high share under lethal tar—is clear. However, several essential definitions and one explicitly required scientific statement are missing.
+
+**Substantive defects**
+
+- **Figure-wide: the required 8086 conclusion is absent.** Add a compact statement: “Evolved 8086 law: untested; no eligible certified copier.” This needs a direct label, not an additional empty panel.
+
+- **Panels a–b: “core-bearing” is insufficiently defined.** The subtitle names “Copy motif 5E ED B0,” but never explicitly connects that motif to the measured core-bearing population. Consequently, the reader cannot confidently interpret the second trajectory row or the middle distribution plot. Add a short definition identifying the actual scored feature and whether this population includes both R and T.
+
+- **Panel b, right: the counted object is unclear.** “Unique T payloads / world” supplies a denominator but does not identify what constitutes a payload or what “unique” distinguishes. A short direct label identifying the counted sequence unit would make the thousands-scale result interpretable without requiring the methods.
+
+- **Panel c: two outcome labels need operational meaning.** “Open-first” does not specify what event is first; “first confined copier” introduces a category whose relationship to the previously defined R and T is unstated. Expand these labels or provide a compact inline definition. Do not require readers to infer that “confined copier” means one of the earlier categories.
+
+- **Panel c: the T-majority tally lacks a time criterion and an explicit majority denominator.** It could mean a majority at the endpoint or at any observed time. State the actual criterion—for example, “Worlds with T/(R + T) > 0.5 at [endpoint], out of 10,” if that is the analysis. Panel b’s 300,000-update endpoint does not clearly extend to this separate experiment.
+
+- **Panel c: “KM” is unexplained, and the time unit changes wording.** Write “Kaplan–Meier median” and use “thousand world updates” consistently with panel a. This is a small labeling fix, not a request to insert survival-analysis methods.
+
+- **Panel a: the six trajectories within each condition are difficult to disentangle.** Light versus dark versions of the same hue, combined with solid/dashed/dotted lines and sparse overlapping markers, become hard to follow where curves converge. The broad environmental result survives, but implementation-by-initialization comparisons are substantially less accessible. Use more distinct light/dark values and better-separated marker positions; if necessary, split the initialization cohorts into aligned small multiples while retaining the direct endpoint numbers.
+
+**Optional polish**
+
+- **Panel a:** turn each multiline endpoint block into a small aligned number table. The values are present, but comma-separated pairs around vertical bars take more effort to compare than the reference’s aligned number columns.
+- **Panel b:** connect “ratio n = 19 in C1 benign” explicitly to the reason for exclusion. The exception is disclosed already; a brief explanation would remove the remaining ambiguity without adding methods.
+- **Panels a–b:** standardize implementation ordering. The top implementation key and panel-b categories place Archive first, whereas the numerical summaries use C1 first.
+- **Figure-wide:** “Archive” and “C1” are usable identifiers, but brief descriptive implementation names would improve standalone explanation.
+- **Layout:** reduce the large vertical interval between the top legend and panel-a plots, using that space for the missing definitions.
+- **Panel c:** explicitly connect the endpoint settings to the named environments—“p = 0: benign” and “p = 1: lethal”—if those are the intended correspondences.
+
+I see no obvious clipping, broken glyphs, text collisions, empty panels, or demonstrably misleading plotted counts or areas. The remaining problems concern scientific self-explanation and trace identification, rather than insufficient content or generally undersized text.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

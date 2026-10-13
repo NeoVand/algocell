@@ -1,0 +1,54 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-watvuhc3
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132a1-bfa9-76a2-82ae-f6fe7991439d
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved 8086 law must be stated as untested, with no eligible certified copier; no pending status or empty 8086 panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new figure is close in visual polish and has substantive content in all four panels, but it falls below the references in self-explanation. Two substantive ambiguities remain. The typography is broadly comparable to the references at 180 mm; a blanket increase in font size is unnecessary.
+
+The 8086 statement meets the requirement: it explicitly says the evolved law is untested and gives “no eligible certified copier.” There is no empty or pending panel.
+
+**Substantive defects**
+
+1. **Panel b: the red exception does not have an unambiguous meaning on the y-axis.**  
+   The red point is plotted at approximately predicted 4, measured 0, while its annotation says “0 sampled sites; 4 positions carried.” The axis promises “Measured retained payload positions,” so the annotation appears to report four retained positions while the plotted measurement is zero. The distinction between an assay reporting zero and actual carriage of four positions is essential to interpreting this exception.
+
+   **Fix:** Explicitly identify the plotted quantity. If zero is the assay’s reported value, label it “assay reports 0; 4 positions carried,” and make the axis or a nearby key explain that distinction. If the axis represents actual retained positions, the point must use that quantity. Apply the same clarification to the inset.
+
+2. **Panel d: the classification that determines the main result is undefined.**  
+   “Working” has an operational threshold, but “88 working, outside conditions” and “11 eligible” do not identify the conditions or what eligibility means. These categories account for all 99 working variants, so their distinction is central to understanding the scan—not merely a methods detail. Panel a illustrates forward overlap but does not explicitly connect it to these classifications.
+
+   **Fix:** Replace “outside conditions” with a short description of the actual unmet conditions, and specify “eligible for [named law/test].” Add a compact connection to panel a using the relevant symbols or criteria. The complete certification procedure can remain in the manuscript legend.
+
+**Optional polish and clarity improvements**
+
+- **Panel a: explicitly mark the A–B boundary.** The introductory sentence supplies addresses, but the track requires readers to count boxes to locate the boundary. Add an “A | B” divider between `d` and the first blank box, plus short extent labels above the two halves. The reference schematic provides this kind of direct spatial guidance.
+
+- **Panel a: separate offspring extent from retained-prefix extent.** In the displacement-4 example, “Retained prefix d; offspring B” sits under a bracket spanning only the first two boxes, although the displayed offspring spans six. Label that bracket “retained prefix d = 4” and identify “offspring B” separately across the complete output. Use the same convention for displacement 12.
+
+- **Panel b: clarify the relationship between the cohort name and count.** “Z80 qualifying sites: 2,343 cells” switches from sites to cells within one label. Something like “Z80 qualifying cells, n = 2,343; discs show site counts” would clarify the relationship, provided that accurately describes the plotted quantities.
+
+- **Panel b: the one-cell size-key disc is barely perceptible.** Its proportional area may be correct, but at print size it resembles a speck. Add a fine leader identifying its location without enlarging the quantitative marker.
+
+- **Panel d: directly connect the two dark outlines to panel c.** “Rims: 0x04 / 0x60” identifies the values, but readers must decode the grid to find them. Small callouts naming the original and edited values would strengthen the connection.
+
+- **Layout:** Panel a has a conspicuous unused lower region, with the formula definition detached from the mechanism. Move the definition closer to the brackets and tighten that panel’s vertical spacing. This is a balance issue, not missing scientific content.
+
+I see no obvious clipping, broken glyphs, or text overlap. Panel d’s counts sum correctly to 256, and its axes explain the hexadecimal indexing. Panel c clearly communicates the change from erased payload to 28 transmitted positions. The required richness of direct labels and keys is present; the remaining substantive problems concern what two central encodings mean.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+28,643

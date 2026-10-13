@@ -1,0 +1,150 @@
+{
+  "technical_checks": "passed",
+  "figures": {
+    "fig1": {
+      "page_mm": [
+        180,
+        146
+      ],
+      "png_pixels": [
+        4252,
+        3449
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 139,
+      "figcheck": "clean",
+      "files": {
+        "pdf": "a7c54c23b65e823a513680a8f1a4fed552850b9d407129b6390bf372f18c28f1",
+        "svg": "61e7a53b5c0c109901a0b1385dbdfd5458fa231aa731bfd91773ef3c61bfbcea",
+        "png": "d62ca84379987b2454512279ed4186b7d86c6aaf6f35b171a5b41f692cb87ee5"
+      },
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "last_review_png_sha256": "d62ca84379987b2454512279ed4186b7d86c6aaf6f35b171a5b41f692cb87ee5",
+      "final_review": "critique/fig1/round3/critique.md"
+    },
+    "fig2": {
+      "page_mm": [
+        180,
+        136
+      ],
+      "png_pixels": [
+        4252,
+        3213
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 118,
+      "figcheck": "clean",
+      "files": {
+        "pdf": "7148c2f5e7951607b7f9fbe025aa7953e3fb7a919fd85cf758bdaeca304b27b3",
+        "svg": "7a0048bac5991f3ab5459045558e0bf755a1330fc0f1d7647699d65ac6229218",
+        "png": "c42ea18618391df6b6e1d1f44633fc68ad88ca3c4380e337c67a1aafdad4a01b"
+      },
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "last_review_png_sha256": "c42ea18618391df6b6e1d1f44633fc68ad88ca3c4380e337c67a1aafdad4a01b",
+      "final_review": "critique/fig2/round3/critique.md"
+    },
+    "fig3": {
+      "page_mm": [
+        180,
+        166
+      ],
+      "png_pixels": [
+        4252,
+        3922
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 145,
+      "figcheck": "clean",
+      "files": {
+        "pdf": "611feee1997ce8fe14a9508a7a413d7a896b815d1e328d4f95e40867aaabd0fd",
+        "svg": "96c78df84bf0089633122df589c842b9a33455c7520133ccdfa595ca85bc35e6",
+        "png": "76e6b6a1fe83e64a4fd98fde69f04aa31ab9fb81b5540c45f610b5f317e95a0c"
+      },
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "last_review_png_sha256": "76e6b6a1fe83e64a4fd98fde69f04aa31ab9fb81b5540c45f610b5f317e95a0c",
+      "final_review": "critique/fig3/round3/critique.md"
+    },
+    "fig4": {
+      "page_mm": [
+        180,
+        163
+      ],
+      "png_pixels": [
+        4252,
+        3851
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 140,
+      "figcheck": "clean",
+      "files": {
+        "pdf": "516730c1019916768950cdf8b243e291c645a8d9a0474851acd356b7a1b223db",
+        "svg": "b777042e438a317a21358714d28bfaf9452d3ff739dfae3df4c1195249a24b6a",
+        "png": "284fd29440d1d2051f685d5350cd2f9938ff32729f9e9195dffddeb20bc54eb2"
+      },
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "last_review_png_sha256": "284fd29440d1d2051f685d5350cd2f9938ff32729f9e9195dffddeb20bc54eb2",
+      "final_review": "critique/fig4/round3/critique.md"
+    },
+    "fig5": {
+      "page_mm": [
+        180,
+        162
+      ],
+      "png_pixels": [
+        4252,
+        3827
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ],
+      "pdf_text_spans": 289,
+      "figcheck": "clean",
+      "files": {
+        "pdf": "1ddcddac1be21e19876ed903492c2bf8dbe045d26ba178e306cf50d10d61b291",
+        "svg": "7f338e5fa10f69400da48bba56a14d728b2d621ff9819d70df78e109aea59fdc",
+        "png": "43ad6cd3442ebdc5fbf21f36522dc5f532f41f0ef09ee5f472a60c7806ac3c57"
+      },
+      "critique_rounds": 3,
+      "final_verdict": "MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS",
+      "cleared": true,
+      "delivered_image_reviewed": true,
+      "last_review_png_sha256": "43ad6cd3442ebdc5fbf21f36522dc5f532f41f0ef09ee5f472a60c7806ac3c57",
+      "final_review": "critique/fig5/round3/critique.md"
+    }
+  },
+  "data_sha256": "bdaf847378925b864b9fb8b037bf1bf18427e212fe2adf850b3b13fa8d16de79",
+  "legends_sha256": "2514d7778e58e9913126df6a02c685f3f8b1ed051e93961bbd9c338f437379da",
+  "scope": "Figures 1-4 cleaned; Figure 5 from completed S2; no new simulation or GPU compute",
+  "source_scripts": {
+    "prepare_v8.py": "246809a5cb49bdbd667e67a40dc27f504f3a3fbe89cdb8dde2bb55a1b95fb96a",
+    "build_v8.py": "d856a297aa15d0130e69bb906ff64f01d82fcdedb9600d07166b04a63c64ca60",
+    "legends_v8.py": "778dbe6324fa96996d4a350330327252d0d723934b62596d06bbf282f465ea17",
+    "critique_v8.py": "81620291160bf13c1f5fe7a004d6ba0e5039f98100f06a0531c6f79e1f727856",
+    "verify_v8.py": "8edfe7cb4ee34efb40a7f008c4ff411b29cc32df269444d63f32f0ea829a613d"
+  }
+}

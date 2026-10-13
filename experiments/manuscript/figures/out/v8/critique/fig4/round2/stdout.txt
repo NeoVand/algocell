@@ -1,0 +1,25 @@
+Figure 4 is close to the references in polish and information density, but it does **not yet meet their standard of self-explanation**. All panels contain substantive content. The main result is visually clear: transmitter share remains low under benign tar and high under lethal tar, while the measured byte motif remains prevalent in both conditions.
+
+At 180 mm width, the body text and ticks appear broadly comparable to the references. I see no clear clipping, broken glyphs, empty panels, or text overlapping data enough to conceal it. Moving full methods into the manuscript legend is appropriate.
+
+Two substantive defects remain:
+
+1. **Panel a: “absolute persistence” overstates what the displayed measurement establishes.** Both rows show proportions: T/(R + T), and motif-bearing cells/all cells. The lower row directly establishes motif prevalence; it does not display absolute abundance or explicitly measure persistence of a lineage. This matters because the title assigns a stronger interpretation to that row than its axis supports. **Fix:** rename the heading to “Z80 competitions: transmitter share and copying-motif prevalence,” if “copying motif” is the intended meaning of `5E ED B0`; otherwise use “byte-motif prevalence.” Retain the explicit denominator.
+
+2. **Panel c: the Kaplan–Meier row does not identify the reported statistic.** “Kaplan-Meier to first confined copier” names an estimation method and event, but does not say whether 32.5, 215, and the other entries are median times, another quantile, or another summary. The time units are present; the missing statistic prevents interpreting the numerical result precisely. **Fix:** name the actual quantity—for example, “Median time to first confined copier (KM; thousand world updates)” **only if these are medians**. Explain any special entry conventions inline if applicable; none are apparent in the PNG.
+
+Optional polish and clarity improvements:
+
+- **Panel a — distinguish the implementation traces more reliably.** The light and dark versions, especially purple, become difficult to follow individually where all six trajectories converge. Sparse open markers help, but do not consistently resolve the overlap. Increase the light/dark separation and stagger the identifying markers along the curves. Preserve the existing line-style mapping to initial conditions.
+
+- **Panel a — make the endpoint summaries easier to scan.** The numerical information is valuable, but “Final T share, motif share: C1 | archive” followed by paired comma-separated values requires repeated decoding. Align the entries into a compact inset table with explicit “C1” and “Archive” columns and a clear metric order. The available lower-plot whitespace can accommodate this.
+
+- **Panel b — clarify the shared symbol key and pooling.** The 20-world count is consistent with the 10 + 5 + 5 cohorts shown above; it is not a count error. Nevertheless, a short label such as “Shapes: initial mixtures as in a; 20 worlds per condition × implementation” would make the distributions independently readable.
+
+- **Panel b — sharpen the diversity label.** “Distinct T tails / world (bytes 4:31)” is compact but uses code-like range notation. “Distinct T tail sequences per world” would identify the counted objects more directly; express the byte interval with explicit endpoints according to the intended indexing convention.
+
+- **Panel c — define the dial in ordinary language.** Replace “p: halt per zero instruction” with “p: probability that a zero instruction halts.” This makes the parameter immediately understandable.
+
+- **Overall layout — tighten the upper legend area slightly.** The space between the keys and the explanatory line is generous compared with the denser lower panels. Recovering some of it would improve balance without increasing font sizes or reducing information.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

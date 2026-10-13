@@ -1,0 +1,18 @@
+Figure 4 **meets the supplied reference standard in polish, information, and self-explanation**. I find no substantive defect supported by the PNG. Its density is comparable to reference Figure 4, and the typography appears consistent with the supplied 5–7 pt publication standard at 180 mm width.
+
+All panels contain substantive content. I see no clipped labels, broken glyphs, overlapping text, or empty panels.
+
+- **Panel a:** The benign/lethal comparison is immediately apparent. R and T, implementation differences, starting mixtures, cohort sizes, time units, and both measured fractions are explicitly identified. The endpoint tables provide numerical comparisons without visibly obstructing the trajectories. The main result—low final transmitter share under benign conditions and high share under lethal conditions, despite high motif prevalence in both—is understandable directly.
+- **Panel b:** Individual-world distributions complement the medians. Condition colors, implementation fills, category labels, and measurement denominators are present. The sample-size note explicitly accounts for the undefined transmitter ratio when R + T = 0. The core-loss annotation identifies the exceptional observation without requiring a methods paragraph.
+- **Panel c:** Every probability setting has results for three outcomes. The probability definition, implementation order, counts out of ten, observation horizon for transmitter dominance, waiting-time units, and open/confined distinction are supplied. The table communicates the comparison without reproducing the experimental protocol.
+
+**Optional polish, rather than substantive defects:**
+
+- **Panel a:** Six trajectories become difficult to distinguish individually where they converge. Slightly strengthen the light/dark implementation contrast and use consistently spaced, sparse markers along the curves. Preserve the endpoint tables, which already resolve the numerical comparison.
+- **Panel b:** The point shapes inherit their starting-mixture meaning from the top legend. Add a compact “Shapes: starting mixtures as in a” label to make this panel easier to read independently.
+- **Panel b, right plot:** “Distinct T tails / world (bytes 4:31)” is the most compressed measurement label. “Distinct T-tail sequences per world” with the byte range beneath would read more naturally.
+- **Panel c:** Change “at 300k” to “at 300,000 updates,” and standardize “thousand” versus “thousands” across the time labels.
+
+These are refinements; none prevents understanding the measurements, encodings, cohorts, or principal outcomes.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

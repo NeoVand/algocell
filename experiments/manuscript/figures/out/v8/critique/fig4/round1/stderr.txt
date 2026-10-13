@@ -1,0 +1,51 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-vdl_62gj
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132a1-bfa9-7913-9154-ffceaec494fd
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved 8086 law must be stated as untested, with no eligible certified copier; no pending status or empty 8086 panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new figure is readable at the stated print size and contains substantial content in all three panels. Its typography is broadly comparable to the references; there is no supported reason to impose a larger minimum font size. The main contrast—low transmitter share under benign tar and high share under lethal tar—is clear. However, several essential definitions and one explicitly required scientific statement are missing.
+
+**Substantive defects**
+
+- **Figure-wide: the required 8086 conclusion is absent.** Add a compact statement: “Evolved 8086 law: untested; no eligible certified copier.” This needs a direct label, not an additional empty panel.
+
+- **Panels a–b: “core-bearing” is insufficiently defined.** The subtitle names “Copy motif 5E ED B0,” but never explicitly connects that motif to the measured core-bearing population. Consequently, the reader cannot confidently interpret the second trajectory row or the middle distribution plot. Add a short definition identifying the actual scored feature and whether this population includes both R and T.
+
+- **Panel b, right: the counted object is unclear.** “Unique T payloads / world” supplies a denominator but does not identify what constitutes a payload or what “unique” distinguishes. A short direct label identifying the counted sequence unit would make the thousands-scale result interpretable without requiring the methods.
+
+- **Panel c: two outcome labels need operational meaning.** “Open-first” does not specify what event is first; “first confined copier” introduces a category whose relationship to the previously defined R and T is unstated. Expand these labels or provide a compact inline definition. Do not require readers to infer that “confined copier” means one of the earlier categories.
+
+- **Panel c: the T-majority tally lacks a time criterion and an explicit majority denominator.** It could mean a majority at the endpoint or at any observed time. State the actual criterion—for example, “Worlds with T/(R + T) > 0.5 at [endpoint], out of 10,” if that is the analysis. Panel b’s 300,000-update endpoint does not clearly extend to this separate experiment.
+
+- **Panel c: “KM” is unexplained, and the time unit changes wording.** Write “Kaplan–Meier median” and use “thousand world updates” consistently with panel a. This is a small labeling fix, not a request to insert survival-analysis methods.
+
+- **Panel a: the six trajectories within each condition are difficult to disentangle.** Light versus dark versions of the same hue, combined with solid/dashed/dotted lines and sparse overlapping markers, become hard to follow where curves converge. The broad environmental result survives, but implementation-by-initialization comparisons are substantially less accessible. Use more distinct light/dark values and better-separated marker positions; if necessary, split the initialization cohorts into aligned small multiples while retaining the direct endpoint numbers.
+
+**Optional polish**
+
+- **Panel a:** turn each multiline endpoint block into a small aligned number table. The values are present, but comma-separated pairs around vertical bars take more effort to compare than the reference’s aligned number columns.
+- **Panel b:** connect “ratio n = 19 in C1 benign” explicitly to the reason for exclusion. The exception is disclosed already; a brief explanation would remove the remaining ambiguity without adding methods.
+- **Panels a–b:** standardize implementation ordering. The top implementation key and panel-b categories place Archive first, whereas the numerical summaries use C1 first.
+- **Figure-wide:** “Archive” and “C1” are usable identifiers, but brief descriptive implementation names would improve standalone explanation.
+- **Layout:** reduce the large vertical interval between the top legend and panel-a plots, using that space for the missing definitions.
+- **Panel c:** explicitly connect the endpoint settings to the named environments—“p = 0: benign” and “p = 1: lethal”—if those are the intended correspondences.
+
+I see no obvious clipping, broken glyphs, text collisions, empty panels, or demonstrably misleading plotted counts or areas. The remaining problems concern scientific self-explanation and trace identification, rather than insufficient content or generally undersized text.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+11,662

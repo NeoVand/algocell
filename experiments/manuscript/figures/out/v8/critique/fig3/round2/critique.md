@@ -1,0 +1,20 @@
+Figure 3 is close to the references in polish and information density, but one substantive ambiguity remains in panel d. All four panels contain meaningful content. The typography appears broadly consistent with the references’ print scale; there is no evident clipping, text collision, or missing panel.
+
+**Substantive defect**
+
+- **Panel d — “Working: gen-2 gain ≥ 0.3” does not identify what gain measures.** The reader cannot tell whether 0.3 is a fractional change, a normalized reproductive output, or another score. This matters because “working” defines the central classification of the 256 byte values. Replace “gain” with the actual measured quantity and its unit or normalization, using a short direct label. The experimental procedure can remain in the manuscript legend.
+
+**Optional polish**
+
+- **Panel a — distinguish the surviving source prefix from the resulting offspring.** In the displacement-4 example, the bracket covers four bytes while the displayed offspring contains twelve bytes. “Retained prefix d = 4; offspring B” combines those two concepts in one label. Put “Retained source prefix: 4 bytes” directly beneath the short bracket and identify the entire strip separately as “Offspring B.” Apply the same wording to the displacement-12 example.
+- **Panel a — simplify the notation key.** The bottom sentence uses several colons and introduces the variables less cleanly than the diagrams do. Use “r = d − c” followed by “r, free payload positions; d, copy offset; c, core length; all in bytes.” This would also connect more explicitly to panel b.
+- **Panel b — make the exception annotation more explicit.** “Assay = 0 sites / Carried = 4” is understandable alongside the legend, but “Whole-tape assay: 0 / Carried positions: 4” would identify the discrepancy directly at the point.
+- **Panel b — the size-key example for one cell is effectively a speck.** At 180 mm it will be difficult to locate. Retain the correct area scaling, but add a fine pointer to that example or use larger representative counts in the size key.
+- **Panel d — state the working total directly.** The displayed categories sum correctly: 157 + 88 + 11 = 256. A compact “99/256 working; 11 within law domain” label would make the main numerical result immediate without requiring arithmetic.
+- **Overall — reduce the uneven internal whitespace if revising the layout.** Panel a has substantial space beneath its notation key, whereas panel b extends downward through its size legend. This is an alignment opportunity, not missing content.
+
+The strongest elements already meet the reference standard: panel a explains the overlap mechanism with byte-sized blocks and explicit offsets; panel c makes the 28-position inheritance change immediately visible; panel d supplies a complete hexadecimal map and category counts. Panel b includes the required evolved-8086 statement—untested, with no eligible certified copier—and distinguishes the cohorts, identity line, exception, and magnified low-count region.
+
+Fixing the definition of “gain” should be sufficient to remove the substantive objection; the other changes are refinements.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

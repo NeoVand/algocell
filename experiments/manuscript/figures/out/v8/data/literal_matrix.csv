@@ -1,0 +1,4 @@
+machine,width,pusher,witness,route,confined,detected
+Z80,2,Yes,01 C5,Open,0,80
+6502,1,No,,Confined,20,20
+8086,2,Yes,B9 51,Confined majority,12,14

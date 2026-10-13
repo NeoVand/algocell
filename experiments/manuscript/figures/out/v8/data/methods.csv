@@ -1,0 +1,5 @@
+name,value,source
+ring_rate_bound,0.0001,impact_i1_report.py::decision
+ring_confidence,0.95,results/impact/decisions.csv
+gen2_minimum,0.3,algocell_exp/assay.py::GEN2_MIN
+match_gate,0.75,algocell_exp/assay.py::_norm_gain_rows

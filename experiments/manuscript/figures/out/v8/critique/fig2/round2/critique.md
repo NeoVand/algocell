@@ -1,0 +1,23 @@
+Figure 2 is close to the references in visual polish, but several labels still leave substantive interpretation unclear. All four panels contain meaningful content. The category headers, restrained colors, byte tracks, and aligned number columns work well. At 180 mm, the apparent text size is broadly consistent with the references; I see no clear clipping, overlap, missing glyphs, or empty panels.
+
+The remaining substantive defects are:
+
+- **Panel a — the control-count denominator has no stated unit.** “WT alive” followed by “48/64” or “64/64” does not identify what the 64 entities are. Unlike the adjacent mutant-population axis, this column never names its counted population. Expand the header to “Unmutated control [actual unit] alive” and retain the fractions. This needs a noun, not a methods paragraph.
+
+- **Panel a — the site threshold is incomplete.** “Sites: ≥half tested values; rare carriers may score 0” supplies a threshold without saying what those tested values must do. It also leaves “rare carriers” ambiguous between rare lineages and a small number of retained variants. Use a direct criterion such as “Qualifying site: allele retained at g8 for ≥½ of tested values,” if that is the intended rule. Make clear that “9/20” counts qualifying byte positions rather than lineages.
+
+- **Panel c — the open-circle key and count column name different endpoints.** The key says “First copy only,” while the column says “Sites at transfer 1.” The image does not establish that a first copy and transfer 1 are equivalent. “Only” also suggests loss immediately afterward, whereas the other displayed endpoint is transfer 8. If these are endpoint comparisons, label the open circles “Present at transfer 1, absent at transfer 8”; otherwise name the actual first-copy measurement consistently in the column.
+
+- **Panel d — the ancestry count is underspecified.** “Edited-byte descendants” could mean descendant organisms carrying the edit or descendant byte copies. The ancestry-label annotation suggests the latter, but the axis does not resolve it. Rename it “Copies carrying byte-8 ancestry,” or the accurate equivalent, and use the same term in the “1 to 0” annotation. This distinction is essential to understanding what the erasure demonstrates.
+
+Optional polish:
+
+- **Panels a–b:** “archive = C1” and “archive” read as internal provenance labels. Define C1 briefly if it distinguishes a meaningful cohort; otherwise move that identifier to the manuscript legend.
+- **Panels a–c:** The pusher changes from L = 16 to L = 50, and Genome 20 changes from world 3 to world 4. These differences are explicitly labeled and are not evidence of missing data. A short “Additional serial examples” cue in c would nevertheless prevent readers from assuming every row continues the upper-panel cohorts.
+- **Panel c:** “Transfer-8 not fetched” is compressed enough to require backtracking through the other headers. “Of retained sites: not fetched” would clarify that the last column is a subset.
+- **Panel d:** Replace “from a-c” with “shown in a–c.” Label the dashed lines directly “Transfer / CPU reset” at step 128, and identify the horizontal address-32 guide as the parent–partner boundary. The existing annotations contain this information, but readers must assemble it across the panel.
+- **Panel d:** The erasure event is less visually prominent in the ancestry plot than in the address plot. A small “Erasure, step 6” pointer at the drop would connect the two plots immediately.
+
+The figure does not need additional panels or full methods inside the artwork. Its main remaining work is to make the counted entities, site criterion, and retention endpoints explicit.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

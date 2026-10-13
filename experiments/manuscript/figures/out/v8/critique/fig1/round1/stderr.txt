@@ -1,0 +1,45 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-h3s1w18u
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132a2-0798-7d72-a134-17a0d15267e3
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved 8086 law must be stated as untested, with no eligible certified copier; no pending status or empty 8086 panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new figure is visually polished and contains substantive content in all four panels, but it does **not yet meet the references’ standard of self-explanation**. The main deficiencies are the missing required 8086 status and ambiguous encodings in panel d.
+
+At 180 mm width, most text appears comparable to the references’ small but readable typography. I see no obvious clipping, broken glyphs, or text collisions. A blanket font-size increase is unnecessary.
+
+**Substantive defects**
+
+- **Required 8086 result is absent.** Nothing states that the evolved 8086 law is untested because there is no eligible certified copier. The “8088 state matches” row does not communicate that status. Add a compact, explicit statement within panel d: **“Evolved 8086 law: untested — no eligible certified copier.”** Keep it separate from the measured bars; it needs neither an empty panel nor a pending designation.
+
+- **Panel d: the three categories are not sufficiently defined.** “Unchanged,” “Expected,” and “Changed” are not self-evidently exclusive: an expected difference is also a change. Readers cannot determine whether orange represents anticipated differences, expected matches, or another outcome. Replace these with precise, mutually exclusive labels reflecting the actual classifications, such as “Unchanged,” “Expected difference,” and “Other difference,” if accurate.
+
+- **Panel d: the number column accounts for only one category.** “Unchanged / tested” supplies useful denominators, but leaves the orange/red split unquantified. The orange segment in the first row is especially difficult to resolve at print size. Add compact counts for both remaining categories, or directly label each non-gray segment with its count. Do not enlarge a tiny segment artificially.
+
+- **Panel d: comparison groups and claim outcomes remain ambiguous.** The footer names “8088 vs hardware” and “Z80 archive vs C1,” but does not explicitly assign rows to those comparisons, and “C1” is unexplained. “Whole claims: pass/fail” and “Claim tests: pass/fail” can also be mistaken for counts of passing claims, despite the “Unchanged / tested” heading. Add category headers identifying the applicable comparison for each group, expand or briefly define C1, and state whether those rows measure agreement in pass/fail outcomes. The distinction between the two claim rows needs a short, meaningful label.
+
+- **Panel c: “Unique / cells” leaves the numerator undefined.** The image does not identify what is unique. If these are distinct tape sequences, label the trace **“Distinct tapes / total cells.”** This is an essential definition of a plotted quantity, not a request for additional methods.
+
+**Optional polish**
+
+- **Panel a:** The mechanism retains the reference’s effective direct labels and numbered sequence. Brief stage labels distinguishing the initial self-writing sequence from the evolved return would strengthen the connection between the two drawings. Explaining `e3` inline would also help, if that byte is important to the illustrated mechanism.
+- **Panel b:** The cohort size and tape-length definition are useful and adequate. Directly labeling the isolated olive trajectory “L = 9” near its endpoint would make the conspicuous exception easier to identify.
+- **Panel c:** Move the “Modal similarity rises” leader closer to the actual steep teal rise; its current endpoint sits below and slightly before the transition. “Zero-valued bytes / all bytes” would make the gray trace’s normalization explicit.
+- **Panel d:** A small “Share of tested cases” label would clarify the normalized bars and discourage comparison of their equal total lengths as equal sample sizes.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+27,855

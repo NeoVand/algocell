@@ -1,0 +1,41 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-4265qzgc
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132a9-12e9-72c3-a5e5-c946140447fd
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say untested, with no eligible certified copier. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is Figure 2. Apply requirements only to its scientific scope. Calibration for this final comparison: the required standard is the supplied previous figures, whose publication typography uses 5-7 pt body/ticks and 8 pt panel letters. Do not substitute a different preferred minimum such as 8 pt for all body copy. Flag actual unreadability relative to those references. This is a scientific figure, with full experimental protocols and preregistration details supplied in separate manuscript legends; judge whether the mechanism, measurements, outcomes, units, encodings and relevant comparisons are understandable from the image, without requiring it to reproduce the complete Methods. Do not excuse real defects, and do not infer missing results. The final verdict must still explicitly assess polish, information, and self-explanation against the attached references.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+Figure 2 meets the references’ standard in polish, information, and self-explanation. Every panel contains substantive content. At the stated 180 mm width, the body text, ticks, keys, and numerical columns appear readable relative to the supplied references. I see no substantive overlap, clipping, broken glyphs, or missing panel content.
+
+**Substantive defects: none supported by the images.**
+
+- **Panel a:** Category headers, three outcome colors, a proportion axis, control counts, and site counts make the comparison understandable. The denominators are visible. The site-threshold note explains how a small carried fraction can coexist with a site count of zero, including the thin teal segment in the block-copy row.
+- **Panel b:** The axis explicitly identifies the numerator and denominator, and the transfer axis and series key establish the comparison. Persistent carriage in Genome 20, world 3, versus rapid loss in the other examples is clear. Marker shapes distinguish the two orange series even where their trajectories converge.
+- **Panel c:** The byte tracks combine execution status, early carriage, persistent carriage, and four numerical summaries effectively. The heading explicitly explains that tracks are scaled to their respective tapes, preventing their equal displayed lengths from implying equal byte counts. The different examples used here versus panels a–b are identified by their lengths and world labels.
+- **Panel d:** Both plots and the accompanying direct labels contribute essential information. The address trace locates the erasure event; the ancestry-copy trace shows its consequence. The byte identity, replacement value, instruction number, parent/partner address ranges, and reset at step 128 make the mechanism understandable without reproducing the experimental protocol.
+
+**Optional polish, with concrete fixes:**
+
+- **Panel a:** “Archive = C1” introduces an unexplained identifier, while panel b uses only “archive.” Either identify C1 briefly in both headings if it matters to the comparison, or move the identifier to the manuscript legend. This does not prevent interpretation of the displayed results.
+- **Panels a–c:** Standardize example naming. “Genome 20, world 3” and “Genome 20, world 4” could use “Genome, L = 20, world …”; panel b could likewise use “Pusher, L = 16” and “Block-copy, L = 32.” The existing labels are decipherable, but consistent notation would reduce cross-panel effort.
+- **Panel a:** Change “≥half” to “≥ half.” “At g8” could become “at generation 8” in the numerical header if space permits.
+- **Panel c:** The title is unusually instructional and visually heavy. Shorten it to “Serial retention by byte site,” retaining “One box per byte; tracks scaled to tape length” as a smaller inline explanation. Preserve the rich key and number columns.
+- **Panel d:** The title and parent/partner subtitle are tightly stacked compared with the surrounding spacing. Add a little vertical separation. Use typographic ranges consistently: “a–c,” “0–31,” and “32–63.”
+
+The figure’s information density is purposeful, and its direct labels adequately explain the measurements and main outcomes. The remaining refinements are editorial.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS
+tokens used
+11,520

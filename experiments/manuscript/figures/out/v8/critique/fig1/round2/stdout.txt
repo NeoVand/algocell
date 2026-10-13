@@ -1,0 +1,18 @@
+Figure 1 is close, but **does not yet match the references in self-explanation**. All four panels contain substantive content. The mechanism drawing remains strong, the emergence plot has a useful cohort key, and the validation panel provides explicit denominators. Typography is broadly comparable to the references at 180 mm; a general increase in font size is unnecessary.
+
+**Substantive defects**
+
+- **Panel c — the gray series has an ambiguous numerator.** “Zero / all bytes” does not explicitly identify what “Zero” counts. This matters because its disappearance is a prominent result alongside increasing similarity. If zero-valued bytes are intended, label it **“Zero-valued bytes / all bytes.”** Likewise, **“Distinct tapes / total cells”** would make the dashed series’ normalization explicit.
+- **Panel d — the hardware comparison’s difference category is visually unresolved.** The state-agreement bar appears entirely gray at this size, although the number column reports 10,083 differences. The amber “Expected difference” key has no readily discernible corresponding segment, and “Diff.” does not identify which category those differences occupy. Consequently, readers cannot confidently distinguish expected discrepancies from flagged changes in this row. Keep the proportional bar, but add a visible endpoint callout and explicitly categorize the count—for example, **“10,083 expected” if that is the intended classification**. Do not enlarge the segment in a way that misrepresents its fraction.
+
+**Optional polish**
+
+- **Panel a:** The inset’s circle nearly touches the title, making the upper-left corner tighter than the surrounding layout. Add a little clearance. Otherwise, the numbered sequence, byte labels, organism sizes and return instruction preserve the reference’s explanatory strength.
+- **Panel b:** The legend reads in increasing length down columns, but not across rows. A single ascending reading order would make comparisons faster. The cohort note already supplies the relevant denominator and meaning of \(L\).
+- **Panel c:** “Modal similarity rises” has a leader ending above the low region immediately before the sharp increase. Terminate it on the rising teal segment, or use a small arrowhead to make the intended feature unmistakable.
+- **Panel d:** The hardware fraction wraps across two lines while the other fractions remain on one line. Give that number column more room or consistently stack numerator and denominator.
+- **Panel d:** “Same / tested” is less precise than the row labels: the rows measure agreement, stability and unchanged verdicts. **“Agreeing / tested”** would better summarize the column.
+
+The displayed validation counts are arithmetically consistent, and their bar proportions appear consistent with those counts. I see no empty panel, obvious clipping, corrupted glyphs or substantial text overlap. Additional paragraph-length methods are unnecessary; the remaining substantive issues concern direct identification of the plotted quantities and categories.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

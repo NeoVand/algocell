@@ -1,0 +1,39 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-w37964hx
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132a5-dab0-73f2-a06c-4f467072af75
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say untested, with no eligible certified copier. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is Figure 1. Apply requirements only to its scientific scope.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+Figure 1 is close, but **does not yet match the references in self-explanation**. All four panels contain substantive content. The mechanism drawing remains strong, the emergence plot has a useful cohort key, and the validation panel provides explicit denominators. Typography is broadly comparable to the references at 180 mm; a general increase in font size is unnecessary.
+
+**Substantive defects**
+
+- **Panel c — the gray series has an ambiguous numerator.** “Zero / all bytes” does not explicitly identify what “Zero” counts. This matters because its disappearance is a prominent result alongside increasing similarity. If zero-valued bytes are intended, label it **“Zero-valued bytes / all bytes.”** Likewise, **“Distinct tapes / total cells”** would make the dashed series’ normalization explicit.
+- **Panel d — the hardware comparison’s difference category is visually unresolved.** The state-agreement bar appears entirely gray at this size, although the number column reports 10,083 differences. The amber “Expected difference” key has no readily discernible corresponding segment, and “Diff.” does not identify which category those differences occupy. Consequently, readers cannot confidently distinguish expected discrepancies from flagged changes in this row. Keep the proportional bar, but add a visible endpoint callout and explicitly categorize the count—for example, **“10,083 expected” if that is the intended classification**. Do not enlarge the segment in a way that misrepresents its fraction.
+
+**Optional polish**
+
+- **Panel a:** The inset’s circle nearly touches the title, making the upper-left corner tighter than the surrounding layout. Add a little clearance. Otherwise, the numbered sequence, byte labels, organism sizes and return instruction preserve the reference’s explanatory strength.
+- **Panel b:** The legend reads in increasing length down columns, but not across rows. A single ascending reading order would make comparisons faster. The cohort note already supplies the relevant denominator and meaning of \(L\).
+- **Panel c:** “Modal similarity rises” has a leader ending above the low region immediately before the sharp increase. Terminate it on the rising teal segment, or use a small arrowhead to make the intended feature unmistakable.
+- **Panel d:** The hardware fraction wraps across two lines while the other fractions remain on one line. Give that number column more room or consistently stack numerator and denominator.
+- **Panel d:** “Same / tested” is less precise than the row labels: the rows measure agreement, stability and unchanged verdicts. **“Agreeing / tested”** would better summarize the column.
+
+The displayed validation counts are arithmetically consistent, and their bar proportions appear consistent with those counts. I see no empty panel, obvious clipping, corrupted glyphs or substantial text overlap. Additional paragraph-length methods are unnecessary; the remaining substantive issues concern direct identification of the plotted quantities and categories.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+11,468
