@@ -1,5 +1,7 @@
 """Build a manuscript PDF from a Markdown file and the built figures.
 
+    python manuscript/build_pdf.py --v8
+
     python manuscript/build_pdf.py [--md manuscript/MAIN_nature.md] [--figs manuscript/figures/out] [--out manuscript/out]
                                    [--name NAME] [--compact] [--inline-figures]
 
@@ -323,6 +325,441 @@ def convert(md_text: str, figs_dir: str, out_dir: str) -> str:
     return preamble + "\n".join(body) + "\n\\end{document}\n"
 
 
+# v8 uses a separate, strict converter; archived v3/v4 conversion stays available.
+from pathlib import Path
+import collections
+import hashlib
+import json
+import tempfile
+import unicodedata
+
+
+SOURCE_PATH = re.compile(
+    r"(?<![\w:/])(?:results/|algocell_exp/|manuscript/|/Users/)[^\s;,`\]]*"
+    r"|(?<![\w/])[-\w]+\.(?:md|py|csv|json|wgsl|gz|pdf)(?!\w)"
+)
+
+
+def bracket_audit(text: str) -> list[dict]:
+    """Classify every balanced bracket, including nested mathematical/code brackets.
+
+    A local file/directory token makes a bracket provenance unless it is a
+    Markdown link label, code/math, or an explicit author placeholder. Qualifiers
+    (registered, theorem, etc.) do not change a path bracket's classification.
+    Unknown non-path brackets are retained and reported for manual inspection.
+    """
+    protected = [(m.start(), m.end(), 'code') for m in re.finditer(r'`[^`]*`', text)]
+    protected += [(m.start(), m.end(), 'math') for m in re.finditer(r'\\\[.*?\\\]', text, re.S)]
+    stack, pairs = [], []
+    for i, c in enumerate(text):
+        if c == '[':
+            stack.append(i)
+        elif c == ']' and stack:
+            pairs.append((stack.pop(), i + 1))
+    if stack:
+        raise ValueError('Unbalanced opening brackets in manuscript')
+    records = []
+    for start, end in sorted(pairs):
+        content = text[start + 1:end - 1]
+        region = next((kind for a, b, kind in protected if a <= start < b), None)
+        if region:
+            kind = region
+        elif text[end:end + 1] == '(':
+            kind = 'link'
+        elif content.startswith('AUTHOR TO '):
+            kind = 'placeholder'
+        elif re.fullmatch(r'\d+(?:\s*[,–-]\s*\d+)*', content):
+            kind = 'citation'
+        elif SOURCE_PATH.search(content):
+            kind = 'source-path'
+        elif re.fullmatch(r'[\w\s+−*/=(),.]+', content) and re.search(r'[+−=*/]', content):
+            kind = 'math'
+        else:
+            kind = 'ambiguous-retained'
+        records.append(dict(line=text.count('\n', 0, start) + 1, start=start, end=end,
+                            bracket=text[start:end], classification=kind))
+    return records
+
+
+def clean_v8(text: str, audit: list[dict]) -> str:
+    for record in reversed(audit):
+        if record['classification'] == 'source-path':
+            text = text[:record['start']] + text[record['end']:]
+    text = re.sub(r'^\*Review copy\..*?\*\s*\n', '', text, count=1, flags=re.M)
+    text = re.sub(r' +([.,;:)])', r'\1', text)
+    return re.sub(r' {2,}', ' ', text)
+
+
+def v8_plain(text: str) -> str:
+    text = esc(text)
+    text = re.sub('[' + ''.join(SUP) + ']+',
+                  lambda m: r'\textsuperscript{' + symbols(''.join(SUP[c] for c in m.group())) + '}', text)
+    text = re.sub(r'\^\(([^()]*)\)', r'\\textsuperscript{\1}', text)
+    text = re.sub(r'\^([−-]?[\w]+|∞)', r'\\textsuperscript{\1}', text)
+    text = text.replace('^', r'\textasciicircum{}')
+    text = re.sub(r'\\_([A-Za-z0-9]+)', r'\\textsubscript{\1}', text)
+    return symbols(text).replace('₀', r'$_0$')
+
+
+def v8_code(text: str) -> str:
+    # Break paths/identifiers inside narrow table columns without altering them.
+    parts = []
+    run = 0
+    for char in text:
+        parts.append(symbols(esc(char)).replace('^', r'\textasciicircum{}'))
+        run += 1
+        if char in '/_.-+,=' or (run >= 10 and not char.isspace()):
+            parts.append(r'\allowbreak{}')
+            run = 0
+        if char.isspace():
+            run = 0
+    return r'\texttt{' + ''.join(parts) + '}'
+
+
+def v8_inline(text: str, *, provenance: bool = True) -> str:
+    token = re.compile(r'`[^`]*`|\[[^\[\]]*\]\(https?://[^\s]*\)|\*\*[^*]+\*\*|(?<!\*)\*[^*]+\*(?!\*)|\[[^\[\]]*\]')
+    pieces, pos = [], 0
+    for m in token.finditer(text):
+        pieces.append(v8_plain(text[pos:m.start()]))
+        value = m.group()
+        if value.startswith('`'):
+            rendered = v8_code(value[1:-1])
+        elif value.startswith('**'):
+            rendered = r'\textbf{' + v8_inline(value[2:-2], provenance=provenance) + '}'
+        elif value.startswith('*'):
+            rendered = r'\emph{' + v8_inline(value[1:-1], provenance=provenance) + '}'
+        elif '](' in value:
+            label, url = value[1:-1].split('](', 1)
+            rendered = r'\url{' + url + '}' if label == url else v8_plain(label) + r' (\url{' + url + '})'
+        elif provenance and bracket_audit(value)[0]['classification'] == 'source-path':
+            rendered = r'{\footnotesize\color{gray}' + v8_inline(value, provenance=False) + '}'
+        else:
+            # Paths in source brackets need discretionary breaks too.
+            content, fragments, cursor = value[1:-1], [], 0
+            for part in re.finditer(r'`[^`]*`|[^\s;,]+', content):
+                fragments.append(v8_plain(content[cursor:part.start()]))
+                word = part.group()
+                if word.startswith('`') and word.endswith('`'):
+                    fragments.append(v8_code(word[1:-1]))
+                else:
+                    fragments.append(v8_code(word) if SOURCE_PATH.fullmatch(word) or '_' in word else v8_plain(word))
+                cursor = part.end()
+            fragments.append(v8_plain(content[cursor:]))
+            rendered = '[' + ''.join(fragments) + ']'
+        pieces.append(rendered)
+        pos = m.end()
+    pieces.append(v8_plain(text[pos:]))
+    return ''.join(pieces)
+
+
+def v8_math(text: str) -> str:
+    for char, tex in SYM.items():
+        text = text.replace(char, tex.strip('$'))
+    return text.replace('₀', '_0')
+
+
+def v8_table(block: str) -> list[str]:
+    rows = [[c.strip() for c in line.strip().strip('|').split('|')] for line in block.splitlines()]
+    if not all(len(row) == len(rows[0]) for row in rows):
+        raise ValueError('Ragged Markdown table')
+    n = len(rows[0])
+    if n == 4:
+        weights = [.17, .26, .29, .28]
+    elif rows[0][0] == 'Table':
+        weights = [.08, .33, .59]
+    elif rows[0][0] == 'Extended Data item':
+        weights = [.25, .25, .50]
+    else:
+        weights = [1 / n] * n
+    colspec = ''.join(r'>{\raggedright\arraybackslash}p{\dimexpr ' + str(w)
+                      + r'\textwidth-' + str(2 * 4) + 'pt\\relax}' for w in weights)
+    head = ' & '.join(r'\textbf{' + v8_inline(c) + '}' for c in rows[0]) + r' \\'
+    result = [r'\par\begingroup\footnotesize\setlength{\tabcolsep}{4pt}',
+              r'\renewcommand{\arraystretch}{1.18}',
+              r'\begin{longtable}{' + colspec + '}', r'\toprule', head, r'\midrule\endfirsthead',
+              r'\toprule', head, r'\midrule\endhead', r'\bottomrule\endfoot', r'\bottomrule\endlastfoot']
+    result.extend(' & '.join(v8_inline(c) for c in row) + r' \\' for row in rows[2:])
+    result.extend([r'\end{longtable}\endgroup', ''])
+    return result
+
+
+def v8_figure(path: Path, legend: str, out_dir: Path) -> list[str]:
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    dst = out_dir / path.name
+    if path.resolve() != dst.resolve():
+        shutil.copyfile(path, dst)
+    # Fixed content blocks enforce citation order. Captions can continue onto
+    # another page; scaling by height would silently violate full-width figures.
+    return [r'\par\addvspace{10pt}',
+            r'\noindent\includegraphics[width=\textwidth]{' + path.name + r'}\par\nobreak',
+            r'\vspace{4pt}{\small ' + v8_inline(legend) + r'\par}', r'\par\addvspace{10pt}', '']
+
+
+def convert_v8(text: str, figs_dir: Path, out_dir: Path, *, author: str,
+               supplementary: bool = False, ed_text: str = '') -> tuple[str, list[str]]:
+    blocks = re.split(r'\n\s*\n', text.strip())
+    title = blocks.pop(0)[2:].strip()
+    author_tex = v8_inline(author)
+    affiliation = ''
+    if not supplementary:
+        if blocks.pop(0).strip() != author:
+            raise ValueError('Unexpected author block')
+        affiliation = v8_inline(blocks.pop(0).strip())
+    legends = {}
+    for i, block in enumerate(blocks):
+        m = re.fullmatch(r'\*\*Figure (\d+)\..*\*\*', block.strip())
+        if m:
+            legends[m[1]] = block.strip() + '\n' + blocks[i + 1].strip()
+    ed_legends = {}
+    if supplementary:
+        for m in re.finditer(r'^## (Extended Data (\d+)\.[^\n]+)\n(.*?)(?=^## |\Z)', ed_text, re.M | re.S):
+            caption = re.search(r'\*\*Legend draft \(\d+ words\)\.\*\*\s*(.*?)(?=\n\n)', m[3], re.S)
+            if not caption:
+                raise ValueError('Missing ED legend: ' + m[2])
+            ed_legends[m[2]] = '**' + m[1] + '** ' + caption[1].strip()
+        if set(ed_legends) != {str(n) for n in range(1, 10)}:
+            raise ValueError('Expected nine Extended Data legends')
+    body, placed, section = [], [], ''
+    references_open = False
+    in_legends = False
+    skip_caption = False
+    for block in blocks:
+        block = block.strip()
+        heading = re.fullmatch(r'(#{2,6}) (.+)', block)
+        if heading:
+            if references_open:
+                body.append(r'\end{enumerate}')
+                references_open = False
+            section = heading[2]
+            in_legends = section == 'Figure legends'
+            if section in ('Methods', 'References', 'Supplementary Tables and generated-source index', 'Extended Data display map'):
+                body.append(r'\clearpage')
+            command = 'section' if len(heading[1]) == 2 else 'subsection'
+            body.append('\\' + command + '*{' + v8_inline(section) + '}')
+            continue
+        if in_legends and re.fullmatch(r'\*\*Figure \d+\..*\*\*', block):
+            skip_caption = True
+            continue
+        if skip_caption:
+            skip_caption = False
+            continue
+        if block.startswith('|'):
+            body.extend(v8_table(block))
+            continue
+        if block.startswith(r'\[') and block.endswith(r'\]'):
+            body.append(v8_math(block))
+            continue
+        numbered = re.match(r'^(\d+)\. (.*)', block, re.S)
+        if numbered:
+            if not references_open:
+                body.append(r'\begin{enumerate}[label=\arabic*.,widest=15,leftmargin=*,itemsep=4pt,parsep=0pt]')
+                references_open = True
+            body.append(r'\item ' + v8_inline(numbered[2].replace('\n', ' ')))
+            continue
+        if block.startswith('- '):
+            body.append(r'\begin{itemize}[leftmargin=*]')
+            body.extend(r'\item ' + v8_inline(line[2:]) for line in block.splitlines())
+            body.append(r'\end{itemize}')
+            continue
+        body.extend([v8_inline(block.replace('\n', ' ')), ''])
+        if not supplementary and not in_legends:
+            for number in re.findall(r'(?<!Extended Data )Fig\.\s*(\d+)', block):
+                if number in legends and number not in placed:
+                    body.extend(v8_figure(figs_dir / f'fig{number}.pdf', legends[number], out_dir))
+                    placed.append(number)
+    if references_open:
+        body.append(r'\end{enumerate}')
+    if supplementary:
+        body.append(r'\clearpage')
+        for n, legend in ed_legends.items():
+            body.extend(v8_figure(figs_dir / f'ed8_{n}.pdf', legend, out_dir))
+            body.append(r'\clearpage')
+            placed.append(n)
+    elif set(placed) != set(legends) or len(placed) != 5:
+        raise ValueError('Expected exactly five figures at their first citations')
+    preamble = r'''\documentclass[11pt,a4paper]{article}
+\usepackage[left=29mm,right=29mm,top=18mm,bottom=18mm]{geometry}
+\usepackage{fontspec}
+\setmainfont{texgyretermes}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\setmonofont{texgyrecursor}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,Scale=0.9]
+\usepackage{graphicx,longtable,xurl,amssymb,enumitem,xcolor,textcomp,booktabs,array}
+\urlstyle{same}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1pt}
+\setlength{\emergencystretch}{4em}
+\tolerance=2500
+\raggedright
+\linespread{1.15}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\pagestyle{plain}
+\begin{document}
+{\raggedright\bfseries\LARGE ''' + v8_inline(title) + r'''\par}
+\vspace{8pt}
+''' + author_tex + r'''\par
+''' + (r'{\small ' + affiliation + r'\par}' if affiliation else '') + r'''
+\vspace{12pt}
+'''
+    return preamble + '\n'.join(body) + '\n\\end{document}\n', placed
+
+
+def cached_v8_bundle(destination: Path) -> Path:
+    """Expose only existing Tectonic cache files as a local directory bundle.
+
+    A local bundle avoids Tectonic's macOS HTTP-client initialization crash,
+    even with --only-cached. No resources are fetched and the cache is read-only.
+    """
+    root = Path.home() / 'Library/Caches/Tectonic/bundles'
+    hash_file = root / 'hashes/https,58,,47,,47,relay.fullyjustified.net,47,default_bundle_v33.tar'
+    if not hash_file.is_file():
+        raise FileNotFoundError('No cached Tectonic v33 bundle; network downloads are disabled')
+    digest = hash_file.read_text().strip()
+    if not re.fullmatch(r'[0-9a-f]{64}', digest):
+        raise ValueError('Invalid cached Tectonic bundle digest')
+    cache = root / 'data' / digest
+    destination.mkdir()
+    for resource in cache.iterdir():
+        if resource.is_file():
+            (destination / resource.name).symlink_to(resource)
+    (destination / 'SHA256SUM').write_text(digest + '\n')
+    return destination
+
+
+def build_v8(out_dir: Path, engine: str) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    main = (Path(HERE) / 'MAIN_v8.md').read_text(encoding='utf-8')
+    si = (Path(HERE) / 'SI_v8.md').read_text(encoding='utf-8')
+    figs = Path(HERE) / 'figures/out/v8'
+    ed = (figs / 'ED_V8.md').read_text(encoding='utf-8')
+    author = re.split(r'\n\s*\n', main)[1].strip()
+    audit = bracket_audit(main)
+    audit_path = out_dir / 'MAIN_v8_bracket_audit.json'
+    audit_path.write_text(json.dumps(dict(rule=bracket_audit.__doc__, brackets=audit,
+        counts=dict(collections.Counter(r['classification'] for r in audit)),
+        ambiguous=[r for r in audit if r['classification'] == 'ambiguous-retained']), indent=2, ensure_ascii=False) + '\n')
+    print('Bracket audit:', collections.Counter(r['classification'] for r in audit))
+    for r in audit:
+        if r['classification'] == 'ambiguous-retained':
+            print('AMBIGUOUS, retained:', r['line'], r['bracket'])
+    bundle_temp = tempfile.TemporaryDirectory(prefix='algocell-tectonic-v8-')
+    bundle = cached_v8_bundle(Path(bundle_temp.name) / 'bundle')
+    jobs = [('MAIN_v8_review', main, False), ('MAIN_v8_clean', clean_v8(main, audit), False), ('SI_v8', si, True)]
+    for name, source, supplementary in jobs:
+        tex, placed = convert_v8(source, figs, out_dir, author=author,
+                                 supplementary=supplementary, ed_text=ed)
+        tex_path = out_dir / (name + '.tex')
+        tex_path.write_text(tex, encoding='utf-8')
+        cmd = [engine, '--only-cached', '--bundle', str(bundle), '--keep-logs', '--outdir', str(out_dir), str(tex_path)]
+        print('running:', ' '.join(cmd), flush=True)
+        run = subprocess.run(cmd, capture_output=True, text=True)
+        sys.stdout.write(run.stdout)
+        sys.stderr.write(run.stderr)
+        if run.returncode:
+            raise SystemExit(run.returncode)
+        log = (out_dir / (name + '.log')).read_text(errors='replace')
+        issues = re.findall(r'(?:Overfull \\[hv]box|Missing character:)[^\n]*', log)
+        if issues:
+            raise RuntimeError(name + ': layout/glyph errors: ' + '\n'.join(issues))
+        print('wrote', out_dir / (name + '.pdf'), 'figures:', ', '.join(placed))
+    bundle_temp.cleanup()
+    verify_v8(out_dir, main, si, ed, figs)
+
+
+def verify_v8(out_dir: Path, main: str, si: str, ed: str, figs: Path) -> None:
+    """Extract all text, check headings/embedding, and render review previews."""
+    import pymupdf as fitz  # already installed in the experiments venv
+
+    def normalize(value: str) -> str:
+        value = re.sub(r'\*\*?|`', '', value)
+        return ' '.join(unicodedata.normalize('NFKC', value).split())
+
+    report = {}
+    for name, source, count in [('MAIN_v8_review', main, 5), ('MAIN_v8_clean', main, 5), ('SI_v8', si, 9)]:
+        pdf = out_dir / (name + '.pdf')
+        doc = fitz.open(pdf)
+        text_path = out_dir / (name + '.txt')
+        if shutil.which('pdftotext'):
+            subprocess.run(['pdftotext', '-layout', str(pdf), str(text_path)], check=True)
+            extracted = text_path.read_text(encoding='utf-8')
+        else:
+            extracted = '\n'.join(page.get_text() for page in doc)
+            text_path.write_text(extracted, encoding='utf-8')
+        norm = normalize(extracted)
+        if name == 'MAIN_v8_review':
+            # Footers can interrupt a multi-page provenance bracket.
+            without_footers = re.sub(r'(?m)^\s*\d+\s*$', '', extracted)
+            compact = lambda value: re.sub(r'\s+', '', unicodedata.normalize('NFKC', value))
+            missing_sources = [r for r in bracket_audit(main) if r['classification'] == 'source-path'
+                               and compact(r['bracket']) not in compact(without_footers)]
+            if missing_sources:
+                raise RuntimeError('Review PDF lost source brackets: ' + repr(missing_sources))
+        headings = re.findall(r'^#{1,6} (.+)$', source, re.M)
+        if name == 'SI_v8':
+            headings += re.findall(r'^## (.+)$', ed, re.M)
+        missing = [heading for heading in headings if normalize(heading) not in norm]
+        if missing:
+            raise RuntimeError(name + ': missing headings: ' + repr(missing))
+        embedded = [(p + 1, x) for p in range(len(doc)) for x in doc.get_page_xobjects(p) if x[2] == 0]
+        if len(embedded) != count:
+            raise RuntimeError(name + ': expected ' + str(count) + ' PDF Forms, found ' + str(len(embedded)))
+        expected_files = [figs / (f'ed8_{n}.pdf' if name == 'SI_v8' else f'fig{n}.pdf') for n in range(1, count + 1)]
+        for (_, form), expected in zip(embedded, expected_files):
+            source_pdf = fitz.open(expected)
+            bounds = fitz.Rect(form[3])
+            if abs(bounds.width - source_pdf[0].rect.width) > .1 or abs(bounds.height - source_pdf[0].rect.height) > .1:
+                raise RuntimeError(name + ': embedded figure size/order mismatch: ' + expected.name)
+            source_pdf.close()
+            if hashlib.sha256(expected.read_bytes()).digest() != hashlib.sha256((out_dir / expected.name).read_bytes()).digest():
+                raise RuntimeError('Copied figure differs from source: ' + expected.name)
+        leaks = [marker for marker in ('**', '`') if marker in extracted]
+        if name == 'MAIN_v8_clean':
+            leaks += [marker for marker in ('[results/', '[registered:', '[exploratory:', 'Review copy.') if marker in extracted]
+            preserved = [r for r in bracket_audit(main) if r['classification'] in ('citation', 'placeholder', 'math')]
+            missing_preserved = [r['bracket'] for r in preserved if normalize(r['bracket']) not in norm]
+            if missing_preserved:
+                raise RuntimeError('Clean PDF lost retained brackets: ' + repr(missing_preserved))
+        if leaks:
+            raise RuntimeError(name + ': leaked markup/provenance: ' + repr(leaks))
+        # Check complete legend text as well as its heading and image.
+        compact_text = re.sub(r'\s+', '', normalize(re.sub(r'(?m)^\s*\d+\s*$', '', extracted)))
+        if name == 'SI_v8':
+            captions = []
+            for match in re.finditer(r'^## (Extended Data \d+\.[^\n]+)\n(.*?)(?=^## |\Z)', ed, re.M | re.S):
+                draft = re.search(r'\*\*Legend draft \(\d+ words\)\.\*\*\s*(.*?)(?=\n\n)', match[2], re.S)
+                captions.append(match[1] + ' ' + draft[1])
+        else:
+            captions = [match[0] for match in re.finditer(r'^\*\*Figure \d+\..*?\*\*\n\n[^\n]+', main, re.M)]
+        if len(captions) != count or any(re.sub(r'\s+', '', normalize(c)) not in compact_text for c in captions):
+            raise RuntimeError(name + ': incomplete figure legends')
+        # TeX cannot diagnose text already inside an embedded PDF figure.
+        margin = 29 * 72 / 25.4
+        for page in doc:
+            for block in page.get_text('dict')['blocks']:
+                for line in block.get('lines', []):
+                    for span in line['spans']:
+                        bounds = fitz.Rect(span['bbox'])
+                        if bounds.x0 < margin - 1 or bounds.x1 > page.rect.width - margin + 1:
+                            raise RuntimeError(name + ': text outside horizontal margins: ' + span['text'])
+        figure_pages = [p for p, _ in embedded]
+        previews = []
+        for label, page_number in [('page1', 1), ('figure', figure_pages[0])]:
+            path = out_dir / f'preview_{name}_{label}.png'
+            doc[page_number - 1].get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False).save(path)
+            previews.append(str(path))
+        report[name] = dict(pages=len(doc), headings_checked=len(headings), missing_headings=missing,
+                            embedded_figures=[dict(file=p.name, page=item[0]) for p, item in zip(expected_files, embedded)],
+                            raw_markup_leaks=leaks, previews=previews,
+                            source_brackets_retained=sum(r['classification'] == 'source-path' for r in bracket_audit(main))
+                            if name == 'MAIN_v8_review' else None,
+                            complete_legends_checked=len(captions),
+                            horizontal_margin_violations=0, overfull_boxes=0, missing_glyphs=0)
+        print(name + ':', len(doc), 'pages;', len(headings), 'headings;', count, 'embedded displays; verified')
+        doc.close()
+    (out_dir / 'v8_verification.json').write_text(json.dumps(report, indent=2) + '\n')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--md", default=os.path.join(HERE, "MAIN_nature.md"))
@@ -332,7 +769,12 @@ def main():
     ap.add_argument("--compact", action="store_true", help="9 pt type and 14 mm margins (one-pagers)")
     ap.add_argument("--inline-figures", action="store_true", help="place each figure after the paragraph that first cites it")
     ap.add_argument("--layout", default=None, choices=["v3", "v4"], help="figure-file mapping (default v4; v3 for the archived manuscript/archive/MAIN_nature_v3.md)")
+    ap.add_argument("--v8", action="store_true", help="build and verify v8 MAIN review/clean and SI using only cached TeX resources")
+    ap.add_argument("--tectonic", default="/opt/homebrew/bin/tectonic", help="TeX engine for the v8 build")
     a = ap.parse_args()
+    if a.v8:
+        build_v8(Path(a.out).resolve(), a.tectonic)
+        return
     COMPACT[0] = a.compact
     INLINE[0] = a.inline_figures
     layout = a.layout or ("v3" if "_v3" in os.path.basename(a.md) else "v4")
