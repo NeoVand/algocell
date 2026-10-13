@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-12",
+  "decided_epoch": 1791838664.014741,
+  "world": "s8086_A_s8086001",
+  "classification": "infrastructure failure: unsupported hard link during publication",
+  "discard_attempt": true,
+  "archive_unchanged": true,
+  "inspect_scientific_content": false,
+  "allowed_inspection": "path, size, bytewise SHA-256 only",
+  "recovery": "new attempt from step 0, same seed 8086001",
+  "recovery_allowance_used": 1,
+  "remaining_full_world_recoveries": 2,
+  "authorization": "user task before any trajectory inspection"
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/neo/repos/algocell-wt-s2/experiments/prebuild8086.py", line 54, in <module>
+    a=p.parse_args();prebuild(a.release,a.ledger,a.output)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell-wt-s2/experiments/prebuild8086.py", line 42, in prebuild
+    monitor.finish();monitor.wait_confirmed()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell-wt-s2/experiments/lifecycle8086.py", line 324, in wait_confirmed
+    raise TimeoutError('stopping unconfirmed; liability retained, watchdog continues')
+TimeoutError: stopping unconfirmed; liability retained, watchdog continues

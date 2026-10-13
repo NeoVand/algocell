@@ -1,0 +1,26 @@
+{
+  "prior_ledger": "results/s8086/launch/run-20261012/spend.jsonl",
+  "prior_ledger_sha256": "923a9772dad53655beb8c25570ae926d4bb231ebf0e9bbe2b4f40c3a426c5c77",
+  "prior_ledger_chain_hash": "b69afc4bede560ddb475a8f42f6cd421890cbbb257fc283d59a90366e466fddd",
+  "prior_ledger_rows": 157,
+  "preparation_chain_hash": "816d77b9fbdb9b27916296d6bca8afa61df290b74714b5bc6b8bda39f5b82c53",
+  "authorization": "User explicitly authorized a fresh relaunch after noninteractive stop repair; no resume/rewrite of terminal ledger",
+  "metered_so_far_usd": 0.13979978,
+  "historical_preparation_bound_usd": 0.7999038189802217,
+  "retained_failed_prebuild_reservation_usd": 0.27334166,
+  "carried_historical_liabilities_usd": 1.0732454789802217,
+  "shared_overhead_once_usd": 5.0,
+  "nominal_relaunch_projection_usd": 84.06715389898022,
+  "frozen_three_world_recovery_allowance_usd": 9.45418254,
+  "projection_with_three_world_recoveries_usd": 93.52133643898023,
+  "cap_usd": 95,
+  "failed_prebuild_settled": false,
+  "frozen_plan_sha256": "6063d8e7810a60e847ed111f1a9c24da802c126542fcf23bd71e7df0648c09a7",
+  "new_ledger": "results/s8086/launch/run-20261012-relaunch/spend.jsonl",
+  "check": {
+    "projected_liabilities_usd": 84.06715389898022,
+    "cap": 95.0,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  }
+}

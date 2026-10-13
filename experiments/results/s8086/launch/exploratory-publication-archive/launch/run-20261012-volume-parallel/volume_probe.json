@@ -1,0 +1,174 @@
+{
+  "path": "/vol/s8086_volume_probes/5759b096265d4bcf90ccf5bde91c2859",
+  "operations": {
+    "volume.reload.initial": {
+      "supported": true,
+      "result": null
+    },
+    "mkdir.parents": {
+      "supported": true,
+      "result": null
+    },
+    "mkdir.exist_ok": {
+      "supported": true,
+      "result": null
+    },
+    "exclusive_create.write.flush.close": {
+      "supported": true,
+      "result": 17
+    },
+    "exclusive_create.no_clobber": {
+      "supported": true,
+      "result": "existing file rejected"
+    },
+    "read_bytes": {
+      "supported": true,
+      "result": "66697865642070726f6265206279746573"
+    },
+    "exists.stat.iterdir": {
+      "supported": true,
+      "result": [
+        true,
+        17,
+        1
+      ]
+    },
+    "append.flush": {
+      "supported": true,
+      "result": null
+    },
+    "file.fsync": {
+      "supported": true,
+      "result": null
+    },
+    "flock.local.only": {
+      "supported": true,
+      "result": null
+    },
+    "chmod": {
+      "supported": true,
+      "result": null
+    },
+    "link": {
+      "supported": false,
+      "error": "PermissionError",
+      "errno": 1,
+      "reason": "[Errno 1] Operation not permitted: '/vol/s8086_volume_probes/5759b096265d4bcf90ccf5bde91c2859/source' -> '/vol/s8086_volume_probes/5759b096265d4bcf90ccf5bde91c2859/hardlink'"
+    },
+    "rename": {
+      "supported": true,
+      "result": null
+    },
+    "replace": {
+      "supported": true,
+      "result": null
+    },
+    "directory.open.fsync.close": {
+      "supported": true,
+      "result": null
+    },
+    "gzip.exclusive_write.read": {
+      "supported": true,
+      "result": "fixed gzip probe"
+    },
+    "volume.commit": {
+      "supported": true,
+      "result": null
+    },
+    "volume.reload.after_commit": {
+      "supported": true,
+      "result": null
+    },
+    "durable_read_after_reload": {
+      "supported": true,
+      "result": "66697865642070726f626520627974657320617070656e646564"
+    },
+    "unlink": {
+      "supported": true,
+      "result": null
+    },
+    "mkdir.rmdir": {
+      "supported": true,
+      "result": null
+    }
+  },
+  "archive": {
+    "attempt": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1",
+    "original_attempt_integrity": {
+      "recovery.json": {
+        "bytes": 450,
+        "sha256": "f21f58a507a42ff046df98df86a3313971fbd400383608ee51ac567dc88cce30"
+      },
+      "s8086_A_s8086001.jsonl": {
+        "bytes": 1351882,
+        "sha256": "59b91c0ac4f6ef3b4926662527020291a64a0d0f580134bf71c4cc34c8ae2192"
+      },
+      "s8086_A_s8086001.t0.u8.br": {
+        "bytes": 320005,
+        "sha256": "46b6831e09f8dd6e59d40a525c7865b4d43f59b3b9714003f2a371bfaea2a5eb"
+      },
+      "s8086_A_s8086001.t100000.u8.br": {
+        "bytes": 57175,
+        "sha256": "d1647ccd2ee17ffb24183f67127a527eff918c82c925b24b842c31137523bd5e"
+      },
+      "s8086_A_s8086001.t1000000.u8.br": {
+        "bytes": 82399,
+        "sha256": "0cca2a1a5d75a185ec226adb2dac96b7d599dcf9b3a113dd832128b3c70675ba"
+      },
+      "s8086_A_s8086001.t20000.u8.br": {
+        "bytes": 57461,
+        "sha256": "676db2d9c2aa1e43a899fcdcb154a6f2f393e231d09c8891a8c6240440e30830"
+      },
+      "s8086_A_s8086001.t3000000.u8.br": {
+        "bytes": 82527,
+        "sha256": "14a2e75f6df71fc6a784996219b11c91aff5e986a90eff3b0c1300aa37858190"
+      }
+    },
+    "moved_unchanged": [
+      {
+        "source": "/vol/s8086/A/s8086_A_s8086001.jsonl.publishing",
+        "destination": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1/publication_failure_archive/s8086_A_s8086001.jsonl.publishing",
+        "bytes": 1351882,
+        "sha256": "59b91c0ac4f6ef3b4926662527020291a64a0d0f580134bf71c4cc34c8ae2192"
+      },
+      {
+        "source": "/vol/s8086/A/s8086_A_s8086001.t0.u8.br",
+        "destination": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1/publication_failure_archive/s8086_A_s8086001.t0.u8.br",
+        "bytes": 320005,
+        "sha256": "46b6831e09f8dd6e59d40a525c7865b4d43f59b3b9714003f2a371bfaea2a5eb"
+      },
+      {
+        "source": "/vol/s8086/A/s8086_A_s8086001.t100000.u8.br",
+        "destination": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1/publication_failure_archive/s8086_A_s8086001.t100000.u8.br",
+        "bytes": 57175,
+        "sha256": "d1647ccd2ee17ffb24183f67127a527eff918c82c925b24b842c31137523bd5e"
+      },
+      {
+        "source": "/vol/s8086/A/s8086_A_s8086001.t1000000.u8.br",
+        "destination": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1/publication_failure_archive/s8086_A_s8086001.t1000000.u8.br",
+        "bytes": 82399,
+        "sha256": "0cca2a1a5d75a185ec226adb2dac96b7d599dcf9b3a113dd832128b3c70675ba"
+      },
+      {
+        "source": "/vol/s8086/A/s8086_A_s8086001.t20000.u8.br",
+        "destination": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1/publication_failure_archive/s8086_A_s8086001.t20000.u8.br",
+        "bytes": 57461,
+        "sha256": "676db2d9c2aa1e43a899fcdcb154a6f2f393e231d09c8891a8c6240440e30830"
+      },
+      {
+        "source": "/vol/s8086/A/s8086_A_s8086001.t3000000.u8.br",
+        "destination": "/vol/s8086/A/attempts/s8086_A_s8086001/4a9e91370b8d48e5adfbd7ba8860b4c1/publication_failure_archive/s8086_A_s8086001.t3000000.u8.br",
+        "bytes": 82527,
+        "sha256": "14a2e75f6df71fc6a784996219b11c91aff5e986a90eff3b0c1300aa37858190"
+      }
+    ],
+    "scientific_content_inspected": false,
+    "selection": "discard infrastructure failure, restart step 0 same seed"
+  },
+  "wall_s": 7.192372575000002,
+  "cpu": 0.125,
+  "memory_mib": 256,
+  "server_timeout_s": 60,
+  "gpu": null,
+  "locking_scope": "flock/exclusive create are local mount operations; no distributed lock claim"
+}

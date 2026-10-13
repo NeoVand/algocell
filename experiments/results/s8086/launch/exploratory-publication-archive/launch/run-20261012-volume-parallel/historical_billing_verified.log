@@ -1,0 +1,73 @@
+{
+  "time": 1791839526.707722,
+  "apps": [
+    {
+      "app_id": "ap-3PIHGikI8Kpb05rvJkI7aW",
+      "metered_usd": 0.02075924,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-3yv8gfnaUhIahlAjZ7ZbF9",
+      "metered_usd": 0,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-AawWLpOdEAKefnoMEyt4oG",
+      "metered_usd": 4.399e-05,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-OA10sRnKgZFM20rzDcsuZj",
+      "metered_usd": 0.89712848,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+      "metered_usd": 0.11543881,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-WrP0TDnnkk8I8SLYcdgPD6",
+      "metered_usd": 1.152e-05,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-X2PqHW0j9NrmN83lUKuziS",
+      "metered_usd": 4.445e-05,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-r9eOs1cleFWGxTvSjkTOyd",
+      "metered_usd": 1.775e-05,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "metered_usd": 0.00354413,
+      "stopped": true,
+      "tasks_empty": true
+    },
+    {
+      "app_id": "ap-yeH7c7tuWHnJ2pmjmb3GKP",
+      "metered_usd": 5.76e-05,
+      "stopped": true,
+      "tasks_empty": true
+    }
+  ],
+  "metered_usd": 1.03704597,
+  "billing_may_lag": true,
+  "check": {
+    "projected_liabilities_usd": 88.39025976898021,
+    "cap": 95.0,
+    "stop_required": false,
+    "unknown_physical_liabilities": []
+  }
+}

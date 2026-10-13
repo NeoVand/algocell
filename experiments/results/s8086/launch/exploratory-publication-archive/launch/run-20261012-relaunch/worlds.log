@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/Users/neo/repos/algocell-wt-s2/experiments/dispatch8086.py", line 270, in <module>
+    if a.stage=='worlds': dispatch_worlds(a.release,a.ledger,json.loads(a.projection.read_text()))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell-wt-s2/experiments/dispatch8086.py", line 226, in dispatch_worlds
+    bounded_call(app,function,(arm,seed,commit,receipt,deadline),guard,job,deadline)
+  File "/Users/neo/repos/algocell-wt-s2/experiments/dispatch8086.py", line 202, in bounded_call
+    if failure is not None: raise failure
+                            ^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell-wt-s2/experiments/dispatch8086.py", line 179, in bounded_call
+    result=call.get()
+           ^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_object.py", line 49, in wrapped
+    return await method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_functions.py", line 2405, in get
+    return await self._invocation().poll_function(timeout=timeout, index=index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_functions.py", line 348, in poll_function
+    return await _process_result(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_utils/function_utils.py", line 572, in _process_result
+    raise exc_with_hints(exc)
+  File "<ta-01M4RVHA2XWPT7VQ0ZYZE8WDQR>:/root/modal_s8086.py", line 89, in world
+    result=publish_complete(attempt,root,R.world_name(arm,seed),s8086.Registration.from_dict(receipt['registration']))
+^^^^^^^^^^^^^^^
+  File "<ta-01M4RVHA2XWPT7VQ0ZYZE8WDQR>:/root/experiments/recovery8086.py", line 47, in publish_complete
+    os.link(temp,target);temp.unlink()  # complete record appears atomically
+      ^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted: '/vol/s8086/A/s8086_A_s8086001.jsonl.publishing' -> '/vol/s8086/A/s8086_A_s8086001.jsonl'

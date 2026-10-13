@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-12",
+  "sequences": 64,
+  "seed": 539394182,
+  "concurrent_worlds": 20,
+  "violations": 4,
+  "violation_details": [
+    [
+      0,
+      "a/c sufficient complete recovery budget stopped",
+      83.79381223898022,
+      83.79381233898022
+    ],
+    [
+      20,
+      "a/c sufficient complete recovery budget stopped",
+      83.79381223898022,
+      83.79381233898022
+    ],
+    [
+      40,
+      "a/c sufficient complete recovery budget stopped",
+      83.79381223898022,
+      83.79381233898022
+    ],
+    [
+      60,
+      "a/c sufficient complete recovery budget stopped",
+      83.79381223898022,
+      83.79381233898022
+    ]
+  ],
+  "invariants": {
+    "a": "successful completions within conservative complete budget never cause a stop",
+    "b": "simultaneous charged current/settled and independently accumulated actual spend stay below cap <= $95",
+    "c": "all 20 worlds complete whenever the conservative full-run plus recovery budget fits",
+    "d": "a cap stop is terminal INCOMPLETE with null route/law verdicts and forbids further dispatch"
+  },
+  "outcomes": {
+    "INCOMPLETE": 17,
+    "COMPLETE": 47
+  },
+  "restarts": 155,
+  "interleaved_job_transitions": 2306,
+  "max_charged_usd": 80.3590980532651,
+  "max_actual_usd": 69.53892422672756,
+  "projection_sha256": "6063d8e7810a60e847ed111f1a9c24da802c126542fcf23bd71e7df0648c09a7",
+  "simulation_sha256": "dd7081a266d28c50eb517e4b46679d52791b41be73f0db7f4d9df5ecde93ae54",
+  "no_paid_compute": true,
+  "no_population": true
+}

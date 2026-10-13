@@ -1,0 +1,16 @@
+{"time": 1791841065.917737, "kind": "pipeline_started", "pipeline_pid": 70164, "registered_worlds": 20, "concurrency": 20, "seeds": [8086001, 8086002, 8086003, 8086004, 8086005, 8086006, 8086007, 8086008, 8086009, 8086010, 8086011, 8086012, 8086013, 8086014, 8086015, 8086016, 8086017, 8086018, 8086019, 8086020], "stages": ["prebuild", "worlds", "score", "extract", "eligibility_commit_release", "assay", "controls"], "projected_liabilities_usd": 72.41250328898022}
+{"time": 1791841065.919332, "kind": "stage_started", "pipeline_pid": 70164, "stage": "prebuild", "child_pid": 70524}
+{"time": 1791841089.6443882, "kind": "stage_complete", "pipeline_pid": 70164, "stage": "prebuild", "child_pid": 70524}
+{"time": 1791841089.645608, "kind": "image_receipt_validated", "pipeline_pid": 70164, "image_id": "im-gES4xYFZgcBmNDyVLjXrxx"}
+{"time": 1791841089.6470459, "kind": "stage_started", "pipeline_pid": 70164, "stage": "worlds", "child_pid": 70931}
+{"time": 1791844328.3331819, "kind": "stage_complete", "pipeline_pid": 70164, "stage": "worlds", "child_pid": 70931}
+{"time": 1791844328.335397, "kind": "stage_started", "pipeline_pid": 70164, "stage": "score", "child_pid": 78477}
+{"time": 1791844362.88743, "kind": "pipeline_incomplete", "pipeline_pid": 70164, "error": "RuntimeError", "reason": "score exited 1; no retry, review logs and retained liabilities", "scientific_verdict": null, "no_retry": true}
+Traceback (most recent call last):
+  File "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/pipeline_invocation.py", line 73, in <module>
+    dispatch(name)
+  File "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/pipeline_invocation.py", line 50, in dispatch
+    stage(name, 'dispatch8086.py', ['--release', release, '--ledger', LEDGER,
+  File "/Users/neo/repos/algocell-wt-s2/experiments/results/s8086/launch/run-20261012-parallel-9000/pipeline_invocation.py", line 45, in stage
+    raise RuntimeError(f'{name} exited {code}; no retry, review logs and retained liabilities')
+RuntimeError: score exited 1; no retry, review logs and retained liabilities

@@ -1,0 +1,9 @@
+{
+  "image_id": "im-7cqReP44xe1Ns0lCbVrLOS",
+  "freeze_sha256": "1fd135f841d2aee7a1905546d21172eb7cac060c932de96132074341cef547c8",
+  "recipe_sha256": "437ff73cb338d837d201d7578164e9d58d66136931e65b53b5f11710affc39a7",
+  "app_id": "ap-WrP0TDnnkk8I8SLYcdgPD6",
+  "stopped_confirmed": true,
+  "accounted_job": "prebuild",
+  "policy": "timed separate prebuild; dispatch from_id only"
+}

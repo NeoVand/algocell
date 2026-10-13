@@ -1,0 +1,29 @@
+[
+  {
+    "tag": "score",
+    "function_id": "fu-h8uSv4QGjASown20kLRe77",
+    "num_total_tasks": 0,
+    "num_running_inputs": 0,
+    "backlog": 0,
+    "server_timeout_s": 43200,
+    "max_containers": 1
+  },
+  {
+    "tag": "positive_controls",
+    "function_id": "fu-wemveCnISXQCys7pXZ9qPr",
+    "num_total_tasks": 0,
+    "num_running_inputs": 0,
+    "backlog": 0,
+    "server_timeout_s": 3600,
+    "max_containers": 1
+  },
+  {
+    "tag": "fu-UwiLKUXDOBtkXZmBc1vL09",
+    "function_id": "fu-UwiLKUXDOBtkXZmBc1vL09",
+    "num_total_tasks": 4,
+    "num_running_inputs": 1,
+    "backlog": 10,
+    "server_timeout_s": 437,
+    "max_containers": 20
+  }
+]

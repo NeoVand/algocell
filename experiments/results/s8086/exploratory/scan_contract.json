@@ -1,0 +1,24 @@
+{
+  "label": "EXPLORATORY / post hoc",
+  "words": [
+    "07a5",
+    "51b9",
+    "55bd",
+    "57bf",
+    "58ab",
+    "5ea5",
+    "96a5",
+    "a507",
+    "a55e",
+    "a596",
+    "ab58",
+    "b951",
+    "bd55",
+    "bf57"
+  ],
+  "partial_definition": "maximum linear consecutive alternating-template match >=4 bytes; >=8 also tabulated; a pair >=2 is separate; both absolute phases tested; no cross-cell or artificial circular joins",
+  "full_definition": "physical phase zero and phase one exact 16-byte alternating tile separately",
+  "scheduled_samples": 11700,
+  "top3_records": 35100,
+  "checkpoint_cells": 2000000
+}
