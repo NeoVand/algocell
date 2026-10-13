@@ -1,0 +1,42 @@
+**ed8_3 is below the references in self-explanation and layout efficiency.** All six panels contain substantive content, and I see no obvious clipping, text overlap, or broken glyphs. The substantive problems are ambiguous scientific labels, unclear relationships between counts, and excessive space around relatively small displays.
+
+The references provide more of the interpretation directly beside the evidence. Extended Data does not need full methods or proofs inside the image, but it still needs enough labeling to identify what was measured, what the categories mean, and what the principal result establishes.
+
+**Substantive defects and concrete fixes**
+
+- **a — The plotted population is unclear.** The title names 101 settings and 22 parents, while the footer names 22 original-value controls. Only a small number of distinct marker locations are visible. “Exact coordinates overlap” acknowledges overlap but does not establish what one marker represents, which populations are plotted, or how the counts relate. Add a compact cohort key stating the plotted unit and the relationship between settings, parents, and controls. Annotate multiplicities or otherwise account for coincident observations.
+
+- **a — The diagonal is unidentified.** Its appearance suggests an identity line, but it could also be a fitted or connecting line. Label it directly as “measured = predicted” if that is its intended meaning. State the agreement result explicitly, with its applicable denominator, rather than requiring readers to infer it from overplotted points.
+
+- **b — The challenge categories and pass condition are insufficiently explained.** “Forward / reciprocal” and “erased / joint / single” are central categories, yet the image never identifies what is reversed, erased, joined, or tested singly. “Passed” likewise does not identify the successful outcome. Add short category definitions and a concise outcome label; these can be phrases rather than method paragraphs.
+
+- **b — The total is separated from the result.** The six case counts do sum to 1,067,608, and every displayed passed count matches its case count. However, the footer gives only the case total. Add a total row or direct statement such as “1,067,608 / 1,067,608 passed,” accompanied by the defined pass criterion. “Partner challenges nested in cases” also needs a clearer indication of the counting unit if it is essential to interpreting this total.
+
+- **c — `d` is undefined.** The two examples are distinguished by `d = 4` and `d = 32`, but neither the quantity nor its unit is provided. Expand the label to the actual quantity and unit. This is essential to understanding why these two strips differ.
+
+- **c — The strip coordinates and ancestry reference are implicit.** The numbered positions appear to be byte indices, but there is no axis label. “Lost ancestry” and “inherited payload” do not identify the source whose ancestry is being assessed. Add “Byte position” and identify the relevant ancestor or parent in the inline key. Also clarify whether “Byte 0 = …” describes the starting parent or the displayed generation-eight descendant.
+
+- **d — The distinction between “nonworking” and “excluded” is opaque.** These categories account for 245 of 256 values, so their meanings are part of the main result. Briefly identify what fails to work and what criterion excludes a value. Qualify “eligible” with the test or purpose for which the 11 values qualify.
+
+- **d — White cells are visually ambiguous at the perimeter.** White is a data category, but it is also the surrounding background; without a complete border or cell guides, excluded edge cells can look like absent cells. Add a thin enclosing border and restrained cell boundaries, or use a distinct very pale fill for excluded cells. Use actual color swatches beside the three category counts.
+
+- **e — The number-column heading does not match the listed units.** “Cells” covers rows labeled cells, cases, scores, and a deficit. The image does not establish that every number counts cells. Either rename the column “Count” and specify each row’s unit, or rewrite all rows as counts of cells exhibiting the stated condition, if that is what they represent.
+
+- **e — The exception denominators and nesting are unresolved.** It is unclear whether 53 and 1 refer to the 2,347 motif-bearing cells, the 2,343 dividing-offset cases, or another set; whether the one deficit overlaps the 53 exceptions is also unspecified. “Nested cells” does not resolve these relationships. Add the applicable denominators and a short nesting label. Define “extra fetched-site scores” and “whole-tape gate deficit” sufficiently to identify what the exceptions are.
+
+- **f — Eligibility lacks its defining subject and criterion.** “Frozen candidate eligibility” does not identify what a candidate is or what it is eligible for. The counts suggest a connection to panel e, but that connection is unstated. Identify the candidate unit, explicitly link the cohort if shared, and specify what “out of range” refers to.
+
+- **f — The validation result is disconnected from its denominator.** The footer combines “25,856 serial observations” with “no mismatch in registered tests,” without establishing whether those observations are the tested denominator or what quantities were compared. Give a compact comparison label and the appropriate mismatch numerator/denominator. Do not imply that observations and tests are interchangeable unless they are.
+
+- **Across the figure — The layout creates substantial avoidable gaps.** Particularly in e and f, short tables occupy the upper portion of tall panels while their explanatory notes sit near the bottom edge. Similar separation weakens the association between displays and keys in a–d. At 180 mm width, this spends substantial print area without improving comprehension. Compress the bottom row, bring notes directly beneath their displays, and use the recovered space for the necessary labels or larger evidence displays. The issue is underused space, not empty panels.
+
+**Optional polish**
+
+- Replace the prose color key in c with compact swatches, following the reference figures.
+- Right-align numerical table columns and use consistent thousands separators: `2,347` and `2,343`.
+- Use a consistent treatment for cohort counts, totals, and supporting notes.
+- Slightly darken the muted footer text. Its size is not categorically outside the references’ standard, but its low contrast and distance from the evidence make it less effective at print scale.
+
+I do not see a supported arithmetic discrepancy in b or d, and no panel is empty. The required improvements concern interpretation and presentation of the shown evidence; they do not require adding full ledgers, proofs, or methods.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

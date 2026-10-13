@@ -1,0 +1,41 @@
+The new **ed8_6 is below the references in self-explanation**, although it is cleanly rendered and every panel contains substantive content. Tables are appropriate for this archived supporting evidence; full ledgers, proofs and methods need not be reproduced. The remaining problems concern how the displayed quantities, categories and results are identified.
+
+At 180 mm width, the body text appears broadly comparable to the references’ small text. I see no clear clipping, overlapping text, broken glyphs or demonstrably incorrect arithmetic. The main weakness is insufficiently explicit direct labeling, rather than a universal font-size problem.
+
+**Substantive defects and concrete fixes**
+
+- **Panel a — the experimental conditions are too compressed.** `L/BRK/budget`, entries such as `16/fait/128`, and `Periods` require readers to reconstruct the parameter meanings. The budget has no stated unit, and “Periods” does not identify what is periodic. Expand `fait` and `halt`, identify L and its unit, and label the budget and period quantities explicitly. These can be compact headers or an inline key.
+
+  The footer does identify the principal result—zero exact nonzero self-writers—but `Words done` and `Exact` are much less informative than that footer. Rename them to identify the enumerated objects and counted endpoint. “Period 4 exhausts 256⁴ words” should also distinguish the period-four search from the cumulative totals in the table, which cover several periods.
+
+- **Panel b — the result columns are materially ambiguous.** `Zero exact` does not identify the event being counted. `≥75% ≥8/16` places two thresholds together without identifying either measured quantity or whether the criteria are joint. This prevents interpretation of the nonzero entries.
+
+  Replace these with explicit endpoint names and a short threshold key. Identify what the percentage measures and what the sixteen trials, positions or other units represent; the image does not establish which. State whether the entries are counts out of the `Words` column. Define `k`, L and the budget unit.
+
+  “Declared reset” also needs a compact identifier for the reset condition. The footer, “Nonzero tiles; causal reclassification supersedes old labels,” refers to an unavailable earlier classification instead of explaining the current one. Replace it with the operative classification key or principal result in present terminology.
+
+- **Panel c — the independent variable and graphical encoding are insufficiently explained.** `d − 6 (byte positions)` supplies a unit but never defines d. Define d directly and explain the subtraction through a concise axis label or nearby annotation.
+
+  The gray diagonal is not identified as a reference relationship, fitted line or connection between observations. Label its actual meaning; if it represents equality, use `y = x`. The three square locations and the footer’s `296 cases` also need a stated relationship. Indicate whether markers summarize groups or contain coincident observations, and provide group counts if applicable. This requires a short aggregation label, not the full sampling method.
+
+- **Panel d — the category structure is unclear.** `Conf.`, `Loop`, `Open` and `Undet.` are not sufficiently defined, particularly whether “Loop” overlaps with or is nested within “Conf.” The displayed values cannot safely be treated as four mutually exclusive outcomes: for example, arm A shows n = 20, Conf. = 20 and Loop = 14.
+
+  Expand the category names and make their hierarchy explicit through grouped headers, indentation or a short key. If Loop is a subset, label it “of [parent category]: loop.” Also identify what n counts and give L and budget units. The existing footer usefully distinguishes arm D’s BRK handling and should remain.
+
+- **Panel e — totals and inclusion relationships need explicit labels.** The sampled entries sum to 942 and the eligible entries sum to 42, so there is no visible arithmetic error. However, the bold `42 roles; 41 tapes; 11 worlds` does not say explicitly that this is the eligible population or that tapes and worlds are distinct entities counted across overlapping categories.
+
+  Label this as the eligible total, with “unique” where appropriate. Define what the `Worlds` column counts—worlds sampled or worlds contributing eligible entries—and state that world counts overlap across rows if that explains the total. Give a short definition of eligibility or identify its endpoint. Replace raw identifiers such as `final_random` and `final_top3` with readable category labels, including what “top” ranks.
+
+- **Panel f — the scope of the exact-agreement claim is underexplained.** The predicted-versus-measured axes communicate agreement well, but “free positions” needs a concise operational meaning and an explicit byte unit if these are byte positions. Label the gray diagonal as the equality reference if that is its role.
+
+  Six visible marker locations accompany `91,428 direct cases; 731,424 serial observations; no mismatch`. Explain how those locations represent the larger population: coincident measurements, grouped summaries or another presentation. Clarify which observations the “no mismatch” statement covers. A brief inline statement can make the archived result interpretable without reproducing its proof.
+
+**Optional polish**
+
+- The generous blank areas beneath tables a, b and d and within e make the page feel less deliberately composed than the references. Tighten these spaces or use them for the missing keys and category definitions.
+- Standardize table number alignment and use consistent numeric column formatting.
+- Darken the pale diagonal lines and panel c’s outlined markers slightly for more dependable print reproduction.
+- Replace administrative phrases such as “supersedes old labels” and the unexplained “not an S2 arm” cross-reference with reader-facing wording, or move them to the manuscript legend.
+- Use the references’ compact category headers and inline keys to establish stronger hierarchy without adding paragraphs.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

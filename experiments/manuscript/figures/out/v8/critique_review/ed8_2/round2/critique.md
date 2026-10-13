@@ -1,0 +1,29 @@
+**ed8_2 is close, but remains below the references in self-explanation and visual organization.** Every panel contains substantive content. The figure includes extensive direct labels, numerical results and controls; its body type is broadly comparable to the references’ small print typography. The remaining problems concern specific definitions and cohort labels, rather than a need to restore full methods.
+
+Substantive defects:
+
+1. **Panels a–c: “excess carriage” lacks its comparison baseline.** Panel a defines a scored site using “excess carriage ≥0.5,” and b and c inherit that definition. The image never identifies what is subtracted to obtain the excess. This matters because the scored-site counts and teal site maps are central results. Add a short definition naming the comparator, such as “excess carriage = [quantity] − [baseline],” using the actual quantities.
+
+2. **Panel a: the carrying definition does not identify a valid numerator clearly.** “Carrying = mutant 5-byte marker window / population members” places a sequence window over a count of members. Specify whether the numerator counts members containing that window or counts marker copies. If the former is intended, “carriage = fraction of population members containing the mutant 5-byte window” would resolve this directly. Panels b and c depend on the same terminology.
+
+3. **Panels a, c and e: cohort categories are insufficiently identified.** Open/closed prefixes help some rows, but “Genome L16, world 6,” the other “Genome” rows and the two “8080 closer” designs lack descriptive category headers. The references explicitly identify evolved and constructed groups, making their scientific roles apparent. Add compact group headers using the correct provenance or functional category, and use consistent names across these three panels. No additional experimental results are needed.
+
+4. **Panel d: the carriage endpoint is not connected to the earlier definition.** “Generation-8 marker-carrying lineages / all mutant starts” names the ratio, but does not establish whether a lineage must meet panel a’s ≥50% carriage threshold or a different criterion. Add the applicable threshold or a brief explicit cross-reference. Otherwise, the prominent 0.75, 0.57 and 0.62–0.68 results cannot be interpreted consistently with a–c.
+
+5. **Panel d: mutant cohort sizes cannot be recovered from the displayed information.** The note gives 255 alternatives per position and 16 lineages per value, but the parent-design labels omit lengths or numbers of tested positions. “Controls 256/design” supplies a different denominator. Add an **L/tested positions** or **mutant starts, n** column for these designs; panel e does not provide an unambiguous mapping for all of them.
+
+6. **Panel d: the environment labels leave two essential details unresolved.** The axis mentions a “zero-opcode rule,” but the labels do not explicitly connect “benign” and “lethal” to that rule. Also, “open phase (t5000)” leaves the unit of 5000 unstated. Use a compact two-level header separating partner source from zero-opcode treatment, and identify the time unit.
+
+7. **Panel f: “zero partners” is ambiguous.** It could mean no partners or partners with zero-valued contents. That distinction affects the interpretation of “two full encounters.” Replace it with the precise experimental condition, preferably beside the lineage description rather than only in the bottom note.
+
+Optional polish:
+
+- **Panel c:** the paired tracks and individual byte divisions are substantially smaller than the reference’s site strips. Increase track height and separation, label the tracks locally “1” and “8,” and consider adjacent count columns to reduce manual counting.
+- **Panels a and b:** convert the prose color explanation into three small labeled swatches. This would match the references’ immediate visual decoding.
+- **Panel d:** printed values already make the heatmap interpretable; a small color key would nevertheless clarify the shading scale.
+- **Panel f:** reserve orange for the trajectory and loss annotation. The entire orange footer gives supporting details excessive visual emphasis.
+- **Across the figure:** redistribute some title-to-content whitespace toward panel c and the compact keys. Additional category spacing would make the long design lists easier to scan.
+
+There is no apparent empty panel, clipping, text collision or malformed glyph, and the displayed counts do not establish an arithmetic contradiction. The required fixes are compact labels and definitions, not full methodological paragraphs.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

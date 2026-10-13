@@ -1,0 +1,24 @@
+**Figure 4 meets the references’ standard.** I find no supported substantive defect in the supplied PNG. It is less visually spacious than reference 1, but its density is comparable to reference 2 and serves substantive content throughout.
+
+The main result is understandable directly: benign conditions leave a low full-tape T share despite high motif prevalence; lethal conditions support high values of both. Panel b supplies world-level distributions, and panel c supplies numerical results across the halt-probability series.
+
+- **Panel a:** R and T, implementation encodings, starting mixtures, cohort sizes, time units and response denominators are stated. The endpoint tables make the main comparisons recoverable despite overlapping trajectories.
+- **Panel b:** Condition and implementation labels, individual observations and outcome axes are present. The explicit exclusion of one undefined R + T ratio explains the reduced sample size. The core-loss annotation identifies an otherwise easily missed observation.
+- **Panel c:** Every column contains results. The probability variable, implementation order, cohort denominator, time unit and operational distinction between open and confined are supplied. Complete methods need not occupy this panel.
+- **Print readability:** Relative to the supplied references at the specified width, the body text and ticks appear acceptable. I see no evident clipped labels, broken glyphs, empty panels or text collisions.
+
+The remaining issues are **optional polish**, with these concrete fixes:
+
+1. **Panel a—trajectory discrimination.** The six trajectories within each condition become difficult to separate after convergence, particularly the light and dark dotted lines. Increase the light/dark contrast slightly and stagger marker positions between implementations. Preserve the endpoint tables; they do useful work here.
+
+2. **Panel a—header spacing.** The large vertical separation between the upper keys and the explanatory R/T line makes the header feel detached from its plots. Compress that gap and bring the explanation closer to the condition headings.
+
+3. **Panels a and c—paired-number syntax.** “C1 | archive” is explained, but repeated pairs require careful reading. Align each pair consistently around its separator; capitalizing “Archive” consistently would also improve finish.
+
+4. **Panel b—shape-key proximity.** The starting-mixture shapes are recoverable from panel a’s legend, but that key is distant. Add a compact “Shapes: starting mixtures as in a” beside the existing open/filled key.
+
+5. **Panel b—tail-position notation.** “bytes 4:31” looks like programming slice notation and leaves the endpoint convention uncertain. State the intended inclusive positions explicitly, using an en dash if both endpoints are included.
+
+6. **Panel c—terminology consistency.** Replace “300k” with “300,000 updates,” and use “thousand world updates” consistently with panel a’s time wording.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

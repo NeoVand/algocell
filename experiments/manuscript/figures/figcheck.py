@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 from matplotlib.legend import Legend
+from matplotlib.collections import PathCollection
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, Patch, Rectangle
 from matplotlib.text import Text
@@ -153,6 +154,12 @@ def _check_drawn(fig, exempt_gids) -> list[str]:
         # text-line / text-patch
         samples = [(f"line {l.get_label()!s}" if not str(l.get_label()).startswith("_") else "a line", _line_points(l)) for l in lines]
         samples += [(f"{type(p).__name__}", _patch_points(p)) for p in patches]
+        for collection in ax.collections:
+            if isinstance(collection, PathCollection) and collection.get_visible():
+                pts = np.asarray(collection.get_offsets(), dtype=float)
+                pts = pts[np.isfinite(pts).all(axis=1)]
+                if len(pts):
+                    samples.append(('scatter points', collection.get_offset_transform().transform(pts)))
         for t, bb in tboxes:
             if id(t) in legend_texts:
                 continue
@@ -183,6 +190,12 @@ def _check_drawn(fig, exempt_gids) -> list[str]:
                 if len(xy) and l.get_transform() == ax.transData and l.get_clip_on():
                     if (xy[:, 0] > x1 + 1e-9).any() or (xy[:, 0] < x0 - 1e-9).any() or (xy[:, 1] > y1 + 1e-9).any() or (xy[:, 1] < y0 - 1e-9).any():
                         problems.append(f"data-clipped line {l.get_label()!s} has data outside the axes limits of '{ax.get_title()}'")
+            for collection in ax.collections:
+                if isinstance(collection, PathCollection) and collection.get_visible() and collection.get_clip_on() and collection.get_offset_transform() == ax.transData:
+                    xy = np.asarray(collection.get_offsets(), dtype=float)
+                    xy = xy[np.isfinite(xy).all(axis=1)]
+                    if len(xy) and ((xy[:, 0] > x1 + 1e-9).any() or (xy[:, 0] < x0 - 1e-9).any() or (xy[:, 1] > y1 + 1e-9).any() or (xy[:, 1] < y0 - 1e-9).any()):
+                        problems.append(f"data-clipped scatter has data outside the axes limits of '{ax.get_title()}'")
     # figure-wide: texts of different axes, and figure-level legends against everything
     all_texts = []
     all_samples = []
@@ -199,6 +212,19 @@ def _check_drawn(fig, exempt_gids) -> list[str]:
         for l in ax.findobj(Line2D):
             if l.get_visible() and len(l.get_xydata()) > 1 and id(l) not in legend_children:
                 all_samples.append((f"line {l.get_label()!s}" if not str(l.get_label()).startswith("_") else "a line", _line_points(l)))
+    # Figure-level panel headings and notes need the same checks as axes text.
+    # They were previously absent from overlap and page-bound verification.
+    for t in fig.texts:
+        if not t.get_visible() or not t.get_text().strip():
+            continue
+        bb = _bbox(t, rend)
+        if bb is None:
+            continue
+        if t.get_fontsize() < MIN_PT - 1e-6:
+            problems.append(f"type-size   {_label(t)} is {t.get_fontsize():.1f} pt (< {MIN_PT} pt)")
+        if bb.x0 < -1 or bb.y0 < -1 or bb.x1 > fig.bbox.x1 + 1 or bb.y1 > fig.bbox.y1 + 1:
+            problems.append(f"text-clipped {_label(t)} extends beyond its figure")
+        all_texts.append((t, t, _shrink(bb, TEXT_PAD)))
     for i in range(len(all_texts)):
         for j in range(i + 1, len(all_texts)):
             ai, ti, bi = all_texts[i]

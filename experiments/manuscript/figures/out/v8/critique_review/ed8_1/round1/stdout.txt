@@ -1,0 +1,47 @@
+**Below the reference standard.** ed8_1 contains substantive evidence in all six panels, and the visible arithmetic is consistent. Its main weakness is self-explanation: several tables name their records without clearly identifying what was compared, what a number counts, or what a status means. These need compact labels and keys, not full methods.
+
+The body text appears broadly comparable to the references’ 5–7 pt range at 180 mm width. I see no obvious overlap, clipping, broken glyphs, or empty panels. The table format is appropriate for archived supporting evidence; additional plots or complete ledgers are not necessary.
+
+**Substantive defects and panel-specific fixes**
+
+- **a — The comparison itself is unidentified.** “Same / tested” does not say which two implementations or records agree, or what constitutes agreement at each level. “8088 states,” “Z80 ring conditions,” and “Claim verdicts” identify different denominators, but not the comparison underlying the numerator. Add a compact comparison subtitle and specify the core associated with the Z80 result. This matters because panel b reports different flag counts for C1 and C2, while panel a gives only one Z80 difference count.
+
+  The orange statement “10,083 expected hardware divergences; none unexpected” is useful, but sits far below the relevant row. Place it immediately beneath that row or connect it with a keyed marker so its scope is unmistakable.
+
+- **b — Flags and assay differences are not sufficiently distinguished.** “I1: flags remain flags” supplies an internal identifier and a conclusion, but does not identify what triggers a flag or what differs in an assay. Define C1/C2 once, and use headers such as “Conditions flagged, n/N” and “Assays differing from [comparator], n/N,” with the actual comparator named.
+
+  The relationship between the 690 conditions and 417 assays is also unclear. A short scope label should establish whether these are separate evaluation sets or related sets; the current side-by-side placement leaves that relationship unstated.
+
+  “Core C1/C2 all-unaffected criterion: not met” needs an inline definition of “all-unaffected.” State the applicable criterion briefly. Otherwise the reader cannot tell which column establishes this result.
+
+- **c — The direction and scientific meaning of the verdict comparison are missing.** “Stands” and “changed” do not identify the baseline. Replace “Comparison” with a more explicit header, such as “Verdict versus archived result,” if that is the intended comparison.
+
+  The panel successfully lists all 22 identifiers, but DZ2, DZ3 and L2—the three main exceptions—have no descriptive labels. Add short names for these changed claims, shared with panel d. The full claim ledger can remain separate.
+
+  “Preserved negative outcomes remain negative” is not connected to any marked entries. Identify the relevant rows with a small symbol and inline key, or make the statement’s scope explicit. As displayed, readers cannot locate the evidence for this particular assertion.
+
+- **d — “n/a” obscures the nature of two of the four changes.** DZ2 and DZ3 visibly move from “not met” to “met.” The L2 entries instead move between “not met” and “n/a,” but “n/a” could mean not applicable, not tested, or unavailable. Spell out the actual status and explain what makes these entries changed components.
+
+  Identify what “Historical” denotes, and separate the compact labels “L2 L16” and “L2 L20” into claim and length fields—for example, “L2, L = 16”—with L defined. Also explicitly connect these 36 components to panel a’s “Constituent tests”; the changing terminology unnecessarily weakens the cross-panel accounting.
+
+- **e — The numerical encoding is unspecified.** The headers “Core C1” and “Core C2” do not say whether the entries are counts of differing assays, changed measurements, or something else. Name the quantity in the header or a one-line key.
+
+  Each column contains 6 and 9 nonzero entries, whereas panels a/b report 10 differing assays. This is **not a demonstrated arithmetic error**: the categories may overlap. But the figure needs to state whether one assay can contribute to multiple measurement rows and whether row counts are non-additive.
+
+  Several labels remain internal variable names: “n informative,” “n informative2,” “offspring within q,” “gen2 cond,” and “score.” Provide readable names and a compact definition of q. Define A/B roles once so the two nonzero results can be understood scientifically. Complete scoring formulas are unnecessary.
+
+- **f — The cohort and alert result need interpretation.** Define L, Stage L, and the counted “worlds” in a short cohort label. “Scoreable” and “Alerts” both equal 10/10 at each length, but the alert type is unstated. The later mutation-collision sentence does not explicitly establish whether those collisions are the counted alerts. Name the alert category and clarify its relationship to scoreability.
+
+  “Dispatch” appears in the title without an explicitly labeled dispatch result. Relabel “Worlds” to identify that result if appropriate, or simplify the title. Tie the retention statements to the displayed cohort, and replace vague archive pointers such as “records linked” with a named supplementary item or Source Data reference.
+
+**Optional polish**
+
+- Compress the excessive vertical whitespace, especially in a, b and d. The references use space to support graphics, annotations and aligned comparisons; here, large gaps separate short tables from their interpretive notes.
+- Bring each bottom note closer to its table. Their current placement makes them resemble detached page footers.
+- Use a restrained, keyed emphasis for the three changed verdicts, four changed components and two nonzero measurement rows. The current uniform styling makes the important exceptions harder to find.
+- Give tables a clearer reading structure through subtle header rules, consistent numeric alignment and tighter column spacing. Heavy grids are unnecessary.
+- Slightly strengthen the contrast of gray notes and the orange annotation. Increasing every text size is not warranted.
+
+The required repairs concern comparison labels, status definitions and count interpretation. They do not require restoring paragraph-length methods or adding material outside this Extended Data item’s scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

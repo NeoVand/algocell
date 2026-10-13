@@ -1,0 +1,29 @@
+The new figure is information-rich, but **does not yet meet the references’ standard of self-explanation**. Every panel contains substantive content. The weaknesses are concentrated in a few scientific labels and in the allocation of space—not missing experiments or insufficient methods.
+
+The body text appears broadly comparable to the references’ small text at the stated print width. I see no definite clipping, overlapping text, broken glyphs, or misleading graphical areas.
+
+Substantive defects:
+
+- **Panel c — the site criterion has an unspecified denominator.** “≥half values heritable” does not identify what “values” comprises: all possible byte values, tested alternatives, or another set. This affects the meaning of a “carried position,” the panel’s measured quantity. Replace it with a compact, explicit criterion identifying the population of values; the assay procedure can remain in the manuscript legend.
+
+- **Panel c — “296 coincident sampled cases” does not identify the counted observational unit.** Three visible locations represent 296 cases, but the reader cannot tell what constitutes a case or whether the count includes repeated measurements. Name that unit and state explicitly that measurements coincide at the three plotted coordinates. Per-coordinate counts would make the aggregation especially clear without requiring the archived ledger.
+
+- **Panel d — the route categories remain partly undefined.** The note defines “Conf.” and explicitly explains that “Loop” overlaps it, which is useful. However, “Open” and “Undet.” lack a similarly direct explanation. In a panel whose entire result is route classification, readers need to distinguish an observed open route from an unresolved classification. Add a short inline key defining both, and visually separate the overlapping Loop count from the principal classification columns. “S1” can remain as an identifier, but a brief descriptive cohort label would improve independence from the legend.
+
+Optional polish, separate from those substantive issues:
+
+- **Whole figure — excessive internal whitespace weakens hierarchy.** Panels d and e leave large vacant regions while explanatory text is compressed into closely spaced lines near panel bottoms. Panel a also separates its table and key substantially. Tighten those gaps and use some recovered space for more comfortably set direct keys. The reference figures connect labels to their content more closely.
+
+- **Panels a and b — make the result headers more immediately interpretable.** “Exact” is decoded below, but “Exact self-writers” would work directly. “Zero exact” initially reads like a statement that the count is zero, despite nonzero entries beneath it. A two-line header such as “Exact output / zero partner” would remove that hesitation. Likewise, render the last header as “≥75% byte match / in ≥8/16 encounters,” using the existing definition.
+
+- **Panel a — align terminology.** The column says “Periods,” while the explanatory key introduces *k*. “Periods k” would connect them directly. The slash-packed condition labels are legible but would scan faster as separate L, BRK, and budget columns.
+
+- **Panel d — expose the nesting graphically.** The overlap note prevents a definite counting error, but “Loop” currently looks like another equivalent outcome column. Labeling it “Of Conf.: Loop,” if that matches the intended relationship, would make the table easier to read correctly.
+
+- **Panel e — bring the cohort totals closer to the table.** “42 roles; 41 unique tapes; 11 worlds” is valuable and correctly distinguishes different counting units. Its substantial separation from the rows makes it feel detached. The separate pointer-randomization statement also introduces “S2” without a local description; explain that identifier briefly or express the scope in ordinary words.
+
+- **Panels c and f — strengthen the measured points slightly.** The small, pale outlined squares in c are less conspicuous than the markers in the references. Slightly darker outlines would improve print robustness. In f, replace “42 roles overlap” with wording explicitly describing coincident plotted observations; otherwise it can be confused with the overlapping sampling-role membership discussed in e.
+
+The census tables, explicit word denominators, sampling totals, units, and mismatch counts provide substantial supporting evidence. No additional panel or full methods paragraph is needed, and the evolved-8086-law statement is not required for this figure’s scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

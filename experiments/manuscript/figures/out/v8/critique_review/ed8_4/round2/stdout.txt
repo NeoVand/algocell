@@ -1,0 +1,19 @@
+The figure is close to the references in polish and information density, but two experiment-scope labels remain missing. All six panels contain substantive content. The tables, direct annotations, and numerical columns are useful; the supporting ledgers and full methods need not be reproduced here.
+
+**Substantive defects**
+
+- **Panel a — the 20-world experiment is not tied to an identifiable cohort.** “Random-register reset” identifies the intervention, but neither the heading nor the inline key specifies the cohort or tape length. Panel c lists several different 20-world cohorts, so the reader cannot place the “2/20” result within the figure’s experimental scope. Add a compact cohort/length label beside the heading, or explicitly identify this as a separate reset cohort and state its composition if pooled.
+- **Panel d — the three worlds are unidentified.** “3 worlds, 24 samples” and “512 cells/sample” provide useful counts, but their relationship to the listed cohorts is absent. Consequently, the scope of the marker-versus-confinement result remains unclear. Add the relevant cohort/length beside the sample counts. This needs only a short identifier, not a methods paragraph.
+
+**Optional polish**
+
+- **Panel f:** This is the tightest material at 180 mm. Its text appears near the lower end of the references’ approximately 5–7 pt range, rather than categorically too small. Add a little separation between cohort pairs and distinguish the two thresholds typographically so readers can follow rows across to “Both” and “n.”
+- **Panel f:** Replace “Both = all 3 orders” with “Both detected = sum of the three order columns.” The current wording can momentarily suggest that all three mutually exclusive orders occurred together.
+- **Panels c, e, f:** Standardize cohort notation: panel c uses “G, L16,” while e and f use “G L16.” A consistent form would improve cross-panel lookup.
+- **Panel b:** Add “cohorts in c” after “170 … worlds.” This would make the connection to the denominator table explicit.
+- **Panel d:** Give the isolated upper-left point a short leader from its “5/5” annotation, and replace “e.g.” with a definite point label if that annotation describes the displayed point.
+- **Shared keys:** Place the R/T definitions where they clearly serve both e and f. Their current position beneath e makes f require a little searching.
+
+I see no apparent clipping, overlapping text, malformed glyphs, empty panels, or visibly contradictory tabulated counts. Panel a’s overlapping zero trajectories are explicitly disclosed, and panel d’s full-scale axes appropriately preserve the equal-fraction comparison. The remaining substantive work is identifying the experimental subsets in a and d.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

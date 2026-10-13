@@ -1,0 +1,50 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-h7tetkfh
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132dc-4d87-7301-8878-8c89547bc4b8
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_6. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new figure is information-rich, but **does not yet meet the references’ standard of self-explanation**. Every panel contains substantive content. The weaknesses are concentrated in a few scientific labels and in the allocation of space—not missing experiments or insufficient methods.
+
+The body text appears broadly comparable to the references’ small text at the stated print width. I see no definite clipping, overlapping text, broken glyphs, or misleading graphical areas.
+
+Substantive defects:
+
+- **Panel c — the site criterion has an unspecified denominator.** “≥half values heritable” does not identify what “values” comprises: all possible byte values, tested alternatives, or another set. This affects the meaning of a “carried position,” the panel’s measured quantity. Replace it with a compact, explicit criterion identifying the population of values; the assay procedure can remain in the manuscript legend.
+
+- **Panel c — “296 coincident sampled cases” does not identify the counted observational unit.** Three visible locations represent 296 cases, but the reader cannot tell what constitutes a case or whether the count includes repeated measurements. Name that unit and state explicitly that measurements coincide at the three plotted coordinates. Per-coordinate counts would make the aggregation especially clear without requiring the archived ledger.
+
+- **Panel d — the route categories remain partly undefined.** The note defines “Conf.” and explicitly explains that “Loop” overlaps it, which is useful. However, “Open” and “Undet.” lack a similarly direct explanation. In a panel whose entire result is route classification, readers need to distinguish an observed open route from an unresolved classification. Add a short inline key defining both, and visually separate the overlapping Loop count from the principal classification columns. “S1” can remain as an identifier, but a brief descriptive cohort label would improve independence from the legend.
+
+Optional polish, separate from those substantive issues:
+
+- **Whole figure — excessive internal whitespace weakens hierarchy.** Panels d and e leave large vacant regions while explanatory text is compressed into closely spaced lines near panel bottoms. Panel a also separates its table and key substantially. Tighten those gaps and use some recovered space for more comfortably set direct keys. The reference figures connect labels to their content more closely.
+
+- **Panels a and b — make the result headers more immediately interpretable.** “Exact” is decoded below, but “Exact self-writers” would work directly. “Zero exact” initially reads like a statement that the count is zero, despite nonzero entries beneath it. A two-line header such as “Exact output / zero partner” would remove that hesitation. Likewise, render the last header as “≥75% byte match / in ≥8/16 encounters,” using the existing definition.
+
+- **Panel a — align terminology.** The column says “Periods,” while the explanatory key introduces *k*. “Periods k” would connect them directly. The slash-packed condition labels are legible but would scan faster as separate L, BRK, and budget columns.
+
+- **Panel d — expose the nesting graphically.** The overlap note prevents a definite counting error, but “Loop” currently looks like another equivalent outcome column. Labeling it “Of Conf.: Loop,” if that matches the intended relationship, would make the table easier to read correctly.
+
+- **Panel e — bring the cohort totals closer to the table.** “42 roles; 41 unique tapes; 11 worlds” is valuable and correctly distinguishes different counting units. Its substantial separation from the rows makes it feel detached. The separate pointer-randomization statement also introduces “S2” without a local description; explain that identifier briefly or express the scope in ordinary words.
+
+- **Panels c and f — strengthen the measured points slightly.** The small, pale outlined squares in c are less conspicuous than the markers in the references. Slightly darker outlines would improve print robustness. In f, replace “42 roles overlap” with wording explicitly describing coincident plotted observations; otherwise it can be confused with the overlapping sampling-role membership discussed in e.
+
+The census tables, explicit word denominators, sampling totals, units, and mismatch counts provide substantial supporting evidence. No additional panel or full methods paragraph is needed, and the evolved-8086-law statement is not required for this figure’s scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+14,982
