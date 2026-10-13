@@ -1,0 +1,146 @@
+import type { ShaderManifest } from '@neovand/zilion';
+
+export type LabIsa = 'z80' | 'm6502' | 'i8086';
+export type LabCompat = '0.2' | '0.3';
+export type LabVariant = 'classic' | 'zilog-nmos' | 'nmos';
+export type StackConvention = 'top' | 'first-push' | 'legacy-sp';
+
+/** Every number here is part of the run contract, not merely a display setting. */
+export interface LabSettings {
+	isa: LabIsa;
+	compat: LabCompat;
+	variant: LabVariant;
+	length: number;
+	ring: number;
+	steps: number;
+	width: number;
+	height: number;
+	topology: 'square' | 'hex';
+	seed: number;
+	pairAttempts: number;
+	mutationExponent: number;
+	lethalProbability: number;
+	randomRegisters: boolean;
+	ablation: string[];
+	stack: StackConvention;
+	dialMode: 'historical-pcg' | 'counter';
+}
+
+export type InitialCondition =
+	| { kind: 'random' }
+	| { kind: 'tiled'; bytes: number[] }
+	| {
+			kind: 'competition';
+			regenerator: number[];
+			transmitterCore: number[];
+			share: number;
+			randomPayload: boolean;
+	  };
+
+export const DEFAULT_SETTINGS: LabSettings = {
+	isa: 'z80',
+	compat: '0.3',
+	variant: 'classic',
+	length: 16,
+	ring: 32,
+	steps: 128,
+	width: 160,
+	height: 125,
+	topology: 'square',
+	seed: 2001,
+	pairAttempts: 8192,
+	mutationExponent: 4,
+	lethalProbability: 0,
+	randomRegisters: false,
+	ablation: [],
+	stack: 'top',
+	dialMode: 'counter'
+};
+
+/** Unknown, no partner entry, partner entry in the last initiating encounter. */
+export type FetchStatus = 0 | 1 | 2;
+
+export interface LabMetrics {
+	update: number;
+	encounters: number;
+	executedSteps: number;
+	zeroFraction: number;
+	topShare: number;
+	diversity: number;
+	uniqueTapes: number;
+	topTape: number[];
+	topCount: number;
+	activePairs: number;
+	mutationAttempts: number;
+	regeneratorShare: number | null;
+	transmitterShare: number | null;
+	coreShare: number | null;
+}
+
+export interface EncounterObservation {
+	before: number[];
+	after: number[];
+	fetched: number[];
+	starts: number[];
+	state: Record<string, number>;
+	writes: Record<string, number>;
+	steps: number;
+	halt: string | number;
+	trap: string | number;
+}
+
+export interface CultureGeneration {
+	generation: number;
+	gain: number | null;
+	informativePartners: number;
+	exactCopies: number;
+	cyclicCopies: number;
+	copyFraction: number;
+	meanSimilarity: number;
+	partnerEntries: number;
+}
+
+export interface CultureResult {
+	parent: number[];
+	trials: number;
+	seed: number;
+	generations: CultureGeneration[];
+	/** Generation two's gain; null if only one generation was requested. */
+	gain: number | null;
+	positive: boolean | null;
+	confinement: 'confined' | 'intermediate' | 'open';
+	example: EncounterObservation;
+	manifest: ShaderManifest;
+	settings: LabSettings;
+}
+
+export interface MarkerResult {
+	position: number;
+	value: number;
+	wildType: CultureResult;
+	mutant: CultureResult;
+	retention: { generation: number; mutant: number; wildType: number }[];
+	note: string;
+}
+
+export interface LabSnapshot {
+	schema: 'algocell.lab/1';
+	scheduler: 'serial-reflected-pcg/1';
+	settings: LabSettings;
+	initialCondition: InitialCondition;
+	update: number;
+	encounters: number;
+	executedSteps: number;
+	rngState: number;
+	bytes: number[];
+	manifest: ShaderManifest;
+	createdAt: string;
+}
+
+export interface DisassemblyLine {
+	offset: number;
+	bytes: number[];
+	mnemonic: string;
+	length: number;
+	truncated?: boolean;
+}
