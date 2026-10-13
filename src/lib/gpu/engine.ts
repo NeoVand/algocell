@@ -14,11 +14,20 @@ import {
 } from '$lib/sim/constants';
 import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
-import { createSimShader, createRenderShader } from './shaders';
+import { createSimShader, createRenderShader, createFieldShader } from './shaders';
 import { suppressionMasks, emptySuppression, type SuppressSets } from '$lib/z80-opcodes';
 import { ORIGINAL_SETTINGS, validateSettings, createInitialSoup } from './machine';
 import { ablationMasks } from '../lab/ablation';
 import { runCulture } from './culture';
+import { runAssays, type AssayResult, type AssayOptions } from './assays';
+import {
+	measureRegion,
+	normalizeRegion,
+	type FieldMode,
+	type Marker,
+	type CellRegion,
+	type RegionMeasurement
+} from '../observation';
 import type { LabSettings, InitialCondition, CultureResult } from '../lab/types';
 
 export class GPUEngine {
@@ -38,9 +47,15 @@ export class GPUEngine {
 	private collisionMaskBuffer!: GPUBuffer;
 	private cellHashBuffer!: GPUBuffer;
 	private fetchStatusBuffer!: GPUBuffer;
+	private fieldBuffer!: GPUBuffer;
 	private simModule!: GPUShaderModule;
+	private visualModules: GPUShaderModule[] = [];
 	private machineSettings: LabSettings = structuredClone(ORIGINAL_SETTINGS);
 	private measureFetch = false;
+	private fieldMode: FieldMode = 'bytes';
+	private marker: Marker | null = null;
+	private fieldDirty = true;
+	private fieldUpdate = -1;
 	private masks = new Uint32Array(24);
 	private paramsData = new Uint32Array(32);
 
@@ -53,6 +68,8 @@ export class GPUEngine {
 	private byteCountsStagingBuffer!: GPUBuffer;
 	private soupStagingBuffer!: GPUBuffer;
 	private cellHashStagingBuffer!: GPUBuffer;
+	private cellStagingBuffer!: GPUBuffer;
+	private cellReadQueue: Promise<void> = Promise.resolve();
 
 	// Compute pipelines
 	private clearCollisionPipeline!: GPUComputePipeline;
@@ -66,10 +83,12 @@ export class GPUEngine {
 
 	// Render pipeline
 	private renderPipeline!: GPURenderPipeline;
+	private fieldPipeline!: GPUComputePipeline;
 
 	// Bind groups
 	private simBindGroup!: GPUBindGroup;
 	private renderBindGroup!: GPUBindGroup;
+	private fieldBindGroup!: GPUBindGroup;
 
 	// Grid configuration
 	private gridConfig: GridConfig;
@@ -257,6 +276,10 @@ export class GPUEngine {
 			size: this.cellCount * 4,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
+		this.fieldBuffer = dev.createBuffer({
+			size: this.cellCount * 4,
+			usage: GPUBufferUsage.STORAGE
+		});
 
 		// RNG states: 1 u32 per pair
 		this.rngStatesBuffer = dev.createBuffer({
@@ -310,6 +333,10 @@ export class GPUEngine {
 			size: this.cellCount * 4,
 			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
 		});
+		this.cellStagingBuffer = dev.createBuffer({
+			size: 128,
+			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+		});
 
 		// Render buffers
 		this.colormapBuffer = dev.createBuffer({
@@ -318,7 +345,7 @@ export class GPUEngine {
 		});
 
 		this.renderParamsBuffer = dev.createBuffer({
-			size: 64, // RenderParams struct (16 fields)
+			size: 80, // RenderParams struct (20 fields)
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -396,6 +423,8 @@ export class GPUEngine {
 
 		// Render pipeline
 		const renderModule = dev.createShaderModule({ code: createRenderShader(this.gridType) });
+		const fieldModule = dev.createShaderModule({ code: createFieldShader() });
+		this.visualModules = [renderModule, fieldModule];
 
 		const renderBindGroupLayout = dev.createBindGroupLayout({
 			entries: [
@@ -419,7 +448,8 @@ export class GPUEngine {
 					visibility: GPUShaderStage.FRAGMENT,
 					buffer: { type: 'read-only-storage' }
 				},
-				{ binding: 4, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }
+				{ binding: 4, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } },
+				{ binding: 5, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }
 			]
 		});
 
@@ -441,12 +471,33 @@ export class GPUEngine {
 				{ binding: 1, resource: { buffer: this.colormapBuffer } },
 				{ binding: 2, resource: { buffer: this.renderParamsBuffer } },
 				{ binding: 3, resource: { buffer: this.traceImageBuffer } },
-				{ binding: 4, resource: { buffer: this.fetchStatusBuffer } }
+				{ binding: 4, resource: { buffer: this.fetchStatusBuffer } },
+				{ binding: 5, resource: { buffer: this.fieldBuffer } }
+			]
+		});
+		const fieldLayout = dev.createBindGroupLayout({
+			entries: [
+				{ binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+				{ binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+				{ binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
+			]
+		});
+		this.fieldPipeline = dev.createComputePipeline({
+			layout: dev.createPipelineLayout({ bindGroupLayouts: [fieldLayout] }),
+			compute: { module: fieldModule, entryPoint: 'measure_field' }
+		});
+		this.fieldBindGroup = dev.createBindGroup({
+			layout: fieldLayout,
+			entries: [
+				{ binding: 0, resource: { buffer: this.soupBuffer } },
+				{ binding: 1, resource: { buffer: this.renderParamsBuffer } },
+				{ binding: 2, resource: { buffer: this.fieldBuffer } }
 			]
 		});
 	}
 
 	private initSoup(): void {
+		this.fieldDirty = true;
 		// Generate random soup data on CPU and upload
 		const soupData = new Uint8Array(this.soupSize);
 		const rng = new SplitMix64(this.seed);
@@ -529,8 +580,12 @@ export class GPUEngine {
 	}
 
 	private async checkShader(): Promise<void> {
-		const info = await this.simModule.getCompilationInfo();
-		const errors = info.messages.filter((message) => message.type === 'error');
+		const infos = await Promise.all(
+			[this.simModule, ...this.visualModules].map((module) => module.getCompilationInfo())
+		);
+		const errors = infos.flatMap((info) =>
+			info.messages.filter((message) => message.type === 'error')
+		);
 		if (errors.length)
 			throw new Error(errors.map((message) => `${message.lineNum}: ${message.message}`).join('\n'));
 	}
@@ -545,6 +600,7 @@ export class GPUEngine {
 		if (settings.pairAttempts > MAX_BATCH_PAIR_N)
 			throw new Error('This instrument supports up to 8192 pair slots per update.');
 		await this.waitForIdle();
+		await this.cellReadQueue;
 		const geometryChanged =
 			settings.width !== this.soupWidth ||
 			settings.height !== this.soupHeight ||
@@ -605,12 +661,36 @@ export class GPUEngine {
 	}
 
 	async setShowConfinement(show: boolean): Promise<void> {
+		await this.setFieldMode(show ? 'confinement' : 'bytes');
+	}
+
+	async setFieldMode(mode: FieldMode): Promise<void> {
+		if (!['bytes', 'identity', 'confinement', 'zeros', 'diversity', 'marker'].includes(mode))
+			throw new Error('Unknown observation mode.');
+		this.fieldMode = mode;
+		this.fieldDirty = true;
+		const show = mode === 'confinement';
 		if (show === this.measureFetch) return;
 		await this.waitForIdle();
 		this.measureFetch = show;
 		this.device.queue.writeBuffer(this.fetchStatusBuffer, 0, new Uint32Array(this.cellCount));
 		this.createPipelines();
 		await this.checkShader();
+	}
+
+	setMarker(marker: Marker | null): void {
+		if (
+			marker &&
+			(!Number.isInteger(marker.position) ||
+				marker.position < 0 ||
+				marker.position >= this.tapeLength ||
+				!Number.isInteger(marker.value) ||
+				marker.value < 0 ||
+				marker.value > 255)
+		)
+			throw new Error('Marker position or byte value is out of range.');
+		this.marker = marker ? { ...marker } : null;
+		this.fieldDirty = true;
 	}
 
 	runCulture(
@@ -620,12 +700,17 @@ export class GPUEngine {
 		return runCulture(this.device, this.settings, tape, options);
 	}
 
+	runAssays(tape: number[] | Uint8Array, options: AssayOptions = {}): Promise<AssayResult> {
+		return runAssays(this.device, this.settings, tape, options);
+	}
+
 	get config(): GridConfig {
 		return { ...this.gridConfig };
 	}
 
 	changeGridConfig(config: GridConfig, canvasW?: number, canvasH?: number): void {
 		this.gridConfig = { ...config };
+		if (this.marker && this.marker.position >= this.tapeLength) this.marker = null;
 		// Preserve suppression across buffer recreation
 		const savedSuppression = this.suppression;
 		// Destroy old buffers
@@ -824,6 +909,7 @@ export class GPUEngine {
 
 	// Write soup data back to GPU (for checkpoint restore)
 	writeSoupData(data: Uint8Array): void {
+		this.fieldDirty = true;
 		this.device.queue.writeBuffer(
 			this.soupBuffer,
 			0,
@@ -851,6 +937,86 @@ export class GPUEngine {
 		} finally {
 			this._soupMapPending = false;
 		}
+	}
+
+	/** Read only the selected tape; probing never downloads the population. */
+	readCell(cell: number): Promise<Uint8Array> {
+		if (!Number.isInteger(cell) || cell < 0 || cell >= this.cellCount)
+			return Promise.reject(new Error('Cell index is outside the lattice.'));
+		const task = this.cellReadQueue.then(async () => {
+			const length = this.tapeLength;
+			const size = this.wordsPerCell * 4;
+			const staging = this.cellStagingBuffer;
+			const encoder = this.device.createCommandEncoder();
+			encoder.copyBufferToBuffer(this.soupBuffer, cell * size, staging, 0, size);
+			this.device.queue.submit([encoder.finish()]);
+			await staging.mapAsync(GPUMapMode.READ, 0, size);
+			try {
+				return new Uint8Array(staging.getMappedRange(0, size).slice(0, length));
+			} finally {
+				staging.unmap();
+			}
+		});
+		this.cellReadQueue = task.then(
+			() => {},
+			() => {}
+		);
+		return task;
+	}
+
+	/** The caller pauses the world before taking a region measurement. */
+	async readRegion(region: CellRegion): Promise<RegionMeasurement> {
+		const selection = normalizeRegion(region, this.soupWidth, this.soupHeight);
+		const { width, height, length } = this.settings;
+		const marker = this.marker;
+		const update = this.batchIndex;
+		const data = await this.readSoupData();
+		if (!data.length) throw new Error('Another population sample is pending. Try again shortly.');
+		return measureRegion(data, width, height, length, selection, update, marker);
+	}
+
+	/** Explicit intervention. Only the affected word is uploaded. */
+	async plantMarker(cell: number, position: number, value: number): Promise<void> {
+		this.setMarker({ position, value });
+		await this.waitForIdle();
+		const tape = await this.readCell(cell);
+		const start = position & ~3;
+		const word = new Uint8Array(4);
+		word.set(tape.subarray(start, start + 4));
+		word[position & 3] = value;
+		this.device.queue.writeBuffer(this.soupBuffer, cell * this.wordsPerCell * 4 + start, word);
+		this.device.queue.writeBuffer(this.fetchStatusBuffer, cell * 4, new Uint32Array([0]));
+		this.fieldDirty = true;
+	}
+
+	/** Canvas-pixel bounds of a cell; hex returns its enclosing visual box. */
+	cellBounds(
+		cell: number,
+		canvasW: number,
+		canvasH: number
+	): { x: number; y: number; width: number; height: number } {
+		const x = cell % this.soupWidth;
+		const y = Math.floor(cell / this.soupWidth);
+		const scale = canvasW / this.view.zoom;
+		if (this.gridType === 'hex') {
+			const row = y * 5;
+			const centerX = x * 5 + (y & 1) * 2 + 0.5 + (row & 1) * 0.5;
+			const centerY = (row + 0.5) * HEX_HEIGHT_RATIO;
+			return {
+				x: (centerX - 2.6 - this.view.offsetX) * scale,
+				y: (centerY - 2.6 * HEX_HEIGHT_RATIO - this.view.offsetY) * scale,
+				width: 5.2 * scale,
+				height: 5.2 * HEX_HEIGHT_RATIO * scale
+			};
+		}
+		// Both axes have the same pixel scale because the renderer preserves aspect.
+		void canvasH;
+		return {
+			x: (x - this.view.offsetX) * scale,
+			y: (y - this.view.offsetY) * scale,
+			width: scale,
+			height: scale
+		};
 	}
 
 	zoomAt(screenX: number, screenY: number, canvasW: number, canvasH: number, factor: number): void {
@@ -1048,7 +1214,7 @@ export class GPUEngine {
 	// Render the soup to the canvas
 	render(canvas: HTMLCanvasElement): void {
 		const tileSize = Math.ceil(Math.sqrt(this.tapeLength));
-		const renderParams = new ArrayBuffer(64); // 16 fields * 4 bytes
+		const renderParams = new ArrayBuffer(80); // 20 fields * 4 bytes
 		const view = new DataView(renderParams);
 		view.setUint32(0, this.soupWidth, true);
 		view.setUint32(4, this.soupHeight, true);
@@ -1066,10 +1232,31 @@ export class GPUEngine {
 		view.setFloat32(52, this.saturation, true);
 		view.setUint32(56, this.showGrid, true);
 		view.setUint32(60, this.measureFetch ? 1 : 0, true);
+		view.setUint32(
+			64,
+			['bytes', 'identity', 'confinement', 'zeros', 'diversity', 'marker'].indexOf(this.fieldMode),
+			true
+		);
+		view.setUint32(68, this.marker?.position ?? 0, true);
+		view.setUint32(72, this.marker?.value ?? 0, true);
+		view.setUint32(76, this.marker ? 1 : 0, true);
 
 		this.device.queue.writeBuffer(this.renderParamsBuffer, 0, renderParams);
 
 		const encoder = this.device.createCommandEncoder();
+		if (
+			this.fieldMode !== 'bytes' &&
+			this.fieldMode !== 'confinement' &&
+			(this.fieldDirty || this.fieldUpdate !== this.batchIndex)
+		) {
+			const fieldPass = encoder.beginComputePass();
+			fieldPass.setPipeline(this.fieldPipeline);
+			fieldPass.setBindGroup(0, this.fieldBindGroup);
+			fieldPass.dispatchWorkgroups(Math.ceil(this.cellCount / 64));
+			fieldPass.end();
+			this.fieldDirty = false;
+			this.fieldUpdate = this.batchIndex;
+		}
 		const textureView = this.context.getCurrentTexture().createView();
 
 		const pass = encoder.beginRenderPass({
@@ -1108,6 +1295,8 @@ export class GPUEngine {
 		this.soupStagingBuffer?.destroy();
 		this.cellHashBuffer?.destroy();
 		this.fetchStatusBuffer?.destroy();
+		this.fieldBuffer?.destroy();
 		this.cellHashStagingBuffer?.destroy();
+		this.cellStagingBuffer?.destroy();
 	}
 }

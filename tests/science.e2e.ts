@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+// Local GPU tests run in short bursts with an idle interval between them.
+test.afterEach(async ({ page }) => {
+	await page.waitForTimeout(2000);
+});
+
 // These run the actual package and app service in Chromium, with no CPU simulation mock.
 test.beforeEach(async ({ page }) => {
 	await page.goto('/demo/playwright');

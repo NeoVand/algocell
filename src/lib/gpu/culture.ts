@@ -39,7 +39,11 @@ function same(a: ArrayLike<number>, b: ArrayLike<number>): boolean {
 	return true;
 }
 
-function observation(result: MachineResult, before: Uint8Array, lane = 0): EncounterObservation {
+export function observation(
+	result: MachineResult,
+	before: Uint8Array,
+	lane = 0
+): EncounterObservation {
 	return {
 		before: Array.from(before),
 		after: Array.from(result.memoryOf(lane)),
@@ -57,7 +61,12 @@ export async function runCulture(
 	device: GPUDevice,
 	settings: LabSettings,
 	tape: number[] | Uint8Array,
-	options: { trials?: number; seed?: number; generations?: number } = {}
+	options: {
+		trials?: number;
+		seed?: number;
+		generations?: number;
+		marker?: { position: number; value: number };
+	} = {}
 ): Promise<CultureResult> {
 	if (
 		tape.length !== settings.length ||
@@ -65,7 +74,10 @@ export async function runCulture(
 	)
 		throw new Error(`A tape must contain exactly ${settings.length} bytes.`);
 	const engine = await createEngine({ device });
-	const machine = await engine.machine(machineSpec(settings));
+	const machine = await engine.machine(machineSpec(settings)).catch((error: unknown) => {
+		engine.destroy();
+		throw error;
+	});
 	const masks = ablationMasks(settings.isa, settings.ablation);
 	try {
 		const trials = options.trials ?? 64,
@@ -82,11 +94,23 @@ export async function runCulture(
 			throw new Error('Culture supports 1–256 partners and 1–8 generations.');
 		if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
 			throw new Error('Culture seed must be an unsigned 32-bit integer.');
+		const marker = options.marker;
+		if (
+			marker &&
+			(!Number.isInteger(marker.position) ||
+				marker.position < 0 ||
+				marker.position >= tape.length ||
+				!Number.isInteger(marker.value) ||
+				marker.value < 0 ||
+				marker.value > 255)
+		)
+			throw new Error('Marker position and value must identify a byte in the selected tape.');
 		const L = settings.length,
 			rng = new Pcg(seed);
 		let parents = new Uint8Array(trials * L);
 		for (let k = 0; k < trials; k++) parents.set(tape, k * L);
 		const summary: CultureGeneration[] = [];
+		const retention: number[] = [];
 		let example: EncounterObservation | undefined;
 		for (let generation = 1; generation <= generations; generation++) {
 			const input = new Uint8Array(trials * L * 2);
@@ -103,7 +127,8 @@ export async function runCulture(
 				cyclic = 0,
 				copies = 0,
 				similarity = 0,
-				entries = 0;
+				entries = 0,
+				retained = 0;
 			for (let k = 0; k < trials; k++) {
 				const child = result.memoryOf(k).subarray(L),
 					before = cyclicSimilarity(tape, input.subarray(k * L * 2 + L, (k + 1) * L * 2)),
@@ -118,6 +143,7 @@ export async function runCulture(
 				if (after >= 0.75) copies++;
 				similarity += after;
 				if (result.fetchedOf(k).some((p) => p >= L)) entries++;
+				if (marker && child[marker.position] === marker.value) retained++;
 			}
 			summary.push({
 				generation,
@@ -130,6 +156,7 @@ export async function runCulture(
 				partnerEntries: entries
 			});
 			parents = offspring;
+			if (marker) retention.push(retained / trials);
 		}
 		const gain = summary[1]?.gain ?? null;
 		return {
@@ -147,7 +174,8 @@ export async function runCulture(
 						: 'intermediate',
 			example: example!,
 			manifest: machine.manifest,
-			settings: structuredClone(settings)
+			settings: structuredClone(settings),
+			...(marker ? { retention } : {})
 		};
 	} finally {
 		machine.destroy();

@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+// Local GPU tests run in short bursts with an idle interval between them.
+test.afterEach(async ({ page }) => {
+	await page.waitForTimeout(2000);
+});
+
 test('embedded soup libraries match standalone machines across ISAs and world interventions', async ({
 	page
 }) => {

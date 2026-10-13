@@ -155,6 +155,17 @@ export function createSimShader(
       write_counts[pair_id * ${laneStride}u + 2u + f] = zil_fetch_map[f];
     }`
 		: '';
+	const fetchCompare = measureFetch
+		? `
+    var changed_a = false;
+    var changed_b = false;
+    for (var w = 0u; w < words_per_cell; w++) {
+      let valid = min(4u, params.tape_length - w * 4u);
+      let mask = 0xffffffffu >> ((4u - valid) * 8u);
+      changed_a = changed_a || ((soup[i * words_per_cell + w] ^ pair_data[base + w]) & mask) != 0u;
+      changed_b = changed_b || ((soup[j * words_per_cell + w] ^ pair_data[base + words_per_cell + w]) & mask) != 0u;
+    }`
+		: '';
 	const fetchAbsorb = measureFetch
 		? `
     // This is the last initiating encounter, not a permanent tape property.
@@ -163,8 +174,8 @@ export function createSimShader(
       let bits = write_counts[pair_id * ${laneStride}u + 2u + (b >> 5u)];
       entered = entered || ((bits >> (b & 31u)) & 1u) != 0u;
     }
-    fetch_status[i] = select(1u, 2u, entered);
-    fetch_status[j] = 0u; // partner changed without an initiating observation
+    fetch_status[i] = select(select(1u, 2u, entered), 0u, changed_a);
+    if (changed_b) { fetch_status[j] = 0u; }
   `
 		: '';
 
@@ -339,6 +350,7 @@ fn absorb_results(@builtin(global_invocation_id) id: vec3u) {
     let words_per_pair = words_per_cell * 2u;
     let base = pair_id * words_per_pair;
 
+    ${fetchCompare}
     for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
         soup[i * words_per_cell + w_idx] = pair_data[base + w_idx];
     }
@@ -453,8 +465,8 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     let cell_y = u32(grid_y);
     let cell_idx = cell_y * u32(sw) + cell_x;
 
-    if (rparams.show_confinement != 0u) {
-      return confinement_color(cell_idx);
+    if (rparams.field_mode != 0u) {
+      return field_color(cell_idx);
     }
 
     // Sub-cell position (0..1 within the cell)
@@ -703,7 +715,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
 
         let cell_idx = u32(cy) * u32(sw) + u32(cx);
 
-        if (rparams.show_confinement != 0u) { return confinement_color(cell_idx); }
+        if (rparams.field_mode != 0u) { return field_color(cell_idx); }
 
         // Average color of all bytes in cell
         var acc = vec3f(0.0);
@@ -767,7 +779,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     }
 
     let cell_idx = u32(cell_b) * u32(sw) + u32(cell_a);
-    if (rparams.show_confinement != 0u) { return confinement_color(cell_idx); }
+    if (rparams.field_mode != 0u) { return field_color(cell_idx); }
     let in_gap = byte_idx_i < 0;
 
     // LOD: bytes per screen pixel
@@ -881,11 +893,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
 }
 `;
 
-export function createRenderShader(gridType: GridType): string {
-	const fragmentBlock = gridType === 'hex' ? HEX_RENDER_FRAGMENT : SQUARE_RENDER_FRAGMENT;
-
-	return /* wgsl */ `
-
+const RENDER_PARAMS = /* wgsl */ `
 struct RenderParams {
     soup_width: u32,
     soup_height: u32,
@@ -903,20 +911,118 @@ struct RenderParams {
     saturation: f32,   // 0..2, default 1
     show_grid: u32,    // 1 = show grid lines, 0 = hide
     show_confinement: u32,
+    field_mode: u32,
+    marker_position: u32,
+    marker_value: u32,
+    marker_enabled: u32,
 }
+`;
+
+/** Optional per-cell reductions. No work from this shader enters the byte view. */
+export function createFieldShader(): string {
+	return /* wgsl */ `
+${RENDER_PARAMS}
+@group(0) @binding(0) var<storage, read> soup: array<u32>;
+@group(0) @binding(1) var<uniform> rparams: RenderParams;
+@group(0) @binding(2) var<storage, read_write> field: array<u32>;
+
+fn field_byte(cell: u32, position: u32) -> u32 {
+  let stride = (rparams.tape_length + 3u) / 4u;
+  return (soup[cell * stride + (position >> 2u)] >> ((position & 3u) * 8u)) & 255u;
+}
+
+fn tapes_equal(a: u32, b: u32) -> bool {
+  let stride = (rparams.tape_length + 3u) / 4u;
+  for (var w = 0u; w < stride; w++) {
+    let valid = min(4u, rparams.tape_length - w * 4u);
+    let mask = 0xffffffffu >> ((4u - valid) * 8u);
+    if (((soup[a * stride + w] ^ soup[b * stride + w]) & mask) != 0u) { return false; }
+  }
+  return true;
+}
+
+@compute @workgroup_size(64)
+fn measure_field(@builtin(global_invocation_id) id: vec3u) {
+  let cell = id.x;
+  if (cell >= rparams.soup_width * rparams.soup_height) { return; }
+  if (rparams.field_mode == 1u) {
+    var hash = 2166136261u;
+    for (var b = 0u; b < rparams.tape_length; b++) {
+      hash = (hash ^ field_byte(cell, b)) * 16777619u;
+    }
+    field[cell] = hash;
+  } else if (rparams.field_mode == 3u) {
+    var zeros = 0u;
+    for (var b = 0u; b < rparams.tape_length; b++) {
+      zeros += select(0u, 1u, field_byte(cell, b) == 0u);
+    }
+    field[cell] = bitcast<u32>(f32(zeros) / f32(rparams.tape_length));
+  } else if (rparams.field_mode == 4u) {
+    let cx = i32(cell % rparams.soup_width);
+    let cy = i32(cell / rparams.soup_width);
+    var representatives: array<u32, 9>;
+    var unique = 0u;
+    var total = 0u;
+    for (var dy = -1; dy <= 1; dy++) {
+      for (var dx = -1; dx <= 1; dx++) {
+        let x = cx + dx;
+        let y = cy + dy;
+        if (x < 0 || x >= i32(rparams.soup_width) || y < 0 || y >= i32(rparams.soup_height)) { continue; }
+        let neighbor = u32(y) * rparams.soup_width + u32(x);
+        total++;
+        var found = false;
+        for (var j = 0u; j < unique; j++) {
+          if (tapes_equal(neighbor, representatives[j])) { found = true; break; }
+        }
+        if (!found) { representatives[unique] = neighbor; unique++; }
+      }
+    }
+    field[cell] = bitcast<u32>(f32(unique) / f32(total));
+  } else if (rparams.field_mode == 5u) {
+    field[cell] = select(0u, 1u, rparams.marker_enabled != 0u && field_byte(cell, rparams.marker_position) == rparams.marker_value);
+  }
+}
+`;
+}
+
+export function createRenderShader(gridType: GridType): string {
+	const fragmentBlock = gridType === 'hex' ? HEX_RENDER_FRAGMENT : SQUARE_RENDER_FRAGMENT;
+
+	return /* wgsl */ `
+${RENDER_PARAMS}
 
 @group(0) @binding(0) var<storage, read> soup: array<u32>;
 @group(0) @binding(1) var<storage, read> colormap: array<u32>;     // 256 RGBA packed
 @group(0) @binding(2) var<uniform> rparams: RenderParams;
 @group(0) @binding(3) var<storage, read> trace_image: array<u32>;  // trace overlay RGBA
 @group(0) @binding(4) var<storage, read> fetch_status: array<u32>;
+@group(0) @binding(5) var<storage, read> field: array<u32>;
 
-// Existing palette: dim unknown, cool confined, warm partner entry.
+// Fixed measurement colours are independent of byte palette and appearance sliders.
 fn confinement_color(cell: u32) -> vec4f {
   let status = fetch_status[cell];
   if (status == 0u) { return vec4f(0.12, 0.12, 0.15, 1.0); }
-  let index = select(48u, 192u, status == 2u);
-  return unpack_color(colormap[index]);
+  return select(vec4f(0.25, 0.52, 0.72, 1.0), vec4f(0.9, 0.58, 0.28, 1.0), status == 2u);
+}
+
+fn field_color(cell: u32) -> vec4f {
+  var color = vec3f(0.12, 0.12, 0.15);
+  if (rparams.field_mode == 1u) {
+    // A visual fingerprint only: hash colours can collide.
+    let hue = f32(field[cell] & 65535u) / 65536.0;
+    let rgb = clamp(abs(fract(vec3f(hue) + vec3f(0.0, 0.666667, 0.333333)) * 6.0 - 3.0) - 1.0, vec3f(0.0), vec3f(1.0));
+    color = mix(vec3f(0.3), rgb, 0.65) * 0.95 + vec3f(0.08);
+  } else if (rparams.field_mode == 2u) {
+    color = confinement_color(cell).rgb;
+  } else if (rparams.field_mode == 3u) {
+    color = mix(vec3f(0.09, 0.16, 0.23), vec3f(0.97, 0.87, 0.66), bitcast<f32>(field[cell]));
+  } else if (rparams.field_mode == 4u) {
+    color = mix(vec3f(0.15, 0.31, 0.43), vec3f(0.91, 0.59, 0.35), bitcast<f32>(field[cell]));
+  } else if (rparams.field_mode == 5u) {
+    color = select(vec3f(0.12, 0.13, 0.15), vec3f(0.98, 0.68, 0.35), field[cell] != 0u);
+  }
+  if (rparams.hover_cell >= 0 && cell == u32(rparams.hover_cell)) { color = min(color * 1.2 + vec3f(0.1), vec3f(1.0)); }
+  return vec4f(color, 1.0);
 }
 
 struct VertexOutput {

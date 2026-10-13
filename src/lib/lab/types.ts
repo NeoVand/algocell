@@ -112,6 +112,8 @@ export interface CultureResult {
 	example: EncounterObservation;
 	manifest: ShaderManifest;
 	settings: LabSettings;
+	/** Optional same-position byte-value matches after each serial transfer. Not ancestry. */
+	retention?: number[];
 }
 
 export interface MarkerResult {
