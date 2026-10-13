@@ -558,13 +558,17 @@ export class GPUEngine {
 		this.masks.fill(0);
 		this.masks.set(ablationMasks(settings.isa, settings.ablation));
 		if (geometryChanged) {
-			this.changeGridConfig({
-				width: settings.width,
-				height: settings.height,
-				gridType: settings.topology,
-				tapeLength: settings.length,
-				pairLength: settings.ring
-			});
+			this.changeGridConfig(
+				{
+					width: settings.width,
+					height: settings.height,
+					gridType: settings.topology,
+					tapeLength: settings.length,
+					pairLength: settings.ring
+				},
+				this.context.canvas.width,
+				this.context.canvas.height
+			);
 		} else {
 			this.createPipelines();
 			this.flushSuppressMask();
