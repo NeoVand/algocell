@@ -14,9 +14,14 @@
 	} from '$lib/z80-disasm';
 	import { disassembleTape } from '$lib/lab/disassemble';
 	import { ablationInstructions, ablationMasks } from '$lib/lab/ablation';
-	import { PAPER_PRESETS, type PaperPreset } from '$lib/lab/presets';
+	import {
+		PAPER_PRESETS as EXPERIMENT_PRESETS,
+		type PaperPreset as ExperimentPreset
+	} from '$lib/lab/presets';
+	import ObservationTools from '$lib/components/ObservationTools.svelte';
+	import EncounterBench from '$lib/components/EncounterBench.svelte';
 	import { ABOUT_SECTIONS, GUIDE_SECTIONS, type DocumentationSection } from '$lib/lab/content';
-	import type { LabSettings, LabIsa, CultureResult, InitialCondition } from '$lib/lab/types';
+	import type { LabSettings, LabIsa, InitialCondition } from '$lib/lab/types';
 	import { ORIGINAL_SETTINGS } from '$lib/gpu/machine';
 	import {
 		resolveSuppression,
@@ -51,7 +56,7 @@
 	let contrast = $state(1);
 	let saturation = $state(1);
 
-	let canvas: HTMLCanvasElement;
+	let canvas = $state<HTMLCanvasElement>(null!);
 	let canvasContainer: HTMLDivElement;
 	let engine = $state.raw<GPUEngine | null>(null);
 	let gpuError = $state<string | null>(null);
@@ -73,12 +78,14 @@
 	let randomRegisters = $state(false);
 	let stackConvention = $state<LabSettings['stack']>('legacy-sp');
 	let dialMode = $state<LabSettings['dialMode']>('historical-pcg');
-	let showConfinement = $state(false);
 	let machineBusy = $state(false);
+	let observationBusy = $state(false);
 	let machineError = $state<string | null>(null);
-	let selectedPaperId = $state('');
+	let selectedExperimentId = $state('');
 	let initialCondition = $state.raw<InitialCondition>({ kind: 'random' });
-	const selectedPaper = $derived(PAPER_PRESETS.find((preset) => preset.id === selectedPaperId));
+	const selectedExperiment = $derived(
+		EXPERIMENT_PRESETS.find((preset) => preset.id === selectedExperimentId)
+	);
 	const isa = $derived<LabIsa>(
 		machine === 'm6502' ? 'm6502' : machine === 'i8086' ? 'i8086' : 'z80'
 	);
@@ -90,9 +97,8 @@
 	);
 	let inspectedTape = $state.raw<Uint8Array | null>(null);
 	let inspectedCell = $state(-1);
-	let cultureResult = $state.raw<CultureResult | null>(null);
 	let cultureBusy = $state(false);
-	let cultureError = $state<string | null>(null);
+	let observation = $state<ObservationTools>();
 	let inspectReadPending = false;
 	let pointerDownX = 0;
 	let pointerDownY = 0;
@@ -189,7 +195,7 @@
 	}
 
 	async function updateMachine(reset = false) {
-		if (!engine || machineBusy) return;
+		if (!engine || machineBusy || observationBusy) return;
 		playing = false;
 		machineBusy = true;
 		machineError = null;
@@ -208,64 +214,32 @@
 		const next = (event.target as HTMLSelectElement).value as MachineChoice;
 		machine = next;
 		suppressPatterns = [];
-		selectedPaperId = '';
+		selectedExperimentId = '';
 		stackConvention = next === 'm6502' || next === 'i8086' ? 'first-push' : 'top';
 		dialMode = next === 'z80-0.2' ? 'historical-pcg' : 'counter';
 		initialCondition = { kind: 'random' };
 		await updateMachine(true);
 	}
 
-	async function applyPaperPreset(preset: PaperPreset) {
-		if (machineBusy) return;
+	async function applyExperimentPreset(preset: ExperimentPreset) {
+		if (machineBusy || observationBusy) return;
 		assignMachineSettings(preset.config);
-		selectedPaperId = preset.id;
+		selectedExperimentId = preset.id;
 		initialCondition = preset.initialCondition;
 		await updateMachine(true);
-	}
-
-	async function changeConfinement(event: Event) {
-		if (!engine || machineBusy) return;
-		const next = (event.target as HTMLInputElement).checked;
-		playing = false;
-		machineBusy = true;
-		machineError = null;
-		try {
-			await engine.setShowConfinement(next);
-			showConfinement = next;
-		} catch (error) {
-			machineError = error instanceof Error ? error.message : String(error);
-		} finally {
-			machineBusy = false;
-		}
 	}
 
 	async function inspectCell(index: number) {
 		if (!engine || index < 0 || inspectReadPending) return;
 		inspectReadPending = true;
 		try {
-			const soup = await engine.readSoupData();
-			if (!soup.length) return;
-			inspectedTape = getCellData(soup, index);
+			const bytes = await engine.readCell(index);
+			if (!bytes.length) return;
+			playing = false;
+			inspectedTape = bytes;
 			inspectedCell = index;
-			cultureResult = null;
-			cultureError = null;
 		} finally {
 			inspectReadPending = false;
-		}
-	}
-
-	async function runCulture(tape: Uint8Array) {
-		if (!engine || cultureBusy) return;
-		playing = false;
-		cultureBusy = true;
-		cultureError = null;
-		cultureResult = null;
-		try {
-			cultureResult = await engine.runCulture(tape, { trials: 32, seed, generations: 2 });
-		} catch (error) {
-			cultureError = error instanceof Error ? error.message : String(error);
-		} finally {
-			cultureBusy = false;
 		}
 	}
 
@@ -343,7 +317,7 @@
 				paragraphs: [
 					'The opcode chart counts inherited byte values, even when a value is an operand or data rather than an executed instruction. The concentration factor compares a byte’s fraction with a uniform 1/256 baseline. Padding is excluded.',
 					'The species and diversity tabs group full tapes by a GPU content hash. This fast composition view can have hash collisions; it is not an exact ancestry census. Shannon entropy, Simpson diversity and richness describe how those groups are distributed, not fitness, heredity or progress.',
-					'An abundant exact-looking tape is a candidate to inspect and culture. A transmitting population can contain many different payloads, so a single top-tape share can hide it. Short visual runs do not reproduce the paper’s cohort evidence or emergence-time distributions.'
+					'An abundant exact-looking tape is a candidate to inspect and culture. A transmitting population can contain many different payloads, so a single top-tape share can hide it. Short visual runs do not reproduce longer cohort evidence or emergence-time distributions.'
 				]
 			};
 		if (section.id === 'exports')
@@ -351,8 +325,8 @@
 				...section,
 				paragraphs: [
 					'A preset describes how to begin; a checkpoint stores the current population. Algocell keeps its original .acell format: a PNG preview with local metadata and the complete word-aligned soup attached. New checkpoints include the processor, ring geometry, reset, chemistry, suppression and planted condition. Original files restore historical Z80 compatibility 0.2 with SP = FFFF.',
-					'Checkpoint populations can be inspected and continued, but the original format does not preserve every GPU random lane’s continuation state. Reloading a population is not a promise of the same subsequent trajectory. Keep the complete condition with any comparison; equal seeds alone do not identify an archived paper run.',
-					'Files remain on your computer. No checkpoint is uploaded to a remote service. Source paths in the paper preset notes identify the companion manuscript’s registration, machine world and results.'
+					'Checkpoint populations can be inspected and continued, but the original format does not preserve every GPU random lane’s continuation state. Reloading a population is not a promise of the same subsequent trajectory. Keep the complete condition with any comparison; equal seeds alone do not identify an archived run.',
+					'Files remain on your computer. No checkpoint is uploaded to a remote service. Source paths in the experiment notes identify the source registration, machine world and results.'
 				]
 			};
 		return section;
@@ -718,20 +692,26 @@
 			if (!engine) return;
 
 			if (playing && (document.hidden || performance.now() >= runDeadline)) playing = false;
-			if (playing && !machineBusy && !cultureBusy) {
+			if (playing && !machineBusy && !observationBusy && !cultureBusy) {
 				for (let i = 0; i < speed; i++) {
 					engine.simulateStep();
 				}
 			}
 
-			if (!machineBusy) {
+			if (!machineBusy && !observationBusy) {
 				engine.render(canvas);
 				flushCellRefresh();
 			}
 			frameCount++;
 
 			// Update stats: immediately on first frame, then every 15 frames
-			if (!machineBusy && playing && (frameCount === 1 || frameCount % 15 === 0) && !statsLoading) {
+			if (
+				!machineBusy &&
+				!observationBusy &&
+				playing &&
+				(frameCount === 1 || frameCount % 15 === 0) &&
+				!statsLoading
+			) {
 				opsPerSec = engine.opsPerSec;
 				updateTopBytes();
 				if (infoTab === 'species' || infoTab === 'diversity') {
@@ -1054,10 +1034,9 @@
 		cellRefreshPending = true;
 		lastCellRefresh = performance.now();
 		engine
-			.readSoupData()
-			.then((soupData) => {
-				if (soupData.length === 0 || hoveredCell !== cell) return;
-				const data = getCellData(soupData, cell);
+			.readCell(cell)
+			.then((data) => {
+				if (data.length === 0 || hoveredCell !== cell) return;
 				cellData = data;
 				disasmLines = disassemble(data);
 			})
@@ -1100,7 +1079,7 @@
 				);
 				clearTimeout(inspectClickTimer);
 				inspectClickTimer = setTimeout(() => {
-					void inspectCell(cell);
+					void observation?.selectCell(cell);
 				}, 220);
 			}
 		}
@@ -1218,7 +1197,7 @@
 
 				if (cell >= 0 && cell !== hoveredCell) {
 					// Tap on a cell — preserve the hover view and open an inspector.
-					void inspectCell(cell);
+					void observation?.selectCell(cell);
 					hoveredCell = cell;
 					mouseX = touchStartX;
 					mouseY = touchStartY;
@@ -1264,7 +1243,7 @@
 	}
 
 	function handleReset() {
-		if (!engine || machineBusy) return;
+		if (!engine || machineBusy || observationBusy) return;
 		if (initialCondition.kind !== 'random') {
 			void updateMachine(true);
 			return;
@@ -1274,9 +1253,8 @@
 	}
 
 	function clearMeasurements() {
+		observation?.resetSelection();
 		inspectedTape = null;
-		cultureResult = null;
-		cultureError = null;
 		opsPerSec = 0;
 		chartRing.length = 0;
 		chartLen = 0;
@@ -1298,38 +1276,65 @@
 	let fileInput: HTMLInputElement;
 
 	async function handleSave() {
-		if (!engine || !canvas) return;
-		const blob = await new Promise<Blob>((resolve) => {
-			canvas.toBlob((b) => resolve(b!), 'image/png');
-		});
-		const soupData = await engine.readSoupData();
-		const metadata: CheckpointMetadata = {
-			version: 1,
-			machineSettings: engine.settings,
-			initialCondition,
-			gridWidth,
-			gridHeight,
-			gridType,
-			seed,
-			noiseExp,
-			z80Steps: engine.z80Steps,
-			pairCount: engine.pairCount,
-			suppressPatterns: [...suppressPatterns],
-			batchCount: engine.batchCount,
-			timestamp: Date.now()
-		};
-		const checkpoint = await saveCheckpoint(blob, metadata, soupData);
-		const url = URL.createObjectURL(checkpoint);
-		const a = document.createElement('a');
-		a.href = url;
-		const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-		a.download = `algocell-${ts}.acell`;
-		a.click();
-		URL.revokeObjectURL(url);
+		if (!engine || !canvas || machineBusy || observationBusy || cultureBusy) return;
+		playing = false;
+		observationBusy = true;
+		machineError = null;
+		try {
+			await engine.waitForIdle();
+			const applied = engine.settings;
+			engine.render(canvas);
+			const blob = await new Promise<Blob>((resolve, reject) => {
+				canvas.toBlob(
+					(value) =>
+						value
+							? resolve(value)
+							: reject(new Error('The checkpoint image could not be captured.')),
+					'image/png'
+				);
+			});
+			let soupData = await engine.readSoupData();
+			const expectedBytes = applied.width * applied.height * Math.ceil(applied.length / 4) * 4;
+			for (let retry = 0; soupData.length !== expectedBytes && retry < 3; retry++) {
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				soupData = await engine.readSoupData();
+			}
+			if (soupData.length !== expectedBytes)
+				throw new Error(
+					'A population measurement is still finishing. Save the checkpoint again in a moment.'
+				);
+			const metadata: CheckpointMetadata = {
+				version: 1,
+				machineSettings: applied,
+				initialCondition,
+				gridWidth: applied.width,
+				gridHeight: applied.height,
+				gridType: applied.topology,
+				seed: applied.seed,
+				noiseExp: applied.mutationExponent,
+				z80Steps: applied.steps,
+				pairCount: applied.pairAttempts,
+				suppressPatterns: [...applied.ablation],
+				batchCount: engine.batchCount,
+				timestamp: Date.now()
+			};
+			const checkpoint = await saveCheckpoint(blob, metadata, soupData);
+			const url = URL.createObjectURL(checkpoint),
+				a = document.createElement('a');
+			a.href = url;
+			const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+			a.download = `algocell-${ts}.acell`;
+			a.click();
+			setTimeout(() => URL.revokeObjectURL(url), 1000);
+		} catch (cause) {
+			machineError = cause instanceof Error ? cause.message : String(cause);
+		} finally {
+			observationBusy = false;
+		}
 	}
 
 	async function handleLoadFile(file: File) {
-		if (!engine || machineBusy) return;
+		if (!engine || machineBusy || observationBusy) return;
 		playing = false;
 		machineBusy = true;
 		machineError = null;
@@ -1352,7 +1357,7 @@
 			};
 			assignMachineSettings(restored);
 			initialCondition = metadata.initialCondition ?? { kind: 'random' };
-			selectedPaperId = '';
+			selectedExperimentId = '';
 			await engine.configure(restored, initialCondition);
 			engine.writeSoupData(soupData);
 			clearMeasurements();
@@ -1402,7 +1407,7 @@
 		gridType = type;
 		tapeLength = type === 'hex' ? 19 : 16;
 		pairLength = tapeLength * 2;
-		selectedPaperId = '';
+		selectedExperimentId = '';
 		initialCondition = { kind: 'random' };
 		// Recompute grid dimensions for the new grid type
 		const dims = computeGridDimensions(window.innerWidth, window.innerHeight, type);
@@ -1635,7 +1640,7 @@
 	});
 
 	async function applyPreset(preset: Preset) {
-		if (machineBusy) return;
+		if (machineBusy || observationBusy) return;
 		let disruption: ApplyMode | 'none' = 'none';
 		const rank: Record<ApplyMode | 'none', number> = { none: 0, live: 0, reset: 1, grid: 2 };
 		if (!('machine' in preset.values)) {
@@ -1667,7 +1672,7 @@
 			def.set(nextVal);
 			if (rank[def.mode] > rank[disruption]) disruption = def.mode;
 		}
-		selectedPaperId = '';
+		selectedExperimentId = '';
 		if (disruption === 'grid' || disruption === 'reset') await updateMachine(true);
 		else if (engine && JSON.stringify(engine.settings) !== JSON.stringify(settings()))
 			await updateMachine();
@@ -1723,7 +1728,7 @@
 
 	// Sync the derived suppression sets to the GPU engine
 	$effect(() => {
-		if (!engine || machineBusy) return;
+		if (!engine || machineBusy || observationBusy) return;
 		engine.setAblation(suppressPatterns);
 	});
 
@@ -1784,7 +1789,7 @@
 	});
 
 	function togglePlay() {
-		if (!engine || machineBusy || cultureBusy) return;
+		if (!engine || machineBusy || observationBusy || cultureBusy) return;
 		playing = !playing;
 		if (playing) runDeadline = performance.now() + 55_000;
 	}
@@ -2185,6 +2190,27 @@
 			oncontextmenu={(e) => e.preventDefault()}
 		></canvas>
 	</div>
+
+	{#if engine}
+		<ObservationTools
+			bind:this={observation}
+			{engine}
+			{canvas}
+			{playing}
+			externalBusy={machineBusy || cultureBusy}
+			onbusy={(value) => {
+				observationBusy = value;
+			}}
+			condition={selectedExperiment?.name ?? ''}
+			{byteColor}
+			onpause={() => {
+				playing = false;
+			}}
+			oninspect={(index) => {
+				void inspectCell(index);
+			}}
+		/>
+	{/if}
 
 	<!-- Toolbar -->
 	<div class="toolbar" class:collapsed={toolbarCollapsed}>
@@ -2719,76 +2745,22 @@
 	{/snippet}
 
 	{#snippet culturePanel(tape: Uint8Array)}
-		<div class="culture-panel">
-			<button
-				class="preset-chip culture-button"
-				disabled={cultureBusy || machineBusy || !engine}
-				onclick={() => {
-					void runCulture(tape);
-				}}>Run culture test</button
-			>
-			<span class="instrument-note">32 fresh partners · 2 generations · mutation off</span>
-			{#if cultureBusy}<p class="instrument-note" role="status">Testing the selected tape…</p>{/if}
-			{#if cultureError}<p class="instrument-error" role="alert">{cultureError}</p>{/if}
-			{#if cultureResult}
-				<p class="culture-verdict">
-					{cultureResult.positive === null
-						? 'Culture screen unknown'
-						: cultureResult.positive
-							? 'Positive culture screen'
-							: 'Below the culture screen'} · {cultureResult.confinement}
-				</p>
-				<table class="culture-table">
-					<thead
-						><tr><th>Generation</th><th>Gain</th><th>Exact</th><th>Cyclic</th><th>Entries</th></tr
-						></thead
-					><tbody>
-						{#each cultureResult.generations as generation (generation.generation)}<tr
-								><td>{generation.generation}</td><td
-									>{generation.gain === null ? 'unknown' : generation.gain.toFixed(3)}</td
-								><td>{generation.exactCopies}/{cultureResult.trials}</td><td
-									>{generation.cyclicCopies}/{cultureResult.trials}</td
-								><td>{generation.partnerEntries}/{cultureResult.trials}</td></tr
-							>{/each}
-					</tbody>
-				</table>
-				<p class="instrument-note">
-					Continuing production is measured separately from retention of an introduced variant. Seed {cultureResult.seed};
-					{cultureResult.settings.steps} instruction slots.
-				</p>
-				<details class="culture-example">
-					<summary>Example encounter · fetch map &amp; offspring</summary>
-					<p class="instrument-note">
-						Fetched addresses (including operands). Underline marks an instruction start.
-					</p>
-					<div class="culture-bytes">
-						{#each cultureResult.example.before as byte, index (index)}<span
-								class="culture-byte"
-								class:fetched={cultureResult.example.fetched.includes(index)}
-								class:instruction-start={cultureResult.example.starts.includes(index)}
-								title="Address {index}"
-								style="--byte-color:{byteColor(byte)};color:{cultureResult.example.fetched.includes(
-									index
-								)
-									? cellTextColor(byte)
-									: '#888'}">{hexByte(byte)}</span
-							>{/each}
-					</div>
-					<p class="instrument-note">Partner after the encounter</p>
-					<div class="culture-bytes">
-						{#each cultureResult.example.after.slice(tape.length, tape.length * 2) as byte, index (index)}<span
-								class="culture-byte fetched"
-								style="--byte-color:{byteColor(byte)};color:{cellTextColor(byte)}"
-								title="Partner byte {index}">{hexByte(byte)}</span
-							>{/each}
-					</div>
-					<p class="instrument-note">
-						{cultureResult.example.steps} executed steps; halt {cultureResult.example.halt}; trap {cultureResult
-							.example.trap}.
-					</p>
-				</details>
-			{/if}
-		</div>
+		{#if engine}
+			{#key tape}
+				<EncounterBench
+					{engine}
+					{tape}
+					{seed}
+					{byteColor}
+					onpause={() => {
+						playing = false;
+					}}
+					onbusy={(value) => {
+						cultureBusy = value;
+					}}
+				/>
+			{/key}
+		{/if}
 	{/snippet}
 
 	{#if inspectedTape}
@@ -2796,7 +2768,7 @@
 		{@const cells = buildGenomeGrid(tape, disassemble(tape))}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
-			class="species-modal-backdrop"
+			class="species-modal-backdrop bench-backdrop"
 			onclick={() => {
 				inspectedTape = null;
 			}}
@@ -2806,12 +2778,16 @@
 				class="species-modal tape-inspector"
 				onclick={(event) => event.stopPropagation()}
 				role="dialog"
-				aria-modal="true"
+				aria-modal="false"
 				aria-label="Tape inspector"
 				tabindex="-1"
 			>
 				<div class="species-modal-header">
-					<span>Cell {inspectedCell} · {isa.toUpperCase()} · {tape.length} bytes</span><button
+					<span
+						>Encounter bench <small
+							>Cell {inspectedCell} · {isa.toUpperCase()} · {tape.length} bytes</small
+						></span
+					><button
 						class="species-modal-close"
 						aria-label="Close tape inspector"
 						onclick={() => {
@@ -3153,54 +3129,57 @@
 						>
 					</div>
 				{/if}
-				<label class="paper-preset-label" for="paper-preset">Paper conditions</label>
+				<label class="experiment-preset-label" for="experiment-preset">Experiments</label>
 				<select
-					id="paper-preset"
+					id="experiment-preset"
 					class="instrument-select"
-					value={selectedPaperId}
-					disabled={machineBusy || !engine}
+					value={selectedExperimentId}
+					disabled={machineBusy || observationBusy || !engine}
 					onchange={(event) => {
-						const preset = PAPER_PRESETS.find((entry) => entry.id === event.currentTarget.value);
-						if (preset) void applyPaperPreset(preset);
+						const preset = EXPERIMENT_PRESETS.find(
+							(entry) => entry.id === event.currentTarget.value
+						);
+						if (preset) void applyExperimentPreset(preset);
 					}}
 				>
-					<option value="">Choose a paper condition…</option>
+					<option value="">Choose an experiment…</option>
 					{#each ['discovery', 'intervention', 'demonstration'] as category (category)}
 						<optgroup label={category.charAt(0).toUpperCase() + category.slice(1)}>
-							{#each PAPER_PRESETS.filter((entry) => entry.category === category) as preset (preset.id)}
+							{#each EXPERIMENT_PRESETS.filter((entry) => entry.category === category) as preset (preset.id)}
 								<option value={preset.id}>{preset.name}</option>
 							{/each}
 						</optgroup>
 					{/each}
 				</select>
-				{#if selectedPaper}
-					<div class="paper-condition">
-						<p>{scientificText(selectedPaper.description)}</p>
-						<p><strong>Look for</strong> {scientificText(selectedPaper.whatToLookFor)}</p>
+				{#if selectedExperiment}
+					<div class="experiment-condition">
+						<p>{scientificText(selectedExperiment.description)}</p>
+						<p><strong>Look for</strong> {scientificText(selectedExperiment.whatToLookFor)}</p>
 						<details>
 							<summary>Finding, limits &amp; sources</summary>
-							<p>{selectedPaper.finding}</p>
-							<p>{scientificText(selectedPaper.limits)}</p>
+							<p>{selectedExperiment.finding}</p>
+							<p>{scientificText(selectedExperiment.limits)}</p>
 							<p>
 								<strong>Registered condition</strong>
-								{selectedPaper.published.width ?? 'isolated'} × {selectedPaper.published.height ??
-									'culture'}, {selectedPaper.published.pairAttempts ?? 'assay'} pair attempts; horizon
-								{selectedPaper.published.horizon.toLocaleString()}
-								{selectedPaper.published.horizonUnit}. {scientificText(
-									selectedPaper.published.note
+								{selectedExperiment.published.width ?? 'isolated'} × {selectedExperiment.published
+									.height ?? 'culture'}, {selectedExperiment.published.pairAttempts ?? 'assay'} pair attempts;
+								horizon
+								{selectedExperiment.published.horizon.toLocaleString()}
+								{selectedExperiment.published.horizonUnit}. {scientificText(
+									selectedExperiment.published.note
 								)}
 							</p>
-							<p>{selectedPaper.published.reset}</p>
-							<p class="source-path">{selectedPaper.source.registration}</p>
-							{#if selectedPaper.source.world}<p class="source-path">
-									{selectedPaper.source.world}
+							<p>{selectedExperiment.published.reset}</p>
+							<p class="source-path">{selectedExperiment.source.registration}</p>
+							{#if selectedExperiment.source.world}<p class="source-path">
+									{selectedExperiment.source.world}
 								</p>{/if}
-							{#each selectedPaper.source.results as source (source)}<p class="source-path">
+							{#each selectedExperiment.source.results as source (source)}<p class="source-path">
 									{source}
 								</p>{/each}
 							<p>
-								Sources are paths in the companion algocell-paper repository. This GPU run is a
-								fresh realization; equal seeds do not promise the archived scheduling trajectory.
+								Sources identify the registered experiment and its archived results. This GPU run is
+								a fresh realization; equal seeds do not promise the archived scheduling trajectory.
 							</p>
 						</details>
 					</div>
@@ -3244,7 +3223,7 @@
 					class="instrument-select"
 					value={machine}
 					onchange={chooseMachine}
-					disabled={machineBusy || !engine}
+					disabled={machineBusy || observationBusy || !engine}
 				>
 					<option value="z80-0.2">Z80 · compat 0.2</option>
 					<option value="z80-0.3">Z80 · 0.3 classic</option>
@@ -3265,12 +3244,12 @@
 							min="4"
 							max="32"
 							value={tapeLength}
-							disabled={machineBusy}
+							disabled={machineBusy || observationBusy}
 							onchange={(event) => {
 								tapeLength = Math.max(4, Math.min(32, Number(event.currentTarget.value)));
 								pairLength = Math.max(pairLength, tapeLength * 2);
 								initialCondition = { kind: 'random' };
-								selectedPaperId = '';
+								selectedExperimentId = '';
 								void updateMachine(true);
 							}}
 						/>
@@ -3281,7 +3260,7 @@
 							min={tapeLength * 2}
 							max="128"
 							value={pairLength}
-							disabled={machineBusy}
+							disabled={machineBusy || observationBusy}
 							onchange={(event) => {
 								pairLength = Math.max(
 									tapeLength * 2,
@@ -3296,7 +3275,7 @@
 						id="stack-convention"
 						class="instrument-select"
 						bind:value={stackConvention}
-						disabled={machineBusy}
+						disabled={machineBusy || observationBusy}
 						onchange={() => {
 							void updateMachine(true);
 						}}
@@ -3309,7 +3288,7 @@
 						><input
 							type="checkbox"
 							bind:checked={randomRegisters}
-							disabled={machineBusy}
+							disabled={machineBusy || observationBusy}
 							onchange={() => {
 								void updateMachine();
 							}}
@@ -3320,7 +3299,7 @@
 						id="dial-mode"
 						class="instrument-select"
 						bind:value={dialMode}
-						disabled={machineBusy}
+						disabled={machineBusy || observationBusy}
 						onchange={() => {
 							void updateMachine();
 						}}
@@ -3345,7 +3324,7 @@
 					max="1"
 					step="0.01"
 					bind:value={lethalProbability}
-					disabled={machineBusy}
+					disabled={machineBusy || observationBusy}
 					onchange={() => {
 						void updateMachine();
 					}}
@@ -4058,21 +4037,9 @@
 						>
 					</div>
 				</div>
-				<label class="instrument-check"
-					><input
-						type="checkbox"
-						checked={showConfinement}
-						disabled={machineBusy || !engine}
-						onchange={changeConfinement}
-					/> Open / confined fetch view</label
-				>
-				{#if showConfinement}<p class="instrument-note">
-						<span class="fetch-key confined" style="background:{byteColor(48)}"></span> No observed
-						exit from focal tape
-						<span class="fetch-key open" style="background:{byteColor(192)}"></span>
-						Outside focal tape (B or padding) <span class="fetch-key unknown"></span> Unknown. Last initiating
-						encounter only; not lifetime confinement or heredity.
-					</p>{/if}
+				<p class="instrument-note">
+					Choose a field view in the observation strip to measure composition or fetching.
+				</p>
 			</div>
 		</div>
 	{/if}
@@ -4105,7 +4072,7 @@
 	{/if}
 
 	<!-- Genome tooltip -->
-	{#if hoveredCell >= 0 && cellData && !isPanning}
+	{#if hoveredCell >= 0 && cellData && !isPanning && (!observation || observation.isNavigating())}
 		{#if gridType === 'hex' && tapeLength === 19}
 			<!-- Hex byte tooltip: 19 hex-shaped bytes in 3-4-5-4-3 hexagonal arrangement -->
 			<div class="genome-tip hex-tip" style={tooltipStyle}>
@@ -4436,8 +4403,8 @@
 						<p>
 							A grid of roughly 20,000 cells, fitted to the viewport, begins with random bytes. Each
 							cell holds a short <strong>tape</strong> interpreted by the selected processor. The original
-							layouts below show the default 16-byte square and 19-byte hex tapes; paper conditions can
-							use other tape and ring lengths:
+							layouts below show the default 16-byte square and 19-byte hex tapes; experiment conditions
+							can use other tape and ring lengths:
 						</p>
 
 						<!-- Tape layout visuals -->
@@ -5475,7 +5442,7 @@
 							<span class="z80-op">EX (SP),HL</span> exchanges that word with the next stack position.
 							A working loop can move its machinery into the partner under a suitable ring and reset contract.
 							This is one available route, not a claim that every occurrence copies or that it always
-							dominates. The paper’s historical L16 Stage G first exemplars were usually load–push designs.
+							dominates. Historical 16-byte first exemplars were usually load–push designs.
 						</p>
 
 						<Mermaid
@@ -7658,33 +7625,32 @@ graph TD
 	.instrument-select:disabled {
 		opacity: 0.55;
 	}
-	.paper-preset-label,
+	.experiment-preset-label,
 	.world-control-label {
 		display: block;
 		font-size: 10px;
 		color: var(--text-subtle);
 		margin: 5px 0 3px;
 	}
-	.paper-condition {
+	.experiment-condition {
 		margin-top: 6px;
 		font-size: 10px;
 		line-height: 1.45;
 		color: var(--text-muted);
 	}
-	.paper-condition p {
+	.experiment-condition p {
 		margin: 0 0 6px;
 	}
-	.paper-condition strong {
+	.experiment-condition strong {
 		color: var(--text-secondary);
 		font-weight: 500;
 	}
-	.paper-condition summary,
-	.culture-example summary {
+	.experiment-condition summary {
 		cursor: pointer;
 		color: var(--accent);
 		font-size: 10px;
 	}
-	.paper-condition details p:first-of-type {
+	.experiment-condition details p:first-of-type {
 		margin-top: 6px;
 	}
 	.source-path {
@@ -7764,70 +7730,6 @@ graph TD
 		color: var(--text-secondary);
 		border-bottom: 1px solid var(--border-subtle);
 	}
-	.culture-panel {
-		margin-top: 8px;
-		padding-top: 8px;
-		border-top: 1px solid var(--border-subtle);
-		max-width: 340px;
-	}
-	.culture-button {
-		margin: 0 0 3px;
-	}
-	.culture-panel > .instrument-note {
-		display: block;
-	}
-	.culture-verdict {
-		font-size: 11px;
-		color: var(--accent);
-		margin-top: 8px;
-	}
-	.culture-table {
-		width: 100%;
-		font-size: 10px;
-		color: var(--text-muted);
-		font-variant-numeric: tabular-nums;
-		border-collapse: collapse;
-	}
-	.culture-table th {
-		font-weight: 500;
-		color: var(--text-subtle);
-	}
-	.culture-table th,
-	.culture-table td {
-		padding: 3px 5px;
-		text-align: right;
-		border-bottom: 1px solid var(--border-subtle);
-	}
-	.culture-table th:first-child,
-	.culture-table td:first-child {
-		text-align: left;
-	}
-	.culture-example {
-		margin-top: 8px;
-	}
-	.culture-bytes {
-		display: grid;
-		grid-template-columns: repeat(8, 1fr);
-		gap: 2px;
-		margin-top: 3px;
-	}
-	.culture-byte {
-		padding: 4px;
-		font: 9px monospace;
-		text-align: center;
-		color: #888;
-		background: #292929;
-		border: 1px solid transparent;
-	}
-	.culture-byte.fetched {
-		background: var(--byte-color);
-		border-color: var(--border-muted);
-		color: #222;
-	}
-	.culture-byte.instruction-start {
-		text-decoration: underline;
-		text-underline-offset: 3px;
-	}
 	.guide-steps {
 		list-style: decimal;
 		padding-left: 20px;
@@ -7866,5 +7768,71 @@ graph TD
 		color: var(--text-subtle);
 		font: 9px monospace;
 		margin-left: 5px;
+	}
+	.bench-backdrop {
+		pointer-events: none;
+		background: none;
+		align-items: flex-start;
+		justify-content: flex-end;
+		padding: 64px 12px 12px;
+	}
+	.bench-backdrop .tape-inspector {
+		pointer-events: auto;
+		width: 520px;
+		max-height: calc(100dvh - 76px);
+		overflow-y: auto;
+	}
+	.tape-inspector .species-modal-header {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		background: var(--bg-elevated);
+		border-bottom: 1px solid var(--border-muted);
+		padding: 11px 13px;
+	}
+	.tape-inspector .species-modal-header small {
+		display: block;
+		font-size: 10px;
+		color: var(--text-muted);
+		margin-top: 4px;
+	}
+	.tape-inspector .species-modal-body {
+		padding: 12px;
+	}
+	.tape-inspector .tip-grid {
+		grid-template-columns: repeat(8, minmax(0, 1fr));
+		gap: 3px;
+	}
+	.tape-inspector .tip-cell {
+		width: auto;
+		height: 36px;
+		font-size: 8px;
+		border-radius: 3px;
+	}
+	@media (max-width: 768px) {
+		.info-bar {
+			top: auto;
+			bottom: 52px;
+			left: 8px;
+			max-width: calc(100vw - 16px);
+			padding: 5px 8px;
+		}
+		.info-bar .info-tabs {
+			display: none;
+		}
+		.bench-backdrop {
+			padding: 156px 8px 90px;
+		}
+		.bench-backdrop .tape-inspector {
+			width: 100%;
+			max-height: calc(100dvh - 246px);
+		}
+		.tape-inspector .tip-grid {
+			grid-template-columns: repeat(8, minmax(0, 1fr));
+		}
+		.tape-inspector .tip-cell {
+			height: 31px;
+			font-size: 7px;
+		}
 	}
 </style>
