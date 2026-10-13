@@ -51,6 +51,20 @@ def verify():
         assert E.digest(stored)==r['stored_sha256'] and E.digest(original)==r['original_sha256']
         assert len(original)==int(r['original_bytes']) and len(stored)==int(r['stored_bytes'])
     out.append({'check':'publication archive byte-preservation','world':'all','tape':'','rows':len(E.read_csv(E.OUT/'publication_archive.csv')),'passed':True})
+    if (E.OUT/'family_world_exemplars.csv').exists():
+        examples=E.read_csv(E.OUT/'family_world_exemplars.csv')
+        source=(E.OUT/'family_pointer_observer.wgsl').read_text().split('\n',1)[1]
+        assert len(examples)==18
+        for r in examples:
+            assert r['raw_observer_identity_all17']=='True' and r['observer_sha256']==E.digest(source.encode())
+            assert int(r['random16_physical_phase_exact'])==16
+        with gzip.open(E.OUT/'family_world_copies.csv.gz','rt') as f:
+            pointer_rows=0
+            for r in csv.DictReader(f):
+                assert json.loads(r['read_positions'])==[int(r['actual_SI_before'])%32]
+                assert json.loads(r['write_positions'])==[int(r['actual_DI_before'])%32]
+                assert r['read_values']==r['write_values'];pointer_rows+=1
+        out.append({'check':'actual SI/DI source identity and all 18-world MOVSB address/value observations','world':'18 worlds / 306 contexts','tape':'','rows':pointer_rows,'passed':True})
     for r in E.read_csv(E.OUT/'gpu_bursts.csv'):
         assert float(r['burst_seconds'])<=60 and float(r['pause_seconds'])>=float(r['burst_seconds']) and r['foreground']=='True'
     files=list(E.OUT.rglob('*'))+list((E.ROOT/'launch/exploratory-publication-archive').rglob('*'))

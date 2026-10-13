@@ -114,3 +114,61 @@ def law():
         for (kind,challenge,generation),n in sorted(c.items()):counts.append({'world':r['world'],'tape':r['tape'],'kind':kind,'challenge':challenge,'generation':generation,'encounters':n})
         print(E.LABEL,'law',i,r['world'],result['status'],result['encounters'],flush=True)
     E.write_csv('law_assay_summary.csv',summary);E.write_csv('law_assay_denominators.csv',counts)
+
+
+def world_family():
+    """EXPLORATORY one scheduled family exemplar per world, including unjudged tapes.
+
+    Observe actual SI/DI at every instruction start. Adding an event to the
+    existing storage observer changes no machine state; compare all frozen
+    original record words and full memories against the raw executor.
+    """
+    import copy
+    from algocell_exp.zmachine import ZMachine
+    positives={r['world']+':'+r['tape']:r for r in E.read_csv(E.ROOT/'tables/copier_tapes.csv')}
+    first={r['world']:r for r in E.world_tapes()};selected=[];coverage=[]
+    for seed in range(8086001,8086021):
+        world=f's8086_A_s{seed}';seen={}
+        with (E.RAW/(world+'.jsonl')).open() as f:
+            for line in f:
+                r=json.loads(line)
+                if r['kind']!='sample':continue
+                for t in r['top3']:
+                    b=bytes.fromhex(t['tape'])
+                    if b[:2]==bytes.fromhex('5fa4') and b==b[:4]*4:
+                        seen.setdefault(t['tape'],(r['step'],t['count']))
+        preferred=first[world]['first_tape'];good=[t for t in seen if world+':'+t in positives]
+        tape=preferred if preferred in seen else min(good,key=lambda t:(seen[t][0],t)) if good else min(seen,key=lambda t:(seen[t][0],t)) if seen else ''
+        coverage.append({'world':world,'seed':seed,'scheduled_family_genotypes':len(seen),'culture_positive_scheduled_family_genotypes':len(good),'exemplar':tape,'selection':'registered first-family tape' if tape and tape==preferred else 'earliest culture-positive scheduled family' if good else 'earliest observed scheduled family; not culture-positive' if tape else 'no scheduled family tape','first_observed_step':seen[tape][0] if tape else '', 'first_observed_cells':seen[tape][1] if tape else ''})
+        if tape:selected.append(coverage[-1])
+    m=E.burst('compile per-world family machine',lambda:load_machine('i8086_pair_maps_L16'))
+    t=E.burst('compile per-world base storage observer',lambda:DiagnosticMachine(m,events=2048,storage_trace=True))
+    anchor='census_event(4u, pc, unit);';assert t.wgsl.count(anchor)==1
+    source=t.wgsl.replace(anchor,anchor+'\n    census_event(5u, i8086_r[6], i8086_r[7]);')
+    manifest=copy.deepcopy(t.m);manifest['sha256']['wgsl']=E.digest(source.encode())
+    view=E.burst('compile actual SI/DI observer',lambda:ZMachine(source,manifest,name=m.name+'_EXPLORATORY_pointers',device=m.dev))
+    view.events=t.events;view.diag_offset=t.diag_offset
+    parents=np.stack([np.frombuffer(bytes.fromhex(r['exemplar']),np.uint8) for r in selected]);mem=__import__('census8086').pairs(parents,16)
+    raw=E.burst('per-world raw family exemplars',lambda:m.run(mem,budget=128));obs=E.burst('per-world actual pointer family exemplars',lambda:view.run(mem,budget=128))
+    assert same_execution(raw,obs,m.record_words)
+    logs=DiagnosticMachine.logs(view,obs);summary=[];events=[];copies=[]
+    for i,r in enumerate(selected):
+        log=logs[i*17];assert log is not None
+        writes=log[log[:,1]==2];fetches=log[log[:,1]==0];decoded=log[log[:,1]==3]
+        try:g=E.copy_certificate(parents[i],log,16);status='eligible';reason=''
+        except ValueError as exc:g={};status='unresolved' if isinstance(exc,Law.Unresolved) else 'excluded';reason=str(exc)
+        known=positives.get(r['world']+':'+r['exemplar']);ref=raw.memory.reshape(len(selected),17,32)[i,:,16:]
+        summary.append({'world':r['world'],'seed':r['seed'],'tape':r['exemplar'],'selection':r['selection'],'first_observed_step':r['first_observed_step'],'frozen_culture_positive':bool(known),'frozen_gen2':known['gen2'] if known else '', 'zero_partner_exact':bool(np.array_equal(ref[0],parents[i])),'random16_physical_phase_exact':int(np.all(ref[1:]==parents[i],1).sum()),'full_encounter_B_fetch':int(raw.fetch_map.reshape(len(selected),17,32)[i,:,16:].any(1).sum()),'decoded_opcodes':json.dumps(sorted(set(map(int,decoded[:,3])))),'physical_fetch_positions':json.dumps(sorted(set(map(int,fetches[:,2])))),'A_write_coverage':len(set(writes[writes[:,2]<16,2])),'B_write_coverage':len(set(writes[writes[:,2]>=16,2])),'SI_final':int(raw.reg('si')[i*17]),'DI_final':int(raw.reg('di')[i*17]),'certificate_status':status,'certificate_reason':reason,'geometry':json.dumps(g,sort_keys=True),'raw_observer_identity_all17':True,'observer_sha256':E.digest(source.encode())})
+        for lane in range(17):
+            trace=logs[i*17+lane];assert trace is not None
+            for step,kind,pos,value,origin in trace:
+                events.append({'world':r['world'],'tape':r['exemplar'],'partner':lane,'step':int(step),'kind':int(kind),'position_or_actual_SI':int(pos),'value_or_actual_DI':int(value),'original_partner':int(origin),'kind5_meaning':'SI=position; DI=value; observed before instruction'})
+            for step in np.unique(trace[:,0]):
+                group=trace[trace[:,0]==step];ptr=group[group[:,1]==5];op=group[group[:,1]==3];rd=group[group[:,1]==1];wr=group[group[:,1]==2]
+                if not len(op) or int(op[-1,3])!=0xa4:continue
+                assert len(ptr)==1
+                copies.append({'world':r['world'],'tape':r['exemplar'],'partner':lane,'step':int(step),'actual_SI_before':int(ptr[0,2]),'actual_DI_before':int(ptr[0,3]),'read_positions':json.dumps(list(map(int,rd[:,2]))),'write_positions':json.dumps(list(map(int,wr[:,2]))),'read_values':json.dumps(list(map(int,rd[:,3]))),'write_values':json.dumps(list(map(int,wr[:,3]))),'basis':'observed private 16-bit registers before MOVSB'})
+    E.write_csv('family_world_coverage.csv',coverage);E.write_csv('family_world_exemplars.csv',summary);E.write_csv('family_world_traces.csv.gz',events);E.write_csv('family_world_copies.csv.gz',copies)
+    (E.OUT/'family_pointer_observer.wgsl').write_text('// EXPLORATORY / post hoc SI/DI observation; no changed execution.\n'+source)
+
+    E.world_family_metadata()

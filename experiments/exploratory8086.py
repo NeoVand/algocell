@@ -192,10 +192,35 @@ def sources():
     paths=[HERE/'algocell_exp/machines/i8086_pair_maps_L16.wgsl',HERE/'algocell_exp/machines/i8086_pair_maps_L16.manifest.json',raw,traced,HERE/'law8086.py',HERE/'exploratory8086_law.py',HERE/'algocell_exp/exectrace.py']
     write_csv('compute_source_hashes.csv',[{'role':'StageG executor' if p==raw else 'StageG traced executor' if p==traced else 'frozen or exploratory source','path':str(p),'bytes':p.stat().st_size,'sha256':digest(p.read_bytes())} for p in paths])
 
+def world_family_metadata():
+    """EXPLORATORY distinguish unjudged tapes from culture-negative tapes."""
+    coverage=read_csv(OUT/'family_world_coverage.csv');exemplars=read_csv(OUT/'family_world_exemplars.csv')
+    lookup={r['world']:r for r in exemplars}
+    for r in coverage:
+        seed=int(r['seed']);world=r['world'];tape=r['exemplar'];counts=[]
+        with (RAW/(world+'.jsonl')).open() as f:
+            for line in f:
+                d=json.loads(line)
+                if d['kind']=='sample':counts.extend(int(t['count']) for t in d['top3'] if t['tape']==tape)
+        snap_genotypes=set();snap_cells=0
+        for t in (0,20000,100000,1000000,3000000):
+            cells,_=snapshot(seed,t);mask=(cells[:,0]==0x5f)&(cells[:,1]==0xa4)&np.all(cells==np.tile(cells[:,:4],(1,4)),1)
+            snap_cells+=int(mask.sum());snap_genotypes.update(x.tobytes().hex() for x in cells[mask])
+        p=ROOT/'downloads/score_A/A'/(world+'.json.gz')
+        with gzip.open(p,'rt') as f:d=json.load(f)
+        judged=next((x for x in d['judged_tapes'] if x['tape']==tape),None)
+        status='culture-positive' if judged and judged['heritable'] else 'culture-negative' if judged else 'unjudged' if tape else 'absent'
+        r.update({'registered_culture_status':status,'exemplar_max_scheduled_cells':max(counts,default=0),'checkpoint_family_genotypes':len(snap_genotypes),'checkpoint_family_cells':snap_cells,'frozen_score_sha256':digest(p.read_bytes())})
+        if status=='unjudged':r['selection']='earliest scheduled family tape; unjudged in register'
+        if world in lookup:lookup[world].update({'registered_culture_status':status,'exemplar_max_scheduled_cells':max(counts,default=0),'selection':r['selection']})
+    for r in coverage:r.pop('label',None)
+    for r in exemplars:r.pop('label',None)
+    write_csv('family_world_coverage.csv',coverage);write_csv('family_world_exemplars.csv',exemplars)
+
 if __name__=='__main__':
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('stage',choices=('scan','reextract','archive','sources','family_copies','encounters','transmission','law','report'));a=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('stage',choices=('scan','reextract','archive','sources','family_copies','world_family_metadata','world_family','encounters','transmission','law','report'));a=ap.parse_args()
     OUT.mkdir(parents=True,exist_ok=True)
-    if a.stage in ('encounters','transmission','law'):
+    if a.stage in ('encounters','transmission','law','world_family'):
         import exploratory8086_compute as compute
         getattr(compute,a.stage)()
     elif a.stage=='report':
