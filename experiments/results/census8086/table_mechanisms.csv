@@ -3,31 +3,31 @@ L,budget,k,mechanism,zero_exact_nonzero
 16,128,1,memory-fed one-pass copier,0
 16,128,1,confined copy loop,0
 16,128,1,other,0
-16,128,2,literal writer,12
+16,128,2,literal writer,3
 16,128,2,memory-fed one-pass copier,2
 16,128,2,confined copy loop,0
-16,128,2,other,6
+16,128,2,other,15
 16,512,1,literal writer,0
 16,512,1,memory-fed one-pass copier,0
 16,512,1,confined copy loop,0
 16,512,1,other,0
-16,512,2,literal writer,12
+16,512,2,literal writer,3
 16,512,2,memory-fed one-pass copier,1
 16,512,2,confined copy loop,0
-16,512,2,other,16
+16,512,2,other,25
 32,128,1,literal writer,0
 32,128,1,memory-fed one-pass copier,0
 32,128,1,confined copy loop,0
 32,128,1,other,0
-32,128,2,literal writer,11
+32,128,2,literal writer,3
 32,128,2,memory-fed one-pass copier,5
 32,128,2,confined copy loop,0
-32,128,2,other,10
+32,128,2,other,18
 32,512,1,literal writer,0
 32,512,1,memory-fed one-pass copier,0
 32,512,1,confined copy loop,0
 32,512,1,other,0
-32,512,2,literal writer,11
+32,512,2,literal writer,3
 32,512,2,memory-fed one-pass copier,4
 32,512,2,confined copy loop,0
-32,512,2,other,11
+32,512,2,other,19

@@ -1,0 +1,27 @@
+{
+  "parent_commit": "8971d0d8b6bd93705c960d9dbef569e61b58a5da",
+  "frozen_manifest_sha256": "e98812d555b1632d07e5c561f786c1d129917f05eff676d87ea7acdbd722f3d9",
+  "registered_python": "/Users/neo/repos/algocell/experiments/.venv/bin/python",
+  "frozen_source_identities_verified": 359,
+  "unchanged_frozen_sources": true,
+  "route_report_complete": true,
+  "law_report_complete": true,
+  "scorer_defects_or_report_step_failures": [],
+  "worlds": 20,
+  "first_copier_encounters": 224,
+  "persistence_world_time_points": 220,
+  "other_cases": 1736,
+  "first_copier_other_encounters": 27,
+  "candidate_family_rows": 2674,
+  "L2_unresolved": 724,
+  "L2_unresolved_worlds": 20,
+  "control_encounters_verified": 1185792,
+  "links_verified": true,
+  "encounter_table_compression": {
+    "path": "tables/judged_encounters.csv.gz",
+    "uncompressed_sha256": "647ed134b252c7c20ede63e8b74f88a5e16a6db6f9961e0c7a83e81a3132c194",
+    "lossless_compression_verified": true
+  },
+  "provider_log_notes": "The retained extract/control logs include AppHeartbeat ConflictError after APP_STATE_STOPPED; pipeline exit/stage completion records and every required durable scientific output were verified.",
+  "generated_csv_line_endings": "LF"
+}

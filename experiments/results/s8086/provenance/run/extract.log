@@ -1,0 +1,10 @@
+[modal-client] 2026-10-12T18:29:34-0500 Loop attempt for _run_app.<locals>.heartbeat failed
+Traceback (most recent call last):
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/_utils/async_utils.py", line 588, in loop_coro
+    await asyncio.wait_for(async_f(), timeout=timeout)
+  File "/Users/neo/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/neo/repos/algocell/experiments/.venv/lib/python3.12/site-packages/modal/runner.py", line 66, in _heartbeat
+    await client._stub.AppHeartbeat(request, retry=Retry(attempt_timeout=HEARTBEAT_TIMEOUT))
+modal.exception.ConflictError: App state is APP_STATE_STOPPED

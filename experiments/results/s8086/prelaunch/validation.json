@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-12",
+  "option": "b",
+  "suite": "all experiments/tests including randomized simulation; expanded full-cap ledger regression additionally rerun",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=experiments /Users/neo/repos/algocell/experiments/.venv/bin/python experiments/results/s8086/prelaunch/refreeze_test_runner.py",
+  "passed": 959,
+  "failed": 0,
+  "skipped": 3,
+  "total_collected": 962,
+  "wall_s": 701.7274872499984,
+  "module_case_counts": {
+    "test_assays_any_isa": 28,
+    "test_b5_enforcement": 23,
+    "test_b6_provenance": 68,
+    "test_bff": 15,
+    "test_impact": 147,
+    "test_impact_assay_supplement": 1,
+    "test_impact_confirm": 10,
+    "test_impact_i1_report": 7,
+    "test_impact_q": 5,
+    "test_impact_registry": 4,
+    "test_impact_report": 3,
+    "test_lethal": 7,
+    "test_mixed": 6,
+    "test_pipeline": 46,
+    "test_port": 3,
+    "test_prefix_causality8086": 15,
+    "test_py65_ring": 44,
+    "test_reset_source_stop": 7,
+    "test_run6502": 11,
+    "test_s2_final": 6,
+    "test_s8086": 36,
+    "test_s8086_repairs": 29,
+    "test_score6502": 42,
+    "test_tier2": 6,
+    "test_zcensus": 7,
+    "test_zsoup": 386
+  },
+  "skip_details": [
+    {
+      "case": "tests.test_assays_any_isa.test_assay_machines_regenerate",
+      "reason": "Zilion checkout at 3c3534d76f22, assay machines vendored from 183ff5c74294"
+    },
+    {
+      "case": "tests.test_impact.test_vendored_machines_match_zilion",
+      "reason": "zilion checkout at 3c3534d76f22, machines from 183ff5c74294"
+    },
+    {
+      "case": "tests.test_zsoup.test_vendored_machines_regenerate",
+      "reason": "Zilion checkout at 3c3534d76f22, machines vendored from 183ff5c74294 (run build_machines.mjs --check by hand)"
+    }
+  ],
+  "additional_validation": {
+    "750000_row_ledger_regression": {
+      "passed": 1,
+      "failed": 0,
+      "source": "ledger_scale_tests.xml.gz",
+      "same_case_already_in_full_suite": true
+    },
+    "descriptive_census_encounters": 21182,
+    "causal_label_changes": 1247,
+    "random_programs": 8192,
+    "random_differential_mismatches": 0,
+    "fault_sequences": 1000,
+    "fault_invariant_violations": 0
+  },
+  "gpu_policy": "synchronous queue readback and equal pause after every submit/compile; no paid compute",
+  "gpu_bursts": 37660,
+  "maximum_gpu_burst_s": 3.532221124973148,
+  "gpu_burst_sum_s": 118.05074606993003,
+  "equal_pauses_verified": true,
+  "artifact_sha256": {
+    "refreeze_tests.xml.gz": "bfaf214972e95b3ccfc26a8090e2dc9ce516d23437b85de60ed2f5f630ffd994",
+    "refreeze_tests.txt": "6952d7efc2b84c589213b2786c9525e902a56e55d731dc469a815fb0a0fc4b47",
+    "refreeze_local_bursts.jsonl": "0e40046a3b77c32cbcc4558065061fc8820b05d047e009430f5b3bf7549ff40d",
+    "ledger_scale_tests.xml.gz": "10f762cb0ebf9a766138847f3dd3111cfaf2824b934ba9d5d204539f84aadbe8",
+    "ledger_scale_tests.txt": "6d55a9206142fc6ed5d6f25b80207182479f4a5c488cde1abc017266b09c16ac",
+    "ledger_scale_validation.json": "d5db0a9c54b886b9ffeafa0572e734f272e5982a26f1722cb71c1d6cc064be84",
+    "descriptive_census_validation.json": "5de43fc58576c11807a66d31d791021adfdb58979eea8ddac895a7e5048283cf",
+    "descriptive_random_validation.json": "a2e13767ec73bfe0d58735239105faf57b5d0a63358068cf6f8a2cb2bc4a3d4f",
+    "spend_simulation.json": "13379b2d33c0716c8e779e9798aa6fcd32fb9bebda0ed6e6eca4d7b9a6cd0b64"
+  },
+  "no_population_runs": true,
+  "no_paid_compute_this_preparation": true,
+  "launch_status": "STOPPED: final independent coordinator review required"
+}

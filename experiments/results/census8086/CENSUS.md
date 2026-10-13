@@ -8,6 +8,1539 @@ counts (L16/128, L16/512, L32/128, L32/512): **20, 29, 26, 26**.
 There are no nonzero period-one exact zero-partner writers. Constant zero is
 enumerated and reported, but matching an untouched zero partner is not writing.
 
+## Correction — 2026-10-12
+
+Astra's B3/B4 defects are repaired. The observer records the instruction-start
+hook's actual full pc for ordinary and retained REP execution. Memory writes
+pair with their exact ordered byte sources; implicit SP/SI/DI/CX arithmetic
+invalidates memory-copy identity. No value-membership matching remains.
+All 1,246 candidate settings (21,182 encounters) were rerun on the local GPU
+against the original fixed panel. Every complete original record and memory
+matched unmodified execution; raw census outcomes and access counts did not
+change. Full corrected traces, including every random partner, are archived
+in gzip parts. Two overflows remain explicitly other.
+
+**07 A5 remains an open memory-fed one-pass copier.** All 17 encounters retain
+that mechanism in every L/budget setting; all 16 random encounters fetch B.
+B9 51 changes eight random-partner labels from other to literal writer; its
+zero-partner label remains literal writer. FF 30 and AD 50 have no changed
+labels. The registered R2 predictions are unchanged.
+
+There are 1,476 changed labels: 1,440 other→literal writer and 36
+other→memory-fed one-pass copier. Precise byte transfers and preserving
+unmodified registers across admitted segment operations resolve those former
+unknowns; arithmetic-derived sources remain other. Every changed label is
+listed below and in correction_labels.csv, identified by L, budget, period,
+word, and partner. Zero-partner summaries are regenerated, not replayed.
+
+| L | budget | k | word | partner | old | new |
+|---|---|---|---|---|---|---|
+| 16 | 128 | 1 | 00 | 11 | other | literal writer |
+| 16 | 128 | 2 | 0000 | 11 | other | literal writer |
+| 16 | 128 | 2 | 080e | 11 | other | literal writer |
+| 16 | 128 | 2 | 08ab | 11 | other | literal writer |
+| 16 | 128 | 2 | 090e | 11 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 10 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 11 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 13 | other | literal writer |
+| 16 | 128 | 2 | 0e20 | 15 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 10 | other | literal writer |
+| 16 | 128 | 2 | 0e22 | 15 | other | literal writer |
+| 16 | 128 | 2 | 0e48 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0e48 | 8 | other | literal writer |
+| 16 | 128 | 2 | 0e48 | 12 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 9 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 10 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 11 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 14 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 15 | other | literal writer |
+| 16 | 128 | 2 | 0e62 | 16 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 10 | other | literal writer |
+| 16 | 128 | 2 | 0e84 | 15 | other | literal writer |
+| 16 | 128 | 2 | 0e87 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0e87 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0e87 | 11 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 10 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 11 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 13 | other | literal writer |
+| 16 | 128 | 2 | 0e88 | 15 | other | literal writer |
+| 16 | 128 | 2 | 0e94 | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ea0 | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ea0 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0ea9 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0ea9 | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ea9 | 3 | other | literal writer |
+| 16 | 128 | 2 | 0ea9 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0eb9 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0eb9 | 1 | other | literal writer |
+| 16 | 128 | 2 | 0eba | 0 | other | literal writer |
+| 16 | 128 | 2 | 0eba | 1 | other | literal writer |
+| 16 | 128 | 2 | 0eba | 5 | other | literal writer |
+| 16 | 128 | 2 | 0eba | 6 | other | literal writer |
+| 16 | 128 | 2 | 0ebb | 0 | other | literal writer |
+| 16 | 128 | 2 | 0ebb | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ebb | 5 | other | literal writer |
+| 16 | 128 | 2 | 0ebb | 6 | other | literal writer |
+| 16 | 128 | 2 | 0ebd | 0 | other | literal writer |
+| 16 | 128 | 2 | 0ebd | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ebd | 5 | other | literal writer |
+| 16 | 128 | 2 | 0ebd | 6 | other | literal writer |
+| 16 | 128 | 2 | 0ebe | 0 | other | literal writer |
+| 16 | 128 | 2 | 0ebe | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ebe | 6 | other | literal writer |
+| 16 | 128 | 2 | 0ebf | 0 | other | literal writer |
+| 16 | 128 | 2 | 0ebf | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ebf | 6 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 0 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 1 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 2 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 5 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 7 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 10 | other | literal writer |
+| 16 | 128 | 2 | 0edb | 15 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 0 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 1 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 2 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 5 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 6 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 7 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 10 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 11 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 12 | other | literal writer |
+| 16 | 128 | 2 | 0ee3 | 15 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 4 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 6 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 10 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 11 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 12 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 14 | other | literal writer |
+| 16 | 128 | 2 | 0eea | 15 | other | literal writer |
+| 16 | 128 | 2 | 110e | 11 | other | literal writer |
+| 16 | 128 | 2 | 190e | 6 | other | literal writer |
+| 16 | 128 | 2 | 190e | 11 | other | literal writer |
+| 16 | 128 | 2 | 1ec6 | 6 | other | literal writer |
+| 16 | 128 | 2 | 280e | 11 | other | literal writer |
+| 16 | 128 | 2 | 2ea5 | 11 | other | literal writer |
+| 16 | 128 | 2 | 310e | 11 | other | literal writer |
+| 16 | 128 | 2 | 3ea4 | 11 | other | literal writer |
+| 16 | 128 | 2 | 480e | 12 | other | literal writer |
+| 16 | 128 | 2 | 50b8 | 5 | other | literal writer |
+| 16 | 128 | 2 | 51b9 | 5 | other | literal writer |
+| 16 | 128 | 2 | 51b9 | 15 | other | literal writer |
+| 16 | 128 | 2 | 5220 | 15 | other | literal writer |
+| 16 | 128 | 2 | 52b9 | 15 | other | literal writer |
+| 16 | 128 | 2 | 52ba | 5 | other | literal writer |
+| 16 | 128 | 2 | 52ba | 15 | other | literal writer |
+| 16 | 128 | 2 | 536b | 8 | other | literal writer |
+| 16 | 128 | 2 | 5387 | 1 | other | literal writer |
+| 16 | 128 | 2 | 5387 | 6 | other | literal writer |
+| 16 | 128 | 2 | 5387 | 11 | other | literal writer |
+| 16 | 128 | 2 | 53b8 | 15 | other | literal writer |
+| 16 | 128 | 2 | 53bb | 15 | other | literal writer |
+| 16 | 128 | 2 | 55bd | 5 | other | literal writer |
+| 16 | 128 | 2 | 55bd | 15 | other | literal writer |
+| 16 | 128 | 2 | 56be | 5 | other | literal writer |
+| 16 | 128 | 2 | 56be | 15 | other | literal writer |
+| 16 | 128 | 2 | 57bf | 5 | other | literal writer |
+| 16 | 128 | 2 | 57bf | 15 | other | literal writer |
+| 16 | 128 | 2 | 6175 | 5 | other | literal writer |
+| 16 | 128 | 2 | 617c | 7 | other | literal writer |
+| 16 | 128 | 2 | 61bc | 7 | other | literal writer |
+| 16 | 128 | 2 | 637c | 7 | other | literal writer |
+| 16 | 128 | 2 | 63bc | 7 | other | literal writer |
+| 16 | 128 | 2 | 657c | 7 | other | literal writer |
+| 16 | 128 | 2 | 65bc | 7 | other | literal writer |
+| 16 | 128 | 2 | 6652 | 11 | other | literal writer |
+| 16 | 128 | 2 | 677c | 7 | other | literal writer |
+| 16 | 128 | 2 | 67bc | 7 | other | literal writer |
+| 16 | 128 | 2 | 70e5 | 11 | other | literal writer |
+| 16 | 128 | 2 | 72e5 | 11 | other | literal writer |
+| 16 | 128 | 2 | 78e5 | 11 | other | literal writer |
+| 16 | 128 | 2 | 7ce5 | 11 | other | literal writer |
+| 16 | 128 | 2 | 7e0e | 11 | other | literal writer |
+| 16 | 128 | 2 | 880e | 11 | other | literal writer |
+| 16 | 128 | 2 | 8aab | 11 | other | literal writer |
+| 16 | 128 | 2 | 8b52 | 5 | other | memory-fed one-pass copier |
+| 16 | 128 | 2 | 8e86 | 11 | other | literal writer |
+| 16 | 128 | 2 | 940e | 1 | other | literal writer |
+| 16 | 128 | 2 | 96a5 | 11 | other | literal writer |
+| 16 | 128 | 2 | a00e | 0 | other | literal writer |
+| 16 | 128 | 2 | a00e | 1 | other | literal writer |
+| 16 | 128 | 2 | a00e | 5 | other | literal writer |
+| 16 | 128 | 2 | a10e | 1 | other | literal writer |
+| 16 | 128 | 2 | a10e | 5 | other | literal writer |
+| 16 | 128 | 2 | a10e | 6 | other | literal writer |
+| 16 | 128 | 2 | a1a5 | 11 | other | literal writer |
+| 16 | 128 | 2 | a1a5 | 16 | other | memory-fed one-pass copier |
+| 16 | 128 | 2 | a407 | 7 | other | memory-fed one-pass copier |
+| 16 | 128 | 2 | a4b8 | 11 | other | literal writer |
+| 16 | 128 | 2 | a4f0 | 11 | other | literal writer |
+| 16 | 128 | 2 | a4f2 | 11 | other | literal writer |
+| 16 | 128 | 2 | a4f3 | 11 | other | literal writer |
+| 16 | 128 | 2 | a53e | 11 | other | literal writer |
+| 16 | 128 | 2 | a559 | 11 | other | literal writer |
+| 16 | 128 | 2 | a57e | 11 | other | literal writer |
+| 16 | 128 | 2 | a593 | 11 | other | literal writer |
+| 16 | 128 | 2 | a595 | 11 | other | literal writer |
+| 16 | 128 | 2 | a596 | 11 | other | literal writer |
+| 16 | 128 | 2 | a5f2 | 11 | other | literal writer |
+| 16 | 128 | 2 | a5f3 | 11 | other | literal writer |
+| 16 | 128 | 2 | a5f5 | 11 | other | literal writer |
+| 16 | 128 | 2 | a90e | 0 | other | literal writer |
+| 16 | 128 | 2 | a90e | 1 | other | literal writer |
+| 16 | 128 | 2 | a90e | 3 | other | literal writer |
+| 16 | 128 | 2 | a90e | 6 | other | literal writer |
+| 16 | 128 | 2 | ab58 | 6 | other | memory-fed one-pass copier |
+| 16 | 128 | 2 | abb8 | 0 | other | literal writer |
+| 16 | 128 | 2 | abb8 | 11 | other | literal writer |
+| 16 | 128 | 2 | abba | 11 | other | literal writer |
+| 16 | 128 | 2 | adab | 11 | other | literal writer |
+| 16 | 128 | 2 | b0ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b10e | 11 | other | literal writer |
+| 16 | 128 | 2 | b16d | 11 | other | literal writer |
+| 16 | 128 | 2 | b1c3 | 11 | other | literal writer |
+| 16 | 128 | 2 | b1ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b2ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b3ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b4e4 | 11 | other | literal writer |
+| 16 | 128 | 2 | b5ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b6ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b70e | 11 | other | literal writer |
+| 16 | 128 | 2 | b7e4 | 11 | other | literal writer |
+| 16 | 128 | 2 | b7ff | 11 | other | literal writer |
+| 16 | 128 | 2 | b80e | 1 | other | literal writer |
+| 16 | 128 | 2 | b80e | 5 | other | literal writer |
+| 16 | 128 | 2 | b850 | 5 | other | literal writer |
+| 16 | 128 | 2 | b852 | 5 | other | literal writer |
+| 16 | 128 | 2 | b853 | 5 | other | literal writer |
+| 16 | 128 | 2 | b8a5 | 11 | other | literal writer |
+| 16 | 128 | 2 | b8ab | 11 | other | literal writer |
+| 16 | 128 | 2 | b8f3 | 11 | other | literal writer |
+| 16 | 128 | 2 | b951 | 5 | other | literal writer |
+| 16 | 128 | 2 | b951 | 15 | other | literal writer |
+| 16 | 128 | 2 | ba52 | 5 | other | literal writer |
+| 16 | 128 | 2 | bae1 | 11 | other | literal writer |
+| 16 | 128 | 2 | bb50 | 5 | other | literal writer |
+| 16 | 128 | 2 | bb53 | 5 | other | literal writer |
+| 16 | 128 | 2 | bb53 | 15 | other | literal writer |
+| 16 | 128 | 2 | bd55 | 5 | other | literal writer |
+| 16 | 128 | 2 | bd55 | 15 | other | literal writer |
+| 16 | 128 | 2 | be0e | 0 | other | literal writer |
+| 16 | 128 | 2 | be0e | 1 | other | literal writer |
+| 16 | 128 | 2 | be0e | 5 | other | literal writer |
+| 16 | 128 | 2 | be0e | 6 | other | literal writer |
+| 16 | 128 | 2 | be56 | 5 | other | literal writer |
+| 16 | 128 | 2 | be56 | 15 | other | literal writer |
+| 16 | 128 | 2 | bf57 | 5 | other | literal writer |
+| 16 | 128 | 2 | bf57 | 15 | other | literal writer |
+| 16 | 128 | 2 | c406 | 11 | other | literal writer |
+| 16 | 128 | 2 | c48a | 11 | other | literal writer |
+| 16 | 128 | 2 | c552 | 5 | other | memory-fed one-pass copier |
+| 16 | 128 | 2 | c552 | 15 | other | memory-fed one-pass copier |
+| 16 | 128 | 2 | c60e | 0 | other | literal writer |
+| 16 | 128 | 2 | c60e | 6 | other | literal writer |
+| 16 | 128 | 2 | c60e | 7 | other | literal writer |
+| 16 | 128 | 2 | c60e | 11 | other | literal writer |
+| 16 | 128 | 2 | c61e | 0 | other | literal writer |
+| 16 | 128 | 2 | c61e | 6 | other | literal writer |
+| 16 | 128 | 2 | c61e | 7 | other | literal writer |
+| 16 | 128 | 2 | c61e | 11 | other | literal writer |
+| 16 | 128 | 2 | c752 | 11 | other | literal writer |
+| 16 | 128 | 2 | c752 | 15 | other | literal writer |
+| 16 | 128 | 2 | c756 | 11 | other | literal writer |
+| 16 | 128 | 2 | c756 | 15 | other | literal writer |
+| 16 | 128 | 2 | e0b9 | 8 | other | literal writer |
+| 16 | 128 | 2 | e10e | 11 | other | literal writer |
+| 16 | 128 | 2 | e2b9 | 8 | other | literal writer |
+| 16 | 128 | 2 | e30e | 11 | other | literal writer |
+| 16 | 128 | 2 | e374 | 8 | other | literal writer |
+| 16 | 128 | 2 | e378 | 8 | other | literal writer |
+| 16 | 128 | 2 | e37c | 7 | other | literal writer |
+| 16 | 128 | 2 | e37c | 10 | other | literal writer |
+| 16 | 128 | 2 | e37c | 11 | other | literal writer |
+| 16 | 128 | 2 | e3bc | 7 | other | literal writer |
+| 16 | 128 | 2 | e3bc | 10 | other | literal writer |
+| 16 | 128 | 2 | e3bc | 11 | other | literal writer |
+| 16 | 128 | 2 | e9b9 | 10 | other | literal writer |
+| 16 | 128 | 2 | ea0e | 7 | other | literal writer |
+| 16 | 128 | 2 | ea0e | 10 | other | literal writer |
+| 16 | 128 | 2 | eaff | 2 | other | literal writer |
+| 16 | 128 | 2 | ebb9 | 8 | other | literal writer |
+| 16 | 128 | 2 | ebbc | 7 | other | literal writer |
+| 16 | 128 | 2 | ebbc | 10 | other | literal writer |
+| 16 | 128 | 2 | f0a5 | 11 | other | literal writer |
+| 16 | 128 | 2 | f2a4 | 11 | other | literal writer |
+| 16 | 128 | 2 | f2a5 | 11 | other | literal writer |
+| 16 | 128 | 2 | f3a4 | 11 | other | literal writer |
+| 16 | 128 | 2 | f3a5 | 11 | other | literal writer |
+| 16 | 128 | 2 | f3b8 | 11 | other | literal writer |
+| 16 | 128 | 2 | fca5 | 11 | other | literal writer |
+| 16 | 512 | 1 | 00 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0000 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0006 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0623 | 15 | other | literal writer |
+| 16 | 512 | 2 | 06b9 | 0 | other | literal writer |
+| 16 | 512 | 2 | 06b9 | 1 | other | literal writer |
+| 16 | 512 | 2 | 06b9 | 6 | other | literal writer |
+| 16 | 512 | 2 | 06b9 | 15 | other | literal writer |
+| 16 | 512 | 2 | 06c4 | 1 | other | literal writer |
+| 16 | 512 | 2 | 06c4 | 2 | other | literal writer |
+| 16 | 512 | 2 | 06c4 | 5 | other | literal writer |
+| 16 | 512 | 2 | 06c4 | 7 | other | literal writer |
+| 16 | 512 | 2 | 06c4 | 10 | other | literal writer |
+| 16 | 512 | 2 | 06c4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 070e | 11 | other | literal writer |
+| 16 | 512 | 2 | 080e | 11 | other | literal writer |
+| 16 | 512 | 2 | 083a | 11 | other | literal writer |
+| 16 | 512 | 2 | 08ab | 11 | other | literal writer |
+| 16 | 512 | 2 | 090e | 11 | other | literal writer |
+| 16 | 512 | 2 | 098a | 11 | other | literal writer |
+| 16 | 512 | 2 | 0e02 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e02 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e02 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e02 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e02 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e04 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e04 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e04 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 13 | other | literal writer |
+| 16 | 512 | 2 | 0e20 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e22 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e24 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e2a | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e2a | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e2a | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e2a | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e2a | 13 | other | literal writer |
+| 16 | 512 | 2 | 0e2a | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e2c | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e2c | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e2c | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e3a | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 13 | other | literal writer |
+| 16 | 512 | 2 | 0e3c | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e48 | 8 | other | literal writer |
+| 16 | 512 | 2 | 0e48 | 12 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 14 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e62 | 16 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 11 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 14 | other | literal writer |
+| 16 | 512 | 2 | 0e6c | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e81 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e81 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e81 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e81 | 13 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e84 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e87 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e87 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e87 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 13 | other | literal writer |
+| 16 | 512 | 2 | 0e88 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0e94 | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ea0 | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ea0 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0ea1 | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ea1 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0ea9 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0ea9 | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ea9 | 3 | other | literal writer |
+| 16 | 512 | 2 | 0ea9 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0eb4 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0eb9 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0eb9 | 1 | other | literal writer |
+| 16 | 512 | 2 | 0eba | 0 | other | literal writer |
+| 16 | 512 | 2 | 0eba | 1 | other | literal writer |
+| 16 | 512 | 2 | 0eba | 5 | other | literal writer |
+| 16 | 512 | 2 | 0eba | 6 | other | literal writer |
+| 16 | 512 | 2 | 0ebb | 0 | other | literal writer |
+| 16 | 512 | 2 | 0ebb | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ebb | 5 | other | literal writer |
+| 16 | 512 | 2 | 0ebb | 6 | other | literal writer |
+| 16 | 512 | 2 | 0ebd | 0 | other | literal writer |
+| 16 | 512 | 2 | 0ebd | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ebd | 5 | other | literal writer |
+| 16 | 512 | 2 | 0ebd | 6 | other | literal writer |
+| 16 | 512 | 2 | 0ebe | 0 | other | literal writer |
+| 16 | 512 | 2 | 0ebe | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ebe | 6 | other | literal writer |
+| 16 | 512 | 2 | 0ebf | 0 | other | literal writer |
+| 16 | 512 | 2 | 0ebf | 1 | other | literal writer |
+| 16 | 512 | 2 | 0ebf | 6 | other | literal writer |
+| 16 | 512 | 2 | 0edb | 0 | other | literal writer |
+| 16 | 512 | 2 | 0edb | 2 | other | literal writer |
+| 16 | 512 | 2 | 0edb | 5 | other | literal writer |
+| 16 | 512 | 2 | 0edb | 7 | other | literal writer |
+| 16 | 512 | 2 | 0edb | 10 | other | literal writer |
+| 16 | 512 | 2 | 0edb | 15 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 0 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 2 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 5 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 6 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 7 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 10 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 11 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 12 | other | literal writer |
+| 16 | 512 | 2 | 0ee3 | 15 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 4 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 6 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 10 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 11 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 12 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 14 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 15 | other | literal writer |
+| 16 | 512 | 2 | 0f0e | 11 | other | literal writer |
+| 16 | 512 | 2 | 0f0e | 16 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | 0fa4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 110e | 11 | other | literal writer |
+| 16 | 512 | 2 | 11bb | 11 | other | literal writer |
+| 16 | 512 | 2 | 168d | 0 | other | literal writer |
+| 16 | 512 | 2 | 168d | 2 | other | literal writer |
+| 16 | 512 | 2 | 168d | 5 | other | literal writer |
+| 16 | 512 | 2 | 168d | 7 | other | literal writer |
+| 16 | 512 | 2 | 168d | 10 | other | literal writer |
+| 16 | 512 | 2 | 168d | 15 | other | literal writer |
+| 16 | 512 | 2 | 1716 | 11 | other | literal writer |
+| 16 | 512 | 2 | 1716 | 13 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | 1855 | 5 | other | literal writer |
+| 16 | 512 | 2 | 1855 | 15 | other | literal writer |
+| 16 | 512 | 2 | 190e | 6 | other | literal writer |
+| 16 | 512 | 2 | 190e | 11 | other | literal writer |
+| 16 | 512 | 2 | 1a58 | 6 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | 1e07 | 0 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 1 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 2 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 3 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 6 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 7 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 11 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 13 | other | literal writer |
+| 16 | 512 | 2 | 1e07 | 15 | other | literal writer |
+| 16 | 512 | 2 | 1e12 | 0 | other | literal writer |
+| 16 | 512 | 2 | 1e12 | 2 | other | literal writer |
+| 16 | 512 | 2 | 1e12 | 5 | other | literal writer |
+| 16 | 512 | 2 | 1e12 | 7 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 0 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 2 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 5 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 6 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 7 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 10 | other | literal writer |
+| 16 | 512 | 2 | 1e8e | 15 | other | literal writer |
+| 16 | 512 | 2 | 1ec6 | 6 | other | literal writer |
+| 16 | 512 | 2 | 280e | 11 | other | literal writer |
+| 16 | 512 | 2 | 2855 | 15 | other | literal writer |
+| 16 | 512 | 2 | 2ea5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 310e | 11 | other | literal writer |
+| 16 | 512 | 2 | 3ea4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 4179 | 11 | other | literal writer |
+| 16 | 512 | 2 | 41a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 42a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 42a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 45a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 47be | 11 | other | literal writer |
+| 16 | 512 | 2 | 480e | 12 | other | literal writer |
+| 16 | 512 | 2 | 4843 | 11 | other | literal writer |
+| 16 | 512 | 2 | 4d6c | 6 | other | literal writer |
+| 16 | 512 | 2 | 4d6c | 11 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 0 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 1 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 2 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 6 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 7 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 11 | other | literal writer |
+| 16 | 512 | 2 | 5017 | 13 | other | literal writer |
+| 16 | 512 | 2 | 50b8 | 5 | other | literal writer |
+| 16 | 512 | 2 | 50be | 15 | other | literal writer |
+| 16 | 512 | 2 | 51b9 | 5 | other | literal writer |
+| 16 | 512 | 2 | 51b9 | 15 | other | literal writer |
+| 16 | 512 | 2 | 5220 | 15 | other | literal writer |
+| 16 | 512 | 2 | 52b9 | 15 | other | literal writer |
+| 16 | 512 | 2 | 52ba | 5 | other | literal writer |
+| 16 | 512 | 2 | 52ba | 15 | other | literal writer |
+| 16 | 512 | 2 | 536b | 8 | other | literal writer |
+| 16 | 512 | 2 | 5387 | 1 | other | literal writer |
+| 16 | 512 | 2 | 5387 | 6 | other | literal writer |
+| 16 | 512 | 2 | 5387 | 11 | other | literal writer |
+| 16 | 512 | 2 | 53bb | 15 | other | literal writer |
+| 16 | 512 | 2 | 557b | 6 | other | literal writer |
+| 16 | 512 | 2 | 5588 | 0 | other | literal writer |
+| 16 | 512 | 2 | 5588 | 1 | other | literal writer |
+| 16 | 512 | 2 | 5588 | 6 | other | literal writer |
+| 16 | 512 | 2 | 5588 | 11 | other | literal writer |
+| 16 | 512 | 2 | 5588 | 15 | other | literal writer |
+| 16 | 512 | 2 | 55bd | 5 | other | literal writer |
+| 16 | 512 | 2 | 55bd | 15 | other | literal writer |
+| 16 | 512 | 2 | 56be | 5 | other | literal writer |
+| 16 | 512 | 2 | 56be | 15 | other | literal writer |
+| 16 | 512 | 2 | 57bf | 5 | other | literal writer |
+| 16 | 512 | 2 | 57bf | 15 | other | literal writer |
+| 16 | 512 | 2 | 58a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 59a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | 5b0e | 11 | other | literal writer |
+| 16 | 512 | 2 | 6175 | 5 | other | literal writer |
+| 16 | 512 | 2 | 617c | 7 | other | literal writer |
+| 16 | 512 | 2 | 61bc | 7 | other | literal writer |
+| 16 | 512 | 2 | 6252 | 11 | other | literal writer |
+| 16 | 512 | 2 | 6285 | 11 | other | literal writer |
+| 16 | 512 | 2 | 637c | 7 | other | literal writer |
+| 16 | 512 | 2 | 63bc | 7 | other | literal writer |
+| 16 | 512 | 2 | 657c | 7 | other | literal writer |
+| 16 | 512 | 2 | 65bc | 7 | other | literal writer |
+| 16 | 512 | 2 | 6652 | 11 | other | literal writer |
+| 16 | 512 | 2 | 677c | 7 | other | literal writer |
+| 16 | 512 | 2 | 67bc | 7 | other | literal writer |
+| 16 | 512 | 2 | 67bf | 11 | other | literal writer |
+| 16 | 512 | 2 | 682a | 11 | other | literal writer |
+| 16 | 512 | 2 | 70e5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 72e5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 74e5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 7856 | 11 | other | literal writer |
+| 16 | 512 | 2 | 78e1 | 11 | other | literal writer |
+| 16 | 512 | 2 | 78e5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 7ce5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 7e0e | 11 | other | literal writer |
+| 16 | 512 | 2 | 870e | 11 | other | literal writer |
+| 16 | 512 | 2 | 880e | 11 | other | literal writer |
+| 16 | 512 | 2 | 8aab | 11 | other | literal writer |
+| 16 | 512 | 2 | 8b52 | 5 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | 8e0e | 11 | other | literal writer |
+| 16 | 512 | 2 | 8e86 | 11 | other | literal writer |
+| 16 | 512 | 2 | 90a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | 940e | 1 | other | literal writer |
+| 16 | 512 | 2 | 9455 | 5 | other | literal writer |
+| 16 | 512 | 2 | 96a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | a00e | 0 | other | literal writer |
+| 16 | 512 | 2 | a00e | 1 | other | literal writer |
+| 16 | 512 | 2 | a00e | 5 | other | literal writer |
+| 16 | 512 | 2 | a10e | 1 | other | literal writer |
+| 16 | 512 | 2 | a10e | 5 | other | literal writer |
+| 16 | 512 | 2 | a1a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | a1a5 | 16 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | a407 | 7 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | a490 | 11 | other | literal writer |
+| 16 | 512 | 2 | a4ad | 11 | other | literal writer |
+| 16 | 512 | 2 | a4b8 | 11 | other | literal writer |
+| 16 | 512 | 2 | a4ba | 11 | other | literal writer |
+| 16 | 512 | 2 | a4f0 | 11 | other | literal writer |
+| 16 | 512 | 2 | a4f2 | 11 | other | literal writer |
+| 16 | 512 | 2 | a4f3 | 11 | other | literal writer |
+| 16 | 512 | 2 | a53e | 11 | other | literal writer |
+| 16 | 512 | 2 | a549 | 11 | other | literal writer |
+| 16 | 512 | 2 | a559 | 11 | other | literal writer |
+| 16 | 512 | 2 | a57e | 11 | other | literal writer |
+| 16 | 512 | 2 | a593 | 11 | other | literal writer |
+| 16 | 512 | 2 | a595 | 11 | other | literal writer |
+| 16 | 512 | 2 | a596 | 11 | other | literal writer |
+| 16 | 512 | 2 | a5f2 | 11 | other | literal writer |
+| 16 | 512 | 2 | a5f3 | 11 | other | literal writer |
+| 16 | 512 | 2 | a5f5 | 11 | other | literal writer |
+| 16 | 512 | 2 | a90e | 0 | other | literal writer |
+| 16 | 512 | 2 | a90e | 1 | other | literal writer |
+| 16 | 512 | 2 | a90e | 3 | other | literal writer |
+| 16 | 512 | 2 | a90e | 6 | other | literal writer |
+| 16 | 512 | 2 | aa74 | 11 | other | literal writer |
+| 16 | 512 | 2 | abb8 | 0 | other | literal writer |
+| 16 | 512 | 2 | abb8 | 11 | other | literal writer |
+| 16 | 512 | 2 | abba | 11 | other | literal writer |
+| 16 | 512 | 2 | adab | 11 | other | literal writer |
+| 16 | 512 | 2 | b041 | 11 | other | literal writer |
+| 16 | 512 | 2 | b0ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b10e | 11 | other | literal writer |
+| 16 | 512 | 2 | b16d | 11 | other | literal writer |
+| 16 | 512 | 2 | b1c3 | 11 | other | literal writer |
+| 16 | 512 | 2 | b1ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b2ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b30e | 11 | other | literal writer |
+| 16 | 512 | 2 | b3ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b40e | 11 | other | literal writer |
+| 16 | 512 | 2 | b4e4 | 11 | other | literal writer |
+| 16 | 512 | 2 | b50e | 11 | other | literal writer |
+| 16 | 512 | 2 | b5ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b6ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b70e | 11 | other | literal writer |
+| 16 | 512 | 2 | b755 | 11 | other | literal writer |
+| 16 | 512 | 2 | b7e4 | 11 | other | literal writer |
+| 16 | 512 | 2 | b7ff | 11 | other | literal writer |
+| 16 | 512 | 2 | b80e | 1 | other | literal writer |
+| 16 | 512 | 2 | b80e | 5 | other | literal writer |
+| 16 | 512 | 2 | b850 | 5 | other | literal writer |
+| 16 | 512 | 2 | b852 | 5 | other | literal writer |
+| 16 | 512 | 2 | b853 | 5 | other | literal writer |
+| 16 | 512 | 2 | b8a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | b8ab | 11 | other | literal writer |
+| 16 | 512 | 2 | b8f3 | 11 | other | literal writer |
+| 16 | 512 | 2 | b951 | 5 | other | literal writer |
+| 16 | 512 | 2 | b951 | 15 | other | literal writer |
+| 16 | 512 | 2 | ba52 | 5 | other | literal writer |
+| 16 | 512 | 2 | bae1 | 11 | other | literal writer |
+| 16 | 512 | 2 | bb50 | 5 | other | literal writer |
+| 16 | 512 | 2 | bb53 | 5 | other | literal writer |
+| 16 | 512 | 2 | bb53 | 15 | other | literal writer |
+| 16 | 512 | 2 | bd06 | 0 | other | literal writer |
+| 16 | 512 | 2 | bd06 | 1 | other | literal writer |
+| 16 | 512 | 2 | bd06 | 5 | other | literal writer |
+| 16 | 512 | 2 | bd06 | 6 | other | literal writer |
+| 16 | 512 | 2 | bd06 | 15 | other | literal writer |
+| 16 | 512 | 2 | bd55 | 5 | other | literal writer |
+| 16 | 512 | 2 | bd55 | 15 | other | literal writer |
+| 16 | 512 | 2 | be0e | 0 | other | literal writer |
+| 16 | 512 | 2 | be0e | 1 | other | literal writer |
+| 16 | 512 | 2 | be0e | 5 | other | literal writer |
+| 16 | 512 | 2 | be0e | 6 | other | literal writer |
+| 16 | 512 | 2 | be56 | 5 | other | literal writer |
+| 16 | 512 | 2 | be56 | 15 | other | literal writer |
+| 16 | 512 | 2 | bef1 | 11 | other | literal writer |
+| 16 | 512 | 2 | bf57 | 5 | other | literal writer |
+| 16 | 512 | 2 | bf57 | 15 | other | literal writer |
+| 16 | 512 | 2 | c406 | 11 | other | literal writer |
+| 16 | 512 | 2 | c48a | 11 | other | literal writer |
+| 16 | 512 | 2 | c552 | 5 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | c60e | 0 | other | literal writer |
+| 16 | 512 | 2 | c60e | 6 | other | literal writer |
+| 16 | 512 | 2 | c60e | 7 | other | literal writer |
+| 16 | 512 | 2 | c60e | 11 | other | literal writer |
+| 16 | 512 | 2 | c61e | 0 | other | literal writer |
+| 16 | 512 | 2 | c61e | 6 | other | literal writer |
+| 16 | 512 | 2 | c61e | 7 | other | literal writer |
+| 16 | 512 | 2 | c61e | 11 | other | literal writer |
+| 16 | 512 | 2 | c752 | 11 | other | literal writer |
+| 16 | 512 | 2 | c752 | 15 | other | literal writer |
+| 16 | 512 | 2 | e0b9 | 8 | other | literal writer |
+| 16 | 512 | 2 | e10e | 11 | other | literal writer |
+| 16 | 512 | 2 | e2b9 | 8 | other | literal writer |
+| 16 | 512 | 2 | e30e | 11 | other | literal writer |
+| 16 | 512 | 2 | e374 | 8 | other | literal writer |
+| 16 | 512 | 2 | e378 | 8 | other | literal writer |
+| 16 | 512 | 2 | e37c | 7 | other | literal writer |
+| 16 | 512 | 2 | e37c | 10 | other | literal writer |
+| 16 | 512 | 2 | e37c | 11 | other | literal writer |
+| 16 | 512 | 2 | e3bc | 7 | other | literal writer |
+| 16 | 512 | 2 | e3bc | 10 | other | literal writer |
+| 16 | 512 | 2 | e3bc | 11 | other | literal writer |
+| 16 | 512 | 2 | e9b9 | 10 | other | literal writer |
+| 16 | 512 | 2 | ea0e | 7 | other | literal writer |
+| 16 | 512 | 2 | ea0e | 10 | other | literal writer |
+| 16 | 512 | 2 | eaff | 2 | other | literal writer |
+| 16 | 512 | 2 | eb74 | 8 | other | literal writer |
+| 16 | 512 | 2 | ebb9 | 8 | other | literal writer |
+| 16 | 512 | 2 | ebbc | 7 | other | literal writer |
+| 16 | 512 | 2 | ebbc | 10 | other | literal writer |
+| 16 | 512 | 2 | f0a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | f2a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | f2a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | f3a4 | 11 | other | literal writer |
+| 16 | 512 | 2 | f3a5 | 11 | other | literal writer |
+| 16 | 512 | 2 | f3b8 | 11 | other | literal writer |
+| 16 | 512 | 2 | fca5 | 11 | other | literal writer |
+| 32 | 128 | 1 | 00 | 11 | other | literal writer |
+| 32 | 128 | 2 | 0000 | 11 | other | literal writer |
+| 32 | 128 | 2 | 0050 | 11 | other | literal writer |
+| 32 | 128 | 2 | 0050 | 15 | other | literal writer |
+| 32 | 128 | 2 | 0850 | 11 | other | literal writer |
+| 32 | 128 | 2 | 0850 | 15 | other | literal writer |
+| 32 | 128 | 2 | 0951 | 11 | other | literal writer |
+| 32 | 128 | 2 | 0951 | 15 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 0 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 2 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 7 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 9 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 10 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 11 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 13 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 14 | other | literal writer |
+| 32 | 128 | 2 | 0e7d | 16 | other | literal writer |
+| 32 | 128 | 2 | 17a5 | 11 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 0 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 1 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 2 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 3 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 6 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 7 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 11 | other | literal writer |
+| 32 | 128 | 2 | 1ea9 | 15 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 0 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 1 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 2 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 6 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 7 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 11 | other | literal writer |
+| 32 | 128 | 2 | 1eb9 | 15 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 0 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 1 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 2 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 6 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 7 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 11 | other | literal writer |
+| 32 | 128 | 2 | 1eba | 15 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 0 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 1 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 2 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 6 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 7 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 11 | other | literal writer |
+| 32 | 128 | 2 | 1ebd | 15 | other | literal writer |
+| 32 | 128 | 2 | 1ebf | 0 | other | literal writer |
+| 32 | 128 | 2 | 1ebf | 1 | other | literal writer |
+| 32 | 128 | 2 | 1ebf | 6 | other | literal writer |
+| 32 | 128 | 2 | 1ebf | 7 | other | literal writer |
+| 32 | 128 | 2 | 1ebf | 11 | other | literal writer |
+| 32 | 128 | 2 | 1ebf | 15 | other | literal writer |
+| 32 | 128 | 2 | 4ca5 | 11 | other | literal writer |
+| 32 | 128 | 2 | 50b8 | 11 | other | literal writer |
+| 32 | 128 | 2 | 51b9 | 11 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 0 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 1 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 2 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 6 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 7 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 11 | other | literal writer |
+| 32 | 128 | 2 | 52a1 | 15 | other | literal writer |
+| 32 | 128 | 2 | 52b8 | 11 | other | literal writer |
+| 32 | 128 | 2 | 52b8 | 15 | other | literal writer |
+| 32 | 128 | 2 | 52ba | 11 | other | literal writer |
+| 32 | 128 | 2 | 52ba | 15 | other | literal writer |
+| 32 | 128 | 2 | 52bb | 11 | other | literal writer |
+| 32 | 128 | 2 | 52be | 11 | other | literal writer |
+| 32 | 128 | 2 | 52be | 15 | other | literal writer |
+| 32 | 128 | 2 | 53bb | 11 | other | literal writer |
+| 32 | 128 | 2 | 55bd | 11 | other | literal writer |
+| 32 | 128 | 2 | 56be | 11 | other | literal writer |
+| 32 | 128 | 2 | 56be | 15 | other | literal writer |
+| 32 | 128 | 2 | 57bf | 11 | other | literal writer |
+| 32 | 128 | 2 | 57c7 | 8 | other | literal writer |
+| 32 | 128 | 2 | 62c2 | 11 | other | literal writer |
+| 32 | 128 | 2 | 8b52 | 15 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | 96a5 | 11 | other | literal writer |
+| 32 | 128 | 2 | a01e | 0 | other | literal writer |
+| 32 | 128 | 2 | a01e | 1 | other | literal writer |
+| 32 | 128 | 2 | a01e | 2 | other | literal writer |
+| 32 | 128 | 2 | a01e | 6 | other | literal writer |
+| 32 | 128 | 2 | a01e | 7 | other | literal writer |
+| 32 | 128 | 2 | a01e | 11 | other | literal writer |
+| 32 | 128 | 2 | a01e | 15 | other | literal writer |
+| 32 | 128 | 2 | a150 | 0 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a150 | 1 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a150 | 2 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a150 | 7 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a150 | 10 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a150 | 13 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a150 | 15 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | a152 | 1 | other | literal writer |
+| 32 | 128 | 2 | a152 | 2 | other | literal writer |
+| 32 | 128 | 2 | a152 | 6 | other | literal writer |
+| 32 | 128 | 2 | a152 | 7 | other | literal writer |
+| 32 | 128 | 2 | a152 | 11 | other | literal writer |
+| 32 | 128 | 2 | a152 | 15 | other | literal writer |
+| 32 | 128 | 2 | a54c | 11 | other | literal writer |
+| 32 | 128 | 2 | a558 | 11 | other | literal writer |
+| 32 | 128 | 2 | a559 | 11 | other | literal writer |
+| 32 | 128 | 2 | a55a | 11 | other | literal writer |
+| 32 | 128 | 2 | a55b | 11 | other | literal writer |
+| 32 | 128 | 2 | a55d | 11 | other | literal writer |
+| 32 | 128 | 2 | a55e | 11 | other | literal writer |
+| 32 | 128 | 2 | a596 | 11 | other | literal writer |
+| 32 | 128 | 2 | a90e | 0 | other | literal writer |
+| 32 | 128 | 2 | a90e | 1 | other | literal writer |
+| 32 | 128 | 2 | a90e | 2 | other | literal writer |
+| 32 | 128 | 2 | a90e | 6 | other | literal writer |
+| 32 | 128 | 2 | a90e | 7 | other | literal writer |
+| 32 | 128 | 2 | a90e | 11 | other | literal writer |
+| 32 | 128 | 2 | a91e | 0 | other | literal writer |
+| 32 | 128 | 2 | a91e | 1 | other | literal writer |
+| 32 | 128 | 2 | a91e | 2 | other | literal writer |
+| 32 | 128 | 2 | a91e | 6 | other | literal writer |
+| 32 | 128 | 2 | a91e | 7 | other | literal writer |
+| 32 | 128 | 2 | a91e | 11 | other | literal writer |
+| 32 | 128 | 2 | a91e | 15 | other | literal writer |
+| 32 | 128 | 2 | adab | 11 | other | literal writer |
+| 32 | 128 | 2 | b81e | 1 | other | literal writer |
+| 32 | 128 | 2 | b81e | 2 | other | literal writer |
+| 32 | 128 | 2 | b81e | 6 | other | literal writer |
+| 32 | 128 | 2 | b81e | 7 | other | literal writer |
+| 32 | 128 | 2 | b81e | 11 | other | literal writer |
+| 32 | 128 | 2 | b81e | 15 | other | literal writer |
+| 32 | 128 | 2 | b850 | 11 | other | literal writer |
+| 32 | 128 | 2 | b850 | 15 | other | literal writer |
+| 32 | 128 | 2 | b852 | 11 | other | literal writer |
+| 32 | 128 | 2 | b852 | 15 | other | literal writer |
+| 32 | 128 | 2 | b8ab | 11 | other | literal writer |
+| 32 | 128 | 2 | b90e | 1 | other | literal writer |
+| 32 | 128 | 2 | b90e | 2 | other | literal writer |
+| 32 | 128 | 2 | b90e | 6 | other | literal writer |
+| 32 | 128 | 2 | b90e | 7 | other | literal writer |
+| 32 | 128 | 2 | b90e | 11 | other | literal writer |
+| 32 | 128 | 2 | b91e | 0 | other | literal writer |
+| 32 | 128 | 2 | b91e | 1 | other | literal writer |
+| 32 | 128 | 2 | b91e | 2 | other | literal writer |
+| 32 | 128 | 2 | b91e | 6 | other | literal writer |
+| 32 | 128 | 2 | b91e | 7 | other | literal writer |
+| 32 | 128 | 2 | b91e | 11 | other | literal writer |
+| 32 | 128 | 2 | b91e | 15 | other | literal writer |
+| 32 | 128 | 2 | b950 | 11 | other | literal writer |
+| 32 | 128 | 2 | b950 | 15 | other | literal writer |
+| 32 | 128 | 2 | b951 | 11 | other | literal writer |
+| 32 | 128 | 2 | b951 | 15 | other | literal writer |
+| 32 | 128 | 2 | b9a5 | 6 | other | literal writer |
+| 32 | 128 | 2 | b9a5 | 11 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 0 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 1 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 2 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 6 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 7 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 11 | other | literal writer |
+| 32 | 128 | 2 | ba1e | 15 | other | literal writer |
+| 32 | 128 | 2 | ba52 | 11 | other | literal writer |
+| 32 | 128 | 2 | ba52 | 15 | other | literal writer |
+| 32 | 128 | 2 | bb50 | 11 | other | literal writer |
+| 32 | 128 | 2 | bb52 | 11 | other | literal writer |
+| 32 | 128 | 2 | bb53 | 11 | other | literal writer |
+| 32 | 128 | 2 | bb53 | 15 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 0 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 1 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 2 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 6 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 7 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 11 | other | literal writer |
+| 32 | 128 | 2 | bd1e | 15 | other | literal writer |
+| 32 | 128 | 2 | bd55 | 11 | other | literal writer |
+| 32 | 128 | 2 | bd55 | 15 | other | literal writer |
+| 32 | 128 | 2 | bda5 | 6 | other | literal writer |
+| 32 | 128 | 2 | bda5 | 11 | other | literal writer |
+| 32 | 128 | 2 | be52 | 11 | other | literal writer |
+| 32 | 128 | 2 | be52 | 15 | other | literal writer |
+| 32 | 128 | 2 | be56 | 11 | other | literal writer |
+| 32 | 128 | 2 | be56 | 15 | other | literal writer |
+| 32 | 128 | 2 | bf1e | 0 | other | literal writer |
+| 32 | 128 | 2 | bf1e | 1 | other | literal writer |
+| 32 | 128 | 2 | bf1e | 6 | other | literal writer |
+| 32 | 128 | 2 | bf1e | 7 | other | literal writer |
+| 32 | 128 | 2 | bf1e | 11 | other | literal writer |
+| 32 | 128 | 2 | bf1e | 15 | other | literal writer |
+| 32 | 128 | 2 | bf57 | 11 | other | literal writer |
+| 32 | 128 | 2 | bf57 | 15 | other | literal writer |
+| 32 | 128 | 2 | c452 | 15 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | c552 | 11 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | c552 | 15 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | f396 | 11 | other | literal writer |
+| 32 | 512 | 1 | 00 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0000 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0050 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0050 | 15 | other | literal writer |
+| 32 | 512 | 2 | 06a1 | 0 | other | literal writer |
+| 32 | 512 | 2 | 06a1 | 1 | other | literal writer |
+| 32 | 512 | 2 | 06a1 | 2 | other | literal writer |
+| 32 | 512 | 2 | 06a1 | 7 | other | literal writer |
+| 32 | 512 | 2 | 06a1 | 11 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 0 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 1 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 2 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 3 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 6 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 7 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 06a9 | 15 | other | literal writer |
+| 32 | 512 | 2 | 0850 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0850 | 15 | other | literal writer |
+| 32 | 512 | 2 | 0951 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0951 | 15 | other | literal writer |
+| 32 | 512 | 2 | 0e02 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e02 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e02 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e02 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e02 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e02 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 13 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e08 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e13 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e13 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e13 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e13 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e13 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e13 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e14 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e14 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e14 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e14 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e1a | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e1a | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e1a | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e1a | 13 | other | literal writer |
+| 32 | 512 | 2 | 0e1a | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e1a | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e1c | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e1c | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e1c | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e1c | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e2a | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e2a | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e2a | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e2a | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e2a | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e32 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e32 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e32 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e32 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e32 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e32 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e3a | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e3a | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e3a | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e3a | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e3a | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e3a | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 13 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e72 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 3 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 13 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e75 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 11 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 13 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e7d | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e84 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e84 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e84 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e84 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0e84 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0e84 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0e94 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0e94 | 1 | other | literal writer |
+| 32 | 512 | 2 | 0e94 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0e94 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0e94 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0ea1 | 1 | other | literal writer |
+| 32 | 512 | 2 | 0ea1 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0ea1 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0ea1 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ea1 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 1 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 3 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 4 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ea9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 13 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0eb2 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 4 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 13 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0eb7 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0eb8 | 1 | other | literal writer |
+| 32 | 512 | 2 | 0eb8 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0eb8 | 6 | other | literal writer |
+| 32 | 512 | 2 | 0eb8 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0eb8 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0eba | 0 | other | literal writer |
+| 32 | 512 | 2 | 0eba | 1 | other | literal writer |
+| 32 | 512 | 2 | 0eba | 2 | other | literal writer |
+| 32 | 512 | 2 | 0eba | 6 | other | literal writer |
+| 32 | 512 | 2 | 0eba | 7 | other | literal writer |
+| 32 | 512 | 2 | 0eba | 11 | other | literal writer |
+| 32 | 512 | 2 | 0ebe | 0 | other | literal writer |
+| 32 | 512 | 2 | 0ebe | 1 | other | literal writer |
+| 32 | 512 | 2 | 0ebe | 2 | other | literal writer |
+| 32 | 512 | 2 | 0ebe | 6 | other | literal writer |
+| 32 | 512 | 2 | 0ebe | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ebe | 11 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 3 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0ed8 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0edc | 0 | other | literal writer |
+| 32 | 512 | 2 | 0edc | 2 | other | literal writer |
+| 32 | 512 | 2 | 0edc | 7 | other | literal writer |
+| 32 | 512 | 2 | 0edc | 10 | other | literal writer |
+| 32 | 512 | 2 | 0edc | 14 | other | literal writer |
+| 32 | 512 | 2 | 0edc | 16 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 11 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 13 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0ee3 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0ee6 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0ee6 | 2 | other | literal writer |
+| 32 | 512 | 2 | 0ee6 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ee6 | 10 | other | literal writer |
+| 32 | 512 | 2 | 0ee6 | 14 | other | literal writer |
+| 32 | 512 | 2 | 0ee6 | 16 | other | literal writer |
+| 32 | 512 | 2 | 0ef7 | 0 | other | literal writer |
+| 32 | 512 | 2 | 0ef7 | 4 | other | literal writer |
+| 32 | 512 | 2 | 0ef7 | 7 | other | literal writer |
+| 32 | 512 | 2 | 0ef7 | 14 | other | literal writer |
+| 32 | 512 | 2 | 17a4 | 11 | other | literal writer |
+| 32 | 512 | 2 | 17a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 180e | 11 | other | literal writer |
+| 32 | 512 | 2 | 1e3b | 0 | other | literal writer |
+| 32 | 512 | 2 | 1e3b | 2 | other | literal writer |
+| 32 | 512 | 2 | 1e3b | 7 | other | literal writer |
+| 32 | 512 | 2 | 1e3b | 10 | other | literal writer |
+| 32 | 512 | 2 | 1e3b | 14 | other | literal writer |
+| 32 | 512 | 2 | 1e3b | 16 | other | literal writer |
+| 32 | 512 | 2 | 1ea0 | 1 | other | literal writer |
+| 32 | 512 | 2 | 1ea0 | 2 | other | literal writer |
+| 32 | 512 | 2 | 1ea0 | 6 | other | literal writer |
+| 32 | 512 | 2 | 1ea0 | 7 | other | literal writer |
+| 32 | 512 | 2 | 1ea0 | 11 | other | literal writer |
+| 32 | 512 | 2 | 1ea0 | 15 | other | literal writer |
+| 32 | 512 | 2 | 1ea1 | 1 | other | literal writer |
+| 32 | 512 | 2 | 1ea1 | 2 | other | literal writer |
+| 32 | 512 | 2 | 1ea1 | 6 | other | literal writer |
+| 32 | 512 | 2 | 1ea1 | 7 | other | literal writer |
+| 32 | 512 | 2 | 1ea1 | 11 | other | literal writer |
+| 32 | 512 | 2 | 1ea1 | 15 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 0 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 1 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 2 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 3 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 6 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 7 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 1ea9 | 15 | other | literal writer |
+| 32 | 512 | 2 | 1eb8 | 1 | other | literal writer |
+| 32 | 512 | 2 | 1eb8 | 2 | other | literal writer |
+| 32 | 512 | 2 | 1eb8 | 7 | other | literal writer |
+| 32 | 512 | 2 | 1eb8 | 11 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 0 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 1 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 2 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 6 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 7 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 1eb9 | 15 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 0 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 1 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 2 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 6 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 7 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 11 | other | literal writer |
+| 32 | 512 | 2 | 1eba | 15 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 0 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 1 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 2 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 6 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 7 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 11 | other | literal writer |
+| 32 | 512 | 2 | 1ebd | 15 | other | literal writer |
+| 32 | 512 | 2 | 1ebf | 0 | other | literal writer |
+| 32 | 512 | 2 | 1ebf | 1 | other | literal writer |
+| 32 | 512 | 2 | 1ebf | 6 | other | literal writer |
+| 32 | 512 | 2 | 1ebf | 7 | other | literal writer |
+| 32 | 512 | 2 | 1ebf | 11 | other | literal writer |
+| 32 | 512 | 2 | 1ebf | 15 | other | literal writer |
+| 32 | 512 | 2 | 1f0e | 6 | other | literal writer |
+| 32 | 512 | 2 | 1f0e | 11 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | 26a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 2ea4 | 11 | other | literal writer |
+| 32 | 512 | 2 | 2ea8 | 11 | other | literal writer |
+| 32 | 512 | 2 | 36a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 3914 | 11 | other | literal writer |
+| 32 | 512 | 2 | 3ea5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 409b | 11 | other | literal writer |
+| 32 | 512 | 2 | 41a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 42a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 45a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 489b | 11 | other | literal writer |
+| 32 | 512 | 2 | 48bf | 11 | other | literal writer |
+| 32 | 512 | 2 | 4ca5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 4da5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 0 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 1 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 2 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 3 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 6 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 7 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 50a9 | 15 | other | literal writer |
+| 32 | 512 | 2 | 50b8 | 11 | other | literal writer |
+| 32 | 512 | 2 | 50bb | 11 | other | literal writer |
+| 32 | 512 | 2 | 50c7 | 8 | other | literal writer |
+| 32 | 512 | 2 | 516e | 11 | other | literal writer |
+| 32 | 512 | 2 | 5172 | 11 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 0 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 1 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 2 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 6 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 7 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 11 | other | literal writer |
+| 32 | 512 | 2 | 51a0 | 15 | other | literal writer |
+| 32 | 512 | 2 | 51b8 | 11 | other | literal writer |
+| 32 | 512 | 2 | 51b9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 51bb | 11 | other | literal writer |
+| 32 | 512 | 2 | 51bd | 11 | other | literal writer |
+| 32 | 512 | 2 | 51bd | 15 | other | literal writer |
+| 32 | 512 | 2 | 51c5 | 6 | other | literal writer |
+| 32 | 512 | 2 | 525f | 6 | other | literal writer |
+| 32 | 512 | 2 | 525f | 11 | other | literal writer |
+| 32 | 512 | 2 | 5272 | 11 | other | literal writer |
+| 32 | 512 | 2 | 52a1 | 1 | other | literal writer |
+| 32 | 512 | 2 | 52a1 | 2 | other | literal writer |
+| 32 | 512 | 2 | 52a1 | 6 | other | literal writer |
+| 32 | 512 | 2 | 52a1 | 7 | other | literal writer |
+| 32 | 512 | 2 | 52a1 | 11 | other | literal writer |
+| 32 | 512 | 2 | 52b8 | 11 | other | literal writer |
+| 32 | 512 | 2 | 52ba | 11 | other | literal writer |
+| 32 | 512 | 2 | 52ba | 15 | other | literal writer |
+| 32 | 512 | 2 | 52bb | 11 | other | literal writer |
+| 32 | 512 | 2 | 52be | 11 | other | literal writer |
+| 32 | 512 | 2 | 52be | 15 | other | literal writer |
+| 32 | 512 | 2 | 53bb | 11 | other | literal writer |
+| 32 | 512 | 2 | 53bd | 11 | other | literal writer |
+| 32 | 512 | 2 | 53bd | 15 | other | literal writer |
+| 32 | 512 | 2 | 5571 | 10 | other | literal writer |
+| 32 | 512 | 2 | 558b | 11 | other | literal writer |
+| 32 | 512 | 2 | 558b | 15 | other | literal writer |
+| 32 | 512 | 2 | 55bd | 11 | other | literal writer |
+| 32 | 512 | 2 | 55bf | 11 | other | literal writer |
+| 32 | 512 | 2 | 568b | 11 | other | literal writer |
+| 32 | 512 | 2 | 568b | 15 | other | literal writer |
+| 32 | 512 | 2 | 56be | 11 | other | literal writer |
+| 32 | 512 | 2 | 56be | 15 | other | literal writer |
+| 32 | 512 | 2 | 56c4 | 6 | other | literal writer |
+| 32 | 512 | 2 | 56c4 | 11 | other | literal writer |
+| 32 | 512 | 2 | 56c4 | 15 | other | literal writer |
+| 32 | 512 | 2 | 5700 | 6 | other | literal writer |
+| 32 | 512 | 2 | 5700 | 11 | other | literal writer |
+| 32 | 512 | 2 | 5700 | 15 | other | literal writer |
+| 32 | 512 | 2 | 5730 | 6 | other | literal writer |
+| 32 | 512 | 2 | 5730 | 11 | other | literal writer |
+| 32 | 512 | 2 | 5730 | 15 | other | literal writer |
+| 32 | 512 | 2 | 5731 | 6 | other | literal writer |
+| 32 | 512 | 2 | 5731 | 11 | other | literal writer |
+| 32 | 512 | 2 | 5731 | 15 | other | literal writer |
+| 32 | 512 | 2 | 5738 | 6 | other | literal writer |
+| 32 | 512 | 2 | 5738 | 11 | other | literal writer |
+| 32 | 512 | 2 | 5738 | 15 | other | literal writer |
+| 32 | 512 | 2 | 5739 | 6 | other | literal writer |
+| 32 | 512 | 2 | 5739 | 11 | other | literal writer |
+| 32 | 512 | 2 | 5739 | 15 | other | literal writer |
+| 32 | 512 | 2 | 578b | 6 | other | literal writer |
+| 32 | 512 | 2 | 578b | 11 | other | literal writer |
+| 32 | 512 | 2 | 578b | 15 | other | literal writer |
+| 32 | 512 | 2 | 57a0 | 0 | other | literal writer |
+| 32 | 512 | 2 | 57a0 | 1 | other | literal writer |
+| 32 | 512 | 2 | 57a0 | 2 | other | literal writer |
+| 32 | 512 | 2 | 57a0 | 7 | other | literal writer |
+| 32 | 512 | 2 | 57a0 | 11 | other | literal writer |
+| 32 | 512 | 2 | 57a0 | 15 | other | literal writer |
+| 32 | 512 | 2 | 57bf | 11 | other | literal writer |
+| 32 | 512 | 2 | 57c7 | 8 | other | literal writer |
+| 32 | 512 | 2 | 62c2 | 11 | other | literal writer |
+| 32 | 512 | 2 | 6773 | 5 | other | literal writer |
+| 32 | 512 | 2 | 6773 | 8 | other | literal writer |
+| 32 | 512 | 2 | 7206 | 11 | other | literal writer |
+| 32 | 512 | 2 | 72ab | 11 | other | literal writer |
+| 32 | 512 | 2 | 7604 | 11 | other | literal writer |
+| 32 | 512 | 2 | 7773 | 5 | other | literal writer |
+| 32 | 512 | 2 | 7773 | 8 | other | literal writer |
+| 32 | 512 | 2 | 780e | 11 | other | literal writer |
+| 32 | 512 | 2 | 7cbf | 11 | other | literal writer |
+| 32 | 512 | 2 | 7f2c | 16 | other | literal writer |
+| 32 | 512 | 2 | 870e | 11 | other | literal writer |
+| 32 | 512 | 2 | 8a1e | 11 | other | literal writer |
+| 32 | 512 | 2 | 8b52 | 15 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | 8c06 | 2 | other | literal writer |
+| 32 | 512 | 2 | 8c06 | 4 | other | literal writer |
+| 32 | 512 | 2 | 8c06 | 6 | other | literal writer |
+| 32 | 512 | 2 | 8c06 | 14 | other | literal writer |
+| 32 | 512 | 2 | 8fd9 | 6 | other | literal writer |
+| 32 | 512 | 2 | 8fd9 | 11 | other | literal writer |
+| 32 | 512 | 2 | 90a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 9157 | 16 | other | literal writer |
+| 32 | 512 | 2 | 91a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 9257 | 16 | other | literal writer |
+| 32 | 512 | 2 | 92a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 92bb | 11 | other | literal writer |
+| 32 | 512 | 2 | 9357 | 16 | other | literal writer |
+| 32 | 512 | 2 | 93a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 940e | 1 | other | literal writer |
+| 32 | 512 | 2 | 940e | 2 | other | literal writer |
+| 32 | 512 | 2 | 940e | 6 | other | literal writer |
+| 32 | 512 | 2 | 940e | 7 | other | literal writer |
+| 32 | 512 | 2 | 940e | 11 | other | literal writer |
+| 32 | 512 | 2 | 945b | 6 | other | literal writer |
+| 32 | 512 | 2 | 94a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 9557 | 16 | other | literal writer |
+| 32 | 512 | 2 | 95a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 95e1 | 11 | other | literal writer |
+| 32 | 512 | 2 | 9657 | 16 | other | literal writer |
+| 32 | 512 | 2 | 96a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | 9ba5 | 11 | other | literal writer |
+| 32 | 512 | 2 | a00e | 0 | other | literal writer |
+| 32 | 512 | 2 | a00e | 1 | other | literal writer |
+| 32 | 512 | 2 | a00e | 2 | other | literal writer |
+| 32 | 512 | 2 | a00e | 7 | other | literal writer |
+| 32 | 512 | 2 | a00e | 11 | other | literal writer |
+| 32 | 512 | 2 | a01e | 0 | other | literal writer |
+| 32 | 512 | 2 | a01e | 1 | other | literal writer |
+| 32 | 512 | 2 | a01e | 2 | other | literal writer |
+| 32 | 512 | 2 | a01e | 6 | other | literal writer |
+| 32 | 512 | 2 | a01e | 7 | other | literal writer |
+| 32 | 512 | 2 | a01e | 11 | other | literal writer |
+| 32 | 512 | 2 | a01e | 15 | other | literal writer |
+| 32 | 512 | 2 | a10e | 1 | other | literal writer |
+| 32 | 512 | 2 | a10e | 2 | other | literal writer |
+| 32 | 512 | 2 | a10e | 6 | other | literal writer |
+| 32 | 512 | 2 | a10e | 7 | other | literal writer |
+| 32 | 512 | 2 | a10e | 11 | other | literal writer |
+| 32 | 512 | 2 | a150 | 0 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a150 | 1 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a150 | 2 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a150 | 7 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a150 | 10 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a150 | 13 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a150 | 15 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | a152 | 1 | other | literal writer |
+| 32 | 512 | 2 | a152 | 2 | other | literal writer |
+| 32 | 512 | 2 | a152 | 6 | other | literal writer |
+| 32 | 512 | 2 | a152 | 7 | other | literal writer |
+| 32 | 512 | 2 | a152 | 11 | other | literal writer |
+| 32 | 512 | 2 | a152 | 15 | other | literal writer |
+| 32 | 512 | 2 | a155 | 1 | other | literal writer |
+| 32 | 512 | 2 | a155 | 2 | other | literal writer |
+| 32 | 512 | 2 | a155 | 7 | other | literal writer |
+| 32 | 512 | 2 | a155 | 11 | other | literal writer |
+| 32 | 512 | 2 | a44c | 11 | other | literal writer |
+| 32 | 512 | 2 | a540 | 11 | other | literal writer |
+| 32 | 512 | 2 | a541 | 11 | other | literal writer |
+| 32 | 512 | 2 | a548 | 11 | other | literal writer |
+| 32 | 512 | 2 | a549 | 11 | other | literal writer |
+| 32 | 512 | 2 | a54c | 11 | other | literal writer |
+| 32 | 512 | 2 | a558 | 11 | other | literal writer |
+| 32 | 512 | 2 | a559 | 11 | other | literal writer |
+| 32 | 512 | 2 | a55a | 11 | other | literal writer |
+| 32 | 512 | 2 | a55b | 11 | other | literal writer |
+| 32 | 512 | 2 | a55d | 11 | other | literal writer |
+| 32 | 512 | 2 | a55e | 11 | other | literal writer |
+| 32 | 512 | 2 | a590 | 11 | other | literal writer |
+| 32 | 512 | 2 | a592 | 11 | other | literal writer |
+| 32 | 512 | 2 | a596 | 11 | other | literal writer |
+| 32 | 512 | 2 | a5b1 | 11 | other | literal writer |
+| 32 | 512 | 2 | a90e | 0 | other | literal writer |
+| 32 | 512 | 2 | a90e | 1 | other | literal writer |
+| 32 | 512 | 2 | a90e | 2 | other | literal writer |
+| 32 | 512 | 2 | a90e | 6 | other | literal writer |
+| 32 | 512 | 2 | a90e | 7 | other | literal writer |
+| 32 | 512 | 2 | a90e | 11 | other | literal writer |
+| 32 | 512 | 2 | a91e | 0 | other | literal writer |
+| 32 | 512 | 2 | a91e | 1 | other | literal writer |
+| 32 | 512 | 2 | a91e | 2 | other | literal writer |
+| 32 | 512 | 2 | a91e | 6 | other | literal writer |
+| 32 | 512 | 2 | a91e | 7 | other | literal writer |
+| 32 | 512 | 2 | a91e | 11 | other | literal writer |
+| 32 | 512 | 2 | a91e | 15 | other | literal writer |
+| 32 | 512 | 2 | a9a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | ab96 | 6 | other | literal writer |
+| 32 | 512 | 2 | ab96 | 11 | other | literal writer |
+| 32 | 512 | 2 | abb8 | 11 | other | literal writer |
+| 32 | 512 | 2 | adab | 11 | other | literal writer |
+| 32 | 512 | 2 | ae6c | 11 | other | literal writer |
+| 32 | 512 | 2 | b33f | 6 | other | literal writer |
+| 32 | 512 | 2 | b33f | 11 | other | literal writer |
+| 32 | 512 | 2 | b50e | 6 | other | literal writer |
+| 32 | 512 | 2 | b50e | 11 | other | literal writer |
+| 32 | 512 | 2 | b7ff | 6 | other | literal writer |
+| 32 | 512 | 2 | b7ff | 11 | other | literal writer |
+| 32 | 512 | 2 | b80e | 1 | other | literal writer |
+| 32 | 512 | 2 | b80e | 2 | other | literal writer |
+| 32 | 512 | 2 | b80e | 7 | other | literal writer |
+| 32 | 512 | 2 | b80e | 11 | other | literal writer |
+| 32 | 512 | 2 | b81e | 1 | other | literal writer |
+| 32 | 512 | 2 | b81e | 2 | other | literal writer |
+| 32 | 512 | 2 | b81e | 6 | other | literal writer |
+| 32 | 512 | 2 | b81e | 7 | other | literal writer |
+| 32 | 512 | 2 | b81e | 11 | other | literal writer |
+| 32 | 512 | 2 | b81e | 15 | other | literal writer |
+| 32 | 512 | 2 | b84e | 6 | other | literal writer |
+| 32 | 512 | 2 | b84e | 11 | other | literal writer |
+| 32 | 512 | 2 | b850 | 11 | other | literal writer |
+| 32 | 512 | 2 | b850 | 15 | other | literal writer |
+| 32 | 512 | 2 | b852 | 11 | other | literal writer |
+| 32 | 512 | 2 | b852 | 15 | other | literal writer |
+| 32 | 512 | 2 | b8ab | 11 | other | literal writer |
+| 32 | 512 | 2 | b90e | 1 | other | literal writer |
+| 32 | 512 | 2 | b90e | 2 | other | literal writer |
+| 32 | 512 | 2 | b90e | 6 | other | literal writer |
+| 32 | 512 | 2 | b90e | 7 | other | literal writer |
+| 32 | 512 | 2 | b90e | 11 | other | literal writer |
+| 32 | 512 | 2 | b91e | 0 | other | literal writer |
+| 32 | 512 | 2 | b91e | 1 | other | literal writer |
+| 32 | 512 | 2 | b91e | 2 | other | literal writer |
+| 32 | 512 | 2 | b91e | 6 | other | literal writer |
+| 32 | 512 | 2 | b91e | 7 | other | literal writer |
+| 32 | 512 | 2 | b91e | 11 | other | literal writer |
+| 32 | 512 | 2 | b91e | 15 | other | literal writer |
+| 32 | 512 | 2 | b950 | 11 | other | literal writer |
+| 32 | 512 | 2 | b950 | 15 | other | literal writer |
+| 32 | 512 | 2 | b951 | 11 | other | literal writer |
+| 32 | 512 | 2 | b951 | 15 | other | literal writer |
+| 32 | 512 | 2 | b9a5 | 6 | other | literal writer |
+| 32 | 512 | 2 | b9a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | ba0e | 0 | other | literal writer |
+| 32 | 512 | 2 | ba0e | 1 | other | literal writer |
+| 32 | 512 | 2 | ba0e | 2 | other | literal writer |
+| 32 | 512 | 2 | ba0e | 6 | other | literal writer |
+| 32 | 512 | 2 | ba0e | 7 | other | literal writer |
+| 32 | 512 | 2 | ba0e | 11 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 0 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 1 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 2 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 6 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 7 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 11 | other | literal writer |
+| 32 | 512 | 2 | ba1e | 15 | other | literal writer |
+| 32 | 512 | 2 | ba52 | 11 | other | literal writer |
+| 32 | 512 | 2 | ba52 | 15 | other | literal writer |
+| 32 | 512 | 2 | bb06 | 0 | other | literal writer |
+| 32 | 512 | 2 | bb06 | 1 | other | literal writer |
+| 32 | 512 | 2 | bb06 | 2 | other | literal writer |
+| 32 | 512 | 2 | bb06 | 6 | other | literal writer |
+| 32 | 512 | 2 | bb06 | 7 | other | literal writer |
+| 32 | 512 | 2 | bb06 | 11 | other | literal writer |
+| 32 | 512 | 2 | bb0e | 0 | other | literal writer |
+| 32 | 512 | 2 | bb0e | 1 | other | literal writer |
+| 32 | 512 | 2 | bb0e | 2 | other | literal writer |
+| 32 | 512 | 2 | bb0e | 6 | other | literal writer |
+| 32 | 512 | 2 | bb0e | 7 | other | literal writer |
+| 32 | 512 | 2 | bb0e | 11 | other | literal writer |
+| 32 | 512 | 2 | bb50 | 11 | other | literal writer |
+| 32 | 512 | 2 | bb52 | 11 | other | literal writer |
+| 32 | 512 | 2 | bb53 | 11 | other | literal writer |
+| 32 | 512 | 2 | bb53 | 15 | other | literal writer |
+| 32 | 512 | 2 | bd0e | 0 | other | literal writer |
+| 32 | 512 | 2 | bd0e | 1 | other | literal writer |
+| 32 | 512 | 2 | bd0e | 2 | other | literal writer |
+| 32 | 512 | 2 | bd0e | 6 | other | literal writer |
+| 32 | 512 | 2 | bd0e | 7 | other | literal writer |
+| 32 | 512 | 2 | bd0e | 11 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 0 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 1 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 2 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 6 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 7 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 11 | other | literal writer |
+| 32 | 512 | 2 | bd1e | 15 | other | literal writer |
+| 32 | 512 | 2 | bd55 | 11 | other | literal writer |
+| 32 | 512 | 2 | bd55 | 15 | other | literal writer |
+| 32 | 512 | 2 | bda5 | 6 | other | literal writer |
+| 32 | 512 | 2 | bda5 | 11 | other | literal writer |
+| 32 | 512 | 2 | be0e | 0 | other | literal writer |
+| 32 | 512 | 2 | be0e | 1 | other | literal writer |
+| 32 | 512 | 2 | be0e | 2 | other | literal writer |
+| 32 | 512 | 2 | be0e | 4 | other | literal writer |
+| 32 | 512 | 2 | be0e | 6 | other | literal writer |
+| 32 | 512 | 2 | be0e | 7 | other | literal writer |
+| 32 | 512 | 2 | be0e | 11 | other | literal writer |
+| 32 | 512 | 2 | be52 | 11 | other | literal writer |
+| 32 | 512 | 2 | be52 | 15 | other | literal writer |
+| 32 | 512 | 2 | be56 | 11 | other | literal writer |
+| 32 | 512 | 2 | be56 | 15 | other | literal writer |
+| 32 | 512 | 2 | bf0e | 0 | other | literal writer |
+| 32 | 512 | 2 | bf0e | 1 | other | literal writer |
+| 32 | 512 | 2 | bf0e | 2 | other | literal writer |
+| 32 | 512 | 2 | bf0e | 6 | other | literal writer |
+| 32 | 512 | 2 | bf0e | 7 | other | literal writer |
+| 32 | 512 | 2 | bf0e | 11 | other | literal writer |
+| 32 | 512 | 2 | bf1e | 0 | other | literal writer |
+| 32 | 512 | 2 | bf1e | 1 | other | literal writer |
+| 32 | 512 | 2 | bf1e | 6 | other | literal writer |
+| 32 | 512 | 2 | bf1e | 7 | other | literal writer |
+| 32 | 512 | 2 | bf1e | 11 | other | literal writer |
+| 32 | 512 | 2 | bf1e | 15 | other | literal writer |
+| 32 | 512 | 2 | bf53 | 11 | other | literal writer |
+| 32 | 512 | 2 | bf53 | 15 | other | literal writer |
+| 32 | 512 | 2 | bf57 | 11 | other | literal writer |
+| 32 | 512 | 2 | bf57 | 15 | other | literal writer |
+| 32 | 512 | 2 | c452 | 15 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | c552 | 11 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | c552 | 15 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | c750 | 6 | other | literal writer |
+| 32 | 512 | 2 | c757 | 6 | other | literal writer |
+| 32 | 512 | 2 | e084 | 6 | other | literal writer |
+| 32 | 512 | 2 | e084 | 8 | other | literal writer |
+| 32 | 512 | 2 | e084 | 12 | other | literal writer |
+| 32 | 512 | 2 | e393 | 8 | other | literal writer |
+| 32 | 512 | 2 | e9a8 | 8 | other | literal writer |
+| 32 | 512 | 2 | eb51 | 0 | other | literal writer |
+| 32 | 512 | 2 | eb51 | 8 | other | literal writer |
+| 32 | 512 | 2 | eb51 | 11 | other | literal writer |
+| 32 | 512 | 2 | eb51 | 13 | other | literal writer |
+| 32 | 512 | 2 | eb51 | 14 | other | literal writer |
+| 32 | 512 | 2 | eb51 | 16 | other | literal writer |
+| 32 | 512 | 2 | f1a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | f396 | 11 | other | literal writer |
+| 32 | 512 | 2 | f5a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | f9a5 | 11 | other | literal writer |
+| 32 | 512 | 2 | faa5 | 11 | other | literal writer |
+| 32 | 512 | 2 | fba5 | 11 | other | literal writer |
+
+## B6 correction — 2026-10-12
+
+Immediate far JMP overwrites CS provenance with its immediate operand. Trapped
+register LES/LDS invalidate provenance; zero-count REP preserves untouched
+registers. Post-instruction TF vector traffic invalidates the register/segment
+bank. The total WGSL instruction table and per-class regressions are archived
+in the S2 prelaunch evidence. An independent flat value-tag bank agrees on
+every ordered partner-write channel and mechanism over all 21,182
+archived candidate encounters (1,246 settings), with zero mismatches.
+The two trace overflows remain other. Random fixed-program evidence is in
+b6_validation.json; no population or paid compute was used.
+
+7 additional encounter labels change relative to e96abc0.
+Every exact nonzero zero-partner word retains its label and all R0–R2 rationale
+counts remain unchanged. 07 A5 remains memory-fed one-pass in all 68 encounters,
+with B fetches in all 64 random encounters. R2 is unchanged. Raw exhaustive
+word tables, trace bytes and output/access/count columns are unchanged.
+
+| L | budget | k | word | partner | old | new |
+|---|---|---|---|---|---|---|
+| 16 | 128 | 2 | 0eea | 9 | other | literal writer |
+| 16 | 128 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+| 16 | 512 | 2 | 0aea | 5 | other | literal writer |
+| 16 | 512 | 2 | 0eea | 9 | other | literal writer |
+| 16 | 512 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+| 32 | 128 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+| 32 | 512 | 2 | ad50 | 15 | other | memory-fed one-pass copier |
+
+
 ## Machine, provenance and method
 
 **8086/8088 instruction semantics, validated against hardware 8088 vectors,
@@ -77,7 +1610,7 @@ partner write. Each candidate has all 17 encounter classes in mechanisms_*.csv.
 Literal writer requires partner write values traced to reset or immediate
 register values. No-change arithmetic/shift RMW stores add coverage and
 transactions but no new byte provenance, so they do not change the writer class.
-A memory-fed copier requires explicit same-valued data-read
+A memory-fed copier requires exact ordered byte-level data-read
 to write pairing through MOVS, memory PUSH, or a tracked load and register PUSH.
 A confined copy loop also requires repeated full instruction-start addresses
 and no partner fetch. Distinct full start addresses mark the admitted one-pass
@@ -127,7 +1660,7 @@ independently, even when it reads already overwritten bytes. A zero access count
 alone is not a payload retention assay.
 
 The complete candidate inventory is table_hits.csv; full classes and evidence
-are mechanisms_*.csv, ordered observations are traces_*.csv. Event kinds:
+are mechanisms_*.csv, ordered observations are traces_*_part*.csv.gz. Event kinds:
 0 fetch, 1 data read, 2 write, 3 decode, 4 instruction start; memory positions
 are ring positions, while decode/start positions retain full physical addresses.
 
@@ -136,15 +1669,19 @@ are ring positions, while decode/start positions retain full physical addresses.
 | L | budget | word | zero_match | random_exact | random75 | zero_mechanism | zero_write_coverage | zero_original_fetch_reads | zero_original_data_reads | max_partner_difference |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 16 | 128 | b951 | 16/16 | 13/16 | 13/16 | literal writer | 16 | 9 | 0 | 16 |
+| 16 | 128 | 07a5 | 16/16 | 16/16 | 16/16 | memory-fed one-pass copier | 16 | 0 | 0 | 0 |
 | 16 | 128 | ff30 | 9/16 | 0/16 | 0/16 | memory-fed one-pass copier | 16 | 1 | 0 | 2 |
 | 16 | 128 | ad50 | 9/16 | 0/16 | 2/16 | memory-fed one-pass copier | 16 | 1 | 1 | 14 |
 | 16 | 512 | b951 | 16/16 | 13/16 | 13/16 | literal writer | 16 | 9 | 0 | 16 |
+| 16 | 512 | 07a5 | 16/16 | 16/16 | 16/16 | memory-fed one-pass copier | 16 | 0 | 0 | 0 |
 | 16 | 512 | ff30 | 9/16 | 0/16 | 0/16 | memory-fed one-pass copier | 16 | 1 | 0 | 2 |
 | 16 | 512 | ad50 | 8/16 | 0/16 | 0/16 | memory-fed one-pass copier | 16 | 1 | 1 | 16 |
 | 32 | 128 | b951 | 32/32 | 6/16 | 11/16 | literal writer | 32 | 17 | 0 | 32 |
+| 32 | 128 | 07a5 | 32/32 | 16/16 | 16/16 | memory-fed one-pass copier | 32 | 0 | 0 | 0 |
 | 32 | 128 | ff30 | 17/32 | 0/16 | 0/16 | memory-fed one-pass copier | 32 | 1 | 0 | 1 |
 | 32 | 128 | ad50 | 29/32 | 0/16 | 16/16 | memory-fed one-pass copier | 32 | 1 | 0 | 9 |
 | 32 | 512 | b951 | 32/32 | 10/16 | 10/16 | literal writer | 32 | 17 | 0 | 32 |
+| 32 | 512 | 07a5 | 32/32 | 16/16 | 16/16 | memory-fed one-pass copier | 32 | 0 | 0 | 0 |
 | 32 | 512 | ff30 | 17/32 | 0/16 | 0/16 | memory-fed one-pass copier | 32 | 1 | 0 | 1 |
 | 32 | 512 | ad50 | 26/32 | 0/16 | 1/16 | memory-fed one-pass copier | 32 | 1 | 0 | 18 |
 
@@ -222,7 +1759,7 @@ them from these facts for user approval before any population trajectory.
 
 ## Compute discipline, reproducibility and hashes
 
-Local foreground GPU only: 7660 timed calls, 132.412 seconds
+Local foreground GPU only: 7826 timed calls, 138.374 seconds
 including compilation/readback, longest 3.856 seconds; each call was
 followed by an equal wall-clock pause. This is an upper bound on actual GPU
 time and remains below 30 minutes. No background job, Modal or paid compute.
@@ -245,24 +1782,61 @@ per-encounter trace hashes and serial partner/offspring hashes bind finer units.
 | file | bytes | sha256 |
 |---|---|---|
 | LAW_CONTRACT.md | 2887 | 028d41fa1fb60980cb3525ce12d548268d9783083adab142b32dfe708a985795 |
-| MECHANISM_CONTRACT.md | 1927 | 1aa291f608ffdd85493ce49718a65dde23bc6971f117b0267f4d7b9352c34193 |
-| bursts.csv | 377931 | f118821502ea35d5a4f350d17b86ee5aac1152674d226c727e4bc43f3462edee |
+| MECHANISM_CONTRACT.md | 3620 | 8a5ed6baaa261e5a24c95fd988e86449de24e26f1a5eb5fb381871da128f7efa |
+| b6_correction_labels.csv | 351 | 0fd2c58215d385fc89add60a7e642347691ac68d11c7341c9bd19813d38158c7 |
+| b6_correction_provenance.json | 1711 | 5e385396ff702ab89f94223701b53ba946b2c08cb4d74749305e1d905cc9abfb |
+| bursts.csv | 385813 | 985445792bdcb8e59dcb3d1058d2b531c1e452b77dc7f03e7021bf3cabb3f76a |
+| correction_labels.csv | 129140 | 63155d35ea3e2e6b668fad3129960bc38d4db4398c39a4e3c91d819387593803 |
+| correction_provenance.json | 24079 | e241900f7dafaf8c5281f7ff747549c9cec150c426f1d81da10baec61b362486 |
 | law_alternatives.csv | 7048021 | 60172f61f4ea8d0823fe847861bae3b1e9b87989012ddbaca9aeabb2d6135b70 |
 | law_eligibility.csv | 45849 | 47b7f24bb1bde315ddae33e35406872896ec1928240a81f73d70d43fc88f67a7 |
 | law_erased.csv | 1367486 | 5f1e6513a07ef677a01d4e6ae11a398a9859296234bce3fe6b484aec137609fa |
 | law_geometry_traces.csv | 146869 | 8bcc9ad2a55c718f65b40f1a2e41ab8b56f38eef7ae81ef8016f6e49677e45d7 |
-| law_serial.csv | 78908426 | 4af6f580bd391b795d3f121dd87cc077a587007a81b1ce36c2201cdf8281a199 |
-| mechanisms_L16_b128.csv | 714514 | 8074476a616a8d960a86a178932aaad3b888fca17eff98d4583d0d3d272c098f |
-| mechanisms_L16_b512.csv | 1057720 | ce4fc5cf5ab512d0c7e6da5c43be476e3fb00c9d64b4636146938d3d2a006e1c |
-| mechanisms_L32_b128.csv | 326926 | 176423fabaf864e5cac7940f7a8fad7868a42c44bdf4a290812b1597d5a0be8d |
-| mechanisms_L32_b512.csv | 961072 | baa3b084a49d38b2838aa698f90ad6b281ecdb757cd93a1200616eafc201e247 |
+| law_serial.csv.gz | 39448913 | 3e4f4d8bdc3c2f9fa7214afea1fd1521802419d2c421f87c6f05f98bee0871cc |
+| mechanisms_L16_b128.csv | 720114 | aee20415b8085489034e3c39fada3d565c994634e5c12bdbcd014c025c358cce |
+| mechanisms_L16_b512.csv | 1066742 | 24e6a91a16c7758a85db42c4a3ddce5b8eaabe71f96741c1e60ad0d25f8ea66f |
+| mechanisms_L32_b128.csv | 330925 | dc1e1669d8d42143f797f53f372c34f5dd4639c7926afbc9f00cb40eef22c131 |
+| mechanisms_L32_b512.csv | 973554 | d33e7bc1215803388462b752ba34149871811f4548fa9b0d6590fc5a99bb4824 |
 | partners.csv | 4497 | 555a4b8b3b3a747ddd11690f5d179bd59c9ab3aef2e57ee3d9dc503fc6076b77 |
 | provenance.json | 4180 | 08dd9fce7923363ff8ba06ae948eb5bc200e740756b9d6bb02df6f7a85d425dc |
 | smoke.json | 2791 | 01b12fd092b0a8ce59255fa501acc15af149846b4f2fb4b3739142fbccf45366 |
-| traces_L16_b128.csv | 5943848 | b391c7bf34ba2f1fa64d592683945213018c122896737a2d128246551552adab |
-| traces_L16_b512.csv | 33515182 | eb0c5f87cf5122e3c96c80380bb66f6719d494495d465d65f935784dcfc535d1 |
-| traces_L32_b128.csv | 3174596 | 2ea5fb1746c5a64617a1ee75d0a72876c169e3960f2428615b3f14f89d1b3c68 |
-| traces_L32_b512.csv | 30584609 | 08eb0aa39ac72746afcc7def020d37bd0825803013759d2c7bca579c92b2e6fd |
+| traces_L16_b128_part001.csv.gz | 3550647 | f2213dc0a5bf1a95e2bbdee35be253cd2fdd584128b10c903acb22398f6ae64e |
+| traces_L16_b128_part002.csv.gz | 3623547 | b81f5033a7400cc60a9eca398d2acce3706667c66189c9ad0f7c9c2910eabaf0 |
+| traces_L16_b128_part003.csv.gz | 3603577 | 5bea342ffc1600e6112e5bdb78bb4592d4fa2131bfa5f084378ba14eb3dbcde2 |
+| traces_L16_b128_part004.csv.gz | 248038 | 85a7d174528443c50578b1a18c3ff6923ef82e6143a585271643bd2becd49810 |
+| traces_L16_b512_part001.csv.gz | 3641127 | e1249a575d08d16983eb4d09f372942a693205bcdcd574089aa56927aa37b8cc |
+| traces_L16_b512_part002.csv.gz | 3709502 | f1467b07f4c69873638362953c9e5fe8c69d83c353aad1d52f384de50dfa6819 |
+| traces_L16_b512_part003.csv.gz | 3569245 | 7490829982a36fa1c4fe358f0b47fa0d2ed89d685e8a67f40f6fe3e60dc1b9a1 |
+| traces_L16_b512_part004.csv.gz | 3640066 | 9643123344f0057ef22e5f5019220b6fdcbba9cc0fcf9dab54bbbdb5796bf234 |
+| traces_L16_b512_part005.csv.gz | 3628130 | 5046e0c17e1c6ce0020c24952460551521ef24153533294efadecd3f79a066a3 |
+| traces_L16_b512_part006.csv.gz | 3781958 | 12818fc902ba10922360c93a9364cf8c2085cabd42de271be1d0c81a7a18b99d |
+| traces_L16_b512_part007.csv.gz | 3669232 | cd56455fd79c8c3c5376a0e53878e014d7fa185d219238e8e7ab08a52517bb38 |
+| traces_L16_b512_part008.csv.gz | 3746810 | 0f471af7e6ec4dd6ccd132ca5341871b431ab38d79d1989759c6da9c7ac5a481 |
+| traces_L16_b512_part009.csv.gz | 3702185 | c5d56dcf5bd17a5464bd451212ddbd4213fd665b022079a4d3968a216e8e6786 |
+| traces_L16_b512_part010.csv.gz | 3548949 | b69a6050359b835ae55237a9cfabb461e626c2b379fde9b56fb22873f9067c8d |
+| traces_L16_b512_part011.csv.gz | 3767947 | 4d51f08072ccaf7bf0fac97807e3bb4eb7a59187a386c005283d70b0ec799210 |
+| traces_L16_b512_part012.csv.gz | 3685913 | b5c2f22b32724c2b7f765545670e363ad1346ff39bc258f2382ee93278870271 |
+| traces_L16_b512_part013.csv.gz | 3633675 | 60143cff667167eeac9d00bc6046313507adcfa6a5b81a0af8626d7b762f87d1 |
+| traces_L16_b512_part014.csv.gz | 3711159 | c3b9b57197b177ef9fc589e3187d3ec92d6d4751b49d5f4e117374cb0f25fb60 |
+| traces_L16_b512_part015.csv.gz | 3627005 | f036e5256bd4a44bf4065cf16c17ec3c9b12063300849bc45989e10bf2c2d25c |
+| traces_L16_b512_part016.csv.gz | 3674634 | 58a6056d68c5f9a4ee024810727fc51a7944b0dd4d2d142fd24384b4847fde0e |
+| traces_L16_b512_part017.csv.gz | 3316314 | 876d0c96c4ca496d7e714718e0f4e5e697ed76c615cc95920e8154c0f0307619 |
+| traces_L32_b128_part001.csv.gz | 3433842 | c97bc89b1eb1c817d27c4c013b148c877b1f8e029a5062b0d93df791f1b33f39 |
+| traces_L32_b128_part002.csv.gz | 1342798 | 264b722b7214a04f34a9e6bc9b449a7a8cf8800f155127c1f5a2333482668fda |
+| traces_L32_b512_part001.csv.gz | 3675810 | 8de727f24064a379bf1c7fe3d87e8b1a2c8f9a457636341d3ca7469669cc966d |
+| traces_L32_b512_part002.csv.gz | 3695127 | d9cf11819d25af08e53f2295b6d4470d4910fdbebb174d729d73226820da9654 |
+| traces_L32_b512_part003.csv.gz | 3651578 | c1a61ca3dc1795044113faff6bf70d7716c4d594d59cd22edebce0dd23ff1c78 |
+| traces_L32_b512_part004.csv.gz | 3755030 | f3fd213ace2e5bfe0daba51f2cb8737acec636d4450884778625f79e98062145 |
+| traces_L32_b512_part005.csv.gz | 3758531 | cd2055e0d50a9ff67de25b948e84d3193d9d8617a8aa67350ab79893c1680a4a |
+| traces_L32_b512_part006.csv.gz | 3664331 | efdb9b7ae016065eb8ea0f45c6a2757ead75af55f9d4a5b766e9c5eef8d1834d |
+| traces_L32_b512_part007.csv.gz | 3589026 | 9c99c6c8e2d921e26ec8a20e4e8518da657e0bb20a72729eb33b250480ca925f |
+| traces_L32_b512_part008.csv.gz | 3692660 | 3248d240d594fbc91d4be688c82609c878193c36fd1708a5d3fb6b28bb24b5f1 |
+| traces_L32_b512_part009.csv.gz | 3554563 | 1f1afaa94ab8b0bb0d7ab1ed264c4b1972dc9c02a15efb201c07994fd26d52e0 |
+| traces_L32_b512_part010.csv.gz | 3618821 | a5bb2102852722b0e6de91e16fca36c5f25beded822786efc270db2660d5c1fc |
+| traces_L32_b512_part011.csv.gz | 3641360 | 4a79eebd71ca26bdb067e3ed0f3eeb2c20bba09b878039bbb3332a96917b5269 |
+| traces_L32_b512_part012.csv.gz | 3723151 | d638bcbe546e0c6a30051330a56b9c8b1637cd332d6fb5fbe9a5629aa7a64be1 |
+| traces_L32_b512_part013.csv.gz | 3639673 | be23fff1e7fc075de400d8689c28f9a2e5571f35b5a16fc07debdfd417ab2150 |
+| traces_L32_b512_part014.csv.gz | 2570758 | 5ef3d0d207811fd7a8adb853703ab3d39f184abc6cf7fd98a3f564db6baf5acd |
 | words_L16_k1_b128.csv | 116675 | 281c3399bb67eea106d230fb0feecb79d4d158786c605d8bbf2f882d4495e4f9 |
 | words_L16_k1_b512.csv | 121402 | e3bf49cbf20d2091f1709461855a16f884849d9b1f2675e1f2a03c4a3a5aeb64 |
 | words_L16_k2_b128.csv | 30195842 | 1a1e71ae46648f68ad6c1872aab2893faf2982eb252544df6ee826aa61a72119 |
@@ -271,8 +1845,23 @@ per-encounter trace hashes and serial partner/offspring hashes bind finer units.
 | words_L32_k1_b512.csv | 118979 | 99fa8020a958cb26e65da9aaf035c7582d093264ce91125fe465a1d6b626d72e |
 | words_L32_k2_b128.csv | 29761826 | 72e2555b0274c71ab8c70f355b0fdc528cc532b13e582b946a13a8dbd7156a7e |
 | words_L32_k2_b512.csv | 30904822 | 1b6852134229637b29a458a438ea7c83daafbaf0fdc64032f1cd2f68b027bbbb |
-| source:experiments/census8086.py | 10120 | 48047d7dc56208365e53039af505db46f87ed101df186e269ba1303b771d7c2a |
-| source:experiments/census8086_law.py | 9581 | c58f1fcb2b9f314e4c2ee3ae8b786c40355afe4fc0a59ebe3cc55f0381afaf8d |
-| source:experiments/census8086_report.py | 19538 | 008f64b0fa3739bf50d04b24e8f40cb400be91dfe67bd0a9d5ecb388c3020c0e |
-| source:experiments/algocell_exp/census8086_trace.py | 10752 | 346eb23db9e989d5d467a9af6c2c040923071029764fa3ed1d9ee3ed51395c60 |
+| source:experiments/census8086.py | 10195 | d1b24fa7806fa3ce5e008dcc876d8cf06f7ff81449df71bfb4079042de9c1e33 |
+| source:experiments/census8086_law.py | 9584 | e99e6c53c22d3549149cb923f0214eca30af7f6cc6b09d597ecedb82bd9a665d |
+| source:experiments/census8086_report.py | 23059 | 8969a0131d02a769d1f34f72f56183aba293afb2c881b297128bb554735ccf05 |
+| source:experiments/algocell_exp/census8086_trace.py | 14103 | 0538dbaa000bc14e32e826f67f77c9fa098d17a0cb74f1f2bc5193930f997564 |
+| source:experiments/reaudit8086.py | 4576 | a8f058739cbf90e9bf3d77e169735a1e2ed04cca8e071e42d8cf48bbc44db2d2 |
 
+
+## Final descriptive correction — 2026-10-12
+
+The final dated [descriptive correction](DESCRIPTIVE_CORRECTION_2026-10-12.md)
+supersedes earlier labels and mechanism counts. 1,247 labels change in
+21,182 audited encounters; all changes and every other case
+are listed. R2a/R2b are descriptive only. Current exact-zero classes:
+
+| L/budget | Literal | Memory-fed | Confined loop | Other |
+|---|---:|---:|---:|---:|
+| 16/128 | 3 | 2 | 0 | 15 |
+| 16/512 | 3 | 1 | 0 | 25 |
+| 32/128 | 3 | 5 | 0 | 18 |
+| 32/512 | 3 | 4 | 0 | 19 |

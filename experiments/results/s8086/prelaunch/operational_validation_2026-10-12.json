@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-12",
+  "scope": "Noninteractive CLI operational amendment; full existing suite plus detached real subprocess regression; separate fault injection rerun",
+  "python": "/Users/neo/repos/algocell/experiments/.venv/bin/python",
+  "modal": "1.6.1",
+  "passed": 964,
+  "failed": 0,
+  "skipped": 3,
+  "total_collected": 967,
+  "wall_s": 664.6645725000417,
+  "module_case_counts": {
+    "tests.test_assays_any_isa": 28,
+    "tests.test_b5_enforcement": 23,
+    "tests.test_b6_provenance": 68,
+    "tests.test_bff": 15,
+    "tests.test_impact": 147,
+    "tests.test_impact_assay_supplement": 1,
+    "tests.test_impact_confirm": 10,
+    "tests.test_impact_i1_report": 7,
+    "tests.test_impact_q": 5,
+    "tests.test_impact_registry": 4,
+    "tests.test_impact_report": 3,
+    "tests.test_lethal": 7,
+    "tests.test_mixed": 6,
+    "tests.test_modal_noninteractive8086": 5,
+    "tests.test_pipeline": 46,
+    "tests.test_port": 3,
+    "tests.test_prefix_causality8086": 15,
+    "tests.test_py65_ring": 44,
+    "tests.test_reset_source_stop": 7,
+    "tests.test_run6502": 11,
+    "tests.test_s2_final": 6,
+    "tests.test_s8086": 36,
+    "tests.test_s8086_repairs": 29,
+    "tests.test_score6502": 42,
+    "tests.test_tier2": 6,
+    "tests.test_zcensus": 7,
+    "tests.test_zsoup": 386
+  },
+  "skips": [
+    {
+      "case": "tests.test_assays_any_isa.test_assay_machines_regenerate",
+      "reason": "Zilion checkout at 3c3534d76f22, assay machines vendored from 183ff5c74294"
+    },
+    {
+      "case": "tests.test_impact.test_vendored_machines_match_zilion",
+      "reason": "zilion checkout at 3c3534d76f22, machines from 183ff5c74294"
+    },
+    {
+      "case": "tests.test_zsoup.test_vendored_machines_regenerate",
+      "reason": "Zilion checkout at 3c3534d76f22, machines vendored from 183ff5c74294 (run build_machines.mjs --check by hand)"
+    }
+  ],
+  "fault_sequences": 1000,
+  "fault_invariant_violations": 0,
+  "fault_outcomes": {
+    "COMPLETE": 830,
+    "INCOMPLETE": 170
+  },
+  "max_charged_usd": 94.13339484474324,
+  "max_actual_usd": 80.33134704719177,
+  "gpu_bursts": 37660,
+  "maximum_gpu_burst_s": 0.3335287499940023,
+  "gpu_burst_sum_s": 112.65977630729321,
+  "equal_pauses_verified": true,
+  "gpu_policy": "existing foreground synchronous readback and equal-pause runner; each burst <=60s",
+  "production_source_changes": [
+    "lifecycle8086.py:331 adds --yes"
+  ],
+  "science_and_spend_rules_unchanged": true,
+  "historical_frozen_files_changed": [
+    "lifecycle8086.py"
+  ],
+  "historical_test_evidence_restored_exactly": true,
+  "prior_freeze_sha256": "563a495ea0c6a5cbffb46ade26903b5bb142f1ddec5bdb6c2319bbc6added0b4",
+  "artifact_sha256": {
+    "operational_tests_2026-10-12.xml.gz": "9670ebd9e48cc7bc2430375d1f2fe958a67ed4c090b41392937f430fce4af5af",
+    "operational_tests_2026-10-12.txt": "7edb3b432fcf2c3e50f3dcc9d9924f1e47e3c5011bde2f4cfcc30066a1633298",
+    "operational_gpu_bursts_2026-10-12.jsonl.gz": "37abf8f81ae68f7de262fb04a05caad7da97b1be13a82228ebf3c59dcd058db7",
+    "operational_fault_simulation_2026-10-12.json": "13379b2d33c0716c8e779e9798aa6fcd32fb9bebda0ed6e6eca4d7b9a6cd0b64",
+    "operational_ledger_scale_validation_2026-10-12.json": "8c3a23d6fa8746c9f8fb488d618c047d775a4ed9ed4815cc0facd9259ca67642",
+    "relaunch_carry_forward_2026-10-12.json": "775df42e08a14a4e50ee1589c645a43f7ab41d33d5c1fe274235338d56cc8691",
+    "relaunch_historical_billing_2026-10-12.json": "9d99d8991db5948fb3b518ac3b1c38f353afc0177f5121f4bf5b975528f53feb"
+  },
+  "no_paid_validation_compute": true
+}

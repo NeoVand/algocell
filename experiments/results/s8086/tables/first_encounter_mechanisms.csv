@@ -1,0 +1,7 @@
+tape_fetch,open,mechanism,count
+confined,False,confined copy loop,48
+confined,False,memory-fed one-pass copier,128
+confined,False,other,16
+open,True,literal writer,5
+open,True,memory-fed one-pass copier,16
+open,True,other,11

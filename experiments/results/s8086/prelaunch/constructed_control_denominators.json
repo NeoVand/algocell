@@ -1,0 +1,122 @@
+{
+  "L16_d8_a4": {
+    "status": "complete-zero-mismatch",
+    "encounters": 60416,
+    "erased_coordinates": 8,
+    "free_coordinates": 2,
+    "single_assignments": 512,
+    "single_alternatives": 510,
+    "joint_assignments": 512,
+    "erased_assignments": 2048,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L16_d8_a5": {
+    "status": "complete-zero-mismatch",
+    "encounters": 60416,
+    "erased_coordinates": 8,
+    "free_coordinates": 2,
+    "single_assignments": 512,
+    "single_alternatives": 510,
+    "joint_assignments": 512,
+    "erased_assignments": 2048,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L16_d16_a4": {
+    "status": "complete-zero-mismatch",
+    "encounters": 76800,
+    "erased_coordinates": 0,
+    "free_coordinates": 10,
+    "single_assignments": 2560,
+    "single_alternatives": 2550,
+    "joint_assignments": 512,
+    "erased_assignments": 0,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L16_d16_a5": {
+    "status": "complete-zero-mismatch",
+    "encounters": 76800,
+    "erased_coordinates": 0,
+    "free_coordinates": 10,
+    "single_assignments": 2560,
+    "single_alternatives": 2550,
+    "joint_assignments": 512,
+    "erased_assignments": 0,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L32_d8_a4": {
+    "status": "complete-zero-mismatch",
+    "encounters": 130048,
+    "erased_coordinates": 24,
+    "free_coordinates": 2,
+    "single_assignments": 512,
+    "single_alternatives": 510,
+    "joint_assignments": 512,
+    "erased_assignments": 6144,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L32_d8_a5": {
+    "status": "complete-zero-mismatch",
+    "encounters": 130048,
+    "erased_coordinates": 24,
+    "free_coordinates": 2,
+    "single_assignments": 512,
+    "single_alternatives": 510,
+    "joint_assignments": 512,
+    "erased_assignments": 6144,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L32_d16_a4": {
+    "status": "complete-zero-mismatch",
+    "encounters": 146432,
+    "erased_coordinates": 16,
+    "free_coordinates": 10,
+    "single_assignments": 2560,
+    "single_alternatives": 2550,
+    "joint_assignments": 512,
+    "erased_assignments": 4096,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L32_d16_a5": {
+    "status": "complete-zero-mismatch",
+    "encounters": 146432,
+    "erased_coordinates": 16,
+    "free_coordinates": 10,
+    "single_assignments": 2560,
+    "single_alternatives": 2550,
+    "joint_assignments": 512,
+    "erased_assignments": 4096,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L32_d32_a4": {
+    "status": "complete-zero-mismatch",
+    "encounters": 179200,
+    "erased_coordinates": 0,
+    "free_coordinates": 26,
+    "single_assignments": 6656,
+    "single_alternatives": 6630,
+    "joint_assignments": 512,
+    "erased_assignments": 0,
+    "census_partners": 17,
+    "serial_generations": 8
+  },
+  "L32_d32_a5": {
+    "status": "complete-zero-mismatch",
+    "encounters": 179200,
+    "erased_coordinates": 0,
+    "free_coordinates": 26,
+    "single_assignments": 6656,
+    "single_alternatives": 6630,
+    "joint_assignments": 512,
+    "erased_assignments": 0,
+    "census_partners": 17,
+    "serial_generations": 8
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-12",
+  "scope": "All Modal CLI and SDK calls in the 333-file prior frozen manifest; pinned local Modal 1.6.1 implementation inspected",
+  "modal_version": "1.6.1",
+  "cli_paths": [
+    {
+      "source": "lifecycle8086.py:331",
+      "command": "python -m modal app stop --yes APP_ID",
+      "callers": ["lifecycle8086.py --stop", "ModalProvider.stop -> detached lifecycle8086.py --stop"],
+      "confirmation": "Pinned CLI calls confirm_or_suggest_yes only when yes is false",
+      "fix": "--yes",
+      "test": "tests/test_modal_noninteractive8086.py"
+    }
+  ],
+  "sdk_paths": [
+    {
+      "sources": ["prebuild8086.py", "dispatch8086.py"],
+      "calls": ["App", "App.run", "Image.build.aio", "Function.with_options", "Function.spawn", "FunctionCall.get"],
+      "finding": "App.run defaults interactive=False; silent SDK execution uses configured credentials and no confirmation prompt or terminal input"
+    },
+    {
+      "sources": ["lifecycle8086.py", "meter8086.py"],
+      "calls": ["_Client.from_env", "AppList", "AppGetLogs.unary_stream", "AppGetLifecycle", "TaskList", "FunctionCallCancel(terminate_containers=True)", "WorkspaceBillingReport.unary_stream", "_get_environment_name"],
+      "finding": "Protocol requests do not prompt; from_env uses configured credentials or raises; no login/browser/TTY flow. Stop and cancellation are separate detached bounded subprocesses"
+    },
+    {
+      "sources": ["modal_s8086.py", "modal_score8086.py"],
+      "calls": ["Image.from_id", "Image.apt_install", "Image.env", "Image.add_local_dir(copy=True)", "App", "App.function", "App.local_entrypoint", "Volume.from_name", "Volume.reload", "Volume.commit"],
+      "finding": "Declarative recipe/decorator APIs and SDK volume operations do not prompt or require a TTY; released dispatch loads only the content-bound prebuilt image"
+    },
+    {
+      "sources": ["modal_s6502.py"],
+      "calls": ["App", "Image.debian_slim", "Image.apt_install", "Image.pip_install", "Image.env", "Image.add_local_dir", "Image.add_local_file", "Volume.from_name(create_if_missing=True)", "Volume.reload", "Volume.commit", "App.function", "App.local_entrypoint", "Function.spawn"],
+      "finding": "Historical frozen 6502 tooling is outside the S2 launch path; its SDK calls are noninteractive and its modal run examples do not request confirmations or interactive shells"
+    }
+  ],
+  "additional_production_changes_needed": false,
+  "new_launch_volume_download": "SDK Volume.from_name/read_file, exact exclusive local writes, no interactive CLI or overwrite prompt",
+  "science_changed": false,
+  "spend_rules_changed": false,
+  "help_validation_cost_usd": 0,
+  "no_paid_audit_calls": true
+}

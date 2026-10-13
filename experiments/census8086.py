@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import gzip
 import json
 from pathlib import Path
 import time
@@ -34,7 +35,7 @@ def sha(data):
 def write_csv(path, rows, fields=None):
     rows = list(rows)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="") as f:
+    with (gzip.open(path,"wt",newline="") if path.suffix==".gz" else path.open("w",newline="")) as f:
         w = csv.DictWriter(f, fieldnames=fields or list(rows[0]))
         w.writeheader()
         w.writerows(rows)
@@ -159,7 +160,7 @@ def audit():
                             for step, kind, pos, value, origin in log:
                                 logs.append({"k": k, "index": idx, "partner": v, "step": int(step), "kind": int(kind), "pos": int(pos), "value": int(value), "original_partner": int(origin)})
             write_csv(OUT / f"mechanisms_L{L}_b{budget}.csv", rows)
-            write_csv(OUT / f"traces_L{L}_b{budget}.csv", logs)
+            write_csv(OUT / f"traces_L{L}_b{budget}.csv.gz", logs)
             print(f"audit L{L} b{budget}: {len(wanted)} words, {len(rows)} traced encounters", flush=True)
 
 

@@ -1,0 +1,23 @@
+{
+  "local": {
+    "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "numpy": "2.5.3",
+    "wgpu": "0.32.0",
+    "brotli": "1.2.0",
+    "modal": "1.6.1",
+    "pytest": "9.1.1"
+  },
+  "modal_dependency_image": "im-T2VaU4HVHQXvzDSkbRye1y",
+  "modal_actual_versions": "recorded in benchmark.json",
+  "pricing": {
+    "checked": "2026-10-12",
+    "source": "https://modal.com/pricing",
+    "L4_per_s": 0.000222,
+    "cpu_per_core_s": 1.31e-05,
+    "ram_per_gib_s": 2.22e-06,
+    "volume_per_gib_month": 0.09,
+    "egress_per_gib": 0.04,
+    "credits_assumed": 0
+  }
+}

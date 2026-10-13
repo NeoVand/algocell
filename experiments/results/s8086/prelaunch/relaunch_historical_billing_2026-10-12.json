@@ -1,0 +1,135 @@
+[
+  {
+    "app_id": "ap-3yv8gfnaUhIahlAjZ7ZbF9",
+    "state": "APP_STATE_STOPPED",
+    "tasks": [],
+    "billing": {
+      "app_id": "ap-3yv8gfnaUhIahlAjZ7ZbF9",
+      "query_start_epoch": 1791792000,
+      "query_end_epoch": 1791835200,
+      "metered_usd": 0,
+      "rows": [],
+      "queried_utc": "2026-10-12T19:25:01.164597+00:00",
+      "billing_may_lag": true
+    }
+  },
+  {
+    "app_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+    "state": "APP_STATE_STOPPED",
+    "tasks": [],
+    "billing": {
+      "app_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "query_start_epoch": 1791792000,
+      "query_end_epoch": 1791835200,
+      "metered_usd": 0.00354413,
+      "rows": [
+        {
+          "object_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+          "description": "algocell-s8086-prelaunch",
+          "environment_name": "main",
+          "interval": "2026-10-12T08:00:00Z",
+          "cost": "0.00354413",
+          "cost_by_resource": {
+            "L4": "0.00311099",
+            "Memory": "0.00024888",
+            "CPU": "0.00018426"
+          }
+        }
+      ],
+      "queried_utc": "2026-10-12T19:25:01.572054+00:00",
+      "billing_may_lag": true
+    }
+  },
+  {
+    "app_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+    "state": "APP_STATE_STOPPED",
+    "tasks": [],
+    "billing": {
+      "app_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+      "query_start_epoch": 1791792000,
+      "query_end_epoch": 1791835200,
+      "metered_usd": 0.11543881,
+      "rows": [
+        {
+          "object_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+          "description": "algocell-s8086-prelaunch",
+          "environment_name": "main",
+          "interval": "2026-10-12T08:00:00Z",
+          "cost": "0.08961741",
+          "cost_by_resource": {
+            "L4": "0.07866681",
+            "Memory": "0.00629334",
+            "CPU": "0.00465726"
+          }
+        },
+        {
+          "object_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+          "description": "algocell-s8086-prelaunch",
+          "environment_name": "main",
+          "interval": "2026-10-12T09:00:00Z",
+          "cost": "0.02582140",
+          "cost_by_resource": {
+            "L4": "0.02266653",
+            "Memory": "0.00181332",
+            "CPU": "0.00134155"
+          }
+        }
+      ],
+      "queried_utc": "2026-10-12T19:25:02.001937+00:00",
+      "billing_may_lag": true
+    }
+  },
+  {
+    "app_id": "ap-3PIHGikI8Kpb05rvJkI7aW",
+    "state": "APP_STATE_STOPPED",
+    "tasks": [],
+    "billing": {
+      "app_id": "ap-3PIHGikI8Kpb05rvJkI7aW",
+      "query_start_epoch": 1791795600,
+      "query_end_epoch": 1791835200,
+      "metered_usd": 0.02075924,
+      "rows": [
+        {
+          "object_id": "ap-3PIHGikI8Kpb05rvJkI7aW",
+          "description": "algocell-s8086-prelaunch",
+          "environment_name": "main",
+          "interval": "2026-10-12T09:00:00Z",
+          "cost": "0.02075924",
+          "cost_by_resource": {
+            "L4": "0.01822232",
+            "Memory": "0.00145779",
+            "CPU": "0.00107914"
+          }
+        }
+      ],
+      "queried_utc": "2026-10-12T19:25:02.458791+00:00",
+      "billing_may_lag": true
+    }
+  },
+  {
+    "app_id": "ap-yeH7c7tuWHnJ2pmjmb3GKP",
+    "state": "APP_STATE_STOPPED",
+    "tasks": [],
+    "billing": {
+      "app_id": "ap-yeH7c7tuWHnJ2pmjmb3GKP",
+      "query_start_epoch": 1791831600,
+      "query_end_epoch": 1791835200,
+      "metered_usd": 5.76e-05,
+      "rows": [
+        {
+          "object_id": "ap-yeH7c7tuWHnJ2pmjmb3GKP",
+          "description": "s2-780edc9ba0b345209dfcf5639ca66fcd",
+          "environment_name": "main",
+          "interval": "2026-10-12T19:00:00Z",
+          "cost": "0.00005760",
+          "cost_by_resource": {
+            "Memory": "0.00000833",
+            "CPU": "0.00004927"
+          }
+        }
+      ],
+      "queried_utc": "2026-10-12T19:25:02.725647+00:00",
+      "billing_may_lag": true
+    }
+  }
+]

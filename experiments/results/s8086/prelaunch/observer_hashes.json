@@ -1,0 +1,18 @@
+{
+  "16": {
+    "wgsl_sha256": "c4a3f5df46fcd1cb3f26891e76fe63d50a0fce3b30230afb44eabb98f99e37b9",
+    "manifest_sha256": "292dd9778c91b4cfc3da7d89f0d0f200285fb1f73e961db7d8429a60bb0ff632",
+    "record_words": 40996,
+    "events": 8192,
+    "mode": "storage-vulkan",
+    "scope": "registered A population and fixed controls"
+  },
+  "32": {
+    "wgsl_sha256": "4fdb75ec14f8c2ecd012f27bc10d7ab4303a3c6b74a9a0ea44af6274bdc7d5b2",
+    "manifest_sha256": "ad4bd78f1658010f415e21e77daff2ee6f71f2911009b6bff75af4b3f766db31",
+    "record_words": 40998,
+    "events": 8192,
+    "mode": "storage-vulkan",
+    "scope": "fixed controls only; B withdrawn"
+  }
+}

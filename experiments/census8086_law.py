@@ -151,7 +151,7 @@ def assay():
                             if not np.all(ok): raise RuntimeError("erased-coordinate mismatch")
                 print(f"law L{L} d{d} {op:02x}: {len(cases)} variants complete", flush=True)
     write_csv(OUT / "law_alternatives.csv", rows)
-    write_csv(OUT / "law_serial.csv", serial)
+    write_csv(OUT / "law_serial.csv.gz", serial)
     write_csv(OUT / "law_erased.csv", erased)
 
 
