@@ -42,6 +42,45 @@ async function probeCell(page: Page, index = 0) {
 	).toBeEnabled();
 }
 
+async function focusSelection(page: Page, control: string, cells: number[]) {
+	const before = await page.evaluate(async (cells) => {
+		const engine = (window as unknown as TestWindow).__algocell.engine;
+		return {
+			update: engine.batchCount,
+			tapes: await Promise.all(cells.map(async (cell) => [...(await engine.readCell(cell))]))
+		};
+	}, cells);
+	await page.getByRole('button', { name: control, exact: true }).click();
+	const after = await page.evaluate(async (cells) => {
+		const engine = (window as unknown as TestWindow).__algocell.engine;
+		return {
+			update: engine.batchCount,
+			tapes: await Promise.all(cells.map(async (cell) => [...(await engine.readCell(cell))]))
+		};
+	}, cells);
+	expect(after).toEqual(before);
+	const bounds = await page.evaluate((cells) => {
+		const engine = (window as unknown as TestWindow).__algocell.engine;
+		const canvas = document.querySelector('canvas')!.getBoundingClientRect();
+		return cells.map((cell) => engine.cellBounds(cell, canvas.width, canvas.height));
+	}, cells);
+	const viewport = page.viewportSize()!;
+	const panel = await page
+		.getByRole('region', {
+			name: control === 'Center probe' ? 'Probe tool' : 'Region tool',
+			exact: true
+		})
+		.boundingBox();
+	for (const box of bounds) {
+		expect(box.x).toBeGreaterThanOrEqual(0);
+		expect(box.y).toBeGreaterThanOrEqual(0);
+		expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
+		expect(box.y + box.height).toBeLessThanOrEqual(
+			(viewport.width < 500 ? panel!.y : viewport.height) + 1
+		);
+	}
+}
+
 async function recordFrames(page: Page) {
 	await tool(page, 'History');
 	await page.getByLabel('Record recent frames').check();
@@ -118,6 +157,7 @@ for (const viewport of [
 		test('probe and marker tools change only the explicitly selected byte', async ({ page }) => {
 			await ready(page);
 			await probeCell(page);
+			await focusSelection(page, 'Center probe', [0]);
 			const before = await page.evaluate(async () => {
 				const engine = (window as unknown as TestWindow).__algocell.engine;
 				return { tape: [...(await engine.readCell(0))], neighbor: [...(await engine.readCell(1))] };
@@ -213,6 +253,10 @@ for (const viewport of [
 			await page.getByRole('button', { name: 'Measure region', exact: true }).click();
 			await expect(measure('Cells')).toHaveText('6');
 			await expect(measure('Exact unique tapes')).toHaveText('1');
+			const width = await page.evaluate(
+				() => (window as unknown as TestWindow).__algocell.engine.config.width
+			);
+			await focusSelection(page, 'Frame region', [0, width + 2]);
 		});
 
 		test('history scrubbing and visual comparison leave simulation state intact', async ({

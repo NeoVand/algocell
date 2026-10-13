@@ -285,9 +285,11 @@
 							class:lit={(lens === 'fetch' ? record.fetched : record.starts).includes(address)}
 							class:started={record.starts.includes(address)}
 							style:--byte-color={byteColor(record.before[address] ?? 0)}
-							title="Address {address} · before {hex(record.before[address] ?? 0)} · after {hex(
-								record.after[address] ?? 0
-							)}"><small>{address}</small>{hex(record.before[address] ?? 0)}</span
+							title="Address {address} · before {hex(
+								record.before[address] ?? 0
+							)} · after {address < record.after.length
+								? hex(record.after[address])
+								: 'not retained'}"><small>{address}</small>{hex(record.before[address] ?? 0)}</span
 						>{/each}
 				</div>
 			{/each}

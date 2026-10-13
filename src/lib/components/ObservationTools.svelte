@@ -28,6 +28,8 @@
 		byteColor: (byte: number) => string;
 	}>();
 	let settings = $state.raw<LabSettings>(untrack(() => engine.settings));
+	let observationBar: HTMLDivElement;
+	let observationDock: HTMLElement | undefined;
 	type Tool = 'navigate' | 'probe' | 'region' | 'history' | 'compare' | 'record';
 	type Frame = {
 		id: number;
@@ -236,6 +238,47 @@
 		if (externalBusy) return;
 		engine.resetView(canvas.width, canvas.height);
 		updateOverlay();
+	}
+	function frameSelection() {
+		if (busy || externalBusy || !observationDock) return;
+		if (tool === 'probe' && selected < 0) return;
+		if (tool === 'region' && ![x0, y0, x1, y1].every(Number.isFinite)) return;
+		updateOverlay();
+		const rect = canvas.getBoundingClientRect();
+		const bar = observationBar.getBoundingClientRect();
+		const dock = observationDock.getBoundingClientRect();
+		// Measure the usable field only on this explicit camera action. The dock
+		// occupies the bottom on phones and the right side on larger screens.
+		const left = rect.left + 16;
+		const top = Math.max(rect.top + 16, bar.bottom + 16);
+		const mobileDock = dock.width > rect.width * 0.6;
+		const right = mobileDock ? rect.right - 16 : Math.min(rect.right - 16, dock.left - 16);
+		const bottom = mobileDock ? Math.min(rect.bottom - 16, dock.top - 16) : rect.bottom - 16;
+		if (right <= left || bottom <= top) return;
+		const scaleX = canvas.width / rect.width;
+		const scaleY = canvas.height / rect.height;
+		if (tool === 'region') {
+			const factor = Math.max(
+				overlay.width / ((right - left) * 0.84),
+				overlay.height / ((bottom - top) * 0.78)
+			);
+			engine.zoomAt(
+				(overlay.x + overlay.width / 2 - rect.left) * scaleX,
+				(overlay.y + overlay.height / 2 - rect.top) * scaleY,
+				canvas.width,
+				canvas.height,
+				factor
+			);
+			updateOverlay();
+		}
+		engine.pan(
+			((left + right) / 2 - overlay.x - overlay.width / 2) * scaleX,
+			((top + bottom) / 2 - overlay.y - overlay.height / 2) * scaleY,
+			canvas.width,
+			canvas.height
+		);
+		updateOverlay();
+		currentCamera = cameraStamp();
 	}
 	function updateOverlay() {
 		const rect = canvas.getBoundingClientRect();
@@ -622,7 +665,13 @@
 	</div>
 {/if}
 
-<div class="observation-bar" aria-label="Observation controls">
+<div
+	class="observation-bar"
+	aria-label="Observation controls"
+	{@attach (element) => {
+		observationBar = element;
+	}}
+>
 	<div class="observation-heading">
 		<span class="wordmark">Algocell</span>
 		<select
@@ -665,16 +714,19 @@
 	</div>
 	<div class="legend" aria-label="Field legend">
 		{#if mode === 'confinement'}<div class="legend-scale">
-				<span><i style="background:#41434a"></i>Unknown</span><span
-					><i style="background:#477fab"></i>No exit</span
-				><span><i style="background:#df9c4c"></i>Outside A</span>
+				<span><i style="background:rgb(12% 12% 15%)"></i>Unknown</span><span
+					><i style="background:rgb(25% 52% 72%)"></i>No exit</span
+				><span><i style="background:rgb(90% 58% 28%)"></i>Outside A</span>
 			</div>
 		{:else if mode === 'zeros' || mode === 'diversity'}<div class="continuous-scale">
 				<span>0%</span><i class:diversity-scale={mode === 'diversity'}></i><span>100%</span>
 			</div>
 		{:else if mode === 'marker'}<div class="legend-scale">
-				<span><i style="background:#df9c4c"></i>Byte {markerPosition} = {hex(markerValue)}</span
-				><span><i style="background:#292c32"></i>Other</span>
+				<span
+					><i style="background:rgb(98% 68% 35%)"></i>Byte {markerPosition} = {hex(
+						markerValue
+					)}</span
+				><span><i style="background:rgb(12% 13% 15%)"></i>Other</span>
 			</div>
 		{:else if mode === 'identity'}<div class="fingerprint-scale">
 				<i></i><span>One fingerprint per complete tape</span>
@@ -687,6 +739,12 @@
 {#if !benchOpen && (tool !== 'navigate' || mode === 'marker')}
 	<section
 		class="observation-dock"
+		{@attach (element) => {
+			observationDock = element;
+			return () => {
+				observationDock = undefined;
+			};
+		}}
 		class:region-tool={tool === 'region'}
 		aria-label="{tool === 'navigate'
 			? 'Marker'
@@ -696,6 +754,16 @@
 			<h2>
 				{tool === 'navigate' ? 'Marker value' : tools.find((entry) => entry.id === tool)?.name}
 			</h2>
+			{#if tool === 'probe' || tool === 'region'}
+				<button
+					class="frame-selection"
+					disabled={busy || externalBusy || (tool === 'probe' && selected < 0)}
+					title={tool === 'region'
+						? 'Zoom and pan the selected region into the visible field'
+						: 'Pan the selected cell into the visible field without changing zoom'}
+					onclick={frameSelection}>{tool === 'region' ? 'Frame region' : 'Center probe'}</button
+				>
+			{/if}
 			<button
 				class="close"
 				aria-label="Close observation tool"
@@ -1173,10 +1241,10 @@
 		flex: 1;
 		max-width: 180px;
 		border-radius: 2px;
-		background: linear-gradient(90deg, #171d27, #417388, #edc895);
+		background: linear-gradient(90deg in srgb, rgb(9% 16% 23%), rgb(97% 87% 66%));
 	}
 	.continuous-scale i.diversity-scale {
-		background: linear-gradient(90deg, #26343a, #538b86, #e7ca7a);
+		background: linear-gradient(90deg in srgb, rgb(15% 31% 43%), rgb(91% 59% 35%));
 	}
 	.fingerprint-scale {
 		display: flex;
@@ -1189,7 +1257,16 @@
 		width: 40px;
 		height: 5px;
 		border-radius: 2px;
-		background: linear-gradient(90deg, #af678b, #d9ab5b, #62b391, #6479aa);
+		background: linear-gradient(
+			90deg in srgb,
+			rgb(79.725% 17.975% 17.975%),
+			rgb(79.725% 79.725% 17.975%),
+			rgb(17.975% 79.725% 17.975%),
+			rgb(17.975% 79.725% 79.725%),
+			rgb(17.975% 17.975% 79.725%),
+			rgb(79.725% 17.975% 79.725%),
+			rgb(79.725% 17.975% 17.975%)
+		);
 	}
 	.mobile-tool-row {
 		display: none;
@@ -1210,8 +1287,13 @@
 	}
 	.observation-dock h2 {
 		font-size: 13px;
-		margin: 0;
+		margin: 0 auto 0 0;
 		font-weight: 600;
+	}
+	.frame-selection {
+		margin-right: 8px;
+		padding: 4px 7px;
+		font-size: 10px;
 	}
 	.close {
 		border: 0;
