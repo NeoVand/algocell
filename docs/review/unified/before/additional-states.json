@@ -2,6 +2,7 @@
 	"phase": "before",
 	"round": "",
 	"source": "/tmp/algocell-unified-baseline-6484a24",
+	"sourceSnapshot": null,
 	"viewport": {
 		"width": 1440,
 		"height": 900
@@ -578,7 +579,28 @@
 			},
 			"overflow": false,
 			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-webgpu-unavailable-1440",
+			"path": "docs/review/unified/before/state-webgpu-unavailable-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-webgpu-guide-1440",
+			"path": "docs/review/unified/before/state-webgpu-guide-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
 		}
 	],
+	"alternativeTaskPaths": [],
 	"errors": []
 }

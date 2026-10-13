@@ -1,0 +1,1858 @@
+{
+	"phase": "after",
+	"round": "4",
+	"source": "/var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/algocell-unified-round-4-yxh5ml33",
+	"sourceSnapshot": {
+		"round": 4,
+		"gitRevision": "192a9265e8ac9f49307e31dc73dde18ed3747424",
+		"runtimeSourceSha256": "8adc9e9d8f1901357f4c820a43155eca9c18f5c667230aad4a721f691b28bf7a",
+		"capturedAt": "2026-10-13T19:22:14.231751+00:00"
+	},
+	"viewport": {
+		"width": 1440,
+		"height": 900
+	},
+	"method": "Pointer starts at viewport center. Every clicked control and number/range edit counts once; a native select uses one click plus keyboard option choice. Setup excluded. Surfaces are independently positioned interaction containers. Pauses include requested and incidental transitions. Resets count engine.reset calls; setMachine counts configuration requests; createPipelines and createBuffers count real pipeline and population-buffer rebuilds separately from engine object replacements.",
+	"tasks": [
+		{
+			"id": "01-first-visit",
+			"persona": "Visitor",
+			"frequency": "Once on arrival; guide revisited occasionally",
+			"task": "Read the guide, return to the lattice and identify the run control",
+			"clicks": 3,
+			"pointerTravelPx": 2281,
+			"surfaces": ["sidebar", "status bar"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 1518.0999999642372
+				}
+			],
+			"playingAtEnd": true,
+			"intentionalPauses": 1,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": ["open Guide", "pause", "resume"]
+		},
+		{
+			"id": "02-look-and-frame",
+			"persona": "Visitor / teacher",
+			"frequency": "10–30 times per session",
+			"task": "Compare identity, confinement and bytes, zoom in, then fit the field",
+			"clicks": 5,
+			"pointerTravelPx": 903,
+			"surfaces": ["header"],
+			"surfaceCount": 1,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 2,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "createPipelines",
+					"at": 553
+				},
+				{
+					"event": "createPipelines",
+					"at": 869.8000000119209
+				}
+			],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": [
+				"select identity",
+				"select confinement",
+				"select bytes",
+				"Zoom in (+)",
+				"Fit lattice (F)"
+			]
+		},
+		{
+			"id": "03-change-core",
+			"persona": "Researcher",
+			"frequency": "1–3 times per study",
+			"task": "Switch to the corrected Z80 core at the same tape length",
+			"clicks": 1,
+			"pointerTravelPx": 539,
+			"surfaces": ["sidebar"],
+			"surfaceCount": 1,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 1,
+			"pipelineRebuilds": 1,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "setMachine",
+					"at": 315.5999999642372
+				},
+				{
+					"event": "createPipelines",
+					"at": 319.19999998807907
+				}
+			],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": ["select z80-0.3"]
+		},
+		{
+			"id": "04-reproduce-preset",
+			"persona": "Researcher",
+			"frequency": "1–6 times per session",
+			"task": "Load the published full-tape copier experiment",
+			"clicks": 3,
+			"pointerTravelPx": 1217,
+			"surfaces": ["sidebar"],
+			"surfaceCount": 1,
+			"pauses": 0,
+			"resets": 1,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 1,
+			"populationBufferRecreations": 1,
+			"events": [
+				{
+					"event": "createBuffers",
+					"at": 785.5999999642372
+				},
+				{
+					"event": "createPipelines",
+					"at": 785.5999999642372
+				},
+				{
+					"event": "reset",
+					"at": 826.3999999761581
+				}
+			],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 1,
+			"incidentalResets": 0,
+			"path": ["open Experiments", "select displacement-32", "explicitly start staged world"]
+		},
+		{
+			"id": "05-live-controls",
+			"persona": "Teacher",
+			"frequency": "5–20 times per demonstration",
+			"task": "Set speed to 2×, adjust mutation and zero chemistry while demonstrating",
+			"clicks": 3,
+			"pointerTravelPx": 1958,
+			"surfaces": ["status bar", "sidebar"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 2,
+			"pipelineRebuilds": 2,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "setMachine",
+					"at": 514.8999999761581
+				},
+				{
+					"event": "createPipelines",
+					"at": 517
+				},
+				{
+					"event": "setMachine",
+					"at": 645
+				},
+				{
+					"event": "createPipelines",
+					"at": 645.6000000238419
+				}
+			],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": ["select 2", "range 5", "range 0.1"]
+		},
+		{
+			"id": "06-follow-probe",
+			"persona": "Power user",
+			"frequency": "20–100 times per session",
+			"task": "Probe a cell, follow its neighbor, and center the selected tape",
+			"clicks": 5,
+			"pointerTravelPx": 950,
+			"surfaces": ["tool rail", "sidebar"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": [
+				"Probe",
+				"set 0",
+				"probe cell 0",
+				"Next cell",
+				"Pan the selected cell into the visible field without changing zoom"
+			]
+		},
+		{
+			"id": "07-encounter",
+			"persona": "Power user",
+			"frequency": "5–20 times per session",
+			"task": "Probe and open an encounter; run the self-pair comparison and inspect writes",
+			"clicks": 7,
+			"pointerTravelPx": 1643,
+			"surfaces": ["tool rail", "sidebar"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": [
+				"Probe",
+				"set 0",
+				"probe cell 0",
+				"Open encounter bench",
+				"Self-pair",
+				"Run comparison tests",
+				"Write activity"
+			]
+		},
+		{
+			"id": "08-region-measure",
+			"persona": "Researcher / teacher",
+			"frequency": "5–15 times per session",
+			"task": "Measure a 4-cell region and frame it on the canvas",
+			"clicks": 7,
+			"pointerTravelPx": 1414,
+			"surfaces": ["tool rail", "sidebar"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": [
+				"Region",
+				"set 0",
+				"set 0",
+				"set 1",
+				"set 1",
+				"Measure region",
+				"Zoom and pan the selected region into the visible field"
+			]
+		},
+		{
+			"id": "09-follow-marker",
+			"persona": "Power user",
+			"frequency": "2–10 times per session",
+			"task": "Plant a marker in a selected tape and view matching cells",
+			"clicks": 8,
+			"pointerTravelPx": 2117,
+			"surfaces": ["tool rail", "sidebar"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": [
+				"Probe",
+				"set 0",
+				"probe cell 0",
+				"Marker",
+				"set 8",
+				"set 165",
+				"Show matches",
+				"Plant in cell 0"
+			]
+		},
+		{
+			"id": "10-history",
+			"persona": "Power user / teacher",
+			"frequency": "3–10 times per session",
+			"task": "Record recent frames, scrub to an earlier sample, then return live",
+			"clicks": 6,
+			"pointerTravelPx": 1763,
+			"surfaces": ["sidebar"],
+			"surfaceCount": 1,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": ["open Measure", "open History", "", "", "Return live", ""]
+		},
+		{
+			"id": "11-compare",
+			"persona": "Researcher / teacher",
+			"frequency": "3–10 times per session",
+			"task": "Pin a reference, reveal the comparison, and adjust the split",
+			"clicks": 4,
+			"pointerTravelPx": 983,
+			"surfaces": ["tool rail", "sidebar"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": ["Compare", "Pin reference", "", "range 65"]
+		},
+		{
+			"id": "12-export",
+			"persona": "Researcher / teacher",
+			"frequency": "1–5 times per session",
+			"task": "Save a PNG snapshot and a resumable world checkpoint",
+			"clicks": 3,
+			"pointerTravelPx": 1464,
+			"surfaces": ["sidebar"],
+			"surfaceCount": 1,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"intentionalPauses": 0,
+			"incidentalPauses": 0,
+			"intentionalResets": 0,
+			"incidentalResets": 0,
+			"path": ["Export & checkpoints", "Save PNG snapshot", "Save checkpoint (Cmd+S)"]
+		}
+	],
+	"captures": [
+		{
+			"name": "task-01-guide",
+			"path": "docs/review/unified/after/round-4/task-01-guide.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-02-identity",
+			"path": "docs/review/unified/after/round-4/task-02-identity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-02-confinement",
+			"path": "docs/review/unified/after/round-4/task-02-confinement.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-02-bytes",
+			"path": "docs/review/unified/after/round-4/task-02-bytes.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-03-core",
+			"path": "docs/review/unified/after/round-4/task-03-core.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-04-preset-staged",
+			"path": "docs/review/unified/after/round-4/task-04-preset-staged.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-04-preset",
+			"path": "docs/review/unified/after/round-4/task-04-preset.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-05-live-settings",
+			"path": "docs/review/unified/after/round-4/task-05-live-settings.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-06-probe",
+			"path": "docs/review/unified/after/round-4/task-06-probe.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-07-encounter",
+			"path": "docs/review/unified/after/round-4/task-07-encounter.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-08-region",
+			"path": "docs/review/unified/after/round-4/task-08-region.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-09-marker",
+			"path": "docs/review/unified/after/round-4/task-09-marker.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-10-history",
+			"path": "docs/review/unified/after/round-4/task-10-history.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-11-compare",
+			"path": "docs/review/unified/after/round-4/task-11-compare.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "task-12-export",
+			"path": "docs/review/unified/after/round-4/task-12-export.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mobile-collapsed-390",
+			"path": "docs/review/unified/after/round-4/state-mobile-collapsed-390.png",
+			"viewport": {
+				"width": 390,
+				"height": 844
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mobile-world-390",
+			"path": "docs/review/unified/after/round-4/state-mobile-world-390.png",
+			"viewport": {
+				"width": 390,
+				"height": 844
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mobile-probe-390",
+			"path": "docs/review/unified/after/round-4/state-mobile-probe-390.png",
+			"viewport": {
+				"width": 390,
+				"height": 844
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mobile-region-390",
+			"path": "docs/review/unified/after/round-4/state-mobile-region-390.png",
+			"viewport": {
+				"width": 390,
+				"height": 844
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mobile-encounter-390",
+			"path": "docs/review/unified/after/round-4/state-mobile-encounter-390.png",
+			"viewport": {
+				"width": 390,
+				"height": 844
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-main-1280",
+			"path": "docs/review/unified/after/round-4/state-main-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-world-1280",
+			"path": "docs/review/unified/after/round-4/state-tab-world-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-measure-1280",
+			"path": "docs/review/unified/after/round-4/state-tab-measure-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-experiments-1280",
+			"path": "docs/review/unified/after/round-4/state-tab-experiments-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-guide-1280",
+			"path": "docs/review/unified/after/round-4/state-tab-guide-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-about-1280",
+			"path": "docs/review/unified/after/round-4/state-tab-about-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-probe-1280",
+			"path": "docs/review/unified/after/round-4/state-probe-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-region-1280",
+			"path": "docs/review/unified/after/round-4/state-region-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-history-empty-1280",
+			"path": "docs/review/unified/after/round-4/state-history-empty-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-encounter-1280",
+			"path": "docs/review/unified/after/round-4/state-encounter-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-species-inspector-1280",
+			"path": "docs/review/unified/after/round-4/state-species-inspector-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-sidebar-collapsed-1280",
+			"path": "docs/review/unified/after/round-4/state-sidebar-collapsed-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-main-1920",
+			"path": "docs/review/unified/after/round-4/state-main-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-world-1920",
+			"path": "docs/review/unified/after/round-4/state-tab-world-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-measure-1920",
+			"path": "docs/review/unified/after/round-4/state-tab-measure-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-experiments-1920",
+			"path": "docs/review/unified/after/round-4/state-tab-experiments-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-guide-1920",
+			"path": "docs/review/unified/after/round-4/state-tab-guide-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-about-1920",
+			"path": "docs/review/unified/after/round-4/state-tab-about-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-probe-1920",
+			"path": "docs/review/unified/after/round-4/state-probe-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-region-1920",
+			"path": "docs/review/unified/after/round-4/state-region-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-history-empty-1920",
+			"path": "docs/review/unified/after/round-4/state-history-empty-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-encounter-1920",
+			"path": "docs/review/unified/after/round-4/state-encounter-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-species-inspector-1920",
+			"path": "docs/review/unified/after/round-4/state-species-inspector-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-sidebar-collapsed-1920",
+			"path": "docs/review/unified/after/round-4/state-sidebar-collapsed-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-main-1440",
+			"path": "docs/review/unified/after/round-4/state-main-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-world-1440",
+			"path": "docs/review/unified/after/round-4/state-tab-world-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-measure-1440",
+			"path": "docs/review/unified/after/round-4/state-tab-measure-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-experiments-1440",
+			"path": "docs/review/unified/after/round-4/state-tab-experiments-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-guide-1440",
+			"path": "docs/review/unified/after/round-4/state-tab-guide-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-tab-about-1440",
+			"path": "docs/review/unified/after/round-4/state-tab-about-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-probe-1440",
+			"path": "docs/review/unified/after/round-4/state-probe-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-region-1440",
+			"path": "docs/review/unified/after/round-4/state-region-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-history-empty-1440",
+			"path": "docs/review/unified/after/round-4/state-history-empty-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-encounter-1440",
+			"path": "docs/review/unified/after/round-4/state-encounter-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-species-inspector-1440",
+			"path": "docs/review/unified/after/round-4/state-species-inspector-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-sidebar-collapsed-1440",
+			"path": "docs/review/unified/after/round-4/state-sidebar-collapsed-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mode-bytes-1440",
+			"path": "docs/review/unified/after/round-4/state-mode-bytes-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mode-identity-1440",
+			"path": "docs/review/unified/after/round-4/state-mode-identity-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mode-confinement-1440",
+			"path": "docs/review/unified/after/round-4/state-mode-confinement-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mode-zeros-1440",
+			"path": "docs/review/unified/after/round-4/state-mode-zeros-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mode-diversity-1440",
+			"path": "docs/review/unified/after/round-4/state-mode-diversity-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-mode-marker-1440",
+			"path": "docs/review/unified/after/round-4/state-mode-marker-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-field-listbox-1440",
+			"path": "docs/review/unified/after/round-4/state-field-listbox-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-speed-listbox-1440",
+			"path": "docs/review/unified/after/round-4/state-speed-listbox-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-core-listbox-1440",
+			"path": "docs/review/unified/after/round-4/state-world-core-listbox-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-core-z80-0.2-1440",
+			"path": "docs/review/unified/after/round-4/state-world-core-z80-0.2-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-core-z80-0.3-1440",
+			"path": "docs/review/unified/after/round-4/state-world-core-z80-0.3-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-core-z80-nmos-1440",
+			"path": "docs/review/unified/after/round-4/state-world-core-z80-nmos-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-core-m6502-1440",
+			"path": "docs/review/unified/after/round-4/state-world-core-m6502-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-core-i8086-1440",
+			"path": "docs/review/unified/after/round-4/state-world-core-i8086-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-core-change-notice-1440",
+			"path": "docs/review/unified/after/round-4/state-core-change-notice-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-staged-1440",
+			"path": "docs/review/unified/after/round-4/state-world-staged-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-discarded-1440",
+			"path": "docs/review/unified/after/round-4/state-world-discarded-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-appearance-1440",
+			"path": "docs/review/unified/after/round-4/state-appearance-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-palette-rainbow-1440",
+			"path": "docs/review/unified/after/round-4/state-palette-rainbow-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-palette-ocean-1440",
+			"path": "docs/review/unified/after/round-4/state-palette-ocean-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-palette-thermal-1440",
+			"path": "docs/review/unified/after/round-4/state-palette-thermal-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-layer-grid-1440",
+			"path": "docs/review/unified/after/round-4/state-layer-grid-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-layer-average-1440",
+			"path": "docs/review/unified/after/round-4/state-layer-average-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-layer-individual-bytes-1440",
+			"path": "docs/review/unified/after/round-4/state-layer-individual-bytes-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-checkpoints-1440",
+			"path": "docs/review/unified/after/round-4/state-checkpoints-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-checkpoint-import-staged-1440",
+			"path": "docs/review/unified/after/round-4/state-checkpoint-import-staged-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-checkpoint-restored-1440",
+			"path": "docs/review/unified/after/round-4/state-checkpoint-restored-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-listbox-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-listbox-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-stage-g-l16-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-stage-g-l16-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-z80-corrected-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-z80-corrected-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-lethal-zero-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-lethal-zero-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-dial-0-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-dial-0-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-dial-0.01-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-dial-0.01-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-dial-0.03-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-dial-0.03-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-dial-0.1-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-dial-0.1-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-dial-0.3-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-dial-0.3-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-dial-1-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-dial-1-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-random-registers-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-random-registers-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-ring-l12-p24-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-ring-l12-p24-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-ring-l12-p28-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-ring-l12-p28-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-no-block-copy-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-no-block-copy-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-no-copy-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-no-copy-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-m6502-s1-a-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-m6502-s1-a-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-i8086-s2-a-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-i8086-s2-a-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-offset-competition-benign-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-offset-competition-benign-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-offset-competition-lethal-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-offset-competition-lethal-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-displacement-4-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-displacement-4-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-displacement-32-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-displacement-32-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-pusher-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-pusher-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-experiment-return-closer-1440",
+			"path": "docs/review/unified/after/round-4/state-experiment-return-closer-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-world-preset-summary-1440",
+			"path": "docs/review/unified/after/round-4/state-world-preset-summary-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-saved-preset-classic-1440",
+			"path": "docs/review/unified/after/round-4/state-saved-preset-classic-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-saved-preset-hex-organic-1440",
+			"path": "docs/review/unified/after/round-4/state-saved-preset-hex-organic-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-saved-preset-no-block-copy-1440",
+			"path": "docs/review/unified/after/round-4/state-saved-preset-no-block-copy-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-saved-preset-no-copy-1440",
+			"path": "docs/review/unified/after/round-4/state-saved-preset-no-copy-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-personal-preset-save-form-1440",
+			"path": "docs/review/unified/after/round-4/state-personal-preset-save-form-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-personal-preset-saved-1440",
+			"path": "docs/review/unified/after/round-4/state-personal-preset-saved-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-personal-preset-overwrite-1440",
+			"path": "docs/review/unified/after/round-4/state-personal-preset-overwrite-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-personal-preset-overwritten-1440",
+			"path": "docs/review/unified/after/round-4/state-personal-preset-overwritten-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-personal-preset-deleted-1440",
+			"path": "docs/review/unified/after/round-4/state-personal-preset-deleted-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-ablation-preview-1440",
+			"path": "docs/review/unified/after/round-4/state-ablation-preview-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-ablation-active-1440",
+			"path": "docs/review/unified/after/round-4/state-ablation-active-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-chart-opcodes-1440",
+			"path": "docs/review/unified/after/round-4/state-chart-opcodes-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-chart-species-1440",
+			"path": "docs/review/unified/after/round-4/state-chart-species-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-chart-diversity-1440",
+			"path": "docs/review/unified/after/round-4/state-chart-diversity-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-species-inspector-detail-1440",
+			"path": "docs/review/unified/after/round-4/state-species-inspector-detail-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-species-disassembly-1440",
+			"path": "docs/review/unified/after/round-4/state-species-disassembly-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-guide-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-guide-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-overview-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-overview-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-visuals-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-visuals-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-z80-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-z80-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-params-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-params-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-analysis-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-analysis-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-keys-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-keys-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-guide-preserved-after-about-1440",
+			"path": "docs/review/unified/after/round-4/state-guide-preserved-after-about-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-shortcuts-1440",
+			"path": "docs/review/unified/after/round-4/state-shortcuts-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-marker-empty-1440",
+			"path": "docs/review/unified/after/round-4/state-marker-empty-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-compare-1440",
+			"path": "docs/review/unified/after/round-4/state-compare-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-history-scrub-1440",
+			"path": "docs/review/unified/after/round-4/state-history-scrub-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-history-replay-1440",
+			"path": "docs/review/unified/after/round-4/state-history-replay-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-frame-export-1440",
+			"path": "docs/review/unified/after/round-4/state-frame-export-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-culture-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-culture-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-self-pair-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-self-pair-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-partner-sensitivity-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-partner-sensitivity-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-marker-transfer-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-marker-transfer-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-fetched-bytes-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-fetched-bytes-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-instruction-starts-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-instruction-starts-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-write-activity-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-write-activity-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-bench-disassembly-1440",
+			"path": "docs/review/unified/after/round-4/state-bench-disassembly-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-webgpu-unavailable-1440",
+			"path": "docs/review/unified/after/round-4/state-webgpu-unavailable-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		},
+		{
+			"name": "state-webgpu-guide-1440",
+			"path": "docs/review/unified/after/round-4/state-webgpu-guide-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false,
+			"forbiddenUiWord": false
+		}
+	],
+	"alternativeTaskPaths": [],
+	"errors": []
+}
