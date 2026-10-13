@@ -182,7 +182,7 @@
 				each</span
 			>
 		</div>
-		<div class="view-tools" aria-label="Lattice view">
+		<div class="view-tools" role="group" aria-label="Lattice view">
 			<select aria-label="Lattice layer" bind:value={session.layer}
 				><option value="bytes">Byte colors</option><option value="identity">Exact tapes</option
 				><option value="fetch">Fetch confinement</option></select

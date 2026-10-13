@@ -36,7 +36,11 @@
 			min="0"
 			max={session.settings.width * session.settings.height - 1}
 			value={session.selectedCell}
-			onchange={(event) => session.select(Number(event.currentTarget.value))}
+			onchange={(event) => {
+				session.select(Number(event.currentTarget.value));
+				// A clamped entry can leave selectedCell unchanged, so the one-way value would not resync.
+				event.currentTarget.value = String(session.selectedCell);
+			}}
 		/><span
 			>{session.settings.isa === 'm6502'
 				? '6502'
@@ -45,7 +49,7 @@
 					: 'Z80'}</span
 		>
 	</div>
-	<div class="tabs" aria-label="Inspector views">
+	<div class="tabs" role="group" aria-label="Inspector views">
 		{#each ['tape', 'culture', 'marker'] as view (view)}<button
 				aria-pressed={tab === view}
 				class:active={tab === view}
@@ -54,7 +58,7 @@
 			>{/each}
 	</div>
 	{#if tab === 'tape'}
-		<div class="tape-strip" aria-label="Selected tape bytes">
+		<div class="tape-strip" role="group" aria-label="Selected tape bytes">
 			{#each Array.from(bytes) as byte, index (index)}<span
 					class:zero={byte === 0}
 					title={`Byte ${index}: ${hex(byte)}`}><small>{index}</small>{hex(byte)}</span
