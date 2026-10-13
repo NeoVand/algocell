@@ -166,6 +166,20 @@ for (const viewport of [
 				'0, 0'
 			);
 			await page.getByLabel('Field view', { exact: true }).selectOption('marker');
+			if (viewport.width < 500) {
+				const dock = page.getByRole('region', { name: 'Probe tool', exact: true });
+				expect((await dock.boundingBox())!.height).toBeLessThanOrEqual(viewport.height * 0.49 + 2);
+				await focusSelection(page, 'Center probe', [0]);
+				await dock.evaluate((element) => {
+					element.scrollTop = element.scrollHeight;
+				});
+				const center = page.getByRole('button', { name: 'Center probe', exact: true });
+				await expect(center).toBeVisible();
+				const panelBox = (await dock.boundingBox())!;
+				const buttonBox = (await center.boundingBox())!;
+				expect(buttonBox.y).toBeGreaterThanOrEqual(panelBox.y);
+				expect(buttonBox.y + buttonBox.height).toBeLessThanOrEqual(panelBox.y + 60);
+			}
 			await page.locator('#marker-position').fill('8');
 			await page.locator('#marker-value').fill('165');
 			await page.getByRole('button', { name: 'Show matches', exact: true }).click();

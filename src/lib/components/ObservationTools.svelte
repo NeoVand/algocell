@@ -1714,12 +1714,18 @@
 			left: 8px;
 			right: 8px;
 			width: auto;
-			max-height: calc(100dvh - 260px);
+			max-height: min(49dvh, calc(100dvh - 260px));
 			padding: 11px;
 			border-radius: 10px;
 		}
-		.observation-dock.region-tool {
-			max-height: 49dvh;
+		.observation-dock header {
+			position: sticky;
+			top: 0;
+			z-index: 1;
+			margin: -11px -11px 0;
+			padding: 11px 11px 10px;
+			border-radius: 9px 9px 0 0;
+			background: #141414;
 		}
 		.region-tool > .hint:first-of-type {
 			display: none;
