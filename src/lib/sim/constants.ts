@@ -7,6 +7,9 @@ export interface GridConfig {
 	width: number;
 	height: number;
 	gridType: GridType;
+	/** Optional paper geometry; original square/hex defaults stay 16/19. */
+	tapeLength?: number;
+	pairLength?: number;
 }
 
 // Default grid dimensions

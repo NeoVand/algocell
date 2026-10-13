@@ -1,6 +1,9 @@
 // All WGSL shaders — factory functions for topology variants
 import type { GridType } from '$lib/sim/constants';
-import { Z80_CORE_WGSL } from '@neovand/zilion';
+import { buildMachine, Z80_CORE_WGSL } from '@neovand/zilion';
+
+import { machineSpec, ORIGINAL_SETTINGS } from './machine';
+import type { LabSettings } from '../lab/types';
 
 // ============================================================
 // SIMULATION COMPUTE SHADER
@@ -106,8 +109,64 @@ fn store_pair_mem(base: u32) {
 }
 `;
 
-export function createSimShader(gridType: GridType): string {
+export function createSimShader(
+	gridType: GridType,
+	settings: LabSettings = ORIGINAL_SETTINGS,
+	measureFetch = false
+): string {
 	const neighborBlock = gridType === 'hex' ? HEX_NEIGHBOR_SELECTION : SQUARE_NEIGHBOR_SELECTION;
+	const spec = machineSpec(settings);
+	const { wgsl: builtMachine } = buildMachine({
+		...spec,
+		mode: 'library',
+		world: {
+			...spec.world,
+			...(settings.isa === 'z80'
+				? {
+						ablation: { expr: 'algocell_suppressed(prefix, op)' },
+						hooks: {
+							...spec.world.hooks,
+							declarations:
+								(spec.world.hooks?.declarations ?? '') +
+								'\n' +
+								SUPPRESS_HOOK_WGSL.replace('fn on_fetch_opcode', 'fn algocell_suppressed')
+						}
+					}
+				: {}),
+			outputs: { memory: true, state: false, writeCounts: false, fetchMap: measureFetch }
+		},
+		bindingNames: { memory: 'pair_data', ablation: 'params.suppress' }
+	});
+	// Keep Algocell's dynamic byte packing and address reduction. Metal's
+	// constant-size unrolling of library memory helpers otherwise lowers soup
+	// throughput. These host adapters do not alter the generated ISA core.
+	const position = `fn zil_pos(addr: u32) -> u32 { return addr % ${settings.ring}u; }`;
+	if (!builtMachine.includes(position))
+		throw new Error('Unexpected Zilion library memory contract.');
+	const machine = builtMachine.replace(
+		position,
+		'fn zil_pos(addr: u32) -> u32 { return addr % params.pair_length; }'
+	);
+	const mapWords = measureFetch ? Math.ceil(settings.ring / 32) : 0;
+	const laneStride = 2 + mapWords;
+	const fetchSave = measureFetch
+		? `
+    for (var f = 0u; f < ${mapWords}u; f++) {
+      write_counts[pair_id * ${laneStride}u + 2u + f] = zil_fetch_map[f];
+    }`
+		: '';
+	const fetchAbsorb = measureFetch
+		? `
+    // This is the last initiating encounter, not a permanent tape property.
+    var entered = false;
+    for (var b = ${settings.length}u; b < ${settings.ring}u; b++) {
+      let bits = write_counts[pair_id * ${laneStride}u + 2u + (b >> 5u)];
+      entered = entered || ((bits >> (b & 31u)) & 1u) != 0u;
+    }
+    fetch_status[i] = select(1u, 2u, entered);
+    fetch_status[j] = 0u; // partner changed without an initiating observation
+  `
+		: '';
 
 	return /* wgsl */ `
 
@@ -137,6 +196,7 @@ struct Params {
 @group(0) @binding(7) var<storage, read_write> byte_counts: array<atomic<u32>>;
 @group(0) @binding(8) var<storage, read_write> collision_mask: array<atomic<u32>>;
 @group(0) @binding(9) var<storage, read_write> cell_hashes: array<u32>;
+@group(0) @binding(10) var<storage, read_write> fetch_status: array<u32>;
 
 // === PRNG (PCG-based) ===
 fn pcg(state: ptr<private, u32>) -> u32 {
@@ -156,25 +216,9 @@ fn rand_bounded(bound: u32) -> u32 {
     return rand() % bound;
 }
 
-// === Z80 memory + suppression (host bits for the shared zilion Z80 core) ===
-// The Z80 instruction logic lives in the zilion package (single source of
-// truth). Algocell provides its own memory model (wrapping mod pair_length,
-// with A/B write counting) and an opcode-suppression hook.
-var<private> cpu_writes_a: u32;
-var<private> cpu_writes_b: u32;
-var<private> mem: array<u32, 40>;
-fn mem_read(addr: u32) -> u32 {
-    return mem[addr % params.pair_length];
-}
-fn mem_write(addr: u32, val: u32) {
-    let a = addr % params.pair_length;
-    mem[a] = val & 0xffu;
-    if (a < params.tape_length) { cpu_writes_a += 1u; } else { cpu_writes_b += 1u; }
-}
-${SUPPRESS_HOOK_WGSL}
-${PAIR_MEM_WGSL}
-
-${Z80_CORE_WGSL}
+// Zilion 0.3.1 library mode: the host owns all soup buffers and entry points.
+${machine}
+${PAIR_MEM_WGSL.replaceAll('mem[', 'zil_m[')}
 
 // === Soup byte access helpers ===
 fn read_soup_byte(cell: u32, byte_idx: u32) -> u32 {
@@ -253,8 +297,8 @@ ${neighborBlock}
         }
     }
 
-    write_counts[pair_id * 2u] = 0u;
-    write_counts[pair_id * 2u + 1u] = 0u;
+    write_counts[pair_id * ${laneStride}u] = 0u;
+    write_counts[pair_id * ${laneStride}u + 1u] = 0u;
 }
 
 // --- Z80 Execute: run Z80 on each pair ---
@@ -264,33 +308,22 @@ fn z80_execute_batch(@builtin(global_invocation_id) id: vec3u) {
     if (pair_id >= params.pair_count) { return; }
     if (pair_active[pair_id] == 0u) { return; }
 
-    // Load pair memory: A at mem[0..tape_length), B at mem[tape_length..pair_length).
     let base = pair_id * ((params.tape_length + 3u) / 4u) * 2u;
     load_pair_mem(base);
-
-    // Reset CPU state
-    cpu_a = 0u; cpu_f = 0u; cpu_b = 0u; cpu_c = 0u;
-    cpu_d = 0u; cpu_e = 0u; cpu_h = 0u; cpu_l = 0u;
-    cpu_sp = 0xffffu; cpu_pc = 0u; // real Z80 resets SP to 0xFFFF (superzazu z80_init); wraps to buffer end via mod-length
-    cpu_a2 = 0u; cpu_f2 = 0u; cpu_b2 = 0u; cpu_c2 = 0u;
-    cpu_d2 = 0u; cpu_e2 = 0u; cpu_h2 = 0u; cpu_l2 = 0u;
-    cpu_ix = 0u; cpu_iy = 0u;
-    cpu_halted = 0u;
-    cpu_iff1 = 0u; cpu_iff2 = 0u;
-    cpu_writes_a = 0u;
-    cpu_writes_b = 0u;
-
-    // Run Z80 steps
+    // Padding is volatile scratch, zero at each encounter and never inherited.
+    for (var p = params.tape_length * 2u; p < params.pair_length; p++) { zil_m[p] = 0u; }
+    zil_begin(pair_id, params.batch_seed);
+    // The soup does not resume or export step records. Use its original tight
+    // loop while the library owns memory, reset, decode, traps and fetch maps.
+    // Counter dials still receive the exact per-instruction index.
     for (var step = 0u; step < params.z80_steps; step++) {
-        if (cpu_halted != 0u) { break; }
-        z80_step();
+      if (${settings.isa === 'z80' ? 'cpu_halted != 0u' : 'zil_halt_reason() != ZIL_RUNNING'}) { break; }
+      ${settings.lethalProbability > 0 && settings.dialMode === 'counter' ? 'zil_step = step;' : ''}
+      ${spec.core!.isa.symbols.step}();
     }
-
-    // Save pair memory back (padding bytes are written as zero)
     store_pair_mem(base);
 
-    write_counts[pair_id * 2u] = cpu_writes_a;
-    write_counts[pair_id * 2u + 1u] = cpu_writes_b;
+    ${fetchSave}
 }
 
 // --- Absorb: write results back to soup ---
@@ -312,6 +345,7 @@ fn absorb_results(@builtin(global_invocation_id) id: vec3u) {
     for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
         soup[j * words_per_cell + w_idx] = pair_data[base + words_per_cell + w_idx];
     }
+    ${fetchAbsorb}
 }
 
 // --- Mutate: apply random mutations to soup ---
@@ -335,6 +369,7 @@ fn mutate_soup(@builtin(global_invocation_id) id: vec3u) {
     let shift = (byte_in_cell & 3u) * 8u;
     let mask = ~(0xffu << shift);
     soup[word_idx] = (soup[word_idx] & mask) | (val << shift);
+    fetch_status[cell] = 0u;
 }
 
 // --- Count bytes for statistics ---
@@ -418,6 +453,10 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     let cell_y = u32(grid_y);
     let cell_idx = cell_y * u32(sw) + cell_x;
 
+    if (rparams.show_confinement != 0u) {
+      return confinement_color(cell_idx);
+    }
+
     // Sub-cell position (0..1 within the cell)
     let frac_x = fract(grid_x);
     let frac_y = fract(grid_y);
@@ -459,6 +498,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     let local_x = u32(frac_x * f32(ts));
     let local_y = u32(frac_y * f32(ts));
     let byte_idx = local_y * ts + local_x;
+    if (byte_idx >= rparams.tape_length) { return vec4f(0.04, 0.04, 0.06, 1.0); }
     let byte_val = read_soup_byte(cell_idx, byte_idx);
     var color = unpack_color(colormap[byte_val]).rgb;
 
@@ -663,6 +703,8 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
 
         let cell_idx = u32(cy) * u32(sw) + u32(cx);
 
+        if (rparams.show_confinement != 0u) { return confinement_color(cell_idx); }
+
         // Average color of all bytes in cell
         var acc = vec3f(0.0);
         for (var i = 0u; i < rparams.tape_length; i++) {
@@ -725,6 +767,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4f {
     }
 
     let cell_idx = u32(cell_b) * u32(sw) + u32(cell_a);
+    if (rparams.show_confinement != 0u) { return confinement_color(cell_idx); }
     let in_gap = byte_idx_i < 0;
 
     // LOD: bytes per screen pixel
@@ -859,13 +902,22 @@ struct RenderParams {
     contrast: f32,     // 0..2, default 1
     saturation: f32,   // 0..2, default 1
     show_grid: u32,    // 1 = show grid lines, 0 = hide
-    _pad4: u32,
+    show_confinement: u32,
 }
 
 @group(0) @binding(0) var<storage, read> soup: array<u32>;
 @group(0) @binding(1) var<storage, read> colormap: array<u32>;     // 256 RGBA packed
 @group(0) @binding(2) var<uniform> rparams: RenderParams;
 @group(0) @binding(3) var<storage, read> trace_image: array<u32>;  // trace overlay RGBA
+@group(0) @binding(4) var<storage, read> fetch_status: array<u32>;
+
+// Existing palette: dim unknown, cool confined, warm partner entry.
+fn confinement_color(cell: u32) -> vec4f {
+  let status = fetch_status[cell];
+  if (status == 0u) { return vec4f(0.12, 0.12, 0.15, 1.0); }
+  let index = select(48u, 192u, status == 2u);
+  return unpack_color(colormap[index]);
+}
 
 struct VertexOutput {
     @builtin(position) position: vec4f,

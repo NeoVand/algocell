@@ -16,6 +16,10 @@ import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
 import { createSimShader, createRenderShader } from './shaders';
 import { suppressionMasks, emptySuppression, type SuppressSets } from '$lib/z80-opcodes';
+import { ORIGINAL_SETTINGS, validateSettings, createInitialSoup } from './machine';
+import { ablationMasks } from '../lab/ablation';
+import { runCulture } from './culture';
+import type { LabSettings, InitialCondition, CultureResult } from '../lab/types';
 
 export class GPUEngine {
 	private device!: GPUDevice;
@@ -33,6 +37,12 @@ export class GPUEngine {
 	private byteCountsBuffer!: GPUBuffer;
 	private collisionMaskBuffer!: GPUBuffer;
 	private cellHashBuffer!: GPUBuffer;
+	private fetchStatusBuffer!: GPUBuffer;
+	private simModule!: GPUShaderModule;
+	private machineSettings: LabSettings = structuredClone(ORIGINAL_SETTINGS);
+	private measureFetch = false;
+	private masks = new Uint32Array(24);
+	private paramsData = new Uint32Array(32);
 
 	// Render buffers
 	private colormapBuffer!: GPUBuffer;
@@ -101,11 +111,14 @@ export class GPUEngine {
 	private get cellCount(): number {
 		return this.gridConfig.width * this.gridConfig.height;
 	}
-	private get tapeLength(): number {
-		return getTapeLength(this.gridType);
+	get tapeLength(): number {
+		return this.gridConfig.tapeLength ?? getTapeLength(this.gridType);
 	}
 	private get pairLength(): number {
-		return getPairLength(this.gridType);
+		return (
+			this.gridConfig.pairLength ??
+			(this.gridConfig.tapeLength ? this.tapeLength * 2 : getPairLength(this.gridType))
+		);
 	}
 	private get wordsPerCell(): number {
 		return Math.ceil(this.tapeLength / 4);
@@ -145,7 +158,7 @@ export class GPUEngine {
 		return this._z80Steps;
 	}
 	set z80Steps(v: number) {
-		this._z80Steps = Math.max(16, Math.min(1024, v));
+		this._z80Steps = Math.max(1, Math.min(4096, v));
 	}
 
 	get batchCount(): number {
@@ -154,6 +167,10 @@ export class GPUEngine {
 
 	setSuppression(sets: SuppressSets): void {
 		this.suppression = { base: new Set(sets.base), cb: new Set(sets.cb), ed: new Set(sets.ed) };
+		this.masks.set(suppressionMasks(this.suppression));
+		this.machineSettings.ablation = (['base', 'cb', 'ed'] as const).flatMap((page) =>
+			[...sets[page]].map((code) => `${page}:${code.toString(16).padStart(2, '0')}`)
+		);
 		// Immediately write the masks to the GPU so they take effect even
 		// before the next simulateStep() call
 		this.flushSuppressMask();
@@ -161,7 +178,8 @@ export class GPUEngine {
 
 	private flushSuppressMask(): void {
 		// Masks start at byte offset 32 (after the 8 scalar params): 24 u32 words.
-		this.device.queue.writeBuffer(this.paramsBuffer, 32, suppressionMasks(this.suppression).buffer);
+		this.paramsData.set(this.masks, 8);
+		this.device.queue.writeBuffer(this.paramsBuffer, 32, this.masks.buffer);
 	}
 
 	async init(canvas: HTMLCanvasElement): Promise<boolean> {
@@ -199,6 +217,7 @@ export class GPUEngine {
 
 		this.createBuffers();
 		this.createPipelines();
+		await this.checkShader();
 		this.initSoup();
 		this.uploadColormap();
 		this.resetView(canvas.width, canvas.height);
@@ -230,7 +249,12 @@ export class GPUEngine {
 
 		// Write counts: 2 u32s per pair
 		this.writeCountsBuffer = dev.createBuffer({
-			size: MAX_BATCH_PAIR_N * 2 * 4,
+			size: MAX_BATCH_PAIR_N * 10 * 4,
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+		});
+
+		this.fetchStatusBuffer = dev.createBuffer({
+			size: this.cellCount * 4,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
@@ -299,7 +323,7 @@ export class GPUEngine {
 		});
 
 		this.traceImageBuffer = dev.createBuffer({
-			size: this.pairLength * 1024 * 4, // max Z80 steps
+			size: this.pairLength * 4096 * 4, // max Z80 steps
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 	}
@@ -308,7 +332,10 @@ export class GPUEngine {
 		const dev = this.device;
 
 		// Simulation shader module
-		const simModule = dev.createShaderModule({ code: createSimShader(this.gridType) });
+		const simModule = dev.createShaderModule({
+			code: createSimShader(this.gridType, this.settings, this.measureFetch)
+		});
+		this.simModule = simModule;
 
 		// Simulation bind group layout
 		const simBindGroupLayout = dev.createBindGroupLayout({
@@ -326,7 +353,8 @@ export class GPUEngine {
 				{ binding: 6, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 7, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 8, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-				{ binding: 9, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
+				{ binding: 9, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 10, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
 			]
 		});
 
@@ -346,7 +374,8 @@ export class GPUEngine {
 				{ binding: 6, resource: { buffer: this.pairActiveBuffer } },
 				{ binding: 7, resource: { buffer: this.byteCountsBuffer } },
 				{ binding: 8, resource: { buffer: this.collisionMaskBuffer } },
-				{ binding: 9, resource: { buffer: this.cellHashBuffer } }
+				{ binding: 9, resource: { buffer: this.cellHashBuffer } },
+				{ binding: 10, resource: { buffer: this.fetchStatusBuffer } }
 			]
 		});
 
@@ -389,7 +418,8 @@ export class GPUEngine {
 					binding: 3,
 					visibility: GPUShaderStage.FRAGMENT,
 					buffer: { type: 'read-only-storage' }
-				}
+				},
+				{ binding: 4, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'read-only-storage' } }
 			]
 		});
 
@@ -410,7 +440,8 @@ export class GPUEngine {
 				{ binding: 0, resource: { buffer: this.soupBuffer } },
 				{ binding: 1, resource: { buffer: this.colormapBuffer } },
 				{ binding: 2, resource: { buffer: this.renderParamsBuffer } },
-				{ binding: 3, resource: { buffer: this.traceImageBuffer } }
+				{ binding: 3, resource: { buffer: this.traceImageBuffer } },
+				{ binding: 4, resource: { buffer: this.fetchStatusBuffer } }
 			]
 		});
 	}
@@ -435,6 +466,7 @@ export class GPUEngine {
 			}
 		}
 		this.device.queue.writeBuffer(this.soupBuffer, 0, soupData);
+		this.device.queue.writeBuffer(this.fetchStatusBuffer, 0, new Uint32Array(this.cellCount));
 		this.batchIndex = 0;
 	}
 
@@ -478,6 +510,110 @@ export class GPUEngine {
 			this.rateAccumOps = 0;
 			this.rateT0 = now;
 		}
+	}
+
+	get settings(): LabSettings {
+		return {
+			...this.machineSettings,
+			width: this.soupWidth,
+			height: this.soupHeight,
+			topology: this.gridType,
+			length: this.tapeLength,
+			ring: this.pairLength,
+			seed: this.seed,
+			steps: this._z80Steps,
+			pairAttempts: this._pairCount,
+			mutationExponent: this._noiseExp,
+			ablation: [...this.machineSettings.ablation]
+		};
+	}
+
+	private async checkShader(): Promise<void> {
+		const info = await this.simModule.getCompilationInfo();
+		const errors = info.messages.filter((message) => message.type === 'error');
+		if (errors.length)
+			throw new Error(errors.map((message) => `${message.lineNum}: ${message.message}`).join('\n'));
+	}
+
+	async waitForIdle(): Promise<void> {
+		await this.device.queue.onSubmittedWorkDone();
+	}
+
+	/** World/ISA edits are explicit events; no host memory round-trip between updates. */
+	async setMachine(settings: LabSettings): Promise<void> {
+		validateSettings(settings);
+		if (settings.pairAttempts > MAX_BATCH_PAIR_N)
+			throw new Error('This instrument supports up to 8192 pair slots per update.');
+		await this.waitForIdle();
+		const geometryChanged =
+			settings.width !== this.soupWidth ||
+			settings.height !== this.soupHeight ||
+			settings.topology !== this.gridType ||
+			settings.length !== this.tapeLength ||
+			settings.ring !== this.pairLength;
+		this.machineSettings = structuredClone(settings);
+		this.z80Steps = settings.steps;
+		this.pairCount = settings.pairAttempts;
+		this.noiseExp = settings.mutationExponent;
+		this.masks.fill(0);
+		this.masks.set(ablationMasks(settings.isa, settings.ablation));
+		if (geometryChanged) {
+			this.changeGridConfig({
+				width: settings.width,
+				height: settings.height,
+				gridType: settings.topology,
+				tapeLength: settings.length,
+				pairLength: settings.ring
+			});
+		} else {
+			this.createPipelines();
+			this.flushSuppressMask();
+			this.resetRate();
+		}
+		await this.checkShader();
+	}
+
+	async configure(
+		settings: LabSettings,
+		initial: InitialCondition = { kind: 'random' }
+	): Promise<void> {
+		// Validate initial bytes before changing the live condition.
+		const bytes = createInitialSoup(settings, initial);
+		await this.setMachine(settings);
+		this.reset(settings.seed);
+		if (initial.kind !== 'random') {
+			const padded = new Uint8Array(this.soupSize);
+			for (let c = 0; c < this.cellCount; c++)
+				padded.set(
+					bytes.subarray(c * this.tapeLength, (c + 1) * this.tapeLength),
+					c * this.wordsPerCell * 4
+				);
+			this.device.queue.writeBuffer(this.soupBuffer, 0, padded);
+		}
+	}
+
+	setAblation(patterns: string[]): void {
+		const masks = ablationMasks(this.machineSettings.isa, patterns);
+		this.machineSettings.ablation = [...patterns];
+		this.masks.fill(0);
+		this.masks.set(masks);
+		this.flushSuppressMask();
+	}
+
+	async setShowConfinement(show: boolean): Promise<void> {
+		if (show === this.measureFetch) return;
+		await this.waitForIdle();
+		this.measureFetch = show;
+		this.device.queue.writeBuffer(this.fetchStatusBuffer, 0, new Uint32Array(this.cellCount));
+		this.createPipelines();
+		await this.checkShader();
+	}
+
+	runCulture(
+		tape: number[] | Uint8Array,
+		options: { trials?: number; seed?: number; generations?: number } = {}
+	): Promise<CultureResult> {
+		return runCulture(this.device, this.settings, tape, options);
 	}
 
 	get config(): GridConfig {
@@ -528,7 +664,7 @@ export class GPUEngine {
 		const mutationCount = Math.floor(this._pairCount * noiseCoef);
 
 		// Update params (8 scalars + 24 suppression mask words = 32 u32s)
-		const paramsData = new Uint32Array(32);
+		const paramsData = this.paramsData;
 		paramsData.set([
 			this.soupWidth,
 			this.soupHeight,
@@ -539,7 +675,7 @@ export class GPUEngine {
 			this._z80Steps,
 			this.cpuRng.nextU32() // batch_seed - different each batch
 		]);
-		paramsData.set(suppressionMasks(this.suppression), 8);
+		paramsData.set(this.masks, 8);
 		this.device.queue.writeBuffer(this.paramsBuffer, 0, paramsData);
 
 		const encoder = this.device.createCommandEncoder();
@@ -907,7 +1043,7 @@ export class GPUEngine {
 
 	// Render the soup to the canvas
 	render(canvas: HTMLCanvasElement): void {
-		const tileSize = 4;
+		const tileSize = Math.ceil(Math.sqrt(this.tapeLength));
 		const renderParams = new ArrayBuffer(64); // 16 fields * 4 bytes
 		const view = new DataView(renderParams);
 		view.setUint32(0, this.soupWidth, true);
@@ -925,7 +1061,7 @@ export class GPUEngine {
 		view.setFloat32(48, this.contrast, true);
 		view.setFloat32(52, this.saturation, true);
 		view.setUint32(56, this.showGrid, true);
-		view.setUint32(60, 0, true); // pad4
+		view.setUint32(60, this.measureFetch ? 1 : 0, true);
 
 		this.device.queue.writeBuffer(this.renderParamsBuffer, 0, renderParams);
 
@@ -967,6 +1103,7 @@ export class GPUEngine {
 		this.byteCountsStagingBuffer?.destroy();
 		this.soupStagingBuffer?.destroy();
 		this.cellHashBuffer?.destroy();
+		this.fetchStatusBuffer?.destroy();
 		this.cellHashStagingBuffer?.destroy();
 	}
 }
