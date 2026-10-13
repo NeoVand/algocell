@@ -1,6 +1,6 @@
 {
   "ed8_1": {
-    "height_mm": 180,
+    "height_mm": 216,
     "sources": {
       "manuscript/figures/out/v8/data/validation_fractions.csv": "9bbe0e8ee5e89a526eca0151414ae2e5ca79c849c9e5bfc349b842c695560737",
       "results/impact/outcome.csv": "08f75c239bfe52df8f057065f60a99874c902c8a88006231c4114d4e555e9fc8",
@@ -13,7 +13,7 @@
     }
   },
   "ed8_2": {
-    "height_mm": 220,
+    "height_mm": 285,
     "sources": {
       "manuscript/figures/out/v8/data/serial_summary.csv": "bce89c41e69710fa4d775cec67b8a564d5e7c4bcf381ceb1d4b572fb63d9f55d",
       "manuscript/figures/out/v8/data/serial_sites.csv": "0b1cb961e672c0a5c8df9f697bedf7f487878e935abe3e3e7c123b3d0baac3b6",
@@ -23,7 +23,7 @@
     }
   },
   "ed8_3": {
-    "height_mm": 180,
+    "height_mm": 211,
     "sources": {
       "manuscript/figures/out/v8/data/capacity_edits.csv": "de9009ee737ece84005c771eebf286453635320c573e3633ea55deab7e1a7f23",
       "manuscript/figures/out/v8/data/ed_joint_challenges.csv": "58d595d81c3e63b48d503535e64233ae94f12fc6b4ea4e0ed65f45ef0e51f1b5",
@@ -35,7 +35,7 @@
     }
   },
   "ed8_4": {
-    "height_mm": 220,
+    "height_mm": 260,
     "sources": {
       "results/r4/r4_rep.csv": "79a56e550f87ffcf87c7d87eb9fbeea1d49c1336af25794b0dc254a3d9644981",
       "results/population/population_worlds.csv": "fd1eac6c19f753514b6219a31158d086faf20053a1edd98a5bf9e7ab0d7df424",
@@ -45,7 +45,7 @@
     }
   },
   "ed8_5": {
-    "height_mm": 290,
+    "height_mm": 324,
     "sources": {
       "manuscript/figures/out/v8/data/competition_trajectories.csv": "e4592fc58bd2106ba78e6d54f616f6d86d8561ac25a6b489d5919a76a224bbc0",
       "results/offset/offset_switch.csv": "da3379390a0f51dcf6bdb1b427fd0c619e12da2060b7e4a1e19a5c9dce32c1cd",
@@ -56,7 +56,7 @@
     }
   },
   "ed8_6": {
-    "height_mm": 220,
+    "height_mm": 224,
     "sources": {
       "results/census6502/table_main.csv": "926f71a48e77dd544bfa4b53f39822bde748fb4f0eb1056c5737dff070d5f0a3",
       "results/census8086/table_main.csv": "7024e4df0244307c24c12578c467ddcce876671ed1a95dc7521ff0cfac2528e6",
@@ -72,7 +72,7 @@
     }
   },
   "ed8_7": {
-    "height_mm": 180,
+    "height_mm": 228,
     "sources": {
       "results/bff/runs.csv": "3f6db27edc3e863587833e148b5f06d78c7b87f39fdd8694a33db5de0dce34f1",
       "results/bff_stdnh/runs.csv": "5c3b8209182c2a40e1c9a3f04e1d1b9789f8000d9c29c48ac2dd87026dd05d12",
@@ -84,18 +84,24 @@
     }
   },
   "ed8_8": {
-    "height_mm": 180,
+    "height_mm": 190,
     "sources": {
       "results/ladder/lod_groups.csv": "b07fc1834ebc7261503d4791b23a4d74ef15bc5bf2963d0b7db468125df75b61",
       "results/lod/founders2.csv": "2f34b331ca9b2bc471067be525a237dfbfab15516c5f0103be2f5ad32c47de90",
       "results/lod_n6/founders2.csv": "3f0ef3d67ab3b8cc31c84350c99c0ada4d6b6124a3d64f7cde7c50985ec65879",
       "results/lod_n6/founding.csv": "17b4327f4c9e254c64d23fbb8477b7b77300fd7067aec66bb7c5650ade48754e",
       "results/lod_n6/chain_v6b.csv": "1c82cfc85af80b5cf1a1d592fe193e5812fd8ffe2a48d905c6a2fadcccfdab18",
-      "results/lod_n6/N6_SCORE.md": "3915ded2ee082d483fd1197d9558c37ca6ff815498eb222d12bf5f0b633841f1"
+      "results/lod_n6/N6_SCORE.md": "3915ded2ee082d483fd1197d9558c37ca6ff815498eb222d12bf5f0b633841f1",
+      "results/lod_n6/parts_v6.csv": "ff962d29880196780c21d1d5f0991ede4753919ea9ea77f8f0e91c6398b377a5",
+      "results/lod_n6/REACH.md": "9881d0b621f0259d18c0cb43e8c01e18e7732c98123ffa06ce1762ab79dd0069",
+      "results/lod_n6/REACH.csv": "75e00a2f3d0567a9ce0d0ea55f8cc89da011d9b42e4ee295858dcd40384ebe43",
+      "results/lod_n6/PARTS_FIRST.md": "ade9b0677e67984cc1865940b51f6104f1f4617049237adc9eebf70bf4c60993",
+      "results/lod/OPEN_FIRST.md": "035dfe4eb1d7b54cf7aa71298416bfb1ad8babf92eb0b56fd5f75368e40a3d08",
+      "results/lod_n6/OPEN_FIRST.md": "2fcf5014291335c4bb0a6a21a6ce2299fd25f37e4b0cbd248314a17c8f0dbd4e"
     }
   },
   "ed8_9": {
-    "height_mm": 180,
+    "height_mm": 231,
     "sources": {
       "results/s8086/tables/worlds.csv": "bcd06cd6dd2fb2540dd666f19d87803827f44dd95f234acf35af8c86832b1d2a",
       "results/s8086/tables/persistence.csv": "590799235c36e4dcd41c681c9c39895ab752b989a6b0aa0768785da8dab68d26",

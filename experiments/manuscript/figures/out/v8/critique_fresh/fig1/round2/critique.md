@@ -1,0 +1,29 @@
+The new Figure 1 has more explanatory content than the first reference, and all four panels are substantive. Panel b is particularly clear: direct title, identifiable curves, labeled axes, and an explicit cohort size. Panel d also provides useful category headers and numerical denominators. However, the mechanism diagram and validation summary still leave important interpretation to the reader.
+
+**Substantive defects and concrete fixes**
+
+- **Panel a — the memory-block encodings lack a key.** Teal, gray and orange blocks appear to distinguish meaningful states or roles, but those meanings are not stated. Readers cannot reliably distinguish organism ownership, occupied memory and newly written bytes. Add a compact inline key for the actual meanings; label the orange `c0` block directly if its color only highlights the return instruction.
+
+- **Panel a — the arrows encode different processes without an explicit distinction.** The thin straight arrow, large teal arc, lower teal arc and orange return arc variously suggest execution and memory writing. Some have explanatory labels, but the overall visual grammar remains ambiguous. Directly label the straight arrow “execution,” use consistent styling for memory writes, and identify the orange arc as the execution return.
+
+- **Panel a — the conditional return is presented too categorically.** “Return redirects execution” and the large return arc read as an unconditional event, while the displayed instruction is `RET NZ`. Expand the direct label to “Conditional return: RET NZ (if zero flag is clear).” Identify the return destination sufficiently to explain why execution reaches the beginning of A; the complete stack mechanics can remain in the manuscript legend.
+
+- **Panel a — the lower example’s scope is not fully explicit.** “Separate return-containing copier” successfully distinguishes it from the upper example, but the relationship between the displayed blocks, omitted blocks and complete A/B tapes remains unclear. Add the applicable tape lengths or a short “selected bytes shown” label. Do not let readers interpret the visible block count as the genome length.
+
+- **Panel d — the comparison categories need more concrete identification.** “Historical vs corrected Z80 core” names both sides, whereas “8088 vs hardware” leaves the software side unnamed. Change the latter to “8088 emulator vs hardware,” if that is the intended comparison. This is a comparison label, not additional methods.
+
+- **Panel d — the statistical bound is disconnected from its row.** “Below change-rate bound” becomes interpretable only through the distant bottom note, which introduces “Ring criterion” without explicitly linking it to that row. Put “Ring conditions” into the row label and attach a compact threshold label: “upper 95% CI <0.01% changed-memory pairs.” Retain the useful clarification that nonzero changes are permitted.
+
+- **Panel d — the tested units are relegated to an ordered prose list.** Readers must map “instruction states; ring conditions; assay combinations; claim verdicts; constituent tests” back onto five rows. Put each unit beside its denominator or within its row label. The numerical columns are already present; this small change would make them substantially more self-explanatory without reproducing the supporting ledgers.
+
+**Print readability and optional polish**
+
+- **Panel a:** The inset assembly line, byte annotations and lower `c0 = RET NZ` label are the smallest substantive text. They deserve enlargement to a clearly readable ≥6.5 pt. The PNG alone does not establish their exact point sizes, so I would not claim a verified numerical violation.
+- **Panels c–d:** The bottom notes are visually dense at 180 mm. Moving the necessary definitions beside their encodings would allow shorter footer text and reduce reading distance.
+- **Panel c:** Move “Modal similarity rises” nearer the late transition and shorten its leader. Its current position spans a comparatively quiet region before reaching the event.
+- **Panel d:** The 0.32% expected-difference segment is necessarily almost invisible at this bar width. Keeping the full-scale bar is appropriate; make the amber callout explicitly read “10,083 / 3,137,000 = 0.32% expected differences.”
+- **Panel a:** The divider and “Separate return-containing copier” heading are useful improvements over the first reference. Preserve them while tightening the lower diagram’s labels.
+
+There is no apparent empty panel, obvious clipping, or arithmetic inconsistency in the displayed validation counts. Panel b’s denominator is supplied, and panel c names its three fractional quantities. The remaining issues concern direct interpretation and label placement, not a need to restore full methods or add scientific content outside Figure 1’s scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

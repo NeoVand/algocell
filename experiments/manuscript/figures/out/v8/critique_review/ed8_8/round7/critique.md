@@ -1,0 +1,21 @@
+The new **ed8_8 meets the reference standard for an Extended Data evidence summary**. It is more text-heavy than the references, but its tables contain substantive results, the cohort and count labels are explicit, and the main findings are understandable without the separate proofs or full methods.
+
+**Substantive defects: none supported by the PNG.**
+
+- **a–b:** Cohorts, worlds, sampled lines and founder events are distinguished. The ancestry totals are consistent with 64 lines per confined world. First founders and repeatable later events have separate columns and explanations.
+- **c:** The 18/20 versus 2/20 mechanism result is explicit. The distinction between recorded mechanisms and causal source classifications prevents their being mistaken for interchangeable categories.
+- **d:** Both copier scopes have denominators and definitions. The failed executed-byte requirement is prominently identified: 11/20 against ≥12/20.
+- **e:** Both axes identify the quantities plotted; the note explains the observational unit and cohort size. The panel contains substantive individual-founder observations.
+- **f:** Requirements, observations and verdicts are aligned and directly comparable. The unmet component is conspicuous, and the carrier-share and mutation summaries have supporting definitions.
+
+There is no apparent clipping, text collision, broken glyph or empty panel. At the stated print width, the body text appears close to the requested substantive-label minimum and reasonably readable; exact point sizes cannot be certified from the image alone.
+
+**Optional polish**
+
+- **a–b:** Consolidate repeated explanations of sampled lines and first-versus-later founders. Preserve the direct definitions and denominators, but use the recovered space to separate results from explanatory notes more clearly.
+- **c:** Give “novel” and “damage” small horizontal proportion bars alongside the existing fractions. This would make the 18:2 comparison faster to read while retaining the precise numbers.
+- **e:** Several low-value observations crowd together. Slightly smaller hollow markers or a clearly marked inset would help distinguish coincident or nearby points without moving their coordinates. Retain the full-range plot.
+- **f:** Add a little more vertical separation between ledger rows, especially around N6-3 and N6-4. The multiline requirements and observations are readable, but tighter than the reference figure’s number columns.
+- **Across panels:** The hierarchy could be stronger: bold result statements and slightly lighter explanatory text would make the figure easier to scan without removing its dense supporting content.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

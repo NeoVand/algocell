@@ -1,0 +1,45 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-1x9jfvrr
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a13302-c4ad-7ef2-b54a-b914de5e8536
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is fig1. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**The new fig1 is below the reference standard overall.** It adds substantial information, and all four panels contain meaningful content. Panel a explains the two copying scenarios more explicitly than the first reference; panel b supplies the cohort size; panel c identifies its example world and defines its plotted fractions; and panel d provides useful categories and number columns. The remaining substantive problems are print typography and the interpretation of panel d.
+
+**Substantive defects**
+
+- **Print readability across the figure.** At 180 mm width, the smaller text appears to fall below the required 6 pt floor, with several substantive labels also below the 6.5 pt target. The clearest concerns are panel a’s instruction strings and opcode annotation, numeric ticks in panels b and c, and the dense legend and count text in the lower panels. Exact point sizes cannot be established from the PNG alone, but the physical-scale readability problem is apparent. **Fix:** enlarge these text classes and redistribute space while retaining the direct labels and numerical content. Panel a occupies enough area to accommodate larger instruction labels.
+
+- **Panel d’s “Below change-rate bound” result lacks an interpretable criterion.** The image gives 643/690 but identifies neither what changes nor what bound is applied. Consequently, readers cannot understand what the largest corrected-core comparison establishes. **Fix:** name the measured change rate and give a compact threshold or short mathematical criterion beside the row. The derivation and individual cases can remain in the manuscript legend or supporting ledger.
+
+- **Panel d’s counting units are insufficiently explicit.** “Meets criterion / tested” supplies numerical denominators, but the first two corrected-core rows do not clearly identify the objects counted: 690 what, and 417 what? “State agreement” similarly leaves the unit of the 3,137,000 comparisons implicit. **Fix:** attach short counting-unit labels to the rows or number column—using the actual units represented in the archive. This requires only a few words, not methods paragraphs.
+
+- **Panel d combines incompatible interpretations in its last column.** “Flagged / different” contains both expected hardware differences and failures of the corrected-core row criteria. The first row’s “expected” qualifier helps, but the shared header and legend still leave the meaning of a remainder dependent on the row. **Fix:** use a neutral column heading such as “Remaining comparisons,” then retain explicit row qualifiers distinguishing expected differences from criterion failures.
+
+**Optional polish**
+
+- **Panel a:** the instruction labels `LD BC,nn` and `PUSH BC` are closely packed beneath their brackets. Separate them more clearly when increasing their size.
+- **Panel a:** `e3` and the partner’s `c0 ad` remain unexplained byte strings. A brief functional label for `e3`, if central to the illustrated mechanism, would improve self-explanation. A full instruction trace is unnecessary.
+- **Panel b:** wrap the long “Z80 historical; L = tape bytes; n = 10 per L” line into two aligned lines and increase its size. This would make the cohort information easier to find.
+- **Panel c:** terminate the “Modal similarity rises” leader directly on the rising teal segment. Its current endpoint sits in open space near the transition.
+- **Panel d:** the expected hardware difference is too small to read reliably as an amber bar segment. Keep the numerical callout, but give it a clearer endpoint marker at the bar boundary; do not enlarge the segment disproportionately.
+- **Panel d:** reduce the oversized gap between the hardware row and the corrected-core category to recover room for larger labels.
+
+I see no empty panel, obvious clipping, malformed glyph, or demonstrable numerical inconsistency. The displayed counts and bar proportions appear compatible. The missing improvements are compact interpretive labels and readable typography, not restored methods paragraphs.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+15,574

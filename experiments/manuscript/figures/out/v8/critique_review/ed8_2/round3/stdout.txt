@@ -1,0 +1,19 @@
+**ed8_2 is close, but falls below the requested standard because its design lists lack the required category headers.** All six panels contain substantive content, and the principal results are understandable. I do not see an empty panel, clipped label, obvious overlap, malformed glyph, or demonstrably inconsistent count.
+
+**Substantive defect**
+
+- **Panels a, c and e — missing design-family hierarchy.** These panels present the same long, undifferentiated list. Repeated prefixes such as “Open,” “Confined,” “Evolved T” and “Constructed” provide some identification, but do not replace category headers. Reference 2 explicitly groups designs, making the comparisons much easier to scan. Add compact family headings or a clearly labeled grouping column, with matching group boundaries across a, c and e. Use scientifically appropriate group names; retain individual design labels and archive identifiers underneath. This is a presentation requirement, not a request for additional experiments or methods.
+
+**Optional polish**
+
+- **Panels a and b — give the outcome bars more width.** At 180 mm, each bar spans only about 23 mm. Their distributions occupy relatively little space compared with the surrounding labels and gaps. Widening them would improve comparison and make the very small teal endpoints easier to distinguish. Preserve their proportional areas.
+- **Panels a and b — make the color keys graphical.** The prose keys explain the encoding, but small swatches beside concise labels would connect more directly to the bars. Keep b’s carriage threshold explicit because its categories differ from a’s.
+- **Panel c — strengthen the paired-track key.** “Upper” and “lower” are explained below, but a miniature pair labeled “transfer 1” and “transfer 8” near the panel heading would reduce repeated checking.
+- **Panel c — clarify positional reading.** Different genome lengths occupy equal widths. The note explains the endpoints, so this is not an unexplained encoding. Nevertheless, a compact indication that each cell represents one byte, plus endpoint indices, would make the maps easier to inspect without counting cells.
+- **Panel d — improve column-label separation.** The wrapped environment labels and the additional “5k updates” line create a crowded band above the axis title. Give the column labels slightly more vertical room and attach “5,000 updates” unmistakably to “Open soup.”
+- **Panel e — expand “Ident.” in the header.** “Identifiable / tested byte alternatives” would communicate the fraction more immediately. The existing note supplies the meaning, so this is not missing information.
+- **Panel f — shorten the annotation near the initial drop.** The step-6 loss is clearly identified, and the long zero plateau is substantive evidence across the two encounters. A tighter lineage/marker label would make that result more prominent.
+
+The body text appears broadly comparable to the references’ stated print-size range; a blanket font-size increase is unwarranted. Denominators, carriage definitions, thresholds and the single-lineage scope of f are supplied. I would not demand full methods, additional archived results, or the unrelated 8086-law statement.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

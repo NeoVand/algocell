@@ -1,0 +1,31 @@
+The new Figure 2 is below the references in print readability and self-explanation. It retains substantial content in every panel, with useful category headers, direct labels, keys and number columns. Panel c is particularly informative. The main weaknesses are small typography and several labels that leave the plotted quantities or comparisons ambiguous.
+
+**Substantive defects**
+
+- **Throughout: print typography is too small.** At 180 mm width, several tick labels and row labels appear below 6 pt; much of the substantive text appears approximately 6–6.5 pt. Exact font sizes cannot be certified from the PNG, but the figure does not convincingly meet the stated readability standard. Enlarge ticks to at least 6 pt and substantive labels to at least 6.5 pt. Recover space from the large gaps above the panel-c tracks and between panels c and d.
+
+- **Panel a: “survival” is not operationally clear.** The title says survival, the key says “Alive,” and the gray category says “Lost under copy criterion.” These labels leave unclear whether “lost” means extinction or failure to meet a replication criterion. Add a short definition of “alive,” and name the gray category according to the actual scored outcome. The full criterion can remain in the manuscript legend.
+
+- **Panel a: denominators are only partly supplied.** The bars identify their denominator as all starting mutant populations, but do not state their number. The adjacent 64 denominators explicitly belong to controls and cannot safely be assumed to describe the mutant cohorts. Add mutant cohort sizes beside the rows or a shared statement if they are identical. Clarify that “Controls alive” means the relevant control condition, such as unmutated controls if that is correct.
+
+- **Panels a and c: the site-scoring definition remains opaque.** “Excess marker carriage >0.5 for ≥50% identifiable values” does not identify the baseline for “excess” or explain what the “values” are. These are essential to interpreting the site counts. Replace this with a compact definition naming the comparison and the eligible values; also change panel a’s “Byte sites at g8” to “Scored sites at generation 8” so the column explicitly connects to the key.
+
+- **Panel c: hollow circles have an incomplete definition.** “Scored at 1; below criterion at 8” omits the unit of the first number and can make “at 1” sound like a score. Use “Scored at transfer 1 only.” The final number column should explicitly identify its subset: “Of transfer-8 scored sites: not fetched.” This would match the clarity of the reference’s “of these” wording.
+
+- **Panel b: “marker-carrying lineage” lacks a threshold.** Panel a distinguishes populations below and above 50% carriage, while panel b reports carrying lineages without saying which condition qualifies. State the applicable threshold directly in the axis or a short key. Include the starting-lineage cohort size, which is absent.
+
+- **Across a–c: the relationship between assays is unclear.** “Generation 8,” “g8,” “serial transfers,” and “historical” appear without establishing whether they describe equivalent endpoints or separate experiments. “Historical” alone does not explain how panel b relates to a. Add a brief assay identifier or endpoint clarification. The explicitly different examples—Pusher 16 versus Pusher 50, and world 3 versus world 4—are acceptable; they do not require forced alignment.
+
+- **Panel d: the ancestry-count domain is unspecified.** “Ancestry-tagged byte copies” does not say whether copies are counted in the parent, partner, or whole ring. That distinction matters to the claim of erasure. Name the counted domain in the axis or adjacent label, and identify addresses as byte addresses.
+
+**Optional polish**
+
+- **Panel a:** The block-copy row’s extremely thin teal terminal segment is difficult to see at print size. Give its value directly if it matters; do not enlarge its area artificially. Its coexistence with “0/32” is not inherently contradictory because the columns describe different quantities.
+- **Panel b:** The two orange series are difficult to distinguish near zero. Retain the distinct markers but add endpoint labels, or distinguish their line styles. Keep the useful exact transfer-8 value.
+- **Panel c:** Shorten the long panel heading and bring the column headers closer to their rows. The current vertical spacing weakens the table-like alignment.
+- **Panel d:** Bring the erasure explanation closer to the two plots. Replace “from a-c” with “shown in a–c,” and attach “offspring to parent; CPU reset” directly to the dashed step-128 reference.
+- **Across panels:** Standardize example names: “Return 16” versus “Return regenerator,” and “Block-copy 32” versus “Block-copy tiling.” Consistent names would make cross-panel reading faster.
+
+There is no apparent empty panel, clipping, text collision, or broken glyph. The remaining problems require clearer measurement labels and larger type, not additional method paragraphs or additional panels.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

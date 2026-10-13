@@ -1,0 +1,45 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-ke46v79e
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1331d-1748-7e52-893c-e17f02389f61
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is fig4. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**Figure 4 is close, but falls below the required print-readability standard.** Its information content is substantive and its organization is coherent. All panels contain results; no content appears missing. The main conclusion—low full-tape T share in benign chemistry and high share in lethal chemistry—is readily understandable.
+
+The remaining substantive defects are concentrated in typography and crowded encodings.
+
+1. **Small text at 180 mm width, especially in panel c.** The table’s two-line outcome descriptions, median-time description and final operational-definition line appear around the 6 pt boundary, with some below the requested 6.5 pt substantive-label target. Panel a’s endpoint numbers and panel b’s qualification notes are also marginal. The PNG does not establish exact nominal font sizes, but these are visibly the weakest elements at the specified print size.  
+   **Fix:** Enlarge these labels to at least 6.5 pt. Recover space from the extensive header area in a and the vertical separation around its endpoint summaries. Give c additional height rather than reducing its content.
+
+2. **Panel a’s six trajectories per plot are difficult to distinguish where they converge.** Pale historical curves, dark corrected curves, three line styles and intermittent markers work in the key, but become tangled in the actual plots. The lethal T-share plot is particularly affected; the motif plots also lose the distinctions between starts. This weakens the promised historical-versus-corrected comparison, although the broad chemistry contrast survives.  
+   **Fix:** Increase historical-line contrast while retaining open markers. Use longer, more distinct dash patterns and deliberately stagger marker positions. Preserve enough separation in visual weight that the historical trajectories remain traceable beneath corrected curves.
+
+3. **Panel c’s long row descriptions are crowded against the horizontal rules.** The two-line “Confined T” row and median-time row have little breathing room. At print size, this makes adjacent rows harder to separate and compounds the small-text problem.  
+   **Fix:** Increase row heights and vertical cell padding. Align each pair of numerical entries with the visual center of its row.
+
+Optional polish:
+
+- **Panel a:** The chemistry headings, starting-cohort key, historical/corrected key and explanatory subtitle occupy considerable space. Tighten their arrangement while preserving all four functions.
+- **Panel a:** Use a monospaced treatment for `5e ed b0`, with “motif” stated directly in the axis label. The sequence is present, but its visual identification could be faster.
+- **Panel b:** Place “Historical: open; Corrected: filled” closer to the scatter plots. Its current position near the next panel makes it look somewhat detached.
+- **Panel c:** Align “Entries: Corrected | Historical” more clearly with the table’s numeric columns.
+- **Across panels:** Standardize capitalization of “Corrected” and “Historical.”
+
+The denominators and cohorts are otherwise unusually well supplied: starting-condition world counts, endpoint medians, total scatter-group counts, the excluded ratio world, per-probability cohort sizes and table units are all visible. I see no supported numerical contradiction, obvious clipping, empty panel or missing required law statement. Full methods do not need to be restored inside the figure.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+12,120

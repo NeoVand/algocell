@@ -1,0 +1,24 @@
+**The new fig1 is below the reference standard overall.** It adds substantial information, and all four panels contain meaningful content. Panel a explains the two copying scenarios more explicitly than the first reference; panel b supplies the cohort size; panel c identifies its example world and defines its plotted fractions; and panel d provides useful categories and number columns. The remaining substantive problems are print typography and the interpretation of panel d.
+
+**Substantive defects**
+
+- **Print readability across the figure.** At 180 mm width, the smaller text appears to fall below the required 6 pt floor, with several substantive labels also below the 6.5 pt target. The clearest concerns are panel a’s instruction strings and opcode annotation, numeric ticks in panels b and c, and the dense legend and count text in the lower panels. Exact point sizes cannot be established from the PNG alone, but the physical-scale readability problem is apparent. **Fix:** enlarge these text classes and redistribute space while retaining the direct labels and numerical content. Panel a occupies enough area to accommodate larger instruction labels.
+
+- **Panel d’s “Below change-rate bound” result lacks an interpretable criterion.** The image gives 643/690 but identifies neither what changes nor what bound is applied. Consequently, readers cannot understand what the largest corrected-core comparison establishes. **Fix:** name the measured change rate and give a compact threshold or short mathematical criterion beside the row. The derivation and individual cases can remain in the manuscript legend or supporting ledger.
+
+- **Panel d’s counting units are insufficiently explicit.** “Meets criterion / tested” supplies numerical denominators, but the first two corrected-core rows do not clearly identify the objects counted: 690 what, and 417 what? “State agreement” similarly leaves the unit of the 3,137,000 comparisons implicit. **Fix:** attach short counting-unit labels to the rows or number column—using the actual units represented in the archive. This requires only a few words, not methods paragraphs.
+
+- **Panel d combines incompatible interpretations in its last column.** “Flagged / different” contains both expected hardware differences and failures of the corrected-core row criteria. The first row’s “expected” qualifier helps, but the shared header and legend still leave the meaning of a remainder dependent on the row. **Fix:** use a neutral column heading such as “Remaining comparisons,” then retain explicit row qualifiers distinguishing expected differences from criterion failures.
+
+**Optional polish**
+
+- **Panel a:** the instruction labels `LD BC,nn` and `PUSH BC` are closely packed beneath their brackets. Separate them more clearly when increasing their size.
+- **Panel a:** `e3` and the partner’s `c0 ad` remain unexplained byte strings. A brief functional label for `e3`, if central to the illustrated mechanism, would improve self-explanation. A full instruction trace is unnecessary.
+- **Panel b:** wrap the long “Z80 historical; L = tape bytes; n = 10 per L” line into two aligned lines and increase its size. This would make the cohort information easier to find.
+- **Panel c:** terminate the “Modal similarity rises” leader directly on the rising teal segment. Its current endpoint sits in open space near the transition.
+- **Panel d:** the expected hardware difference is too small to read reliably as an amber bar segment. Keep the numerical callout, but give it a clearer endpoint marker at the bar boundary; do not enlarge the segment disproportionately.
+- **Panel d:** reduce the oversized gap between the hardware row and the corrected-core category to recover room for larger labels.
+
+I see no empty panel, obvious clipping, malformed glyph, or demonstrable numerical inconsistency. The displayed counts and bar proportions appear compatible. The missing improvements are compact interpretive labels and readable typography, not restored methods paragraphs.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

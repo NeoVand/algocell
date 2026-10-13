@@ -1,0 +1,20 @@
+Fig5 is close, but it does **not yet meet the references’ standard**. All four panels contain substantive content, and the direct labels, count columns, cohort annotations and byte-level evidence give it strong information density. The remaining problems are localized.
+
+**Substantive defects**
+
+- **Panel a — obscured cohort description.** The Z80 subtitle, “Stage G; four lengths; 80 wo…”, runs underneath the bar. This hides information needed to understand the pooled 80-world cohort, particularly because panel b shows only the 20-world Z80, L = 16 subset. Wrap the subtitle within the left column, or place the complete cohort description above the bar. Keep “four lengths; 80 worlds” fully visible.
+
+- **Panel d — undefined concluding notation.** The bottom statement introduces “mapped ring positions at d = 4” without defining *d* or its unit. This reads as an additional scientific result, but its meaning cannot be recovered from the image. Define the quantity directly in ordinary language, including its unit if applicable, or move this supporting statement to the manuscript legend. The motif and classification results can remain fully substantive without it.
+
+**Print readability and optional polish**
+
+- **Typography across c–d:** The explanatory lines, byte entries and bottom notes are near the requested substantive-label size boundary at 180 mm. The PNG does not establish a definite below-6-pt violation, but these elements have little readability reserve. Set substantive text explicitly to at least 6.5 pt; recover space by shortening notes and tightening unused vertical gaps.
+- **Panel a:** Put the three cohort descriptions on consistent wrapped lines. The current long Z80 description makes the left column look less controlled than the references.
+- **Panel c:** The outlined, shaded 8086 row competes with the teal route label. A lighter fill with a single thin rule would preserve emphasis more quietly.
+- **Panel d:** “First detection” and “Frozen full-address class” are tightly packed above adjacent columns. Give the headers more separation and align each clearly over its values.
+- **Panel d:** Reduce the large gap between world seeds and the byte matrix. Some of that width could improve the two right-hand columns.
+- **Across panels:** Teal identifies a route in a and c, an architecture in b, and motif/class annotations in d. Direct labels prevent a substantive ambiguity, but a small architecture key or more neutral cohort-label treatment in b would reduce the effort of switching meanings.
+
+The denominators are otherwise well handled: 80/80, 20/20, 14/20, the 12/14 versus 2/14 route split, and the 10/14 family subset are explicit. Panel b also states observation endpoints and explains the censor tick. No panel is empty, and complete methods are unnecessary inside this figure.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

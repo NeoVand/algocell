@@ -1,0 +1,27 @@
+**Below the reference standard, principally because of print readability and a few unresolved encoding labels.** All six panels contain substantive content. The tables, direct annotations and explicit zero results are useful; no panel needs additional scientific results merely to fill space.
+
+The numerical accounting shown is internally consistent: 558 + 55 + 724 = 1,337; the unresolved opcode counts sum to 724; and the two encounter totals sum to 2,224,640. Panel e explicitly acknowledges overlapping world counts. I see no definite clipping or text overlap.
+
+**Substantive defects**
+
+- **Across the figure — print typography is too small in several places.** At 180 mm width, the smallest explanatory lines appear below the 6 pt floor, with much substantive text also appearing below the preferred 6.5 pt size. Exact point sizes cannot be certified from the displayed PNG, but the vulnerable areas are evident: the notes beneath a–b, the bottom notes in c–e, and the annotations and cohort explanation in f. These contain essential qualifications, rather than expendable methods. The 600 dpi export does not increase their physical size. Enlarge them, using the substantial whitespace in c and removing repeated explanations elsewhere.
+
+- **Panel a — the fetch classification is not self-explanatory.** “Confined: 0/16 fetch” and “Open: ≥8/16 fetch” give thresholds without identifying what is counted. The reader cannot tell whether these are distinct byte locations, instructions, accesses outside the source tape, or another quantity. “Tape length L = 16 bytes” does not resolve the numerator. Replace the legend wording with the actual counted quantity and its domain. If intermediate values are possible, briefly indicate their treatment or absence; another category is unnecessary unless one is represented.
+
+- **Panels a–b — the relationship between the two open-copier labels is unclear.** Panel a uses a fetch threshold; panel b measures worlds with an “open memory-tied tape.” The image does not establish whether these are the same classification or whether persistence adds a further condition. This matters when comparing the orange detections with the zero terminal result. Use consistent terminology, or add one short direct qualifier identifying the additional condition. The sample counts and time window are already adequately stated.
+
+- **Panels a, e and f — the address domain needs one connecting label.** Panel a specifies 16-byte tapes, while e defines displacement modulo 32 and f plots addresses through 31. These can be compatible, but the image never identifies what the 32-address space comprises. Add a short label naming that domain; if it comprises two tapes, identify their address ranges. No full memory-model explanation is needed.
+
+- **Panel e — the test conditions are detached from the reported totals.** The table reports encounters and zero byte/core/ancestry mismatches, followed by two tests with zero applicable positions; much farther below, another note identifies nonempty perturbation types. Readers must reconstruct which conditions produced the table’s encounter and mismatch totals. Move the applicable perturbation type into each displacement row or immediately beneath it, label whether the totals include perturbations and controls, and group the zero-applicability statements separately. Preserve the important distinction between an inapplicable test and an executed test with zero mismatches.
+
+**Optional polish**
+
+- **Panel a:** Strengthen the thin censor marks slightly. They are keyed, but have much less visual presence than the colored detections.
+- **Panel b:** Bring “0/20 at all 11 terminal samples” closer to the zero series. The result currently floats well above its marks.
+- **Panels c–d:** Consolidate repeated cohort and certificate explanations. Panel c’s large internal gap can support larger text; it does not constitute missing content.
+- **Panel e:** Give “600 admitted records → 32 selected genotypes” a stronger position in the hierarchy so that the admissions result is easier to find.
+- **Panel f:** Add a light divider or greater typographic separation before “Separate snapshot facts.” The label already distinguishes the comparison, but its proximity to the address plot still encourages readers to connect the two datasets.
+
+The archived-supporting-evidence scope is appropriate: full ledgers, proofs and complete methods are not needed here. The deficiencies concern readable direct labels and the interpretation of the displayed results.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

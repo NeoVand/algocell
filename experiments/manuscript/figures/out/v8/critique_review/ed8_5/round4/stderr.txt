@@ -1,0 +1,49 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-iovondck
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a13302-c535-7510-875f-3f9339d22a27
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_5. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**ed8_5 is below the reference standard at 180 mm width.** All six panels contain substantive content, and the historical/corrected and benign/lethal comparisons are understandable. The principal failure is print readability: much of the information needed to interpret the results is substantially smaller than the required minimum.
+
+These judgments concern the supplied PNG; font sizes below are approximate physical-size estimates.
+
+**Substantive defects**
+
+- **Across a–f: undersized text.** At 180 mm width, the plot ticks, legends, explanatory keys, ledger entries and several control annotations appear approximately 5–6 pt, with some below that range. Much substantive text therefore falls below 6.5 pt, and considerable text appears below the absolute 6 pt minimum. The 600 dpi export cannot compensate for small physical lettering. Increase substantive labels and values to at least 6.5 pt wherever possible; keep every remaining annotation at least 6 pt.
+
+- **a–d: essential interpretation is relegated to tiny, repeated keys.** The distinction between individual worlds and medians, the meanings of R and T, and the zero-execution rules are present, but their small type undermines self-explanation at print size. Consolidate the repeated material into one readable shared key. Keep the chemistry condition directly attached to each row and retain the cohort sizes beside the starting conditions.
+
+- **a–d: the percentage labels do not explicitly identify starting composition.** “R at 1% (5)” and “T at 1% (5)” require the reader to connect them to the distant ledger’s “Start” column. Use “Start: R = 1% (5 worlds)” and “Start: T = 1% (5 worlds),” with a corresponding explicit label for the 50:50 cohort.
+
+- **e: the ledger is too compressed to function comfortably as a printed numerical reference.** Its values, repeated condition labels, paired implementation columns and defining footnotes require sustained reading at very small size. Preserve the rows and number columns, but enlarge them and introduce clear L = 16/L = 32 group headers. Group corrected/historical subcolumns beneath shared metric headings to reduce repetitive header text.
+
+- **e: an essential missing-value qualification is especially difficult to read.** The asterisk on 0.08 is present, and the note explains that the T median uses four defined ratios from five worlds. This is substantive denominator information, not expendable methods prose. Make the marker and qualification readily legible; a compact adjacent “T: n = 4/5” annotation would strengthen the connection.
+
+- **f: the host-control quantity is ambiguously expressed.** “Unchanged-host encounters /25,600: native 0.0137; detox 0.0128” mixes a denominator with decimal values without explicitly calling them fractions. Label the measure “Fraction of encounters leaving the host unchanged,” then give “25,600 encounters per condition” if that is the intended denominator. Retain the 400 × 64 cohort description and clarify “native” as the unmodified condition.
+
+**Optional polish**
+
+- Reduce the large title-to-plot gaps in a–d and redistribute that space to readable keys and larger plotting areas.
+- In e, use subtle spacing or rules to separate chemistry and mutation blocks. The references provide stronger categorical navigation.
+- In f, give continuation, host control and the registered verdict distinct subheadings. This would make their different evidential roles easier to scan.
+- Make the corrected-core identifier consistent wherever it appears, rather than introducing “C1” only in the final note.
+
+There are no visibly empty panels, obvious clipped labels, overlapping text or broken glyphs. The ledger’s displayed world counts reconcile to 110 per implementation. The registered verdict includes both its observed counts and threshold. No additional full methods, archived proofs or evolved-8086-law statement is needed for this figure’s scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+15,580

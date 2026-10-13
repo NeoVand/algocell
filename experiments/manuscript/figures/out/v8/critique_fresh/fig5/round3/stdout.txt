@@ -1,0 +1,18 @@
+**Figure 5 meets the references in substantive information and self-explanation, with comparable polish.** All four panels contain meaningful content. I see no supported missing result, overlap, clipping, malformed glyph, or misleading area encoding.
+
+- **Panel a:** Route categories, counts, denominators, and cohorts are explicit. The 8086 segments correctly distinguish 2 open, 12 confined, and 6 undetected worlds. “Detected” totals prevent the censored group from being mistaken for another successful route.
+- **Panel b:** Direct curve labels identify machines and detection totals; the axes explain the outcome and time unit. The observation-end annotation explains the 8086 censor mark. The Z80 curve explicitly identifies its 20-world, L = 16 cohort, distinguishing it from panel a’s pooled 80 worlds.
+- **Panel c:** Literal width, candidate motifs, and observed routes make the comparison understandable. The definition beneath the table supplies the necessary meaning of “exact pusher.” The 8086 denominator appropriately changes to 14 detected worlds.
+- **Panel d:** Ten populated rows substantiate the convergence claim. Seeds, byte positions, invariant instructions, variable bytes, detection times, and behavioral classes are all supplied. The bottom definitions explain why “One-pass” and “Loop” refer to instruction-start addresses, while repeated copying concerns mapped ring positions.
+
+**Substantive defects:** None supported by the supplied PNG. Exact font-point compliance cannot be certified from the displayed raster alone, but I do not see clearly unreadable substantive labels at the stated print width.
+
+**Optional polish:**
+
+1. **Panel a / top annotation:** Move the detached “S1/S2…” criterion closer to the route legend. Replace “no first cases in 1–7/16” with “No observed first replicators had partner fetch in 1–7 of 16 encounters.” This makes the threshold statement easier to parse.
+2. **Panel b:** Break the observation-end annotation into three short, aligned entries. Its current wrapping separates “8086” from the preceding list and makes the reader reconstruct the association.
+3. **Panel c:** Put “routes: evolved worlds” beneath the final column as “Observed routes in evolved worlds.” Its current placement at the end of the exact-pusher definition weakens the connection.
+4. **Panel d:** Give the byte indices, class definitions, and cohort key a modest type-size increase using some of the surrounding vertical whitespace. These are the figure’s least comfortable elements at print size; retain all ten rows.
+5. **Panel d:** Align the detection-time numbers on their right edges for easier comparison.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

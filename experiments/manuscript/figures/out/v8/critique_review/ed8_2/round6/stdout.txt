@@ -1,0 +1,44 @@
+**Below standard.** The figure contains substantive content in all six panels and useful direct labels, category headers and number columns. However, panels **a and c visibly omit plotted rows**, including rows with substantial reported results. These omissions prevent it from matching the references in completeness and self-explanation.
+
+### Substantive defects
+
+1. **Panel a: four designs have numbers but no outcome bars.**
+   
+   The missing bars are:
+   - T L20 seed 6004 — controls alive **256/256**, scored sites **12**.
+   - Open 8080 pusher L32 — **9/256**, **0**.
+   - 8080 L32/1 — **256/256**, **19**.
+   - 8080 L32/2 — **256/256**, **20**.
+   
+   These blank spaces cannot communicate the stated three outcome categories. A zero carrier fraction would still require a bar showing the other outcomes. **Restore the four stacked bars**, or explicitly label unavailable outcomes if that is what the blanks mean. The printed numbers cannot substitute for the missing distributions.
+
+2. **Panel c: five designs have no site tracks.**
+   
+   Both transfer tracks are absent for:
+   - T L20 seed 6003.
+   - T L20 seed 6004.
+   - Open 8080 pusher L32.
+   - 8080 L32/1.
+   - 8080 L32/2.
+   
+   This directly undermines the title **“Complete serial site maps”**. Four of these designs have nonzero scored-site counts in panel a; the fifth still needs a visible negative result rather than empty space. **Restore both tracks for every listed design**, including the unscored background cells.
+
+3. **Panel c: the background encoding needs an explicit definition.**
+   
+   Teal is defined as a scored site, but the pale cells are not explicitly identified as tested, unscored sites. In a panel that also contains wholly blank rows, the distinction between a negative result and missing evidence becomes consequential. **Add a compact key distinguishing “tested, unscored” from “scored”; identify unavailable data separately if applicable.**
+
+4. **Panels a, c and e: the constructed-design names lose essential descriptive information.**
+   
+   **“8080 L32/1” and “8080 L32/2”** provide an architecture, length and identifier, but no indication of what the constructs do or what distinguishes them. The reference supplies descriptive construct names, which makes its comparison understandable. **Use a short design descriptor plus “variant 1/2” or the relevant distinguishing feature**, consistently across all three panels. Keep the numeric identifiers if needed for the separate ledger.
+
+### Optional polish
+
+- **Panel c:** Add sparse byte-position guides or endpoint labels. The note establishes that each track spans bytes 0 to L−1, but locating individual scored sites across different genome lengths requires counting small cells.
+- **Panel d:** Clarify whether **65,280 starts/design** applies to each environment cell. “65,280 mutant starts per cell,” if accurate, would make the denominator immediately checkable.
+- **Panels a and b:** Replace the prose color descriptions with small swatches and short labels, following the reference’s more immediate encoding keys.
+- **Panel b:** Consider expanding U and K near the title or relevant rows; their definitions currently sit several lines into the explanatory block.
+- **Throughout:** The body text appears near the requested minimum print size, with little reserve in the multiline notes. Preserve its size when restoring content. Prefer shortening repeated explanations and reallocating space over shrinking labels.
+
+I see no clear text collisions, clipping or malformed glyphs. Panels **d, e and f** contain substantive supporting evidence; their differing formats and panel counts are appropriate. The principal failure is missing graphical content, rather than insufficient methods detail.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

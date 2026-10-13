@@ -1,0 +1,18 @@
+**Figure 2 is close, but remains below standard in self-explanation.** All four panels contain substantive content. The category headers, direct annotations, number columns and mechanistic example preserve considerable information. There is no obvious clipping, overlapping text, broken glyph or empty panel.
+
+The remaining substantive defects are concentrated in panel a:
+
+- **The denominator of “<50% carrying” and “≥50% carrying” is missing.** The horizontal axis defines the fraction of starting mutant populations, but does not establish what population the carriage threshold refers to within each start. The note defines the marker, not this denominator. Expand the legend to name the actual scored entities—for example, “Alive; ≥50% of descendants carry marker,” if descendants are the intended denominator.
+- **The scored-site criterion leaves the scale of “carriage excess over WT ≥0.5” ambiguous.** Readers cannot confidently tell whether this means an absolute difference in carriage fractions or another measure of excess. This definition also governs panel c, so it matters to the main result. If an absolute difference is intended, write “carriage fraction − unmutated-control fraction ≥0.5.” Define “WT” alongside “unmutated controls.” This needs a compact direct definition, not additional methods.
+
+Panel-specific optional polish:
+
+- **Panel a:** The teal sliver at the end of the block-copy bar is difficult to distinguish from an edge at print size. Label its value directly or provide a small numerical carriage column; preserve the proportional bar width. Align the two right-hand column headings more tightly with their entries.
+- **Panel b:** “Historical” distinguishes the analysis only vaguely. A short, concrete cohort or assay descriptor would better explain its relationship to panel a. The transfer-eight annotation is useful and successfully makes the near-zero curves interpretable.
+- **Panel c:** The equal-width tracks use different byte widths, and the title appropriately discloses that scaling. Adding first/last byte indices would make individual marked positions easier to identify without counting tiny boxes. Keep the four numerical columns: they substantially improve readability.
+- **Panel d:** The orange erasure annotation clearly explains the event, and the copy-count plot supports it. Label the dashed step-128 line directly with a short “offspring → parent; CPU reset” callout, connecting the explanation spatially to both plots.
+- **Typography and spacing:** The explanatory notes, table headings and axis labels look close to the minimum comfortable size at 180 mm. Exact compliance with 6/6.5 pt cannot be established confidently from the displayed raster. Use some of the generous vertical separation between panel bands to enlarge substantive labels and reduce awkward heading wraps.
+
+The different cohorts and lengths are explicitly identified; they are not themselves inconsistencies. Likewise, a small retained-lineage fraction in b and zero qualifying sites in a/c need not conflict, because these are different quantities. No additional methods paragraphs or out-of-scope law statement are needed.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

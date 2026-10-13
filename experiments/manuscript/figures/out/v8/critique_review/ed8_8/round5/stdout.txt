@@ -1,0 +1,29 @@
+**ed8_8 is below the references in print readability and visual polish.** It contains substantive content in all six panels, and its cohort tables, denominators, direct definitions and explicit verdicts communicate much of the supporting evidence well. The main weaknesses are undersized text and a few unresolved labeling ambiguities—not a need to reproduce the full methods.
+
+**Substantive defects**
+
+- **Throughout: text is too small at 180 mm width.** The body labels and explanatory lines appear approximately 5–5.5 pt, with some ledger text similarly small. Exact font sizes cannot be established from the PNG alone, but much of the substantive text visibly falls below the requested print standard. This affects the tables in **a–d**, tick labels and explanatory text in **e**, and nearly all entries and notes in **f**. Enlarge all text to at least 6 pt and substantive labels to 6.5 pt where possible. Recover space by shortening and regrouping existing wording and using the large internal gaps.
+
+- **Panel b: the classification cross-reference reads as unfinished text.** “Transition: open ancestry to confined copier; sampled classifier as a” does not clearly identify panel a as its referent. Replace it with, for example, “Transition: open ancestry → confined copier; classification as in panel a.” This preserves the direct explanation without adding methods.
+
+- **Panel a: “Z80 L16” leaves the genome-length notation undefined.** Neither the meaning of *L* nor its unit is stated in this figure. Use “Z80; tape length L = 16 bytes,” assuming that is the intended meaning. This matters because the cohort identity anchors all subsequent panels.
+
+- **Panel f: the final rejection criterion is detached from the component ledger.** “Reject if point mutations complete ≥5/20 first founders; observed 0/20” introduces a criterion whose relationship to the listed requirements is unclear. In particular, readers must distinguish it from the N6-5′ requirement concerning *expected* mutation founders. Give the footer criterion its applicable component identifier and label it explicitly as an observed-count rejection rule, or place it beside the corresponding component. The underlying proof can remain elsewhere.
+
+**Optional polish and panel-specific improvements**
+
+- **a:** The table is clear, and 1,088 = 17 × 64 and 1,280 = 20 × 64 are understandable from the sampling label. Consolidate the repeated sampling explanations into one compact block immediately beneath the table. The distant bottom notes weaken grouping and consume room needed for larger type.
+
+- **b:** Rename “Events” to “Total founder events.” The arithmetic is consistent, but the more specific heading makes the 32 and 34 immediately interpretable. Bring the bottom distinction between worlds, lines and events closer to the table.
+
+- **c:** This panel has substantial unused space beneath a very small table. Enlarge the two mechanism rows and place their definitions alongside them. Retain the distinction between recorded mechanisms and the separate N6-1 source rule; it prevents readers from treating these as interchangeable classifications.
+
+- **d:** Put the executed-byte requirement and verdict directly beside the 11/20 result. Likewise, attach the whole-tape threshold to 20/20. The current orange sentence is conspicuous, but readers must repeatedly move between the table and prose to compare outcomes.
+
+- **e:** The axes, cohort and one-point-per-founder encoding are supplied. Closely spaced points at short chain lengths are difficult to distinguish at print size. Slightly thinner marker outlines and a larger plotting area would help without moving the observations.
+
+- **f:** Increase row spacing and use more deliberate alignment within the multiline requirement and observation cells. A short “4 of 5 listed components met; N6-4 not met” summary would make the ledger’s overall outcome easier to find while preserving every entry.
+
+I see no clearly empty panel, overlapping labels, clipped plot content, malformed mathematical glyphs or internally inconsistent displayed totals. The references achieve stronger visual grouping; this figure can approach that standard while retaining its dense supporting evidence, chiefly by reallocating whitespace to readable text and tightening the identified labels.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

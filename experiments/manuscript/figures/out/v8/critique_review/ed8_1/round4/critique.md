@@ -1,0 +1,25 @@
+**ed8_1 is below the required standard, chiefly because of print readability.** All six panels contain substantive evidence, and the tables provide useful counts and direct explanations. The main weakness is the combination of small text and large unused spaces, compared with the references’ stronger visual hierarchy.
+
+**Substantive defects**
+
+1. **Across panels a–f: body text is too small at 180 mm width.** From the supplied raster, much of the table and explanatory text appears approximately 5–6 pt; panel e is particularly small. These are visual estimates, not font-metadata measurements, but the figure does not convincingly meet the 6 pt minimum or the 6.5 pt target for substantive labels. The affected content includes essential results, denominators and qualifications—not merely supplementary notes.  
+   **Fix:** Set table entries, row labels and essential explanatory labels to at least 6.5 pt, with secondary notes no smaller than 6 pt. Enlarge the actual text rather than relying on the 600 dpi export, which improves sharpness but not physical size.
+
+2. **Panels a, b and f: excess internal whitespace compromises the space available for readable content.** Panels a and b have substantial gaps between their main content and bottom definitions. Panel f similarly separates its explanatory statements from its final notes. Meanwhile, panel e packs fourteen measurement rows into a comparatively tight block. The figure has enough substantive content, but its allocation of space makes that content unnecessarily difficult to read.  
+   **Fix:** Move definitions closer to the tables they explain, reduce the height of the upper row, and give the bottom row more room. Use that recovered space to enlarge panel e and the other table text.
+
+3. **Panel b: the concluding statement has an ambiguous scope.** “Unchanged across both comparisons: criterion not met” follows different flag counts, 47/690 and 114/690. It is unclear whether “unchanged” refers to an overall verdict, the flagged conditions, or some other comparison. The title “flags remain flags” does not resolve this.  
+   **Fix:** Explicitly name the unchanged outcome. If this means the overall stability verdict, write “Overall stability verdict: criterion not met for either core.” Keep the differing condition counts immediately above it. If another outcome is intended, label that outcome directly.
+
+**Optional polish**
+
+- **Panel a:** Align the numeric columns consistently and give the “Not met” counts slightly greater visual emphasis. Preserve the distinct denominators; combining these rows into a common percentage graphic would obscure their different units.
+- **Panel b:** Use “Corrected (C1)” in the table itself, matching the definition below. A descriptive title such as “Stability flags and assay differences” would communicate more than the current slogan.
+- **Panel c:** The orange “changed” labels work well. Bring “19/22 stand” into the title or a nearby summary label. Keep the explicit explanation that an unchanged verdict can remain a failure.
+- **Panel d:** Differentiate criterion changes from applicability changes with two small row-group labels. The existing four rows and n/a definition already support this distinction.
+- **Panel e:** Emphasize the two nonzero measurement rows, using restrained weight or color consistent with panel c. Keep all zero rows: they establish the scope of the comparison. Preserve the overlap warning, which correctly prevents readers from treating 6 and 9 as additive.
+- **Panel f:** Shorten the final header to “Worlds missing snapshot at 7,500 updates.” Keep the completion and scoreability statements nearby so readers can readily distinguish missing intermediate observations from missing final results.
+
+There is no apparent empty panel, clipping, overlap or broken glyph. The assay denominator and overlapping-count qualification are present, and the component applicability changes are explained. The archived claim identifiers can reasonably function as ledger references; reproducing the full proofs or methods is unnecessary.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
