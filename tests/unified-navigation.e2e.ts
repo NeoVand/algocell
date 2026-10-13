@@ -38,7 +38,7 @@ test('a live core swap explains the reset conventions and suppression it changes
 		)
 		.toContain('LDIR');
 	await choose(page, 'Processor', 'm6502');
-	const notice = page.locator('.world-panel .inline-notice');
+	const notice = page.locator('.world-panel .core-notice');
 	await expect(notice).toContainText('Core changed on the existing lattice.');
 	await expect(notice).toContainText('Stack: first push at B’s last byte');
 	await expect(notice).toContainText('dial: counter');
@@ -82,6 +82,77 @@ test('both start actions describe the full staged condition rather than the live
 	expect(
 		await page.evaluate(() => (window as unknown as AppWindow).__algocell.engine.settings)
 	).toEqual(applied);
+});
+
+test('checkboxes visibly distinguish their checked and unchecked states', async ({ page }) => {
+	await ready(page);
+	await tab(page, 'World');
+	const verify = async (name: string) => {
+		const checkbox = page.getByRole('checkbox', { name, exact: true });
+		await expect(checkbox).toBeVisible();
+		await checkbox.uncheck();
+		await expect(checkbox).not.toBeChecked();
+		const unchecked = await checkbox.screenshot({ animations: 'disabled' });
+		await checkbox.check();
+		await expect(checkbox).toBeChecked();
+		await expect(checkbox).not.toHaveCSS('appearance', 'none');
+		const checked = await checkbox.screenshot({ animations: 'disabled' });
+		expect(checked.equals(unchecked), `${name} must visibly change when checked`).toBe(false);
+	};
+	await verify('Mutation off');
+	await page.getByText('Encounter reset', { exact: true }).click();
+	await verify('Random registers');
+	await page.getByRole('button', { name: 'Look', exact: true }).click();
+	await verify('Grid lines');
+});
+
+test('the initial collapsed mobile world fills its settled canvas before using Fit', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await ready(page);
+	await expect(page.getByRole('button', { name: 'Expand sidebar', exact: true })).toBeVisible();
+	const measure = () =>
+		page.evaluate(() => {
+			const engine = (window as unknown as AppWindow).__algocell.engine;
+			const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
+			const settings = engine.settings;
+			const first = engine.cellBounds(0, canvas.width, canvas.height);
+			const last = engine.cellBounds(
+				settings.width * settings.height - 1,
+				canvas.width,
+				canvas.height
+			);
+			return {
+				canvasWidth: canvas.getBoundingClientRect().width,
+				widthCoverage: (last.x + last.width - first.x) / canvas.width,
+				heightCoverage: (last.y + last.height - first.y) / canvas.height,
+				settings
+			};
+		});
+	const initial = await measure();
+	expect(initial.canvasWidth).toBeCloseTo(310, 0);
+	expect(initial.widthCoverage).toBeGreaterThan(0.88);
+	expect(initial.widthCoverage).toBeLessThanOrEqual(1.02);
+	expect(initial.heightCoverage).toBeGreaterThan(0.88);
+	expect(initial.heightCoverage).toBeLessThanOrEqual(1.02);
+	await page.getByTitle('Fit lattice (F)', { exact: true }).click();
+	const fitted = await measure();
+	expect(fitted.settings).toEqual(initial.settings);
+	expect(fitted.widthCoverage).toBeCloseTo(initial.widthCoverage, 2);
+	expect(fitted.heightCoverage).toBeCloseTo(initial.heightCoverage, 2);
+});
+
+test('an empty Measure panel teaches one probe action', async ({ page }) => {
+	await ready(page);
+	await tab(page, 'Measure');
+	await expect(page.getByRole('heading', { name: 'Inspect the lattice', exact: true })).toHaveCount(
+		1
+	);
+	await expect(page.getByRole('button', { name: 'Probe a tape', exact: true })).toHaveCount(1);
+	await expect(page.getByRole('heading', { name: 'Select a tape', exact: true })).toHaveCount(0);
+	await page.getByRole('button', { name: 'Probe a tape', exact: true }).click();
+	await expect(page.getByRole('region', { name: 'Probe tool', exact: true })).toBeVisible();
 });
 
 test('starting history from Export keeps navigation and playback in sync', async ({ page }) => {

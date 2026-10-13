@@ -33,7 +33,7 @@
 	} from '$lib/z80-opcodes';
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
-	import { untrack, onMount } from 'svelte';
+	import { untrack, onMount, tick } from 'svelte';
 	import Mermaid from '$lib/components/Mermaid.svelte';
 	import { saveCheckpoint, loadCheckpoint, type CheckpointMetadata } from '$lib/checkpoint';
 	import {
@@ -609,64 +609,72 @@
 	onMount(() => {
 		if (!canvas) return;
 		sidebarCollapsed = window.innerWidth < 700;
+		let disposed = false;
+		let mountedEngine: GPUEngine | undefined;
 
-		// Compute grid dimensions from actual viewport on first mount
-		if (!gridInitialized) {
-			const initialGridType = untrack(() => gridType);
-			const dims = computeGridDimensions(canvas.clientWidth, canvas.clientHeight, initialGridType);
-			gridWidth = dims.w;
-			gridHeight = dims.h;
-			gridInitialized = true;
+		async function initialize() {
+			// Narrow layouts start with the sidebar collapsed. Measure only after that
+			// change reaches the DOM, so the first world and camera fit its actual canvas.
+			await tick();
+			if (disposed) return;
+			if (!gridInitialized) {
+				const initialGridType = untrack(() => gridType);
+				const dims = computeGridDimensions(
+					canvas.clientWidth,
+					canvas.clientHeight,
+					initialGridType
+				);
+				gridWidth = dims.w;
+				gridHeight = dims.h;
+				gridInitialized = true;
+			}
+
+			const initialSeed = untrack(() => seed);
+			const initialConfig: GridConfig = untrack(() => ({
+				width: gridWidth,
+				height: gridHeight,
+				gridType: gridType,
+				tapeLength,
+				pairLength
+			}));
+			// Set canvas pixel dimensions before init so resetView gets correct aspect.
+			const dpr = window.devicePixelRatio || 1;
+			canvas.width = canvasW = Math.round(canvas.clientWidth * dpr);
+			canvas.height = canvasH = Math.round(canvas.clientHeight * dpr);
+
+			const eng = new GPUEngine(initialSeed, initialConfig);
+			mountedEngine = eng;
+			const ok = await eng.init(canvas);
+			if (disposed) {
+				eng.destroy();
+				return;
+			}
+			if (!ok) {
+				gpuError = 'WebGPU not available. Please use Chrome 113+ or Edge 113+.';
+				return;
+			}
+			engine = eng;
+			applied = eng.settings;
+			worldDraft = structuredClone(eng.settings);
+			startLoop();
+			if (import.meta.env.DEV) {
+				// Dev-only handle for headless experiments and debugging from the console.
+				(window as unknown as { __algocell?: unknown }).__algocell = {
+					engine: eng,
+					get playing() {
+						return playing;
+					},
+					setPlaying(value: boolean) {
+						playing = value;
+					},
+					resolveSuppression
+				};
+			}
 		}
 
-		const initialSeed = untrack(() => seed);
-		const initialConfig: GridConfig = untrack(() => ({
-			width: gridWidth,
-			height: gridHeight,
-			gridType: gridType,
-			tapeLength,
-			pairLength
-		}));
-		// Set canvas pixel dimensions before init so resetView gets correct aspect
-		const dpr = window.devicePixelRatio || 1;
-		canvas.width = canvasW = Math.round(canvas.clientWidth * dpr);
-		canvas.height = canvasH = Math.round(canvas.clientHeight * dpr);
-
-		const eng = new GPUEngine(initialSeed, initialConfig);
-		let disposed = false;
-
-		eng
-			.init(canvas)
-			.then((ok) => {
-				if (disposed) {
-					eng.destroy();
-					return;
-				}
-				if (!ok) {
-					gpuError = 'WebGPU not available. Please use Chrome 113+ or Edge 113+.';
-					return;
-				}
-				engine = eng;
-				applied = eng.settings;
-				worldDraft = structuredClone(eng.settings);
-				startLoop();
-				if (import.meta.env.DEV) {
-					// Dev-only handle for headless experiments and debugging from the console.
-					(window as unknown as { __algocell?: unknown }).__algocell = {
-						engine: eng,
-						get playing() {
-							return playing;
-						},
-						setPlaying(value: boolean) {
-							playing = value;
-						},
-						resolveSuppression
-					};
-				}
-			})
-			.catch((error) => {
-				if (!disposed) gpuError = String(error);
-			});
+		void initialize().catch((error) => {
+			if (!disposed) gpuError = String(error);
+		});
 
 		return () => {
 			disposed = true;
@@ -676,7 +684,7 @@
 				cancelAnimationFrame(animFrameId);
 				animFrameId = undefined;
 			}
-			eng.destroy();
+			mountedEngine?.destroy();
 		};
 	});
 
@@ -2925,27 +2933,20 @@
 						>{/if}
 				</nav>
 			</div>
-			{#if activeTab === 'measure' && measureSection === 'probe' && activeTool === 'navigate' && !sidebarCollapsed}<section
+			{#if activeTab === 'measure' && measureSection === 'probe' && activeTool === 'navigate' && !sidebarCollapsed && cellData && hoveredCell >= 0}<section
 					class="sidebar-section hover-preview"
 					aria-label="Tape preview"
 				>
-					<h2>Select a tape</h2>
-					<p class="intro-copy">
-						Click a cell on the lattice to keep its bytes in view. Use the probe tool to move
-						between neighbours.
-					</p>
-					{#if cellData && hoveredCell >= 0}<p class="control-note">
-							Hover preview · cell {hoveredCell}
-						</p>
-						<div class="tip-grid inline-tape-grid">
-							{#each buildGenomeGrid(cellData, disasmLines) as cell, index (index)}<div
-									class="tip-cell"
-									class:operand={!cell.isOpcode}
-									style={`background:${byteColor(cell.byteVal)};color:${cellTextColor(cell.byteVal)}`}
-								>
-									{cell.label}
-								</div>{/each}
-						</div>{/if}
+					<h2>Hover preview · cell {hoveredCell}</h2>
+					<div class="tip-grid inline-tape-grid">
+						{#each buildGenomeGrid(cellData, disasmLines) as cell, index (index)}<div
+								class="tip-cell"
+								class:operand={!cell.isOpcode}
+								style={`background:${byteColor(cell.byteVal)};color:${cellTextColor(cell.byteVal)}`}
+							>
+								{cell.label}
+							</div>{/each}
+					</div>
 				</section>{/if}
 			{#if engine}<ObservationTools
 					bind:this={observation}
@@ -6235,12 +6236,14 @@ graph TD
 		margin: 12px 0;
 	}
 	.unified-shell input[type='checkbox'] {
+		appearance: auto;
 		width: 13px;
 		height: 13px;
+		padding: 0;
 		border: 1px solid #ffffff25;
 		border-radius: 3px;
 		accent-color: var(--accent);
-		background: #25251f;
+		background: none;
 		color: var(--accent);
 		box-shadow: none;
 	}
@@ -6707,16 +6710,14 @@ graph TD
 		.unified-shell {
 			--sidebar-width: 352px;
 		}
-		.status-chemistry {
-			display: none;
-		}
 	}
 	@media (max-width: 900px) {
 		.unified-shell {
 			--sidebar-width: 328px;
 		}
 		.status-seed,
-		.status-core {
+		.status-core,
+		.status-chemistry {
 			display: none;
 		}
 		.section-context {

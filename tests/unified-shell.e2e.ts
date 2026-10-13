@@ -290,6 +290,11 @@ for (const viewport of [
 	}) => {
 		await page.setViewportSize(viewport);
 		await ready(page);
+		for (const item of ['run', 'rate', 'core', 'seed', 'size', 'chemistry']) {
+			const status = page.locator(`.status-${item}`);
+			await expect(status).toBeVisible();
+			await expect(status).toBeInViewport({ ratio: 1 });
+		}
 		for (const name of tabs) {
 			await tab(page, name);
 			const layout = await page.evaluate(() => {

@@ -52,7 +52,7 @@ npm run test:e2e
 
 Playwright uses port 4183, one worker and installed Google Chrome with real WebGPU. Tests cover the 22 experiment presets, processor contracts, scientific fixtures, field measurements, interaction tools, exports, continuity, staged changes, stable controls, three desktop sizes, mobile layout and readable documentation without WebGPU. Local GPU workloads use short bursts and idle pauses.
 
-The current design is in [docs/UNIFIED_DESIGN.md](docs/UNIFIED_DESIGN.md), with [task measurements](docs/review/unified/TASKS.md), [three review rounds](docs/review/unified/ROUNDS.md), [performance evidence](docs/review/unified/PERFORMANCE.md) and before/after screenshots in [docs/review/unified](docs/review/unified). The preceding [design evolution](docs/DESIGN_EVOLUTION.md) remains documented. The baseline runner can interleave the current engine with a frozen checkout:
+The current design is in [docs/UNIFIED_DESIGN.md](docs/UNIFIED_DESIGN.md), with [task measurements](docs/review/unified/TASKS.md), [design review rounds](docs/review/unified/ROUNDS.md), [performance evidence](docs/review/unified/PERFORMANCE.md) and before/after screenshots in [docs/review/unified](docs/review/unified). The preceding [design evolution](docs/DESIGN_EVOLUTION.md) remains documented. The baseline runner can interleave the current engine with a frozen checkout:
 
 ```sh
 BASELINE_REPO=/tmp/algocell-unified-6484a24 node scripts/evolution-benchmark.mjs
