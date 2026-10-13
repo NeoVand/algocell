@@ -171,7 +171,7 @@ def corrected_schematic():
             if label=='3' or label=='comes back':
                 page.add_redact_annot(box,fill=None)
                 continue
-            if min(span['size'] for span in spans)>=6.5:continue
+            if min(span['size'] for span in spans)>=6.5 and label!='operand = output':continue
             page.add_redact_annot(box,fill=None)
             replacements.append((line,label,box))
     page.apply_redactions(images=0,graphics=0)
@@ -186,7 +186,13 @@ def corrected_schematic():
         if abs(angle)<.1:
             origin.x=max(2,min(box.x0-(width-box.width)/2,351-width))
             if label=='LD BC,nn':origin.x=45-width/2
-            if label=='PUSH BC':origin.x=78-width/2
+            if label=='operand = output':origin=fitz.Point(18.0,origin.y-2.4)
+            if label=='PUSH BC':
+                # Stack the push mnemonic under its tick so it stays inside the inset circle.
+                for k,part in enumerate(['PUSH','BC']):
+                    w=fitz.get_text_length(part,fontname=font,fontsize=size)
+                    page.insert_text(fitz.Point(76.2-w/2,origin.y+k*6.2),part,fontname=font,fontsize=size,color=(.15,.18,.21))
+                continue
         page.insert_text(origin,label,fontname=font,fontsize=size,
                          color=tuple(v/255 for v in [(line['spans'][0]['color']>>16)&255,(line['spans'][0]['color']>>8)&255,line['spans'][0]['color']&255]),
                          morph=(origin,fitz.Matrix(angle)))
@@ -194,7 +200,7 @@ def corrected_schematic():
     page.draw_rect(fitz.Rect(149,157,160,169),color=None,fill=(1,1,1))
     page.draw_line((8,156),(345,156),color=(.72,.76,.78),width=.6)
     page.insert_text((9,167),'Separate return-containing copier',fontsize=7,fontname='hebo',color=(.15,.18,.21))
-    page.insert_text((140,167),"Conditional return: RET NZ; if zero flag clear, to A's start",fontsize=6.5,fontname='helv',color=(.8,.25,.15))
+    page.insert_text((140,167),"Conditional return: RET NZ; if zero flag clear, to A’s start",fontsize=6.5,fontname='helv',color=(.8,.25,.15))
     page.insert_text((178,111),'execution',fontsize=6.5,fontname='helv',color=(.15,.18,.21))
     return src
 
