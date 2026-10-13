@@ -35,7 +35,7 @@ export interface PaperPreset {
 export const DEFAULT_PRESET_ID = 'stage-g-l16';
 export const PAPER_REPOSITORY = 'algocell-paper';
 export const HOST_CONTRACT_NOTE =
-	'This app uses a new serial host scheduler and mutation stream. These are source-bound world settings, not a replay of an archived population trajectory. A seed alone does not reproduce the paper’s GPU scheduling.';
+	'The population runs on the local GPU with a parallel pairing and mutation schedule. These settings start a new realization, not a replay of an archived population. A seed alone does not identify a GPU trajectory.';
 
 const PLAN = 'registrations/originals/PLAN.md';
 const REVISION = 'registrations/originals/REVISION_PREREG.md';
@@ -86,7 +86,7 @@ function preset(
 
 const stageG = preset({
 	id: DEFAULT_PRESET_ID,
-	name: 'Historical Z80 · Stage G',
+	name: 'Random code · benign zero',
 	category: 'discovery',
 	description:
 		'Twenty thousand random 16-byte tapes meet on a reflecting lattice. This is the historical benign Z80 world, with the frozen 0.2 processor semantics.',
@@ -105,14 +105,14 @@ const stageG = preset({
 
 const corrected = preset({
 	id: 'z80-corrected',
-	name: 'Corrected Z80 · 0.3',
+	name: 'Random code · corrected Z80',
 	category: 'discovery',
 	description:
 		'The familiar 16-byte world on the corrected Z80 core. Compare this explicit processor contract with historical compatibility 0.2.',
 	whatToLookFor:
 		'Inspect the same candidate under both cores. Keep geometry, reset, budget and chemistry fixed when exploring instruction-level differences.',
 	finding:
-		'The paper’s corrected-core ecological reruns retained 19 of 22 claim verdicts; four of 36 component verdicts changed.',
+		'The corrected-core ecological reruns retained 19 of 22 claim verdicts; four of 36 component verdicts changed.',
 	limits:
 		'This is a current-engine reference world. Fresh stochastic trajectories do not isolate a causal effect of an emulator repair, and this preset does not reproduce the full rerun cohort.',
 	source: {
@@ -128,12 +128,12 @@ const corrected = preset({
 
 const lethal = preset({
 	id: 'lethal-zero',
-	name: 'Lethal zero · Stage I',
+	name: 'Make zero lethal',
 	category: 'intervention',
 	description:
 		'Change one rule of the historical Z80 world: fetching 00 as the first byte of an instruction halts that encounter. Zero used as an operand or data is not automatically lethal.',
 	whatToLookFor:
-		'Compare with benign Stage G. Track zero fraction, then culture selected candidates and inspect whether instruction fetching enters the partner.',
+		'Compare with Random code · benign zero. Track zero fraction, then culture selected candidates and inspect whether instruction fetching enters the partner.',
 	finding:
 		'All ten first detected copiers in the historical lethal cohort were confined. By the endpoint, transmitters were a majority of culture-positive cells in nine of ten worlds.',
 	limits:
@@ -152,7 +152,7 @@ const dialPresets = [0, 0.01, 0.03, 0.1, 0.3, 1].map((probability) =>
 		id: `dial-${probability}`,
 		name: `Lethality dial · ${probability * 100}%`,
 		category: 'intervention',
-		description: `Each fetch of a zero opcode independently halts with probability ${probability}. This changes encounter chemistry, while keeping the Stage G geometry, reset and budget.`,
+		description: `Each fetch of a zero opcode independently halts with probability ${probability}. This changes encounter chemistry, while keeping the benign-zero geometry, reset and budget.`,
 		whatToLookFor:
 			'Compare several probabilities, including benign zero and fully lethal zero. The draw happens at every zero instruction start, not once per tape or update.',
 		finding:
@@ -270,10 +270,10 @@ const noCopy = preset({
 
 const m6502 = preset({
 	id: 'm6502-s1-a',
-	name: 'NMOS 6502 · S1 arm A',
+	name: 'Random code · NMOS 6502',
 	category: 'discovery',
 	description:
-		'The paper’s primary 6502 world: 16-byte tapes, faithful BRK, JAM halting and a first push onto the last byte of the partner.',
+		'A 6502 world: 16-byte tapes, faithful BRK, JAM halting and a first push onto the last byte of the partner.',
 	whatToLookFor:
 		'Read the 6502 disassembly: 00 means BRK, not Z80 NOP. This cohort’s detections took much longer than a short browser tour, so use cultures to inspect candidates.',
 	finding:
@@ -303,7 +303,7 @@ const m6502 = preset({
 
 const i8086 = preset({
 	id: 'i8086-s2-a',
-	name: 'Coherent 8086 · S2 arm A',
+	name: 'Random code · coherent 8086',
 	category: 'discovery',
 	description:
 		'The registered 16-byte 8086 world with coherent fetch, zero-EA hidden-latch abstraction and SP = 1. REP iterations each consume one execution step.',
@@ -337,7 +337,7 @@ const i8086 = preset({
 const competitionPresets = [false, true].map((isLethal) =>
 	preset({
 		id: `offset-competition-${isLethal ? 'lethal' : 'benign'}`,
-		name: `R/T competition · ${isLethal ? 'lethal' : 'benign'}`,
+		name: `Competing copiers · ${isLethal ? 'lethal zero' : 'benign zero'}`,
 		category: 'demonstration',
 		description:
 			'Start with a random 50:50 mixture of a partial-copy R design and full-tape T designs at length 32. Every T cell receives its own 28-byte random payload.',
@@ -383,7 +383,7 @@ const displacementPresets = [4, 32].map((distance) => {
 	bytes[8] = 0x7f;
 	return preset({
 		id: `displacement-${distance}`,
-		name: `Displacement · ${distance === 4 ? '4-byte prefix' : 'full tape'}`,
+		name: distance === 4 ? 'Short-prefix copier' : 'Full-tape copier',
 		category: 'demonstration',
 		description: `A seeded 32-byte copier with a 7F marker at position 8 and mutation disabled. Its first byte sets displacement ${distance}; ${distance === 4 ? '04 5E ED B0 regenerates the four-byte prefix' : '60 5E ED B0 sets 96 mod 64 = 32, a full-tape distance'}.`,
 		whatToLookFor:
@@ -417,7 +417,7 @@ const displacementPresets = [4, 32].map((distance) => {
 
 const pusher = preset({
 	id: 'pusher',
-	name: 'The load–push pusher',
+	name: 'Load and push',
 	category: 'demonstration',
 	description:
 		'A seeded culture of 01 C5 repeated across 16 bytes. The same bytes supply both instructions and literal data: load a word, then push it towards the partner’s end.',
@@ -447,7 +447,7 @@ const pusher = preset({
 
 const returnCloser = preset({
 	id: 'return-closer',
-	name: 'The return closer',
+	name: 'Return-driven copier',
 	category: 'demonstration',
 	description:
 		'A seeded culture of AD E3 21 E3 21 C0 AD C0 repeated twice. This return-containing design is a separate evolved example from the historical 16-byte worlds.',

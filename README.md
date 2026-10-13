@@ -1,12 +1,10 @@
 # Algocell
 
-A browser laboratory for machine-code primordial soups. Watch neighboring tapes meet, inspect what they execute, and test whether the bytes they produce can reproduce. Built with Svelte 5, TypeScript, WebGPU and [Zilion](https://github.com/NeoVand/zilion).
+A browser instrument for machine-code primordial soups. Watch neighbouring tapes meet, inspect what they execute, and test whether the material they produce can reproduce. Built with Svelte 5, TypeScript, WebGPU and [Zilion](https://github.com/NeoVand/zilion).
 
-The research workspace supports historical Z80 compatibility 0.2, corrected Z80 0.3, the Zilog NMOS variant, NMOS 6502 and coherent-fetch 8086. Paper presets make the processor, world, reset, budget and chemistry explicit. A live browser run is a new experiment, not a replay of an archived paper trajectory.
+The original full-screen lattice now has six observation modes, live cell probing, exact region measurements, visual history, reference comparison and a linked encounter bench. The population stays on the GPU. Available processors are Z80 compatibility 0.2, corrected Z80 0.3 classic and Zilog NMOS, NMOS 6502, and coherent-fetch 8086.
 
 ## Run locally
-
-From this worktree:
 
 ```sh
 cd /Users/neo/repos/algocell-wt-app
@@ -14,9 +12,9 @@ npm ci
 npm run dev -- --host 127.0.0.1 --port 5174 --strictPort
 ```
 
-Open `http://127.0.0.1:5174/` in a WebGPU-capable browser. The workspace starts paused. Run uses bursts of at most 60 seconds; Step advances one population update. Simulation, assays, imports and exports stay in the browser. No account or external runtime service is required.
+Open `http://127.0.0.1:5174/` in a WebGPU-capable browser. The original instrument starts running. Play/Pause controls the population; runs pause after 55 seconds and when hidden. Simulation, assays, recordings and checkpoints remain in the browser.
 
-To inspect a production build:
+For a production build:
 
 ```sh
 npm run build
@@ -25,24 +23,25 @@ npm run preview -- --host 127.0.0.1 --port 4173 --strictPort
 
 ## What to try
 
-- Select a paper preset and read its source, declared conditions and limitations.
-- Compare zero-byte fraction, the most abundant exact tape's share, and distinct-tape diversity. These describe composition; none alone detects reproduction or heredity.
-- Select a cell to see ISA-aware disassembly. A static reading is not a trace of self-modifying execution.
-- Run a fresh-partner culture test. Inspect copying, continued reproduction and instruction-stream partner entry separately.
-- Compare a short-displacement copier with a full-tape copier. Confined fetching can accompany very different fates for a payload marker.
-- Export the complete condition and its Zilion manifest when keeping a result.
+- Choose **Full-tape copier** in Settings → Experiments, then compare Bytes, Tape identity and Open / confined.
+- Probe a cell, read its ISA-aware disassembly and run a two-transfer culture against fresh partners.
+- Inspect fetched positions, instruction starts, A/B write counts and the stopping reason. Static disassembly is not a trace of self-modifying execution.
+- Compare marker retention in **Short-prefix copier** and **Full-tape copier**. Use matched original and changed parents; field marker matches alone are not ancestry.
+- Select a region to count exact tape identities and zero fraction at a recorded update.
+- Record a bounded visual history, scrub or replay recent frames, pin a reference, and export PNG or WebM observations.
+- Save `.acell` checkpoints for population bytes and JSON assay evidence for settings, records and machine manifests.
 
-The **Legacy instrument** at `/legacy` preserves the original optimized Z80 lattice, square/hex rendering, visual adjustments, stored presets and `.acell` snapshots. Its frozen core is historical compatibility 0.2. Its old population scheduler is GPU-order dependent; legacy snapshots do not contain enough continuation state to guarantee exact replay.
+All features live at `/`; there is no separate legacy interface.
 
-## Scientific boundaries
+## Measurement boundaries
 
-The app separates the processor from its world and the population scheduler. Zilion's SHA-256 manifest identifies a machine; population settings, random streams and mutations need their own record. The new workspace uses a versioned deterministic host scheduler and GPU encounter execution, so its throughput and trajectories differ from the legacy all-GPU implementation.
+Tape identity colours are hash fingerprints and may collide; region sequence counts and local diversity compare exact tapes. Open/confined records fetching outside the focal tape, including discarded padding, in the last measured initiating encounter. It does not measure partner-data reads, information independence or heredity.
 
-“Confined” refers to instruction-stream fetching within the initiating tape. It does not mean no partner data was read, no external influence, or inherited variation. Culture results are finite, condition-specific tests. A marker's matching value is not proof of its causal ancestry. Seeded mechanism examples are constructions, not spontaneous discoveries. The paper's registered multi-world, branching and serial-transfer studies remain distinct from these short browser demonstrations.
+Partner sensitivity changes one original partner byte while holding the parent and reset/chemistry seed fixed. An untouched byte can persist without being read. Marker transfer counts same-position value matches against an unmarked control; values may be regenerated or reacquired. These are finite tests, not causal ancestry or a branching inheritance protocol.
 
-BFF is not offered because it is excluded from the Zilion 0.3.1 npm exports.
+History records sampled images, not rewindable simulation state. A reference is a frozen view, not an independent control world. Checkpoints preserve population and settings but do not guarantee identical future GPU scheduling. BFF and hardware 8088 prefetch are outside the available processor contracts.
 
-## Development and verification
+## Verification
 
 ```sh
 npm run check
@@ -51,14 +50,18 @@ npm run build
 npm run test:e2e
 ```
 
-Playwright uses a dedicated local Vite server on port 4183, one worker and installed Google Chrome (`channel: 'chrome'`) with real WebGPU. Install Chrome if it is unavailable. Tests exercise the workspace, presets, ISAs, inspector, documentation, core scientific fixtures, checkpoint continuation and import recovery. GPU tests require an available WebGPU adapter and fail explicitly if it is unavailable; a separate test checks the readable preview with WebGPU disabled.
+Playwright uses port 4183, one worker and installed Google Chrome with real WebGPU. Tests cover the 22 experiment presets, processor contracts, scientific fixtures, field measurements, interaction tools, exports, mobile layout and readable documentation without WebGPU. Local GPU workloads use short bursts and idle pauses.
 
-The implementation plan, audit, source catalogue, design system and remaining roadmap are in [docs/APP_PLAN.md](docs/APP_PLAN.md). Detailed studies: [app](docs/study-app.md), [engine](docs/study-engine.md), [paper](docs/study-paper.md). Review screenshots live in [docs/screenshots](docs/screenshots).
+The design and critique are in [docs/DESIGN_EVOLUTION.md](docs/DESIGN_EVOLUTION.md). Before/after screenshots, benchmark measurements and the final review are in [docs/review/evolution](docs/review/evolution). The baseline runner can interleave the current engine with a frozen checkout:
 
-The public GitHub Pages site deploys from `main`. This development branch must not be pushed to `main` without the owner's separate deployment decision.
+```sh
+BASELINE_REPO=/tmp/algocell-evolution-ee67698 node scripts/evolution-benchmark.mjs
+```
+
+The public site deploys from `main`. This work stays on `feat/app-legacy-base` and must not be pushed to `main`.
 
 ## Credits
 
-Algocell and Zilion are by Mostafa “Neo” Mohsenvand. The work builds on the primordial-soup experiments of Agüera y Arcas and colleagues, Alexander Mordvintsev's implementation, and the Z80 work of Cicala and colleagues. Processor validation draws on the SingleStepTests suites and Zilion's analytic and regression tests. See the app's About page and source-bound preset notes for scientific context.
+Algocell and Zilion are by Mostafa “Neo” Mohsenvand. The work builds on the primordial-soup experiments of Agüera y Arcas and colleagues, Alexander Mordvintsev's implementation, and the Z80 work of Cicala and colleagues. Processor validation draws on SingleStepTests and Zilion's analytic and regression tests. See About and the experiment provenance notes for context.
 
 MIT licensed.
