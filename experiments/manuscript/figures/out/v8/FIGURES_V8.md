@@ -1,3 +1,5 @@
+> **Manuscript v8 review status (12 October 2026).** The clearance and technical-verification statements below describe the earlier archived build, not verification of the corrected submission package. At this revision’s file check, Figures 1–5 have PDF/PNG exports but `fig1.svg` is absent. Figures 2–5 have SVG exports. `MAIN_v8.md` is now the canonical short-caption source; `legends_v8.py` exports it to both legend files. Main-figure labels still require the corrections recorded in `MAIN_v7_REVIEW.md` and `MAIN_v8_CHANGES.md`, followed by a new build and verification. The registered S2 law test is untested; separate post hoc assays exist and are not plotted. The parallel Extended Data job is tracked in `SI_v8.md` using `ed8_*.pdf` targets. Archived review records below are retained unchanged as historical provenance.
+
 # Figures v8: S2 results and v7 cleanup
 
 Technical verification passed for all five figures. Astra cleared 5/5 delivered images. Clearance requires both a no-substantive-defects verdict and an exact hash match between the reviewed and delivered PNG.
