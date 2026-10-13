@@ -1,0 +1,877 @@
+{
+	"phase": "before",
+	"round": "",
+	"source": "/tmp/algocell-unified-baseline-6484a24",
+	"viewport": {
+		"width": 1440,
+		"height": 900
+	},
+	"method": "Pointer starts at viewport center. Every clicked control and number/range edit counts once; a native select uses one click plus keyboard option choice. Setup excluded. Surfaces are independently positioned interaction containers. Pauses include requested and incidental transitions. Resets count engine.reset calls; setMachine counts configuration requests; createPipelines and createBuffers count real pipeline and population-buffer rebuilds separately from engine object replacements.",
+	"tasks": [
+		{
+			"id": "01-first-visit",
+			"persona": "Visitor",
+			"frequency": "Once on arrival; guide revisited occasionally",
+			"task": "Read the guide, return to the lattice and identify the run control",
+			"clicks": 4,
+			"pointerTravelPx": 2120,
+			"surfaces": ["floating widget", "help dialog"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 1536
+				}
+			],
+			"playingAtEnd": true,
+			"path": ["open help", "Guide", "Escape", "pause", "resume"]
+		},
+		{
+			"id": "02-look-and-frame",
+			"persona": "Visitor / teacher",
+			"frequency": "10\u201330 times per session",
+			"task": "Compare identity, confinement and bytes, zoom in, then fit the field",
+			"clicks": 5,
+			"pointerTravelPx": 1002,
+			"surfaces": ["observation strip"],
+			"surfaceCount": 1,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 2,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 512
+				},
+				{
+					"event": "createPipelines",
+					"at": 516.4000000357628
+				},
+				{
+					"event": "createPipelines",
+					"at": 712.8000000119209
+				}
+			],
+			"playingAtEnd": false,
+			"path": [
+				"select identity",
+				"select confinement",
+				"select bytes",
+				"Zoom in",
+				"Fit lattice (F)"
+			]
+		},
+		{
+			"id": "03-change-core",
+			"persona": "Researcher",
+			"frequency": "1\u20133 times per study",
+			"task": "Switch to the corrected Z80 core at the same tape length",
+			"clicks": 3,
+			"pointerTravelPx": 1168,
+			"surfaces": ["floating widget", "settings panel"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 1,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 1,
+			"pipelineRebuilds": 1,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "setMachine",
+					"at": 389.39999997615814
+				},
+				{
+					"event": "pause",
+					"at": 391.39999997615814
+				},
+				{
+					"event": "createPipelines",
+					"at": 392.80000001192093
+				},
+				{
+					"event": "reset",
+					"at": 420.5999999642372
+				}
+			],
+			"playingAtEnd": false,
+			"path": ["open settings", "select z80-0.3", "close settings"]
+		},
+		{
+			"id": "04-reproduce-preset",
+			"persona": "Researcher",
+			"frequency": "1\u20136 times per session",
+			"task": "Load the published short-prefix copier experiment",
+			"clicks": 3,
+			"pointerTravelPx": 981,
+			"surfaces": ["floating widget", "settings panel"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 1,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 1,
+			"pipelineRebuilds": 1,
+			"populationBufferRecreations": 1,
+			"events": [
+				{
+					"event": "setMachine",
+					"at": 356.5999999642372
+				},
+				{
+					"event": "pause",
+					"at": 359.39999997615814
+				},
+				{
+					"event": "createBuffers",
+					"at": 361.2999999523163
+				},
+				{
+					"event": "createPipelines",
+					"at": 361.2999999523163
+				},
+				{
+					"event": "reset",
+					"at": 398.5999999642372
+				}
+			],
+			"playingAtEnd": false,
+			"path": ["open settings", "select displacement-32", "close settings"]
+		},
+		{
+			"id": "05-live-controls",
+			"persona": "Teacher",
+			"frequency": "5\u201320 times per demonstration",
+			"task": "Set speed to 2\u00d7, adjust mutation and zero chemistry while demonstrating",
+			"clicks": 6,
+			"pointerTravelPx": 1749,
+			"surfaces": ["floating widget", "speed popover", "settings panel"],
+			"surfaceCount": 3,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 2,
+			"pipelineRebuilds": 2,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "setMachine",
+					"at": 543.6000000238419
+				},
+				{
+					"event": "pause",
+					"at": 545.3000000119209
+				},
+				{
+					"event": "createPipelines",
+					"at": 546.5
+				},
+				{
+					"event": "setMachine",
+					"at": 676.1000000238419
+				},
+				{
+					"event": "createPipelines",
+					"at": 677.4000000357628
+				}
+			],
+			"playingAtEnd": false,
+			"path": ["open speed", "2\u00d7", "open settings", "range 5", "range 0.1", "close settings"]
+		},
+		{
+			"id": "06-follow-probe",
+			"persona": "Power user",
+			"frequency": "20\u2013100 times per session",
+			"task": "Probe a cell, follow its neighbor, and center the selected tape",
+			"clicks": 5,
+			"pointerTravelPx": 2157,
+			"surfaces": ["observation strip", "observation dock"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"path": [
+				"Probe",
+				"set 0",
+				"probe cell 0",
+				"Next cell",
+				"Pan the selected cell into the visible field without changing zoom"
+			]
+		},
+		{
+			"id": "07-encounter",
+			"persona": "Power user",
+			"frequency": "5\u201320 times per session",
+			"task": "Probe and open an encounter; run the self-pair comparison and inspect writes",
+			"clicks": 7,
+			"pointerTravelPx": 3194,
+			"surfaces": ["observation strip", "observation dock", "encounter dialog"],
+			"surfaceCount": 3,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 633.3000000119209
+				}
+			],
+			"playingAtEnd": false,
+			"path": [
+				"Probe",
+				"set 0",
+				"probe cell 0",
+				"Open encounter bench",
+				"Self-pair",
+				"Run comparison tests",
+				"Write activity"
+			]
+		},
+		{
+			"id": "08-region-measure",
+			"persona": "Researcher / teacher",
+			"frequency": "5\u201315 times per session",
+			"task": "Measure a 4-cell region and frame it on the canvas",
+			"clicks": 7,
+			"pointerTravelPx": 2818,
+			"surfaces": ["observation strip", "observation dock"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 284.69999998807907
+				}
+			],
+			"playingAtEnd": false,
+			"path": [
+				"Region",
+				"set 0",
+				"set 0",
+				"set 1",
+				"set 1",
+				"Measure region",
+				"Zoom and pan the selected region into the visible field"
+			]
+		},
+		{
+			"id": "09-follow-marker",
+			"persona": "Power user",
+			"frequency": "2\u201310 times per session",
+			"task": "Plant a neutral marker in a selected tape and view matching descendants",
+			"clicks": 8,
+			"pointerTravelPx": 5016,
+			"surfaces": ["observation strip", "observation dock"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 993.8000000119209
+				}
+			],
+			"playingAtEnd": false,
+			"path": [
+				"Probe",
+				"set 0",
+				"probe cell 0",
+				"select marker",
+				"set 8",
+				"set 165",
+				"Show matches",
+				"Plant in cell 0"
+			]
+		},
+		{
+			"id": "10-history",
+			"persona": "Power user / teacher",
+			"frequency": "3\u201310 times per session",
+			"task": "Record recent frames, scrub to an earlier sample, then return live",
+			"clicks": 5,
+			"pointerTravelPx": 2160,
+			"surfaces": ["observation strip", "observation dock"],
+			"surfaceCount": 2,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 1232.5
+				}
+			],
+			"playingAtEnd": false,
+			"path": ["History", "", "", "Return live", ""]
+		},
+		{
+			"id": "11-compare",
+			"persona": "Researcher / teacher",
+			"frequency": "3\u201310 times per session",
+			"task": "Pin a reference, reveal the comparison, and adjust the split",
+			"clicks": 4,
+			"pointerTravelPx": 2048,
+			"surfaces": ["observation strip", "observation dock"],
+			"surfaceCount": 2,
+			"pauses": 0,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [],
+			"playingAtEnd": true,
+			"path": ["Compare", "Pin reference", "", "range 65"]
+		},
+		{
+			"id": "12-export",
+			"persona": "Researcher / teacher",
+			"frequency": "1\u20135 times per session",
+			"task": "Save a PNG snapshot and a resumable world checkpoint",
+			"clicks": 3,
+			"pointerTravelPx": 2167,
+			"surfaces": ["observation strip", "observation dock", "floating widget"],
+			"surfaceCount": 3,
+			"pauses": 1,
+			"resets": 0,
+			"engineRecreations": 0,
+			"machineConfigurationCalls": 0,
+			"pipelineRebuilds": 0,
+			"populationBufferRecreations": 0,
+			"events": [
+				{
+					"event": "pause",
+					"at": 466.0999999642372
+				}
+			],
+			"playingAtEnd": false,
+			"path": ["Record", "Save PNG snapshot", "Save checkpoint (Cmd+S)"]
+		}
+	],
+	"captures": [
+		{
+			"name": "layout-1280",
+			"path": "docs/review/unified/before/layout-1280.png",
+			"viewport": {
+				"width": 1280,
+				"height": 800
+			},
+			"overflow": false
+		},
+		{
+			"name": "layout-1440",
+			"path": "docs/review/unified/before/layout-1440.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "layout-1920",
+			"path": "docs/review/unified/before/layout-1920.png",
+			"viewport": {
+				"width": 1920,
+				"height": 1080
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-speed",
+			"path": "docs/review/unified/before/state-speed.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-widget-collapsed",
+			"path": "docs/review/unified/before/state-widget-collapsed.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-chart-opcodes",
+			"path": "docs/review/unified/before/state-chart-opcodes.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-chart-species",
+			"path": "docs/review/unified/before/state-chart-species.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-chart-diversity",
+			"path": "docs/review/unified/before/state-chart-diversity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-chart-collapsed",
+			"path": "docs/review/unified/before/state-chart-collapsed.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-settings",
+			"path": "docs/review/unified/before/state-settings.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-color-adjustments",
+			"path": "docs/review/unified/before/state-color-adjustments.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-world-contract",
+			"path": "docs/review/unified/before/state-world-contract.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-mode-bytes",
+			"path": "docs/review/unified/before/state-mode-bytes.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-mode-identity",
+			"path": "docs/review/unified/before/state-mode-identity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-mode-confinement",
+			"path": "docs/review/unified/before/state-mode-confinement.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-mode-zeros",
+			"path": "docs/review/unified/before/state-mode-zeros.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-mode-diversity",
+			"path": "docs/review/unified/before/state-mode-diversity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-mode-marker",
+			"path": "docs/review/unified/before/state-mode-marker.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-tool-navigate-empty",
+			"path": "docs/review/unified/before/state-tool-navigate-empty.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-tool-probe-empty",
+			"path": "docs/review/unified/before/state-tool-probe-empty.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-tool-region-empty",
+			"path": "docs/review/unified/before/state-tool-region-empty.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-tool-history-empty",
+			"path": "docs/review/unified/before/state-tool-history-empty.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-tool-compare-empty",
+			"path": "docs/review/unified/before/state-tool-compare-empty.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-tool-record-empty",
+			"path": "docs/review/unified/before/state-tool-record-empty.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-about",
+			"path": "docs/review/unified/before/state-about.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-guide",
+			"path": "docs/review/unified/before/state-guide.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-overview",
+			"path": "docs/review/unified/before/state-overview.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-visuals",
+			"path": "docs/review/unified/before/state-visuals.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-z80",
+			"path": "docs/review/unified/before/state-z80.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-parameters",
+			"path": "docs/review/unified/before/state-parameters.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-analysis",
+			"path": "docs/review/unified/before/state-analysis.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-keys",
+			"path": "docs/review/unified/before/state-keys.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-initial",
+			"path": "docs/review/unified/before/state-bench-initial.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-culture",
+			"path": "docs/review/unified/before/state-bench-culture.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-self-pair",
+			"path": "docs/review/unified/before/state-bench-self-pair.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-partner-sensitivity",
+			"path": "docs/review/unified/before/state-bench-partner-sensitivity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-marker-transfer",
+			"path": "docs/review/unified/before/state-bench-marker-transfer.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-fetched-bytes",
+			"path": "docs/review/unified/before/state-bench-fetched-bytes.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-instruction-starts",
+			"path": "docs/review/unified/before/state-bench-instruction-starts.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-write-activity",
+			"path": "docs/review/unified/before/state-bench-write-activity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "state-bench-disassembly",
+			"path": "docs/review/unified/before/state-bench-disassembly.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-01-guide",
+			"path": "docs/review/unified/before/task-01-guide.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-02-identity",
+			"path": "docs/review/unified/before/task-02-identity.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-02-confinement",
+			"path": "docs/review/unified/before/task-02-confinement.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-02-bytes",
+			"path": "docs/review/unified/before/task-02-bytes.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-03-core",
+			"path": "docs/review/unified/before/task-03-core.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-04-preset",
+			"path": "docs/review/unified/before/task-04-preset.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-05-live-settings",
+			"path": "docs/review/unified/before/task-05-live-settings.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-06-probe",
+			"path": "docs/review/unified/before/task-06-probe.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-07-encounter",
+			"path": "docs/review/unified/before/task-07-encounter.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-08-region",
+			"path": "docs/review/unified/before/task-08-region.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-09-marker",
+			"path": "docs/review/unified/before/task-09-marker.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-10-history",
+			"path": "docs/review/unified/before/task-10-history.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-11-compare",
+			"path": "docs/review/unified/before/task-11-compare.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		},
+		{
+			"name": "task-12-export",
+			"path": "docs/review/unified/before/task-12-export.png",
+			"viewport": {
+				"width": 1440,
+				"height": 900
+			},
+			"overflow": false
+		}
+	],
+	"errors": []
+}
