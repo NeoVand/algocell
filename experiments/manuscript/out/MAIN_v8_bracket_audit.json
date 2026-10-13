@@ -1,0 +1,930 @@
+{
+  "rule": "Classify every balanced bracket, including nested mathematical/code brackets.\n\n    A local file/directory token makes a bracket provenance unless it is a\n    Markdown link label, code/math, or an explicit author placeholder. Qualifiers\n    (registered, theorem, etc.) do not change a path bracket's classification.\n    Unknown non-path brackets are retained and reported for manual inspection.\n    ",
+  "brackets": [
+    {
+      "line": 5,
+      "start": 156,
+      "end": 190,
+      "bracket": "[AUTHOR TO SUPPLY: e-mail address]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 11,
+      "start": 1477,
+      "end": 1510,
+      "bracket": "[results/branching/SUPP_TABLE.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 11,
+      "start": 1740,
+      "end": 1804,
+      "bracket": "[results/capacity/CAPACITY.md; results/evolved6502/RETENTION.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 11,
+      "start": 1971,
+      "end": 2096,
+      "bracket": "[results/s8086/tables/worlds.csv; results/s8086/tables/law_denominators.csv; results/s8086/exploratory/law_assay_summary.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 15,
+      "start": 2373,
+      "end": 2379,
+      "bracket": "[1, 2]",
+      "classification": "citation"
+    },
+    {
+      "line": 15,
+      "start": 2615,
+      "end": 2618,
+      "bracket": "[3]",
+      "classification": "citation"
+    },
+    {
+      "line": 15,
+      "start": 2737,
+      "end": 2740,
+      "bracket": "[2]",
+      "classification": "citation"
+    },
+    {
+      "line": 15,
+      "start": 2841,
+      "end": 2844,
+      "bracket": "[4]",
+      "classification": "citation"
+    },
+    {
+      "line": 15,
+      "start": 2945,
+      "end": 2948,
+      "bracket": "[5]",
+      "classification": "citation"
+    },
+    {
+      "line": 15,
+      "start": 3159,
+      "end": 3162,
+      "bracket": "[6]",
+      "classification": "citation"
+    },
+    {
+      "line": 17,
+      "start": 3240,
+      "end": 3243,
+      "bracket": "[7]",
+      "classification": "citation"
+    },
+    {
+      "line": 17,
+      "start": 3303,
+      "end": 3309,
+      "bracket": "[8, 9]",
+      "classification": "citation"
+    },
+    {
+      "line": 17,
+      "start": 3349,
+      "end": 3353,
+      "bracket": "[10]",
+      "classification": "citation"
+    },
+    {
+      "line": 17,
+      "start": 3457,
+      "end": 3465,
+      "bracket": "[11, 12]",
+      "classification": "citation"
+    },
+    {
+      "line": 19,
+      "start": 3690,
+      "end": 3698,
+      "bracket": "[13, 14]",
+      "classification": "citation"
+    },
+    {
+      "line": 19,
+      "start": 3814,
+      "end": 3818,
+      "bracket": "[14]",
+      "classification": "citation"
+    },
+    {
+      "line": 19,
+      "start": 4032,
+      "end": 4040,
+      "bracket": "[13, 14]",
+      "classification": "citation"
+    },
+    {
+      "line": 27,
+      "start": 6031,
+      "end": 6101,
+      "bracket": "[algocell_exp/machines/; /Users/neo/repos/zilion/docs/ARCHITECTURE.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 31,
+      "start": 7130,
+      "end": 7192,
+      "bracket": "[results/tier2/T2_CLAIMS.csv; results/tier2/T2_COMPONENTS.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 39,
+      "start": 8366,
+      "end": 8412,
+      "bracket": "[results/inflow_insoup/INFLOW_INSOUP.md, X2-2]",
+      "classification": "source-path"
+    },
+    {
+      "line": 39,
+      "start": 8463,
+      "end": 8503,
+      "bracket": "[results/stageG/stageG/stage_g_runs.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 39,
+      "start": 8639,
+      "end": 8647,
+      "bracket": "[13, 14]",
+      "classification": "citation"
+    },
+    {
+      "line": 41,
+      "start": 9585,
+      "end": 9700,
+      "bracket": "[results/branching/branching_summary.csv, pusher16, arm U; results/branching/SUPP_TABLE.md; REVISION_PREREG.md, X1]",
+      "classification": "source-path"
+    },
+    {
+      "line": 43,
+      "start": 10242,
+      "end": 10314,
+      "bracket": "[results/branching/branching_summary.csv, ret16, ldir32, genome20_s6003]",
+      "classification": "source-path"
+    },
+    {
+      "line": 43,
+      "start": 10671,
+      "end": 10704,
+      "bracket": "[results/branching/SUPP_TABLE.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 51,
+      "start": 12337,
+      "end": 12398,
+      "bracket": "[theorem: manuscript/SI_v8.md, Supplementary Note 1; Methods]",
+      "classification": "source-path"
+    },
+    {
+      "line": 53,
+      "start": 13072,
+      "end": 13076,
+      "bracket": "[14]",
+      "classification": "citation"
+    },
+    {
+      "line": 53,
+      "start": 13142,
+      "end": 13194,
+      "bracket": "[theorem: manuscript/SI_v8.md, Supplementary Note 1]",
+      "classification": "source-path"
+    },
+    {
+      "line": 53,
+      "start": 13329,
+      "end": 13362,
+      "bracket": "[results/offset/CORE_FAMILIES.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 55,
+      "start": 13892,
+      "end": 14039,
+      "bracket": "[exploratory: results/crystal/cells.csv, results/crystal/cell_exceptions.csv, results/crystal/offset_examples.csv; results/offset/offset_cells.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 57,
+      "start": 14495,
+      "end": 14567,
+      "bracket": "[exploratory: results/crystal/cell_exceptions.csv, K, L = 32, seed 5006]",
+      "classification": "source-path"
+    },
+    {
+      "line": 63,
+      "start": 15534,
+      "end": 15614,
+      "bracket": "[results/serial_retention/sr_mutants.csv.gz, ldir32, gen 8, pos 0, val 8 and 96]",
+      "classification": "source-path"
+    },
+    {
+      "line": 65,
+      "start": 16486,
+      "end": 16639,
+      "bracket": "[registered: results/capacity/edit_eligibility.csv; results/capacity/serial.csv.gz; results/capacity/capacity_cases.csv.gz; results/capacity/CAPACITY.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 67,
+      "start": 16878,
+      "end": 16927,
+      "bracket": "[exploratory: results/crystal/alleles_ldir32.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 67,
+      "start": 17471,
+      "end": 17515,
+      "bracket": "[results/crystal/alleles_genome20_s6003.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 69,
+      "start": 17652,
+      "end": 17655,
+      "bracket": "[3]",
+      "classification": "citation"
+    },
+    {
+      "line": 73,
+      "start": 18581,
+      "end": 18666,
+      "bracket": "[results/tier2/scored/E/REPORT.md, mutation off; results/tier2/T2_COMPONENTS.csv, E1]",
+      "classification": "source-path"
+    },
+    {
+      "line": 73,
+      "start": 19074,
+      "end": 19166,
+      "bracket": "[results/tier2/T2_COMPONENTS.csv, E2; results/tier2/scored/E/REPORT.md, L = 16, mutation on]",
+      "classification": "source-path"
+    },
+    {
+      "line": 73,
+      "start": 19622,
+      "end": 19760,
+      "bracket": "[results/tier2/scored/E/REPORT.md, L = 32, mutation on; results/tier2/scored/E/offset_switch.csv; results/tier2/T2_COMPONENTS.csv, E-L32L]",
+      "classification": "source-path"
+    },
+    {
+      "line": 75,
+      "start": 20124,
+      "end": 20182,
+      "bracket": "[manuscript/figures/out/v8/data/competition_endpoints.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 75,
+      "start": 20313,
+      "end": 20355,
+      "bracket": "[results/tier2/scored/E/REPORT.md, L = 32]",
+      "classification": "source-path"
+    },
+    {
+      "line": 75,
+      "start": 20544,
+      "end": 20594,
+      "bracket": "[results/tier2/T2_DZ.csv; REVISION_PREREG.md, DZ3]",
+      "classification": "source-path"
+    },
+    {
+      "line": 77,
+      "start": 21019,
+      "end": 21070,
+      "bracket": "[results/tier2/T2.md, DZ2; REVISION_PREREG.md, DZ2]",
+      "classification": "source-path"
+    },
+    {
+      "line": 77,
+      "start": 21446,
+      "end": 21523,
+      "bracket": "[exploratory: results/ladder/population_worlds.csv; results/ladder/LADDER.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 77,
+      "start": 21858,
+      "end": 21958,
+      "bracket": "[exploratory: results/crystal/first_cells.csv, Z80 I; results/ladder/population_worlds.csv, stage I]",
+      "classification": "source-path"
+    },
+    {
+      "line": 79,
+      "start": 22259,
+      "end": 22376,
+      "bracket": "[results/toxin/CAUSAL.md; results/n2/BACKUP.md; results/offset/OFFSET_FLOW.md; REVISION_PREREG.md, N1, N2 and E-mech]",
+      "classification": "source-path"
+    },
+    {
+      "line": 79,
+      "start": 22524,
+      "end": 22565,
+      "bracket": "[exploratory: results/offset/INTRUDER.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 83,
+      "start": 23206,
+      "end": 23249,
+      "bracket": "[theorem: results/literal_channel/CHECK.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 83,
+      "start": 23419,
+      "end": 23454,
+      "bracket": "[results/census6502/table_main.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 83,
+      "start": 23741,
+      "end": 23807,
+      "bracket": "[results/s6502/v2/arm_comparison.csv; results/s6502/CORRECTION.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 85,
+      "start": 24414,
+      "end": 24671,
+      "bracket": "[construction: results/census6502/table_closers_law.csv; registered: results/evolved6502/eligibility.csv; results/evolved6502/geometry.csv; results/evolved6502/law_verdict.csv; results/evolved6502/exact_cases.csv.gz; results/evolved6502/exact_serial.csv.gz]",
+      "classification": "source-path"
+    },
+    {
+      "line": 87,
+      "start": 24915,
+      "end": 24990,
+      "bracket": "[results/census8086/table_hits.csv; algocell_exp/machines/worlds_8086.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 87,
+      "start": 25449,
+      "end": 25554,
+      "bracket": "[registered: results/s8086/tables/worlds.csv; results/s8086/tables/kaplan_meier.csv; results/s8086/S2.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 89,
+      "start": 26138,
+      "end": 26255,
+      "bracket": "[registered: results/s8086/tables/law_denominators.csv; results/s8086/tables/law_candidates.csv; results/s8086/S2.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 91,
+      "start": 26770,
+      "end": 26905,
+      "bracket": "[exploratory: results/s8086/exploratory/motif_scan.csv.gz; results/s8086/exploratory/encounter_fates.csv; results/s8086/EXPLORATORY.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 93,
+      "start": 27445,
+      "end": 27652,
+      "bracket": "[exploratory: results/s8086/exploratory/first_family.csv; results/s8086/exploratory/first_family_copies.csv; results/s8086/exploratory/family_transmission.csv; results/s8086/exploratory/family_serial.csv.gz]",
+      "classification": "source-path"
+    },
+    {
+      "line": 95,
+      "start": 28183,
+      "end": 28445,
+      "bracket": "[exploratory: results/s8086/exploratory/eligibility_counts.csv; results/s8086/exploratory/eligibility.csv; results/s8086/exploratory/law_panel_predictions.csv; results/s8086/exploratory/law_assay_denominators.csv; results/s8086/exploratory/law_assay_summary.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 101,
+      "start": 29735,
+      "end": 29738,
+      "bracket": "[6]",
+      "classification": "citation"
+    },
+    {
+      "line": 105,
+      "start": 31369,
+      "end": 31372,
+      "bracket": "[3]",
+      "classification": "citation"
+    },
+    {
+      "line": 135,
+      "start": 41165,
+      "end": 41235,
+      "bracket": "[algocell_exp/machines/; /Users/neo/repos/zilion/docs/ARCHITECTURE.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 137,
+      "start": 42147,
+      "end": 42299,
+      "bracket": "[results/emulator/RING_DIFFTEST.md; algocell_exp/shader/z80_test_L16.wgsl; algocell_exp/shader/z80_test_lethal_L16.wgsl; results/review_r2/RUN_TABLE.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 139,
+      "start": 42754,
+      "end": 42853,
+      "bracket": "[results/s6502/CORRECTION.md; algocell_exp/machines/m6502_pair_maps_L16.wgsl; results/bff/runs.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 143,
+      "start": 43104,
+      "end": 43152,
+      "bracket": "[algocell_exp/machines/ZILION_PUBLIC_COMMITS.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 143,
+      "start": 43699,
+      "end": 43818,
+      "bracket": "[algocell_exp/machines/worlds_8086.json; algocell_exp/machines/PROVENANCE_8086.md; results/s8086/prelaunch/freeze.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 145,
+      "start": 44509,
+      "end": 44673,
+      "bracket": "[algocell_exp/machines/worlds_8086.json; algocell_exp/machines/i8086_pair_maps_L16.wgsl; results/s8086/prelaunch/freeze.json; /Users/neo/repos/zilion/docs/I8086.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 149,
+      "start": 44946,
+      "end": 44986,
+      "bracket": "[algocell_exp/soup.py; offset_switch.py]",
+      "classification": "source-path"
+    },
+    {
+      "line": 151,
+      "start": 45597,
+      "end": 45747,
+      "bracket": "[algocell_exp/soup.py; s8086.py; results/review_r2/RUN_TABLE.md; results/s8086/prelaunch/registration_basis.json; results/s8086/prelaunch/freeze.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 153,
+      "start": 46289,
+      "end": 46376,
+      "bracket": "[REVISION_PREREG.md, S1; results/s6502/CORRECTION.md; results/evolved6502/coverage.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 155,
+      "start": 46980,
+      "end": 47153,
+      "bracket": "[s8086.py; manuscript/figures/out/v8/data/arrival_worlds.csv; results/s8086/tables/worlds.csv; results/s8086/tables/download_hashes.csv; results/s8086/prelaunch/freeze.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 157,
+      "start": 47719,
+      "end": 47866,
+      "bracket": "[score8086.py; results/s8086/tables/worlds.csv; results/s8086/tables/kaplan_meier.csv; results/s6502/v2/arm_comparison.csv; REVISION_PREREG.md, S2]",
+      "classification": "source-path"
+    },
+    {
+      "line": 161,
+      "start": 48299,
+      "end": 48322,
+      "bracket": "[algocell_exp/assay.py]",
+      "classification": "source-path"
+    },
+    {
+      "line": 161,
+      "start": 48618,
+      "end": 48750,
+      "bracket": "[manuscript/figures/out/v8/data/methods.csv; results/s8086/tables/copier_tapes.csv; results/s8086/prelaunch/registration_basis.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 163,
+      "start": 49240,
+      "end": 49293,
+      "bracket": "[results/s6502/CORRECTION.md; REVISION_PREREG.md, S1]",
+      "classification": "source-path"
+    },
+    {
+      "line": 165,
+      "start": 49825,
+      "end": 49932,
+      "bracket": "[mutscan.py; results/ladder/LADDER.md; results/population/classes_snapshots.csv; results/crystal/cells.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 167,
+      "start": 50352,
+      "end": 50420,
+      "bracket": "[serial_retention.py; branching_transfer.py; REVISION_PREREG.md, X1]",
+      "classification": "source-path"
+    },
+    {
+      "line": 169,
+      "start": 51299,
+      "end": 51449,
+      "bracket": "[results/serial_retention/sr_summary.csv; results/serial_retention/REPORT.md; results/branching/branching_summary.csv; results/branching/BRANCHING.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 171,
+      "start": 51942,
+      "end": 52044,
+      "bracket": "[theorem: manuscript/SI_v8.md, Supplementary Note 2; results/biology/individuality/per_replicator.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 175,
+      "start": 52649,
+      "end": 52723,
+      "bracket": "[offset_switch.py; results/offset/OFFSET_CENSUS.md; REVISION_PREREG.md, E]",
+      "classification": "source-path"
+    },
+    {
+      "line": 175,
+      "start": 53198,
+      "end": 53332,
+      "bracket": "[results/offset/offset_switch.csv; results/tier2/scored/E/offset_switch.csv; manuscript/figures/out/v8/data/competition_endpoints.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 177,
+      "start": 54030,
+      "end": 54081,
+      "bracket": "[results/tier2/T2.md, DZ2; REVISION_PREREG.md, DZ2]",
+      "classification": "source-path"
+    },
+    {
+      "line": 177,
+      "start": 54273,
+      "end": 54404,
+      "bracket": "[results/tier2/T2_DZ.csv; results/toxin/CAUSAL.md; results/n2/BACKUP.md; results/offset/OFFSET_FLOW.md; results/offset/INTRUDER.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 181,
+      "start": 54495,
+      "end": 54502,
+      "bracket": "[s+d+k]",
+      "classification": "math"
+    },
+    {
+      "line": 181,
+      "start": 54506,
+      "end": 54511,
+      "bracket": "[s+k]",
+      "classification": "math"
+    },
+    {
+      "line": 181,
+      "start": 55118,
+      "end": 55211,
+      "bracket": "[theorem: manuscript/SI_v8.md, Supplementary Note 1; results/capacity/geometry_traces.csv.gz]",
+      "classification": "source-path"
+    },
+    {
+      "line": 183,
+      "start": 55861,
+      "end": 55977,
+      "bracket": "[theorem: manuscript/SI_v8.md, Supplementary Note 1, Z80 specialization; results/capacity/candidate_eligibility.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 185,
+      "start": 56327,
+      "end": 56434,
+      "bracket": "[results/crystal/cell_exceptions.csv; results/crystal/offset_examples.csv; results/offset/offset_cells.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 189,
+      "start": 57224,
+      "end": 57408,
+      "bracket": "[theorem: manuscript/SI_v8.md, Supplementary Note 2; results/capacity/candidate_eligibility.csv; results/evolved6502/eligibility.csv; results/s8086/prelaunch/ASTRA_PRELAUNCH_REVIEW.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 191,
+      "start": 58324,
+      "end": 58472,
+      "bracket": "[theorem and registered amendment: REVISION_PREREG.md, S2 B2; results/s8086/prelaunch/ASTRA_PRELAUNCH_REVIEW.md; results/census8086/LAW_CONTRACT.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 195,
+      "start": 59072,
+      "end": 59196,
+      "bracket": "[results/capacity/parents.csv; results/capacity/edit_eligibility.csv; results/capacity/partners.csv; REVISION_PREREG.md, C1]",
+      "classification": "source-path"
+    },
+    {
+      "line": 197,
+      "start": 59915,
+      "end": 60046,
+      "bracket": "[results/capacity/serial.csv.gz; results/capacity/capacity_cases.csv.gz; results/capacity/CAPACITY.md; results/capacity/bursts.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 201,
+      "start": 60670,
+      "end": 60770,
+      "bracket": "[results/evolved6502/coverage.csv; results/evolved6502/inputs.csv; results/evolved6502/RETENTION.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 203,
+      "start": 61903,
+      "end": 62244,
+      "bracket": "[evolved6502_retention.py; capacity_common.py; results/evolved6502/panel.csv; results/evolved6502/eligibility.csv; results/evolved6502/geometry.csv; results/evolved6502/law_verdict.csv; results/evolved6502/descriptive_panel.csv; results/evolved6502/exact_cases.csv.gz; results/evolved6502/exact_serial.csv.gz; results/evolved6502/bursts.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 207,
+      "start": 62641,
+      "end": 62645,
+      "bracket": "[15]",
+      "classification": "citation"
+    },
+    {
+      "line": 207,
+      "start": 62950,
+      "end": 63094,
+      "bracket": "[theorem: results/literal_channel/CHECK.md; results/literal_channel/pair_layouts.csv; results/literal_channel/finite_bound_counterexamples.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 209,
+      "start": 63892,
+      "end": 64091,
+      "bracket": "[theorem/construction: results/literal_channel/verification.csv; results/literal_channel/finite_search.csv; results/literal_channel/6502_finite_harness.json; results/literal_channel/census_audit.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 213,
+      "start": 64524,
+      "end": 64705,
+      "bracket": "[results/census8086/table_main.csv; results/census8086/table_hits.csv; results/census8086/descriptive_correction_counts.csv; results/census8086/DESCRIPTIVE_CORRECTION_2026-10-12.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 215,
+      "start": 65439,
+      "end": 65585,
+      "bracket": "[results/census8086/MECHANISM_CONTRACT.md; results/census8086/DESCRIPTIVE_CORRECTION_2026-10-12.md; results/s8086/tables/judged_encounters.csv.gz]",
+      "classification": "source-path"
+    },
+    {
+      "line": 217,
+      "start": 66235,
+      "end": 66439,
+      "bracket": "[results/s8086/tables/census_07a5.csv; results/census8086/table_hits.csv; results/census8086/words_L16_k2_b128.csv; results/census8086/words_L32_k2_b128.csv; REVISION_PREREG.md, prospective R2 withdrawal]",
+      "classification": "source-path"
+    },
+    {
+      "line": 221,
+      "start": 67101,
+      "end": 67232,
+      "bracket": "[results/s8086/tables/worlds.csv; results/s8086/tables/persistence.csv; results/s8086/tables/kaplan_meier.csv; results/s8086/S2.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 223,
+      "start": 68050,
+      "end": 68192,
+      "bracket": "[results/s8086/tables/law_candidates.csv; results/s8086/tables/law_denominators.csv; results/s8086/tables/law_worlds.csv; results/s8086/S2.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 225,
+      "start": 68978,
+      "end": 69078,
+      "bracket": "[results/census8086/LAW_CONTRACT.md; results/s8086/tables/law_outcomes.json; REVISION_PREREG.md, S2]",
+      "classification": "source-path"
+    },
+    {
+      "line": 227,
+      "start": 69305,
+      "end": 69353,
+      "bracket": "[construction: results/census8086/table_law.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 227,
+      "start": 69609,
+      "end": 69722,
+      "bracket": "[construction: results/s8086/tables/constructed_controls.csv; results/s8086/tables/control_hash_verification.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 231,
+      "start": 69988,
+      "end": 70238,
+      "bracket": "[results/s8086/prelaunch/S2_OPERATIONAL_AMENDMENT_2026-10-12.md; results/s8086/prelaunch/S2_VOLUME_PARALLEL_AMENDMENT_2026-10-12.md; results/s8086/prelaunch/S2_SCORING_ONWARD_LOCK_AMENDMENT_2026-10-12.md; results/s8086/provenance/run_provenance.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 235,
+      "start": 70811,
+      "end": 70967,
+      "bracket": "[exploratory: results/s8086/exploratory/motif_scan.csv.gz; results/s8086/exploratory/encounter_fates.csv; results/s8086/exploratory/family_transmission.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 237,
+      "start": 71787,
+      "end": 72074,
+      "bracket": "[exploratory: results/s8086/exploratory/eligibility_counts.csv; results/s8086/exploratory/eligibility.csv; results/s8086/exploratory/law_panel_predictions.csv; results/s8086/exploratory/law_assay_denominators.csv; results/s8086/exploratory/verification.csv; results/s8086/EXPLORATORY.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 241,
+      "start": 72594,
+      "end": 72728,
+      "bracket": "[manuscript/figures/out/v8/data/validation_fractions.csv; results/emulator/RING_DIFFTEST.md; algocell_exp/machines/PROVENANCE_8086.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 243,
+      "start": 73664,
+      "end": 73869,
+      "bracket": "[results/impact/decisions.csv; results/impact/assay_identity.csv; results/impact/supplement_manifest.json; results/tier2/T2_CLAIMS.csv; results/tier2/T2_COMPONENTS.csv; results/tier2/stageL_diagnosis.json]",
+      "classification": "source-path"
+    },
+    {
+      "line": 245,
+      "start": 74587,
+      "end": 74792,
+      "bracket": "[REVISION_PREREG.md; results/lod_n6/N6_SCORE.md; results/s6502/CORRECTION.md; results/evolved6502/coverage.csv; results/s8086/prelaunch/ASTRA_RECHECK3.md; results/s8086/exploratory/publication_archive.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 249,
+      "start": 75586,
+      "end": 75718,
+      "bracket": "[manuscript/figures/out/v8/data/methods.csv; manuscript/figures/out/v8/data/competition_endpoints.csv; results/impact/decisions.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 257,
+      "start": 76039,
+      "end": 76078,
+      "bracket": "[AUTHOR TO CONFIRM: AI-use disclosure.]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 261,
+      "start": 77320,
+      "end": 77341,
+      "bracket": "[manuscript/SI_v8.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 265,
+      "start": 77787,
+      "end": 77931,
+      "bracket": "[results/s8086/provenance/artifact_manifest.json; results/s8086/provenance/verification.json; results/s8086/exploratory/publication_archive.csv]",
+      "classification": "source-path"
+    },
+    {
+      "line": 267,
+      "start": 78161,
+      "end": 78487,
+      "bracket": "[AUTHOR TO SUPPLY: data accession/DOI and accessible archive containing required raw records, source-data tables, preregistrations, amendments, the standalone cross-machine encounter benchmark package with its generated table and a release-wide checksum manifest, with durable retrieval locations and any access restrictions.]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 269,
+      "start": 78742,
+      "end": 78804,
+      "bracket": "[manuscript/figures/out/v8/FIGURES_V8.md; manuscript/SI_v8.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 273,
+      "start": 79475,
+      "end": 79586,
+      "bracket": "[results/s8086/provenance/artifact_manifest.json; results/evolved6502/inputs.csv; results/capacity/CAPACITY.md]",
+      "classification": "source-path"
+    },
+    {
+      "line": 275,
+      "start": 79786,
+      "end": 80010,
+      "bracket": "[AUTHOR TO SUPPLY: frozen Algocell and Zilion code releases and accession/DOIs, dependency versions, licence, hardware requirements and verified runnable instructions distinguishing report regeneration from new simulations.]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 279,
+      "start": 80037,
+      "end": 80078,
+      "bracket": "[AUTHOR TO SUPPLY: author contributions.]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 283,
+      "start": 80113,
+      "end": 80217,
+      "bracket": "[AUTHOR TO SUPPLY: funding sources, grant identifiers and acknowledgements, or confirm that none apply.]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 287,
+      "start": 80243,
+      "end": 80295,
+      "bracket": "[AUTHOR TO SUPPLY: competing interests declaration.]",
+      "classification": "placeholder"
+    },
+    {
+      "line": 293,
+      "start": 80568,
+      "end": 80608,
+      "bracket": "[https://doi.org/10.1006/jtbi.1996.0389]",
+      "classification": "link"
+    },
+    {
+      "line": 297,
+      "start": 80988,
+      "end": 81029,
+      "bracket": "[https://doi.org/10.1073/pnas.0912628107]",
+      "classification": "link"
+    },
+    {
+      "line": 299,
+      "start": 81198,
+      "end": 81237,
+      "bracket": "[https://doi.org/10.1186/1745-6150-7-1]",
+      "classification": "link"
+    },
+    {
+      "line": 301,
+      "start": 81376,
+      "end": 81416,
+      "bracket": "[https://doi.org/10.1073/pnas.132266999]",
+      "classification": "link"
+    },
+    {
+      "line": 303,
+      "start": 81553,
+      "end": 81599,
+      "bracket": "[https://doi.org/10.1016/0167-2789(84)90256-2]",
+      "classification": "link"
+    },
+    {
+      "line": 307,
+      "start": 81966,
+      "end": 82010,
+      "bracket": "[https://doi.org/10.1162/106454604773563612]",
+      "classification": "link"
+    },
+    {
+      "line": 311,
+      "start": 82318,
+      "end": 82364,
+      "bracket": "[https://doi.org/10.1016/0167-2789(95)00268-5]",
+      "classification": "link"
+    },
+    {
+      "line": 313,
+      "start": 82550,
+      "end": 82590,
+      "bracket": "[https://doi.org/10.1098/rsta.2016.0350]",
+      "classification": "link"
+    },
+    {
+      "line": 315,
+      "start": 82770,
+      "end": 82790,
+      "bracket": "[arXiv:2406.19108v2]",
+      "classification": "link"
+    },
+    {
+      "line": 317,
+      "start": 82945,
+      "end": 82965,
+      "bracket": "[arXiv:2607.09211v2]",
+      "classification": "link"
+    },
+    {
+      "line": 319,
+      "start": 83132,
+      "end": 83183,
+      "bracket": "[https://doi.org/10.1090/S0002-9939-1965-0174934-9]",
+      "classification": "link"
+    }
+  ],
+  "counts": {
+    "placeholder": 7,
+    "source-path": 92,
+    "citation": 19,
+    "math": 2,
+    "link": 11
+  },
+  "ambiguous": []
+}
