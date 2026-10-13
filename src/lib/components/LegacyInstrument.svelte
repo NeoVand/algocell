@@ -8,17 +8,25 @@
 		type GridType,
 		type GridConfig
 	} from '$lib/sim/constants';
-	import { disassemble, byteToMnemonic } from '$lib/z80-disasm';
+	import {
+		disassemble as disassembleZ80,
+		byteToMnemonic as z80ByteToMnemonic
+	} from '$lib/z80-disasm';
+	import { disassembleTape } from '$lib/lab/disassemble';
+	import { ablationInstructions, ablationMasks } from '$lib/lab/ablation';
+	import { PAPER_PRESETS, type PaperPreset } from '$lib/lab/presets';
+	import { ABOUT_SECTIONS, GUIDE_SECTIONS, type DocumentationSection } from '$lib/lab/content';
+	import type { LabSettings, LabIsa, CultureResult, InitialCondition } from '$lib/lab/types';
+	import { ORIGINAL_SETTINGS } from '$lib/gpu/machine';
 	import {
 		resolveSuppression,
 		countSuppressed,
 		mnemonicOf,
 		describeSuppression
 	} from '$lib/z80-opcodes';
-	import { getCellData } from '$lib/sim/soup';
 	import { unpackRGBA, createColormap, COLORMAP_NAMES } from '$lib/colormap';
 	import type { ColormapName } from '$lib/colormap';
-	import { untrack } from 'svelte';
+	import { untrack, onMount } from 'svelte';
 	import Mermaid from '$lib/components/Mermaid.svelte';
 	import { saveCheckpoint, loadCheckpoint, type CheckpointMetadata } from '$lib/checkpoint';
 	import {
@@ -45,7 +53,7 @@
 
 	let canvas: HTMLCanvasElement;
 	let canvasContainer: HTMLDivElement;
-	let engine = $state<GPUEngine | null>(null);
+	let engine = $state.raw<GPUEngine | null>(null);
 	let gpuError = $state<string | null>(null);
 
 	// Controls
@@ -53,10 +61,302 @@
 	let noiseExp = $state(DEFAULT_NOISE_EXP);
 	let pairCount = $state(MAX_BATCH_PAIR_N);
 	let z80Steps = $state(Z80_STEPS);
-	let playing = $state(false);
+	let playing = $state(true);
 	let runDeadline = 0;
 	let speed = $state(8); // steps per frame; 8x is the default
 	let gridType = $state<GridType>('square');
+	type MachineChoice = 'z80-0.2' | 'z80-0.3' | 'z80-nmos' | 'm6502' | 'i8086';
+	let machine = $state<MachineChoice>('z80-0.2');
+	let tapeLength = $state(16);
+	let pairLength = $state(32);
+	let lethalProbability = $state(0);
+	let randomRegisters = $state(false);
+	let stackConvention = $state<LabSettings['stack']>('legacy-sp');
+	let dialMode = $state<LabSettings['dialMode']>('historical-pcg');
+	let showConfinement = $state(false);
+	let machineBusy = $state(false);
+	let machineError = $state<string | null>(null);
+	let selectedPaperId = $state('');
+	let initialCondition = $state.raw<InitialCondition>({ kind: 'random' });
+	const selectedPaper = $derived(PAPER_PRESETS.find((preset) => preset.id === selectedPaperId));
+	const isa = $derived<LabIsa>(
+		machine === 'm6502' ? 'm6502' : machine === 'i8086' ? 'i8086' : 'z80'
+	);
+	const instructionTable = $derived(ablationInstructions(isa));
+	const isaSuppressionDescription = $derived(
+		isa === 'm6502'
+			? 'Use a mnemonic (STA, PHA), family (family:stack, family:writes-mem) or exact opcode (opcode:8D). A suppressed 6502 operation consumes only its opcode byte; operand bytes can execute next as code. The byte values remain in the soup.'
+			: 'Use a mnemonic (MOV, PUSH), family (family:block-copy, family:stack) or exact opcode (opcode:A4). Suppression consumes prefixes and the opcode only; ModRM, displacement and immediate bytes can execute next as code. Groups are suppressed at opcode level, including every suboperation sharing the selected opcode. The byte values remain in the soup.'
+	);
+	let inspectedTape = $state.raw<Uint8Array | null>(null);
+	let inspectedCell = $state(-1);
+	let cultureResult = $state.raw<CultureResult | null>(null);
+	let cultureBusy = $state(false);
+	let cultureError = $state<string | null>(null);
+	let inspectReadPending = false;
+	let pointerDownX = 0;
+	let pointerDownY = 0;
+	let pointerMoved = false;
+	let inspectClickTimer: ReturnType<typeof setTimeout> | undefined;
+
+	function settings(): LabSettings {
+		return {
+			isa,
+			compat: machine === 'z80-0.2' ? '0.2' : '0.3',
+			variant: machine === 'z80-nmos' ? 'zilog-nmos' : isa === 'z80' ? 'classic' : 'nmos',
+			length: tapeLength,
+			ring: pairLength,
+			steps: z80Steps,
+			width: gridWidth,
+			height: gridHeight,
+			topology: gridType,
+			seed,
+			pairAttempts: pairCount,
+			mutationExponent: noiseExp,
+			lethalProbability,
+			randomRegisters,
+			ablation: [...suppressPatterns],
+			stack: stackConvention,
+			dialMode
+		};
+	}
+
+	function disassemble(data: Uint8Array) {
+		// Keep historical Z80 labels and use the added ISA decoders for the other cores.
+		return isa === 'z80' ? disassembleZ80(data) : disassembleTape(isa, data);
+	}
+
+	function byteToMnemonic(byte: number): string {
+		return isa === 'z80'
+			? z80ByteToMnemonic(byte)
+			: (instructionTable.find((row) => row.code === byte)?.mnemonic ?? hexByte(byte));
+	}
+
+	function getCellData(soup: Uint8Array, index: number): Uint8Array {
+		const stride = Math.ceil(tapeLength / 4) * 4;
+		return soup.slice(index * stride, index * stride + tapeLength);
+	}
+
+	function resolveIsaSuppression(patterns: string[]) {
+		if (isa === 'z80') return resolveSuppression(patterns);
+		const masks = ablationMasks(isa, patterns);
+		// These sets are rebuilt only when a control changes, not on soup updates.
+		// eslint-disable-next-line svelte/prefer-svelte-reactivity
+		const base = new Set<number>();
+		for (let byte = 0; byte < 256; byte++)
+			if ((masks[byte >> 5] & (1 << (byte & 31))) !== 0) base.add(byte);
+		return { base, cb: new Set<number>(), ed: new Set<number>() };
+	}
+
+	function suppressionPreview(input: string): number {
+		try {
+			return countSuppressed(
+				resolveIsaSuppression(
+					input
+						.split(';')
+						.map((p) => p.trim())
+						.filter(Boolean)
+				)
+			);
+		} catch {
+			return 0;
+		}
+	}
+
+	function assignMachineSettings(next: LabSettings) {
+		machine =
+			next.isa === 'z80'
+				? next.compat === '0.2'
+					? 'z80-0.2'
+					: next.variant === 'zilog-nmos'
+						? 'z80-nmos'
+						: 'z80-0.3'
+				: next.isa;
+		tapeLength = next.length;
+		pairLength = next.ring;
+		lethalProbability = next.lethalProbability;
+		randomRegisters = next.randomRegisters;
+		stackConvention = next.stack;
+		dialMode = next.dialMode;
+		gridWidth = next.width;
+		gridHeight = next.height;
+		gridType = next.topology;
+		seed = next.seed;
+		pairCount = next.pairAttempts;
+		z80Steps = next.steps;
+		noiseExp = next.mutationExponent;
+		suppressPatterns = [...next.ablation];
+	}
+
+	async function updateMachine(reset = false) {
+		if (!engine || machineBusy) return;
+		playing = false;
+		machineBusy = true;
+		machineError = null;
+		try {
+			if (reset) await engine.configure(settings(), initialCondition);
+			else await engine.setMachine(settings());
+			clearMeasurements();
+		} catch (error) {
+			machineError = error instanceof Error ? error.message : String(error);
+		} finally {
+			machineBusy = false;
+		}
+	}
+
+	async function chooseMachine(event: Event) {
+		const next = (event.target as HTMLSelectElement).value as MachineChoice;
+		machine = next;
+		suppressPatterns = [];
+		selectedPaperId = '';
+		stackConvention = next === 'm6502' || next === 'i8086' ? 'first-push' : 'top';
+		dialMode = next === 'z80-0.2' ? 'historical-pcg' : 'counter';
+		initialCondition = { kind: 'random' };
+		await updateMachine(true);
+	}
+
+	async function applyPaperPreset(preset: PaperPreset) {
+		if (machineBusy) return;
+		assignMachineSettings(preset.config);
+		selectedPaperId = preset.id;
+		initialCondition = preset.initialCondition;
+		await updateMachine(true);
+	}
+
+	async function changeConfinement(event: Event) {
+		if (!engine || machineBusy) return;
+		const next = (event.target as HTMLInputElement).checked;
+		playing = false;
+		machineBusy = true;
+		machineError = null;
+		try {
+			await engine.setShowConfinement(next);
+			showConfinement = next;
+		} catch (error) {
+			machineError = error instanceof Error ? error.message : String(error);
+		} finally {
+			machineBusy = false;
+		}
+	}
+
+	async function inspectCell(index: number) {
+		if (!engine || index < 0 || inspectReadPending) return;
+		inspectReadPending = true;
+		try {
+			const soup = await engine.readSoupData();
+			if (!soup.length) return;
+			inspectedTape = getCellData(soup, index);
+			inspectedCell = index;
+			cultureResult = null;
+			cultureError = null;
+		} finally {
+			inspectReadPending = false;
+		}
+	}
+
+	async function runCulture(tape: Uint8Array) {
+		if (!engine || cultureBusy) return;
+		playing = false;
+		cultureBusy = true;
+		cultureError = null;
+		cultureResult = null;
+		try {
+			cultureResult = await engine.runCulture(tape, { trials: 32, seed, generations: 2 });
+		} catch (error) {
+			cultureError = error instanceof Error ? error.message : String(error);
+		} finally {
+			cultureBusy = false;
+		}
+	}
+
+	function scientificText(text: string): string {
+		return text
+			.replaceAll('new host-scheduled worlds', 'new GPU-scheduled worlds')
+			.replaceAll('host scheduler', 'GPU scheduler')
+			.replaceAll(
+				'the update counter measures completed work, not seconds',
+				'ops/s measures instruction slots of completed GPU work'
+			)
+			.replaceAll('host stream', 'GPU random stream')
+			.replaceAll('pale zero-rich', 'zero-rich')
+			.replaceAll(
+				'instruction-stream reading enters the partner',
+				'instruction-stream fetching leaves the focal tape (B or padding)'
+			)
+			.replaceAll(
+				'“open” when it enters its partner',
+				'“open” when it fetches outside that tape (B or padding)'
+			)
+			.replaceAll(
+				'instruction fetching enters the partner',
+				'instruction fetching leaves the focal tape (B or padding)'
+			)
+			.replaceAll(
+				'no partner entry in all 16',
+				'no fetch outside the focal tape (B or padding) in all 16'
+			)
+			.replaceAll('entry in at least eight is open', 'such a fetch in at least eight is open')
+			.replaceAll(
+				'Confinement describes instruction-stream addresses.',
+				'Confinement describes whether instruction-stream fetching crosses the focal tape boundary into B or discarded padding.'
+			)
+			.replaceAll('new host’s per-encounter seeds', 'GPU kernel’s per-encounter seeds')
+			.replaceAll(
+				'0.3 engine and world API',
+				'0.3.1 library core inside Algocell’s GPU soup kernel'
+			)
+			.replace(
+				'The legacy instrument remains available for its original rendering, controls and checkpoints.',
+				'The original Algocell rendering, controls and checkpoints remain the base of this instrument.'
+			)
+			.replace(
+				'The interface’s visual language follows the manuscript’s figure plan: a white field, tangible byte blocks, quiet structural lines and separate encodings for byte value, execution and transmission.',
+				'The interface keeps Algocell’s original dark instrument panels, tangible byte blocks and familiar color maps.'
+			)
+			.replace(
+				'Press Run to advance the world, Pause to keep its current state, or Step for one population update.',
+				'Press Play to advance the world or Pause to keep its current state.'
+			)
+			.replace(
+				'Select a tape on the lattice or by cell index.',
+				'Click a tape on the lattice or inspect an abundant species.'
+			)
+			.replace('Hexagonal legacy worlds', 'Hexagonal worlds');
+	}
+
+	const guideSections: DocumentationSection[] = GUIDE_SECTIONS.filter(
+		(section) => section.id !== 'legacy'
+	).map((section) => {
+		if (section.id === 'lattice')
+			return {
+				...section,
+				paragraphs: [
+					'Byte view keeps Algocell’s original color maps. Each tape occupies a block at its actual lattice position; simple view averages its byte colors. A color or a visible texture is not a test of reproduction. Square and hexagonal neighborhoods preserve their original layouts.',
+					'Colors continue to identify the same byte values when the processor changes. Their historical Z80 category colors do not imply equivalent 6502 or 8086 instruction meanings. Read the selected processor’s disassembly.',
+					'The fetch layer records the last initiating encounter only. “Outside focal tape” means instruction-stream fetching reached any ring position at or beyond L, including B or discarded padding; “no observed exit” means it stayed in A during that encounter. Unknown means no current measurement. Mutated or modified cells can lose their measurement. This is not a lifetime confinement classification, and it does not measure partner-data reads, partner-information independence or heredity.'
+				]
+			};
+		if (section.id === 'measurements')
+			return {
+				...section,
+				title: 'Interpret the original charts',
+				paragraphs: [
+					'The opcode chart counts inherited byte values, even when a value is an operand or data rather than an executed instruction. The concentration factor compares a byte’s fraction with a uniform 1/256 baseline. Padding is excluded.',
+					'The species and diversity tabs group full tapes by a GPU content hash. This fast composition view can have hash collisions; it is not an exact ancestry census. Shannon entropy, Simpson diversity and richness describe how those groups are distributed, not fitness, heredity or progress.',
+					'An abundant exact-looking tape is a candidate to inspect and culture. A transmitting population can contain many different payloads, so a single top-tape share can hide it. Short visual runs do not reproduce the paper’s cohort evidence or emergence-time distributions.'
+				]
+			};
+		if (section.id === 'exports')
+			return {
+				...section,
+				paragraphs: [
+					'A preset describes how to begin; a checkpoint stores the current population. Algocell keeps its original .acell format: a PNG preview with local metadata and the complete word-aligned soup attached. New checkpoints include the processor, ring geometry, reset, chemistry, suppression and planted condition. Original files restore historical Z80 compatibility 0.2 with SP = FFFF.',
+					'Checkpoint populations can be inspected and continued, but the original format does not preserve every GPU random lane’s continuation state. Reloading a population is not a promise of the same subsequent trajectory. Keep the complete condition with any comparison; equal seeds alone do not identify an archived paper run.',
+					'Files remain on your computer. No checkpoint is uploaded to a remote service. Source paths in the paper preset notes identify the companion manuscript’s registration, machine world and results.'
+				]
+			};
+		return section;
+	});
 
 	// Compute grid dimensions from viewport aspect ratio
 	// ~20K cells: enough for emergence, large enough to see patterns clearly
@@ -97,26 +397,27 @@
 	// Stats
 	let opsPerSec = $state(0);
 	let showHelp = $state(false);
-	let helpTab = $state<'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'analysis' | 'about'>(
-		'overview'
-	);
+	let helpTab = $state<
+		'overview' | 'visuals' | 'z80' | 'params' | 'keys' | 'analysis' | 'about' | 'guide'
+	>('overview');
 	let showSpeedMenu = $state(false);
 	let showSettings = $state(false);
 	let toolbarCollapsed = $state(false);
 	let openTip = $state<string | null>(null);
+	let keyboardModality = $state(false);
 	let showInfoChart = $state(true);
 	let suppressPatterns: string[] = $state([]);
 	let suppressInput = $state('');
 
 	// Resolve patterns → per-page suppression sets (base / CB / ED), see $lib/z80-opcodes.
-	let suppression = $derived(resolveSuppression(suppressPatterns));
+	let suppression = $derived(resolveIsaSuppression(suppressPatterns));
 	// Base-page set: what the frequency tiles (which show base-page bytes) can mark.
 	let suppressedOpcodes = $derived(suppression.base);
 	let suppressedTotal = $derived(countSuppressed(suppression));
 
 	// Frequency chart: track top N bytes normalized over time
 	// Total bytes counted by shader = cells * wordsPerCell * 4 (word-aligned)
-	let TOTAL_BYTES = $derived(gridWidth * gridHeight * (gridType === 'hex' ? 19 : 16));
+	let TOTAL_BYTES = $derived(gridWidth * gridHeight * tapeLength);
 	const MAX_TRACKED = 10;
 	const MAX_HISTORY = 300;
 
@@ -220,8 +521,8 @@
 
 	// Hover / genome tooltip
 	let hoveredCell = $state(-1);
-	let cellData = $state<Uint8Array | null>(null);
-	let disasmLines: ReturnType<typeof disassemble> = $state([]);
+	let cellData = $state.raw<Uint8Array | null>(null);
+	let disasmLines: ReturnType<typeof disassemble> = $state.raw([]);
 	let mouseX = $state(0);
 	let mouseY = $state(0);
 	let canvasW = $state(800);
@@ -283,9 +584,9 @@
 	);
 
 	function computeTooltipStyle(mx: number, my: number): string {
-		const isHex = gridType === 'hex';
+		const isHex = gridType === 'hex' && tapeLength === 19;
 		const tooltipW = isHex ? 280 : 196;
-		const tooltipH = isHex ? 260 : 196;
+		const tooltipH = isHex ? 260 : Math.ceil(tapeLength / 4) * 48 + 4;
 		const vw = window.innerWidth;
 		const vh = window.innerHeight;
 		const gap = 12;
@@ -327,7 +628,7 @@
 		return parts.join(' ');
 	}
 
-	$effect(() => {
+	onMount(() => {
 		if (!canvas) return;
 
 		// Compute grid dimensions from actual viewport on first mount
@@ -343,7 +644,9 @@
 		const initialConfig: GridConfig = untrack(() => ({
 			width: gridWidth,
 			height: gridHeight,
-			gridType: gridType
+			gridType: gridType,
+			tapeLength,
+			pairLength
 		}));
 		// Set canvas pixel dimensions before init so resetView gets correct aspect
 		const dpr = window.devicePixelRatio || 1;
@@ -365,6 +668,7 @@
 					return;
 				}
 				engine = eng;
+				runDeadline = performance.now() + 55_000;
 				startLoop();
 				if (import.meta.env.DEV) {
 					// Dev-only handle for headless experiments and debugging from the console.
@@ -381,6 +685,7 @@
 		return () => {
 			disposed = true;
 			clearInterval(tooltipRefreshTimer);
+			clearTimeout(inspectClickTimer);
 			if (animFrameId !== undefined) {
 				cancelAnimationFrame(animFrameId);
 				animFrameId = undefined;
@@ -390,7 +695,7 @@
 	});
 
 	// ResizeObserver for canvas
-	$effect(() => {
+	onMount(() => {
 		if (!canvasContainer) return;
 		const ro = new ResizeObserver((entries) => {
 			for (const entry of entries) {
@@ -413,18 +718,20 @@
 			if (!engine) return;
 
 			if (playing && (document.hidden || performance.now() >= runDeadline)) playing = false;
-			if (playing) {
+			if (playing && !machineBusy && !cultureBusy) {
 				for (let i = 0; i < speed; i++) {
 					engine.simulateStep();
 				}
 			}
 
-			engine.render(canvas);
-			flushCellRefresh();
+			if (!machineBusy) {
+				engine.render(canvas);
+				flushCellRefresh();
+			}
 			frameCount++;
 
 			// Update stats: immediately on first frame, then every 15 frames
-			if (playing && (frameCount === 1 || frameCount % 15 === 0) && !statsLoading) {
+			if (!machineBusy && playing && (frameCount === 1 || frameCount % 15 === 0) && !statsLoading) {
 				opsPerSec = engine.opsPerSec;
 				updateTopBytes();
 				if (infoTab === 'species' || infoTab === 'diversity') {
@@ -527,7 +834,7 @@
 				.slice(0, MAX_SPECIES_TRACKED)
 				.map(([hash, count]) => {
 					const cellIdx = exemplarIdx.get(hash) ?? 0;
-					const exemplar = soupData.length > 0 ? getCellData(soupData, cellIdx, gridType) : null;
+					const exemplar = soupData.length > 0 ? getCellData(soupData, cellIdx) : null;
 					const { color, textColor } = speciesAvgColor(exemplar);
 					const exemplarCells = exemplar ? buildGenomeGrid(exemplar, disassemble(exemplar)) : [];
 					return {
@@ -695,6 +1002,7 @@
 		mouseY = e.clientY;
 
 		if (isPanning) {
+			if (Math.hypot(e.clientX - pointerDownX, e.clientY - pointerDownY) > 4) pointerMoved = true;
 			const dx = e.clientX - panStartX;
 			const dy = e.clientY - panStartY;
 			engine.pan(dx, dy, rect.width, rect.height);
@@ -725,6 +1033,8 @@
 	}
 
 	let pendingCellRefresh = -1;
+	let cellRefreshPending = false;
+	let lastCellRefresh = 0;
 
 	function refreshCellData(cell: number) {
 		// Mark for readback after next render (so data matches what's on screen)
@@ -732,15 +1042,28 @@
 	}
 
 	function flushCellRefresh() {
-		if (pendingCellRefresh < 0 || !engine) return;
+		if (
+			pendingCellRefresh < 0 ||
+			!engine ||
+			cellRefreshPending ||
+			performance.now() - lastCellRefresh < 500
+		)
+			return;
 		const cell = pendingCellRefresh;
 		pendingCellRefresh = -1;
-		engine.readSoupData().then((soupData) => {
-			if (soupData.length === 0 || hoveredCell !== cell) return;
-			const data = getCellData(soupData, cell, gridType);
-			cellData = data;
-			disasmLines = disassemble(data);
-		});
+		cellRefreshPending = true;
+		lastCellRefresh = performance.now();
+		engine
+			.readSoupData()
+			.then((soupData) => {
+				if (soupData.length === 0 || hoveredCell !== cell) return;
+				const data = getCellData(soupData, cell);
+				cellData = data;
+				disasmLines = disassemble(data);
+			})
+			.finally(() => {
+				cellRefreshPending = false;
+			});
 	}
 
 	// Track if touch just handled an interaction, to suppress synthetic mouse events
@@ -751,6 +1074,9 @@
 		if (e.button === 0 || e.button === 1) {
 			e.preventDefault();
 			isPanning = true;
+			pointerMoved = false;
+			pointerDownX = e.clientX;
+			pointerDownY = e.clientY;
 			panStartX = e.clientX;
 			panStartY = e.clientY;
 			hoveredCell = -1;
@@ -764,6 +1090,19 @@
 		if (touchHandled) return;
 		if (e.button === 0 || e.button === 1) {
 			isPanning = false;
+			if (e.button === 0 && !pointerMoved && engine && canvas) {
+				const rect = canvas.getBoundingClientRect();
+				const cell = engine.screenToCell(
+					((e.clientX - rect.left) * canvasW) / rect.width,
+					((e.clientY - rect.top) * canvasH) / rect.height,
+					canvasW,
+					canvasH
+				);
+				clearTimeout(inspectClickTimer);
+				inspectClickTimer = setTimeout(() => {
+					void inspectCell(cell);
+				}, 220);
+			}
 		}
 	}
 
@@ -878,7 +1217,8 @@
 				const cell = engine.screenToCell(sx, sy, canvasW, canvasH);
 
 				if (cell >= 0 && cell !== hoveredCell) {
-					// Tap on a cell — show tooltip
+					// Tap on a cell — preserve the hover view and open an inspector.
+					void inspectCell(cell);
 					hoveredCell = cell;
 					mouseX = touchStartX;
 					mouseY = touchStartY;
@@ -918,12 +1258,25 @@
 	}
 
 	function handleCanvasDblClick() {
+		clearTimeout(inspectClickTimer);
+		inspectedTape = null;
 		engine?.resetView(canvasW, canvasH);
 	}
 
 	function handleReset() {
-		if (!engine) return;
+		if (!engine || machineBusy) return;
+		if (initialCondition.kind !== 'random') {
+			void updateMachine(true);
+			return;
+		}
 		engine.reset(seed);
+		clearMeasurements();
+	}
+
+	function clearMeasurements() {
+		inspectedTape = null;
+		cultureResult = null;
+		cultureError = null;
 		opsPerSec = 0;
 		chartRing.length = 0;
 		chartLen = 0;
@@ -952,6 +1305,8 @@
 		const soupData = await engine.readSoupData();
 		const metadata: CheckpointMetadata = {
 			version: 1,
+			machineSettings: engine.settings,
+			initialCondition,
 			gridWidth,
 			gridHeight,
 			gridType,
@@ -974,52 +1329,38 @@
 	}
 
 	async function handleLoadFile(file: File) {
-		const data = new Uint8Array(await file.arrayBuffer());
-		const result = await loadCheckpoint(data);
-		if (!result) return;
-
-		const { metadata, soupData } = result;
-
-		// Apply grid config if different
-		if (
-			metadata.gridWidth !== gridWidth ||
-			metadata.gridHeight !== gridHeight ||
-			metadata.gridType !== gridType
-		) {
-			gridType = metadata.gridType;
-			gridWidth = metadata.gridWidth;
-			gridHeight = metadata.gridHeight;
-			applyGridConfig();
-		}
-
-		// Restore params
-		seed = metadata.seed;
-		noiseExp = metadata.noiseExp;
-		if (engine) {
-			engine.noiseExp = noiseExp;
-			engine.z80Steps = metadata.z80Steps;
-			engine.pairCount = metadata.pairCount;
+		if (!engine || machineBusy) return;
+		playing = false;
+		machineBusy = true;
+		machineError = null;
+		try {
+			const result = await loadCheckpoint(new Uint8Array(await file.arrayBuffer()));
+			if (!result) throw new Error('This file does not contain an Algocell checkpoint.');
+			const { metadata, soupData } = result;
+			const restored: LabSettings = metadata.machineSettings ?? {
+				...ORIGINAL_SETTINGS,
+				width: metadata.gridWidth,
+				height: metadata.gridHeight,
+				topology: metadata.gridType,
+				length: metadata.gridType === 'hex' ? 19 : 16,
+				ring: metadata.gridType === 'hex' ? 38 : 32,
+				seed: metadata.seed,
+				mutationExponent: metadata.noiseExp,
+				steps: metadata.z80Steps,
+				pairAttempts: metadata.pairCount,
+				ablation: [...metadata.suppressPatterns]
+			};
+			assignMachineSettings(restored);
+			initialCondition = metadata.initialCondition ?? { kind: 'random' };
+			selectedPaperId = '';
+			await engine.configure(restored, initialCondition);
 			engine.writeSoupData(soupData);
+			clearMeasurements();
+		} catch (error) {
+			machineError = error instanceof Error ? error.message : String(error);
+		} finally {
+			machineBusy = false;
 		}
-
-		// Restore suppression
-		suppressPatterns = metadata.suppressPatterns;
-
-		// Reset chart/species
-		chartRing.length = 0;
-		chartLen = 0;
-		chartVersion++;
-		trackedBytes = [];
-		speciesRing.length = 0;
-		speciesHashOrder = [];
-		speciesLen = 0;
-		speciesVersion++;
-		currentSpecies = null;
-		speciesExemplars = new Map();
-		speciesModal = null;
-		diversityRing.length = 0;
-		diversityLen = 0;
-		diversityVersion++;
 	}
 
 	function handleFileInputChange(e: Event) {
@@ -1059,6 +1400,10 @@
 
 	function handleGridTypeChange(type: GridType) {
 		gridType = type;
+		tapeLength = type === 'hex' ? 19 : 16;
+		pairLength = tapeLength * 2;
+		selectedPaperId = '';
+		initialCondition = { kind: 'random' };
 		// Recompute grid dimensions for the new grid type
 		const dims = computeGridDimensions(window.innerWidth, window.innerHeight, type);
 		gridWidth = dims.w;
@@ -1067,27 +1412,7 @@
 	}
 
 	function applyGridConfig() {
-		if (!engine) return;
-		const config: GridConfig = { width: gridWidth, height: gridHeight, gridType: gridType };
-		engine.changeGridConfig(config, canvasW, canvasH);
-		// Re-apply suppression after buffer recreation
-		engine.setSuppression(suppression);
-		// Reset stats
-		opsPerSec = 0;
-		chartRing.length = 0;
-		chartLen = 0;
-		chartVersion++;
-		trackedBytes = [];
-		speciesRing.length = 0;
-		speciesHashOrder = [];
-		speciesLen = 0;
-		speciesVersion++;
-		currentSpecies = null;
-		speciesExemplars = new Map();
-		speciesModal = null;
-		diversityRing.length = 0;
-		diversityLen = 0;
-		diversityVersion++;
+		void updateMachine(true);
 	}
 
 	function addSuppressPattern(pattern: string) {
@@ -1100,6 +1425,12 @@
 		let added = false;
 		for (const p of parts) {
 			if (!p || suppressPatterns.includes(p)) continue;
+			try {
+				ablationMasks(isa, [p]);
+			} catch (error) {
+				machineError = error instanceof Error ? error.message : String(error);
+				continue;
+			}
 			suppressPatterns.push(p);
 			added = true;
 		}
@@ -1116,7 +1447,7 @@
 	function toggleSuppressOpcode(opcode: number) {
 		tileTooltip = null;
 		chartHoveredByte = -1;
-		const mnemonic = mnemonicOf('base', opcode);
+		const mnemonic = isa === 'z80' ? mnemonicOf('base', opcode) : `opcode:${hexByte(opcode)}`;
 		if (suppressedOpcodes.has(opcode)) {
 			// Find and remove patterns that match this opcode
 			// If the exact mnemonic is a pattern, remove it; otherwise remove patterns that only match this one
@@ -1145,6 +1476,56 @@
 		set: (v: unknown) => void;
 	}
 	const SETTINGS: SettingDef[] = [
+		{
+			key: 'machine',
+			mode: 'grid',
+			get: () => machine,
+			set: (v) => (machine = v as MachineChoice)
+		},
+		{
+			key: 'tapeLength',
+			mode: 'grid',
+			get: () => tapeLength,
+			set: (v) => (tapeLength = v as number)
+		},
+		{
+			key: 'pairLength',
+			mode: 'grid',
+			get: () => pairLength,
+			set: (v) => (pairLength = v as number)
+		},
+		{
+			key: 'lethalProbability',
+			mode: 'live',
+			get: () => lethalProbability,
+			set: (v) => (lethalProbability = v as number)
+		},
+		{
+			key: 'randomRegisters',
+			mode: 'live',
+			get: () => randomRegisters,
+			set: (v) => (randomRegisters = v as boolean)
+		},
+		{
+			key: 'stackConvention',
+			mode: 'grid',
+			get: () => stackConvention,
+			set: (v) => (stackConvention = v as LabSettings['stack'])
+		},
+		{
+			key: 'dialMode',
+			mode: 'live',
+			get: () => dialMode,
+			set: (v) => (dialMode = v as LabSettings['dialMode'])
+		},
+		{
+			key: 'initialCondition',
+			mode: 'grid',
+			get: () => JSON.stringify(initialCondition),
+			set: (v) => {
+				initialCondition = JSON.parse(v as string) as InitialCondition;
+			}
+		},
 		{ key: 'gridType', mode: 'grid', get: () => gridType, set: (v) => (gridType = v as GridType) },
 		{ key: 'gridWidth', mode: 'grid', get: () => gridWidth, set: (v) => (gridWidth = v as number) },
 		{
@@ -1253,10 +1634,32 @@
 		return null;
 	});
 
-	function applyPreset(preset: Preset) {
-		// Apply each changed setting, tracking the most disruptive action needed.
+	async function applyPreset(preset: Preset) {
+		if (machineBusy) return;
 		let disruption: ApplyMode | 'none' = 'none';
 		const rank: Record<ApplyMode | 'none', number> = { none: 0, live: 0, reset: 1, grid: 2 };
+		if (!('machine' in preset.values)) {
+			// Original .acell-era presets retain their original processor and reset contract.
+			if (
+				machine !== 'z80-0.2' ||
+				lethalProbability !== 0 ||
+				randomRegisters ||
+				stackConvention !== 'legacy-sp'
+			)
+				disruption = 'grid';
+			machine = 'z80-0.2';
+			lethalProbability = 0;
+			randomRegisters = false;
+			stackConvention = 'legacy-sp';
+			dialMode = 'historical-pcg';
+			if (preset.id === 'builtin:classic' || preset.id === 'builtin:hex-organic') {
+				const topology = preset.values.gridType === 'hex' ? 'hex' : 'square';
+				if (tapeLength !== (topology === 'hex' ? 19 : 16)) disruption = 'grid';
+				tapeLength = topology === 'hex' ? 19 : 16;
+				pairLength = tapeLength * 2;
+				initialCondition = { kind: 'random' };
+			}
+		}
 		for (const def of SETTINGS) {
 			if (!(def.key in preset.values)) continue;
 			const nextVal = preset.values[def.key];
@@ -1264,10 +1667,10 @@
 			def.set(nextVal);
 			if (rank[def.mode] > rank[disruption]) disruption = def.mode;
 		}
-		// Perform the single disruptive action, if any. Live-only changes leave
-		// the running simulation untouched — it steers, it does not restart.
-		if (disruption === 'grid') applyGridConfig();
-		else if (disruption === 'reset') handleReset();
+		selectedPaperId = '';
+		if (disruption === 'grid' || disruption === 'reset') await updateMachine(true);
+		else if (engine && JSON.stringify(engine.settings) !== JSON.stringify(settings()))
+			await updateMachine();
 	}
 
 	// Case-insensitive name match so "Classic" and "classic" are the same preset.
@@ -1320,8 +1723,8 @@
 
 	// Sync the derived suppression sets to the GPU engine
 	$effect(() => {
-		if (!engine) return;
-		engine.setSuppression(suppression);
+		if (!engine || machineBusy) return;
+		engine.setAblation(suppressPatterns);
 	});
 
 	// Sync simple view mode to GPU engine
@@ -1381,6 +1784,7 @@
 	});
 
 	function togglePlay() {
+		if (!engine || machineBusy || cultureBusy) return;
 		playing = !playing;
 		if (playing) runDeadline = performance.now() + 55_000;
 	}
@@ -1671,11 +2075,16 @@
 </script>
 
 <svelte:window
+	onpointerdown={() => {
+		keyboardModality = false;
+	}}
 	onkeydown={(e) => {
+		keyboardModality = true;
 		if (e.code === 'Escape') {
 			showHelp = false;
 			showSettings = false;
 			speciesModal = null;
+			inspectedTape = null;
 			overwriteTarget = null;
 		}
 		if (e.target !== document.body) return;
@@ -1724,7 +2133,7 @@
 />
 
 <svelte:head>
-	<title>Algocell · Legacy Z80 instrument</title>
+	<title>Algocell · Digital primordial soup</title>
 </svelte:head>
 
 <svelte:document
@@ -1732,7 +2141,7 @@
 		if (document.hidden) playing = false;
 	}}
 />
-<div class="legacy-scope">
+<div class="legacy-scope" class:pointer-focus={!keyboardModality}>
 	<!-- Hidden file input for checkpoint load -->
 	<input
 		bind:this={fileInput}
@@ -1746,7 +2155,7 @@
 	<div
 		bind:this={canvasContainer}
 		role="region"
-		aria-label="Legacy soup viewport"
+		aria-label="Soup viewport"
 		class="fixed inset-0"
 		style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none"
 		ondragover={(e) => e.preventDefault()}
@@ -1952,14 +2361,19 @@
 	<!-- Bottom-left info bar -->
 	<div class="info-bar">
 		<div class="info-row">
-			<span class="info-item">
+			<span
+				class="info-item"
+				title="Instruction-slot budget per second, including unused slots in halted encounters"
+			>
 				<span class="info-label">ops/s</span>
 				<span class="info-value">{formatNumber(opsPerSec)}</span>
 			</span>
 			<span class="info-sep"></span>
 			<span class="info-item">
 				<span class="info-label">mut</span>
-				<span class="info-value">1/2<sup>{noiseExp}</sup></span>
+				<span class="info-value"
+					>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
+				>
 			</span>
 			<button class="info-chart-toggle" onclick={toggleChart} title="Toggle chart">
 				<svg
@@ -1984,7 +2398,7 @@
 					class="info-tab"
 					class:active={infoTab === 'opcodes'}
 					onclick={() => (infoTab = 'opcodes')}
-					title="Opcode frequency — most common byte values (Z80 instructions) over time"
+					title="Opcode frequency — most common byte values for the selected processor over time"
 					>Opcodes</button
 				>
 				<button
@@ -2293,6 +2707,136 @@
 		{/if}
 	</div>
 
+	{#snippet disassemblyPanel(tape: Uint8Array)}
+		<details class="inspector-disassembly">
+			<summary>Disassembly</summary>
+			{#each disassemble(tape) as line (line.offset)}<div class="disassembly-line">
+					<span>{line.offset.toString(16).toUpperCase().padStart(2, '0')}</span><span
+						>{line.bytes.map(hexByte).join(' ')}</span
+					><span>{line.mnemonic}</span>
+				</div>{/each}
+		</details>
+	{/snippet}
+
+	{#snippet culturePanel(tape: Uint8Array)}
+		<div class="culture-panel">
+			<button
+				class="preset-chip culture-button"
+				disabled={cultureBusy || machineBusy || !engine}
+				onclick={() => {
+					void runCulture(tape);
+				}}>Run culture test</button
+			>
+			<span class="instrument-note">32 fresh partners · 2 generations · mutation off</span>
+			{#if cultureBusy}<p class="instrument-note" role="status">Testing the selected tape…</p>{/if}
+			{#if cultureError}<p class="instrument-error" role="alert">{cultureError}</p>{/if}
+			{#if cultureResult}
+				<p class="culture-verdict">
+					{cultureResult.positive === null
+						? 'Culture screen unknown'
+						: cultureResult.positive
+							? 'Positive culture screen'
+							: 'Below the culture screen'} · {cultureResult.confinement}
+				</p>
+				<table class="culture-table">
+					<thead
+						><tr><th>Generation</th><th>Gain</th><th>Exact</th><th>Cyclic</th><th>Entries</th></tr
+						></thead
+					><tbody>
+						{#each cultureResult.generations as generation (generation.generation)}<tr
+								><td>{generation.generation}</td><td
+									>{generation.gain === null ? 'unknown' : generation.gain.toFixed(3)}</td
+								><td>{generation.exactCopies}/{cultureResult.trials}</td><td
+									>{generation.cyclicCopies}/{cultureResult.trials}</td
+								><td>{generation.partnerEntries}/{cultureResult.trials}</td></tr
+							>{/each}
+					</tbody>
+				</table>
+				<p class="instrument-note">
+					Continuing production is measured separately from retention of an introduced variant. Seed {cultureResult.seed};
+					{cultureResult.settings.steps} instruction slots.
+				</p>
+				<details class="culture-example">
+					<summary>Example encounter · fetch map &amp; offspring</summary>
+					<p class="instrument-note">
+						Fetched addresses (including operands). Underline marks an instruction start.
+					</p>
+					<div class="culture-bytes">
+						{#each cultureResult.example.before as byte, index (index)}<span
+								class="culture-byte"
+								class:fetched={cultureResult.example.fetched.includes(index)}
+								class:instruction-start={cultureResult.example.starts.includes(index)}
+								title="Address {index}"
+								style="--byte-color:{byteColor(byte)};color:{cultureResult.example.fetched.includes(
+									index
+								)
+									? cellTextColor(byte)
+									: '#888'}">{hexByte(byte)}</span
+							>{/each}
+					</div>
+					<p class="instrument-note">Partner after the encounter</p>
+					<div class="culture-bytes">
+						{#each cultureResult.example.after.slice(tape.length, tape.length * 2) as byte, index (index)}<span
+								class="culture-byte fetched"
+								style="--byte-color:{byteColor(byte)};color:{cellTextColor(byte)}"
+								title="Partner byte {index}">{hexByte(byte)}</span
+							>{/each}
+					</div>
+					<p class="instrument-note">
+						{cultureResult.example.steps} executed steps; halt {cultureResult.example.halt}; trap {cultureResult
+							.example.trap}.
+					</p>
+				</details>
+			{/if}
+		</div>
+	{/snippet}
+
+	{#if inspectedTape}
+		{@const tape = inspectedTape}
+		{@const cells = buildGenomeGrid(tape, disassemble(tape))}
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<div
+			class="species-modal-backdrop"
+			onclick={() => {
+				inspectedTape = null;
+			}}
+			role="presentation"
+		>
+			<div
+				class="species-modal tape-inspector"
+				onclick={(event) => event.stopPropagation()}
+				role="dialog"
+				aria-modal="true"
+				aria-label="Tape inspector"
+				tabindex="-1"
+			>
+				<div class="species-modal-header">
+					<span>Cell {inspectedCell} · {isa.toUpperCase()} · {tape.length} bytes</span><button
+						class="species-modal-close"
+						aria-label="Close tape inspector"
+						onclick={() => {
+							inspectedTape = null;
+						}}>×</button
+					>
+				</div>
+				<div class="species-modal-body">
+					<div class="tip-grid species-modal-grid">
+						{#each cells as cell, index (index)}<div
+								class="tip-cell"
+								class:operand={!cell.isOpcode}
+								style="background:{byteColor(cell.byteVal)};color:{cellTextColor(cell.byteVal)}"
+								title="Byte {index} · {hexByte(cell.byteVal)} · {cell.label}"
+							>
+								{cell.label}
+							</div>{/each}
+					</div>
+					{@render disassemblyPanel(tape)}
+					{@render culturePanel(tape)}
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	<!-- Species inspect modal -->
 	{#if speciesModal}
 		{@const sp = speciesModal}
@@ -2311,7 +2855,7 @@
 				onclick={(e) => e.stopPropagation()}
 				role="dialog"
 				aria-modal="true"
-				aria-label="Legacy instrument details"
+				aria-label="Algocell details"
 				tabindex="-1"
 			>
 				<div class="species-modal-header" style="background:{sp.color};color:{sp.textColor}">
@@ -2334,7 +2878,7 @@
 				</div>
 				{#if cells.length > 0}
 					<div class="species-modal-body">
-						{#if gridType === 'hex'}
+						{#if gridType === 'hex' && tapeLength === 19}
 							<div
 								class="hex-byte-grid species-modal-hex"
 								role="group"
@@ -2404,6 +2948,9 @@
 								{/each}
 							</div>
 						{/if}
+						{#if sp.exemplar}{@render disassemblyPanel(sp.exemplar)}{@render culturePanel(
+								sp.exemplar
+							)}{/if}
 						<div class="species-modal-hash">
 							{(sp.hash >>> 0).toString(16).padStart(8, '0')}
 						</div>
@@ -2606,6 +3153,58 @@
 						>
 					</div>
 				{/if}
+				<label class="paper-preset-label" for="paper-preset">Paper conditions</label>
+				<select
+					id="paper-preset"
+					class="instrument-select"
+					value={selectedPaperId}
+					disabled={machineBusy || !engine}
+					onchange={(event) => {
+						const preset = PAPER_PRESETS.find((entry) => entry.id === event.currentTarget.value);
+						if (preset) void applyPaperPreset(preset);
+					}}
+				>
+					<option value="">Choose a paper condition…</option>
+					{#each ['discovery', 'intervention', 'demonstration'] as category (category)}
+						<optgroup label={category.charAt(0).toUpperCase() + category.slice(1)}>
+							{#each PAPER_PRESETS.filter((entry) => entry.category === category) as preset (preset.id)}
+								<option value={preset.id}>{preset.name}</option>
+							{/each}
+						</optgroup>
+					{/each}
+				</select>
+				{#if selectedPaper}
+					<div class="paper-condition">
+						<p>{scientificText(selectedPaper.description)}</p>
+						<p><strong>Look for</strong> {scientificText(selectedPaper.whatToLookFor)}</p>
+						<details>
+							<summary>Finding, limits &amp; sources</summary>
+							<p>{selectedPaper.finding}</p>
+							<p>{scientificText(selectedPaper.limits)}</p>
+							<p>
+								<strong>Registered condition</strong>
+								{selectedPaper.published.width ?? 'isolated'} × {selectedPaper.published.height ??
+									'culture'}, {selectedPaper.published.pairAttempts ?? 'assay'} pair attempts; horizon
+								{selectedPaper.published.horizon.toLocaleString()}
+								{selectedPaper.published.horizonUnit}. {scientificText(
+									selectedPaper.published.note
+								)}
+							</p>
+							<p>{selectedPaper.published.reset}</p>
+							<p class="source-path">{selectedPaper.source.registration}</p>
+							{#if selectedPaper.source.world}<p class="source-path">
+									{selectedPaper.source.world}
+								</p>{/if}
+							{#each selectedPaper.source.results as source (source)}<p class="source-path">
+									{source}
+								</p>{/each}
+							<p>
+								Sources are paths in the companion algocell-paper repository. This GPU run is a
+								fresh realization; equal seeds do not promise the archived scheduling trajectory.
+							</p>
+						</details>
+					</div>
+				{/if}
 				<div class="preset-chips">
 					{#each presets as preset (preset.id)}
 						<button
@@ -2634,6 +3233,125 @@
 						</button>
 					{/each}
 				</div>
+			</div>
+
+			<div class="param machine-controls">
+				<div class="param-head">
+					<label class="param-label" for="machine-select">Processor</label>
+				</div>
+				<select
+					id="machine-select"
+					class="instrument-select"
+					value={machine}
+					onchange={chooseMachine}
+					disabled={machineBusy || !engine}
+				>
+					<option value="z80-0.2">Z80 · compat 0.2</option>
+					<option value="z80-0.3">Z80 · 0.3 classic</option>
+					<option value="z80-nmos">Z80 · 0.3 Zilog NMOS</option>
+					<option value="m6502">NMOS 6502</option>
+					<option value="i8086">8086 · coherent fetch</option>
+				</select>
+				<details class="world-contract">
+					<summary
+						>World contract <span class="contract-shape">L{tapeLength} / P{pairLength}</span
+						></summary
+					>
+					<div class="world-geometry-row">
+						<label for="tape-length">Tape L</label><input
+							id="tape-length"
+							class="seed-input"
+							type="number"
+							min="4"
+							max="32"
+							value={tapeLength}
+							disabled={machineBusy}
+							onchange={(event) => {
+								tapeLength = Math.max(4, Math.min(32, Number(event.currentTarget.value)));
+								pairLength = Math.max(pairLength, tapeLength * 2);
+								initialCondition = { kind: 'random' };
+								selectedPaperId = '';
+								void updateMachine(true);
+							}}
+						/>
+						<label for="pair-length">Ring P</label><input
+							id="pair-length"
+							class="seed-input"
+							type="number"
+							min={tapeLength * 2}
+							max="128"
+							value={pairLength}
+							disabled={machineBusy}
+							onchange={(event) => {
+								pairLength = Math.max(
+									tapeLength * 2,
+									Math.min(128, Number(event.currentTarget.value))
+								);
+								void updateMachine(true);
+							}}
+						/>
+					</div>
+					<label class="world-control-label" for="stack-convention">Stack placement</label>
+					<select
+						id="stack-convention"
+						class="instrument-select"
+						bind:value={stackConvention}
+						disabled={machineBusy}
+						onchange={() => {
+							void updateMachine(true);
+						}}
+					>
+						<option value="top">Top at B’s last byte</option><option value="first-push"
+							>First push at B’s last byte</option
+						>{#if isa === 'z80'}<option value="legacy-sp">Original SP = FFFF</option>{/if}
+					</select>
+					<label class="instrument-check"
+						><input
+							type="checkbox"
+							bind:checked={randomRegisters}
+							disabled={machineBusy}
+							onchange={() => {
+								void updateMachine();
+							}}
+						/> Random registers</label
+					>
+					<label class="world-control-label" for="dial-mode">Dial stream</label>
+					<select
+						id="dial-mode"
+						class="instrument-select"
+						bind:value={dialMode}
+						disabled={machineBusy}
+						onchange={() => {
+							void updateMachine();
+						}}
+						><option value="historical-pcg">Historical PCG</option><option value="counter"
+							>Counter</option
+						></select
+					>
+				</details>
+				<div class="param-head chemistry-head">
+					<label class="param-label" for="lethal-probability">Lethal zero</label><span
+						class="param-val"
+						>{(lethalProbability * 100).toFixed(
+							lethalProbability && lethalProbability < 0.01 ? 1 : 0
+						)}%</span
+					>
+				</div>
+				<input
+					id="lethal-probability"
+					class="slider"
+					type="range"
+					min="0"
+					max="1"
+					step="0.01"
+					bind:value={lethalProbability}
+					disabled={machineBusy}
+					onchange={() => {
+						void updateMachine();
+					}}
+				/>
+				{#if machineBusy}<p class="instrument-note" role="status">Preparing the processor…</p>{/if}
+				{#if machineError}<p class="instrument-error" role="alert">{machineError}</p>{/if}
 			</div>
 
 			<div class="param">
@@ -2872,14 +3590,16 @@
 							live.</span
 						>
 					</span>
-					<span class="param-val">1/2<sup>{noiseExp}</sup></span>
+					<span class="param-val"
+						>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
+					>
 				</div>
 				<div class="slider-track-wrap">
 					<input
 						id="noise-input"
 						type="range"
 						class="slider"
-						value={13 - noiseExp}
+						value={noiseExp >= 31 ? 1 : 13 - noiseExp}
 						min="1"
 						max="12"
 						step="1"
@@ -2892,6 +3612,16 @@
 						}}
 					/>
 				</div>
+				<label class="instrument-check"
+					><input
+						type="checkbox"
+						checked={noiseExp >= 31}
+						onchange={(event) => {
+							noiseExp = event.currentTarget.checked ? 31 : 4;
+							if (engine) engine.noiseExp = noiseExp;
+						}}
+					/> Mutation off</label
+				>
 			</div>
 
 			<div class="param">
@@ -2965,7 +3695,8 @@
 							stroke-width="2"
 							stroke-linecap="round"
 							stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg
-						> Z80 steps</label
+						>
+						{isa === 'z80' ? 'Z80 steps' : 'Execution steps'}</label
 					>
 					<span class="param-info-wrap" class:show-tip={openTip === 'steps'}>
 						<button
@@ -2981,7 +3712,7 @@
 							}}>?</button
 						>
 						<span class="param-tip"
-							>CPU cycles per pair execution. More steps = longer programs can run, slower
+							>Instruction slots per pair execution. More steps = longer programs can run, slower
 							throughput. Applied live.</span
 						>
 					</span>
@@ -3041,11 +3772,12 @@
 							}}>?</button
 						>
 						<span class="param-tip"
-							>Remove instructions from the CPU. A pattern is a mnemonic substring (LDIR, LD (HL),
-							PUSH), a whole family (family:block-copy, family:stack, family:writes-mem) or one
-							opcode (ed:B0, cb:FF, 3E). Prefixed ED/CB instructions are reachable individually. A
-							suppressed opcode executes as a NOP; its operand bytes run as the next instruction.
-							Use it to take the usual replication machinery away and see what else evolves.</span
+							>{#if isa === 'z80'}Remove instructions from the CPU. A pattern is a mnemonic
+								substring (LDIR, LD (HL), PUSH), a whole family (family:block-copy, family:stack,
+								family:writes-mem) or one opcode (ed:B0, cb:FF, 3E). Prefixed ED/CB instructions are
+								reachable individually. A suppressed opcode executes as a NOP; its operand bytes run
+								as the next instruction. Use it to take the usual replication machinery away and see
+								what else evolves.{:else}{isaSuppressionDescription}{/if}</span
 						>
 					</span>
 					{#if suppressPatterns.length > 0}
@@ -3066,7 +3798,11 @@
 					<input
 						class="suppress-input"
 						type="text"
-						placeholder="family:block-copy; LDIR; PUSH; ed:B0"
+						placeholder={isa === 'z80'
+							? 'family:block-copy; LDIR; PUSH; ed:B0'
+							: isa === 'm6502'
+								? 'family:stack; STA; opcode:8D'
+								: 'family:block-copy; MOV; opcode:A4'}
 						bind:value={suppressInput}
 						onkeydown={(e) => {
 							if (e.key === 'Enter' && suppressInput.trim()) {
@@ -3076,14 +3812,7 @@
 						}}
 					/>
 					{#if suppressInput.trim()}
-						{@const preview = countSuppressed(
-							resolveSuppression(
-								suppressInput
-									.split(';')
-									.map((s) => s.trim())
-									.filter(Boolean)
-							)
-						)}
+						{@const preview = suppressionPreview(suppressInput)}
 						<span class="suppress-preview"
 							>↵ to suppress {preview} instruction{preview !== 1 ? 's' : ''}</span
 						>
@@ -3329,6 +4058,21 @@
 						>
 					</div>
 				</div>
+				<label class="instrument-check"
+					><input
+						type="checkbox"
+						checked={showConfinement}
+						disabled={machineBusy || !engine}
+						onchange={changeConfinement}
+					/> Open / confined fetch view</label
+				>
+				{#if showConfinement}<p class="instrument-note">
+						<span class="fetch-key confined" style="background:{byteColor(48)}"></span> No observed
+						exit from focal tape
+						<span class="fetch-key open" style="background:{byteColor(192)}"></span>
+						Outside focal tape (B or padding) <span class="fetch-key unknown"></span> Unknown. Last initiating
+						encounter only; not lifetime confinement or heredity.
+					</p>{/if}
 			</div>
 		</div>
 	{/if}
@@ -3342,7 +4086,7 @@
 				onclick={(e) => e.stopPropagation()}
 				role="dialog"
 				aria-modal="true"
-				aria-label="Legacy instrument details"
+				aria-label="Algocell details"
 				tabindex="-1"
 			>
 				<div class="confirm-title">Overwrite preset?</div>
@@ -3362,7 +4106,7 @@
 
 	<!-- Genome tooltip -->
 	{#if hoveredCell >= 0 && cellData && !isPanning}
-		{#if gridType === 'hex'}
+		{#if gridType === 'hex' && tapeLength === 19}
 			<!-- Hex byte tooltip: 19 hex-shaped bytes in 3-4-5-4-3 hexagonal arrangement -->
 			<div class="genome-tip hex-tip" style={tooltipStyle}>
 				<div class="hex-byte-grid">
@@ -3409,13 +4153,14 @@
 				onclick={(e) => e.stopPropagation()}
 				role="dialog"
 				aria-modal="true"
-				aria-label="Legacy instrument details"
+				aria-label="Algocell details"
 				tabindex="-1"
 			>
 				<div class="modal-header">
 					<div class="modal-tabs">
 						<button
 							class="modal-tab"
+							aria-label="Overview"
 							class:active={helpTab === 'overview'}
 							onclick={() => (helpTab = 'overview')}
 						>
@@ -3439,6 +4184,13 @@
 						</button>
 						<button
 							class="modal-tab"
+							aria-label="Guide"
+							class:active={helpTab === 'guide'}
+							onclick={() => (helpTab = 'guide')}>Guide</button
+						>
+						<button
+							class="modal-tab"
+							aria-label="Visuals"
 							class:active={helpTab === 'visuals'}
 							onclick={() => (helpTab = 'visuals')}
 						>
@@ -3461,6 +4213,7 @@
 						</button>
 						<button
 							class="modal-tab"
+							aria-label="Z80"
 							class:active={helpTab === 'z80'}
 							onclick={() => (helpTab = 'z80')}
 						>
@@ -3499,6 +4252,7 @@
 						</button>
 						<button
 							class="modal-tab"
+							aria-label="Parameters"
 							class:active={helpTab === 'params'}
 							onclick={() => (helpTab = 'params')}
 						>
@@ -3532,6 +4286,7 @@
 						</button>
 						<button
 							class="modal-tab"
+							aria-label="Analysis"
 							class:active={helpTab === 'analysis'}
 							onclick={() => (helpTab = 'analysis')}
 						>
@@ -3551,6 +4306,7 @@
 						</button>
 						<button
 							class="modal-tab tab-keys"
+							aria-label="Keys"
 							class:active={helpTab === 'keys'}
 							onclick={() => (helpTab = 'keys')}
 						>
@@ -3594,6 +4350,7 @@
 						</button>
 						<button
 							class="modal-tab"
+							aria-label="About"
 							class:active={helpTab === 'about'}
 							onclick={() => (helpTab = 'about')}
 						>
@@ -3655,7 +4412,14 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					{#if helpTab === 'overview'}
+					{#if helpTab === 'guide'}
+						{#each guideSections as section (section.id)}<h4>{section.title}</h4>
+							{#each section.paragraphs as paragraph (paragraph)}<p>
+									{scientificText(paragraph)}
+								</p>{/each}{#if section.steps}<ol class="guide-steps">
+									{#each section.steps as step (step)}<li>{scientificText(step)}</li>{/each}
+								</ol>{/if}{/each}
+					{:else if helpTab === 'overview'}
 						<p class="cmap-note">
 							Based on <a
 								href="https://arxiv.org/abs/2406.19108"
@@ -3670,9 +4434,10 @@
 
 						<h4>Cells &amp; Tapes</h4>
 						<p>
-							A grid of cells (default 200&times;200) is filled with random bytes. Each cell holds a
-							short <strong>tape</strong> &mdash; a sequence of bytes treated as Z80 machine code. The
-							tape layout depends on the grid topology:
+							A grid of roughly 20,000 cells, fitted to the viewport, begins with random bytes. Each
+							cell holds a short <strong>tape</strong> interpreted by the selected processor. The original
+							layouts below show the default 16-byte square and 19-byte hex tapes; paper conditions can
+							use other tape and ring lengths:
 						</p>
 
 						<!-- Tape layout visuals -->
@@ -3743,7 +4508,8 @@
 							<li>
 								<strong>Combine their tapes.</strong> Both cells' bytes are copied into a single contiguous
 								buffer &mdash; Cell&nbsp;A's tape first, then Cell&nbsp;B's. The buffer wraps around,
-								so address 31 is followed by address 0.
+								so in the default 32-byte ring, address 31 is followed by address 0. Extra ring padding
+								starts at zero and is discarded on writeback.
 							</li>
 						</ol>
 
@@ -4093,34 +4859,37 @@
 
 						<ol class="help-steps" start="3">
 							<li>
-								<strong>Run Z80.</strong> A fresh Z80 CPU (all registers&nbsp;=&nbsp;0, PC&nbsp;=&nbsp;0)
-								executes instructions from byte 0 onward. It can read and write anywhere in the 32-byte
-								buffer, so Cell&nbsp;A's code can overwrite Cell&nbsp;B's bytes and vice versa.
+								<strong>Run the processor.</strong> The chosen machine starts at byte 0 with its declared
+								reset. The original Z80 starts with zero registers except SP = FFFF. Instructions can
+								read and write the shared ring, including the partner’s bytes. The diagrams illustrate
+								the default Z80 world.
 							</li>
 							<li>
 								<strong>Write back.</strong> The modified buffer is split and written back to both cells
 								in the grid. Note some bytes have been cross-contaminated (highlighted).
 							</li>
-							<li><strong>Mutate.</strong> Random bit-flips are applied across the grid.</li>
+							<li>
+								<strong>Mutate.</strong> Random byte-replacement attempts are applied across the grid.
+							</li>
 						</ol>
 						<p>
-							After all pairs are processed, the next step begins. Over time, self-replicating
-							programs emerge from this cycle.
+							After all pairs are processed, the next update begins. Copiers can emerge and spread
+							in this world, but a short run need not find one. Culture a candidate before
+							interpreting visible order as reproduction.
 						</p>
 
-						<h4>Why Life Emerges</h4>
+						<h4>Order, copying and evidence</h4>
 						<p>
-							Because every Z80 execution starts with all registers at zero, instructions like
+							In the default benign Z80 reset, A, H and L begin at zero. Instructions such as
 							<code>LD (HL),A</code> (store&nbsp;A at address&nbsp;HL) write zeros &mdash; since A, H,
 							and L are all zero. This makes NOP (0x00) accumulate rapidly. Random code acts as a &ldquo;zero
 							pump,&rdquo; flooding the grid with NOPs.
 						</p>
 						<p>
-							Eventually, by chance, a short byte sequence forms a self-copying loop &mdash;
-							typically <code>POP HL</code> + <code>EX (SP),HL</code>, which reads bytes from one
-							location and writes them to another, propagating itself into neighboring cells. Once a
-							replicator appears it spreads exponentially, displacing the NOPs. Watch the frequency
-							chart to see this phase transition happen in real time.
+							Some compact load–push or exchange/stack loops can copy material into a neighbor.
+							Whether a candidate keeps reproducing, enters its partner during instruction fetching,
+							or preserves an introduced difference are separate measurements. The schematic below
+							illustrates possible composition changes; it is not a guaranteed phase sequence.
 						</p>
 						<svg
 							viewBox="0 0 320 180"
@@ -4482,45 +5251,58 @@
 						</p>
 
 						<h4>Instruction Suppression (ablation)</h4>
-						<p>
-							Type a pattern into the Suppress field in Settings and press Enter to remove the
-							matching instructions from the CPU. The Z80 then executes a suppressed opcode as a
-							NOP. Every instruction on the base, <code>CB</code> and <code>ED</code> pages is
-							addressable, so block copies like <code>LDIR</code> can be removed on their own.
-						</p>
-						<ul class="help-list">
-							<li>
-								<strong>Families</strong> &mdash; <code>family:block-copy</code>
-								(LDI/LDD/LDIR/LDDR),
-								<code>family:stack</code> (PUSH/POP), <code>family:ld8-mem</code>,
-								<code>family:call-ret</code>, &hellip; and the pseudo-family
-								<code>family:writes-mem</code> (every instruction that writes memory)
-							</li>
-							<li>
-								<strong>Exact opcodes</strong> &mdash; <code>ed:B0</code> (LDIR), <code>cb:FF</code>
-								(SET 7,A), <code>3E</code> or <code>base:3E</code> (LD A,n)
-							</li>
-							<li>
-								<strong>Mnemonic substrings</strong> &mdash; <code>LDIR</code>,
-								<code>LD (HL)</code>,
-								<code>PUSH</code>; <code>LD</code> matches every load on every page
-							</li>
-							<li>
-								<strong>Click-to-suppress</strong> &mdash; click any tile in the frequency widget to add
-								its exact mnemonic as a pattern
-							</li>
-							<li>
-								<strong>Remove patterns</strong> &mdash; click the &times; on any chip to remove it, or
-								use the clear button to remove all
-							</li>
-						</ul>
-						<p>
-							Semantics: a suppressed base-page opcode is a 1-byte NOP, so its operand bytes run as
-							the next instruction (as if the opcode had been removed from the ISA). Suppressed
-							<code>CB</code>/<code>ED</code> instructions are 2-byte NOPs. IX/IY forms follow their
-							base opcode. Suppression prevents <em>execution</em>, not <em>existence</em>: a
-							suppressed byte value can still be written into memory or carried as data.
-						</p>
+						{#if isa === 'z80'}
+							<p>
+								Type a pattern into the Suppress field in Settings and press Enter to remove the
+								matching instructions from the CPU. The Z80 then executes a suppressed opcode as a
+								NOP. Every instruction on the base, <code>CB</code> and <code>ED</code> pages is
+								addressable, so block copies like <code>LDIR</code> can be removed on their own.
+							</p>
+							<ul class="help-list">
+								<li>
+									<strong>Families</strong> &mdash; <code>family:block-copy</code>
+									(LDI/LDD/LDIR/LDDR),
+									<code>family:stack</code> (PUSH/POP), <code>family:ld8-mem</code>,
+									<code>family:call-ret</code>, &hellip; and the pseudo-family
+									<code>family:writes-mem</code> (every instruction that writes memory)
+								</li>
+								<li>
+									<strong>Exact opcodes</strong> &mdash; <code>ed:B0</code> (LDIR),
+									<code>cb:FF</code>
+									(SET 7,A), <code>3E</code> or <code>base:3E</code> (LD A,n)
+								</li>
+								<li>
+									<strong>Mnemonic substrings</strong> &mdash; <code>LDIR</code>,
+									<code>LD (HL)</code>,
+									<code>PUSH</code>; <code>LD</code> matches every load on every page
+								</li>
+								<li>
+									<strong>Click-to-suppress</strong> &mdash; click any tile in the frequency widget to
+									add its exact mnemonic as a pattern
+								</li>
+								<li>
+									<strong>Remove patterns</strong> &mdash; click the &times; on any chip to remove it,
+									or use the clear button to remove all
+								</li>
+							</ul>
+							<p>
+								Semantics: a suppressed base-page opcode is a 1-byte NOP, so its operand bytes run
+								as the next instruction (as if the opcode had been removed from the ISA). Suppressed
+								<code>CB</code>/<code>ED</code> instructions are 2-byte NOPs. IX/IY forms follow
+								their base opcode. Suppression prevents <em>execution</em>, not <em>existence</em>:
+								a suppressed byte value can still be written into memory or carried as data.
+							</p>
+						{:else}
+							<p>
+								Type a pattern into the Suppress field in Settings and press Enter. {isaSuppressionDescription}
+							</p>
+							<p>
+								Click an opcode frequency tile to add its exact opcode as a pattern. Remove a chip
+								to restore its operations, or use the clear button to restore all operations. Static
+								disassembly still shows the ordinary instruction decoding; measured fetches show the
+								execution path under suppression.
+							</p>
+						{/if}
 					{:else if helpTab === 'z80'}
 						<h4>Registers</h4>
 						<p>The Z80 has 8-bit and 16-bit registers used as operands:</p>
@@ -4687,12 +5469,13 @@
 							</div>
 						</div>
 
-						<h4>Why POP HL &amp; EX (SP),HL Win</h4>
+						<h4>An exchange/stack copying route</h4>
 						<p>
-							<span class="z80-op">POP HL</span> reads 2 bytes from memory via the stack pointer.
-							<span class="z80-op">EX (SP),HL</span> writes them forward to the next position. Repeating
-							this copies the cell's own bytes into its neighbor &mdash; a minimal self-replicating loop.
-							Once one cell contains this pattern, it spreads exponentially.
+							<span class="z80-op">POP HL</span> reads two bytes and advances the stack pointer;
+							<span class="z80-op">EX (SP),HL</span> exchanges that word with the next stack position.
+							A working loop can move its machinery into the partner under a suitable ring and reset contract.
+							This is one available route, not a claim that every occurrence copies or that it always
+							dominates. The paper’s historical L16 Stage G first exemplars were usually load–push designs.
 						</p>
 
 						<Mermaid
@@ -4712,9 +5495,9 @@ graph TD
 
 						<h4>Grid Size (W &times; H)</h4>
 						<p>
-							Width and height of the grid in cells. Default is 200&times;200. Larger grids give
-							more space for diverse species to evolve, but use more GPU memory and compute.
-							Changing resets the simulation.
+							Width and height of the grid in cells. The initial grid fits roughly 20,000 cells to
+							the viewport. Larger worlds provide more encounters and use more GPU memory and
+							compute. Changing resets the simulation.
 						</p>
 
 						<h4>Seed</h4>
@@ -4725,36 +5508,41 @@ graph TD
 
 						<h4>Mutation Rate</h4>
 						<p>
-							Controls the probability of random byte flips after each execution step (1/2<sup
-								>n</sup
-							>). Higher slider values mean more mutations. Too low and replicators can't emerge;
-							too high and they can't survive. Sweet spot is usually 3&ndash;5.
+							Mutation exponent k sets floor(pair attempts / 2ᵏ) random byte-replacement attempts
+							per population update. With 8,192 pair slots and k = 4, that is 512 attempts.
+							Replacement can repeat the old value; this is not a fraction of all population bytes.
+							The off checkbox disables mutation.
 						</p>
 
 						<h4>Pairs / Batch</h4>
 						<p>
-							How many cell pairs are selected and executed each simulation step. Higher values
-							speed up evolution but use more GPU time. At max, roughly a quarter of all cells are
-							updated per step.
+							The number of proposed neighboring pair slots per update. Collision claims can reject
+							a proposal, so the number of accepted encounters is lower. More pair attempts usually
+							require more GPU time; an update is not a synchronized generation.
 						</p>
 
-						<h4>Z80 Steps</h4>
+						<h4>{isa === 'z80' ? 'Z80 Steps' : 'Execution steps'}</h4>
 						<p>
-							Maximum CPU cycles per pair execution (16&ndash;1024). Lower values make the
-							simulation faster but limit program complexity &mdash; simple replicators emerge
-							quickly. Higher values allow more complex programs to develop but slow down the
-							simulation. Default (128) balances speed and complexity.
+							Maximum instruction slots per encounter, with default 128. These are execution steps
+							rather than hardware clock cycles; Z80 block repeats and 8086 REP consume one slot per
+							iteration. Larger budgets permit longer execution and usually reduce update
+							throughput. A halted lane does not execute its unused slots.
 						</p>
 
 						<h4>Suppress Opcodes</h4>
-						<p>
-							Remove instructions from the CPU: a mnemonic substring (<code>LDIR</code>,
-							<code>PUSH</code>), a family (<code>family:block-copy</code>,
-							<code>family:writes-mem</code>) or an exact opcode (<code>ed:B0</code>). The Z80 skips
-							them as NOPs. Use this to take the usual replication machinery away and observe which
-							alternative strategies evolve. Patterns appear as removable chips; the count shows how
-							many instructions are affected across the base, CB and ED pages.
-						</p>
+						{#if isa === 'z80'}
+							<p>
+								Remove instructions from the CPU: a mnemonic substring (<code>LDIR</code>,
+								<code>PUSH</code>), a family (<code>family:block-copy</code>,
+								<code>family:writes-mem</code>) or an exact opcode (<code>ed:B0</code>). The Z80
+								skips them as NOPs. Use this to take the usual replication machinery away and
+								observe which alternative strategies evolve. Patterns appear as removable chips; the
+								count shows how many instructions are affected across the base, CB and ED pages.
+							</p>
+						{:else}<p>
+								{isaSuppressionDescription} Patterns appear as removable chips; the count shows the affected
+								opcodes.
+							</p>{/if}
 
 						<h4>Colormap</h4>
 						<p>
@@ -4848,42 +5636,30 @@ graph TD
 							<div class="shortcut"><kbd>Dbl-click</kbd> Reset view</div>
 						</div>
 					{:else if helpTab === 'about'}
-						<p>
-							<strong>Algocell</strong> is a WebGPU-accelerated artificial life simulator that runs Z80
-							machine code on a configurable grid of cells. Choose between square and hexagonal topologies,
-							adjust grid size, Z80 execution depth, mutation rate, and more. Self-replicating programs
-							spontaneously emerge from random noise.
-						</p>
-						<p>
-							Based on the paper by
-							<a
-								href="https://arxiv.org/abs/2406.19108"
+						{#each ABOUT_SECTIONS as section (section.id)}
+							<h4>{section.title}</h4>
+							{#each section.paragraphs as paragraph (paragraph)}<p>
+									{scientificText(paragraph)}
+								</p>{/each}
+							{#if section.links}<p class="cmap-note">
+									{#each section.links as link, index (link.href)}{#if index > 0}
+											·
+										{/if}
+										<!-- eslint-disable svelte/no-navigation-without-resolve -- Curated scientific references are absolute external URLs. -->
+										<a class="help-link" href={link.href} target="_blank" rel="noopener noreferrer"
+											>{link.label}</a
+										>
+										<!-- eslint-enable svelte/no-navigation-without-resolve -->
+									{/each}
+								</p>{/if}
+						{/each}
+						<p class="cmap-note">
+							Original WebGPU instrument inspired by Alexander Mordvintsev’s <a
+								class="help-link"
+								href="https://github.com/znah/zff"
 								target="_blank"
-								rel="noopener"
-								class="help-link">Agüera y Arcas et al. (2024)</a
-							>
-							and the
-							<a href="https://github.com/znah/zff" target="_blank" rel="noopener" class="help-link"
-								>original implementation</a
-							>
-							by Alexander Mordvintsev. This version uses WebGPU compute shaders instead of the original
-							JavaScript/WASM approach, enabling massively parallel execution on the GPU. The hexagonal
-							grid mode produces more organic emergent structures thanks to 6-neighbor interactions.
-						</p>
-						<p>
-							Developed by <strong>Neo Mohsenvand</strong> with the help of
-							<a href="https://claude.ai" target="_blank" rel="noopener" class="help-link"
-								>Claude Code</a
-							>.
-						</p>
-						<p class="cmap-note" style="margin-top: 12px;">
-							<a
-								href="https://github.com/NeoVand/algocell"
-								target="_blank"
-								rel="noopener"
-								class="help-link">GitHub</a
-							>
-							&middot; SvelteKit &middot; TypeScript &middot; WebGPU &middot; Tailwind CSS
+								rel="noopener noreferrer">zff implementation</a
+							>. Developed with Claude Code. SvelteKit · TypeScript · WebGPU.
 						</p>
 					{/if}
 				</div>
@@ -4895,12 +5671,31 @@ graph TD
 <style>
 	.legacy-scope {
 		color: var(--text-primary);
-		font-family: Arial, Helvetica, sans-serif;
 	}
 	.legacy-scope :global(button),
 	.legacy-scope :global(input),
 	.legacy-scope :global(select) {
 		min-height: 0;
+	}
+
+	.legacy-scope :global(input:focus),
+	.legacy-scope :global(select:focus),
+	.legacy-scope :global(textarea:focus) {
+		outline: none;
+		box-shadow: none;
+		border-color: var(--border-default);
+	}
+	.legacy-scope :global(input:focus-visible),
+	.legacy-scope :global(select:focus-visible),
+	.legacy-scope :global(textarea:focus-visible) {
+		outline: 1px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	/* Native selects can match :focus-visible after a pointer click in Chrome. */
+	.legacy-scope.pointer-focus :global(:focus) {
+		outline: none;
+		box-shadow: none;
 	}
 
 	/* Prevent mobile zoom/scroll escaping on all UI overlays */
@@ -4913,8 +5708,8 @@ graph TD
 
 	/* Preserve visible keyboard focus in the historical interface. */
 	button:focus-visible {
-		outline: 2px solid var(--accent);
-		outline-offset: 3px;
+		outline: 1px solid var(--accent);
+		outline-offset: 2px;
 	}
 
 	/* ── Toolbar ── */
@@ -5492,6 +6287,8 @@ graph TD
 		top: 60px;
 		right: 12px;
 		width: 220px;
+		max-height: calc(100dvh - 72px);
+		overflow-y: auto;
 	}
 	.param {
 		margin-bottom: 8px;
@@ -5595,7 +6392,7 @@ graph TD
 		appearance: none;
 		margin: 0;
 	}
-	.seed-input:focus {
+	.seed-input:focus-visible {
 		border-color: rgba(255, 255, 255, 0.15);
 	}
 	.seed-apply {
@@ -5773,7 +6570,7 @@ graph TD
 		font-size: 9.5px;
 		opacity: 1;
 	}
-	.suppress-input:focus {
+	.suppress-input:focus-visible {
 		border-color: rgba(255, 255, 255, 0.15);
 		outline: none;
 	}
@@ -5894,7 +6691,7 @@ graph TD
 		font-size: 9.5px;
 		opacity: 1;
 	}
-	.preset-name-input:focus {
+	.preset-name-input:focus-visible {
 		border-color: var(--accent);
 	}
 	.preset-name-save {
@@ -6394,6 +7191,8 @@ graph TD
 	.modal-tabs {
 		display: flex;
 		gap: 0;
+		overflow-x: auto;
+		min-width: 0;
 	}
 	.modal-tab {
 		background: none;
@@ -6840,5 +7639,232 @@ graph TD
 			transform: scale(0.8);
 			transform-origin: top center;
 		}
+	}
+	.instrument-select {
+		width: 100%;
+		min-height: 26px;
+		border: 1px solid var(--border-muted);
+		border-radius: 4px;
+		padding: 3px 6px;
+		background: #1b1b1b;
+		background-image: none;
+		color: var(--text-secondary);
+		font-size: 11px;
+		line-height: 1.35;
+		appearance: auto;
+		color-scheme: dark;
+		box-shadow: none;
+	}
+	.instrument-select:disabled {
+		opacity: 0.55;
+	}
+	.paper-preset-label,
+	.world-control-label {
+		display: block;
+		font-size: 10px;
+		color: var(--text-subtle);
+		margin: 5px 0 3px;
+	}
+	.paper-condition {
+		margin-top: 6px;
+		font-size: 10px;
+		line-height: 1.45;
+		color: var(--text-muted);
+	}
+	.paper-condition p {
+		margin: 0 0 6px;
+	}
+	.paper-condition strong {
+		color: var(--text-secondary);
+		font-weight: 500;
+	}
+	.paper-condition summary,
+	.culture-example summary {
+		cursor: pointer;
+		color: var(--accent);
+		font-size: 10px;
+	}
+	.paper-condition details p:first-of-type {
+		margin-top: 6px;
+	}
+	.source-path {
+		overflow-wrap: anywhere;
+		font-family: monospace;
+		font-size: 9px;
+	}
+	.world-geometry-row {
+		display: grid;
+		grid-template-columns: auto 1fr auto 1fr;
+		gap: 5px;
+		align-items: center;
+		margin-top: 6px;
+	}
+	.world-geometry-row label {
+		font-size: 10px;
+		color: var(--text-muted);
+	}
+	.world-geometry-row input {
+		width: 100%;
+	}
+	.instrument-check {
+		display: flex;
+		gap: 6px;
+		align-items: center;
+		margin-top: 6px;
+		font-size: 10px;
+		color: var(--text-muted);
+		cursor: pointer;
+	}
+	.instrument-check input {
+		width: 11px;
+		height: 11px;
+		color: var(--accent);
+		background: var(--bg-muted);
+		border: 1px solid var(--border-default);
+		border-radius: 2px;
+	}
+	.chemistry-head {
+		margin-top: 8px;
+	}
+	.instrument-note {
+		color: var(--text-subtle);
+		font-size: 10px;
+		line-height: 1.45;
+		margin-top: 5px;
+	}
+	.instrument-error {
+		color: var(--accent-rose);
+		font-size: 10px;
+		overflow-wrap: anywhere;
+		margin-top: 5px;
+	}
+	.fetch-key {
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		border-radius: 2px;
+		margin-right: 2px;
+	}
+	.fetch-key.confined {
+		background: var(--accent-emerald);
+	}
+	.fetch-key.open {
+		background: var(--accent-rose);
+	}
+	.fetch-key.unknown {
+		background: #555;
+	}
+	.tape-inspector,
+	.species-modal {
+		max-width: calc(100vw - 28px);
+		max-height: 85dvh;
+		overflow-y: auto;
+	}
+	.tape-inspector .species-modal-header {
+		color: var(--text-secondary);
+		border-bottom: 1px solid var(--border-subtle);
+	}
+	.culture-panel {
+		margin-top: 8px;
+		padding-top: 8px;
+		border-top: 1px solid var(--border-subtle);
+		max-width: 340px;
+	}
+	.culture-button {
+		margin: 0 0 3px;
+	}
+	.culture-panel > .instrument-note {
+		display: block;
+	}
+	.culture-verdict {
+		font-size: 11px;
+		color: var(--accent);
+		margin-top: 8px;
+	}
+	.culture-table {
+		width: 100%;
+		font-size: 10px;
+		color: var(--text-muted);
+		font-variant-numeric: tabular-nums;
+		border-collapse: collapse;
+	}
+	.culture-table th {
+		font-weight: 500;
+		color: var(--text-subtle);
+	}
+	.culture-table th,
+	.culture-table td {
+		padding: 3px 5px;
+		text-align: right;
+		border-bottom: 1px solid var(--border-subtle);
+	}
+	.culture-table th:first-child,
+	.culture-table td:first-child {
+		text-align: left;
+	}
+	.culture-example {
+		margin-top: 8px;
+	}
+	.culture-bytes {
+		display: grid;
+		grid-template-columns: repeat(8, 1fr);
+		gap: 2px;
+		margin-top: 3px;
+	}
+	.culture-byte {
+		padding: 4px;
+		font: 9px monospace;
+		text-align: center;
+		color: #888;
+		background: #292929;
+		border: 1px solid transparent;
+	}
+	.culture-byte.fetched {
+		background: var(--byte-color);
+		border-color: var(--border-muted);
+		color: #222;
+	}
+	.culture-byte.instruction-start {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+	.guide-steps {
+		list-style: decimal;
+		padding-left: 20px;
+		margin: 0 0 12px;
+	}
+	.guide-steps li {
+		margin-bottom: 6px;
+	}
+	.inspector-disassembly {
+		max-width: 340px;
+		margin-top: 7px;
+	}
+	.inspector-disassembly summary {
+		color: var(--accent);
+		font-size: 10px;
+		cursor: pointer;
+	}
+	.disassembly-line {
+		display: grid;
+		grid-template-columns: 18px 66px minmax(0, 1fr);
+		gap: 5px;
+		padding-top: 4px;
+		font: 9px/1.4 monospace;
+		color: var(--text-muted);
+		overflow-wrap: anywhere;
+	}
+	.world-contract {
+		margin-top: 6px;
+	}
+	.world-contract summary {
+		color: var(--text-muted);
+		font-size: 10px;
+		cursor: pointer;
+	}
+	.contract-shape {
+		color: var(--text-subtle);
+		font: 9px monospace;
+		margin-left: 5px;
 	}
 </style>

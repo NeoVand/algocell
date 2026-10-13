@@ -33,7 +33,15 @@ export const SETTING_KEYS = [
 	'contrast',
 	'saturation',
 	'showGridLines',
-	'simpleView'
+	'simpleView',
+	'machine',
+	'tapeLength',
+	'pairLength',
+	'lethalProbability',
+	'randomRegisters',
+	'stackConvention',
+	'dialMode',
+	'initialCondition'
 ] as const;
 
 export type SettingKey = (typeof SETTING_KEYS)[number];

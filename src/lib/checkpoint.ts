@@ -1,3 +1,5 @@
+import type { LabSettings, InitialCondition } from './lab/types';
+
 // Checkpoint format: valid PNG + appended binary payload after IEND chunk
 // Opening in Preview/image viewer → shows simulation screenshot
 // Loading in the app → detects ACEL magic, extracts full state
@@ -6,6 +8,9 @@ const MAGIC = new Uint8Array([0x41, 0x43, 0x45, 0x4c]); // "ACEL"
 
 export interface CheckpointMetadata {
 	version: 1;
+	/** Absent in original checkpoints: the historical Z80 condition. */
+	machineSettings?: LabSettings;
+	initialCondition?: InitialCondition;
 	gridWidth: number;
 	gridHeight: number;
 	gridType: 'square' | 'hex';
