@@ -9,6 +9,7 @@
 		canvas,
 		playing,
 		externalBusy = false,
+		benchOpen = false,
 		onbusy,
 		condition = '',
 		onpause,
@@ -19,6 +20,7 @@
 		canvas: HTMLCanvasElement;
 		playing: boolean;
 		externalBusy?: boolean;
+		benchOpen?: boolean;
 		onbusy: (value: boolean) => void;
 		condition?: string;
 		onpause: () => void;
@@ -682,9 +684,10 @@
 	</div>
 </div>
 
-{#if tool !== 'navigate' || mode === 'marker'}
+{#if !benchOpen && (tool !== 'navigate' || mode === 'marker')}
 	<section
 		class="observation-dock"
+		class:region-tool={tool === 'region'}
 		aria-label="{tool === 'navigate'
 			? 'Marker'
 			: tools.find((entry) => entry.id === tool)?.name} tool"
@@ -762,7 +765,7 @@
 					min="0"
 					max={settings.width - 1}
 					bind:value={x0}
-					onchange={() => {
+					oninput={() => {
 						region = null;
 					}}
 				/><input
@@ -771,7 +774,7 @@
 					min="0"
 					max={settings.height - 1}
 					bind:value={y0}
-					onchange={() => {
+					oninput={() => {
 						region = null;
 					}}
 				/><span>To</span><input
@@ -780,7 +783,7 @@
 					min="0"
 					max={settings.width - 1}
 					bind:value={x1}
-					onchange={() => {
+					oninput={() => {
 						region = null;
 					}}
 				/><input
@@ -789,7 +792,7 @@
 					min="0"
 					max={settings.height - 1}
 					bind:value={y1}
-					onchange={() => {
+					oninput={() => {
 						region = null;
 					}}
 				/>
@@ -834,6 +837,15 @@
 								{points}
 								class:top-share={index === 1}
 							/>{/each}
+						{#each regionSeries as sample (sample.id)}
+							{@const sampleX =
+								28 +
+								((sample.update - regionSeries[0].update) /
+									Math.max(1, regionSeries.at(-1)!.update - regionSeries[0].update)) *
+									260}
+							<circle cx={sampleX} cy={66 - sample.zero * 56} r="2.5" />
+							<circle class="top-share" cx={sampleX} cy={66 - sample.top * 56} r="2.5" />
+						{/each}
 						<text x="28" y="82">{regionSeries[0]?.update ?? region.update}</text><text
 							x="288"
 							y="82"
@@ -842,9 +854,8 @@
 					</svg>
 					<div class="trend-key"><span>Zero fraction</span><span>Largest tape share</span></div>
 				</div>
-				<div class="fraction-bar"><span style:width="{region.topShare * 100}%"></span></div>
-				<p class="hint">
-					Bar: largest exact tape share, 0–100%. This sample stays fixed until measured again.
+				<p class="hint held-note">
+					Explicit samples of this region. Measure again to add a point.
 				</p>{/if}
 		{:else if tool === 'history'}
 			<label class="check-row"
@@ -920,7 +931,14 @@
 					><input type="checkbox" bind:checked={comparing} /> Show comparison</label
 				><label class="range-label" for="comparison-divider"
 					>Reveal reference <span>{divider}%</span></label
-				><input id="comparison-divider" type="range" min="5" max="95" bind:value={divider} />
+				><input
+					id="comparison-divider"
+					aria-label="Reveal reference"
+					type="range"
+					min="5"
+					max="95"
+					bind:value={divider}
+				/>
 				<div class="comparison-key"><span>Reference</span><span>Live</span></div>
 				<p class="hint">A visual reference, not a second simulation.</p>{/if}
 		{:else if tool === 'record'}
@@ -1088,7 +1106,8 @@
 		background: var(--accent-emerald);
 	}
 	.update-count {
-		display: none;
+		display: inline;
+		font-variant-numeric: tabular-nums;
 	}
 	.observation-tabs {
 		display: flex;
@@ -1318,17 +1337,6 @@
 		font: 12px monospace;
 		color: var(--text-primary);
 	}
-	.fraction-bar {
-		height: 5px;
-		border-radius: 3px;
-		background: var(--bg-hover);
-		overflow: hidden;
-	}
-	.fraction-bar span {
-		display: block;
-		height: 100%;
-		background: var(--accent);
-	}
 	.check-row {
 		display: flex;
 		gap: 7px;
@@ -1462,6 +1470,12 @@
 		fill: none;
 		stroke: #7dabb7;
 		stroke-width: 2;
+	}
+	.region-trend circle {
+		fill: #7dabb7;
+	}
+	.region-trend circle.top-share {
+		fill: var(--accent-warm);
 	}
 	.region-trend polyline.top-share {
 		stroke: var(--accent-warm);
@@ -1622,6 +1636,46 @@
 			padding: 11px;
 			border-radius: 10px;
 		}
+		.observation-dock.region-tool {
+			max-height: 49dvh;
+		}
+		.region-tool > .hint:first-of-type {
+			display: none;
+		}
+		.region-tool .coordinate-grid {
+			margin: 4px 0;
+			gap: 4px 6px;
+		}
+		.region-tool .coordinate-grid input {
+			min-height: 30px;
+			padding: 3px 6px;
+		}
+		.region-tool .measurement-list {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 7px 14px;
+			margin: 9px 0;
+		}
+		.region-tool .measurement-list div {
+			flex-direction: column;
+			gap: 4px;
+			padding: 3px 0 6px;
+		}
+		.region-tool .measurement-list dd {
+			font-size: 15px;
+		}
+		.region-tool .region-trend {
+			margin: 8px 0;
+			padding-top: 4px;
+		}
+		.region-tool .region-trend svg {
+			height: 63px;
+		}
+		.region-tool .held-note {
+			font-size: 10px;
+			margin: 5px 0 0;
+		}
+
 		.observation-dock button:not(.close) {
 			min-height: 36px;
 		}

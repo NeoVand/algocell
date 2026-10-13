@@ -80,6 +80,7 @@
 	let dialMode = $state<LabSettings['dialMode']>('historical-pcg');
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
+	let checkpointBusy = $state(false);
 	let machineError = $state<string | null>(null);
 	let selectedExperimentId = $state('');
 	let initialCondition = $state.raw<InitialCondition>({ kind: 'random' });
@@ -195,7 +196,7 @@
 	}
 
 	async function updateMachine(reset = false) {
-		if (!engine || machineBusy || observationBusy) return;
+		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		playing = false;
 		machineBusy = true;
 		machineError = null;
@@ -222,7 +223,7 @@
 	}
 
 	async function applyExperimentPreset(preset: ExperimentPreset) {
-		if (machineBusy || observationBusy) return;
+		if (machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		assignMachineSettings(preset.config);
 		selectedExperimentId = preset.id;
 		initialCondition = preset.initialCondition;
@@ -236,6 +237,7 @@
 			const bytes = await engine.readCell(index);
 			if (!bytes.length) return;
 			playing = false;
+			showSettings = false;
 			inspectedTape = bytes;
 			inspectedCell = index;
 		} finally {
@@ -692,13 +694,13 @@
 			if (!engine) return;
 
 			if (playing && (document.hidden || performance.now() >= runDeadline)) playing = false;
-			if (playing && !machineBusy && !observationBusy && !cultureBusy) {
+			if (playing && !machineBusy && !observationBusy && !checkpointBusy && !cultureBusy) {
 				for (let i = 0; i < speed; i++) {
 					engine.simulateStep();
 				}
 			}
 
-			if (!machineBusy && !observationBusy) {
+			if (!machineBusy && !observationBusy && !checkpointBusy) {
 				engine.render(canvas);
 				flushCellRefresh();
 			}
@@ -1243,7 +1245,7 @@
 	}
 
 	function handleReset() {
-		if (!engine || machineBusy || observationBusy) return;
+		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		if (initialCondition.kind !== 'random') {
 			void updateMachine(true);
 			return;
@@ -1276,9 +1278,10 @@
 	let fileInput: HTMLInputElement;
 
 	async function handleSave() {
-		if (!engine || !canvas || machineBusy || observationBusy || cultureBusy) return;
+		if (!engine || !canvas || machineBusy || observationBusy || checkpointBusy || cultureBusy)
+			return;
 		playing = false;
-		observationBusy = true;
+		checkpointBusy = true;
 		machineError = null;
 		try {
 			await engine.waitForIdle();
@@ -1329,12 +1332,12 @@
 		} catch (cause) {
 			machineError = cause instanceof Error ? cause.message : String(cause);
 		} finally {
-			observationBusy = false;
+			checkpointBusy = false;
 		}
 	}
 
 	async function handleLoadFile(file: File) {
-		if (!engine || machineBusy || observationBusy) return;
+		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		playing = false;
 		machineBusy = true;
 		machineError = null;
@@ -1640,7 +1643,7 @@
 	});
 
 	async function applyPreset(preset: Preset) {
-		if (machineBusy || observationBusy) return;
+		if (machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		let disruption: ApplyMode | 'none' = 'none';
 		const rank: Record<ApplyMode | 'none', number> = { none: 0, live: 0, reset: 1, grid: 2 };
 		if (!('machine' in preset.values)) {
@@ -1728,7 +1731,7 @@
 
 	// Sync the derived suppression sets to the GPU engine
 	$effect(() => {
-		if (!engine || machineBusy || observationBusy) return;
+		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		engine.setAblation(suppressPatterns);
 	});
 
@@ -1789,7 +1792,7 @@
 	});
 
 	function togglePlay() {
-		if (!engine || machineBusy || observationBusy || cultureBusy) return;
+		if (!engine || machineBusy || observationBusy || checkpointBusy || cultureBusy) return;
 		playing = !playing;
 		if (playing) runDeadline = performance.now() + 55_000;
 	}
@@ -2197,7 +2200,8 @@
 			{engine}
 			{canvas}
 			{playing}
-			externalBusy={machineBusy || cultureBusy}
+			externalBusy={machineBusy || cultureBusy || checkpointBusy}
+			benchOpen={Boolean(inspectedTape || speciesModal)}
 			onbusy={(value) => {
 				observationBusy = value;
 			}}
@@ -3026,1021 +3030,1030 @@
 				</button>
 			</div>
 
-			<!-- Presets -->
-			<div class="param">
-				<div class="param-head">
-					<span class="param-label"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z" /></svg
-						> Presets</span
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'presets'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'presets';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'presets' ? null : 'presets';
-							}}>?</button
+			<fieldset
+				class="settings-fields"
+				disabled={machineBusy || observationBusy || checkpointBusy || cultureBusy}
+			>
+				<!-- Presets -->
+				<div class="param">
+					<div class="param-head">
+						<span class="param-label"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z" /></svg
+							> Presets</span
 						>
-						<span class="param-tip"
-							>Save and switch between full setting configurations. Applying a preset that only
-							changes live parameters (mutation, pairs, steps, suppression, appearance) steers the
-							running simulation without resetting it. Grid or seed changes reset the soup.</span
-						>
-					</span>
-					<div class="preset-header-actions">
-						{#if activePresetId}
+						<span class="param-info-wrap" class:show-tip={openTip === 'presets'}>
 							<button
-								class="preset-delete-active"
-								onclick={deleteActivePreset}
-								title="Delete selected preset"
-								aria-label="Delete selected preset"
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'presets';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'presets' ? null : 'presets';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Save and switch between full setting configurations. Applying a preset that only
+								changes live parameters (mutation, pairs, steps, suppression, appearance) steers the
+								running simulation without resetting it. Grid or seed changes reset the soup.</span
+							>
+						</span>
+						<div class="preset-header-actions">
+							{#if activePresetId}
+								<button
+									class="preset-delete-active"
+									onclick={deleteActivePreset}
+									title="Delete selected preset"
+									aria-label="Delete selected preset"
+								>
+									<svg
+										width="12"
+										height="12"
+										viewBox="0 0 14 14"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.4"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path d="M2.5 3.5h9M5.5 3.5V2.5h3v1M4 3.5l.5 8h5l.5-8M6 5.5v4M8 5.5v4" />
+									</svg>
+								</button>
+							{/if}
+							<button
+								class="preset-save-toggle"
+								class:active={showPresetSave}
+								onclick={() => {
+									showPresetSave = !showPresetSave;
+									if (showPresetSave) newPresetName = '';
+								}}
+								title="Save current settings as a preset"
 							>
 								<svg
-									width="12"
-									height="12"
-									viewBox="0 0 14 14"
+									width="11"
+									height="11"
+									viewBox="0 0 12 12"
 									fill="none"
 									stroke="currentColor"
 									stroke-width="1.4"
-									stroke-linecap="round"
-									stroke-linejoin="round"
 								>
-									<path d="M2.5 3.5h9M5.5 3.5V2.5h3v1M4 3.5l.5 8h5l.5-8M6 5.5v4M8 5.5v4" />
+									<path d="M6 2v8M2 6h8" stroke-linecap="round" />
 								</svg>
 							</button>
-						{/if}
-						<button
-							class="preset-save-toggle"
-							class:active={showPresetSave}
-							onclick={() => {
-								showPresetSave = !showPresetSave;
-								if (showPresetSave) newPresetName = '';
-							}}
-							title="Save current settings as a preset"
+						</div>
+					</div>
+					{#if showPresetSave}
+						<div class="preset-save-row">
+							<input
+								class="preset-name-input"
+								type="text"
+								placeholder="Preset name…"
+								bind:value={newPresetName}
+								onkeydown={(e) => {
+									if (e.key === 'Enter' && newPresetName.trim()) {
+										requestSavePreset(newPresetName);
+									} else if (e.key === 'Escape') {
+										showPresetSave = false;
+										newPresetName = '';
+									}
+								}}
+							/>
+							<button
+								class="preset-name-save"
+								disabled={!newPresetName.trim()}
+								onclick={() => requestSavePreset(newPresetName)}
+								title="Save preset">Save</button
+							>
+						</div>
+					{/if}
+					<label class="experiment-preset-label" for="experiment-preset">Experiments</label>
+					<select
+						id="experiment-preset"
+						class="instrument-select"
+						value={selectedExperimentId}
+						disabled={machineBusy || observationBusy || !engine}
+						onchange={(event) => {
+							const preset = EXPERIMENT_PRESETS.find(
+								(entry) => entry.id === event.currentTarget.value
+							);
+							if (preset) void applyExperimentPreset(preset);
+						}}
+					>
+						<option value="">Choose an experiment…</option>
+						{#each ['discovery', 'intervention', 'demonstration'] as category (category)}
+							<optgroup label={category.charAt(0).toUpperCase() + category.slice(1)}>
+								{#each EXPERIMENT_PRESETS.filter((entry) => entry.category === category) as preset (preset.id)}
+									<option value={preset.id}>{preset.name}</option>
+								{/each}
+							</optgroup>
+						{/each}
+					</select>
+					{#if selectedExperiment}
+						<div class="experiment-condition">
+							<p>{scientificText(selectedExperiment.description)}</p>
+							<p><strong>Look for</strong> {scientificText(selectedExperiment.whatToLookFor)}</p>
+							<details>
+								<summary>Finding, limits &amp; sources</summary>
+								<p>{selectedExperiment.finding}</p>
+								<p>{scientificText(selectedExperiment.limits)}</p>
+								<p>
+									<strong>Registered condition</strong>
+									{selectedExperiment.published.width ?? 'isolated'} × {selectedExperiment.published
+										.height ?? 'culture'}, {selectedExperiment.published.pairAttempts ?? 'assay'} pair
+									attempts; horizon
+									{selectedExperiment.published.horizon.toLocaleString()}
+									{selectedExperiment.published.horizonUnit}. {scientificText(
+										selectedExperiment.published.note
+									)}
+								</p>
+								<p>{selectedExperiment.published.reset}</p>
+								<p class="source-path">{selectedExperiment.source.registration}</p>
+								{#if selectedExperiment.source.world}<p class="source-path">
+										{selectedExperiment.source.world}
+									</p>{/if}
+								{#each selectedExperiment.source.results as source (source)}<p class="source-path">
+										{source}
+									</p>{/each}
+								<p>
+									Sources identify the registered experiment and its archived results. This GPU run
+									is a fresh realization; equal seeds do not promise the archived scheduling
+									trajectory.
+								</p>
+							</details>
+						</div>
+					{/if}
+					<div class="preset-chips">
+						{#each presets as preset (preset.id)}
+							<button
+								class="preset-chip"
+								class:active={activePresetId === preset.id}
+								class:builtin={preset.builtin}
+								onclick={() => applyPreset(preset)}
+								title={preset.builtin
+									? `Built-in preset: ${preset.name}`
+									: `Apply preset: ${preset.name}`}
+							>
+								{#if activePresetId === preset.id}
+									<svg
+										class="preset-chip-check"
+										width="9"
+										height="9"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
+									>
+								{/if}
+								{preset.name}
+							</button>
+						{/each}
+					</div>
+				</div>
+
+				<div class="param machine-controls">
+					<div class="param-head">
+						<label class="param-label" for="machine-select">Processor</label>
+					</div>
+					<select
+						id="machine-select"
+						class="instrument-select"
+						value={machine}
+						onchange={chooseMachine}
+						disabled={machineBusy || observationBusy || !engine}
+					>
+						<option value="z80-0.2">Z80 · compat 0.2</option>
+						<option value="z80-0.3">Z80 · 0.3 classic</option>
+						<option value="z80-nmos">Z80 · 0.3 Zilog NMOS</option>
+						<option value="m6502">NMOS 6502</option>
+						<option value="i8086">8086 · coherent fetch</option>
+					</select>
+					<details class="world-contract">
+						<summary
+							>World contract <span class="contract-shape">L{tapeLength} / P{pairLength}</span
+							></summary
 						>
+						<div class="world-geometry-row">
+							<label for="tape-length">Tape L</label><input
+								id="tape-length"
+								class="seed-input"
+								type="number"
+								min="4"
+								max="32"
+								value={tapeLength}
+								disabled={machineBusy || observationBusy}
+								onchange={(event) => {
+									tapeLength = Math.max(4, Math.min(32, Number(event.currentTarget.value)));
+									pairLength = Math.max(pairLength, tapeLength * 2);
+									initialCondition = { kind: 'random' };
+									selectedExperimentId = '';
+									void updateMachine(true);
+								}}
+							/>
+							<label for="pair-length">Ring P</label><input
+								id="pair-length"
+								class="seed-input"
+								type="number"
+								min={tapeLength * 2}
+								max="128"
+								value={pairLength}
+								disabled={machineBusy || observationBusy}
+								onchange={(event) => {
+									pairLength = Math.max(
+										tapeLength * 2,
+										Math.min(128, Number(event.currentTarget.value))
+									);
+									void updateMachine(true);
+								}}
+							/>
+						</div>
+						<label class="world-control-label" for="stack-convention">Stack placement</label>
+						<select
+							id="stack-convention"
+							class="instrument-select"
+							bind:value={stackConvention}
+							disabled={machineBusy || observationBusy}
+							onchange={() => {
+								void updateMachine(true);
+							}}
+						>
+							<option value="top">Top at B’s last byte</option><option value="first-push"
+								>First push at B’s last byte</option
+							>{#if isa === 'z80'}<option value="legacy-sp">Original SP = FFFF</option>{/if}
+						</select>
+						<label class="instrument-check"
+							><input
+								type="checkbox"
+								bind:checked={randomRegisters}
+								disabled={machineBusy || observationBusy}
+								onchange={() => {
+									void updateMachine();
+								}}
+							/> Random registers</label
+						>
+						<label class="world-control-label" for="dial-mode">Dial stream</label>
+						<select
+							id="dial-mode"
+							class="instrument-select"
+							bind:value={dialMode}
+							disabled={machineBusy || observationBusy}
+							onchange={() => {
+								void updateMachine();
+							}}
+							><option value="historical-pcg">Historical PCG</option><option value="counter"
+								>Counter</option
+							></select
+						>
+					</details>
+					<div class="param-head chemistry-head">
+						<label class="param-label" for="lethal-probability">Lethal zero</label><span
+							class="param-val"
+							>{(lethalProbability * 100).toFixed(
+								lethalProbability && lethalProbability < 0.01 ? 1 : 0
+							)}%</span
+						>
+					</div>
+					<input
+						id="lethal-probability"
+						class="slider"
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						bind:value={lethalProbability}
+						disabled={machineBusy || observationBusy}
+						onchange={() => {
+							void updateMachine();
+						}}
+					/>
+					{#if machineBusy}<p class="instrument-note" role="status">
+							Preparing the processor…
+						</p>{/if}
+					{#if machineError}<p class="instrument-error" role="alert">{machineError}</p>{/if}
+				</div>
+
+				<div class="param">
+					<div class="param-head">
+						<span class="param-label"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><rect x="3" y="3" width="8" height="8" /><rect
+									x="13"
+									y="3"
+									width="8"
+									height="8"
+								/><rect x="3" y="13" width="8" height="8" /><rect
+									x="13"
+									y="13"
+									width="8"
+									height="8"
+								/></svg
+							> Grid</span
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'grid'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'grid';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'grid' ? null : 'grid';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Grid topology and dimensions. Hex grids produce more organic patterns. Changing
+								resets simulation.</span
+							>
+						</span>
+						<div class="grid-type-toggle">
+							<button
+								class="grid-type-btn"
+								class:active={gridType === 'square'}
+								onclick={() => handleGridTypeChange('square')}
+								title="Square grid — 4 neighbors"
+								><svg
+									width="10"
+									height="10"
+									viewBox="0 0 10 10"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.2"
+									><rect x="1" y="1" width="3.5" height="3.5" /><rect
+										x="5.5"
+										y="1"
+										width="3.5"
+										height="3.5"
+									/><rect x="1" y="5.5" width="3.5" height="3.5" /><rect
+										x="5.5"
+										y="5.5"
+										width="3.5"
+										height="3.5"
+									/></svg
+								></button
+							>
+							<button
+								class="grid-type-btn"
+								class:active={gridType === 'hex'}
+								onclick={() => handleGridTypeChange('hex')}
+								title="Hex grid — 6 neighbors"
+								><svg
+									width="10"
+									height="10"
+									viewBox="0 0 10 10"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.2"><path d="M5 1L8.5 3V7L5 9L1.5 7V3Z" /></svg
+								></button
+							>
+						</div>
+					</div>
+					<div class="grid-size-row">
+						<label class="grid-size-label">
+							W
+							<input
+								type="number"
+								class="grid-size-input"
+								bind:value={gridWidth}
+								min="50"
+								max="500"
+								step="10"
+							/>
+						</label>
+						<span class="grid-size-x">&times;</span>
+						<label class="grid-size-label">
+							H
+							<input
+								type="number"
+								class="grid-size-input"
+								bind:value={gridHeight}
+								min="50"
+								max="500"
+								step="10"
+							/>
+						</label>
+						<button class="seed-apply" onclick={applyGridConfig} title="Apply & Reset">
 							<svg
-								width="11"
-								height="11"
-								viewBox="0 0 12 12"
+								width="12"
+								height="12"
+								viewBox="0 0 14 14"
 								fill="none"
 								stroke="currentColor"
-								stroke-width="1.4"
+								stroke-width="1.5"
 							>
-								<path d="M6 2v8M2 6h8" stroke-linecap="round" />
+								<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
+								<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
 							</svg>
 						</button>
 					</div>
 				</div>
-				{#if showPresetSave}
-					<div class="preset-save-row">
+
+				<div class="param">
+					<div class="param-head">
+						<label class="param-label" for="seed-input"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><rect x="2" y="2" width="20" height="20" rx="3" /><circle
+									cx="8"
+									cy="8"
+									r="1.5"
+									fill="currentColor"
+									stroke="none"
+								/><circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" /><circle
+									cx="8"
+									cy="16"
+									r="1.5"
+									fill="currentColor"
+									stroke="none"
+								/><circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" /><circle
+									cx="12"
+									cy="12"
+									r="1.5"
+									fill="currentColor"
+									stroke="none"
+								/></svg
+							> Seed</label
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'seed'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'seed';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'seed' ? null : 'seed';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Random seed for initial soup generation. Changing seed requires reset.</span
+							>
+						</span>
+					</div>
+					<div class="seed-row">
 						<input
-							class="preset-name-input"
-							type="text"
-							placeholder="Preset name…"
-							bind:value={newPresetName}
-							onkeydown={(e) => {
-								if (e.key === 'Enter' && newPresetName.trim()) {
-									requestSavePreset(newPresetName);
-								} else if (e.key === 'Escape') {
-									showPresetSave = false;
-									newPresetName = '';
+							id="seed-input"
+							type="number"
+							class="seed-input"
+							value={seed}
+							min="0"
+							onchange={handleSeedChange}
+						/>
+						<button class="seed-apply" aria-label="Reset with seed" onclick={handleReset}>
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 14 14"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+							>
+								<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
+								<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<div class="param">
+					<div class="param-head">
+						<label class="param-label" for="noise-input"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path
+									d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+								/></svg
+							> Mutation rate</label
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'mutation'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'mutation';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'mutation' ? null : 'mutation';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Random byte flips per batch. Higher = more mutations = faster evolution. Applied
+								live.</span
+							>
+						</span>
+						<span class="param-val"
+							>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
+						>
+					</div>
+					<div class="slider-track-wrap">
+						<input
+							id="noise-input"
+							type="range"
+							class="slider"
+							value={noiseExp >= 31 ? 1 : 13 - noiseExp}
+							min="1"
+							max="12"
+							step="1"
+							oninput={(e) => {
+								const val = 13 - parseInt((e.target as HTMLInputElement).value);
+								if (!isNaN(val) && engine) {
+									noiseExp = val;
+									engine.noiseExp = val;
 								}
 							}}
 						/>
-						<button
-							class="preset-name-save"
-							disabled={!newPresetName.trim()}
-							onclick={() => requestSavePreset(newPresetName)}
-							title="Save preset">Save</button
-						>
 					</div>
-				{/if}
-				<label class="experiment-preset-label" for="experiment-preset">Experiments</label>
-				<select
-					id="experiment-preset"
-					class="instrument-select"
-					value={selectedExperimentId}
-					disabled={machineBusy || observationBusy || !engine}
-					onchange={(event) => {
-						const preset = EXPERIMENT_PRESETS.find(
-							(entry) => entry.id === event.currentTarget.value
-						);
-						if (preset) void applyExperimentPreset(preset);
-					}}
-				>
-					<option value="">Choose an experiment…</option>
-					{#each ['discovery', 'intervention', 'demonstration'] as category (category)}
-						<optgroup label={category.charAt(0).toUpperCase() + category.slice(1)}>
-							{#each EXPERIMENT_PRESETS.filter((entry) => entry.category === category) as preset (preset.id)}
-								<option value={preset.id}>{preset.name}</option>
-							{/each}
-						</optgroup>
-					{/each}
-				</select>
-				{#if selectedExperiment}
-					<div class="experiment-condition">
-						<p>{scientificText(selectedExperiment.description)}</p>
-						<p><strong>Look for</strong> {scientificText(selectedExperiment.whatToLookFor)}</p>
-						<details>
-							<summary>Finding, limits &amp; sources</summary>
-							<p>{selectedExperiment.finding}</p>
-							<p>{scientificText(selectedExperiment.limits)}</p>
-							<p>
-								<strong>Registered condition</strong>
-								{selectedExperiment.published.width ?? 'isolated'} × {selectedExperiment.published
-									.height ?? 'culture'}, {selectedExperiment.published.pairAttempts ?? 'assay'} pair attempts;
-								horizon
-								{selectedExperiment.published.horizon.toLocaleString()}
-								{selectedExperiment.published.horizonUnit}. {scientificText(
-									selectedExperiment.published.note
-								)}
-							</p>
-							<p>{selectedExperiment.published.reset}</p>
-							<p class="source-path">{selectedExperiment.source.registration}</p>
-							{#if selectedExperiment.source.world}<p class="source-path">
-									{selectedExperiment.source.world}
-								</p>{/if}
-							{#each selectedExperiment.source.results as source (source)}<p class="source-path">
-									{source}
-								</p>{/each}
-							<p>
-								Sources identify the registered experiment and its archived results. This GPU run is
-								a fresh realization; equal seeds do not promise the archived scheduling trajectory.
-							</p>
-						</details>
-					</div>
-				{/if}
-				<div class="preset-chips">
-					{#each presets as preset (preset.id)}
-						<button
-							class="preset-chip"
-							class:active={activePresetId === preset.id}
-							class:builtin={preset.builtin}
-							onclick={() => applyPreset(preset)}
-							title={preset.builtin
-								? `Built-in preset: ${preset.name}`
-								: `Apply preset: ${preset.name}`}
+					<label class="instrument-check"
+						><input
+							type="checkbox"
+							checked={noiseExp >= 31}
+							onchange={(event) => {
+								noiseExp = event.currentTarget.checked ? 31 : 4;
+								if (engine) engine.noiseExp = noiseExp;
+							}}
+						/> Mutation off</label
+					>
+				</div>
+
+				<div class="param">
+					<div class="param-head">
+						<label class="param-label" for="pairs-input"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><rect x="3" y="3" width="7" height="7" /><rect
+									x="14"
+									y="3"
+									width="7"
+									height="7"
+								/><rect x="3" y="14" width="7" height="7" /><rect
+									x="14"
+									y="14"
+									width="7"
+									height="7"
+								/></svg
+							> Pairs/batch</label
 						>
-							{#if activePresetId === preset.id}
+						<span class="param-info-wrap" class:show-tip={openTip === 'pairs'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'pairs';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'pairs' ? null : 'pairs';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Cell pairs evaluated per step. More = faster evolution, higher GPU load. Applied
+								live.</span
+							>
+						</span>
+						<span class="param-val">{pairCount}</span>
+					</div>
+					<div class="slider-track-wrap">
+						<input
+							id="pairs-input"
+							type="range"
+							class="slider"
+							bind:value={pairCount}
+							min={256}
+							max={MAX_BATCH_PAIR_N}
+							step={256}
+							oninput={handlePairCountChange}
+						/>
+					</div>
+				</div>
+
+				<div class="param">
+					<div class="param-head">
+						<label class="param-label" for="steps-input"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg
+							>
+							{isa === 'z80' ? 'Z80 steps' : 'Execution steps'}</label
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'steps'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'steps';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'steps' ? null : 'steps';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Instruction slots per pair execution. More steps = longer programs can run, slower
+								throughput. Applied live.</span
+							>
+						</span>
+						<span class="param-val">{z80Steps}</span>
+					</div>
+					<div class="slider-track-wrap">
+						<input
+							id="steps-input"
+							type="range"
+							class="slider"
+							bind:value={z80Steps}
+							min={16}
+							max={1024}
+							step={16}
+							oninput={(e) => {
+								const val = parseInt((e.target as HTMLInputElement).value);
+								if (!isNaN(val) && engine) {
+									z80Steps = val;
+									engine.z80Steps = val;
+								}
+							}}
+						/>
+					</div>
+				</div>
+
+				<div class="param">
+					<div class="param-head">
+						<span class="param-label"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><circle cx="12" cy="12" r="10" /><line
+									x1="4.93"
+									y1="4.93"
+									x2="19.07"
+									y2="19.07"
+								/></svg
+							> Suppress opcodes</span
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'suppress'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'suppress';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'suppress' ? null : 'suppress';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>{#if isa === 'z80'}Remove instructions from the CPU. A pattern is a mnemonic
+									substring (LDIR, LD (HL), PUSH), a whole family (family:block-copy, family:stack,
+									family:writes-mem) or one opcode (ed:B0, cb:FF, 3E). Prefixed ED/CB instructions
+									are reachable individually. A suppressed opcode executes as a NOP; its operand
+									bytes run as the next instruction. Use it to take the usual replication machinery
+									away and see what else evolves.{:else}{isaSuppressionDescription}{/if}</span
+							>
+						</span>
+						{#if suppressPatterns.length > 0}
+							<button class="suppress-clear" onclick={clearSuppressedOpcodes} title="Clear all">
 								<svg
-									class="preset-chip-check"
-									width="9"
-									height="9"
+									width="10"
+									height="10"
+									viewBox="0 0 10 10"
+									stroke="currentColor"
+									stroke-width="1.5"
+								>
+									<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
+								</svg>
+							</button>
+						{/if}
+					</div>
+					<div class="suppress-input-wrap">
+						<input
+							class="suppress-input"
+							type="text"
+							placeholder={isa === 'z80'
+								? 'family:block-copy; LDIR; PUSH; ed:B0'
+								: isa === 'm6502'
+									? 'family:stack; STA; opcode:8D'
+									: 'family:block-copy; MOV; opcode:A4'}
+							bind:value={suppressInput}
+							onkeydown={(e) => {
+								if (e.key === 'Enter' && suppressInput.trim()) {
+									addSuppressPattern(suppressInput);
+									suppressInput = '';
+								}
+							}}
+						/>
+						{#if suppressInput.trim()}
+							{@const preview = suppressionPreview(suppressInput)}
+							<span class="suppress-preview"
+								>↵ to suppress {preview} instruction{preview !== 1 ? 's' : ''}</span
+							>
+						{/if}
+					</div>
+					{#if suppressPatterns.length > 0}
+						<div class="suppress-chips">
+							{#each suppressPatterns as pat (pat)}
+								<button
+									class="suppress-chip"
+									onclick={() => removeSuppressPattern(pat)}
+									title="Remove pattern: {pat} (click to remove)"
+								>
+									{pat}
+									<svg
+										width="8"
+										height="8"
+										viewBox="0 0 8 8"
+										stroke="currentColor"
+										stroke-width="1.5"
+									>
+										<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
+									</svg>
+								</button>
+							{/each}
+							<span class="suppress-count" title={describeSuppression(suppression)}
+								>{suppressedTotal} instruction{suppressedTotal !== 1 ? 's' : ''}</span
+							>
+						</div>
+					{/if}
+				</div>
+
+				<div class="param">
+					<div class="param-head">
+						<span class="param-label"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="var(--accent)"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><circle cx="12" cy="12" r="10" /><path
+									d="M12 2a7 7 0 0 0 0 20 4 4 0 0 1 0-8 4 4 0 0 0 0-8z"
+								/><circle cx="12" cy="9" r="1" fill="var(--accent)" /></svg
+							> Appearance</span
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'cmap'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'cmap';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'cmap' ? null : 'cmap';
+								}}>?</button
+							>
+							<span class="param-tip"
+								>Color scheme for byte values. Each Z80 opcode category gets a distinct color
+								family.</span
+							>
+						</span>
+						<button
+							class="color-adj-toggle"
+							class:active={showColorAdj}
+							onclick={() => (showColorAdj = !showColorAdj)}
+							title="Color adjustments"
+						>
+							<svg
+								width="10"
+								height="10"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path
+									d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+								/><circle cx="12" cy="12" r="3" />
+							</svg>
+						</button>
+					</div>
+					<div class="cmap-row">
+						{#each COLORMAP_NAMES as name (name)}
+							<button
+								class="cmap-btn"
+								class:active={colormapName === name}
+								onclick={() => handleColormapChange(name)}
+							>
+								<span class="cmap-preview cmap-preview-{name}"></span>
+								{name}
+							</button>
+						{/each}
+					</div>
+					{#if showColorAdj}
+						<div class="color-adj-panel">
+							<div class="color-adj-row">
+								<span class="color-adj-label">Brightness</span>
+								<input
+									type="range"
+									class="slider color-adj-slider"
+									min="-0.5"
+									max="0.5"
+									step="0.01"
+									bind:value={brightness}
+								/>
+							</div>
+							<div class="color-adj-row">
+								<span class="color-adj-label">Contrast</span>
+								<input
+									type="range"
+									class="slider color-adj-slider"
+									min="0.3"
+									max="2.5"
+									step="0.01"
+									bind:value={contrast}
+								/>
+							</div>
+							<div class="color-adj-row">
+								<span class="color-adj-label">Saturation</span>
+								<input
+									type="range"
+									class="slider color-adj-slider"
+									min="0"
+									max="3"
+									step="0.01"
+									bind:value={saturation}
+								/>
+							</div>
+							<button
+								class="color-adj-reset"
+								onclick={() => {
+									brightness = 0;
+									contrast = 1;
+									saturation = 1;
+								}}>Reset</button
+							>
+						</div>
+					{/if}
+					<label class="grid-lines-toggle">
+						<input type="checkbox" bind:checked={showGridLines} class="sr-only" />
+						<span class="check-box" class:checked={showGridLines}>
+							{#if showGridLines}
+								<svg
+									width="8"
+									height="8"
 									viewBox="0 0 12 12"
 									fill="none"
-									stroke="currentColor"
+									stroke="var(--accent)"
 									stroke-width="2"
 									stroke-linecap="round"
 									stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
 								>
 							{/if}
-							{preset.name}
-						</button>
-					{/each}
-				</div>
-			</div>
-
-			<div class="param machine-controls">
-				<div class="param-head">
-					<label class="param-label" for="machine-select">Processor</label>
-				</div>
-				<select
-					id="machine-select"
-					class="instrument-select"
-					value={machine}
-					onchange={chooseMachine}
-					disabled={machineBusy || observationBusy || !engine}
-				>
-					<option value="z80-0.2">Z80 · compat 0.2</option>
-					<option value="z80-0.3">Z80 · 0.3 classic</option>
-					<option value="z80-nmos">Z80 · 0.3 Zilog NMOS</option>
-					<option value="m6502">NMOS 6502</option>
-					<option value="i8086">8086 · coherent fetch</option>
-				</select>
-				<details class="world-contract">
-					<summary
-						>World contract <span class="contract-shape">L{tapeLength} / P{pairLength}</span
-						></summary
-					>
-					<div class="world-geometry-row">
-						<label for="tape-length">Tape L</label><input
-							id="tape-length"
-							class="seed-input"
-							type="number"
-							min="4"
-							max="32"
-							value={tapeLength}
-							disabled={machineBusy || observationBusy}
-							onchange={(event) => {
-								tapeLength = Math.max(4, Math.min(32, Number(event.currentTarget.value)));
-								pairLength = Math.max(pairLength, tapeLength * 2);
-								initialCondition = { kind: 'random' };
-								selectedExperimentId = '';
-								void updateMachine(true);
-							}}
-						/>
-						<label for="pair-length">Ring P</label><input
-							id="pair-length"
-							class="seed-input"
-							type="number"
-							min={tapeLength * 2}
-							max="128"
-							value={pairLength}
-							disabled={machineBusy || observationBusy}
-							onchange={(event) => {
-								pairLength = Math.max(
-									tapeLength * 2,
-									Math.min(128, Number(event.currentTarget.value))
-								);
-								void updateMachine(true);
-							}}
-						/>
-					</div>
-					<label class="world-control-label" for="stack-convention">Stack placement</label>
-					<select
-						id="stack-convention"
-						class="instrument-select"
-						bind:value={stackConvention}
-						disabled={machineBusy || observationBusy}
-						onchange={() => {
-							void updateMachine(true);
-						}}
-					>
-						<option value="top">Top at B’s last byte</option><option value="first-push"
-							>First push at B’s last byte</option
-						>{#if isa === 'z80'}<option value="legacy-sp">Original SP = FFFF</option>{/if}
-					</select>
-					<label class="instrument-check"
-						><input
-							type="checkbox"
-							bind:checked={randomRegisters}
-							disabled={machineBusy || observationBusy}
-							onchange={() => {
-								void updateMachine();
-							}}
-						/> Random registers</label
-					>
-					<label class="world-control-label" for="dial-mode">Dial stream</label>
-					<select
-						id="dial-mode"
-						class="instrument-select"
-						bind:value={dialMode}
-						disabled={machineBusy || observationBusy}
-						onchange={() => {
-							void updateMachine();
-						}}
-						><option value="historical-pcg">Historical PCG</option><option value="counter"
-							>Counter</option
-						></select
-					>
-				</details>
-				<div class="param-head chemistry-head">
-					<label class="param-label" for="lethal-probability">Lethal zero</label><span
-						class="param-val"
-						>{(lethalProbability * 100).toFixed(
-							lethalProbability && lethalProbability < 0.01 ? 1 : 0
-						)}%</span
-					>
-				</div>
-				<input
-					id="lethal-probability"
-					class="slider"
-					type="range"
-					min="0"
-					max="1"
-					step="0.01"
-					bind:value={lethalProbability}
-					disabled={machineBusy || observationBusy}
-					onchange={() => {
-						void updateMachine();
-					}}
-				/>
-				{#if machineBusy}<p class="instrument-note" role="status">Preparing the processor…</p>{/if}
-				{#if machineError}<p class="instrument-error" role="alert">{machineError}</p>{/if}
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<span class="param-label"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><rect x="3" y="3" width="8" height="8" /><rect
-								x="13"
-								y="3"
-								width="8"
-								height="8"
-							/><rect x="3" y="13" width="8" height="8" /><rect
-								x="13"
-								y="13"
-								width="8"
-								height="8"
-							/></svg
-						> Grid</span
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'grid'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'grid';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'grid' ? null : 'grid';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Grid topology and dimensions. Hex grids produce more organic patterns. Changing
-							resets simulation.</span
-						>
-					</span>
-					<div class="grid-type-toggle">
-						<button
-							class="grid-type-btn"
-							class:active={gridType === 'square'}
-							onclick={() => handleGridTypeChange('square')}
-							title="Square grid — 4 neighbors"
-							><svg
-								width="10"
-								height="10"
-								viewBox="0 0 10 10"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.2"
-								><rect x="1" y="1" width="3.5" height="3.5" /><rect
-									x="5.5"
-									y="1"
-									width="3.5"
-									height="3.5"
-								/><rect x="1" y="5.5" width="3.5" height="3.5" /><rect
-									x="5.5"
-									y="5.5"
-									width="3.5"
-									height="3.5"
-								/></svg
-							></button
-						>
-						<button
-							class="grid-type-btn"
-							class:active={gridType === 'hex'}
-							onclick={() => handleGridTypeChange('hex')}
-							title="Hex grid — 6 neighbors"
-							><svg
-								width="10"
-								height="10"
-								viewBox="0 0 10 10"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.2"><path d="M5 1L8.5 3V7L5 9L1.5 7V3Z" /></svg
-							></button
-						>
-					</div>
-				</div>
-				<div class="grid-size-row">
-					<label class="grid-size-label">
-						W
-						<input
-							type="number"
-							class="grid-size-input"
-							bind:value={gridWidth}
-							min="50"
-							max="500"
-							step="10"
-						/>
+						</span>
+						<span>Grid lines</span>
 					</label>
-					<span class="grid-size-x">&times;</span>
-					<label class="grid-size-label">
-						H
-						<input
-							type="number"
-							class="grid-size-input"
-							bind:value={gridHeight}
-							min="50"
-							max="500"
-							step="10"
-						/>
-					</label>
-					<button class="seed-apply" onclick={applyGridConfig} title="Apply & Reset">
-						<svg
-							width="12"
-							height="12"
-							viewBox="0 0 14 14"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-						>
-							<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
-							<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
-						</svg>
-					</button>
 				</div>
-			</div>
 
-			<div class="param">
-				<div class="param-head">
-					<label class="param-label" for="seed-input"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><rect x="2" y="2" width="20" height="20" rx="3" /><circle
-								cx="8"
-								cy="8"
-								r="1.5"
-								fill="currentColor"
-								stroke="none"
-							/><circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" /><circle
-								cx="8"
-								cy="16"
-								r="1.5"
-								fill="currentColor"
-								stroke="none"
-							/><circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" /><circle
-								cx="12"
-								cy="12"
-								r="1.5"
-								fill="currentColor"
-								stroke="none"
-							/></svg
-						> Seed</label
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'seed'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'seed';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'seed' ? null : 'seed';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Random seed for initial soup generation. Changing seed requires reset.</span
-						>
-					</span>
-				</div>
-				<div class="seed-row">
-					<input
-						id="seed-input"
-						type="number"
-						class="seed-input"
-						value={seed}
-						min="0"
-						onchange={handleSeedChange}
-					/>
-					<button class="seed-apply" aria-label="Reset with seed" onclick={handleReset}>
-						<svg
-							width="12"
-							height="12"
-							viewBox="0 0 14 14"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-						>
-							<path d="M2 7a5 5 0 1 1 1 3" stroke-linecap="round" />
-							<path d="M2 3v4h4" stroke-linecap="round" stroke-linejoin="round" />
-						</svg>
-					</button>
-				</div>
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<label class="param-label" for="noise-input"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><path
-								d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
-							/></svg
-						> Mutation rate</label
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'mutation'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'mutation';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'mutation' ? null : 'mutation';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Random byte flips per batch. Higher = more mutations = faster evolution. Applied
-							live.</span
-						>
-					</span>
-					<span class="param-val"
-						>{#if noiseExp >= 31}off{:else}1/2<sup>{noiseExp}</sup>{/if}</span
-					>
-				</div>
-				<div class="slider-track-wrap">
-					<input
-						id="noise-input"
-						type="range"
-						class="slider"
-						value={noiseExp >= 31 ? 1 : 13 - noiseExp}
-						min="1"
-						max="12"
-						step="1"
-						oninput={(e) => {
-							const val = 13 - parseInt((e.target as HTMLInputElement).value);
-							if (!isNaN(val) && engine) {
-								noiseExp = val;
-								engine.noiseExp = val;
-							}
-						}}
-					/>
-				</div>
-				<label class="instrument-check"
-					><input
-						type="checkbox"
-						checked={noiseExp >= 31}
-						onchange={(event) => {
-							noiseExp = event.currentTarget.checked ? 31 : 4;
-							if (engine) engine.noiseExp = noiseExp;
-						}}
-					/> Mutation off</label
-				>
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<label class="param-label" for="pairs-input"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><rect x="3" y="3" width="7" height="7" /><rect
-								x="14"
-								y="3"
-								width="7"
-								height="7"
-							/><rect x="3" y="14" width="7" height="7" /><rect
-								x="14"
-								y="14"
-								width="7"
-								height="7"
-							/></svg
-						> Pairs/batch</label
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'pairs'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'pairs';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'pairs' ? null : 'pairs';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Cell pairs evaluated per step. More = faster evolution, higher GPU load. Applied
-							live.</span
-						>
-					</span>
-					<span class="param-val">{pairCount}</span>
-				</div>
-				<div class="slider-track-wrap">
-					<input
-						id="pairs-input"
-						type="range"
-						class="slider"
-						bind:value={pairCount}
-						min={256}
-						max={MAX_BATCH_PAIR_N}
-						step={256}
-						oninput={handlePairCountChange}
-					/>
-				</div>
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<label class="param-label" for="steps-input"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg
-						>
-						{isa === 'z80' ? 'Z80 steps' : 'Execution steps'}</label
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'steps'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'steps';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'steps' ? null : 'steps';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Instruction slots per pair execution. More steps = longer programs can run, slower
-							throughput. Applied live.</span
-						>
-					</span>
-					<span class="param-val">{z80Steps}</span>
-				</div>
-				<div class="slider-track-wrap">
-					<input
-						id="steps-input"
-						type="range"
-						class="slider"
-						bind:value={z80Steps}
-						min={16}
-						max={1024}
-						step={16}
-						oninput={(e) => {
-							const val = parseInt((e.target as HTMLInputElement).value);
-							if (!isNaN(val) && engine) {
-								z80Steps = val;
-								engine.z80Steps = val;
-							}
-						}}
-					/>
-				</div>
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<span class="param-label"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><circle cx="12" cy="12" r="10" /><line
-								x1="4.93"
-								y1="4.93"
-								x2="19.07"
-								y2="19.07"
-							/></svg
-						> Suppress opcodes</span
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'suppress'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'suppress';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'suppress' ? null : 'suppress';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>{#if isa === 'z80'}Remove instructions from the CPU. A pattern is a mnemonic
-								substring (LDIR, LD (HL), PUSH), a whole family (family:block-copy, family:stack,
-								family:writes-mem) or one opcode (ed:B0, cb:FF, 3E). Prefixed ED/CB instructions are
-								reachable individually. A suppressed opcode executes as a NOP; its operand bytes run
-								as the next instruction. Use it to take the usual replication machinery away and see
-								what else evolves.{:else}{isaSuppressionDescription}{/if}</span
-						>
-					</span>
-					{#if suppressPatterns.length > 0}
-						<button class="suppress-clear" onclick={clearSuppressedOpcodes} title="Clear all">
-							<svg
-								width="10"
-								height="10"
-								viewBox="0 0 10 10"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round" />
-							</svg>
-						</button>
-					{/if}
-				</div>
-				<div class="suppress-input-wrap">
-					<input
-						class="suppress-input"
-						type="text"
-						placeholder={isa === 'z80'
-							? 'family:block-copy; LDIR; PUSH; ed:B0'
-							: isa === 'm6502'
-								? 'family:stack; STA; opcode:8D'
-								: 'family:block-copy; MOV; opcode:A4'}
-						bind:value={suppressInput}
-						onkeydown={(e) => {
-							if (e.key === 'Enter' && suppressInput.trim()) {
-								addSuppressPattern(suppressInput);
-								suppressInput = '';
-							}
-						}}
-					/>
-					{#if suppressInput.trim()}
-						{@const preview = suppressionPreview(suppressInput)}
-						<span class="suppress-preview"
-							>↵ to suppress {preview} instruction{preview !== 1 ? 's' : ''}</span
-						>
-					{/if}
-				</div>
-				{#if suppressPatterns.length > 0}
-					<div class="suppress-chips">
-						{#each suppressPatterns as pat (pat)}
-							<button
-								class="suppress-chip"
-								onclick={() => removeSuppressPattern(pat)}
-								title="Remove pattern: {pat} (click to remove)"
-							>
-								{pat}
-								<svg
-									width="8"
-									height="8"
-									viewBox="0 0 8 8"
-									stroke="currentColor"
-									stroke-width="1.5"
-								>
-									<path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke-linecap="round" />
-								</svg>
-							</button>
-						{/each}
-						<span class="suppress-count" title={describeSuppression(suppression)}
-							>{suppressedTotal} instruction{suppressedTotal !== 1 ? 's' : ''}</span
-						>
-					</div>
-				{/if}
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<span class="param-label"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><circle cx="12" cy="12" r="10" /><path
-								d="M12 2a7 7 0 0 0 0 20 4 4 0 0 1 0-8 4 4 0 0 0 0-8z"
-							/><circle cx="12" cy="9" r="1" fill="var(--accent)" /></svg
-						> Appearance</span
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'cmap'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'cmap';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'cmap' ? null : 'cmap';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Color scheme for byte values. Each Z80 opcode category gets a distinct color family.</span
-						>
-					</span>
-					<button
-						class="color-adj-toggle"
-						class:active={showColorAdj}
-						onclick={() => (showColorAdj = !showColorAdj)}
-						title="Color adjustments"
-					>
-						<svg
-							width="10"
-							height="10"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path
-								d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-							/><circle cx="12" cy="12" r="3" />
-						</svg>
-					</button>
-				</div>
-				<div class="cmap-row">
-					{#each COLORMAP_NAMES as name (name)}
-						<button
-							class="cmap-btn"
-							class:active={colormapName === name}
-							onclick={() => handleColormapChange(name)}
-						>
-							<span class="cmap-preview cmap-preview-{name}"></span>
-							{name}
-						</button>
-					{/each}
-				</div>
-				{#if showColorAdj}
-					<div class="color-adj-panel">
-						<div class="color-adj-row">
-							<span class="color-adj-label">Brightness</span>
-							<input
-								type="range"
-								class="slider color-adj-slider"
-								min="-0.5"
-								max="0.5"
-								step="0.01"
-								bind:value={brightness}
-							/>
-						</div>
-						<div class="color-adj-row">
-							<span class="color-adj-label">Contrast</span>
-							<input
-								type="range"
-								class="slider color-adj-slider"
-								min="0.3"
-								max="2.5"
-								step="0.01"
-								bind:value={contrast}
-							/>
-						</div>
-						<div class="color-adj-row">
-							<span class="color-adj-label">Saturation</span>
-							<input
-								type="range"
-								class="slider color-adj-slider"
-								min="0"
-								max="3"
-								step="0.01"
-								bind:value={saturation}
-							/>
-						</div>
-						<button
-							class="color-adj-reset"
-							onclick={() => {
-								brightness = 0;
-								contrast = 1;
-								saturation = 1;
-							}}>Reset</button
-						>
-					</div>
-				{/if}
-				<label class="grid-lines-toggle">
-					<input type="checkbox" bind:checked={showGridLines} class="sr-only" />
-					<span class="check-box" class:checked={showGridLines}>
-						{#if showGridLines}
-							<svg
-								width="8"
-								height="8"
-								viewBox="0 0 12 12"
+				<div class="param">
+					<div class="param-head">
+						<span class="param-label"
+							><svg
+								width="12"
+								height="12"
+								viewBox="0 0 24 24"
 								fill="none"
 								stroke="var(--accent)"
 								stroke-width="2"
 								stroke-linecap="round"
-								stroke-linejoin="round"><path d="M2 6l3 3 5-5" /></svg
+								stroke-linejoin="round"
+								><rect x="3" y="3" width="18" height="18" rx="2" /><line
+									x1="3"
+									y1="12"
+									x2="21"
+									y2="12"
+								/><line x1="12" y1="3" x2="12" y2="21" /></svg
+							> Detail</span
+						>
+						<span class="param-info-wrap" class:show-tip={openTip === 'detail'}>
+							<button
+								class="param-info"
+								onmouseenter={() => {
+									openTip = 'detail';
+								}}
+								onmouseleave={() => {
+									openTip = null;
+								}}
+								onclick={() => {
+									openTip = openTip === 'detail' ? null : 'detail';
+								}}>?</button
 							>
-						{/if}
-					</span>
-					<span>Grid lines</span>
-				</label>
-			</div>
-
-			<div class="param">
-				<div class="param-head">
-					<span class="param-label"
-						><svg
-							width="12"
-							height="12"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="var(--accent)"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							><rect x="3" y="3" width="18" height="18" rx="2" /><line
-								x1="3"
-								y1="12"
-								x2="21"
-								y2="12"
-							/><line x1="12" y1="3" x2="12" y2="21" /></svg
-						> Detail</span
-					>
-					<span class="param-info-wrap" class:show-tip={openTip === 'detail'}>
-						<button
-							class="param-info"
-							onmouseenter={() => {
-								openTip = 'detail';
-							}}
-							onmouseleave={() => {
-								openTip = null;
-							}}
-							onclick={() => {
-								openTip = openTip === 'detail' ? null : 'detail';
-							}}>?</button
-						>
-						<span class="param-tip"
-							>Toggle between detailed view (showing individual bytes within each cell) and simple
-							view (one averaged color per cell). Hover tooltip always shows full detail.</span
-						>
-					</span>
-					<div class="detail-toggle">
-						<button
-							class="grid-type-btn"
-							class:active={!simpleView}
-							onclick={() => (simpleView = false)}
-							title="Detailed — show individual bytes"
-							><svg
-								width="10"
-								height="10"
-								viewBox="0 0 10 10"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1"
-								><rect x="0.5" y="0.5" width="4" height="4" /><rect
-									x="5.5"
-									y="0.5"
-									width="4"
-									height="4"
-								/><rect x="0.5" y="5.5" width="4" height="4" /><rect
-									x="5.5"
-									y="5.5"
-									width="4"
-									height="4"
-								/></svg
-							></button
-						>
-						<button
-							class="grid-type-btn"
-							class:active={simpleView}
-							onclick={() => (simpleView = true)}
-							title="Simple — one color per cell"
-							><svg
-								width="10"
-								height="10"
-								viewBox="0 0 10 10"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.2"><rect x="1" y="1" width="8" height="8" rx="1" /></svg
-							></button
-						>
+							<span class="param-tip"
+								>Toggle between detailed view (showing individual bytes within each cell) and simple
+								view (one averaged color per cell). Hover tooltip always shows full detail.</span
+							>
+						</span>
+						<div class="detail-toggle">
+							<button
+								class="grid-type-btn"
+								class:active={!simpleView}
+								onclick={() => (simpleView = false)}
+								title="Detailed — show individual bytes"
+								><svg
+									width="10"
+									height="10"
+									viewBox="0 0 10 10"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1"
+									><rect x="0.5" y="0.5" width="4" height="4" /><rect
+										x="5.5"
+										y="0.5"
+										width="4"
+										height="4"
+									/><rect x="0.5" y="5.5" width="4" height="4" /><rect
+										x="5.5"
+										y="5.5"
+										width="4"
+										height="4"
+									/></svg
+								></button
+							>
+							<button
+								class="grid-type-btn"
+								class:active={simpleView}
+								onclick={() => (simpleView = true)}
+								title="Simple — one color per cell"
+								><svg
+									width="10"
+									height="10"
+									viewBox="0 0 10 10"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.2"><rect x="1" y="1" width="8" height="8" rx="1" /></svg
+								></button
+							>
+						</div>
 					</div>
+					<p class="instrument-note">
+						Choose a field view in the observation strip to measure composition or fetching.
+					</p>
 				</div>
-				<p class="instrument-note">
-					Choose a field view in the observation strip to measure composition or fetching.
-				</p>
-			</div>
+			</fieldset>
 		</div>
 	{/if}
 
@@ -7769,6 +7782,12 @@ graph TD
 		font: 9px monospace;
 		margin-left: 5px;
 	}
+	.settings-fields {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		min-width: 0;
+	}
 	.bench-backdrop {
 		pointer-events: none;
 		background: none;
@@ -7820,11 +7839,15 @@ graph TD
 		.info-bar .info-tabs {
 			display: none;
 		}
+		.settings-panel {
+			max-height: calc(100dvh - 224px);
+		}
 		.bench-backdrop {
 			padding: 156px 8px 90px;
 		}
 		.bench-backdrop .tape-inspector {
 			width: 100%;
+			max-width: 100%;
 			max-height: calc(100dvh - 246px);
 		}
 		.tape-inspector .tip-grid {
