@@ -30,7 +30,32 @@ import {
 } from '../observation';
 import type { LabSettings, InitialCondition, CultureResult } from '../lab/types';
 
+let nextEngineId = 0;
+let nextDeviceId = 0;
+
+export interface EngineDiagnostics {
+	engineId: number;
+	deviceId: number;
+	deviceInitializations: number;
+	resetCount: number;
+	bufferRevision: number;
+	pipelineRevision: number;
+}
+
 export class GPUEngine {
+	private readonly lifecycle: EngineDiagnostics = {
+		engineId: ++nextEngineId,
+		deviceId: 0,
+		deviceInitializations: 0,
+		resetCount: 0,
+		bufferRevision: 0,
+		pipelineRevision: 0
+	};
+	private configurationQueue: Promise<void> = Promise.resolve();
+	private readbackBarrier: Promise<void> | null = null;
+	private pendingReadbacks = 0;
+	private readbackWaiters: (() => void)[] = [];
+	private markerPipeline: GPUComputePipeline | null = null;
 	private device!: GPUDevice;
 	private context!: GPUCanvasContext;
 	private format!: GPUTextureFormat;
@@ -184,6 +209,11 @@ export class GPUEngine {
 		return this.batchIndex;
 	}
 
+	/** Lifecycle-only counters: reading diagnostics never touches the GPU or simulation loop. */
+	get diagnostics(): Readonly<EngineDiagnostics> {
+		return Object.freeze({ ...this.lifecycle });
+	}
+
 	setSuppression(sets: SuppressSets): void {
 		this.suppression = { base: new Set(sets.base), cb: new Set(sets.cb), ed: new Set(sets.ed) };
 		this.masks.set(suppressionMasks(this.suppression));
@@ -225,6 +255,8 @@ export class GPUEngine {
 				)
 			}
 		});
+		this.lifecycle.deviceId = ++nextDeviceId;
+		this.lifecycle.deviceInitializations++;
 
 		this.context = canvas.getContext('webgpu')!;
 		this.format = navigator.gpu.getPreferredCanvasFormat();
@@ -245,6 +277,7 @@ export class GPUEngine {
 	}
 
 	private createBuffers(): void {
+		this.lifecycle.bufferRevision++;
 		const dev = this.device;
 
 		const soupWords = this.cellCount * this.wordsPerCell;
@@ -356,6 +389,7 @@ export class GPUEngine {
 	}
 
 	private createPipelines(): void {
+		this.lifecycle.pipelineRevision++;
 		const dev = this.device;
 
 		// Simulation shader module
@@ -531,6 +565,7 @@ export class GPUEngine {
 	}
 
 	reset(seed: number): void {
+		this.lifecycle.resetCount++;
 		this.seed = seed;
 		this.cpuRng = new SplitMix64(seed);
 		this.initSoup();
@@ -594,62 +629,110 @@ export class GPUEngine {
 		await this.device.queue.onSubmittedWorkDone();
 	}
 
+	private queueConfiguration(operation: () => Promise<void>): Promise<void> {
+		const task = this.configurationQueue.then(operation);
+		this.configurationQueue = task.catch(() => {});
+		return task;
+	}
+
+	private finishReadback(): void {
+		this.pendingReadbacks--;
+		if (this.pendingReadbacks === 0) {
+			for (const resolve of this.readbackWaiters) resolve();
+			this.readbackWaiters = [];
+		}
+	}
+
+	private waitForReadbacks(): Promise<void> {
+		return this.pendingReadbacks === 0
+			? Promise.resolve()
+			: new Promise((resolve) => this.readbackWaiters.push(resolve));
+	}
+
 	/** World/ISA edits are explicit events; no host memory round-trip between updates. */
-	async setMachine(settings: LabSettings): Promise<void> {
+	setMachine(settings: LabSettings): Promise<void> {
+		const next = structuredClone(settings);
+		return this.queueConfiguration(() => this.applyMachine(next));
+	}
+
+	private async applyMachine(settings: LabSettings): Promise<void> {
 		validateSettings(settings);
 		if (settings.pairAttempts > MAX_BATCH_PAIR_N)
 			throw new Error('This instrument supports up to 8192 pair slots per update.');
-		await this.waitForIdle();
-		await this.cellReadQueue;
 		const geometryChanged =
 			settings.width !== this.soupWidth ||
 			settings.height !== this.soupHeight ||
 			settings.topology !== this.gridType ||
 			settings.length !== this.tapeLength ||
 			settings.ring !== this.pairLength;
-		this.machineSettings = structuredClone(settings);
-		this.z80Steps = settings.steps;
-		this.pairCount = settings.pairAttempts;
-		this.noiseExp = settings.mutationExponent;
-		this.masks.fill(0);
-		this.masks.set(ablationMasks(settings.isa, settings.ablation));
-		if (geometryChanged) {
-			this.changeGridConfig(
-				{
-					width: settings.width,
-					height: settings.height,
-					gridType: settings.topology,
-					tapeLength: settings.length,
-					pairLength: settings.ring
-				},
-				this.context.canvas.width,
-				this.context.canvas.height
-			);
-		} else {
-			this.createPipelines();
-			this.flushSuppressMask();
-			this.resetRate();
+		let releaseReads: (() => void) | undefined;
+		if (geometryChanged && !this.readbackBarrier)
+			this.readbackBarrier = new Promise((resolve) => {
+				releaseReads = resolve;
+			});
+		try {
+			await this.waitForIdle();
+			if (geometryChanged) await this.waitForReadbacks();
+			this.machineSettings = structuredClone(settings);
+			this.z80Steps = settings.steps;
+			this.pairCount = settings.pairAttempts;
+			this.noiseExp = settings.mutationExponent;
+			this.masks.fill(0);
+			this.masks.set(ablationMasks(settings.isa, settings.ablation));
+			if (geometryChanged) {
+				this.changeGridConfig(
+					{
+						width: settings.width,
+						height: settings.height,
+						gridType: settings.topology,
+						tapeLength: settings.length,
+						pairLength: settings.ring
+					},
+					this.context.canvas.width,
+					this.context.canvas.height
+				);
+			} else {
+				this.createPipelines();
+				this.flushSuppressMask();
+				this.resetRate();
+			}
+			await this.checkShader();
+		} finally {
+			if (releaseReads) {
+				this.readbackBarrier = null;
+				releaseReads();
+			}
 		}
-		await this.checkShader();
 	}
 
-	async configure(
-		settings: LabSettings,
-		initial: InitialCondition = { kind: 'random' }
-	): Promise<void> {
-		// Validate initial bytes before changing the live condition.
-		const bytes = createInitialSoup(settings, initial);
-		await this.setMachine(settings);
-		this.reset(settings.seed);
-		if (initial.kind !== 'random') {
-			const padded = new Uint8Array(this.soupSize);
-			for (let c = 0; c < this.cellCount; c++)
-				padded.set(
-					bytes.subarray(c * this.tapeLength, (c + 1) * this.tapeLength),
-					c * this.wordsPerCell * 4
-				);
-			this.device.queue.writeBuffer(this.soupBuffer, 0, padded);
-		}
+	configure(settings: LabSettings, initial: InitialCondition = { kind: 'random' }): Promise<void> {
+		const next = structuredClone(settings);
+		const condition = structuredClone(initial);
+		return this.queueConfiguration(async () => {
+			// Validate initial bytes before changing the live condition.
+			const bytes = createInitialSoup(next, condition);
+			let releaseReads!: () => void;
+			this.readbackBarrier = new Promise((resolve) => {
+				releaseReads = resolve;
+			});
+			try {
+				await this.waitForReadbacks();
+				await this.applyMachine(next);
+				this.reset(next.seed);
+				if (condition.kind !== 'random') {
+					const padded = new Uint8Array(this.soupSize);
+					for (let c = 0; c < this.cellCount; c++)
+						padded.set(
+							bytes.subarray(c * this.tapeLength, (c + 1) * this.tapeLength),
+							c * this.wordsPerCell * 4
+						);
+					this.device.queue.writeBuffer(this.soupBuffer, 0, padded);
+				}
+			} finally {
+				this.readbackBarrier = null;
+				releaseReads();
+			}
+		});
 	}
 
 	setAblation(patterns: string[]): void {
@@ -664,7 +747,11 @@ export class GPUEngine {
 		await this.setFieldMode(show ? 'confinement' : 'bytes');
 	}
 
-	async setFieldMode(mode: FieldMode): Promise<void> {
+	setFieldMode(mode: FieldMode): Promise<void> {
+		return this.queueConfiguration(() => this.applyFieldMode(mode));
+	}
+
+	private async applyFieldMode(mode: FieldMode): Promise<void> {
 		if (!['bytes', 'identity', 'confinement', 'zeros', 'diversity', 'marker'].includes(mode))
 			throw new Error('Unknown observation mode.');
 		this.fieldMode = mode;
@@ -828,12 +915,15 @@ export class GPUEngine {
 	// pending gets the last counts instead of a mapAsync OperationError.
 	private _statsMapPending = false;
 	async readStats(): Promise<Uint32Array> {
+		if (this.readbackBarrier) return this.readbackBarrier.then(() => this.readStats());
 		if (this._statsMapPending) return this.byteCounts;
 		this._statsMapPending = true;
+		this.pendingReadbacks++;
 		try {
 			return await this.readStatsNow();
 		} finally {
 			this._statsMapPending = false;
+			this.finishReadback();
 		}
 	}
 
@@ -876,8 +966,10 @@ export class GPUEngine {
 	// Read cell hashes from GPU for species tracking
 	private _hashMapPending = false;
 	async readCellHashes(): Promise<Uint32Array> {
+		if (this.readbackBarrier) return this.readbackBarrier.then(() => this.readCellHashes());
 		if (this._hashMapPending) return new Uint32Array(0);
 		this._hashMapPending = true;
+		this.pendingReadbacks++;
 		try {
 			const encoder = this.device.createCommandEncoder();
 
@@ -904,6 +996,7 @@ export class GPUEngine {
 			return data;
 		} finally {
 			this._hashMapPending = false;
+			this.finishReadback();
 		}
 	}
 
@@ -922,8 +1015,10 @@ export class GPUEngine {
 	// Read soup data from GPU for CPU-side trace/disassembly
 	private _soupMapPending = false;
 	async readSoupData(): Promise<Uint8Array> {
+		if (this.readbackBarrier) return this.readbackBarrier.then(() => this.readSoupData());
 		if (this._soupMapPending) return new Uint8Array(0);
 		this._soupMapPending = true;
+		this.pendingReadbacks++;
 		try {
 			const soupBytes = this.cellCount * this.wordsPerCell * 4;
 			const encoder = this.device.createCommandEncoder();
@@ -936,25 +1031,32 @@ export class GPUEngine {
 			return data;
 		} finally {
 			this._soupMapPending = false;
+			this.finishReadback();
 		}
 	}
 
 	/** Read only the selected tape; probing never downloads the population. */
 	readCell(cell: number): Promise<Uint8Array> {
+		if (this.readbackBarrier) return this.readbackBarrier.then(() => this.readCell(cell));
 		if (!Number.isInteger(cell) || cell < 0 || cell >= this.cellCount)
 			return Promise.reject(new Error('Cell index is outside the lattice.'));
+		this.pendingReadbacks++;
 		const task = this.cellReadQueue.then(async () => {
-			const length = this.tapeLength;
-			const size = this.wordsPerCell * 4;
-			const staging = this.cellStagingBuffer;
-			const encoder = this.device.createCommandEncoder();
-			encoder.copyBufferToBuffer(this.soupBuffer, cell * size, staging, 0, size);
-			this.device.queue.submit([encoder.finish()]);
-			await staging.mapAsync(GPUMapMode.READ, 0, size);
 			try {
-				return new Uint8Array(staging.getMappedRange(0, size).slice(0, length));
+				const length = this.tapeLength;
+				const size = this.wordsPerCell * 4;
+				const staging = this.cellStagingBuffer;
+				const encoder = this.device.createCommandEncoder();
+				encoder.copyBufferToBuffer(this.soupBuffer, cell * size, staging, 0, size);
+				this.device.queue.submit([encoder.finish()]);
+				await staging.mapAsync(GPUMapMode.READ, 0, size);
+				try {
+					return new Uint8Array(staging.getMappedRange(0, size).slice(0, length));
+				} finally {
+					staging.unmap();
+				}
 			} finally {
-				staging.unmap();
+				this.finishReadback();
 			}
 		});
 		this.cellReadQueue = task.then(
@@ -964,8 +1066,9 @@ export class GPUEngine {
 		return task;
 	}
 
-	/** The caller pauses the world before taking a region measurement. */
+	/** Queue-ordered snapshot; later population updates may continue while it maps. */
 	async readRegion(region: CellRegion): Promise<RegionMeasurement> {
+		if (this.readbackBarrier) return this.readbackBarrier.then(() => this.readRegion(region));
 		const selection = normalizeRegion(region, this.soupWidth, this.soupHeight);
 		const { width, height, length } = this.settings;
 		const marker = this.marker;
@@ -975,18 +1078,67 @@ export class GPUEngine {
 		return measureRegion(data, width, height, length, selection, update, marker);
 	}
 
-	/** Explicit intervention. Only the affected word is uploaded. */
+	/** One queue-ordered GPU patch preserves neighbouring bytes even during live updates. */
 	async plantMarker(cell: number, position: number, value: number): Promise<void> {
+		if (this.readbackBarrier)
+			return this.readbackBarrier.then(() => this.plantMarker(cell, position, value));
+		if (!Number.isInteger(cell) || cell < 0 || cell >= this.cellCount)
+			throw new Error('Cell index is outside the lattice.');
 		this.setMarker({ position, value });
-		await this.waitForIdle();
-		const tape = await this.readCell(cell);
-		const start = position & ~3;
-		const word = new Uint8Array(4);
-		word.set(tape.subarray(start, start + 4));
-		word[position & 3] = value;
-		this.device.queue.writeBuffer(this.soupBuffer, cell * this.wordsPerCell * 4 + start, word);
-		this.device.queue.writeBuffer(this.fetchStatusBuffer, cell * 4, new Uint32Array([0]));
+		if (!this.markerPipeline)
+			this.markerPipeline = this.device.createComputePipeline({
+				layout: 'auto',
+				compute: {
+					module: this.device.createShaderModule({
+						code: `
+struct Patch { word: u32, shift: u32, value: u32, cell: u32 }
+@group(0) @binding(0) var<storage, read_write> soup: array<u32>;
+@group(0) @binding(1) var<storage, read_write> fetched: array<u32>;
+@group(0) @binding(2) var<uniform> marker_patch: Patch;
+@compute @workgroup_size(1) fn plant_marker() {
+  let mask = 255u << marker_patch.shift;
+  soup[marker_patch.word] = (soup[marker_patch.word] & ~mask) | (marker_patch.value << marker_patch.shift);
+  fetched[marker_patch.cell] = 0u;
+}`
+					}),
+					entryPoint: 'plant_marker'
+				}
+			});
+		const params = this.device.createBuffer({
+			size: 16,
+			usage: GPUBufferUsage.UNIFORM,
+			mappedAtCreation: true
+		});
+		new Uint32Array(params.getMappedRange()).set([
+			cell * this.wordsPerCell + (position >> 2),
+			(position & 3) * 8,
+			value,
+			cell
+		]);
+		params.unmap();
+		const encoder = this.device.createCommandEncoder();
+		const pass = encoder.beginComputePass();
+		pass.setPipeline(this.markerPipeline);
+		pass.setBindGroup(
+			0,
+			this.device.createBindGroup({
+				layout: this.markerPipeline.getBindGroupLayout(0),
+				entries: [
+					{ binding: 0, resource: { buffer: this.soupBuffer } },
+					{ binding: 1, resource: { buffer: this.fetchStatusBuffer } },
+					{ binding: 2, resource: { buffer: params } }
+				]
+			})
+		);
+		pass.dispatchWorkgroups(1);
+		pass.end();
+		this.device.queue.submit([encoder.finish()]);
 		this.fieldDirty = true;
+		try {
+			await this.waitForIdle();
+		} finally {
+			params.destroy();
+		}
 	}
 
 	/** Canvas-pixel bounds of a cell; hex returns its enclosing visual box. */
