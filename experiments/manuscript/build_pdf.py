@@ -490,9 +490,10 @@ def v8_figure(path: Path, legend: str, out_dir: Path) -> list[str]:
     if path.resolve() != dst.resolve():
         shutil.copyfile(path, dst)
     # Fixed content blocks enforce citation order. Captions can continue onto
-    # another page; scaling by height would silently violate full-width figures.
+    # another page. Tall Extended Data pages are capped at 86% of the text height
+    # in this reading PDF; the submitted figure files keep their full size.
     return [r'\par\addvspace{10pt}',
-            r'\noindent\includegraphics[width=\textwidth]{' + path.name + r'}\par\nobreak',
+            r'\noindent\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{' + path.name + r'}\par\nobreak',
             r'\vspace{4pt}{\small ' + v8_inline(legend) + r'\par}', r'\par\addvspace{10pt}', '']
 
 
@@ -514,7 +515,7 @@ def convert_v8(text: str, figs_dir: Path, out_dir: Path, *, author: str,
     ed_legends = {}
     if supplementary:
         for m in re.finditer(r'^## (Extended Data (\d+)\.[^\n]+)\n(.*?)(?=^## |\Z)', ed_text, re.M | re.S):
-            caption = re.search(r'\*\*Legend draft \(\d+ words\)\.\*\*\s*(.*?)(?=\n\n)', m[3], re.S)
+            caption = re.search(r'\*\*Legend(?: draft)? \(\d+ words\)\.\*\*\s*(.*?)(?=\n\n)', m[3], re.S)
             if not caption:
                 raise ValueError('Missing ED legend: ' + m[2])
             ed_legends[m[2]] = '**' + m[1] + '** ' + caption[1].strip()
@@ -727,7 +728,7 @@ def verify_v8(out_dir: Path, main: str, si: str, ed: str, figs: Path) -> None:
         if name == 'SI_v8':
             captions = []
             for match in re.finditer(r'^## (Extended Data \d+\.[^\n]+)\n(.*?)(?=^## |\Z)', ed, re.M | re.S):
-                draft = re.search(r'\*\*Legend draft \(\d+ words\)\.\*\*\s*(.*?)(?=\n\n)', match[2], re.S)
+                draft = re.search(r'\*\*Legend(?: draft)? \(\d+ words\)\.\*\*\s*(.*?)(?=\n\n)', match[2], re.S)
                 captions.append(match[1] + ' ' + draft[1])
         else:
             captions = [match[0] for match in re.finditer(r'^\*\*Figure \d+\..*?\*\*\n\n[^\n]+', main, re.M)]
