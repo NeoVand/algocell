@@ -1,0 +1,18 @@
+The new fig5 **meets the references in polish, information, and self-explanation**. All four panels contain substantive content. Its typography and density are comparable to the references at the stated 180 mm width; panel d is dense but remains orderly and readable.
+
+I find **no supported substantive defects**:
+
+- **a:** Category colors, segment counts, cohort sizes, and detected totals are explicit. The stacked areas agree with the printed counts, including the 8086 split of 2 open, 12 confined, and 6 censored.
+- **b:** Direct curve labels identify cohorts and detection totals. The logarithmic time axis has units, the footer establishes 16-byte tapes and 20 worlds per cohort, and the six censored 8086 worlds are annotated. The distinction between this 20-world Z80 cohort and panel a’s pooled 80 worlds is recoverable from the labels.
+- **c:** The table clearly juxtaposes literal width, exact-pusher candidates, and observed routes. The 8086 result uses the detected-world denominator explicitly: 12/14 confined, with two open. This agrees with panel a.
+- **d:** All ten examples are present, with byte positions, an opcode key, variable-byte explanation, detection times, and mechanism classifications. The title supplies the family’s 10/14 denominator and states that all ten were confined.
+
+There is no visible clipping, overlapping text, missing panel content, corrupted glyph, or contradictory count. The main findings do not require paragraph-length methods inside the figure.
+
+Optional polish, rather than substantive corrections:
+
+- **b:** Replace the text-like “I censored” key with a drawn vertical censor tick matching the plotted mark. This would make the encoding immediately recognizable.
+- **a/b:** Make the sampling distinction faster to scan: label a’s Z80 row “80 worlds pooled across four lengths” and b’s footer “L = 16 bytes; 20 worlds per cohort.”
+- **c:** The tinted 8086 row effectively emphasizes the central comparison, but its full teal outline is heavier than the references’ table treatment. Retaining the tint with thinner rules would give a quieter finish.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS

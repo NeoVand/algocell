@@ -7,6 +7,7 @@ from pathlib import Path
 import argparse
 import io
 import json
+import base64
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -121,6 +122,17 @@ def save(f, name, designer=None):
                               preserveAspectRatio='none', overflow='hidden')
         root.append(overlay)
         svg.write(OUT / (name+'.svg'), encoding='utf-8', xml_declaration=True)
+    # Apply this to every export, including ED heatmaps: no SVG may embed
+    # raster data. Keep relative links portable with the delivered directory.
+    svg = ET.parse(OUT/(name+'.svg'))
+    for i, item in enumerate(svg.getroot().iter('{http://www.w3.org/2000/svg}image')):
+        for attr, value in list(item.attrib.items()):
+            if attr.endswith('href') and value.startswith('data:image/'):
+                assert value.startswith('data:image/png;'), value[:40]
+                asset = f'{name}_render_{i+1}.png'
+                (OUT/asset).write_bytes(base64.b64decode(value.split(',',1)[1]))
+                item.set(attr, asset)
+    svg.write(OUT/(name+'.svg'),encoding='utf-8',xml_declaration=True)
     subprocess.run(['pdftoppm', '-r', '600', '-png', '-singlefile',
                     str(OUT/(name+'.pdf')), str(OUT/name)], check=True, capture_output=True)
     plt.close(f)
@@ -209,13 +221,13 @@ def fig1():
 
 def fig2():
     f = page(150)
-    title(f, 'a', 'Branching, generation 8 (archive = C1)', 2, 146)
+    title(f, 'a', 'Carriage can fail despite survival (generation 8)', 2, 146)
     title(f, 'b', 'Serial retention (archive)', 111, 146)
     # The outcome bars and numeric side columns follow _sr_partition in v5.
-    k = axes(f, 36, 135, 74, 6, True)
-    key(k, 0, 3, 'Lost', old.LOST_C)
-    key(k, 16, 3, 'Alive, erased', old.ERASED_C)
-    key(k, 45, 3, 'Alive, carried', TEAL)
+    k = axes(f, 2, 135, 106, 7, True)
+    key(k, 0, 3, 'Lost under\ncopy criterion', old.LOST_C)
+    key(k, 34, 3, 'Alive, <50%\ncarrying', old.ERASED_C)
+    key(k, 70, 3, 'Alive, ≥50%\ncarrying', TEAL)
     a = axes(f, 35, 109, 48, 24)
     d = table('branching_endpoints').query("cohort=='C1'").set_index('key')
     rows = [('Open first replicator', GREY, [('pusher16','Pusher, L = 16')]),
@@ -244,7 +256,8 @@ def fig2():
     a.set_yticks(ticks,labs,fontsize=6)
     a.tick_params(axis='y',length=0);a.spines['left'].set_visible(False)
     tidy(a,'Share of all starting mutant populations',xticks=[0,.5,1])
-    f.text(4/180,100/150,'Site: g8 carriage for ≥half tested values; rare carriage can score 0',fontsize=6.5,color=INK)
+    f.text(4/180,100/150,'Carrying: mutant five-byte marker window; % of population members',fontsize=6.5,color=INK)
+    f.text(4/180,96/150,'Scored site in a,c: excess marker carriage ≥0.5 for ≥50% identifiable values',fontsize=6.5,color=INK)
     # Same curves/units as _sr_curves, with four explicit design identities.
     ss=table('serial_summary').set_index('key')
     a=axes(f,124,112,53,29)
@@ -255,23 +268,24 @@ def fig2():
                mfc='white' if keyname=='ret16' else col,label=label)
     a.set(xscale='log',xlim=(.85,9.5),ylim=(-.02,.54))
     a.set_xticks([1,2,4,8],['1','2','4','8']);a.minorticks_off()
-    tidy(a,'Serial transfers','Carrying lineages /\nall starting lineages')
+    tidy(a,'Serial transfers','Marker-carrying lineages /\nall starting lineages')
     a.legend(loc='center right',bbox_to_anchor=(.99,.52),fontsize=6,handlelength=1.2)
+    text(a,1.2,.105,'At transfer 8: pusher / return = 0;\nblock-copy = '+f'{ss.loc["ldir32","retained_g8"]:.5f}',size=6.5)
     title(f,'c','Serial sites: one box per byte; each track scaled to its tape',2,85)
     a=axes(f,2,41,175,40,True)
     k=axes(f,36,76,140,6,True)
-    key(k,0,3,'Opcode fetched',old.EXEC_C)
-    key(k,35,3,'Not fetched','white')
+    key(k,0,3,'Instruction-stream\nfetched',old.EXEC_C)
+    key(k,37,3,'Not fetched','white')
     k.patches[-1].set_edgecolor(RULE)
     key(k,71,3,'Transfer 1, absent at 8',old.SITE_C,'o')
     k.lines[-1].set_markerfacecolor('white')
-    key(k,118,3,'Carried at 8',old.SITE_C,'o')
+    key(k,118,3,'Marker site at 8',old.SITE_C,'o')
     ss=table('serial_summary').set_index('key'); sites=table('serial_sites')
     rows=[('pusher50','Pusher, L = 50'),('ret16','Return closer, L = 16'),
           ('ldir32','Block-copy tiling, L = 32'),('lethal16_s4009','Lethal-tar closer, L = 16'),
           ('genome20_s6004','Genome 20, world 4'),('closer32_8080_p1','Constructed 8080, L = 32')]
     cols=[121,136,152,168]
-    for x,lab in zip(cols,['Fetched\nbytes','Sites at\ntransfer 1','Sites at\ntransfer 8','Transfer-8\nnot fetched']):
+    for x,lab in zip(cols,['Fetched\nbytes','Scored sites\nat transfer 1','Scored sites\nat transfer 8','Transfer-8\nnot fetched']):
         text(a,x,32,lab,size=5.2,ha='center',color=INK)
     for i,(keyname,label) in enumerate(rows):
         r=ss.loc[keyname]; L=int(r.L); ex=np.array([c=='1' for c in str(r.executed).zfill(L)])
@@ -310,7 +324,7 @@ def fig2():
     k=axes(f,128,3,49,29,True)
     text(k,0,27,f'Ancestry label: byte {m["position"]} (0x{m["marker"]:02X})',size=6.5,bold=True)
     text(k,0,21,f'Erasure at instruction {int(r.step)}',color=RED,size=6.5,bold=True)
-    text(k,0,15.5,f'Source byte {int(r.source)}: 0x{int(r.byte):02X}\nOverwrites byte {int(r.address)}: 0x{int(r.prior_byte):02X}',color=RED,size=6.5)
+    text(k,0,15.5,'Read address 4; ancestry: byte 0\nWrites 0x04 over byte 8 (0xA7)',color=RED,size=6.5)
     text(k,0,10,'Labelled byte copies: 1 to 0',size=6.5)
     text(k,0,4,f'{m["steps_per_encounter"]}: offspring to parent; CPU reset',size=6.5)
     reflow(f,136,lambda y: y-14 if y>=90 else y-4 if y>=35 else y)
@@ -389,13 +403,13 @@ def fig3():
     # Series are named in the plot; the untested evolved law is stated in the key.
     pop=table('law_population');c1=table('law_z80_c1');c2=table('law_6502_c2');ctrl=table('law_6502_controls')
     handles=[Line2D([],[],marker='o',ls='none',ms=4,mfc='#D3D8DC',mec=GREY,label=f'Z80 qualifying-site scores: {int(pop.cells.sum()):,} cells'),
-             Line2D([],[],marker='o',ls='none',ms=3,mfc='none',mec=TEAL,label=f'Z80 exact positions: {int(c1.edits.sum())} edits'),
-             Line2D([],[],marker='^',ls='none',ms=3,mfc='#C98E2F',mec='#C98E2F',label=f'6502 exact positions: {int(c2.roles.sum())} copiers'),
+             Line2D([],[],marker='o',ls='none',ms=3,mfc='none',mec=TEAL,label=f'Z80 exact positions: {int(c1.edits.sum())} settings'),
+             Line2D([],[],marker='^',ls='none',ms=3,mfc='#C98E2F',mec='#C98E2F',label='6502 exact positions: 42 sampling roles\n(41 tapes, 11 worlds)'),
              Line2D([],[],marker='s',ls='none',ms=3,mfc='none',mec=INK,label=f'6502 sampled carried positions: {int(ctrl.cases.sum())} controls'),
              Line2D([],[],marker='o',ls='none',ms=3,mfc='none',mec=RED,label='Whole-tape match gate fails (one cell)'),
-             Line2D([],[],marker='D',ls='none',ms=3,mfc='none',mec=GREY,label='8086 evolved law untested\n(no eligible certified copier)')]
-    a.legend(handles=handles,loc='upper left',fontsize=6,handlelength=1,borderpad=.15)
-    text(a,45,42,'y = x',size=5.7,color=GREY)
+             Line2D([],[],marker='D',ls='none',ms=3,mfc='none',mec=GREY,label='Registered 8086 law test: untested\nFrozen extractor certified no eligible copier')]
+    a.legend(handles=handles,loc='upper left',fontsize=5.2,handlelength=1,borderpad=.15)
+    text(a,52,42,'y = x',size=5.7,color=GREY)
     # A real low-capacity enlargement in the unused below-diagonal quadrant.
     inset=axes(f,150,101,23,23);law(inset,True)
     inset.set_title('Same points: 0-10',fontsize=6,pad=2)
@@ -506,7 +520,7 @@ def endpoint(a,measure):
 
 def fig4():
     f=page(165)
-    title(f,'a','Z80 competitions: transmitter share and byte-motif prevalence (L = 32)',2,161)
+    title(f,'a','Z80 competitions: full-tape T share and byte-motif prevalence (L = 32)',2,161)
     k=axes(f,4,150,173,8,True)
     for x,(start,(label,ls,marker,n)) in zip([0,36,81],STARTS.items()):
         k.plot([x,x+5],[5,5],color=INK,lw=.9,ls=ls)
@@ -516,7 +530,7 @@ def fig4():
         k.plot([131,136],[yy,yy],color=col,lw=.9)
         k.plot(133.5,yy,'o',ms=3,mfc=fill,mec=col,ls='none')
         text(k,138,yy,label,size=6.5)
-    f.text(15/180,143/165,'Regenerator R | Transmitter T | World medians; C1 = corrected Z80 instructions',fontsize=6.5,color=INK)
+    f.text(15/180,143/165,'Partial-copy R | Full-tape T | World medians; C1 = corrected Z80 instructions',fontsize=6.5,color=INK)
     for x,tar,col in [(15,'benign',TEAL),(103,'lethal',PURPLE)]:
         f.text((x+30)/180,137/165,f'{tar.capitalize()} tar: zero executes as '+('no operation' if tar=='benign' else 'halt'),fontsize=6.5,color=col,fontweight='bold',ha='center')
         trajectories(axes(f,x,108,72,25),tar,'T_share')
@@ -569,14 +583,13 @@ def fig4():
     f.text(126/180,36/170,'Each entry: C1 | archive',fontsize=6.5,color=INK)
     for y in [11.5,16.5,21.5,26.5,31.5]:
         f.add_artist(Line2D([8/180,177/180],[y/170,y/170],transform=f.transFigure,color=RULE,lw=.35))
-    f.text(8/180,8.5/170,'Open = partner opcode fetch; confined = no partner fetch',fontsize=6.5,color=INK)
+    f.text(8/180,8.5/170,'Open: partner instruction-stream fetch in ≥8/16 traces; confined: none in 16/16',fontsize=6.5,color=INK)
     reflow(f,163,lambda y:y-7)
     save(f,'fig4')
 
 
 def fig5():
     f=page(162)
-    f.text(2/180,158/162,'Different machines, different beginnings',fontsize=9,fontweight='bold',va='top',color=INK)
     title(f,'a','First-replicator route',2,148)
     a=axes(f,3,98,85,44,True)
     for x,label,col in [(0,'Open\npartner fetch',GREY),(27,'Confined\nno partner fetch',TEAL),(56,'Censored\nno detection','#E8E9EA')]:
@@ -613,6 +626,7 @@ def fig5():
     text(a,1e5,.79,'6 censored',size=6.5,color=TEAL)
     a.annotate('',xy=(3e6,.7),xytext=(8e5,.78),arrowprops=dict(arrowstyle='-',color=TEAL,lw=.6))
     f.text(106/180,95/162,'16-byte tapes; 20 worlds/cohort; | censored',fontsize=6.5,color=INK)
+    f.text(4/180,154/162,'Open: partner instruction-stream fetch in ≥8/16 encounters; confined: none (S1/S2)',fontsize=6.5,color=INK)
     title(f,'c','Literal-channel expectation and observed beginnings',2,90)
     a=axes(f,4,58,172,27,True)
     for x,label in [(0,'Machine'),(37,'Literal width\n(bytes / push)'),(76,'Census: exact pusher\n(opcode motif)'),(123,'First observed route')]:

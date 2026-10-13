@@ -1,0 +1,111 @@
+{
+  "ed8_1": {
+    "height_mm": 180,
+    "sources": {
+      "manuscript/figures/out/v8/data/validation_fractions.csv": "9bbe0e8ee5e89a526eca0151414ae2e5ca79c849c9e5bfc349b842c695560737",
+      "results/impact/outcome.csv": "08f75c239bfe52df8f057065f60a99874c902c8a88006231c4114d4e555e9fc8",
+      "results/tier2/T2_CLAIMS.csv": "513afbd1eefa889681104ef9b7bea9f518e6301f033a44e930376144dcf5ae8c",
+      "results/tier2/T2_COMPONENTS.csv": "cd298e7bd80768995b013c4b286666ca519520ae30bb21982af5ed0dfa89f8d9",
+      "results/impact/assay_columns.csv": "bdf740dc1de520a47712f25c0cb45a6f76bab76e15dbb1a79f7d9e03cd2f1ee5",
+      "results/tier2/T2_StageL_status.csv": "198d30829e1690a6ffe6138f50d55b254d710aecb4604072ca4f691022fdae66",
+      "results/impact/supplement_manifest.json": "9f98e32d89ff1ec8d70f249c43a29083db0519218f497259c443b036718b24a2",
+      "results/tier2/stageL_diagnosis.json": "63a9bb3c36167665e72f50e747a5e8970c0661495d02ac5f6dee4c03b16892d6"
+    }
+  },
+  "ed8_2": {
+    "height_mm": 220,
+    "sources": {
+      "manuscript/figures/out/v8/data/serial_summary.csv": "bce89c41e69710fa4d775cec67b8a564d5e7c4bcf381ceb1d4b572fb63d9f55d",
+      "manuscript/figures/out/v8/data/serial_sites.csv": "0b1cb961e672c0a5c8df9f697bedf7f487878e935abe3e3e7c123b3d0baac3b6",
+      "manuscript/figures/out/v8/data/branching.csv": "17a727ad31dc68330735518d84e3ca24bcf326bc80d2b8d47ab4f1f355550678",
+      "manuscript/figures/out/v8/data/parent_environment.csv": "8145c8b5e6adfeb8a6166658cffbf53b99c8624736d86da44c2fdd93ac7738f1",
+      "manuscript/figures/out/v8/data/erasure_ordered.csv": "55952d7d0873b61449ac27fa9cc6048e576e5b748e4fca70fd4c724cea74cd84"
+    }
+  },
+  "ed8_3": {
+    "height_mm": 180,
+    "sources": {
+      "manuscript/figures/out/v8/data/capacity_edits.csv": "de9009ee737ece84005c771eebf286453635320c573e3633ea55deab7e1a7f23",
+      "manuscript/figures/out/v8/data/ed_joint_challenges.csv": "58d595d81c3e63b48d503535e64233ae94f12fc6b4ea4e0ed65f45ef0e51f1b5",
+      "manuscript/figures/out/v8/data/lineage_strips.csv": "0fed4c37126b35b2d0ce73e41b6f6f865852d39dab18adc883e1f946a0cca414",
+      "results/capacity/serial.csv.gz": "281db1a3a091b9a533d1a74668413c9be73dc9c7ac19dcf53f655f09a898c921",
+      "manuscript/figures/out/v8/data/dial_coordinates.csv": "1d020993a6b4628cdbff2bb00daae2f8cf1f4cbc916d0685d64ab84366ee5406",
+      "manuscript/figures/out/v8/data/z80_payload.csv": "8ccc7c3d0ee8671acb24a0cbbe247ff1137c8ec83f9abefe873c7412950f88e8",
+      "results/capacity/candidate_eligibility.csv": "2ff97231e4a15fa752316caea447fd80ff94a3853f73c549659ea92f1eda87bc"
+    }
+  },
+  "ed8_4": {
+    "height_mm": 220,
+    "sources": {
+      "results/r4/r4_rep.csv": "79a56e550f87ffcf87c7d87eb9fbeea1d49c1336af25794b0dc254a3d9644981",
+      "results/population/population_worlds.csv": "fd1eac6c19f753514b6219a31158d086faf20053a1edd98a5bf9e7ab0d7df424",
+      "results/population/classes_cells.csv": "4d40cad5f983a59ebe6465322c469b510d6996ae4d72a72759e01f5ab3c33ac3",
+      "results/marker_check/marker_check.csv": "2095f27b378336df7bc51a30b88cdbd762d836bb5162c66040ee512f0f38b806",
+      "results/ladder/population_groups.csv": "bbf5f0d4c712423b117c249ac077a0c5a70e2bdc8c64b451e57d1d7a863677f6"
+    }
+  },
+  "ed8_5": {
+    "height_mm": 290,
+    "sources": {
+      "manuscript/figures/out/v8/data/competition_trajectories.csv": "e4592fc58bd2106ba78e6d54f616f6d86d8561ac25a6b489d5919a76a224bbc0",
+      "results/offset/offset_switch.csv": "da3379390a0f51dcf6bdb1b427fd0c619e12da2060b7e4a1e19a5c9dce32c1cd",
+      "results/tier2/scored/E/offset_switch.csv": "15e6bec72a789d8de00bef4e987c04c20c0a55e057a6839da34ce77de785466e",
+      "results/ladder/n2_groups.csv": "47a0e92eb001be4eed361d2ca7099f83a88f1fae9f6ca755bba4af483d977401",
+      "results/toxin/causal.csv": "6d0232a52ec9450bf064878765d9381363d012e1dc0f3bd30ecadc62de6121cd",
+      "results/n2/demography.csv": "f08cd3adfa51c8fadda7c72293f46b18d351d76360a8cba74d058dc8f8a65952"
+    }
+  },
+  "ed8_6": {
+    "height_mm": 220,
+    "sources": {
+      "results/census6502/table_main.csv": "926f71a48e77dd544bfa4b53f39822bde748fb4f0eb1056c5737dff070d5f0a3",
+      "results/census8086/table_main.csv": "7024e4df0244307c24c12578c467ddcce876671ed1a95dc7521ff0cfac2528e6",
+      "manuscript/figures/out/v8/data/law_6502_controls.csv": "d86210b9d9420846fc0c6e79db506c57b6ec4c3e7f07347eaec5db5332a2097b",
+      "results/s6502/s1_worlds.csv": "b4de1b513085ac6c6a06a1c96b1b77817cc139e8219f28b66c3e7b448680ec07",
+      "results/evolved6502/eligibility.csv": "d0a14c349252b53df7d325ebcf6c974f14fba7c217351f7cef0e20fe556a2898",
+      "manuscript/figures/out/v8/data/evolved6502_capacity.csv": "52c75648fc1cb11f49d41027346224c287754479cfd0f5aefb97407d0d3492ad",
+      "results/literal_channel/direct_search.csv": "24bfe1a1e6e9cff748af78f05e7766096faa76d2d2a53bbdc33a9cfec8841f9d",
+      "results/literal_channel/finite_search.csv": "2209645ad24e5b29b84b202e38e90cacc2a3912b60cbe7d117794d7944c58bdb",
+      "results/literal_channel/CHECK.md": "e52a53fcb43852f75f174667df645f2aad003f6d5beab27911c34c16e8d2e073",
+      "results/s6502/CORRECTION.md": "34abf7ed13363d2f947d83bc37991e6a6cbe50148bcc296c74ff260b1d0ecf51",
+      "results/census8086/reset_correction_counts.csv": "e407181534c2fb079d61904da8b2d6f3a177049bbbd28a4058bde16052eac120"
+    }
+  },
+  "ed8_7": {
+    "height_mm": 180,
+    "sources": {
+      "results/bff/runs.csv": "3f6db27edc3e863587833e148b5f06d78c7b87f39fdd8694a33db5de0dce34f1",
+      "results/bff_stdnh/runs.csv": "5c3b8209182c2a40e1c9a3f04e1d1b9789f8000d9c29c48ac2dd87026dd05d12",
+      "results/biology/individuality/per_replicator.csv": "ac34b283d0eb94d64ca5240db711cb1ea1a72b8e382730d1a60a9eeba6781cc8",
+      "results/bff_dials/d2_bandwidth.csv": "1c93f8e9524329f1b73bdfbece1cf50267b0de314355bcebe59882e27fd455fd",
+      "results/bff_dials/d1_lethality.csv": "5bcafaf2888aaa3db93742447bb87e8da5546607439679b971d178bc43d45e40",
+      "results/biology/individuality/predictions.csv": "f8a67f97ba9ca457126d7ccac3b49db9f6ffd5ebefc01a75374fb3669c68ec6b",
+      "results/bff_dials/FINDINGS.md": "dc1467c5304f01c8355416e7801effbd28944764d395df334d15ab3832da32c8"
+    }
+  },
+  "ed8_8": {
+    "height_mm": 180,
+    "sources": {
+      "results/ladder/lod_groups.csv": "b07fc1834ebc7261503d4791b23a4d74ef15bc5bf2963d0b7db468125df75b61",
+      "results/lod/founders2.csv": "2f34b331ca9b2bc471067be525a237dfbfab15516c5f0103be2f5ad32c47de90",
+      "results/lod_n6/founders2.csv": "3f0ef3d67ab3b8cc31c84350c99c0ada4d6b6124a3d64f7cde7c50985ec65879",
+      "results/lod_n6/founding.csv": "17b4327f4c9e254c64d23fbb8477b7b77300fd7067aec66bb7c5650ade48754e",
+      "results/lod_n6/chain_v6b.csv": "1c82cfc85af80b5cf1a1d592fe193e5812fd8ffe2a48d905c6a2fadcccfdab18",
+      "results/lod_n6/N6_SCORE.md": "3915ded2ee082d483fd1197d9558c37ca6ff815498eb222d12bf5f0b633841f1"
+    }
+  },
+  "ed8_9": {
+    "height_mm": 180,
+    "sources": {
+      "results/s8086/tables/worlds.csv": "bcd06cd6dd2fb2540dd666f19d87803827f44dd95f234acf35af8c86832b1d2a",
+      "results/s8086/tables/persistence.csv": "590799235c36e4dcd41c681c9c39895ab752b989a6b0aa0768785da8dab68d26",
+      "results/s8086/tables/law_denominators.csv": "67209d8b48cf14ffbeded636c0d8c3ec415f05b4f8eb7aedef97eb86097c9a2a",
+      "results/s8086/tables/law_candidates.csv": "27df59d00e5357476533d03e4d3baec7661b781e97804fb0e2fc7804c80e0c81",
+      "results/s8086/exploratory/eligibility.csv": "e3e3c370f666ff67719f399f59fc12ec943365645bf03149321dc286cd56c593",
+      "results/s8086/exploratory/law_assay_summary.csv": "756f00d03d841494889b4bba82837bef45d6fc23546733d680d5fb8ec384889b",
+      "results/s8086/exploratory/first_family.csv": "1a46370d91b5be0c8af5afb66cbd807e5102b32e21b23c41a42677faf504b87f",
+      "results/s8086/exploratory/encounter_fates.csv": "beebfddd08a95a8cb66a5b2c76e18048dfe9a88433d01c615bb2aca02000d06f",
+      "results/s8086/exploratory/first_family_copies.csv": "c286cee6215f71bdfe07ddd20e15e500ed0549c2c1387cd1d3605ee92d94b53e"
+    }
+  }
+}

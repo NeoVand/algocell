@@ -1,0 +1,24 @@
+The new figure is **below the references in self-explanation and visual finish**, although all six panels contain substantive content. Its tables preserve useful numbers, and panel b provides a meaningful visual comparison. The main problems are undefined experimental labels, incomplete cohort identification, and an incompletely specified count encoding—not missing full methods or proofs.
+
+The substantive defects are:
+
+- **Panel a: “Modal gain ≥0.3” does not identify what gains or what the number measures.** This is the stated detection criterion, so its meaning matters to the table’s main result. Replace it with a compact label naming the quantity and its units or normalization.
+- **Panels a, b and e: “harmless” is an undefined experimental distinction.** It accompanies substantial differences in collapse and entropy, yet the image never identifies what was made harmless. Add a short shared key naming the changed behavior. Panel b’s abbreviated “W+lit+harmless” should connect explicitly to the corresponding table label.
+- **Panel a: “Later collapse” has an ambiguous qualifying cohort.** The note says “after detection,” but there are two detection columns. Specify which detection event qualifies a world for this count. A heading such as “Collapse after population detection,” if accurate, would resolve this without adding methods.
+- **Panel b: circle area encodes coincident counts without a quantitative size key.** The category sample sizes give total worlds, but do not tell readers how many worlds occupy individual bubbles. Add representative count circles or direct multiplicity labels. Use uniform marker sizes for the category legend; its currently varying symbol sizes mix category identification with the count encoding.
+- **Panel d: the denominator for “Median final P share” is not explicit.** “All worlds included in counts” clarifies the count columns but leaves open whether the median includes all worlds or only persistent worlds. Label the column “Median final P share, all worlds,” or name the actual subset.
+- **Panel f: the cohorts cannot be reconciled from the displayed labels.** The Z80 rows use 80, 67 and 80 worlds without identifying the eligibility distinction. More conspicuously, “BFF literal” uses **12/36**, whereas the explicitly named literal cohort elsewhere has **12 worlds** and other literal-containing variants have separate names. Identify the pooled variants or other cohort underlying 36, and briefly identify the cohort underlying 67. Separate ledgers can retain the detailed accounting.
+- **Panel f: the verdict key is circular.** “Met: registered support cutoff reached” and “rejected: kill cutoff” name the rules without giving their thresholds. Consequently, readers cannot interpret why 63/80 is “met,” 6/9 is “between,” and 12/36 is “rejected.” Supply the compact registered decision thresholds, or the relevant decision statistic and boundary if the rule is more involved than a pass fraction. Full proofs are unnecessary.
+
+Optional polish improvements:
+
+- **Overall layout:** Large vertical gaps separate tables from their explanatory notes, especially in a, c, d and e. The references use space more purposefully. Tighten these gaps and place cohort and encoding keys immediately beside the content they explain. This could also reduce the figure’s height without shrinking text.
+- **Panel b:** The legend occupies the otherwise empty middle of the plot while the observations cluster near the two x-axis extremes. Direct group labels near those clusters, with a compact count key outside the plotting field, would make the result easier to scan.
+- **Panels a, c, d and e:** Align numeric entries consistently and use decimal alignment where appropriate. Center count columns beneath their headings or right-align them consistently.
+- **Panel e:** The crowded juxtaposition of “n worlds” and “H bits first / final” weakens column separation. Increase that gap and standardize the two-line headers.
+- **Panel c:** Typeset `P a b` and the emitted sequence distinctly, with consistent punctuation. The current prose-like instruction notation is decipherable but visually loose.
+- **Panel f:** The orange footer gives substantial emphasis to verdict terminology while the verdict cells themselves remain visually undifferentiated. Restrained emphasis within the verdict column would connect the key to the result more directly.
+
+I do not see clear clipping, text collisions, malformed glyphs or an empty panel. The body text appears broadly comparable to the references’ small print typography; a blanket font-size increase is not warranted. The figure needs more precise direct labeling and tighter composition, rather than additional paragraphs of methods.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

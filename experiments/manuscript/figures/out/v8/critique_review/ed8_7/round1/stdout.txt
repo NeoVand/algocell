@@ -1,0 +1,35 @@
+The new **ed8_7 is below the references in self-explanation and layout polish**. All six panels contain substantive content, and the tables preserve useful numerical detail. The main weaknesses are ambiguous measurement labels, insufficiently defined outcomes, and large gaps that make the figure feel sparse despite its substantial evidence.
+
+The body text appears broadly comparable to the references’ small print typography. I do not see clear clipping, overlapping text, broken glyphs, or an empty panel. The issue is how effectively the available space communicates the results.
+
+**Substantive defects**
+
+- **Panel a — outcome counts are insufficiently defined.** “Modal life,” “Pop. life,” and “Collapsed” do not clearly identify what is counted or when. The footer supplies partial thresholds, but “gen2 ≥0.3” does not name the measured quantity. The `wraplit` row reports 12 population-life worlds and 12 collapsed worlds; these can be compatible at different times, but the table does not explain that relationship. **Fix:** use explicit count headings, such as “Worlds with …, n,” name the generation-2 quantity, and distinguish detection from later collapse. Retain the Worlds column as the denominator.
+
+- **Panels a, b and e — the variant vocabulary lacks a decoding key.** `std`, `stdlit`, `stdnh`, `wrap`, `wraplit`, `wraplitnh`, and `lit` are central scientific categories but remain unexplained. “BFF contracts” also does not orient an unfamiliar reader. **Fix:** add a compact variant key with expanded names or short descriptions of the relevant differences. Different panels can legitimately contain different subsets; make those subsets readily identifiable.
+
+- **Panel b — the entropy label is ambiguous.** The axis says “Offspring entropy (bits),” while the footer specifies `H(O | parent)`, a conditional quantity. “Uses partner panel” does not clarify what “panel” means here. **Fix:** label the axis explicitly as conditional offspring entropy and replace that phrase with a short, intelligible description of the partner set, if essential.
+
+- **Panel b — the displayed marks do not reveal the distribution of 64 tapes.** Only a small number of distinguishable positions are visible, with substantial apparent coincidence near fetch fractions zero and one. Readers cannot determine whether a visible point represents one tape, many tapes, or a summary. **Fix:** identify the point unit and encode coincident multiplicity with count labels, sized markers with a key, or a suitable stacked display. Add per-variant sample sizes directly beside the legend labels.
+
+- **Panels b, c and e — fetch and entry terminology is not reconciled.** “Partner-fetch fraction,” “Partner entry,” and “Entry” might describe different quantities, but their relationship is unstated. “H bits” likewise does not identify which entropy is reported. **Fix:** use the same explicit measurement name wherever the quantity is the same; otherwise distinguish the measures with brief labels. Specify whether table entries are means, medians, pooled estimates, or another summary.
+
+- **Panel c — the control manipulation is not sufficiently identified.** “Repetition r” does not say what is repeated. The numerical contrast—8.0 bits versus 0.0 bits despite entry of 1.00—is visible, but the manipulation producing that contrast remains obscure. **Fix:** expand the repetition heading to name the repeated object and give the entropy column its full quantity label. This needs a direct label, not a methods paragraph.
+
+- **Panel d — the headline and outcome language need clarification.** “All worlds retained” can be read as a biological persistence result, although the Persistent column reaches zero. The footer also leaves the object of the “≥10%” threshold unspecified, and “Final share” does not say share of what. **Fix:** if retention means inclusion in analysis, say so explicitly. Name the population or cell category in both the persistence threshold and final-share heading, and identify how final share is summarized across worlds.
+
+- **Panel d — the stated failed claim is not demonstrated by the displayed summaries.** Both the persistence fractions and final shares decrease or remain constant as halt probability increases. These values do not themselves explain “monotonic-collapse claim failed.” **Fix:** state the precise failed prediction in a short label and show the relevant comparison, or move that verdict to the separately supplied ledger and keep this panel’s annotation tied to the visible result.
+
+- **Panel e — “first” and “final” lack a defined reference point.** The table does not establish what stages these designate or whether the rows represent paired measurements of the same tapes. **Fix:** specify the sampling stages in the heading or a compact key and identify pairing if applicable. Define `n` as tapes, worlds, or the actual sampling unit.
+
+- **Panel f — the verdicts cannot be interpreted from the panel alone.** Archived IDs are appropriate here, but `Q1`–`Q4b` do not identify the claims, “Passing / n” does not name the counted unit, and “met,” “between,” and “KILL” lack a decision key. The orange footer explains only part of Q4b. **Fix:** add a short claim description beside each ID, name the denominator unit, and provide a compact verdict key. Full proofs can remain outside the figure.
+
+**Optional polish**
+
+- **Whole figure:** tighten the three-row layout. Large blank regions separate the tables from their footers, especially in a, c and d. Bring explanatory labels next to their data and use the recovered space for the missing keys.
+- **Tables a, c, d, e and f:** introduce restrained header rules and consistent numeric alignment. Right-align counts and align decimal values to improve scanning.
+- **Panel e:** group each first/final pair more visibly, or place first and final values in adjacent columns. The current repeated variant names make comparisons unnecessarily laborious.
+- **Panel b:** match legend order to the corresponding table order and use expanded category labels consistently.
+- **Panel f:** replace the visually abrupt uppercase “KILL” with a defined, consistently styled verdict term unless that exact registered terminology must be retained.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

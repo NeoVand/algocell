@@ -1,0 +1,29 @@
+ed8_9 is **below the references in polish and self-explanation**, although every panel contains substantive content. Its direct labels, numerical tables and explicit qualifications are useful. Body and tick sizes appear broadly comparable to the references at 180 mm; a blanket font-size increase is unnecessary.
+
+The remaining substantive defects are:
+
+- **Panel f—annotations overlap the data.** Both explanatory lines intrude into the rising sequence of teal points, particularly around “pairs overlap” and “wraps at 32.” Move the write count above the axes and place the equation in the clear lower-right interior, away from both point sequences. Preserve the explanation that repeated pairs overlap.
+
+- **Panels c–e—cohort relationships are insufficiently explicit.** Panels a–b clearly identify the same 20 S2 worlds. The subsequent 1,337 candidate tapes, 779 culture-positive tapes, 600 admissions and 32 selected genotypes are individually reported, but their relationship to that named cohort is not stated. Add a short cohort label for c–e identifying their source and whether they belong to the same S2 worlds. This needs only a direct label, not a methods paragraph.
+
+- **Panel e—the admission accounting requires unnecessary reconstruction.** “600 candidate tapes admitted from 779 culture-positive” and the small “590 admitted d16 +10 d4” footer explain different stages, while the table reports 32 selected genotypes. Present these stages together: **779 culture-positive tapes → 600 admitted tapes (590 d16; 10 d4) → 32 selected genotypes**. Keep the 20-world total explicit. The visible counts are compatible; the defect is their scattered presentation.
+
+- **Panel e—the payload result has an ambiguous referent.** “d4 has 0 free payload coordinates; d16 has 0 erased ones” leaves “ones” unclear and does not identify the population over which those zeros apply. Spell out the second quantity and identify whether the statement concerns the admitted tapes or selected genotypes. Give the relevant coordinate total if this is intended as a zero-of-total result.
+
+- **Panel f—“first-family” is not securely connected to the preceding categories.** It could refer to L1, the d4 group, or another ordering. Replace it with the actual family identifier and connect the ten tapes to the corresponding group in e, if that is their relationship.
+
+- **Panel f—the footer introduces an inadequately labeled additional result.** “Median new tiled copies /512,” “Separate snapshot-fate panels” and “across contexts” do not establish what 512 counts or which contexts the 8086 and Z80 medians summarize. Replace the reference to absent panels with a compact result label defining the sampling unit and cohort. If this comparison is only navigation to archived evidence, move it to the manuscript legend.
+
+- **Panel b—the earlier-occurrence statement has ambiguous aggregation.** “Occurrence in 1/20 at any earlier scheduled sample ≤3M” can mean one world ever qualified across earlier samples or a per-sample count. State the intended interpretation directly—for example, “Earlier samples combined: 1/20 worlds ever positive,” if supported. Retain the clear terminal result, “0/20 at all 11 terminal samples.”
+
+Optional polish:
+
+- **Panels c and e:** large gaps separate tables, conclusions and explanatory labels. Tighten these groups so each panel reads as one coherent result. These are underused spaces, not empty panels.
+- **Panel d:** group the seven opcode rows under one “unresolved” category header with **n = 724**, keeping each reason and count. This would match the references’ stronger use of category headers.
+- **Panel a:** format the existing explanatory text as a compact inline key with teal/red dots and a grey censor tick. Add **14 detections; 6 censored** so readers need not count marks.
+- **Panel e:** replace the generic title ending “exact-law panel” with a result-oriented label such as “admissions and exact-law checks.”
+- **Across the figure:** reduce the dominance of long bold headings and repeated “EXPLORATORY” prefixes by using a shared exploratory section label for e–f.
+
+I see no supported clipping defect, malformed glyph, arithmetic contradiction, or empty panel. The registered result is appropriately qualified as untested; ed8_9 does not require the Figure 3b-specific wording. Full ledgers and proofs can remain separate—the fixes above concern visible result interpretation and presentation.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

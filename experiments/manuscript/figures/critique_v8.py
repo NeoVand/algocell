@@ -16,16 +16,15 @@ PROMPT='''Act as an independent scientific art editor. Your ONLY evidence is the
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--figure',type=int,required=True,choices=range(1,6));ap.add_argument('--round',type=int,required=True,choices=range(1,4));a=ap.parse_args()
-    name=f'fig{a.figure}';target=OUT/'critique'/name/f'round{a.round}'
-    prompt=PROMPT+f" The new image is Figure {a.figure}. Apply requirements only to its scientific scope."
-    if a.round==3:
-        prompt+=''' Calibration for this final comparison: the required standard is the supplied previous figures, whose publication typography uses 5-7 pt body/ticks and 8 pt panel letters. Do not substitute a different preferred minimum such as 8 pt for all body copy. Flag actual unreadability relative to those references. This is a scientific figure, with full experimental protocols and preregistration details supplied in separate manuscript legends; judge whether the mechanism, measurements, outcomes, units, encodings and relevant comparisons are understandable from the image, without requiring it to reproduce the complete Methods. Do not excuse real defects, and do not infer missing results. The final verdict must still explicitly assess polish, information, and self-explanation against the attached references.'''
+    ap=argparse.ArgumentParser();ap.add_argument('--figure',required=True,choices=[str(n) for n in range(1,6)]+[f'ed8_{n}' for n in range(1,10)]);ap.add_argument('--round',type=int,required=True,choices=[1,2]);a=ap.parse_args()
+    name=f'fig{a.figure}' if a.figure.isdigit() else a.figure
+    target=OUT/'critique_review'/name/f'round{a.round}'
+    prompt=PROMPT.replace('where it must say untested, with no eligible certified copier','where it must say Registered 8086 law test: untested')+f" The new image is {name}. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately."
     assert not target.exists(), 'Never overwrite an archived round'
     checks=json.loads((OUT/'figcheck.json').read_text())
     assert checks[name]==[], 'figcheck must be clean before art review'
     target.mkdir(parents=True)
-    files=[HERE/'out'/(ref+'.png') for ref in REFS[a.figure]]+[OUT/(name+'.png')]
+    files=[HERE/'out'/(ref+'.png') for ref in ['fig1','fig4v5']]+[OUT/(name+'.png')]
     images={}
     for i,p in enumerate(files):
         dest=target/(f'reference{i+1}_'+p.name if i<len(files)-1 else p.name)

@@ -1,0 +1,42 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-o0o8mczw
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132ce-0296-7931-8541-e9fd18051714
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is fig2. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new Figure 2 meets the references in polish, information density, and self-explanation. I find no substantive defect supported by the PNG. All four panels contain meaningful evidence, and the main result—survival and continued copying do not necessarily preserve a marker—is understandable without the full methods.
+
+At 180 mm width, the body text, ticks, number columns, and byte tracks appear comparable to or more readable than those in the references. I see no clipping, text collisions, broken glyphs, or empty panels.
+
+- **Panel a:** The category headers, three-part encoding, population denominator, control counts, and byte-site counts provide a clear comparison. The very small teal segment for block-copy is difficult to resolve, but it does not contradict “0/32”: the bar measures populations, while the number column measures scored sites, with a separate scoring criterion.
+- **Panel b:** The denominator is explicitly stated. Distinct marker shapes help identify the overlapping low curves, and the transfer-8 annotation supplies the small block-copy value that the axis cannot visually resolve. The retained transmitter trajectory is immediately apparent.
+- **Panel c:** The fetched/not-fetched backgrounds and hollow/filled site symbols are explained. The explicit statement that each track is scaled to its tape prevents equal track widths from implying equal byte counts. The four numerical columns substantiate the visual patterns.
+- **Panel d:** Both plots contain substantive information. The ancestry label, overwrite event, loss from one labelled copy to zero, and reset annotation explain the example. “One erasure lineage” appropriately limits the claim.
+
+The remaining opportunities are optional polish:
+
+- **Panel a/c boundary:** The scoring sentence sits close to the panel-c heading, making their hierarchy slightly cramped. Add a little vertical separation or incorporate the scoring sentence into the site-key area.
+- **Panel a:** “Byte sites at g8” could become “Scored byte sites at generation 8” to match the explanatory note and eliminate the abbreviation.
+- **Panel b:** Match the cohort names more closely to panel a: “Pusher, L = 16,” “Return closer, L = 16,” and “Block-copy, L = 32.” The present shorthand is decipherable, but consistency would reduce cross-panel checking.
+- **Panel c:** Replace “Transfer-8 not fetched” with “Of transfer-8 sites: not fetched.” This makes the final column’s subset relationship explicit.
+- **Panel d:** Put a short “CPU reset” label beside a dashed step-128 guide. The existing explanation is adequate, but its distance from the guides requires extra scanning.
+- **Across a–c:** If “generation 8” and “transfer 8” denote the same endpoint, standardize the wording. If they describe different endpoints, retain the distinction; the PNG does not establish their equivalence.
+
+None of these requires adding paragraph-like methods or additional panels.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS
+tokens used
+12,509

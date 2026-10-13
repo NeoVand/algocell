@@ -1,0 +1,45 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-98xq74az
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a132dc-e11f-7c31-a277-1f21794db87d
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references use 5-7 pt body/ticks and 8 pt panel letters. Judge actual print readability relative to the references; do not impose a different universal minimum. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_7. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new figure is **below the references in self-explanation and visual finish**, although all six panels contain substantive content. Its tables preserve useful numbers, and panel b provides a meaningful visual comparison. The main problems are undefined experimental labels, incomplete cohort identification, and an incompletely specified count encoding—not missing full methods or proofs.
+
+The substantive defects are:
+
+- **Panel a: “Modal gain ≥0.3” does not identify what gains or what the number measures.** This is the stated detection criterion, so its meaning matters to the table’s main result. Replace it with a compact label naming the quantity and its units or normalization.
+- **Panels a, b and e: “harmless” is an undefined experimental distinction.** It accompanies substantial differences in collapse and entropy, yet the image never identifies what was made harmless. Add a short shared key naming the changed behavior. Panel b’s abbreviated “W+lit+harmless” should connect explicitly to the corresponding table label.
+- **Panel a: “Later collapse” has an ambiguous qualifying cohort.** The note says “after detection,” but there are two detection columns. Specify which detection event qualifies a world for this count. A heading such as “Collapse after population detection,” if accurate, would resolve this without adding methods.
+- **Panel b: circle area encodes coincident counts without a quantitative size key.** The category sample sizes give total worlds, but do not tell readers how many worlds occupy individual bubbles. Add representative count circles or direct multiplicity labels. Use uniform marker sizes for the category legend; its currently varying symbol sizes mix category identification with the count encoding.
+- **Panel d: the denominator for “Median final P share” is not explicit.** “All worlds included in counts” clarifies the count columns but leaves open whether the median includes all worlds or only persistent worlds. Label the column “Median final P share, all worlds,” or name the actual subset.
+- **Panel f: the cohorts cannot be reconciled from the displayed labels.** The Z80 rows use 80, 67 and 80 worlds without identifying the eligibility distinction. More conspicuously, “BFF literal” uses **12/36**, whereas the explicitly named literal cohort elsewhere has **12 worlds** and other literal-containing variants have separate names. Identify the pooled variants or other cohort underlying 36, and briefly identify the cohort underlying 67. Separate ledgers can retain the detailed accounting.
+- **Panel f: the verdict key is circular.** “Met: registered support cutoff reached” and “rejected: kill cutoff” name the rules without giving their thresholds. Consequently, readers cannot interpret why 63/80 is “met,” 6/9 is “between,” and 12/36 is “rejected.” Supply the compact registered decision thresholds, or the relevant decision statistic and boundary if the rule is more involved than a pass fraction. Full proofs are unnecessary.
+
+Optional polish improvements:
+
+- **Overall layout:** Large vertical gaps separate tables from their explanatory notes, especially in a, c, d and e. The references use space more purposefully. Tighten these gaps and place cohort and encoding keys immediately beside the content they explain. This could also reduce the figure’s height without shrinking text.
+- **Panel b:** The legend occupies the otherwise empty middle of the plot while the observations cluster near the two x-axis extremes. Direct group labels near those clusters, with a compact count key outside the plotting field, would make the result easier to scan.
+- **Panels a, c, d and e:** Align numeric entries consistently and use decimal alignment where appropriate. Center count columns beneath their headings or right-align them consistently.
+- **Panel e:** The crowded juxtaposition of “n worlds” and “H bits first / final” weakens column separation. Increase that gap and standardize the two-line headers.
+- **Panel c:** Typeset `P a b` and the emitted sequence distinctly, with consistent punctuation. The current prose-like instruction notation is decipherable but visually loose.
+- **Panel f:** The orange footer gives substantial emphasis to verdict terminology while the verdict cells themselves remain visually undifferentiated. Restrained emphasis within the verdict column would connect the key to the result more directly.
+
+I do not see clear clipping, text collisions, malformed glyphs or an empty panel. The body text appears broadly comparable to the references’ small print typography; a blanket font-size increase is not warranted. The figure needs more precise direct labeling and tighter composition, rather than additional paragraphs of methods.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+12,394
