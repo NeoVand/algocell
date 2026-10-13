@@ -1,0 +1,21 @@
+world,seed,scoreable,t_rep,rep_preceding_step,rep_right_censored,rep_baseline,t_closed,closed_preceding_step,closed_right_censored,censor_step,first_tape,first_share,first_gen2,first_fetch,first_open_encounters,first_majority_mechanism,first_mechanism_counts,first_max_B_hamming_from_zero,closed_tape,occurrence,persistent,same_genotype_persistence
+s8086_A_s8086001,8086001,True,652500,650000,False,False,652500,650000,False,3000000,5fa4633d5fa4633d5fa4633d5fa4633d,0.01315,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa4633d5fa4633d5fa4633d5fa4633d,False,False,False
+s8086_A_s8086002,8086002,True,,,True,False,,,True,3000000,,,,,,,,,,False,False,False
+s8086_A_s8086003,8086003,True,400,350,False,False,400,350,False,3000000,2100ff582105ff582105ff582105ff58,0.0067,0.9361328125000001,confined,0,other,"{""other"":16}",0,2100ff582105ff582105ff582105ff58,False,False,False
+s8086_A_s8086004,8086004,True,,,True,False,,,True,3000000,,,,,,,,,,False,False,False
+s8086_A_s8086005,8086005,True,975000,972500,False,False,975000,972500,False,3000000,5fa4735d5fa4735d5fa4735d5fa4735d,0.0124,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa4735d5fa4735d5fa4735d5fa4735d,False,False,False
+s8086_A_s8086006,8086006,True,1650,1600,False,False,1650,1600,False,3000000,5fa46d7d5fa46d7d5fa46d7d5fa46d7d,0.0064,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa46d7d5fa46d7d5fa46d7d5fa46d7d,False,False,False
+s8086_A_s8086007,8086007,True,,,True,False,,,True,3000000,,,,,,,,,,False,False,False
+s8086_A_s8086008,8086008,True,1050,1000,False,False,,,True,3000000,be56be56be56be56be56be56be56be56,0.00515,0.4248325892857143,open,16,other,"{""other"":11,""literal writer"":5}",16,,False,False,False
+s8086_A_s8086009,8086009,True,292500,290000,False,False,292500,290000,False,3000000,5fa4613d5fa4613d5fa4613d5fa4613d,0.00575,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa4613d5fa4613d5fa4613d5fa4613d,False,False,False
+s8086_A_s8086010,8086010,True,,,True,False,,,True,3000000,,,,,,,,,,False,False,False
+s8086_A_s8086011,8086011,True,,,True,False,,,True,3000000,,,,,,,,,,False,False,False
+s8086_A_s8086012,8086012,True,1100000,1075000,False,False,1100000,1075000,False,3000000,5fa4e27d5fa4e27d5fa4e27d5fa4e27d,0.006,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa4e27d5fa4e27d5fa4e27d5fa4e27d,False,False,False
+s8086_A_s8086013,8086013,True,1175000,1150000,False,False,1175000,1150000,False,3000000,5fa47dfd5fa47dfd5fa47dfd5fa47dfd,0.0321,1.0,confined,0,confined copy loop,"{""confined copy loop"":16}",0,5fa47dfd5fa47dfd5fa47dfd5fa47dfd,False,False,False
+s8086_A_s8086014,8086014,True,532500,530000,False,False,532500,530000,False,3000000,5fa4e93c5fa4e93c5fa4e93c5fa4e93c,0.0137,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa4e93c5fa4e93c5fa4e93c5fa4e93c,False,False,False
+s8086_A_s8086015,8086015,True,,,True,False,,,True,3000000,,,,,,,,,,False,False,False
+s8086_A_s8086016,8086016,True,1000,950,False,False,1000,950,False,3000000,430c0007d722dddd0407034ba575fd03,0.0051,1.0,confined,0,confined copy loop,"{""confined copy loop"":16}",0,430c0007d722dddd0407034ba575fd03,False,False,False
+s8086_A_s8086017,8086017,True,422500,420000,False,False,422500,420000,False,3000000,5fa461bd5fa461bd5fa461bd5fa461bd,0.0054,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa461bd5fa461bd5fa461bd5fa461bd,False,False,False
+s8086_A_s8086018,8086018,True,787500,785000,False,False,787500,785000,False,3000000,5fa469dd5fa469dd5fa469dd5fa469dd,0.00615,1.0,confined,0,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,5fa469dd5fa469dd5fa469dd5fa469dd,False,False,False
+s8086_A_s8086019,8086019,True,800,750,False,False,,,True,3000000,900141350742f0a4123500060004e994,0.00585,1.0,open,16,memory-fed one-pass copier,"{""memory-fed one-pass copier"":16}",0,,True,False,False
+s8086_A_s8086020,8086020,True,107500,105000,False,False,107500,105000,False,3000000,5fa463fd5fa463fd5fa463fd5fa463fd,0.0058,1.0,confined,0,confined copy loop,"{""confined copy loop"":16}",0,5fa463fd5fa463fd5fa463fd5fa463fd,False,False,False

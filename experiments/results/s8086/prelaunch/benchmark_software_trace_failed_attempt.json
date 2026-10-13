@@ -1,0 +1,15 @@
+{
+  "call": {
+    "app_id": "ap-UKKBebIo8fZoAiCzWaIN4q",
+    "call_id": "fc-01M4QN3ADQ0Q2HEXDMFKMYKZ5J",
+    "started_epoch": 1791795243.397753,
+    "timeout_s": 450,
+    "rate_usd_per_s": 0.00025286,
+    "resource_reservation_usd": 0.5
+  },
+  "status": "450-second fixed-input function timeout; app stopped",
+  "population_calls": 0,
+  "cause": "private-array software diagnostic preparation did not complete within allocation; exact failure stage unavailable",
+  "no_timing_results": true,
+  "next_remedy": "Storage-backed 8192-event observer, independently reviewed and validated before any cloud attempt"
+}

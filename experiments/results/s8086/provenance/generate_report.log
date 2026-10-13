@@ -1,0 +1,37 @@
+Verified L16_d8_a4: 60416 encounter hashes
+Verified L16_d8_a5: 60416 encounter hashes
+Verified L16_d16_a4: 76800 encounter hashes
+Verified L16_d16_a5: 76800 encounter hashes
+Verified L32_d8_a4: 130048 encounter hashes
+Verified L32_d8_a5: 130048 encounter hashes
+Verified L32_d16_a4: 146432 encounter hashes
+Verified L32_d16_a5: 146432 encounter hashes
+Verified L32_d32_a4: 179200 encounter hashes
+Verified L32_d32_a5: 179200 encounter hashes
+{
+  "R0": true,
+  "D": 14,
+  "O": 2,
+  "R1": false,
+  "kill": true,
+  "laws": [
+    [
+      "L1",
+      false,
+      "evolved law untested"
+    ],
+    [
+      "L2",
+      false,
+      "incomplete/invalid"
+    ],
+    [
+      "L2",
+      true,
+      "incomplete/invalid"
+    ]
+  ],
+  "download_files": 450,
+  "other_cases": 1736,
+  "control_hashes": 1185792
+}

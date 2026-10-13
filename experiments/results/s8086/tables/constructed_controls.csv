@@ -1,0 +1,11 @@
+control,L,d,operation,status,encounters,erased_coordinates,held_erased_coordinates,held_erased_ancestry_absent,free_coordinates,single_assignments,single_alternatives,joint_assignments,erased_assignments,census_partners,serial_generations
+L16_d16_a4,16,16,a4,complete-zero-mismatch,76800,0,0,True,10,2560,2550,512,0,17,8
+L16_d16_a5,16,16,a5,complete-zero-mismatch,76800,0,0,True,10,2560,2550,512,0,17,8
+L16_d8_a4,16,8,a4,complete-zero-mismatch,60416,8,0,True,2,512,510,512,2048,17,8
+L16_d8_a5,16,8,a5,complete-zero-mismatch,60416,8,0,True,2,512,510,512,2048,17,8
+L32_d16_a4,32,16,a4,complete-zero-mismatch,146432,16,0,True,10,2560,2550,512,4096,17,8
+L32_d16_a5,32,16,a5,complete-zero-mismatch,146432,16,0,True,10,2560,2550,512,4096,17,8
+L32_d32_a4,32,32,a4,complete-zero-mismatch,179200,0,0,True,26,6656,6630,512,0,17,8
+L32_d32_a5,32,32,a5,complete-zero-mismatch,179200,0,0,True,26,6656,6630,512,0,17,8
+L32_d8_a4,32,8,a4,complete-zero-mismatch,130048,24,0,True,2,512,510,512,6144,17,8
+L32_d8_a5,32,8,a5,complete-zero-mismatch,130048,24,0,True,2,512,510,512,6144,17,8

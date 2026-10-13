@@ -1,0 +1,11 @@
+{
+  "policy": "restart_step_0",
+  "attempt_id": "dcd6642c73404e80b02d4e1099237c29",
+  "prior_attempt_ids": [],
+  "provider_task_id": "ta-01M4S1FTEEMHGB57KSFS023V9R",
+  "provider_container_id": null,
+  "checkpoint_resume": false,
+  "frozen_seed_unchanged": true,
+  "selection": "first_complete_durable_trajectory",
+  "reason": "checkpoints omit complete RNG/execution state; never splice partial histories"
+}

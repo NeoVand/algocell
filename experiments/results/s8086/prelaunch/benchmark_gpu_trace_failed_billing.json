@@ -1,0 +1,22 @@
+{
+  "app_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+  "query_start_epoch": 1791792000,
+  "query_end_epoch": 1791795600,
+  "metered_usd": 0.00354413,
+  "rows": [
+    {
+      "object_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+      "description": "algocell-s8086-prelaunch",
+      "environment_name": "main",
+      "interval": "2026-10-12T08:00:00Z",
+      "cost": "0.00354413",
+      "cost_by_resource": {
+        "Memory": "0.00024888",
+        "L4": "0.00311099",
+        "CPU": "0.00018426"
+      }
+    }
+  ],
+  "queried_utc": "2026-10-12T08:51:05.258009+00:00",
+  "billing_may_lag": true
+}

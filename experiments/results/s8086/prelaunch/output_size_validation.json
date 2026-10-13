@@ -1,0 +1,68 @@
+{
+  "controls": [
+    {
+      "control": "L16_d8_a4",
+      "encounters": 60416,
+      "gzip_bytes": 3526052,
+      "bytes_per_encounter": 58.36288400423729
+    },
+    {
+      "control": "L16_d8_a5",
+      "encounters": 60416,
+      "gzip_bytes": 3526954,
+      "bytes_per_encounter": 58.37781382415254
+    },
+    {
+      "control": "L16_d16_a4",
+      "encounters": 76800,
+      "gzip_bytes": 5998601,
+      "bytes_per_encounter": 78.10678385416666
+    },
+    {
+      "control": "L16_d16_a5",
+      "encounters": 76800,
+      "gzip_bytes": 5999771,
+      "bytes_per_encounter": 78.12201822916667
+    },
+    {
+      "control": "L32_d8_a4",
+      "encounters": 130048,
+      "gzip_bytes": 6724393,
+      "bytes_per_encounter": 51.70700818159449
+    },
+    {
+      "control": "L32_d8_a5",
+      "encounters": 130048,
+      "gzip_bytes": 6725617,
+      "bytes_per_encounter": 51.716420091043304
+    },
+    {
+      "control": "L32_d16_a4",
+      "encounters": 146432,
+      "gzip_bytes": 9504970,
+      "bytes_per_encounter": 64.91047038898601
+    },
+    {
+      "control": "L32_d16_a5",
+      "encounters": 146432,
+      "gzip_bytes": 9507033,
+      "bytes_per_encounter": 64.9245588395979
+    },
+    {
+      "control": "L32_d32_a4",
+      "encounters": 179200,
+      "gzip_bytes": 15065622,
+      "bytes_per_encounter": 84.07155133928572
+    },
+    {
+      "control": "L32_d32_a5",
+      "encounters": 179200,
+      "gzip_bytes": 15067511,
+      "bytes_per_encounter": 84.08209263392857
+    }
+  ],
+  "worst_gzip_bytes_per_encounter": 84.08209263392857,
+  "encounters": 1185792,
+  "gzip_bytes": 81646524,
+  "source": "full passing fixed-input control outputs, no population data"
+}

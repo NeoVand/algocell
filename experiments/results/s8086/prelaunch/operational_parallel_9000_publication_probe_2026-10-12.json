@@ -1,0 +1,118 @@
+{
+  "path": "/vol/s8086_volume_probes/12759725b247454da70b28b587466351",
+  "operations": {
+    "volume.reload.initial": {
+      "supported": true,
+      "result": null
+    },
+    "mkdir.parents": {
+      "supported": true,
+      "result": null
+    },
+    "mkdir.exist_ok": {
+      "supported": true,
+      "result": null
+    },
+    "exclusive_create.write.flush.close": {
+      "supported": true,
+      "result": 17
+    },
+    "exclusive_create.no_clobber": {
+      "supported": true,
+      "result": "existing file rejected"
+    },
+    "read_bytes": {
+      "supported": true,
+      "result": "66697865642070726f6265206279746573"
+    },
+    "exists.stat.iterdir": {
+      "supported": true,
+      "result": [
+        true,
+        17,
+        1
+      ]
+    },
+    "append.flush": {
+      "supported": true,
+      "result": null
+    },
+    "file.fsync": {
+      "supported": true,
+      "result": null
+    },
+    "flock.local.only": {
+      "supported": true,
+      "result": null
+    },
+    "chmod": {
+      "supported": true,
+      "result": null
+    },
+    "link": {
+      "supported": false,
+      "error": "PermissionError",
+      "errno": 1,
+      "reason": "[Errno 1] Operation not permitted: '/vol/s8086_volume_probes/12759725b247454da70b28b587466351/source' -> '/vol/s8086_volume_probes/12759725b247454da70b28b587466351/hardlink'"
+    },
+    "rename": {
+      "supported": true,
+      "result": null
+    },
+    "replace": {
+      "supported": true,
+      "result": null
+    },
+    "directory.open.fsync.close": {
+      "supported": true,
+      "result": null
+    },
+    "gzip.exclusive_write.read": {
+      "supported": true,
+      "result": "fixed gzip probe"
+    },
+    "volume.commit": {
+      "supported": true,
+      "result": null
+    },
+    "volume.reload.after_commit": {
+      "supported": true,
+      "result": null
+    },
+    "durable_read_after_reload": {
+      "supported": true,
+      "result": "66697865642070726f626520627974657320617070656e646564"
+    },
+    "unlink": {
+      "supported": true,
+      "result": null
+    },
+    "mkdir.rmdir": {
+      "supported": true,
+      "result": null
+    },
+    "publication.actual_repaired_code.commit_reload": {
+      "supported": true,
+      "result": {
+        "kind": "summary",
+        "steps_run": 250000
+      }
+    },
+    "publication.duplicate_no_clobber": {
+      "supported": true,
+      "result": "canonical bytes unchanged"
+    },
+    "publication.stale_marker_no_clobber": {
+      "supported": true,
+      "result": "stale reservation fails closed"
+    }
+  },
+  "archive": null,
+  "wall_s": 10.361857657,
+  "cpu": 0.125,
+  "memory_mib": 256,
+  "server_timeout_s": 60,
+  "gpu": null,
+  "locking_scope": "flock/exclusive create are local mount operations; no distributed lock claim",
+  "publication_source_sha256": "6dd7bf7612a5726ba38cb6befb549a5c41579d327b951f30f9e67e481ce0c6fe"
+}

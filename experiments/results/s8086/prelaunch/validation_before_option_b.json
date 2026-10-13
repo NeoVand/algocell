@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-12",
+  "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q",
+  "passed": 40,
+  "failed": 0,
+  "wall_s": 64.14,
+  "warnings": [
+    "Existing Modal-local mock test warning"
+  ],
+  "constructed_law_controls": 10,
+  "constructed_law_encounters": 1185792,
+  "census_replay": "B9 51,07 A5,FF 30,AD 50; both phases, L16/L32, budgets128/512; exact output hashes and matches; full diagnostic lane identity",
+  "boundaries": [
+    "sequential ring laps",
+    "multi-byte offset wraps",
+    "forward aliases",
+    "backward/taken branches",
+    "far transfers",
+    "retained REP",
+    "halts",
+    "coherent self modification",
+    "overflow other",
+    "culture64 trace16",
+    "tie share baseline censor persistence",
+    "sampling multiplicity caps",
+    "input record snapshot identity",
+    "injected payload core source mismatches",
+    "NaN/liability/hashchain guards",
+    "archived DZ 10-world endpoint regression"
+  ],
+  "no_population_runs": true,
+  "compileall": "passed",
+  "diff_check": "passed for implementation source, tests and registration; verbatim generated WGSL archives retain inherited trailing whitespace and carried registration-body archive retains its terminal blank line",
+  "manual_recovery_guard": "passed in full suite",
+  "remote_trace_backend": "storage-vulkan on L4; unchanged event format and full raw-record/memory parity validated; original private WGSL remains byte-identical",
+  "post_full_checks": [
+    {
+      "command": "pytest tests/test_s8086.py -q -k storage_observer",
+      "passed": 1,
+      "deselected": 28,
+      "wall_s": 13.15,
+      "purpose": "explicit REP/resume memory as well as full record parity"
+    },
+    {
+      "command": "/Users/neo/repos/algocell/experiments/.venv/bin/python -m pytest tests/test_s8086.py tests/test_run6502.py -q -k 'not exact_census and not constructed_rep_and_non_rep and not all_ten_full and not l2_nonzero and not byte_granular_count and not frozen_pair_bridge and not storage_observer and not instruction_and_retained and not culture_n64'",
+      "passed": 35,
+      "deselected": 9,
+      "wall_s": 0.5,
+      "purpose": "final gzip, flag-specific footprint, unknown-history/censoring and unresolved-diagnosis safeguards; all nine GPU checks already covered",
+      "warnings": [
+        "Existing Modal-local mock test warning"
+      ]
+    },
+    {
+      "command": "pytest tests/test_s8086.py -q -k cf_preserved",
+      "passed": 1,
+      "deselected": 32,
+      "wall_s": 0.09,
+      "purpose": "Corrected fixed JNC displacement FB; flag-specific CF dependency regression; included in final 35 CPU passes"
+    }
+  ],
+  "unique_test_cases_covered": 44,
+  "diff_check_scope": "git diff --check 80426a4 -- experiments/REVISION_PREREG.md experiments/s8086.py experiments/run8086.py experiments/score8086.py experiments/law8086.py experiments/dispatch8086.py experiments/benchmark8086.py experiments/modal_s8086.py experiments/modal_score8086.py experiments/meter8086.py experiments/algocell_exp/census8086_trace.py experiments/tests/test_s8086.py",
+  "archival_whitespace": "Full staged check reports six inherited whitespace-only shader lines and one terminal blank line in S2_REGISTRATION_BASE.md. These archived exact bytes are deliberately preserved; no execution or normative substance changes."
+}

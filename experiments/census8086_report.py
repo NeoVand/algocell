@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 import csv
 import hashlib
+import gzip
 import json
 from pathlib import Path
 import subprocess
@@ -12,7 +13,7 @@ from census8086 import OUT, write_csv
 
 
 def read(name):
-    with (OUT / name).open() as f:
+    with (gzip.open(OUT/name,"rt") if name.endswith(".gz") else (OUT/name).open()) as f:
         return list(csv.DictReader(f))
 
 
@@ -22,14 +23,16 @@ def table(rows, fields):
         "| " + " | ".join(str(r[f]) for f in fields) + " |" for r in rows) + "\n"
 
 
-def main():
+def main(*, require_committed=True):
     repo = OUT.parents[2]
-    inputs = sorted(OUT.glob("words_*.csv")) + sorted(OUT.glob("mechanisms_*.csv")) + sorted(OUT.glob("traces_*.csv")) + [OUT / n for n in
-              ("law_eligibility.csv", "law_geometry_traces.csv", "law_alternatives.csv", "law_serial.csv", "law_erased.csv", "partners.csv", "bursts.csv")]
+    inputs = sorted(OUT.glob("words_*.csv")) + sorted(OUT.glob("mechanisms_*.csv")) + sorted(OUT.glob("traces_*.csv.gz")) + [OUT / n for n in
+              ("law_eligibility.csv", "law_geometry_traces.csv", "law_alternatives.csv", "law_serial.csv.gz", "law_erased.csv", "partners.csv", "bursts.csv", "correction_labels.csv", "correction_provenance.json")]
+    inputs += [OUT/n for n in ('b6_correction_labels.csv','b6_correction_provenance.json') if (OUT/n).exists()]
     for path in inputs:
         rel = str(path.relative_to(repo))
-        subprocess.run(["git", "ls-files", "--error-unmatch", rel], cwd=repo, check=True, stdout=subprocess.DEVNULL)
-        subprocess.run(["git", "diff", "--exit-code", "HEAD", "--", rel], cwd=repo, check=True, stdout=subprocess.DEVNULL)
+        if require_committed:
+            subprocess.run(["git", "ls-files", "--error-unmatch", rel], cwd=repo, check=True, stdout=subprocess.DEVNULL)
+            subprocess.run(["git", "diff", "--exit-code", "HEAD", "--", rel], cwd=repo, check=True, stdout=subprocess.DEVNULL)
     summary, inventory, classes, candidates, consistency, audit_stats = [], [], [], [], [], []
     for L in (16, 32):
         for budget in (128, 512):
@@ -72,7 +75,7 @@ def main():
             assert errors == 0
             consistency.append({"L": L, "budget": budget, "period1_duplicates_in_period2": 256, "mismatches": errors,
                                 "primitive_period2_words": 65280, "rotation_pairs_kept_separate": 32640})
-            for word in ("b951", "ff30", "ad50"):
+            for word in ("b951", "07a5", "ff30", "ad50"):
                 r = runs[2][int(word, 16)]; a = audit[2, int(word, 16), 0]
                 candidates.append({"L": L, "budget": budget, "word": word, "zero_match": f"{r['zero_match']}/{L}",
                                    "random_exact": f"{r['rand_exact']}/16", "random75": f"{r['rand75']}/16", "zero_mechanism": a["mechanism"],
@@ -93,8 +96,8 @@ def main():
         c["passed"] += int(r["passed"]); c["core_preserved"] += int(r["core_preserved"])
         c["alternative_single_cases"] += int(r["alternative"]) if r["kind"] == "single" else 0
         assert r["passed"] == r["partners"] and r["core_preserved"] == "1"
-    for name, prefix in (("law_serial.csv", "serial"), ("law_erased.csv", "erased")):
-        with (OUT / name).open() as f:
+    for name, prefix in (("law_serial.csv.gz", "serial"), ("law_erased.csv", "erased")):
+        with (gzip.open(OUT/name,"rt") if name.endswith(".gz") else (OUT/name).open()) as f:
             for r in csv.DictReader(f):
                 key = tuple(r[field] for field in ("L", "d", "opcode", "budget")); c = law[key]
                 c[prefix+"_cases"] += 1
@@ -117,7 +120,7 @@ def main():
     write_csv(OUT / "table_law.csv", lawrows)
     hashes = [{"file": str(p.relative_to(OUT)), "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in
               sorted(inputs + [OUT / n for n in ("provenance.json", "smoke.json", "LAW_CONTRACT.md", "MECHANISM_CONTRACT.md")])]
-    for rel in ("experiments/census8086.py", "experiments/census8086_law.py", "experiments/census8086_report.py", "experiments/algocell_exp/census8086_trace.py"):
+    for rel in ("experiments/census8086.py", "experiments/census8086_law.py", "experiments/census8086_report.py", "experiments/algocell_exp/census8086_trace.py", "experiments/reaudit8086.py"):
         p = repo / rel
         hashes.append({"file": "source:"+rel, "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
     write_csv(OUT / "table_hashes.csv", hashes)
@@ -130,6 +133,55 @@ def main():
     machines = [{"L": L, "core_sha256": p["sha256_core"], "world_sha256": p["sha256_world"], "wgsl_sha256": p["sha256_wgsl"]}
                 for L, p in prov["machines"].items()]
     zero = [r for r in summary if r["k"] == 2]
+    correction=read('correction_labels.csv')
+    named_changes=[r for r in correction if r['word'] in ('b951','07a5','ff30','ad50')]
+    correction_text="""## Correction — 2026-10-12
+
+Astra's B3/B4 defects are repaired. The observer records the instruction-start
+hook's actual full pc for ordinary and retained REP execution. Memory writes
+pair with their exact ordered byte sources; implicit SP/SI/DI/CX arithmetic
+invalidates memory-copy identity. No value-membership matching remains.
+All 1,246 candidate settings (21,182 encounters) were rerun on the local GPU
+against the original fixed panel. Every complete original record and memory
+matched unmodified execution; raw census outcomes and access counts did not
+change. Full corrected traces, including every random partner, are archived
+in gzip parts. Two overflows remain explicitly other.
+
+**07 A5 remains an open memory-fed one-pass copier.** All 17 encounters retain
+that mechanism in every L/budget setting; all 16 random encounters fetch B.
+B9 51 changes eight random-partner labels from other to literal writer; its
+zero-partner label remains literal writer. FF 30 and AD 50 have no changed
+labels. The registered R2 predictions are unchanged.
+
+There are 1,476 changed labels: 1,440 other→literal writer and 36
+other→memory-fed one-pass copier. Precise byte transfers and preserving
+unmodified registers across admitted segment operations resolve those former
+unknowns; arithmetic-derived sources remain other. Every changed label is
+listed below and in correction_labels.csv, identified by L, budget, period,
+word, and partner. Zero-partner summaries are regenerated, not replayed.
+
+"""+table(correction,['L','budget','k','word','partner','old','new'])+"\n"
+    if (OUT/'b6_correction_provenance.json').exists():
+        b6=json.loads((OUT/'b6_correction_provenance.json').read_text())
+        correction_text += f"""## B6 correction — 2026-10-12
+
+Immediate far JMP overwrites CS provenance with its immediate operand. Trapped
+register LES/LDS invalidate provenance; zero-count REP preserves untouched
+registers. Post-instruction TF vector traffic invalidates the register/segment
+bank. The total WGSL instruction table and per-class regressions are archived
+in the S2 prelaunch evidence. An independent flat value-tag bank agrees on
+every ordered partner-write channel and mechanism over all {b6['encounters']:,}
+archived candidate encounters ({b6['settings']:,} settings), with zero mismatches.
+The two trace overflows remain other. Random fixed-program evidence is in
+b6_validation.json; no population or paid compute was used.
+
+{b6['label_changes']} additional encounter labels change relative to e96abc0.
+Every exact nonzero zero-partner word retains its label and all R0–R2 rationale
+counts remain unchanged. 07 A5 remains memory-fed one-pass in all 68 encounters,
+with B fetches in all 64 random encounters. R2 is unchanged. Raw exhaustive
+word tables, trace bytes and output/access/count columns are unchanged.
+
+""" + table(read('b6_correction_labels.csv'),['L','budget','k','word','partner','old','new'])+'\n'
     msg = f"""<!-- Generated by experiments/census8086_report.py from committed CSVs. Do not edit by hand. -->
 # Validated coherent-fetch 8086 census
 
@@ -140,6 +192,7 @@ counts (L16/128, L16/512, L32/128, L32/512): **{', '.join(str(r['zero_exact_nonz
 There are no nonzero period-one exact zero-partner writers. Constant zero is
 enumerated and reported, but matching an untouched zero partner is not writing.
 
+{correction_text}
 ## Machine, provenance and method
 
 **8086/8088 instruction semantics, validated against hardware 8088 vectors,
@@ -189,7 +242,7 @@ partner write. Each candidate has all 17 encounter classes in mechanisms_*.csv.
 Literal writer requires partner write values traced to reset or immediate
 register values. No-change arithmetic/shift RMW stores add coverage and
 transactions but no new byte provenance, so they do not change the writer class.
-A memory-fed copier requires explicit same-valued data-read
+A memory-fed copier requires exact ordered byte-level data-read
 to write pairing through MOVS, memory PUSH, or a tracked load and register PUSH.
 A confined copy loop also requires repeated full instruction-start addresses
 and no partner fetch. Distinct full start addresses mark the admitted one-pass
@@ -215,7 +268,7 @@ independently, even when it reads already overwritten bytes. A zero access count
 alone is not a payload retention assay.
 
 The complete candidate inventory is table_hits.csv; full classes and evidence
-are mechanisms_*.csv, ordered observations are traces_*.csv. Event kinds:
+are mechanisms_*.csv, ordered observations are traces_*_part*.csv.gz. Event kinds:
 0 fetch, 1 data read, 2 write, 3 decode, 4 instruction start; memory positions
 are ring positions, while decode/start positions retain full physical addresses.
 

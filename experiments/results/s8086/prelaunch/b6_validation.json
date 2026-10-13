@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-12",
+  "no_population": true,
+  "no_modal": true,
+  "baseline_commit": "e96abc0",
+  "instruction_table_rows": 1276,
+  "classifier_sha256": "0538dbaa000bc14e32e826f67f77c9fa098d17a0cb74f1f2bc5193930f997564",
+  "oracle_sha256": "5f855a1d621f16163241ef5f5720bf7062780bc25757b4d49da9483ffb059a7e",
+  "census": {
+    "settings": 1246,
+    "encounters": 21182,
+    "mismatches": 0,
+    "label_changes": 7,
+    "runs": [
+      {
+        "L": 16,
+        "budget": 128,
+        "exact_counts_unchanged": true,
+        "07a5_17_of_17_unchanged": true,
+        "encounters": 4998
+      },
+      {
+        "L": 16,
+        "budget": 512,
+        "exact_counts_unchanged": true,
+        "07a5_17_of_17_unchanged": true,
+        "encounters": 7361
+      },
+      {
+        "L": 32,
+        "budget": 128,
+        "exact_counts_unchanged": true,
+        "07a5_17_of_17_unchanged": true,
+        "encounters": 2227
+      },
+      {
+        "L": 32,
+        "budget": 512,
+        "exact_counts_unchanged": true,
+        "07a5_17_of_17_unchanged": true,
+        "encounters": 6596
+      }
+    ],
+    "words_sha256": {
+      "words_L16_k1_b128.csv": "281c3399bb67eea106d230fb0feecb79d4d158786c605d8bbf2f882d4495e4f9",
+      "words_L16_k1_b512.csv": "e3bf49cbf20d2091f1709461855a16f884849d9b1f2675e1f2a03c4a3a5aeb64",
+      "words_L16_k2_b128.csv": "1a1e71ae46648f68ad6c1872aab2893faf2982eb252544df6ee826aa61a72119",
+      "words_L16_k2_b512.csv": "f37dda7107a2b4f0af2751a95c8a5ee98c0489d4c1f39a09a75efaef9333abc1",
+      "words_L32_k1_b128.csv": "a7062d21e2492b8fb01da964b363834453425ae3cfbd337b096c6668ac9686df",
+      "words_L32_k1_b512.csv": "99fa8020a958cb26e65da9aaf035c7582d093264ce91125fe465a1d6b626d72e",
+      "words_L32_k2_b128.csv": "72e2555b0274c71ab8c70f355b0fdc528cc532b13e582b946a13a8dbd7156a7e",
+      "words_L32_k2_b512.csv": "1b6852134229637b29a458a438ea7c83daafbaf0fdc64032f1cd2f68b027bbbb"
+    },
+    "overflow_other": 2,
+    "individual_exact_word_labels_unchanged": true
+  },
+  "random_programs": {
+    "runs": [
+      {
+        "L": 16,
+        "programs": 4096,
+        "budget": 128,
+        "input_sha256": "3f5f82f44215a7cf86ca089d1d62ac97c2cd8a861957d0090aff9dac6aa29257",
+        "full_record_memory_mismatches": 0,
+        "provenance_mismatches": 0
+      },
+      {
+        "L": 32,
+        "programs": 4096,
+        "budget": 128,
+        "input_sha256": "330f8be1442526af6f0907d7b51a4c3b7be786a85489237b380da5f3262e18ef",
+        "full_record_memory_mismatches": 0,
+        "provenance_mismatches": 0
+      }
+    ],
+    "classes_observed": {
+      "aam_aad_salc": 5085,
+      "accumulator_memory": 5818,
+      "alu": 132554,
+      "ax_exchange": 12857,
+      "conditional_jump": 85849,
+      "decimal_adjust": 6219,
+      "escape": 12578,
+      "far_load": 2789,
+      "flags_stack": 2409,
+      "flags_transfer": 3753,
+      "immediate": 26663,
+      "immediate_far_call": 1304,
+      "immediate_far_jump": 4291,
+      "immediate_rm": 2993,
+      "inc_dec": 25033,
+      "inc_transfer_push_group": 14218,
+      "interrupt": 5498,
+      "io": 12763,
+      "lea": 1284,
+      "loop": 12342,
+      "mov": 13975,
+      "muldiv_group": 3836,
+      "near_call": 1742,
+      "near_jump": 7779,
+      "neutral": 18614,
+      "pop_rm": 1671,
+      "register_pop": 12655,
+      "register_push": 11346,
+      "return": 13954,
+      "segment_mov": 3159,
+      "segment_pop": 6992,
+      "segment_push": 7810,
+      "shift": 6019,
+      "sign_extend": 3685,
+      "string": 15477,
+      "xchg": 3520,
+      "xlat": 1539
+    },
+    "mismatches": 0
+  },
+  "focused_cpu_tests": {
+    "passed": 97,
+    "failed": 0
+  }
+}

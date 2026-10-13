@@ -1,0 +1,17 @@
+{
+  "call": {
+    "app_id": "ap-sCeRhIXHr8Hn8g5NSjXSpy",
+    "call_id": "fc-01M4QMQH7WXSMCWAEC08WZYQR6",
+    "started_epoch": 1791794857.165319,
+    "timeout_s": 450,
+    "rate_usd_per_s": 0.00025286,
+    "resource_reservation_usd": 0.5
+  },
+  "status": "failed during 8192-event diagnostic pipeline compilation; app stopped by uncaught exception",
+  "cause": "wgpu GPUValidationError: Parent device is lost",
+  "population_calls": 0,
+  "retained_resource_liability_usd": 0.5,
+  "recovery": "Explicitly declare Mesa software Vulkan for ordered diagnostics only, retaining L4 for uninstrumented world and culture execution; full-record/memory cross-backend equivalence required",
+  "fixed_memories_changed": false,
+  "automatic_retries": false
+}
