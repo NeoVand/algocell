@@ -1,0 +1,411 @@
+{
+	"captures": [
+		{
+			"case": "mode-bytes",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/mode-bytes-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-identity",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/mode-identity-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-confinement",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/mode-confinement-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-zeros",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/mode-zeros-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-diversity",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/mode-diversity-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-marker",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/mode-marker-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-fit",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-fit-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-navigate",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-navigate-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-probe",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-probe-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-marker",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-marker-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-region",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-region-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-history-scrub",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-history-scrub-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-history-replay",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-history-replay-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-compare",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-compare-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-snapshot",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-snapshot-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-timelapse",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-timelapse-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-culture",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-culture-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-self-pair",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-self-pair-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-partner-sensitivity",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-partner-sensitivity-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-marker-transfer",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-marker-transfer-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-fetch",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-fetch-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-starts",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-starts-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-writes",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-writes-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-disassembly",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/bench-disassembly-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "experiments",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/experiments-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "about",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/about-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "guide",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/guide-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-center-probe",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-center-probe-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-frame-region",
+			"width": 1440,
+			"height": 900,
+			"path": "docs/review/evolution/tool-frame-region-1440.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-bytes",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/mode-bytes-390.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-identity",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/mode-identity-390.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-confinement",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/mode-confinement-390.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-zeros",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/mode-zeros-390.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-diversity",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/mode-diversity-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-fit",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-fit-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-navigate",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-navigate-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-history-scrub",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-history-scrub-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-history-replay",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-history-replay-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-compare",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-compare-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-snapshot",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-snapshot-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-timelapse",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-timelapse-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-culture",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-culture-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-self-pair",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-self-pair-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-partner-sensitivity",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-partner-sensitivity-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-marker-transfer",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-marker-transfer-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-fetch",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-fetch-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-starts",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-starts-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-writes",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-writes-390.png",
+			"overflow": false
+		},
+		{
+			"case": "bench-disassembly",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/bench-disassembly-390.png",
+			"overflow": false
+		},
+		{
+			"case": "experiments",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/experiments-390.png",
+			"overflow": false
+		},
+		{
+			"case": "about",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/about-390.png",
+			"overflow": false
+		},
+		{
+			"case": "guide",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/guide-390.png",
+			"overflow": false
+		},
+		{
+			"case": "mode-marker",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/mode-marker-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-probe",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-probe-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-marker",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-marker-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-region",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-region-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-center-probe",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-center-probe-390.png",
+			"overflow": false
+		},
+		{
+			"case": "tool-frame-region",
+			"width": 390,
+			"height": 844,
+			"path": "docs/review/evolution/tool-frame-region-390.png",
+			"overflow": false
+		}
+	],
+	"errors": []
+}
