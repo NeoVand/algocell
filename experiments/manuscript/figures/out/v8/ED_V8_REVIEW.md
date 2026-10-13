@@ -18,10 +18,22 @@ All nine original ED legend titles differed from the SI_v8.md display map. The d
 
 Unavailable observations are labelled in their relevant figures: applied-mutation/collision counts for Stage L, pointer-randomization measurements, and the standard harmless-bracket BFF entropy panel. No corresponding values are invented.
 
-Rounds 3 and 4 are the only new critique rounds. ED1, ED3, ED4, ED5 and ED6 clear in round 3; ED2 clears in round 4. Their delivered PNGs are frozen at their clearing reviews. ED7, ED8 and ED9 receive below-standard round-4 verdicts; the newly identified label gaps are corrected afterward and the resulting files pass technical validation. Those final PNGs have no clearing review and are explicitly **not cleared**. The four-round limit prevents further review.
+In the preceding revision, rounds 3 and 4 were the only new critique rounds. ED1, ED3, ED4, ED5 and ED6 clear in round 3; ED2 clears in round 4. Their preceding delivered PNGs matched their clearing reviews; terminology revisions below supersede those deliveries where noted. ED7, ED8 and ED9 receive below-standard round-4 verdicts; the newly identified label gaps are corrected afterward and the resulting files pass technical validation. Those final PNGs have no clearing review and are explicitly **not cleared**. That revision stopped at its four-round limit; the current task explicitly authorizes confirmation rounds 5 and 6.
 
 The final unreviewed corrections are: ED7 names entropy conditioning on the fixed parent, writes the Q3 subtraction explicitly, and identifies literal-no-wrap and wrap-plus-literal dial backgrounds; ED8 defines a counted genealogy trace as any partner opcode/operand fetch; ED9 defines copy displacement, names zero applicable perturbation coordinates and empty-assignment controls, and identifies snapshot medians as totals per 512-encounter batch. These changes do not alter frozen observations. All final verdicts remain the unedited archived reviewer verdicts.
 
 Two source-semantic checks affect interpretation. The constructed 6502 carriage census records same-position byte identity over three sampled bodies and 64 partners per body, rather than a mutant-value threshold. The N6 null prose in `results/lod_n6/REACH.md` contains a stale hard-coded count of 17; `founders2.csv` and `REACH.csv` each contain 20 first-founder rows, all 20 soup non-copier shares are defined, and their product is 0.061811822140904575 (displayed as P = 0.062). Frozen source files are preserved.
 
 The branch fast-forwarded to `7cab316` before these changes. Rendering and validation use CPU only; no simulation or GPU computation is performed.
+
+## Fresh-review confirmation and terminology revision
+
+The required runner merge did not fast-forward. The fallback `git merge --no-edit feat/experiments-runner` completed without conflicts as merge commit `37ff72a`.
+
+ED1–ED5 had displayed terminology corrections and were re-reviewed: corrected-core implementation labels in ED1/ED5; lethal chemistry and transmitter labels in ED2; lowercase Z80 bytes in ED3–ED5. ED1, ED3, ED4 and ED5 received round 4; ED2 received round 5. All five returned below-standard verdicts, principally for existing small type and additional label/definition concerns. Their reviewed/delivered PNG hashes match; they are **not cleared**. ED6 was unchanged and retains its earlier round-3 clearance.
+
+ED7–ED9 received the required round-5 review of the previously unreviewed delivered images. All three returned substantive defects. They were then enlarged to 180 × 220 mm while retaining every panel, data row and coordinate; body/table text was increased to at least 6.5 pt and remaining annotations to at least 6 pt. Cohort, denominator and encoding labels were expanded, and ED9’s 8086 opcode bytes were uppercased. Each received the final authorized round 6. All three remain **below standard / not cleared**, with exact reviewed/delivered PNG hash matches. No further ED7–ED9 image edits occurred after round 6.
+
+The unedited round-6 responses identify remaining print-readability and grouping concerns in all three displays; ED7 also needs clearer five-variant coverage and r ≥ 2 scope, ED8 needs improved column separation and an explicit mutation-founded outcome label, and ED9 needs clearer fetch-event/address-domain and perturbation-total definitions. These are retained as unresolved reviewer findings, not silently treated as clearance. Source font-size checks do not replace the image verdicts.
+
+See `FRESH_REVIEW.md`, `qa_manifest.json` and `FIGURES_V8.md` for the final per-image hashes and dispositions. All rendering and verification remained CPU-only.

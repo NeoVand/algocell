@@ -22,18 +22,18 @@ EXP=HERE.parents[1]
 OUT=b.OUT
 SOURCES={}
 CURRENT=0
-HEIGHTS={n:(290 if n==5 else 180 if n in [1,3,7,8,9] else 220) for n in range(1,10)}
+HEIGHTS={n:(290 if n==5 else 180 if n in [1,3] else 220) for n in range(1,10)}
 TITLES={1:'Validation and correction impact',2:'Survival, carriage and erasure',3:'Inherited displacement and capacity',4:'Sampling, reset and classification',5:'Environmental competitions',6:'Machine laws and finite censuses',7:'BFF literal and environmental controls',8:'Founder genealogies',9:'Registered S2 and separate follow-ups'}
 RING_CRITERION='Stable: upper 95% CI of changed-final-memory pair fraction <0.01%'
 SITE_CRITERION='Site: ≥half identifiable tested values have excess carrier share ≥0.5'
 FREE_DEFINITION='Free byte positions: arbitrary alternatives jointly inherited with causal roots'
 GAIN_DEFINITION='Gain = mean (after−before)/(1−before) byte-match fraction'
 LEGENDS={
-1:'a, Validation comparisons identify their observational units and agreement criteria: instruction-vector states, ring conditions, isolated-assay metrics, claim verdicts and component outcomes. All 10,083 hardware divergences are expected. b, A ring condition is stable when the upper bound of its two-sided 95% Clopper–Pearson interval for the fraction of pairs with changed final memory is below 0.01%, using 100,000 encounter draws per condition. Flags indicate failure of that criterion. Core C0, core C1 and core C2 identify emulator implementations, distinct from displacement experiment C1 and 6502 retention experiment C2. c, Nineteen of 22 I1-T2 claims retain every constituent verdict, including prior failures. d, Four of 36 components change; applicability changes are distinguished from newly met criteria. e, Counts of differing measurements use 417 isolated assays per core comparison; rows overlap. f, All ten Stage-L worlds at each tape length complete 10,000,000 updates and are scoreable from retained final bytes and journals, although their 7,500-update snapshots are missing. Applied-mutation and collision counts are unavailable for these worlds. Expected hardware divergences and stochastic rerun differences do not isolate a causal effect of core repair.',
+1:'a, Validation comparisons identify their observational units and agreement criteria: instruction-vector states, ring conditions, isolated-assay metrics, claim verdicts and component outcomes. All 10,083 hardware divergences are expected. b, A ring condition is stable when the upper bound of its two-sided 95% Clopper–Pearson interval for the fraction of pairs with changed final memory is below 0.01%, using 100,000 encounter draws per condition. Flags indicate failure of that criterion. Historical core C0, corrected core C1 and core C2 identify emulator implementations, distinct from displacement experiment C1 and 6502 retention experiment C2. c, Nineteen of 22 I1-T2 claims retain every constituent verdict, including prior failures. d, Four of 36 components change; applicability changes are distinguished from newly met criteria. e, Counts of differing measurements use 417 isolated assays per core comparison; rows overlap. f, All ten Stage-L worlds at each tape length complete 10,000,000 updates and are scoreable from retained final bytes and journals, although their 7,500-update snapshots are missing. Applied-mutation and collision counts are unavailable for these worlds. Expected hardware divergences and stochastic rerun differences do not isolate a causal effect of core repair.',
 2:'a, Historical serial transfer-eight outcomes over all identifiable mutant starts: lost, alive without the mutant marker window, or alive with it. Each serial population contains one descendant. b, Registered branching generation-eight outcomes distinguish loss, survival with fewer than half of members carrying the marker, and survival with at least half carrying it. The marker is the centred cyclic five-byte window of the introduced mutant. A scored site requires at least half of identifiable tested values to have an excess carrier share of at least 0.5: the fraction of surviving mutant populations classified as carriers minus the corresponding fraction of surviving unmutated populations. Serial populations use the same criterion with one member. c, Complete serial site maps at transfers one and eight. d, Carrier lineages divided by all mutant starts for six L16 parents across partner environments; each design has 65,280 mutant starts and 256 unmutated controls. Benign zero opcodes execute; lethal zero opcodes halt. e, Identifiable alternative types and unmutated starts for the serial designs. f, One block-copy L32 lineage against all-zero byte partners, through two 128-execution-step encounters. At step six, a read from address four carrying byte-zero ancestry overwrites the final byte-eight marker descendant. Survival requires at least 75% immediate-parent byte match at the best cyclic shift; marker carriage and ancestry are separate measurements.',
-3:'a, All 101 registered displacement experiment C1 settings in 22 Z80 parents, including 22 original controls. Free byte positions admit arbitrary alternatives jointly inherited with their causal roots while the core is fixed; markers coincide at eight coordinates with setting counts shown. b, All direct single-site, joint-payload and erased-coordinate challenges, separately for forward and reciprocal passages, total 1,067,608 cases without mismatch; each case uses 17 partners. c, Actual generation-eight descendant bytes and original-parent ancestry for parallel byte-zero interventions 0x04 and 0x60. d, The exploratory Z80 L32 first-byte sweep partitions all 256 values into 157 culture-negative, 88 culture-positive but theorem-ineligible and 11 culture-positive eligible values. Culture positivity requires dimensionless generation-two gain of at least 0.3 on 16 uniform partners; gain averages the increase in parent-byte match divided by available match headroom. e, The exploratory 5E ED B0 motif-bearing cell cohort from stages G, I, K and L; extra fetched-site scores and the immediate-parent whole-tape-match gate deficit are distinct outcomes. f, Frozen eligibility accounting for those 2,347 cells, and zero mismatches among 25,856 registered descendant-transfer records. Exact bytes, fixed core and ancestry each use that serial denominator. Eligibility and sampled scores do not certify a universal inheritance law.',
-4:'a, A separate random-register-reset cohort of 20 Z80 L16 worlds, with six observation updates. Confinement fractions use sampled heritable cells as denominator; two worlds are majority confined at 3,000,000 updates. b, Final-world modal-tape abundance versus modal identity among sampled heritable cells in the 170 worlds of panel c. c, Sampled-cell and world denominators by stage and tape length; confined and transmitter cells are subsets of the pooled cell rows. d, The Z80 L50 matched-pair invasion cohort comprises three worlds and 24 samples of 512 cells. Axes compare confinement among cells with and without the 20 F0 sequence marker; seed one at update zero has five of five marker cells confined and zero of 507 nonmarker cells confined. e, Exploratory order of first regenerator and transmitter detections at any positive estimated share. f, Complete sensitivity to majority and greater-than-10% class shares among heritable cells. Both-detected worlds equal the sum of the three mutually exclusive order columns. Regenerator and transmitter here mean confined site-score classes with at most two and at least five sites, respectively; they differ from competition byte classes. Observation order does not establish ancestry.',
-5:'a–d, Historical core C0 and corrected core C1 Z80 L32 competitions under benign and lethal zero-opcode chemistry with mutation on, through 300,000 updates. Thin curves show individual worlds; thick curves show within-start-group medians. Each environment has ten 50:50 worlds and five worlds per reciprocal 1% invasion. R and T are partial-copy and full-tape byte classes. e, Complete endpoint medians for 110 worlds per implementation, covering both tape lengths, chemistries, mutation settings and starts. Mutation-off endpoints are at 100,000 updates. T share is T/(R+T); core share counts 5E ED B0-bearing cells over 20,000 cells; tail types count distinct sequences at bytes four through L−1 per world. The core-C1 L32 benign T-at-1% median uses four defined ratios among five worlds, while core and tail medians include all five, including zeros. f, Exploratory historical-core L32 continuations report mean T share at start and 2,000 updates. The lethal L32 host control reports unchanged-host fractions over 400 hosts times 64 soup-executor encounters per treatment. Detoxification replaces payload 0x00 and 0x76 with non-toxic bytes. Registered E1 under core C1, benign chemistry and mutation off meets its final-share interval in only four of ten worlds at each length, below seven required. Variable endpoints do not establish neutral drift.',
+3:'a, All 101 registered displacement experiment C1 settings in 22 Z80 parents, including 22 original controls. Free byte positions admit arbitrary alternatives jointly inherited with their causal roots while the core is fixed; markers coincide at eight coordinates with setting counts shown. b, All direct single-site, joint-payload and erased-coordinate challenges, separately for forward and reciprocal passages, total 1,067,608 cases without mismatch; each case uses 17 partners. c, Actual generation-eight descendant bytes and original-parent ancestry for parallel byte-zero interventions 0x04 and 0x60. d, The exploratory Z80 L32 first-byte sweep partitions all 256 values into 157 culture-negative, 88 culture-positive but theorem-ineligible and 11 culture-positive eligible values. Culture positivity requires dimensionless generation-two gain of at least 0.3 on 16 uniform partners; gain averages the increase in parent-byte match divided by available match headroom. e, The exploratory 5e ed b0 motif-bearing cell cohort from stages G, I, K and L; extra fetched-site scores and the immediate-parent whole-tape-match gate deficit are distinct outcomes. f, Frozen eligibility accounting for those 2,347 cells, and zero mismatches among 25,856 registered descendant-transfer records. Exact bytes, fixed core and ancestry each use that serial denominator. Eligibility and sampled scores do not certify a universal inheritance law.',
+4:'a, A separate random-register-reset cohort of 20 Z80 L16 worlds, with six observation updates. Confinement fractions use sampled heritable cells as denominator; two worlds are majority confined at 3,000,000 updates. b, Final-world modal-tape abundance versus modal identity among sampled heritable cells in the 170 worlds of panel c. c, Sampled-cell and world denominators by stage and tape length; confined and transmitter cells are subsets of the pooled cell rows. d, The Z80 L50 matched-pair invasion cohort comprises three worlds and 24 samples of 512 cells. Axes compare confinement among cells with and without the 20 f0 sequence marker; seed one at update zero has five of five marker cells confined and zero of 507 nonmarker cells confined. e, Exploratory order of first regenerator and transmitter detections at any positive estimated share. f, Complete sensitivity to majority and greater-than-10% class shares among heritable cells. Both-detected worlds equal the sum of the three mutually exclusive order columns. Regenerator and transmitter here mean confined site-score classes with at most two and at least five sites, respectively; they differ from competition byte classes. Observation order does not establish ancestry.',
+5:'a–d, Historical core C0 and corrected Z80 core (C1) L32 competitions under benign and lethal zero-opcode chemistry with mutation on, through 300,000 updates. Thin curves show individual worlds; thick curves show within-start-group medians. Each environment has ten 50:50 worlds and five worlds per reciprocal 1% invasion. R and T are partial-copy and full-tape byte classes. e, Complete endpoint medians for 110 worlds per implementation, covering both tape lengths, chemistries, mutation settings and starts. Mutation-off endpoints are at 100,000 updates. T share is T/(R+T); core share counts 5e ed b0-bearing cells over 20,000 cells; tail types count distinct sequences at bytes four through L−1 per world. The corrected-core L32 benign T-at-1% median uses four defined ratios among five worlds, while core and tail medians include all five, including zeros. f, Exploratory historical-core L32 continuations report mean T share at start and 2,000 updates. The lethal L32 host control reports unchanged-host fractions over 400 hosts times 64 soup-executor encounters per treatment. Detoxification replaces payload 0x00 and 0x76 with non-toxic bytes. Registered E1 under the corrected core, benign chemistry and mutation off meets its final-share interval in only four of ten worlds at each length, below seven required. Variable endpoints do not establish neutral drift.',
 6:'a, Complete finite 6502 census accounting by tape length, BRK contract, execution-step budget and tiled-word period, including the four-billion-word period-four arms. Exact self-writers produce exact output into an all-zero partner. b, Complete finite 8086 census counts under the declared reset; nonzero words qualify by exact output into zero partners or at least 75% parent-byte match in at least eight of 16 uniform-partner encounters. c, The 296 constructed copier/contract configurations coincide at five coordinate groups. A payload position is carried when its parent byte remains at the same offspring position for all three sampled bodies and 64 partners per body; this is distinct from a mutant-value site score. d, S1 first-route counts for four 20-world 6502 arms; open and confined are fetch classifications, whereas loops overlap routes. e, The complete 6502 retention experiment C2 sampling ledger contains 942 roles from 80 S1 worlds. Its 42 eligible roles represent 41 tapes from 11 worlds; role-level world counts overlap. f, Predicted and measured free byte positions agree for all eligible roles. Exact-byte, fixed-core and ancestry checks each have zero mismatches over 91,428 direct cases and 731,424 serial records. Free positions admit arbitrary alternatives jointly inherited with causal roots. Pointer randomization is unmeasured and was not an 8086 S2 arm.',
 7:'a, All archived BFF variants with modal detection, population detection and later collapse counts. Modal detection requires headroom-normalized generation-two parent-byte-match gain of at least 0.3; population detection requires at least half of sampled cells to satisfy the same heritability criterion. Collapse is terminal heritable share below 10% after population detection. Literal writing emits operands; wrap permits pointer wrap; harmless variants prevent unmatched brackets from halting. b, Complete paired fetch-fraction and conditional-entropy counts for first-modal tapes, one per detected world. All distinct observed pairs have explicit tape counts; values are rounded to five decimals. H is offspring entropy conditional on the fixed parent, measuring partner inflow over 256 uniform partners per tape. The standard harmless-bracket variant has no archived entropy panel. c, Literal-no-wrap repetition controls: open fetch can coexist with zero sampled partner inflow. d, Wrap-plus-literal halting controls retain all worlds in counts and final P-tape-share medians at 16,384 BFF population updates, called epochs in the archive. e, Paired first-versus-final world medians of entropy and fetch. f, Registered individuality results pair each pass fraction with its support and rejection thresholds. Z80 claims use 80 Stage G worlds, except the 67 loop-bearing finals; BFF Q4b pools three literal variants of 12 worlds each. Q4b is rejected and Q4a lies between decision boundaries. Entropy, confinement and dependence on initial partner contents remain separate measurements.',
 8:'a, Z80 L16 discovery and N6 confirmation each comprise 20 worlds. Sixty-four ancestral lines are sampled from each world with confined founders: 17 discovery and 20 N6 worlds. The genealogy classifier requires at least 75% tape-byte copying in at least 32/64 uniform partners; its open/confined classes count any partner opcode or operand fetch in at least/fewer than 32/64 encounters. Open-first refers to the earliest copier on each line. b, First founders and later open-ancestry-to-confined-founder events have separate denominators. c, N6 founding-event categories distinguish rewrites from partial overwrites; recorded mechanisms and registered source classes are separate. d, One executor per N6 first founder is classified under whole-tape and executed-byte copying scopes. A copier reproduces at least 75% of scoped bytes in at least half of partner encounters. All 20 executors are whole-tape non-copiers, but only 11 are executed-byte non-copiers, below 12 required. The probability of all 20 being whole-tape non-copiers under independent draws from pre-founder soup composition is 0.062. e, Chain records and elapsed updates for all 20 first founders. f, Every registered N6 component includes its decision boundary and observation. N6-3 measures cells carrying two-byte words at founder-executed instruction starts divided by all soup cells; its median over 99 word/founder records is 0.00190 against a 0.00024 random-tape baseline, a 7.9-fold ratio. The 55 recorded point-mutation events on 20 pre-founder chains imply 0.0064 expected confined founders; zero of 20 founders are observed mutation completions. N6-4 remains not met; the five-of-20 point-mutation kill is not triggered.',
@@ -64,7 +64,7 @@ def panel(f,i,label,plot=True):
 
 def foot(f,i,s,color=b.INK):
     x=3+92*(i%2);top=f._height_mm-6-70*(i//2)
-    f.text(x/180,(top-64)/f._height_mm,s,fontsize=5.3,color=color,va='center',linespacing=1.3)
+    f.text(x/180,(top-64)/f._height_mm,s,fontsize=6 if CURRENT>=7 else 5.3,color=color,va='center',linespacing=1.3)
 
 
 def tab(a,headers,rows,widths=None,size=5.5,step=None):
@@ -88,6 +88,16 @@ def frac(a,x='',y='Fraction'):
 
 
 def save(f,n):
+    if n>=7:
+        from matplotlib.text import Text
+        for item in f.findobj(Text):
+            item.set_fontsize(max(6,item.get_fontsize()))
+        # The body text in tables and notes has a 6.5 pt floor.
+        for a in f.axes:
+            if not a.axison:
+                for item in a.texts:item.set_fontsize(max(6.5,item.get_fontsize()))
+        b.figcheck.MIN_PT=6
+    else:b.figcheck.MIN_PT=5
     f.set_size_inches(180*b.fs.MM,HEIGHTS[n]*b.fs.MM);f._height_mm=HEIGHTS[n]
     b.save(f,f'ed8_{n}')
 
@@ -95,14 +105,14 @@ def save(f,n):
 def ed1():
     f=page(1);d=frozen('validation_fractions')
     a=panel(f,0,'Validation: distinct denominators',False)
-    labs=['8088/hardware: identical vector states','Core C1/C0: stable ring conditions','Core C1/C0: identical assay metrics','Core C1/archive: unchanged claim verdicts','Core C1/archive: unchanged component outcomes']
+    labs=['8088/hardware: identical vector states','Corrected/historical: below change-rate bound','Corrected/historical: identical assay metrics','Corrected/historical: unchanged claim verdicts','Corrected/historical: unchanged components']
     tab(a,['Comparison / agreement criterion','Met / tested units','Not met, n'],[(lab,f'{int(r.unchanged):,}/{int(r.total):,}',f'{int(r.changed):,}') for lab,r in zip(labs,d.itertuples())],[44,25,13],size=5.1)
     note(a,17,'All 10,083 hardware divergences were expected')
     foot(f,0,RING_CRITERION+'\n100,000 encounter draws/condition; units named in each row')
     d=read('results/impact/outcome.csv');a=panel(f,1,'I1: flags remain flags',False)
-    tab(a,['Core','Flagged / conditions','Assays differing / tested'],[(r.core,f'{r.flagged}/{r.decision_conditions}',f'{r.assay_differences}/{r.assay_combinations}') for r in d.itertuples()],[12,33,37])
+    tab(a,['Core','Flagged / conditions','Assays differing / tested'],[(('Corrected' if r.core=='C1' else r.core),f'{r.flagged}/{r.decision_conditions}',f'{r.assay_differences}/{r.assay_combinations}') for r in d.itertuples()],[12,33,37])
     note(a,31,'Comparator: historical compatibility core C0')
-    note(a,26,'Core C1: corrected classic; core C2: Zilog NMOS')
+    note(a,26,'Corrected core (C1): classic; core C2: Zilog NMOS')
     note(a,21,'Unchanged across both comparisons: criterion not met')
     foot(f,1,RING_CRITERION+'\nFlag = stability criterion not met; assays compare with core C0')
     d=read('results/tier2/T2_CLAIMS.csv');a=panel(f,2,'I1-T2: all 22 claim verdicts',False)
@@ -113,14 +123,14 @@ def ed1():
     tab(a,['Claim','vs archive','Claim','vs archive'],rows,[13,29,13,27])
     foot(f,2,'DZ2 timing; DZ3 transmitter trend; L2 recovery sites\nStands = same as archive; E1 stability remains failed; 19/22 stand')
     d=read('results/tier2/T2_COMPONENTS.csv');q=d[d.published_verdict!=d.C1_verdict];a=panel(f,3,'Four changed components of 36',False)
-    tab(a,['Component','Historical','Core C1'],[(r.claim+(' L16' if 'L16' in r.registered_component else ' L20' if 'L20' in r.registered_component else ''),r.published_verdict.replace('n/a (no recovery)','n/a'),r.C1_verdict.replace('n/a (no recovery)','n/a')) for r in q.itertuples()],[28,27,27])
+    tab(a,['Component','Historical','Corrected core'],[(r.claim+(' L16' if 'L16' in r.registered_component else ' L20' if 'L20' in r.registered_component else ''),r.published_verdict.replace('n/a (no recovery)','n/a'),r.C1_verdict.replace('n/a (no recovery)','n/a')) for r in q.itertuples()],[28,27,27])
     note(a,20,'n/a = not applicable: no recovered lineage')
     note(a,14,'Component tests summarized in panel a; L = tape bytes')
     note(a,8,'DZ2/DZ3: criteria now met; L2: applicability changes')
     foot(f,3,'Historical = published archive; DZ timing/share; L2 sites\nComplete 36-component ledger retained in Source Data')
     d=read('results/impact/assay_columns.csv');a=panel(f,4,'Assay changes by measurement',False)
     names={'copy_into_neighbor_as_A':'Partner-copy fraction, parent A','copy_into_neighbor_as_B':'Partner-copy fraction, parent B','baseline_similarity':'Initial byte-match fraction','n_informative':'Informative partners, generation 1 (n)','n_informative2':'Informative partners, generation 2 (n)','copy_offset':'Cyclic copy offset (bytes)','self_preserved_as_A':'Parent-byte fraction preserved, A','self_preserved_as_B':'Parent-byte fraction preserved, B','offspring_within_q':'Offspring ≥75% parent-match fraction','gen2_score':'Generation-2 normalized gain','gen2_cond':'Generation-2 conditional gain','score':'Normalized culture gain','is_replicator':'Generation-2 gain ≥0.3 (yes/no)','faithful':'Faithful culture classification (yes/no)'}
-    tab(a,['Metric','Differing C1','Differing C2'],[(names.get(r.column,r.column.replace('_',' ')),r.c1_changed,r.c2_changed) for r in d.itertuples()],[48,17,17],size=5.2)
+    tab(a,['Metric','Differing\ncorrected core','Differing C2'],[(names.get(r.column,r.column.replace('_',' ')),r.c1_changed,r.c2_changed) for r in d.itertuples()],[48,17,17],size=5.2)
     foot(f,4,'Counts /417 assays vs core C0; rows overlap (not additive)\nA/B = parent role; copy = ≥75% immediate-parent byte match')
     d=read('results/tier2/T2_StageL_status.csv');a=panel(f,5,'Stage-L scoring and snapshot availability',False)
     rows=[]
@@ -138,7 +148,7 @@ def ed1():
 
 def design_family(key):
     if '8080' in key:return 'Constructed 8080 controls'
-    if key.startswith('genome'):return 'Evolved Z80 transmitters'
+    if key.startswith('genome') or key=='lethal16_s4009':return 'Evolved Z80 transmitters'
     if key.startswith('pusher'):return 'Z80 pushers'
     return 'Evolved Z80 closers'
 
@@ -175,7 +185,7 @@ def partition(a,d,labels,control,sites,grouped=False):
 
 
 def design(key):
-    names={'ret16':'Confined return L16','ldir20':'Confined block-copy L20','ldir32':'Confined block-copy L32','jr50':'Open jump L50','lethal16_s4009':'Confined lethal L16','genome16_s6006':'Evolved T L16 s6006','genome20_s6003':'Evolved T L20 s6003','genome20_s6004':'Evolved T L20 s6004','pusher32_8080':'Open 8080 pusher L32','closer32_8080_p1':'Constructed 8080 L32/1','closer32_8080_p2':'Constructed 8080 L32/2'}
+    names={'ret16':'Confined return L16','ldir20':'Confined block-copy L20','ldir32':'Confined block-copy L32','jr50':'Open jump L50','lethal16_s4009':'Lethal chemistry T L16','genome16_s6006':'Evolved T L16 s6006','genome20_s6003':'Evolved T L20 s6003','genome20_s6004':'Evolved T L20 s6004','pusher32_8080':'Open 8080 pusher L32','closer32_8080_p1':'Constructed 8080 L32/1','closer32_8080_p2':'Constructed 8080 L32/2'}
     return names.get(key,'Open: pusher L'+key.removeprefix('pusher'))
 
 
@@ -207,7 +217,7 @@ def ed2():
     environments={'random partners, benign':'Uniform\nbenign','random partners, lethal':'Uniform\nlethal','closed benign world':'Confined\nbenign\nsoup','lethal world':'Lethal\nsoup','open phase (t5000)':'Open\nsoup\n5k updates','random registers':'Uniform\nrandom\nreset'}
     labels=[environments.get(s,s.replace(' partners,','').replace(' ','\n',1)) for s in pivot.columns]
     lengths=d.groupby('parent').tape.first().str.split().map(len)
-    a.set_xticks(range(len(pivot.columns)),labels,fontsize=5);a.set_yticks(range(len(pivot)),[s.replace('block-copy R','Partial block-copy').replace('block-copy T','Full block-copy')+f' L{lengths[s]}' for s in pivot.index],fontsize=5.1)
+    a.set_xticks(range(len(pivot.columns)),labels,fontsize=5);a.set_yticks(range(len(pivot)),[s.replace('lethal-tar closer 4009','Lethal chemistry T 4009').replace('block-copy R','Partial block-copy').replace('block-copy T','Full block-copy')+f' L{lengths[s]}' for s in pivot.index],fontsize=5.1)
     for i in range(len(pivot)):
         for j in range(len(pivot.columns)):a.text(j,i,f'{pivot.iloc[i,j]:.2f}',ha='center',va='center',fontsize=5.3,color='white' if pivot.iloc[i,j]>.6 else b.INK)
     b.tidy(a,'Partner source / zero-opcode chemistry / reset','')
@@ -253,7 +263,7 @@ def ed3():
         for pos in [0,4,16,31]:b.text(a,(pos+.5)*2.5,y-3,str(pos),size=5.5,ha='center')
         sample=serial.query('edit_id==@key and lineage==0 and generation==8 and direction=="forward"');assert len(sample)==1 and sample.exact.all() and sample.provenance_exact.all()
         haplotype=sample.offspring.iloc[0].split();assert len(haplotype)==32
-        for j in range(2):a.text(0,y-7-j*3,' '.join(haplotype[j*16:(j+1)*16]).upper(),fontsize=5.1,fontfamily='DejaVu Sans Mono',va='center')
+        for j in range(2):a.text(0,y-7-j*3,' '.join(haplotype[j*16:(j+1)*16]).lower(),fontsize=5.1,fontfamily='DejaVu Sans Mono',va='center')
     foot(f,2,'Byte positions 0–31; hex rows = actual descendant bytes\nGrey core | red original-parent ancestry lost | teal retained')
     d=frozen('dial_coordinates');a=panel(f,3,'Exploratory: all 256 first-byte values')
     color=np.array([0 if not r.culture_replicator else 2 if r.prop8_eligible else 1 for r in d.itertuples()]).reshape(16,16)
@@ -272,7 +282,7 @@ def ed3():
     note(a,15,'Extra = fetched-site retention beyond unexecuted sites')
     note(a,10,'Gate deficit: mutant alleles retained at 4 byte positions')
     note(a,5,'Offspring <75% immediate-parent byte match at best cyclic shift')
-    foot(f,4,'Exploratory Z80 G/I/K/L cells: 5E ED B0 motif (same family as c)\n2,347 sampled cells nested in worlds; 4 nondividing excluded')
+    foot(f,4,'Exploratory Z80 G/I/K/L cells: 5e ed b0 motif (same family as c)\n2,347 sampled cells nested in worlds; 4 nondividing excluded')
     d=read('results/capacity/candidate_eligibility.csv');a=panel(f,5,'Frozen candidate eligibility',False)
     q=d.groupby(['eligible','reason'],dropna=False).size().reset_index(name='n')
     tab(a,['Eligibility / reason','Candidates'],[(('Eligible' if r.eligible else str(r.reason).replace('_',' ')),r.n) for r in q.itertuples()],[65,17],size=5.3)
@@ -302,7 +312,7 @@ def ed4():
     a.scatter(d.confined_given_no_marker,d.confined_given_marker,s=9,color=b.RED);a.plot([0,1],[0,1],color=b.RULE,lw=.6);a.set(xlim=(-.03,1.05));frac(a,'Confined / no marker','Confined / marker')
     a.annotate('Seed 1, update 0: 5/5 marker cells confined',xy=(0,1),xytext=(.05,.84),fontsize=5.1,arrowprops=dict(arrowstyle='-',color=b.GREY,lw=.5))
     a.text(.05,.74,'No marker in same sample: 0/507',fontsize=5.5)
-    foot(f,3,f'Z80 L50 matched-pair invasion: {d.seed.nunique()} worlds, {len(d)} samples\n20 F0 marker; axes: confinement among positive/negative cells\n512 cells/sample; equal-fraction diagonal')
+    foot(f,3,f'Z80 L50 matched-pair invasion: {d.seed.nunique()} worlds, {len(d)} samples\n20 f0 marker; axes: confinement among positive/negative cells\n512 cells/sample; equal-fraction diagonal')
     d=read('results/ladder/population_groups.csv');q=d.query("threshold=='any'");a=panel(f,4,'Exploratory detection order: any detection',False)
     tab(a,['Cohort','Worlds','R<T','Same','T<R','R only','T only','None'],[[f'{r.stage}, L{r.L}',r.n,r['R before T'],r['same sample'],r['T before R'],r['R only'],r['T only'],r['neither']] for _,r in q.iterrows()],[18,8,9,9,9,10,10,9],size=5.2)
     foot(f,4,'R = confined ≤2 scored sites; T = confined ≥5 scored sites\nR<T: R observed first; Same: same sampled update; T<R: T first\nAny = positive estimated class share; n = worlds; not ancestry')
@@ -317,7 +327,7 @@ def ed4():
 def ed5():
     f=page(5);d=frozen('competition_trajectories');starts={'mix50':('-',b.GREY),'R_into_T':('--',b.RED),'T_into_R':(':',b.TEAL)}
     for i,(cohort,tar) in enumerate([('Historical','benign'),('C1','benign'),('Historical','lethal'),('C1','lethal')]):
-        a=panel(f,i,f'{"Core C1" if cohort=="C1" else "Historical core C0"} / {tar}: L32, mutation on')
+        a=panel(f,i,f'{"Corrected core" if cohort=="C1" else "Historical core C0"} / {tar}: L32, mutation on')
         q=d.query('cohort==@cohort and tar==@tar')
         for (start,seed),g in q.groupby(['start','seed']):a.plot(g.step/1000,g.T_share,color=starts[start][1],ls=starts[start][0],lw=.4,alpha=.3)
         for start,g in q.groupby('start'):
@@ -334,10 +344,10 @@ def ed5():
         r=c1.query('L==@L and tar==@tar and mut==@mut and start==@start')
         star='*' if (L,tar,mut,start)==(32,'benign','on','T_into_R') else ''
         rows.append([L,tar,mut,{'mix50':'50:50','R_into_T':'R at 1%','T_into_R':'T at 1%'}[start],f'{len(r)}/{len(q)}',f'{r.T_share_end.median():.2f}'+star,f'{q.T_share_end.median():.2f}',f'{r.core_share_end.median():.2f}',f'{q.core_share_end.median():.2f}',f'{r.T_distinct_tails_end.median():.0f}',f'{q.T_distinct_tails_end.median():.0f}'])
-    tab(a,['L\nbytes','Zero rule','Mutation','Start','Worlds\nC1/H','T share\nC1','T share\nH','Core share\nC1','Core share\nH','Tail types\nC1','Tail types\nH'],rows,[11,18,13,21,14,15,15,15,15,17,18],size=5.4)
+    tab(a,['L\nbytes','Zero rule','Mutation','Start','Worlds\nCorr/H','T share\nCorr','T share\nH','Core share\nCorr','Core share\nH','Tail types\nCorr','Tail types\nH'],rows,[11,18,13,21,14,15,15,15,15,17,18],size=5.4)
     f.text(3/180,79/290,'World medians; H = historical core C0. Benign zero executes; lethal zero halts. Mutation off: 100k; on: 300k updates.\n'+
-           'T share = T/(R+T); core share = 5E ED B0-bearing cells /20,000; tail types = distinct byte 4–(L−1) sequences/world.\n'+
-           '*Core C1 L32 benign T-at-1%: T median uses 4 defined ratios/5 worlds; core/tail medians include all 5 worlds, including zeros.',fontsize=5.4,color=b.INK,va='center',linespacing=1.4)
+           'T share = T/(R+T); core share = 5e ed b0-bearing cells /20,000; tail types = distinct byte 4–(L−1) sequences/world.\n'+
+           '*Corrected-core L32 benign T-at-1%: T median uses 4 defined ratios/5 worlds; core/tail medians include all 5 worlds, including zeros.',fontsize=5.4,color=b.INK,va='center',linespacing=1.4)
     d=read('results/ladder/n2_groups.csv');a=b.axes(f,3,15,174,51,True)
     b.title(f,'f','EXPLORATORY continuation and host controls; registered stability verdict',2,74)
     tab(a,['Source soup','Execution zero rule','Worlds','Mean T fraction, start','Mean T fraction, end'],[(r.composition,r.rule,r.worlds,f'{r.mean_T_share_start:.3f}',f'{r.mean_T_share_end:.3f}') for r in d.itertuples()],[34,35,20,42,43],size=6)
@@ -353,7 +363,7 @@ def ed5():
         q=c1.query('L==@L and tar=="benign" and mut=="off" and start=="mix50"')
         vals.append(f'L{L}: {int(q.T_share_end.between(.3,.7).sum())}/10')
     a.text(0,4,'Registered E1 not met: '+', '.join(vals)+'; requires ≥7/10 worlds with final T/(R+T) in [0.3,0.7].',fontsize=5.8,fontweight='bold',va='center',color=b.RED)
-    f.text(3/180,9/290,'E1: corrected core C1 Z80, benign chemistry, mutation off, 50:50 starts; L16/L32. Variable endpoints do not establish neutral drift.',fontsize=5.4,color=b.INK)
+    f.text(3/180,9/290,'E1: corrected Z80 core (C1), benign chemistry, mutation off, 50:50 starts; L16/L32. Variable endpoints do not establish neutral drift.',fontsize=5.4,color=b.INK)
     save(f,5)
 
 
@@ -393,30 +403,30 @@ def ed7():
     f=page(7);d=read('results/bff/runs.csv');extra=read('results/bff_stdnh/runs.csv');d=pd.concat([d,extra],ignore_index=True)
     a=panel(f,0,'BFF contracts: detection and persistence',False)
     variants={'std':'Standard','stdlit':'Literal, no wrap','stdnh':'Standard, harmless','wrap':'Pointer wrap','wraplit':'Wrap + literal','wraplitnh':'Wrap + literal, harmless','lit':'Literal, no wrap'}
-    tab(a,['Variant','Worlds','Modal\ndetected','Pop.\ndetected','Later\ncollapse'],[(variants[v],len(q),int(q.t_top.notna().sum()),int(q.t_her.notna().sum()),int(q.collapsed.fillna(False).sum())) for v,q in d.groupby('variant')],[27,14,13,13,15])
-    note(a,12,'Harmless = unmatched brackets do not halt; literal emits operands')
-    note(a,6,'Standard harmless-bracket H panel: unavailable in archived tables')
-    foot(f,0,'Modal: generation-2 parent-byte-match gain ≥0.3 (headroom-normalized)\nPopulation: ≥50% cells heritable (same gain ≥0.3 criterion)\nLater collapse: terminal heritable cells/all cells <10% after pop. detection')
-    h=read('results/biology/individuality/per_replicator.csv');q=h.query("machine=='bff' and which=='first'");a=panel(f,1,'First copiers: complete fetch / inflow counts',False)
+    tab(a,['Variant','Worlds\nN','Modal\nworlds, n','Population\nworlds, n','Collapse\nn / pop. n'],[(variants[v],len(q),int(q.t_top.notna().sum()),int(q.t_her.notna().sum()),f'{int(q.collapsed.fillna(False).sum())}/{int(q.t_her.notna().sum())}') for v,q in d.groupby('variant')],[29,11,13,14,15],step=5)
+    note(a,11,'Harmless: unmatched brackets do not halt; literal emits operands')
+    note(a,5,'BFF = Brainfuck-family machine; wrap permits pointer wrap')
+    foot(f,0,'Modal: generation-2 parent-byte-match gain ≥0.3 (headroom-normalized)\nPopulation: ≥50% cells heritable (same gain ≥0.3 criterion)\nLater collapse: terminal heritable-cell fraction <10% after population detection')
+    h=read('results/biology/individuality/per_replicator.csv');q=h.query("machine=='bff' and which=='first'");a=panel(f,1,'First-modal tapes: fetch / inflow counts',False)
     palette={'std':b.GREY,'lit':b.INK,'wrap':'#C98E2F','wraplit':b.RED,'wraplitnh':b.TEAL}
     for x0,groups in [(0,['std','lit','wraplitnh']),(43,['wrap','wraplit'])]:
-        for dx,label in [(0,'Fetch fraction'),(16,'H (bits)'),(30,'Tapes, n')]:a.text(x0+dx,48,label,fontsize=5.2,fontweight='bold',va='center')
+        for dx,label in [(0,'Fetch/256'),(17,'H (bits)'),(31,'Tapes, n')]:a.text(x0+dx,48,label,fontsize=5.2,fontweight='bold',va='center')
         y=44
         for group in groups:
             g=q.query('group==@group')
             a.text(x0,y,f'{variants[group]} (n={len(g)})',fontsize=5.1,fontweight='bold',va='center',color=palette[group]);y-=2.4
             counts=g.groupby(['entered_frac','H_bits']).size().reset_index(name='n')
             for r in counts.itertuples():
-                for dx,value in [(0,f'{r.entered_frac:.5f}'),(16,f'{r.H_bits:.5f}'),(30,str(r.n))]:a.text(x0+dx,y,value,fontsize=5,va='center')
+                for dx,value in [(0,f'{r.entered_frac:.5f}'),(17,f'{r.H_bits:.5f}'),(31,str(r.n))]:a.text(x0+dx,y,value,fontsize=5,va='center')
                 y-=2.4
-    foot(f,1,f'{len(q)} first-modal tapes, one/world; n = tapes with each exact fetch/H pair\nPartner inflow H = H(offspring | fixed parent), bits over 256 uniform partners\nFetch = partner-fetch encounters/256; printed values rounded to 5 decimals')
+    foot(f,1,f'{len(q)} first-modal tapes, one/world; n counts each fetch/H pair\nFetch: encounters with any partner fetch /256; values rounded to 5 decimals\nH = H(offspring | fixed parent), bits; 256 uniform partners\nStandard, harmless: paired fetch/H archive unavailable')
     d2=read('results/bff_dials/d2_bandwidth.csv');a=panel(f,2,'Bandwidth controls: open fetch, zero inflow',False)
-    tab(a,['Operand copies r','Worlds','H bits','Fetch fraction'],[(r,len(q),f'{q.H_bits.median():.1f}',f'{q.entered_frac.median():.2f}') for r,q in d2.groupby('lit_rep')],[30,17,17,18])
+    tab(a,['Operand copies r','Worlds','H bits','Fetch/256'],[(r,len(q),f'{q.H_bits.median():.1f}',f'{q.entered_frac.median():.2f}') for r,q in d2.groupby('lit_rep')],[30,17,17,18])
     note(a,29,'Background: Literal, no wrap; vary operand copies r')
     note(a,23,'Literal P a b emits a,b repeated r times')
-    foot(f,2,'World medians of conditional H and partner-fetch fraction\nr≥2: zero partner inflow with fetch in every encounter',b.TEAL)
+    foot(f,2,'World medians: conditional H and any-partner-fetch encounters/256\nr≥2: zero partner inflow with fetch in every encounter',b.TEAL)
     d1=read('results/bff_dials/d1_lethality.csv');a=panel(f,3,'Halting dial: all worlds included in counts',False)
-    tab(a,['Halt p','Worlds','P tapes\npersist','All-world median\nfinal P share'],[(f'{p:g}',len(q),int(q.persists.sum()),f'{q.share_last.median():.3f}') for p,q in d1.groupby('halt_p')],[18,18,23,23])
+    tab(a,['Halt p','Worlds\nN','P persistence\nworlds, n/N','Median final P share\nall worlds'],[(f'{p:g}',len(q),f'{int(q.persists.sum())}/{len(q)}',f'{q.share_last.median():.3f}') for p,q in d1.groupby('halt_p')],[12,13,24,33])
     note(a,10,'Background: Wrap + literal; p = 0 harmless, p = 1 halting')
     foot(f,3,'p = probability an unmatched bracket halts; P = literal-copy instruction\nPersistence: P-tape share ≥10% at 16,384 BFF population updates (epochs)')
     q=h.query("machine=='bff'");a=panel(f,4,'First / final inflow and fetch',False)
@@ -424,15 +434,15 @@ def ed7():
     for g,r in q.groupby('group'):
         first=r.query("which=='first'");final=r.query("which=='final'")
         rows.append([variants[g],len(first),f'{first.H_bits.median():.2f} / {final.H_bits.median():.2f}',f'{first.entered_frac.median():.2f} / {final.entered_frac.median():.2f}'])
-    tab(a,['Variant','n worlds','H bits\nfirst / final','Fetch fraction\nfirst / final'],rows,[29,10,22,21],size=5.2)
-    note(a,15,'First = first modal-life tape; final = terminal modal tape')
-    foot(f,4,'Paired world sampling; values are medians across worlds\nFetch fraction and conditional H use the same units as b,c')
-    q=read('results/biology/individuality/predictions.csv');a=panel(f,5,'Registered individuality verdicts',False)
-    names={'Q1':'Z80 first H>1','Q2':'Z80 loop final H<0.5','Q3':'Z80 H_first − H_final ≥2','Q4a':'BFF standard first H<0.5','Q4b':'BFF pooled literal variants:\nfirst H>1'}
-    tab(a,['Claim: H criterion (bits)','Pass / worlds','Support / reject\npass fraction','Verdict'],[(r.prediction+' '+names[r.prediction],f'{r["count"]}/{r.n}',f'≥{r.threshold_met:.0%} / ≤{r.threshold_kill:.0%}',r.outcome.replace('between (neither met nor killed)','between').replace('KILL','rejected')) for _,r in q.iterrows()],[35,15,20,12],size=5.1,step=6)
-    note(a,7,'Q4b: Literal, no wrap; Wrap + literal; Wrap + literal, harmless')
-    note(a,2,'12 worlds each; 36 total; same names as a, b and e')
-    foot(f,5,'Q1–3: Z80 Stage G (80 worlds); Q2: 67 loop-bearing finals\nQ4a: Standard BFF; Q4b: the three pooled variants named above\nSupport/reject use pass/world fraction; between = neither threshold')
+    tab(a,['Variant','Worlds\nn','H bits\nfirst / final','Fetch/256\nfirst / final'],rows,[29,10,22,21],size=5.2)
+    note(a,15,'First = first-modal tape; final = terminal modal tape')
+    foot(f,4,'Paired world sampling; values are medians across worlds\nFetch/256 counts any-partner-fetch encounters; H units as b,c')
+    q=read('results/biology/individuality/predictions.csv');a=panel(f,5,'Registered tests of partner inflow (H)',False)
+    names={'Q1':'Z80 first H>1','Q2':'Z80 loop final H<0.5\n67 worlds: loop final tapes','Q3':'Z80 H_first − H_final ≥2','Q4a':'BFF standard first H<0.5','Q4b':'BFF pooled literal variants:\nfirst H>1'}
+    tab(a,['Per-world criterion\nH in bits','Passing\nworlds, n/N','Support / reject\n% passing','Verdict'],[(r.prediction+' '+names[r.prediction],f'{r["count"]}/{r.n}',f'≥{r.threshold_met:.0%} / ≤{r.threshold_kill:.0%}',r.outcome.replace('between (neither met nor killed)','between').replace('KILL','rejected')) for _,r in q.iterrows()],[36,15,19,12],size=6,step=7.2)
+    note(a,5,'Q4b: Literal, no wrap; Wrap + literal; Wrap + literal, harmless')
+    note(a,0,'12 worlds each; 36 total; same names as a, b and e')
+    foot(f,5,'Q1–3: Z80 Stage G (80 worlds); Q2: 67 worlds with loop-bearing final tapes\nQ4a: Standard BFF; Q4b: the three pooled variants named above\nSupport/reject use pass/world fraction; between = neither threshold')
     path=EXP/'results/bff_dials/FINDINGS.md';SOURCES[7][str(path.relative_to(EXP))]=hashlib.sha256(path.read_bytes()).hexdigest()
     save(f,7)
 
@@ -441,7 +451,7 @@ def ed8():
     f=page(8);d=read('results/ladder/lod_groups.csv');a=panel(f,0,'Genealogy cohorts: worlds and nested lines',False)
     tab(a,['Cohort','Worlds','Confined\nworlds','Lines from\nconfined worlds','Open-first\nlines'],[(r.cohort,r.worlds,r.closed_worlds,r.sampled_lines,r.open_first_lines) for r in d.itertuples()],[23,12,13,18,16],size=5.1)
     note(a,31,'64 sampled-cell ancestries / confined world; world = simulation')
-    note(a,26,'N3-v6 = discovery; N6 = prospective confirmation; Z80 L16')
+    note(a,26,'N3-v6: discovery; N6: confirmation; Z80 tape length L = 16 bytes')
     note(a,21,'Copier: ≥75% tape bytes copied in ≥32/64 uniform partners')
     note(a,16,'Counted trace = fetch of any partner opcode or operand byte')
     note(a,11,'Genealogy fetch class: open ≥32/64 counted traces; confined <32/64')
@@ -449,10 +459,10 @@ def ed8():
     foot(f,0,'Sampled lines: 64 ancestries per world with a confined founder\nWorlds column counts all worlds; genealogy classes use 64 partner traces')
     a=panel(f,1,'First founders versus later conversions',False)
     ds={name:read(f'results/{family}/founders2.csv') for name,family in [('N3-v6','lod'),('N6','lod_n6')]}
-    tab(a,['Cohort','First confined\nfounders','Later confined\nfounder events','Events'],[(name,int(q['first'].sum()),int((~q['first'].astype(bool)).sum()),len(q)) for name,q in ds.items()],[23,20,24,15],size=5.1)
+    tab(a,['Cohort','First confined\nfounders','Later confined\nfounder events','Total founder\nevents'],[(name,int(q['first'].sum()),int((~q['first'].astype(bool)).sum()),len(q)) for name,q in ds.items()],[23,20,24,15],size=5.1)
     note(a,31,'20 worlds/cohort; at most one first confined founder/world')
     note(a,26,'Founder: first confined copier after latest open copier on sampled line')
-    note(a,21,'Transition: open ancestry to confined copier; sampled classifier as a')
+    note(a,21,'Open ancestry to confined copier; classification as in panel a')
     note(a,16,'Later events follow the first founder in that world; events can repeat')
     note(a,11,'Later events can reuse existing confined-cell byte sources')
     foot(f,1,'First founders and later confined-founder events stay separate\nWorlds, ancestral lines and founding events are different units')
@@ -463,7 +473,7 @@ def ed8():
     foot(f,2,'Separate N6-1 source rule: copy/rewrite 18/20, mutation 0/20\nRecorded event categories and causal source classes differ')
     d=read('results/lod_n6/founding.csv');a=panel(f,3,'N6 founding executors: two copier scopes',False)
     tab(a,['Executors, n','Whole-tape','Executed-byte'],[['Non-copier',int(d.executor_class.eq('non-copier').sum()),int(d.executor_exec_copier.lt(.5).sum())],['Copier',int(d.executor_class.ne('non-copier').sum()),int(d.executor_exec_copier.ge(.5).sum())]],[34,24,24])
-    a.text(0,30,'N6-4: 11/20 executed-byte non-copiers; requires 12/20; not met',fontsize=5.5,fontweight='bold',va='center',color=b.RED)
+    a.text(0,30,'N6-4 executed-byte: 11/20 non-copiers; requires ≥12/20; not met',fontsize=5.5,fontweight='bold',va='center',color=b.RED)
     note(a,24,'Whole-tape: 20/20 non-copiers; requires ≥16/20')
     note(a,17,'Soup-abundance null: P(all 20 whole-tape non-copiers) = 0.062')
     note(a,12,'Null draws executors by pre-founder soup composition')
@@ -477,37 +487,39 @@ def ed8():
     parts=read('results/lod_n6/parts_v6.csv');first_parts=parts.merge(first[['seed','F_step']],on=['seed','F_step'])
     assert len(first_parts)==99 and abs(first_parts.share.median()-.0019)<1e-8
     assert abs(ds['N6'].query('first==True').soup_noncopier.prod()-.061811822140904575)<1e-12
-    rows=[['N6-1','Copy/rewrite ≥16/20;\nmutation ≤2/20 founders','Copy/rewrite 18/20\nMutation 0/20','met'],['N6-2','Whole-tape non-copier\nchains ≥15/20','20/20','met'],['N6-3','Median cell carrier share\n≥5× random-tape baseline','Observed 0.00190\nBaseline 0.00024\nRatio 7.9×','met'],['N6-4','Non-copier executors\nwhole ≥16/20; exec ≥12/20','Whole 20/20\nExecuted-byte 11/20\nNull P = 0.062','not met'],['N6-5′','Expected mutation founders\n<0.05 in 20-world cohort','0.0064 expected\n0/20 observed founders','met']]
-    tab(a,['ID','Requirement','Observation','Verdict'],rows,[12,35,23,12],size=5.1,step=8.7)
+    rows=[['N6-1','Copy/rewrite ≥16/20;\nmutation ≤2/20 founders','Copy/rewrite 18/20\nMutation 0/20','met'],['N6-2','Whole-tape non-copier\nchains ≥15/20','20/20','met'],['N6-3','Median cell carrier share\n≥5× random-tape baseline','Observed 0.00190\nBaseline 0.00024\nRatio 7.9×','met'],['N6-4','Non-copier executors\nwhole ≥16/20; exec ≥12/20','Whole 20/20\nExecuted-byte 11/20\nNull P = 0.062','not met'],['N6-5′','Expected mutation founders\n<0.05 in 20-world cohort','0.0064 expected\n0/20 observed','met']]
+    tab(a,['ID','Requirement','Observation','Verdict'],rows,[11,34,25,12],size=6,step=9.5)
     for text in a.texts:
         if text.get_text()=='not met':text.set_color(b.RED);text.set_fontweight('bold')
-    foot(f,5,'N6-3: cells carrying a word / all soup cells; 2-byte word at executed start\nMedian across 99 word/founder rows in pre-founder snapshots\nReject if point mutations complete ≥5/20 first founders; observed 0/20')
-    note(a,1,'Input: 55 point-mutation events on 20 pre-founder chains')
+    foot(f,5,'N6-3: cells carrying a word / all soup cells; 2-byte word at executed start\nMedian across 99 word/founder rows in pre-founder snapshots\nN6 mutation kill (observed): reject at ≥5/20 first founders; observed 0/20\nInput: 55 point-mutation events on 20 pre-founder chains')
     for path in ['results/lod_n6/REACH.md','results/lod_n6/REACH.csv','results/lod_n6/PARTS_FIRST.md','results/lod/OPEN_FIRST.md','results/lod_n6/OPEN_FIRST.md']:
         p=EXP/path;SOURCES[8][path]=hashlib.sha256(p.read_bytes()).hexdigest()
     save(f,8)
 
 
 def ed9():
-    f=page(9);d=read('results/s8086/tables/worlds.csv');a=panel(f,0,'Registered S2: first heritable-copier detection')
+    f=page(9);d=read('results/s8086/tables/worlds.csv');a=panel(f,0,'8086 S2: registered first-copier detection')
     for i,r in enumerate(d.itertuples()):
         t=r.censor_step if r.rep_right_censored else r.t_rep
         a.plot(t/1e6,i,marker='|' if r.rep_right_censored else 'o',color=b.GREY if r.rep_right_censored else b.TEAL if r.first_fetch=='confined' else b.RED,ms=3.5,ls='none')
     a.set(xlim=(-.1,3.15),ylim=(-1,20));a.set_yticks([0,5,10,15,19],[str(x) for x in d.seed.iloc[[0,5,10,15,19]]]);b.tidy(a,'Detection / censor time (million updates)','World seed')
-    foot(f,0,'First heritable copier: 14/20 S2 L16 worlds; 6 censored at 3 million updates\nPer detection: teal no partner fetch in 16/16; red partner fetch in ≥8/16\nEach detection uses 16 partner traces; grey ticks = censored worlds')
-    p=read('results/s8086/tables/persistence.csv');a=panel(f,1,'R2: open memory-fed persistence')
+    foot(f,0,'S2 = coherent-fetch emergence: 20 worlds; tape length L = 16 bytes\n14/20 detected; 6/20 censored at 3 million updates')
+    k=b.axes(f,3,151,82,7,True)
+    for x,label,col,marker in [(0,'Confined: 0/16 fetch',b.TEAL,'o'),(29,'Open: ≥8/16 fetch',b.RED,'o'),(59,'Censored',b.GREY,'|')]:b.key(k,x,3,label,col,marker,size=6)
+    p=read('results/s8086/tables/persistence.csv');a=panel(f,1,'R2: descriptive open-copier persistence')
     q=p.groupby('step').event_present.sum();a.plot(q.index/1e6,q,color=b.TEAL,lw=1,marker='o',ms=2);a.set(xlim=(2.73,3.02),ylim=(-.15,1.15));b.tidy(a,'World updates (millions)','Worlds with open memory-fed tape',yticks=[0,1]);b.text(a,2.77,.65,'0/20 at all 11 terminal samples',size=6.5)
     foot(f,1,'Same 20 S2 worlds as a; terminal persistence = 0/20\nAll earlier scheduled samples combined: 1/20 worlds ever positive')
     d=read('results/s8086/tables/law_denominators.csv');a=panel(f,2,'Registered evolved law: untested',False)
-    tab(a,['Family test','Candidates','Eligible','Unresolved'],[(r.family+(' excluding L1' if r.exclude_L1 else ''),r.unique_candidates,r.eligible,r.unresolved_extractions) for r in d.itertuples()],[30,19,15,18])
+    tab(a,['Family test','Candidate\ntapes','Eligible\ntapes','Unresolved\ntapes'],[(r.family+(' excluding L1' if r.exclude_L1 else ''),r.unique_candidates,r.eligible,r.unresolved_extractions) for r in d.itertuples()],[30,19,15,18])
     b.text(a,0,30,'L2 support suspended: zero certified cases',size=6,color=b.RED)
-    note(a,24,'Candidate tapes from the same 20 registered S2 worlds as a')
-    note(a,18,'Zero eligible cases do not mean zero capacity')
+    note(a,24,'L1: frozen overlap; L2: broader pure-copy certificate')
+    note(a,18,'Zero eligible cases: law tests untested; capacity undetermined')
     foot(f,2,'c–e: candidate tapes from same 20 S2 worlds as a\nL1 frozen overlap / L2 broader pure-copy certificate; d = L2 ledger')
     d=read('results/s8086/tables/law_candidates.csv');q=d.query("family=='L2'");a=panel(f,3,'Registered exclusions and unresolved cases',False)
     counts=q.groupby(['status','reason'],dropna=False).size();rows=[]
-    for (status,reason),n in counts.items():rows.append([str(status),str(reason).replace('unmodelled_dependency_opcode:07','Opcode 07 (POP ES)').replace('unmodelled_dependency_opcode:', 'Opcode ').replace('_',' '),n])
-    tab(a,['Status','Reason','n'],rows,[27,46,9],size=5.2)
+    for (status,reason),n in counts.items():rows.append([str(status),('Opcode '+str(reason).split(':')[-1].upper()+(' (POP ES)' if str(reason).endswith(':07') else '')) if str(reason).startswith('unmodelled_dependency_opcode:') else str(reason).replace('_',' '),n])
+    tab(a,['Status','Reason','Candidate\ntapes, n'],rows,[22,44,16],size=6)
+    note(a,1,'Total: 1,337 candidate tapes; 724 unresolved')
     foot(f,3,'L2 candidate tapes: 558 culture-negative, 55 excluded\n724 unresolved (708 at POP ES); total 1,337')
     e=read('results/s8086/exploratory/eligibility.csv');p=read('results/s8086/exploratory/law_assay_summary.csv');a=panel(f,4,'Post hoc: admissions and exact-law checks',False)
     rows=[]
@@ -515,7 +527,7 @@ def ed9():
     tab(a,['d bytes','Genotypes','Worlds','Encounters','Byte/core/ancestry\nmismatches'],[(r[0],r[1],r[2],r[3],'0') for r in rows],[12,17,13,23,17],size=5.1)
     note(a,34,'d = physical copy displacement (write − read) mod 32, in bytes')
     note(a,30,'Same 20 S2 worlds: 779 culture-positive world/tape records')
-    a.text(0,25,'→ 600 admitted records (590 d16; 10 d4) → 32 selected genotypes',fontsize=5.3,va='center',fontfamily='DejaVu Sans')
+    a.text(0,25,'→ 600 admitted records (590 d = 16; 10 d = 4) → 32 selected genotypes',fontsize=5.3,va='center',fontfamily='DejaVu Sans')
     note(a,18,'d = 4 joint free-payload tests: 0 applicable positions/genotype (n = 10)')
     note(a,13,'d = 16 erasure tests: 0 applicable positions/genotype (n = 22)')
     note(a,6,'32 genotypes /20 worlds; 2,224,640 encounters; worlds overlap by d')
@@ -525,17 +537,17 @@ def ed9():
     assert len(c)==640 and c.world.nunique()==10 and not c.original_partner_read.any()
     a.scatter(c.read_position,c.write_position,s=7,color=b.TEAL)
     a.set(xlim=(-1,33),ylim=(-1,33));b.tidy(a,'Physical read address','Physical write address',[0,16,31],[0,16,31])
-    pos=a.get_position();a.set_position([pos.x0,33/220,pos.width,30/220])
-    a.set_title('Hex byte pattern 5F A4 u v; u/v are variable bytes\n640 writes /10 d4 genotypes in e; repeated pairs coincide',fontsize=5.1,pad=3)
+    pos=a.get_position();a.set_position([pos.x0,38/220,pos.width,25/220])
+    a.set_title('Hex byte pattern 5F A4 u v; u/v are variable bytes\n640 writes /10 d = 4 genotypes in e; repeated pairs coincide',fontsize=5.1,pad=3)
     a.text(15,7,'Write = (read + d) mod 32\nd = 4-byte copy displacement',fontsize=5.3)
     med=ef.groupby('isa').new_exact.median()
-    a=b.axes(f,95,1,82,23,True)
-    a.text(0,23,'Separate post hoc snapshot fates: 512 encounters per batch',fontsize=5.1,fontweight='bold',va='center')
-    for x,label in [(0,'Cohort'),(55,'Median new targets/batch')]:a.text(x,19,label,fontsize=5.1,fontweight='bold',va='center')
-    for y,isa,label in [(15,'8086','8086 S2 L16 (20 worlds; 3 donor tiles)'),(11,'Z80','Z80 G L16 (20 worlds; 1 donor tile)')]:
-        a.text(0,y,label,fontsize=5.1,va='center');a.text(55,y,f'{med[isa]:g}',fontsize=5.1,va='center')
-    a.text(0,6,'New target = non-donor 16-byte half newly matching 2-byte donor tiling',fontsize=5.1,va='center')
-    a.text(0,1,'Median of batch totals: 5 samples/world × soup/uniform × donor A/B',fontsize=5.1,va='center')
+    a=b.axes(f,95,3,82,24,True)
+    a.text(0,23,'Separate snapshot fates: median targets /512 encounters',fontsize=5.1,fontweight='bold',va='center')
+    for x,label in [(0,'Cohort'),(59,'Median targets')]:a.text(x,19,label,fontsize=5.1,fontweight='bold',va='center')
+    for y,isa,label in [(15,'8086','8086 S2: 20 L16 worlds; 3 donor motifs'),(11,'Z80','Z80 Stage G: 20 L16 worlds; 1 donor motif')]:
+        a.text(0,y,label,fontsize=5.1,va='center');a.text(59,y,f'{med[isa]:g}',fontsize=5.1,va='center')
+    a.text(0,6,'Target: new non-donor 16-byte half matching a donor 2-byte tiling',fontsize=5.1,va='center')
+    a.text(0,1,'Batch medians: 5 snapshots/world × partners (soup or uniform) × donor A/B\nG = random-code cohort; motifs = distinct tiled 2-byte donor sequences',fontsize=5.1,va='center')
     save(f,9)
 
 

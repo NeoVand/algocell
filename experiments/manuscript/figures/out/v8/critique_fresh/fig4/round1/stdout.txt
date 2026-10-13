@@ -1,0 +1,31 @@
+The new Figure 4 is information-rich, and every panel contains substantive content. It does **not yet match the references in visual hierarchy and self-explanation**. The main problems are difficult trajectory decoding, insufficiently defined measurements, and the placement of endpoint tables inside plotting areas. Complete methods do not need to return to the figure.
+
+**Substantive defects**
+
+- **Panel a: six trajectories per plot are difficult to identify.** Historical and corrected traces have similar tones, while overlapping lines obscure dash patterns and open versus filled markers—particularly in the lethal-chemistry plots. The endpoint tables preserve numerical results but cannot resolve which trajectory shows which behavior. **Fix:** increase historical/corrected lightness separation, use larger and more regularly spaced distinguishing markers, and place compact encoding keys beside each chemistry column.
+
+- **Panel a: the endpoint tables occupy the lower portions of the motif plots.** Their text sits within the quantitative coordinate system, and the final table rows crowd the x-axis baseline. This makes the tables look superimposed on data space and weakens the separation between trajectories and summaries. **Fix:** place each table in a dedicated, aligned strip immediately below its plot, with a clear boundary and adequate baseline clearance. Retain all numerical entries.
+
+- **Panels a and b: the byte-motif measurement needs one additional direct definition.** “5e ed b0-bearing / all cells” identifies the bytes and denominator, but does not establish whether “bearing” means containing that contiguous sequence anywhere, containing it at a specified position, or satisfying another criterion. The title’s “byte-motif prevalence” does not resolve this. **Fix:** add a short operational label specifying the actual matching rule; format the byte sequence consistently as code.
+
+- **Panel b, right: “Distinct T tails / world (bytes 4:31)” is insufficiently explicit.** “Tail” is introduced here without definition, and the byte-range notation leaves indexing and endpoint inclusion unclear. These affect what the count represents. **Fix:** label it as a count of unique T suffix sequences per world, and state the actual byte interval unambiguously, including the indexing convention.
+
+- **Panel c: the relationship between “confined copier” and T is unclear.** Panel a defines T as “Full-tape,” whereas panel c introduces “confined copier” and reports T dominance without saying whether these are the same class or different properties. The trace-based footer defines confinement but does not connect the terms. **Fix:** add a brief local distinction or equivalence using the scientifically correct relationship. No explanatory paragraph is necessary.
+
+- **Panel c: “Each entry: Corrected | Historical” does not adequately expose the per-condition cohort structure.** The title says “10 worlds per implementation per p,” but readers must connect “implementation” to the two named versions elsewhere in the figure. **Fix:** state directly, “10 Corrected + 10 Historical worlds at each p.” This preserves the existing information while making the denominators immediate.
+
+**Optional polish**
+
+- **Panel a’s header consumes disproportionate space.** The title, widely distributed starting-condition legend, implementation legend, explanatory line, and chemistry headings create several competing levels before the data begin. Consolidating these would release space for larger plots and separate endpoint tables.
+
+- **Panel b’s point symbols are small at 180 mm.** Slightly larger symbols and stronger open-marker outlines would improve discrimination among the three starting conditions. The existing 20-world group statement correctly reconciles the 10 + 5 + 5 cohorts.
+
+- **Panel b’s “Core-loss world” annotation could be more explicit.** Its arrow identifies a point, but its relationship to the separately reported exclusion from the T-ratio calculation is unclear. If they refer to the same world, say so directly; otherwise distinguish them.
+
+- **Panel c’s mixed labels and definitions would benefit from tighter terminology.** “Zero opcode,” “zero instruction,” and “fetching” appear in related descriptions. Use consistent wording where they denote the same event.
+
+- **Print typography deserves a final size check.** The table entries, scatter-axis labels, and footer are the limiting text. The supplied PNG does not establish their nominal point sizes reliably enough to declare a specific threshold violation. Preserve at least 6 pt throughout and preferably 6.5 pt for these substantive labels; reclaim header space rather than removing content.
+
+There are no apparent empty panels, missing panel letters, broken glyphs, or clipped content. The chemistry headings, endpoint numbers, cohort counts, and random-code table provide substantial explanatory value. The fixes should preserve that density while making the encodings and measurements independently readable.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

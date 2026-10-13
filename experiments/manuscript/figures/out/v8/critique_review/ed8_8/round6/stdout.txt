@@ -1,0 +1,27 @@
+The new figure is **below the references in polish and print readability**, although it contains substantial information in every panel. The cohorts, founder counts, mechanism split, and failed executed-byte requirement are present. The main problem is how that information is arranged and sized, rather than missing scientific results.
+
+**Substantive defects**
+
+- **Across panels: small text at the specified print size.** At 180 mm width, the smaller explanatory lines and plot tick labels appear roughly 5.5–6 pt; much of the substantive table text appears around 6–6.5 pt. These are visual estimates, but the smallest text is sufficiently marginal to prevent a confident pass against the explicit 6 pt minimum. This particularly affects the bottom notes in **a–d**, the ticks and explanatory text in **e**, and the densely packed definitions beneath **f**. Increase all small text to at least 6 pt and substantive labels to at least 6.5 pt. Reclaim the substantial internal whitespace before removing information.
+
+- **Panel a: adjacent column headings visually run together.** “Lines from / confined worlds” and “Open-first / lines” have insufficient horizontal separation. The lower heading line reads almost continuously as “confined worlds lines,” weakening the association between headings and the two identical count columns. Use deliberate three-line headings—“Lines from / confined / worlds” and “Open-first / lines”—or widen their separation. Align each heading clearly with its numerical column.
+
+- **Panel f: the final rejection statement does not identify its counted outcome explicitly.** “N6 mutation kill (observed): reject at ≥5/20 first founders; observed 0/20” leaves the reader to supply what property of those founders triggers rejection and what is rejected. This is a direct-result label problem, not a request for the underlying proof or methods. If the intended outcome is mutation-founded first founders, write that explicitly: “Mutation-founded first founders: 0/20; registered rejection threshold ≥5/20.” Name the rejected claim briefly if necessary.
+
+**Optional polish and panel-specific improvements**
+
+- **Panel a:** The principal result is buried in matched numerical columns. Show open-first lines as **1088/1088** and **1280/1280**, or add a compact “all sampled lines open-first” result label. The existing adjacent counts do supply the denominators, so this is an improvement rather than missing content.
+
+- **Panel b:** Make the distinction between worlds and repeatable events visible in the table itself. A heading such as “First founders, n worlds” versus “Later founder events, n” would reduce reliance on the explanatory sentences. Preserve the valid totals: **17 + 15 = 32** and **20 + 14 = 34**.
+
+- **Panel c:** The two-row table occupies very little of its allocated panel, followed by a large gap before the final note. Enlarge the mechanism rows and definitions, and bring the source-rule statement closer. Keep the distinction between recorded mechanism and causal source class explicit; the two separate **18/20** values should not visually imply an established one-to-one correspondence.
+
+- **Panel d:** The orange failure statement successfully identifies the main qualification, but it is a long sentence. A compact comparison would read faster: **Executed-byte: 11/20; required ≥12/20 — not met**, followed by **Whole-tape: 20/20; required ≥16/20 — met**. Use those same scope names consistently in panel f instead of switching to “whole” and “exec.”
+
+- **Panel e:** Several hollow markers crowd or overlap in the lower-left cluster. Consequently, the stated 20 founders cannot readily be checked by counting distinguishable points. This does **not** establish missing observations. A small enlarged inset of that cluster, or multiplicity labels wherever points coincide, would preserve the actual coordinates while making all cases inspectable. Enlarge the axis labels and ticks using the available panel space.
+
+- **Panel f:** Strengthen the ledger’s row structure with more consistent spacing or light horizontal separators. Its multiline requirements and observations currently form a dense text block. Preserve all five component entries, but separate the ledger from its definitions more clearly and replace shorthand such as “exec” with readable scope labels.
+
+All six panels contain substantive content. I see no clear clipping, corrupted mathematical glyphs, contradictory founder totals, or misleading area encoding. The archived-evidence scope does not require the full ledgers, proofs, or complete methods inside this image, and no 8086-law statement is required here.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

@@ -1,0 +1,48 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-r41bwfst
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1330a-b0e8-7470-afca-cb14b17ac010
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_9. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**Below the reference standard, principally because of print readability and a few unresolved encoding labels.** All six panels contain substantive content. The tables, direct annotations and explicit zero results are useful; no panel needs additional scientific results merely to fill space.
+
+The numerical accounting shown is internally consistent: 558 + 55 + 724 = 1,337; the unresolved opcode counts sum to 724; and the two encounter totals sum to 2,224,640. Panel e explicitly acknowledges overlapping world counts. I see no definite clipping or text overlap.
+
+**Substantive defects**
+
+- **Across the figure — print typography is too small in several places.** At 180 mm width, the smallest explanatory lines appear below the 6 pt floor, with much substantive text also appearing below the preferred 6.5 pt size. Exact point sizes cannot be certified from the displayed PNG, but the vulnerable areas are evident: the notes beneath a–b, the bottom notes in c–e, and the annotations and cohort explanation in f. These contain essential qualifications, rather than expendable methods. The 600 dpi export does not increase their physical size. Enlarge them, using the substantial whitespace in c and removing repeated explanations elsewhere.
+
+- **Panel a — the fetch classification is not self-explanatory.** “Confined: 0/16 fetch” and “Open: ≥8/16 fetch” give thresholds without identifying what is counted. The reader cannot tell whether these are distinct byte locations, instructions, accesses outside the source tape, or another quantity. “Tape length L = 16 bytes” does not resolve the numerator. Replace the legend wording with the actual counted quantity and its domain. If intermediate values are possible, briefly indicate their treatment or absence; another category is unnecessary unless one is represented.
+
+- **Panels a–b — the relationship between the two open-copier labels is unclear.** Panel a uses a fetch threshold; panel b measures worlds with an “open memory-tied tape.” The image does not establish whether these are the same classification or whether persistence adds a further condition. This matters when comparing the orange detections with the zero terminal result. Use consistent terminology, or add one short direct qualifier identifying the additional condition. The sample counts and time window are already adequately stated.
+
+- **Panels a, e and f — the address domain needs one connecting label.** Panel a specifies 16-byte tapes, while e defines displacement modulo 32 and f plots addresses through 31. These can be compatible, but the image never identifies what the 32-address space comprises. Add a short label naming that domain; if it comprises two tapes, identify their address ranges. No full memory-model explanation is needed.
+
+- **Panel e — the test conditions are detached from the reported totals.** The table reports encounters and zero byte/core/ancestry mismatches, followed by two tests with zero applicable positions; much farther below, another note identifies nonempty perturbation types. Readers must reconstruct which conditions produced the table’s encounter and mismatch totals. Move the applicable perturbation type into each displacement row or immediately beneath it, label whether the totals include perturbations and controls, and group the zero-applicability statements separately. Preserve the important distinction between an inapplicable test and an executed test with zero mismatches.
+
+**Optional polish**
+
+- **Panel a:** Strengthen the thin censor marks slightly. They are keyed, but have much less visual presence than the colored detections.
+- **Panel b:** Bring “0/20 at all 11 terminal samples” closer to the zero series. The result currently floats well above its marks.
+- **Panels c–d:** Consolidate repeated cohort and certificate explanations. Panel c’s large internal gap can support larger text; it does not constitute missing content.
+- **Panel e:** Give “600 admitted records → 32 selected genotypes” a stronger position in the hierarchy so that the admissions result is easier to find.
+- **Panel f:** Add a light divider or greater typographic separation before “Separate snapshot facts.” The label already distinguishes the comparison, but its proximity to the address plot still encourages readers to connect the two datasets.
+
+The archived-supporting-evidence scope is appropriate: full ledgers, proofs and complete methods are not needed here. The deficiencies concern readable direct labels and the interpretation of the displayed results.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+29,235

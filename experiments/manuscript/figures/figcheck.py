@@ -45,10 +45,11 @@ def _line_points(line, n_per_seg=12):
     if len(xy) == 0:
         return np.empty((0, 2))
     pts = line.get_transform().transform(xy)
-    pts = pts[np.isfinite(pts).all(axis=1)]
+    finite = np.isfinite(pts).all(axis=1)
     if len(pts) <= 1 or str(line.get_linestyle()).lower() in ("none", " ", ""):
-        return pts
-    out = [pts[0]]
+        return pts[finite]
+    # NaN breaks are deliberate gaps, not line segments to reconnect.
+    out = [pts[finite]]
     for a, b in zip(pts[:-1], pts[1:]):
         if not (np.isfinite(a).all() and np.isfinite(b).all()):
             continue

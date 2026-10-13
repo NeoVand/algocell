@@ -4,7 +4,7 @@
   <rdf:RDF>
    <ns2:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-    <dc:date>2026-10-12T20:47:13.809145</dc:date>
+    <dc:date>2026-10-12T21:04:59.668810</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <ns2:Agent>
@@ -23,7 +23,7 @@
   </ns0:g>
   <ns0:g id="axes_1">
    <ns0:g id="line2d_1">
-    <ns0:path d="M 8.503937 47.080888  L 238.110236 47.080888  " clip-path="url(#pab6d5890fb)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 8.503937 47.080888  L 238.110236 47.080888  " clip-path="url(#p14e8c894c0)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_1">
     <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="40.864251" transform="rotate(-0 8.503937 40.864251)">Comparison / agreement criterion</ns0:text>
@@ -44,7 +44,7 @@
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="52.502821" transform="rotate(-0 204.094488 52.502821)">10,083</ns0:text>
    </ns0:g>
    <ns0:g id="text_7">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="62.808585" transform="rotate(-0 8.503937 62.808585)">Core C1/C0: stable ring conditions</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="62.808585" transform="rotate(-0 8.503937 62.808585)">Corrected/historical: below change-rate bound</ns0:text>
    </ns0:g>
    <ns0:g id="text_8">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="62.939471" transform="rotate(-0 133.228346 62.939471)">643/690</ns0:text>
@@ -53,7 +53,7 @@
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="62.939471" transform="rotate(-0 204.094488 62.939471)">47</ns0:text>
    </ns0:g>
    <ns0:g id="text_10">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="73.262766" transform="rotate(-0 8.503937 73.262766)">Core C1/C0: identical assay metrics</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="73.262766" transform="rotate(-0 8.503937 73.262766)">Corrected/historical: identical assay metrics</ns0:text>
    </ns0:g>
    <ns0:g id="text_11">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="73.376121" transform="rotate(-0 133.228346 73.376121)">407/417</ns0:text>
@@ -62,7 +62,7 @@
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="73.376121" transform="rotate(-0 204.094488 73.376121)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_13">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="83.681884" transform="rotate(-0 8.503937 83.681884)">Core C1/archive: unchanged claim verdicts</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="83.681884" transform="rotate(-0 8.503937 83.681884)">Corrected/historical: unchanged claim verdicts</ns0:text>
    </ns0:g>
    <ns0:g id="text_14">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="83.812771" transform="rotate(-0 133.228346 83.812771)">19/22</ns0:text>
@@ -71,7 +71,7 @@
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="83.812771" transform="rotate(-0 204.094488 83.812771)">3</ns0:text>
    </ns0:g>
    <ns0:g id="text_16">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="94.118534" transform="rotate(-0 8.503937 94.118534)">Core C1/archive: unchanged component outcomes</ns0:text>
+    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="94.118534" transform="rotate(-0 8.503937 94.118534)">Corrected/historical: unchanged components</ns0:text>
    </ns0:g>
    <ns0:g id="text_17">
     <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="94.249421" transform="rotate(-0 133.228346 94.249421)">32/36</ns0:text>
@@ -85,7 +85,7 @@
   </ns0:g>
   <ns0:g id="axes_2">
    <ns0:g id="line2d_2">
-    <ns0:path d="M 269.291339 47.080888  L 498.897638 47.080888  " clip-path="url(#p5855974f0a)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 269.291339 47.080888  L 498.897638 47.080888  " clip-path="url(#pa79db26faa)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_20">
     <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="41.109571" transform="rotate(-0 269.291339 41.109571)">Core</ns0:text>
@@ -97,7 +97,7 @@
     <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="40.970688" transform="rotate(-0 396.850394 40.970688)">Assays differing / tested</ns0:text>
    </ns0:g>
    <ns0:g id="text_23">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="52.618837" transform="rotate(-0 269.291339 52.618837)">C1</ns0:text>
+    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="52.618837" transform="rotate(-0 269.291339 52.618837)">Corrected</ns0:text>
    </ns0:g>
    <ns0:g id="text_24">
     <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="52.618837" transform="rotate(-0 303.307087 52.618837)">47/690</ns0:text>
@@ -118,7 +118,7 @@
     <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="80.327657" transform="rotate(-0 269.291339 80.327657)">Comparator: historical compatibility core C0</ns0:text>
    </ns0:g>
    <ns0:g id="text_30">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="91.905029" transform="rotate(-0 269.291339 91.905029)">Core C1: corrected classic; core C2: Zilog NMOS</ns0:text>
+    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="91.905029" transform="rotate(-0 269.291339 91.905029)">Corrected core (C1): classic; core C2: Zilog NMOS</ns0:text>
    </ns0:g>
    <ns0:g id="text_31">
     <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="103.501307" transform="rotate(-0 269.291339 103.501307)">Unchanged across both comparisons: criterion not met</ns0:text>
@@ -126,7 +126,7 @@
   </ns0:g>
   <ns0:g id="axes_3">
    <ns0:g id="line2d_3">
-    <ns0:path d="M 8.503937 209.428776  L 238.110236 209.428776  " clip-path="url(#p001952f688)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 8.503937 209.428776  L 238.110236 209.428776  " clip-path="url(#p5cb716987a)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_32">
     <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="203.457459" transform="rotate(-0 8.503937 203.457459)">Claim</ns0:text>
@@ -275,7 +275,7 @@
   </ns0:g>
   <ns0:g id="axes_4">
    <ns0:g id="line2d_4">
-    <ns0:path d="M 269.291339 209.428776  L 498.897638 209.428776  " clip-path="url(#p90e58fa5a4)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 269.291339 209.428776  L 498.897638 209.428776  " clip-path="url(#p720ae9b418)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_80">
     <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="203.342592" transform="rotate(-0 269.291339 203.342592)">Component</ns0:text>
@@ -284,7 +284,7 @@
     <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="203.457459" transform="rotate(-0 348.661417 203.457459)">Historical</ns0:text>
    </ns0:g>
    <ns0:g id="text_82">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="203.457459" transform="rotate(-0 425.19685 203.457459)">Core C1</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="203.457459" transform="rotate(-0 425.19685 203.457459)">Corrected core</ns0:text>
    </ns0:g>
    <ns0:g id="text_83">
     <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="214.966725" transform="rotate(-0 269.291339 214.966725)">DZ2</ns0:text>
@@ -334,13 +334,14 @@
   </ns0:g>
   <ns0:g id="axes_5">
    <ns0:g id="line2d_5">
-    <ns0:path d="M 8.503937 371.776664  L 238.110236 371.776664  " clip-path="url(#paf5d657705)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 8.503937 371.776664  L 238.110236 371.776664  " clip-path="url(#pa4425aa398)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_98">
     <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="365.718336" transform="rotate(-0 8.503937 365.718336)">Metric</ns0:text>
    </ns0:g>
    <ns0:g id="text_99">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="365.586637" transform="rotate(-0 144.566929 365.586637)">Differing C1</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 362.974942)">Differing</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 368.461729)">corrected core</ns0:text>
    </ns0:g>
    <ns0:g id="text_100">
     <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="365.586637" transform="rotate(-0 192.755906 365.586637)">Differing C2</ns0:text>
@@ -474,7 +475,7 @@
   </ns0:g>
   <ns0:g id="axes_6">
    <ns0:g id="line2d_6">
-    <ns0:path d="M 269.291339 371.776664  L 498.897638 371.776664  " clip-path="url(#p4360f71e3b)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
+    <ns0:path d="M 269.291339 371.776664  L 498.897638 371.776664  " clip-path="url(#pd8697b1403)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
    </ns0:g>
    <ns0:g id="text_143">
     <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="365.593512" transform="rotate(-0 269.291339 365.593512)">L bytes</ns0:text>
@@ -586,22 +587,22 @@
   </ns0:g>
  </ns0:g>
  <ns0:defs>
-  <ns0:clipPath id="pab6d5890fb">
+  <ns0:clipPath id="p14e8c894c0">
    <ns0:rect x="8.503937" y="32.469578" width="232.440945" height="118.282033" />
   </ns0:clipPath>
-  <ns0:clipPath id="p5855974f0a">
+  <ns0:clipPath id="pa79db26faa">
    <ns0:rect x="269.291339" y="32.469578" width="232.440945" height="118.282033" />
   </ns0:clipPath>
-  <ns0:clipPath id="p001952f688">
+  <ns0:clipPath id="p5cb716987a">
    <ns0:rect x="8.503937" y="194.817466" width="232.440945" height="118.282033" />
   </ns0:clipPath>
-  <ns0:clipPath id="p90e58fa5a4">
+  <ns0:clipPath id="p720ae9b418">
    <ns0:rect x="269.291339" y="194.817466" width="232.440945" height="118.282033" />
   </ns0:clipPath>
-  <ns0:clipPath id="paf5d657705">
+  <ns0:clipPath id="pa4425aa398">
    <ns0:rect x="8.503937" y="357.165354" width="232.440945" height="118.282033" />
   </ns0:clipPath>
-  <ns0:clipPath id="p4360f71e3b">
+  <ns0:clipPath id="pd8697b1403">
    <ns0:rect x="269.291339" y="357.165354" width="232.440945" height="118.282033" />
   </ns0:clipPath>
  </ns0:defs>

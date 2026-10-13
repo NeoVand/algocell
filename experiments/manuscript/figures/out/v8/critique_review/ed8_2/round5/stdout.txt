@@ -1,0 +1,34 @@
+**ed8_2 is below the reference standard, primarily because of print readability and a few unresolved labeling ambiguities.** All six panels contain substantive content. The outcome bars, complete site maps, coverage table, environmental tests and ancestry trace provide useful supporting evidence; no additional experiment or panel is needed.
+
+At 180 mm width, however, much of the text appears approximately **5–5.5 pt**, with some smaller text. Exact font sizes cannot be verified from the PNG alone, but the widespread undersizing is visually clear. The reference figures give their substantive labels substantially more room.
+
+**Substantive defects**
+
+- **Across all panels — undersized substantive text.** Design names, numerical results, tick labels, heatmap values, table entries and explanatory keys are too small for the specified print standard. Panel titles are readable, but the information needed to interpret them is not comfortably readable. **Fix:** enforce 6 pt for every text element and at least 6.5 pt for substantive labels. Recover space from the large internal gaps and simplify repeated wording while retaining the rows and results.
+
+- **Panels a and b — important number columns are visually subordinate.** “Controls alive” and “Scored sites” have prominent headers, but their actual values are much smaller. Bar-axis ticks and design labels have the same problem. **Fix:** enlarge the values and row labels together, retaining clear alignment between each design, bar and pair of numbers.
+
+- **Panel b — U/K cohort definitions remain insufficiently explicit.** The title and row suffixes depend on U/K; the small note “U uniform/K soup” only partly resolves them. “Uniform” does not identify what is uniform, and “K soup” remains an opaque condition name. **Fix:** spell out the two cohort conditions in a short, readable inline key or directly in the row labels. Full preparation methods are unnecessary.
+
+- **Panel b — the middle outcome category is incompletely stated.** “Grey lost; pale alive <50% carriage; teal alive ≥50% carriage” leaves the grey category’s threshold implicit. The reader must infer whether “lost” means no surviving descendants or loss of the marker. **Fix:** explicitly identify grey as the intended lineage-loss outcome, and label the surviving categories by their carriage thresholds.
+
+- **Panel c — the paired tracks are too thin and their identities too remote.** Transfer 1 versus transfer 8 is explained only below the entire map. At print size, the fine separation between tracks and the small byte cells make the central comparison difficult to follow. **Fix:** increase track height and pair separation; add a compact “1 / 8” key immediately beside the tracks, with “transfer” written out. Preserve the full site coverage.
+
+- **Panel d — condition labels and values are too small and crowded.** The multiline column labels require careful reading even in the enlarged image. The shared axis title combines partner source, chemistry and reset, without making their relationships especially easy to scan. **Fix:** enlarge cell values and column labels; use consistently ordered, short condition descriptions, with a compact shared key for source, chemistry and reset.
+
+- **Panel e — the evidence table is not adequately readable at final size.** Its fractions are substantive coverage results, yet they receive body text substantially below the requested size. Large whitespace separates the title from the table and the table from its explanatory text. **Fix:** reclaim that space to enlarge rows, fractions and headers. Keep the category headers and all designs.
+
+- **Essential decoding text is concentrated in very small notes.** The carrier and scored-site definitions in a/b, track interpretation in c, denominator in d, and alternative definition in e are present—which is good—but their size makes them ineffective as direct explanation. **Fix:** retain these brief definitions at readable size and place them beside the relevant encoding. Detailed procedural notes can remain in the manuscript legend.
+
+**Optional polish**
+
+- **a–e:** standardize design naming and introduce “T = evolved transmitter” near its first use. Identify the role of the `s6003`-style identifiers without requiring their provenance.
+- **a/b:** replace verbal colour descriptions with small swatches and concise labels. This would make the keys faster to read.
+- **c:** add unobtrusive byte-range endpoints so readers can locate sites more readily within the normalized-width tracks.
+- **d:** add “carrier fraction” immediately above the matrix. The printed values already supply the quantitative scale, so a separate colour bar is optional.
+- **f:** enlarge the trace annotations and tighten their placement. Its simple trajectory is substantive and appropriately sparse; it does not need additional data.
+- **Overall:** reduce the unusually large title-to-content gaps in the middle and bottom rows. The available space should support readability.
+
+I see no clear clipping, text overlap, broken glyphs, demonstrably incorrect counts or empty panels. The ancestry panel explains its main result directly. The central problem is presenting the existing evidence at a readable print scale, with a few local labels clarified.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

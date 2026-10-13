@@ -1,0 +1,38 @@
+**Below standard.** ed8_7 contains substantive content in all six panels and substantial supporting evidence, but its print typography, uneven space allocation, and incomplete explanation of cohort selection keep it below the references. The main problems are presentation and labeling; it does not need full methods or additional experimental results inside the figure.
+
+**Substantive defects**
+
+1. **Print readability is insufficient throughout.** At 180 mm width, the smallest explanatory text appears approximately 5.5–6 pt, and much of the table text appears around 6–6.5 pt. These are visual estimates, but the figure does not convincingly satisfy the required minimums. Particularly vulnerable are:
+   - **a:** the three definitions beneath the table;
+   - **b:** the densely stacked numeric rows and four explanatory lines;
+   - **c–d:** the bottom explanatory text;
+   - **e–f:** the footnotes and multiline criterion descriptions.
+
+   **Fix:** set a verified 6 pt minimum for every annotation and at least 6.5 pt for substantive labels, criteria, and values. Recover space through layout changes rather than deleting evidence. The references accommodate dense content with stronger separation between data, labels, and supporting text.
+
+2. **Panel b compresses distinct groups into an almost continuous text block.** Several category headers immediately follow the preceding group’s last numeric row. The transition from Standard to Literal, no wrap, and from Pointer wrap to Wrap + literal is especially tight. Color helps, but does not adequately establish boundaries at print size.
+
+   **Fix:** add a small, consistent gap before each category header and modestly increase numeric row spacing. Retain all fetch/H pairs and their counts. Light separators or distinct header bands would also work.
+
+3. **The coverage of panels b and e is not explicitly reconciled with panel a.** Panel a includes six variants, whereas b and e summarize five. The five displayed groups in b correctly total **64 tapes**, but a also reports **seven modal worlds for Standard, harmless**. “Paired fetch/H archive available” acknowledges that variant without saying why it is outside the displayed summary; e provides no equivalent scope statement.
+
+   **Fix:** explicitly label b and e as summaries of the five displayed variants, with Standard, harmless reported separately in the archive. If there is a scientific selection rule, name it briefly. Additional ledger rows are unnecessary, but the reader should not have to determine whether the omission is intentional.
+
+4. **Panel c’s title overgeneralizes its result.** “Open fetch, zero inflow” appears to describe the whole table, yet the **r = 1** row reports **H = 8.0 bits**. The qualifying statement “r≥2” is present, but far below the table.
+
+   **Fix:** use a title such as **“Open fetch; zero inflow for r ≥ 2”**, identify r = 1 as the baseline, and place the qualifying result directly beneath the rows.
+
+5. **Panels c and d have excessive internal gaps that separate evidence from its explanation.** In c, the teal result statement sits near the next panel boundary, well below both the table and the operand-copy explanation. In d, the persistence definition is similarly detached from the table. These gaps consume space while other regions—especially b and f—remain cramped.
+
+   **Fix:** move each definition and result statement immediately below its relevant table. Rebalance panel heights or allow independently sized columns, using the recovered space to enlarge the dense text. The panels are not empty, but the current allocation weakens their cohesion.
+
+**Optional polish**
+
+- **a, c, d, e, f:** introduce slightly stronger row rhythm and consistent header-to-rule spacing. The tables are readable structurally, but look more like assembled text than finished scientific tables.
+- **b and e:** repeat the short metric name **“Partner inflow H (bits)”** where useful. Its definition exists, but “H bits” alone makes cross-panel reading less immediate.
+- **f:** visually separate each criterion from its cohort qualifier. Give the verdict column restrained emphasis, and consider “neither threshold” in place of “between”; the existing footnote explains it, but the longer label is immediately interpretable.
+- **Across panels:** standardize numerical precision where it does not remove information, particularly Fetch/256 formatting between b, c, and e.
+
+The displayed counts in b sum correctly to their category totals and to 64. Panel a supplies collapse denominators, d explicitly includes all worlds, and f supplies passing denominators and decision thresholds. I see no clear overlap, clipping, broken glyphs, or empty panels. No evolved-8086-law statement is required for this figure’s scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

@@ -17,6 +17,7 @@ matplotlib.use('Agg')
 import matplotlib.colors as mc
 from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.text import Text
 from matplotlib.patches import Rectangle
 import numpy as np
 import pandas as pd
@@ -89,6 +90,11 @@ def key(a, x, y, label, color, shape='box', size=5.5):
 
 
 def save(f, name, designer=None):
+    if name.startswith('fig'):
+        # Publication-width minimum applies to ticks and log exponents too.
+        for item in f.findobj(Text):
+            if item.get_fontsize() < 6.5:
+                item.set_fontsize(6.5)
     f.canvas.draw()
     issues = figcheck.check(f)
     REPORTS[name] = issues
@@ -151,9 +157,50 @@ def reflow(f, height, ymap):
     f.set_size_inches(180*fs.MM,height*fs.MM);f._height_mm=height
 
 
+def corrected_schematic():
+    """Retain the original dense vector art, with readable independent examples."""
+    src=fitz.open(HERE/'out/fig1.pdf')
+    page=src[0]
+    replacements=[]
+    for block in page.get_text('dict')['blocks']:
+        if block['type']!=0:continue
+        for line in block['lines']:
+            spans=line['spans']; box=fitz.Rect(line['bbox'])
+            if box.x1>353 or box.y0<27 or box.y1>246.33:continue
+            label=''.join(span['text'] for span in spans)
+            if label=='3' or label=='comes back':
+                page.add_redact_annot(box,fill=None)
+                continue
+            if min(span['size'] for span in spans)>=6.5:continue
+            page.add_redact_annot(box,fill=None)
+            replacements.append((line,label,box))
+    page.apply_redactions(images=0,graphics=0)
+    for line,label,box in replacements:
+        # Preserve the apparent baseline angle on the two small byte faces.
+        dx,dy=line['dir']; angle=np.degrees(np.arctan2(-dy,dx))
+        origin=fitz.Point(line['spans'][0]['origin'])
+        font='cour' if label in ['LD BC,nn','PUSH BC','c0 ad','c5 01','01 c5 × 8','c0 = RET NZ'] else 'helv'
+        label=label.replace('ﬁ','fi')
+        size=6.5
+        width=fitz.get_text_length(label,fontname=font,fontsize=size)
+        if abs(angle)<.1:
+            origin.x=max(2,min(box.x0-(width-box.width)/2,351-width))
+            if label=='LD BC,nn':origin.x=45-width/2
+            if label=='PUSH BC':origin.x=78-width/2
+        page.insert_text(origin,label,fontname=font,fontsize=size,
+                         color=tuple(v/255 for v in [(line['spans'][0]['color']>>16)&255,(line['spans'][0]['color']>>8)&255,line['spans'][0]['color']&255]),
+                         morph=(origin,fitz.Matrix(angle)))
+    # Remove the third numbered badge, then separate the comparison explicitly.
+    page.draw_rect(fitz.Rect(149,157,160,169),color=None,fill=(1,1,1))
+    page.draw_line((8,156),(345,156),color=(.72,.76,.78),width=.6)
+    page.insert_text((9,167),'Separate return-containing copier',fontsize=7,fontname='hebo',color=(.15,.18,.21))
+    page.insert_text((163,167),'Return redirects execution',fontsize=6.5,fontname='helv',color=(.8,.25,.15))
+    return src
+
+
 def fig1():
     f = page(146)
-    src = fitz.open(HERE / 'out/fig1.pdf')
+    src = corrected_schematic()
     clip = fitz.Rect(0, 27, 353, 246.33)
     rect = (1, 62, 124.5, clip.height/clip.width*124.5)
     a = axes(f, *rect)
@@ -161,7 +208,7 @@ def fig1():
     pix = src[0].get_pixmap(clip=clip, dpi=180)
     a.imshow(Image.open(io.BytesIO(pix.tobytes('png'))), aspect='auto')
     a.set_axis_off()
-    title(f,'a','Writing code; evolving a return',2,142)
+    title(f,'a','Literal self-writing and return-based copying',2,142)
     title(f, 'b', 'Emergence from random code', 129, 142)
     a = axes(f, 140, 78, 37, 53)
     d = table('emergence_curves')
@@ -170,9 +217,9 @@ def fig1():
     a.set(xscale='log', xlim=(40, 350000), ylim=(-.03, 1.04))
     fs.log10_ticks(a)
     tidy(a, 'World update', 'Fraction with a heritable replicator')
-    a.legend(loc='lower center', bbox_to_anchor=(.46, 1.02), ncol=3, fontsize=5,
+    a.legend(loc='lower center', bbox_to_anchor=(.46, 1.02), ncol=3, fontsize=6.5,
              handlelength=1.1, columnspacing=.7)
-    f.text(134/180, 70/146, 'Z80 archive; L = tape bytes; n = 10 per L', fontsize=6, color=INK)
+    f.text(134/180, 67/146, 'Z80 historical; L = tape bytes; n = 10 per L', fontsize=6, color=INK)
     title(f, 'c', 'One Z80 world: similarity rises (L = 16)', 2, 59)
     d = table('world_trajectory')
     a = axes(f, 14, 16, 67, 33)
@@ -194,16 +241,16 @@ def fig1():
     title(f, 'd', 'Five validation comparisons', 94, 57)
     a = axes(f, 95, 9, 83, 44, True)
     d = table('validation_fractions')
-    key(a,0,42,'Same',GREY)
-    key(a,20,42,'Expected difference','#C98E2F')
-    key(a,54,42,'Flagged / changed',RED)
+    key(a,0,42,'Meets row criterion',GREY)
+    key(a,34,42,'Expected\ndifference','#C98E2F')
+    key(a,63,42,'Flagged /\ndifferent',RED)
     text(a,0,36,'8088 vs hardware',size=6.5,bold=True)
-    text(a,56,36,'Same / tested',size=6.5,bold=True)
-    text(a,82,36,'Diff.',size=6.5,bold=True,ha='right')
-    text(a,0,22,'Original Z80 vs C1',size=6.5,bold=True)
+    text(a,60.5,36,'Meets criterion /\ntested',ha='center',size=6.5,bold=True)
+    text(a,83,37.5,'Flagged /\ndifferent',size=6.5,bold=True,ha='right')
+    text(a,0,22,'Historical vs corrected Z80 core',size=6.5,bold=True)
     for i,r in enumerate(d.itertuples()):
         y=30.5 if i==0 else 17-(i-1)*5
-        label=['State agreement','Ring memory stable','Identical assay metrics','Same claim verdict','Same constituent test'][i]
+        label=['State agreement','Below change-rate bound','Identical assay metrics','Same claim verdict','Same constituent test'][i]
         text(a,29,y,label,size=6.5,ha='right')
         a.add_patch(Rectangle((31,y-1.2),21*r.fraction,2.4,fc=GREY,ec='none'))
         a.add_patch(Rectangle((31+21*r.fraction,y-1.2),21*(1-r.fraction),2.4,fc='#C98E2F' if i==0 else RED,ec='none'))
@@ -214,7 +261,11 @@ def fig1():
             text(a,31,26.4,f'{100*(1-r.fraction):.2f}% expected',size=6.5,color='#C98E2F')
             a.annotate('',xy=(52-.5*21*(1-r.fraction),y),xytext=(50,26.4),arrowprops=dict(arrowstyle='-',color='#C98E2F',lw=.6))
     f.text(5/180,5/146,'Seed 2002; match to the contemporaneous modal tape',fontsize=6.5,color=INK)
-    f.text(95/180,5/146,'C1 = corrected Z80 instruction semantics',fontsize=6.5,color=INK)
+    f.text(95/180,5/146,'Corrected core = core C1',fontsize=6.5,color=INK)
+    reflow(f,156,lambda y:y+10)
+    f.text(95/180,5.3/156,'Units: instruction states; ring conditions; assay combinations;\nclaim verdicts; constituent tests. Ring criterion: upper 95% CI\nof changed-memory pair rate <0.01%; nonzero changes permitted.',fontsize=6.5,color=INK,va='center')
+    f.text(5/180,5.3/156,'e3 = EX (SP), HL: exchanges HL with stack memory.\nHardware remainder: expected differences. Other remainders: flags/differences.',fontsize=6.5,color=INK,va='center')
+    rect=(rect[0],rect[1]+10,rect[2],rect[3])
     save(f, 'fig1', (src, clip, rect))
     src.close()
 
@@ -222,21 +273,21 @@ def fig1():
 def fig2():
     f = page(150)
     title(f, 'a', 'Carriage can fail despite survival (generation 8)', 2, 146)
-    title(f, 'b', 'Serial retention (archive)', 111, 146)
+    title(f, 'b', 'Serial retention (historical)', 111, 146)
     # The outcome bars and numeric side columns follow _sr_partition in v5.
     k = axes(f, 2, 135, 106, 7, True)
-    key(k, 0, 3, 'Lost under\ncopy criterion', old.LOST_C)
-    key(k, 34, 3, 'Alive, <50%\ncarrying', old.ERASED_C)
-    key(k, 70, 3, 'Alive, ≥50%\ncarrying', TEAL)
+    key(k, 0, 3, 'No continuing\ndescendant', old.LOST_C)
+    key(k, 34, 3, 'Alive; <50% of\nmembers carry', old.ERASED_C)
+    key(k, 70, 3, 'Alive; ≥50% of\nmembers carry', TEAL)
     a = axes(f, 35, 109, 48, 24)
     d = table('branching_endpoints').query("cohort=='C1'").set_index('key')
     rows = [('Open first replicator', GREY, [('pusher16','Pusher, L = 16')]),
-            ('Closed regenerators', RED, [('ret16','Return closer, L = 16'),('ldir32','Block-copy tiling, L = 32')]),
-            ('Closed transmitter', TEAL, [('genome20_s6003','Genome 20, world 3')])]
+            ('Confined regenerators', RED, [('ret16','Return regenerator, L = 16'),('ldir32','Block-copy tiling, L = 32')]),
+            ('Confined transmitter', TEAL, [('genome20_s6003','Genome 20, world 3')])]
     y=0; ticks=[]; labs=[]
     c = axes(f, 86, 109, 23, 24, True)
-    text(c, 4, 24, 'Controls alive\n(populations)', size=6.5, ha='center')
-    text(c, 15, 24, 'Byte sites\nat g8', size=6.5)
+    text(c, 4, 24, 'WT controls\nalive, n/64', size=6.5, ha='center')
+    text(c, 15, 24, 'Scored sites\nat gen. 8', size=6.5)
     for group, color, rr in rows:
         a.text(-.03, y-.18, group, transform=a.get_yaxis_transform(), ha='right', va='bottom',
                fontsize=6, fontweight='bold', color=color, gid='allow-outside')
@@ -256,8 +307,9 @@ def fig2():
     a.set_yticks(ticks,labs,fontsize=6)
     a.tick_params(axis='y',length=0);a.spines['left'].set_visible(False)
     tidy(a,'Share of all starting mutant populations',xticks=[0,.5,1])
-    f.text(4/180,100/150,'Carrying: mutant five-byte marker window; % of population members',fontsize=6.5,color=INK)
-    f.text(4/180,96/150,'Scored site in a,c: excess marker carriage ≥0.5 for ≥50% identifiable values',fontsize=6.5,color=INK)
+    f.text(4/180,100/150,'Alive: ≥75% immediate-parent byte match continues; carrying = mutant 5-byte window',fontsize=6.5,color=INK)
+    f.text(4/180,96/150,'Site (a,c): mutant carrier fraction − WT carrier fraction ≥0.5 for ≥half identifiable byte values',fontsize=6.5,color=INK)
+    f.text(4/180,92/150,'Branching mutant starts: L16 2,048; L32 4,096; L20 2,560; 64 WT (unmutated) controls/design',fontsize=6.5,color=INK)
     # Same curves/units as _sr_curves, with four explicit design identities.
     ss=table('serial_summary').set_index('key')
     a=axes(f,124,112,53,29)
@@ -269,23 +321,24 @@ def fig2():
     a.set(xscale='log',xlim=(.85,9.5),ylim=(-.02,.54))
     a.set_xticks([1,2,4,8],['1','2','4','8']);a.minorticks_off()
     tidy(a,'Serial transfers','Marker-carrying lineages /\nall starting lineages')
-    a.legend(loc='center right',bbox_to_anchor=(.99,.52),fontsize=6,handlelength=1.2)
+    a.legend(loc='center right',bbox_to_anchor=(.99,.52),fontsize=6.5,handlelength=1.2)
     text(a,1.2,.105,'At transfer 8: pusher / return = 0;\nblock-copy = '+f'{ss.loc["ldir32","retained_g8"]:.5f}',size=6.5)
+    f.text(150/180,101/150,'Serial: one member; marker window = carrier\n255 values/site × 16 starts/value × L\n256 unmutated controls',fontsize=6.5,color=INK,ha='center',va='center')
     title(f,'c','Serial sites: one box per byte; each track scaled to its tape',2,85)
     a=axes(f,2,41,175,40,True)
     k=axes(f,36,76,140,6,True)
     key(k,0,3,'Instruction-stream\nfetched',old.EXEC_C)
     key(k,37,3,'Not fetched','white')
     k.patches[-1].set_edgecolor(RULE)
-    key(k,71,3,'Transfer 1, absent at 8',old.SITE_C,'o')
+    key(k,71,3,'Scored at 1;\nbelow criterion at 8',old.SITE_C,'o')
     k.lines[-1].set_markerfacecolor('white')
-    key(k,118,3,'Marker site at 8',old.SITE_C,'o')
+    key(k,118,3,'Scored at\ntransfer 8',old.SITE_C,'o')
     ss=table('serial_summary').set_index('key'); sites=table('serial_sites')
-    rows=[('pusher50','Pusher, L = 50'),('ret16','Return closer, L = 16'),
-          ('ldir32','Block-copy tiling, L = 32'),('lethal16_s4009','Lethal-tar closer, L = 16'),
+    rows=[('pusher50','Pusher, L = 50'),('ret16','Return regenerator, L = 16'),
+          ('ldir32','Block-copy tiling, L = 32'),('lethal16_s4009','Lethal-chemistry transmitter,\nL = 16'),
           ('genome20_s6004','Genome 20, world 4'),('closer32_8080_p1','Constructed 8080, L = 32')]
     cols=[121,136,152,168]
-    for x,lab in zip(cols,['Fetched\nbytes','Scored sites\nat transfer 1','Scored sites\nat transfer 8','Transfer-8\nnot fetched']):
+    for x,lab in zip(cols,['Fetched\nbytes','Scored sites\nat transfer 1','Scored sites\nat transfer 8','Of scored sites\nat 8: not fetched']):
         text(a,x,32,lab,size=5.2,ha='center',color=INK)
     for i,(keyname,label) in enumerate(rows):
         r=ss.loc[keyname]; L=int(r.L); ex=np.array([c=='1' for c in str(r.executed).zfill(L)])
@@ -313,21 +366,21 @@ def fig2():
     text(a,28,9,'Erasure',size=6.5,color=RED)
     a.annotate('',xy=(r.step,r.address),xytext=(25,9),arrowprops=dict(arrowstyle='-',color=RED,lw=.5))
     a.axhline(m['L']-.5,color=RULE,lw=.5,ls=':')
-    a.set(xlim=(-4,260),ylim=(-2,66));tidy(a,'Instruction step','Ring write address',[0,128,256],[0,32,63])
+    a.set(xlim=(-4,260),ylim=(-2,66));tidy(a,'Execution step','Ring write address\n(byte positions)',[0,128,256],[0,32,63])
     f.text(15/180,26.7/150,f'Parent 0-{m["L"]-1} | partner {m["L"]}-{2*m["L"]-1}',fontsize=6.5,color=INK)
     a=axes(f,88,11,35,14)
     for encounter,offset in [(1,0),(2,m['steps_per_encounter'])]:
         q=t[t.encounter==encounter]
         a.step(np.r_[offset,q.step+offset],np.r_[1 if encounter==1 else 0,q.marker_sources_remaining],where='post',color=RED,lw=.9)
     a.axvline(128,color=RULE,lw=.7,ls='--')
-    a.set(xlim=(-4,260),ylim=(-.05,1.1));tidy(a,'Instruction step','Ancestry-tagged\nbyte copies',[0,128,256],[0,1])
+    a.set(xlim=(-4,260),ylim=(-.05,1.1));tidy(a,'Execution step','Ancestry-tagged copies\nin the whole ring',[0,128,256],[0,1])
     k=axes(f,128,3,49,29,True)
     text(k,0,27,f'Ancestry label: byte {m["position"]} (0x{m["marker"]:02X})',size=6.5,bold=True)
-    text(k,0,21,f'Erasure at instruction {int(r.step)}',color=RED,size=6.5,bold=True)
+    text(k,0,21,f'Erasure at execution step {int(r.step)}',color=RED,size=6.5,bold=True)
     text(k,0,15.5,'Read address 4; ancestry: byte 0\nWrites 0x04 over byte 8 (0xA7)',color=RED,size=6.5)
     text(k,0,10,'Labelled byte copies: 1 to 0',size=6.5)
     text(k,0,4,f'{m["steps_per_encounter"]}: offspring to parent; CPU reset',size=6.5)
-    reflow(f,136,lambda y: y-14 if y>=90 else y-4 if y>=35 else y)
+    reflow(f,145,lambda y: y-5 if y>=90 else y-4 if y>=35 else y)
     save(f,'fig2')
 
 
@@ -377,7 +430,7 @@ def law(a, detail=False):
     pop=table('law_population').sort_values('cells',ascending=False)
     c1=table('law_z80_c1'); c2=table('law_6502_c2');ctrl=table('law_6502_controls')
     limit=10.8 if detail else 64
-    a.plot([0,limit],[0,limit],color=RULE,lw=.6,zorder=0)
+    a.plot([0,limit] if detail else [0,32,np.nan,56,limit], [0,limit] if detail else [0,32,np.nan,56,limit],color=RULE,lw=.6,zorder=0)
     if detail:
         pop=pop[pop.predicted<=10];c1=c1[c1.predicted_free<=10];c2=c2[c2.predicted_free<=10];ctrl=ctrl[ctrl.iloc[:,0]<=10]
     a.scatter(pop.predicted,pop.n_unexec,s=pop.cells*.18,facecolors='#D3D8DC',edgecolors=GREY,lw=.3,zorder=1)
@@ -388,8 +441,8 @@ def law(a, detail=False):
     deficits=pop[pop.predicted!=pop.n_unexec]
     a.scatter(deficits.predicted,deficits.n_unexec,s=13,marker='o',facecolors='none',edgecolors=RED,lw=.8,zorder=5)
     a.set(xlim=(-5 if not detail else -2.5,limit),ylim=(-5 if not detail else -2.5,limit),aspect='equal')
-    tidy(a, '' if detail else 'Predicted d - core length (byte positions)',
-         '' if detail else 'Reported position count (bytes)',
+    tidy(a, '' if detail else 'Predicted free payload r = d − c (positions)',
+         '' if detail else 'Reported count (byte positions)',
          [0,5,10] if detail else [0,20,40,60], [0,5,10] if detail else [0,20,40,60])
 
 
@@ -397,28 +450,28 @@ def fig3():
     f=page(166)
     title(f,'a','Forward overlap protects a prefix',2,162)
     geometry(axes(f,4,96,83,60,True))
-    f.text(5/180,88/166,'r = d - c: r free byte positions; d copy offset; c core bytes.',fontsize=6,color=INK)
+    f.text(5/180,88/166,'r = d − c: r free byte positions; d displacement; c core bytes.',fontsize=6,color=INK)
     title(f,'b','The law: prediction and measurement',97,162)
     a=axes(f,113,95,63,63);law(a)
     # Series are named in the plot; the untested evolved law is stated in the key.
     pop=table('law_population');c1=table('law_z80_c1');c2=table('law_6502_c2');ctrl=table('law_6502_controls')
-    handles=[Line2D([],[],marker='o',ls='none',ms=4,mfc='#D3D8DC',mec=GREY,label=f'Z80 qualifying-site scores: {int(pop.cells.sum()):,} cells'),
+    handles=[Line2D([],[],marker='o',ls='none',ms=4,mfc='#D3D8DC',mec=GREY,label=f'Z80 scored unexecuted positions:\n{int(pop.cells.sum()):,} sampled cells'),
              Line2D([],[],marker='o',ls='none',ms=3,mfc='none',mec=TEAL,label=f'Z80 exact positions: {int(c1.edits.sum())} settings'),
              Line2D([],[],marker='^',ls='none',ms=3,mfc='#C98E2F',mec='#C98E2F',label='6502 exact positions: 42 sampling roles\n(41 tapes, 11 worlds)'),
              Line2D([],[],marker='s',ls='none',ms=3,mfc='none',mec=INK,label=f'6502 sampled carried positions: {int(ctrl.cases.sum())} controls'),
              Line2D([],[],marker='o',ls='none',ms=3,mfc='none',mec=RED,label='Whole-tape match gate fails (one cell)'),
-             Line2D([],[],marker='D',ls='none',ms=3,mfc='none',mec=GREY,label='Registered 8086 law test: untested\nFrozen extractor certified no eligible copier')]
-    a.legend(handles=handles,loc='upper left',fontsize=5.2,handlelength=1,borderpad=.15)
+             Line2D([],[],marker='D',ls='none',ms=3,mfc='none',mec=GREY,label='Registered 8086 law test: untested\nFrozen extractor admitted no eligible copier')]
+    a.legend(handles=handles,loc='upper left',fontsize=6.5,handlelength=1,borderpad=.15)
     text(a,52,42,'y = x',size=5.7,color=GREY)
     # A real low-capacity enlargement in the unused below-diagonal quadrant.
     inset=axes(f,150,101,23,23);law(inset,True)
-    inset.set_title('Same points: 0-10',fontsize=6,pad=2)
+    inset.set_title('Same byte positions: 0–10',fontsize=6,pad=2)
     inset.tick_params(labelsize=6)
     a.add_patch(Rectangle((0,0),10,10,fill=False,ec=RULE,lw=.6,ls='--'))
-    text(a,10,7,'Assay = 0 sites\nCarried = 4',size=6.5,color=RED)
-    a.annotate('',xy=(4,.2),xytext=(12,4),arrowprops=dict(arrowstyle='-',color=RED,lw=.5))
+    text(a,2,30,'Whole-tape gate:\n0 reported positions;\n4 carried positions',size=6.5,color=RED)
+    a.annotate('',xy=(4,.2),xytext=(4,25),arrowprops=dict(arrowstyle='-',color=RED,lw=.5))
     k=axes(f,104,73,74,13,True)
-    text(k,0,10,'Disc area scales with cells; rings = series only',size=6.5,color=INK)
+    text(k,0,10,'All counts are byte positions; disc area scales with cells',size=6.5,color=INK)
     for x,n in [(36,1),(46,100),(62,2000)]:
         k.scatter(x,5,s=n*.18,facecolors='#D3D8DC',edgecolors=GREY,lw=.3)
         text(k,x,0,str(n) if n<1000 else '2,000',size=5,ha='center')
@@ -427,7 +480,7 @@ def fig3():
     title(f,'c','One byte changes the inherited copying rule',2,68)
     a=axes(f,4,6,83,56,True)
     d=table('lineage_strips')
-    text(a,0,54,'Z80 ldir32: byte 0 sets offset modulo the 64-byte ring.',size=6)
+    text(a,0,54,'Z80 ldir32: byte 0 sets the displacement modulo the 64-byte ring.',size=6)
     colors={'core':GREY,'erased':RED,'transmitted':TEAL}
     for keyname,y in [('ldir32_v04',41),('ldir32_v60',20)]:
         q=d[d.edit_id==keyname].sort_values('position');r=q.iloc[0]
@@ -462,14 +515,14 @@ def fig3():
     k=axes(f,157,12,21,48,True)
     nw=int((~dial.culture_replicator).sum());ne=int(dial.prop8_eligible.sum());other=int(dial.culture_replicator.sum())-ne
     key(k,0,45,f'{nw} nonworking','#F0F1F2',size=5.1)
-    key(k,0,38,f'{other} working,\noutside domain','white',size=5.1);k.patches[-1].set_edgecolor(TEAL)
-    key(k,0,28,f'{ne} in law domain;\nshade = capacity',cmap(.6),size=5.1)
+    key(k,0,38,f'{other} working,\noutside sampled\nscreen','white',size=5.1);k.patches[-1].set_edgecolor(TEAL)
+    key(k,0,28,f'{ne} pass sampled\nscreen; shade =\npredicted payload',cmap(.6),size=5.1)
     text(k,0,21,'Free payload',size=5.3,bold=True)
     for i in range(100):
         k.add_patch(Rectangle((0,5+i*.12),3,.125,fc=cmap(i/99),ec='none'))
     text(k,4,5,'0',size=5.3);text(k,4,17,'28 positions',size=5.3)
     text(k,0,1,'Rims: 0x04 / 0x60',size=5.1)
-    f.text(105/180,63/166,f'Working: normalized gen-2 partner/parent match gain ≥ {method("gen2_minimum"):g}\nLaw domain: 4≤d≤32; d divides 32; aligned full-ring copy',fontsize=6.5,color=INK,va='center')
+    f.text(105/180,63/166,f'Working: normalized gen-2 partner/parent match gain ≥ {method("gen2_minimum"):g}\nSampled screen: 4≤d≤32; d divides 32; aligned full-ring copy',fontsize=6.5,color=INK,va='center')
     save(f,'fig3')
 
 
@@ -483,21 +536,12 @@ def trajectories(a,tar,measure):
         for start,(label,ls,marker,n) in STARTS.items():
             q=d[(d.cohort==cohort)&(d.tar==tar)&(d.start==start)].sort_values('step')
             a.plot(q.step/1000,q[measure],color=color,ls=ls,lw=.95 if cohort=='C1' else .75,
-                   alpha=1 if cohort=='C1' else .7,marker=marker,ms=2.8,
+                   alpha=1 if cohort=='C1' else .42,marker=marker,ms=3.8,
                    markevery=([0,len(q)//4,len(q)//2,3*len(q)//4,len(q)-1] if cohort=='C1' else [len(q)//8,3*len(q)//8,5*len(q)//8,7*len(q)//8]),
                    mfc=color if cohort=='C1' else 'white',mec=color,mew=.55)
     a.set(xlim=(0,305),ylim=(-.03,1.05))
-    tidy(a,'World updates (thousands)', 'T / (R + T)' if measure=='T_share' else '5E ED B0-bearing /\nall cells',[0,150,300],[0,.5,1])
-    if measure=='core_share':
-        ends=table('competition_endpoints')
-        a.text(.035,.62,'Endpoint medians: C1 | archive',transform=a.transAxes,fontsize=6.5,va='center',color=INK)
-        for x,label in [(.035,'Start'),(.36,'T share'),(.70,'Motif share')]:
-            a.text(x,.48,label,transform=a.transAxes,fontsize=6.5,va='center',fontweight='bold',color=INK)
-        for i,(start,(label,_,_,_)) in enumerate(STARTS.items()):
-            q=[ends[(ends.cohort==cohort)&(ends.tar==tar)&(ends.start==start)] for cohort in ['C1','Historical']]
-            y=.34-i*.14
-            for x,value in [(.035,label),(.36,' | '.join(f'{g.T_share_end.median():.2f}' for g in q)),(.70,' | '.join(f'{g.core_share_end.median():.2f}' for g in q))]:
-                a.text(x,y,value,transform=a.transAxes,fontsize=6.5,va='center',color=INK)
+    tidy(a,'World updates (thousands)', 'T / (R + T)' if measure=='T_share' else '5e ed b0 at bytes 1–3 /\nall cells (zero-based)',[0,150,300],[0,.5,1])
+
 
 
 
@@ -513,78 +557,61 @@ def endpoint(a,measure):
     a.set_xlim(-.5,3.5)
     if measure!='T_distinct_tails_end':a.set_ylim(-.03,1.07)
     else:a.set_ylim(-20,d[measure].max()*1.08)
-    a.set_xticks(range(4),['Archive','C1','Archive','C1'])
-    tidy(a,'',{'T_share_end':'Final T / (R + T)','core_share_end':'5E ED B0-bearing /\nall cells',
-               'T_distinct_tails_end':'Distinct T tails /\nworld (bytes 4-31)'}[measure],yticks=[0,.5,1] if measure!='T_distinct_tails_end' else None)
+    a.set_xticks(range(4),['Historical','Corrected','Historical','Corrected'])
+    tidy(a,'',{'T_share_end':'Final T / (R + T)','core_share_end':'5e ed b0 at bytes 1–3 /\nall cells (zero-based)',
+               'T_distinct_tails_end':'Distinct suffix sequences\nper world (T only)\nbytes 4–31; zero-based, inclusive'}[measure],yticks=[0,.5,1] if measure!='T_distinct_tails_end' else None)
 
 
 def fig4():
-    f=page(165)
-    title(f,'a','Z80 competitions: full-tape T share and byte-motif prevalence (L = 32)',2,161)
-    k=axes(f,4,150,173,8,True)
+    f=page(180)
+    title(f,'a','Z80 competitions: full-tape T share and motif prevalence (L = 32)',2,176)
+    k=axes(f,4,167,173,6,True)
     for x,(start,(label,ls,marker,n)) in zip([0,36,81],STARTS.items()):
-        k.plot([x,x+5],[5,5],color=INK,lw=.9,ls=ls)
-        k.plot(x+2.5,5,marker=marker,color=INK,ms=2.8,ls='none')
-        text(k,x+7,5,f'{label} ({n} worlds)',size=5.5)
-    for yy,col,fill,label in [(5,GREY,'white','Archive: light/open'),(1,INK,INK,'C1: dark/filled')]:
+        k.plot([x,x+5],[4,4],color=INK,lw=.9,ls=ls)
+        k.plot(x+2.5,4,marker=marker,color=INK,ms=3.5,ls='none')
+        text(k,x+7,4,f'{label} ({n} worlds)',size=6.5)
+    for yy,col,fill,label in [(4,GREY,'white','Historical: light/open'),(.7,INK,INK,'Corrected: dark/filled')]:
         k.plot([131,136],[yy,yy],color=col,lw=.9)
-        k.plot(133.5,yy,'o',ms=3,mfc=fill,mec=col,ls='none')
+        k.plot(133.5,yy,'o',ms=3.8,mfc=fill,mec=col,ls='none')
         text(k,138,yy,label,size=6.5)
-    f.text(15/180,143/165,'Partial-copy R | Full-tape T | World medians; C1 = corrected Z80 instructions',fontsize=6.5,color=INK)
+    f.text(4/180,159/180,'Partial-copy R | Full-tape T | World medians; Corrected = corrected Z80 core (core C1)',fontsize=6.5,color=INK)
     for x,tar,col in [(15,'benign',TEAL),(103,'lethal',PURPLE)]:
-        f.text((x+30)/180,137/165,f'{tar.capitalize()} tar: zero executes as '+('no operation' if tar=='benign' else 'halt'),fontsize=6.5,color=col,fontweight='bold',ha='center')
-        trajectories(axes(f,x,108,72,25),tar,'T_share')
-        trajectories(axes(f,x,73,72,25),tar,'core_share')
-    title(f,'b','Final world distributions at 300,000 world updates',2,59)
-    f.text(101/180,57.8/165,'Open: archive / filled: C1 implementation',fontsize=6,color=INK)
-    f.text(15/180,15.5/165,'20 worlds/group; C1 benign ratio n = 19 (one world has R + T = 0)',fontsize=6.5,color=INK)
+        f.text((x+35)/180,153/180,('Benign chemistry: a zero opcode executes as no operation' if tar=='benign' else 'Lethal chemistry: fetching a zero opcode halts'),fontsize=6.5,color=col,fontweight='bold',ha='center')
+        trajectories(axes(f,x,128,72,21),tar,'T_share')
+        trajectories(axes(f,x,99,72,21),tar,'core_share')
+        # Endpoint medians live in their own strip, outside the coordinate axes.
+        a=axes(f,x,74,72,15,True)
+        text(a,0,14,'Endpoint medians: Corrected | Historical',size=6.5)
+        for xx,label in [(0,'Start'),(27,'T share'),(50,'Motif share')]:text(a,xx,10.5,label,bold=True,size=6.5)
+        ends=table('competition_endpoints')
+        for i,(start,(label,_,_,_)) in enumerate(STARTS.items()):
+            q=[ends[(ends.cohort==cohort)&(ends.tar==tar)&(ends.start==start)] for cohort in ['C1','Historical']]
+            for xx,value in [(0,label),(27,' | '.join(f'{g.T_share_end.median():.2f}' for g in q)),(50,' | '.join(f'{g.core_share_end.median():.2f}' for g in q))]:text(a,xx,7-i*3.3,value,size=6.5)
+        a.plot([0,72],[16,16],color=RULE,lw=.4)
+    title(f,'b','Final world distributions at 300,000 updates',2,70)
+    f.text(101/180,31/180,'Open: Historical / filled: Corrected',fontsize=6.5,color=INK)
     for x,measure in [(15,'T_share_end'),(73,'core_share_end'),(132,'T_distinct_tails_end')]:
-        endpoint(axes(f,x,27,45,25),measure)
+        endpoint(axes(f,x,43,45,21),measure)
         if measure=='core_share_end':
-            a=f.axes[-1]
-            text(a,1.8,.22,'Core-loss world',size=5.1,color=GREY)
+            a=f.axes[-1];text(a,1.4,.27,'Ratio-excluded\nworld (R + T = 0)',size=6.5,color=GREY)
             points=table('endpoint_positions')
             zero=points[(points.measure=='core_share_end')&(points.cohort=='C1')&(points.tar=='benign')&(points.core_share_end==0)]
-            assert len(zero)==1
-            a.annotate('',xy=(1+zero.iloc[0].offset,0),xytext=(1.8,.16),arrowprops=dict(arrowstyle='-',color=GREY,lw=.5))
-        f.text((x+10)/180,20/165,'Benign',fontsize=6,color=TEAL,ha='center')
-        f.text((x+34)/180,20/165,'Lethal',fontsize=6,color=PURPLE,ha='center')
-    # Increase page depth just for the dial while retaining 170-mm limit.
-    # The table above is deliberately paired with its definitions on a second
-    # registered strip below; no claim is represented by a blank panel.
-    title(f,'c','Lethality dial from random code: L = 16; 10 worlds / p',2,12)
-    d=table('lethality_summary')
-    # Compact numeric columns reproduce the figure4v5 design without hiding
-    # closure timing or the remaining C1 reversal in a separate page.
-    # Freed header and plot spacing allows a fully defined dial in 40 mm.
-    # Shift the entire a-b block upward after authoring, expanding the page to
-    # the previous standard's maximum depth while reserving the bottom strip.
-    shift,scale=28,.82
-    f.set_size_inches(180*fs.MM,170*fs.MM)
-    for ax in f.axes:
-        pos=ax.get_position()
-        ax.set_position([pos.x0,(pos.y0*165*scale+shift)/170,pos.width,pos.height*165*scale/170])
-    for item in f.texts:
-        x,y=item.get_position();item.set_position((x,(y*165*scale+shift)/170))
-    f._height_mm=170
-    # The prior temporary c title would sit at 40 mm; remove it and place the
-    # final c heading directly above the table.
-    for item in f.texts[-2:]:item.remove()
-    title(f,'c','Random-code dial: L = 16; 10 worlds per implementation per p',2,37)
-    a=axes(f,8,13,169,20,True)
-    text(a,0,16,'p: probability a zero instruction halts',size=6.5,bold=True)
-    for j,p in enumerate(sorted(d.p.unique())):
-        text(a,60+j*19,16,f'{p:g}',size=6,ha='center',bold=True)
-    for y,field,label in [(11,'open_first','First copier open (out of 10)'),(6,'T_majority','T >50% heritable cells at 300k (out of 10)'),(1,'confinement_km','Kaplan-Meier median to first confined copier\n(thousand world updates)')]:
-        text(a,0,y,label,size=5.3)
+            a.annotate('',xy=(1+zero.iloc[0].offset,0),xytext=(1.8,.21),arrowprops=dict(arrowstyle='-',color=GREY,lw=.5))
+        f.text((x+10)/180,37/180,'Benign',fontsize=6.5,color=TEAL,ha='center')
+        f.text((x+34)/180,37/180,'Lethal',fontsize=6.5,color=PURPLE,ha='center')
+    f.text(15/180,32/180,'20 worlds/group; Corrected benign ratio n = 19 (one world has R + T = 0)',fontsize=6.5,color=INK)
+    title(f,'c','Random-code dial: 10 Corrected + 10 Historical worlds at each p; L = 16',2,28)
+    f.text(126/180,27/180,'Entries: Corrected | Historical',fontsize=6.5,color=INK)
+    d=table('lethality_summary');a=axes(f,8,7,169,17,True)
+    text(a,0,16,'p: probability fetching a zero opcode halts',bold=True,size=6.5)
+    for j,p in enumerate(sorted(d.p.unique())):text(a,60+j*19,16,f'{p:g}',ha='center',bold=True,size=6.5)
+    for y,field,label in [(11,'open_first','First copier open (out of 10)'),(6,'T_majority','Confined T >50% of heritable cells at 300,000 updates\n(≥5 sites scoring mutant carriage; out of 10)'),(.5,'confinement_km','Kaplan–Meier median to first confined copier\n(thousand world updates)')]:
+        text(a,0,y,label,size=6.5)
         for j,p in enumerate(sorted(d.p.unique())):
             c=d[(d.cohort=='C1')&(d.p==p)].iloc[0];h=d[(d.cohort=='Historical')&(d.p==p)].iloc[0]
-            text(a,60+j*19,y,f'{c[field]:g} | {h[field]:g}',size=6.5,ha='center')
-    f.text(126/180,36/170,'Each entry: C1 | archive',fontsize=6.5,color=INK)
-    for y in [11.5,16.5,21.5,26.5,31.5]:
-        f.add_artist(Line2D([8/180,177/180],[y/170,y/170],transform=f.transFigure,color=RULE,lw=.35))
-    f.text(8/180,8.5/170,'Open: partner instruction-stream fetch in ≥8/16 traces; confined: none in 16/16',fontsize=6.5,color=INK)
-    reflow(f,163,lambda y:y-7)
+            text(a,60+j*19,y,f'{c[field]:g} | {h[field]:g}',ha='center',size=6.5)
+    for y in [4.8,10.3,16,20.5,25.5]:f.add_artist(Line2D([8/180,177/180],[y/180,y/180],transform=f.transFigure,color=RULE,lw=.35))
+    f.text(8/180,2.2/180,'Entries: Corrected | Historical. Open: partner instruction-stream fetch in ≥8/16 traces; confined: none in 16/16.',fontsize=6.5,color=INK)
     save(f,'fig4')
 
 
@@ -599,7 +626,7 @@ def fig5():
     for i,r in enumerate(routes.itertuples()):
         y=27-i*11
         text(a,0,y+1.5,r.machine,bold=True,size=7)
-        text(a,0,y-2.2,r.cohort,size=6.5,color=GREY)
+        text(a,0,y-2.2,r.cohort.replace('G; L16/20/50/64 bytes','Stage G; four lengths\n80 worlds; L16/20/50/64'),size=6.5,color=GREY)
         left=29
         for field,col in [('open',GREY),('confined',TEAL),('censored','#E8E9EA')]:
             n=int(getattr(r,field));w=40*n/r.worlds
@@ -620,16 +647,14 @@ def fig5():
         a.plot(r.step,r.detected,marker='|',ms=6,color=colors[r.machine],ls='none',mew=1.1)
     a.set(xscale='log',xlim=(40,1.2e7),ylim=(-.02,1.08))
     fs.log10_ticks(a);tidy(a,'World updates','Fraction with\na detected copier',yticks=[0,.5,1])
-    for name,x,y,label in [('Z80 G',3500,.90,'Z80 Stage G · 20/20'),('6502 A',3500,.62,'6502 S1 A · 20/20'),
+    for name,x,y,label in [('Z80 G',3500,.90,'Z80 G: L = 16 bytes · 20/20'),('6502 A',3500,.62,'6502 S1 A · 20/20'),
                             ('8086 S2',4e3,.38,'8086 S2 · 14/20')]:
         text(a,x,y,label,size=6.5,bold=True,color=colors[name])
-    text(a,1e5,.79,'6 censored',size=6.5,color=TEAL)
-    a.annotate('',xy=(3e6,.7),xytext=(8e5,.78),arrowprops=dict(arrowstyle='-',color=TEAL,lw=.6))
-    f.text(106/180,95/162,'16-byte tapes; 20 worlds/cohort; | censored',fontsize=6.5,color=INK)
-    f.text(4/180,154/162,'Open: partner instruction-stream fetch in ≥8/16 encounters; confined: none (S1/S2)',fontsize=6.5,color=INK)
+    f.text(106/180,93/162,'Observation ends: Z80 300,000; 6502 10,000,000;\n8086 3,000,000 updates (6/20 undetected; censor tick).',fontsize=6.5,color=INK,va='center')
+    f.text(4/180,155/162,'S1/S2: open ≥8/16 partner-fetch encounters; confined 0/16; no first cases in 1–7/16',fontsize=6.5,color=INK)
     title(f,'c','Literal-channel expectation and observed beginnings',2,90)
     a=axes(f,4,58,172,27,True)
-    for x,label in [(0,'Machine'),(37,'Literal width\n(bytes / push)'),(76,'Census: exact pusher\n(opcode motif)'),(123,'First observed route')]:
+    for x,label in [(0,'Machine'),(37,'Literal width\n(bytes / push)'),(76,'Exact-pusher candidate\npresent (opcode motif)'),(123,'First route among\ndetected worlds')]:
         text(a,x,23,label,bold=True,size=6.5)
     matrix=table('literal_matrix')
     for i,r in enumerate(matrix.itertuples()):
@@ -638,18 +663,18 @@ def fig5():
             a.add_patch(Rectangle((-1,y-3.3),172,6.6,fc='#EEF6F5',ec=TEAL,lw=.65))
         text(a,0,y,r.machine,bold=True,size=7)
         text(a,44,y,str(r.width),size=7,ha='center')
-        text(a,76,y,r.pusher+(' · '+r.witness if pd.notna(r.witness) else ''),size=6.5)
+        text(a,76,y,r.pusher+(' · '+(r.witness.lower() if r.machine=='Z80' else r.witness) if pd.notna(r.witness) else ''),size=6.5)
         route=f'Open · {r.detected}/{r.detected}' if r.machine=='Z80' else f'Confined · {r.confined}/{r.detected}'
-        if r.machine=='8086':route+=' (2 open)'
+        if r.machine=='8086':route='12/14 confined; 2/14 open'
         text(a,123,y,route,size=6.5,bold=r.machine=='8086',color=TEAL if r.machine!='Z80' else GREY)
-    f.text(4/180,55/162,'Census candidates; first routes from evolved worlds',fontsize=6.5,color=INK)
+    f.text(4/180,55/162,'Exact pusher: candidate writes its literal instruction bytes into an all-zero partner; routes: evolved worlds',fontsize=6.5,color=INK)
     title(f,'d','8086 convergence: the 5F A4 x y first-copier family (10/14; all ten confined)',2,52)
     a=axes(f,4,3,172,44,True)
     text(a,0,42,'World seed',bold=True,size=6.5)
     text(a,36,42,'5F A4 = POP DI; MOVSB',bold=True,size=6.5,color=TEAL)
     text(a,91,42,'x, y: variable bytes',size=6.5)
-    text(a,130,42,'Detection\n(update)',bold=True,size=6.5,ha='center')
-    text(a,153,42,'Mechanism\n(16/16 encounters)',bold=True,size=6.5,ha='center')
+    text(a,130,42,'First detection\n(world updates)',bold=True,size=6.5,ha='center')
+    text(a,153,43,'Frozen full-address class\n(16/16 encounters)',bold=True,size=6.5,ha='center')
     start,w=35,5.4
     for j in range(16):text(a,start+(j+.5)*w,37,str(j),size=6.5,ha='center',color=GREY)
     d=table('first_copier_tiles')
@@ -663,11 +688,13 @@ def fig5():
             text(a,x+w/2,y,r.byte,size=6.5,ha='center',color=TEAL if shared else INK,bold=shared,fontfamily='DejaVu Sans Mono')
         r=q.iloc[0]
         text(a,130,y,f'{int(r.detection):,}',size=6.5,ha='center')
-        text(a,153,y,'One-pass copy' if r.mechanism=='memory-fed one-pass copier' else 'Copy loop',size=6.5,ha='center',color=TEAL)
+        text(a,153,y,'One-pass class' if r.mechanism=='memory-fed one-pass copier' else 'Loop class',size=6.5,ha='center',color=TEAL)
     for i in range(4):
         x=start+i*4*w
         # Tile separators stop at the strip edges and never cross byte labels.
         a.add_patch(Rectangle((x,.4),4*w,34.2,fill=False,ec=RULE,lw=.4))
+    reflow(f,174,lambda y:y+12)
+    f.text(4/180,5/174,'Frozen class uses full instruction-start addresses: One-pass = no repeated start; Loop = repeated start.\nLabels agree in all 16/16 encounters per tape. Post hoc: all ten repeatedly copy mapped ring positions at displacement d = 4 bytes.\nG = historical random-code cohort; S1 A = 6502 primary arm; S2 = coherent-fetch 8086 arm.',fontsize=6.5,color=INK,va='center')
     save(f,'fig5')
 
 
@@ -675,6 +702,8 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--only',default='1,2,3,4,5');args=ap.parse_args()
     OUT.mkdir(parents=True,exist_ok=True)
     fs.setup('nature')
+    fs.EXP_PT=6.5
+    figcheck.MIN_PT=6
     plt.rcParams.update({'font.size':6.5,'axes.labelsize':6.5,'xtick.labelsize':6,'ytick.labelsize':6})
     previous=json.loads((OUT/'figcheck.json').read_text()) if (OUT/'figcheck.json').exists() else {}
     for n in map(int,args.only.split(',')):

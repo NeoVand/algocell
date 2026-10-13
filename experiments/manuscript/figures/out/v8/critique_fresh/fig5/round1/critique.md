@@ -1,0 +1,33 @@
+Fig. 5 is close, with substantial content in every panel, but it does **not yet match the references in self-explanation**. Its strongest features are the direct curve labels, explicit count columns, aligned byte sequences, and consistent route colors. The main weaknesses are several undefined classifications and insufficient distinction between the cohorts being compared.
+
+**Substantive defects**
+
+- **Global route definition:** “Open: … ≥8/16 encounters; confined: none” leaves encounters with partner fetching in **1–7 of 16** unclassified. The scope of “(S1/S2)” is also unclear: does it qualify the definition, the encounters, or only “confined”? State the scope explicitly and account for the intermediate range. If no displayed cases occupy that range, a short factual label would suffice; the image does not establish that.
+
+- **Panels a–b—cohort correspondence:** Panel a pools **80 Z80 worlds across four lengths**, whereas panel b shows **20 Z80 worlds at 16 bytes**. The necessary information is present, but the shared Z80 identity and different totals require readers to reconcile distant labels. Put “four lengths; 80 worlds” beside the Z80 bar and “L = 16 bytes; 20 worlds” directly beside its curve. Expand “G,” “S1 arm A,” and “S2” into short cohort descriptions where those distinctions are essential to the comparison.
+
+- **Panel b—censoring and observation endpoints:** The teal endpoint, “6 censored” annotation, and tiny “I censored” key do not clearly distinguish the cumulative detected fraction from the end of observation. The gray curve also stops substantially earlier than the orange curve without an endpoint explanation. Label the teal marker “6/20 undetected at observation end” and give its update value. Identify terminal observation times where curve termination represents them. Use a drawn censoring symbol in the key rather than an easily misread text glyph.
+
+- **Panel c—what the census establishes:** “Census: exact pusher (opcode motif)” and “Census candidates” do not explain what qualifies as an *exact pusher* or whether “Yes” denotes an available candidate or an observed evolved copier. That distinction is central to the panel’s expectation-versus-observation argument. Rename the column, for example, “Exact-pusher candidate present,” and add a brief functional definition of the candidate criterion. Keep the separate observed-route column.
+
+- **Panel c—denominator changes:** The 8086 result switches from **12/20 confined worlds** in panel a to **12/14 detected worlds** here. Both counts are consistent, but the column heading does not identify the conditional denominator. Use “First route among detected worlds” and write “12/14 confined; 2/14 open.” This makes the comparison interpretable without cross-checking panel a.
+
+- **Panel d—undefined outcome classes:** “Frozen full-address class,” “One-pass class,” and “Loop class” are not explained sufficiently to understand the panel’s main mechanistic result. “16/16 encounters” also lacks an explicit relationship to these classes: agreement across encounters, successful copying, or another criterion? Add short inline definitions of one-pass and loop, clarify what was frozen, and state what the 16/16 measures. These are essential encoding definitions, not paragraph-length methods.
+
+- **Panel d—detection label:** “Detection (update)” is less specific than panel b’s “World updates.” Use “First detection (world updates)” so the number column’s event and unit are explicit.
+
+**Print readability**
+
+At 180 mm, the dense byte-table labels, position indices, and secondary cohort text deserve particular attention. They look near the lower readable limit, especially the pale gray indices and cohort descriptions. The displayed PNG alone does not justify declaring a precise point-size violation, but it also does not demonstrate comfortable compliance. Ensure every label is at least 6 pt and substantive table text at least 6.5 pt; darken the secondary gray text. Preserve the byte-level detail.
+
+**Optional polish**
+
+- **Panel a:** Center “Detected” over its values and slightly tighten the oversized gap between the legend and first bar.
+- **Panel b:** Move the orange direct label closer to its curve; it currently occupies a relatively detached position.
+- **Panel c:** Replace the full teal outline around the 8086 row with a light fill and restrained rule. The box gives this table a heavier visual treatment than the references.
+- **Panel d:** Add slightly stronger separators after positions 3, 7, and 11 to expose the repeated four-byte motif immediately.
+- **Across panels:** Shorten the long bold headings where possible. Their weight competes with the data more than in the reference figures.
+
+There are no apparent empty panels, clipped labels, major overlaps, or inconsistent displayed totals. The remaining work is chiefly to make the classifications, denominator changes, and observation endpoints explicit while protecting small-text readability.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

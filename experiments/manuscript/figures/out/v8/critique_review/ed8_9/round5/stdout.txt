@@ -1,0 +1,32 @@
+**Below standard.** ed8_9 contains substantive evidence in every panel, and its main results are generally recoverable. However, at 180 mm width, the small typography, weak separation of evidence blocks, and several unexplained labels keep it below the references’ standard.
+
+The counts shown are internally consistent: 14 detections plus 6 censored worlds gives 20; the panel d ledger totals 1,337, including 724 unresolved cases; and panel e’s encounter counts sum to 2,224,640. I see no clear overlap, missing plotted series, or malformed glyphs. The problems are presentation and local interpretation, rather than demonstrably missing evidence.
+
+Substantive defects and concrete fixes:
+
+1. **Throughout: print readability is inadequate.** Much of the table text, plot annotations, tick lettering and supporting text appears approximately 5–6 pt at the specified width; several blocks appear below the 6 pt floor. Exact font sizes cannot be certified from the displayed PNG, but the visual concern is substantial, especially in c–f. Increase all text to at least 6 pt, with substantive labels at least 6.5 pt. Recover space through shorter wording and better allocation of existing white space.
+
+2. **Panel a: the detection encoding requires too much reading at too small a size.** The teal/red distinction and grey censor marks are explained only in the three-line text block below the plot. Grey censor marks are particularly inconspicuous. Add a compact inline key using the actual symbols: teal dot, red dot and grey censor tick. Keep the trace denominators beside those symbols, and promote “14/20 detected; 6/20 censored at 3 million updates” into a readable result line. The current information is present, but insufficiently accessible at print size.
+
+3. **Panels a–b: cohort and test codes are insufficiently identified locally.** “Registered S2” and “R2” function as unexplained identifiers, while the principal cohort is described only as “S2 L16” in a small note. Elsewhere, f identifies an “8086 S2 L16” cohort, but readers should not need that distant table to interpret a–b. Add a shared, readable cohort label identifying the architecture, 20-world sample and what L16 measures; define S2/R2 briefly if their distinction matters to the result.
+
+4. **Panel c: the test-family definitions are detached from the table.** Rows “L1,” “L2” and “L2 excluding L1” depend on a small note far below, separated by substantial blank space. Attach “frozen overlap” and “broader pure-copy certificate” directly to the corresponding row labels or place the key immediately below the table. Bring “zero eligible cases” and the resulting untested status into the same compact block. No complete proof or ledger is needed here.
+
+5. **Panel d: “n” has an ambiguous counting unit.** Only the small footer makes clear that these are candidate tapes, rather than worlds, genotypes or encounters. Rename the column “Candidate tapes, n” and place “Total 1,337; unresolved 724” directly with the table. This would also make the connection to c immediately legible.
+
+6. **Panel e: the admissions sequence lacks visual hierarchy.** The table, 779-record starting pool, 600 admitted records, 32 selected genotypes, applicability results and perturbation explanations read as successive text fragments. Integrate the selection counts into one compact sequence, then group the d = 4 and d = 16 applicability results into aligned rows. Spell out “d4” and “d16” consistently as “d = 4” and “d = 16.” Preserve the distinction between zero observed mismatches and zero applicable perturbation positions.
+
+7. **Panel f: the snapshot comparison lacks essential local definitions.** “New target” is defined, but “Stage G,” “soup/uniform,” and “3 donor tiles” versus “1 donor tile” remain unexplained. These distinguish the compared cohorts or the aggregation underlying the medians. Add short expansions and state clearly what population of batches the median summarizes. This requires concise definitions, not full methods.
+
+8. **Panel f: the second evidence block is cramped against the bottom edge.** Its cohort table and two explanatory lines have smaller, denser typography than the plot, with almost no closing margin. Give this block a visibly separate subheading and more vertical space; shorten the repeated displacement annotation and redistribute the substantial unused space elsewhere.
+
+Optional polish:
+
+- **a:** Shorten the long seed labels with an explicit common-prefix key.
+- **b:** Enlarge the prominent zero-result annotation and tighten the oversized empty plotting region. The flat zero series is substantive and should remain.
+- **c–e:** Align table headers, numerical columns and result statements more consistently.
+- **f:** Use a monospace treatment for the byte pattern and “u, v” to distinguish the two variable bytes clearly.
+
+The required subject matter is present, and the archived-supporting-evidence scope does not call for complete methods or proofs inside the figure. Readable direct keys, cohort definitions and stronger organization are the remaining requirements.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

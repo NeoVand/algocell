@@ -1,0 +1,55 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-wkmyo3mb
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a13302-c565-70f0-8667-0b2127b155c7
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_2. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**ed8_2 is below the reference standard, primarily because of print readability and a few unresolved labeling ambiguities.** All six panels contain substantive content. The outcome bars, complete site maps, coverage table, environmental tests and ancestry trace provide useful supporting evidence; no additional experiment or panel is needed.
+
+At 180 mm width, however, much of the text appears approximately **5–5.5 pt**, with some smaller text. Exact font sizes cannot be verified from the PNG alone, but the widespread undersizing is visually clear. The reference figures give their substantive labels substantially more room.
+
+**Substantive defects**
+
+- **Across all panels — undersized substantive text.** Design names, numerical results, tick labels, heatmap values, table entries and explanatory keys are too small for the specified print standard. Panel titles are readable, but the information needed to interpret them is not comfortably readable. **Fix:** enforce 6 pt for every text element and at least 6.5 pt for substantive labels. Recover space from the large internal gaps and simplify repeated wording while retaining the rows and results.
+
+- **Panels a and b — important number columns are visually subordinate.** “Controls alive” and “Scored sites” have prominent headers, but their actual values are much smaller. Bar-axis ticks and design labels have the same problem. **Fix:** enlarge the values and row labels together, retaining clear alignment between each design, bar and pair of numbers.
+
+- **Panel b — U/K cohort definitions remain insufficiently explicit.** The title and row suffixes depend on U/K; the small note “U uniform/K soup” only partly resolves them. “Uniform” does not identify what is uniform, and “K soup” remains an opaque condition name. **Fix:** spell out the two cohort conditions in a short, readable inline key or directly in the row labels. Full preparation methods are unnecessary.
+
+- **Panel b — the middle outcome category is incompletely stated.** “Grey lost; pale alive <50% carriage; teal alive ≥50% carriage” leaves the grey category’s threshold implicit. The reader must infer whether “lost” means no surviving descendants or loss of the marker. **Fix:** explicitly identify grey as the intended lineage-loss outcome, and label the surviving categories by their carriage thresholds.
+
+- **Panel c — the paired tracks are too thin and their identities too remote.** Transfer 1 versus transfer 8 is explained only below the entire map. At print size, the fine separation between tracks and the small byte cells make the central comparison difficult to follow. **Fix:** increase track height and pair separation; add a compact “1 / 8” key immediately beside the tracks, with “transfer” written out. Preserve the full site coverage.
+
+- **Panel d — condition labels and values are too small and crowded.** The multiline column labels require careful reading even in the enlarged image. The shared axis title combines partner source, chemistry and reset, without making their relationships especially easy to scan. **Fix:** enlarge cell values and column labels; use consistently ordered, short condition descriptions, with a compact shared key for source, chemistry and reset.
+
+- **Panel e — the evidence table is not adequately readable at final size.** Its fractions are substantive coverage results, yet they receive body text substantially below the requested size. Large whitespace separates the title from the table and the table from its explanatory text. **Fix:** reclaim that space to enlarge rows, fractions and headers. Keep the category headers and all designs.
+
+- **Essential decoding text is concentrated in very small notes.** The carrier and scored-site definitions in a/b, track interpretation in c, denominator in d, and alternative definition in e are present—which is good—but their size makes them ineffective as direct explanation. **Fix:** retain these brief definitions at readable size and place them beside the relevant encoding. Detailed procedural notes can remain in the manuscript legend.
+
+**Optional polish**
+
+- **a–e:** standardize design naming and introduce “T = evolved transmitter” near its first use. Identify the role of the `s6003`-style identifiers without requiring their provenance.
+- **a/b:** replace verbal colour descriptions with small swatches and concise labels. This would make the keys faster to read.
+- **c:** add unobtrusive byte-range endpoints so readers can locate sites more readily within the normalized-width tracks.
+- **d:** add “carrier fraction” immediately above the matrix. The printed values already supply the quantitative scale, so a separate colour bar is optional.
+- **f:** enlarge the trace annotations and tighten their placement. Its simple trajectory is substantive and appropriately sparse; it does not need additional data.
+- **Overall:** reduce the unusually large title-to-content gaps in the middle and bottom rows. The available space should support readability.
+
+I see no clear clipping, text overlap, broken glyphs, demonstrably incorrect counts or empty panels. The ancestry panel explains its main result directly. The central problem is presenting the existing evidence at a readable print scale, with a few local labels clarified.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+15,825
