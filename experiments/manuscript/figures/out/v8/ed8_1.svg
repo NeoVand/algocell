@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<ns0:svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" width="510.23622pt" height="510.23622pt" viewBox="0 0 510.23622 510.23622" version="1.1">
+<ns0:svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" width="510.23622pt" height="612.283465pt" viewBox="0 0 510.23622 612.283465" version="1.1">
  <ns0:metadata>
   <rdf:RDF>
    <ns2:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-    <dc:date>2026-10-12T21:04:59.668810</dc:date>
+    <dc:date>2026-10-12T21:32:04.571308</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <ns2:Agent>
@@ -19,591 +19,558 @@
  </ns0:defs>
  <ns0:g id="figure_1">
   <ns0:g id="patch_1">
-   <ns0:path d="M 0 510.23622  L 510.23622 510.23622  L 510.23622 0  L 0 0  z " style="fill: #ffffff" />
+   <ns0:path d="M 0 612.283465  L 510.23622 612.283465  L 510.23622 0  L 0 0  z " style="fill: #ffffff" />
   </ns0:g>
   <ns0:g id="axes_1">
-   <ns0:g id="line2d_1">
-    <ns0:path d="M 8.503937 47.080888  L 238.110236 47.080888  " clip-path="url(#p14e8c894c0)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
-   </ns0:g>
    <ns0:g id="text_1">
-    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="40.864251" transform="rotate(-0 8.503937 40.864251)">Comparison / agreement criterion</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="36.056102" transform="rotate(-0 8.503937 36.056102)">Comparison / agreement criterion</ns0:text>
    </ns0:g>
    <ns0:g id="text_2">
-    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="40.993555" transform="rotate(-0 133.228346 40.993555)">Met / tested units</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="36.056102" transform="rotate(-0 133.228346 36.056102)">Met / tested units</ns0:text>
    </ns0:g>
    <ns0:g id="text_3">
-    <ns0:text style="font-weight: 700; font-size: 5.4px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="40.993555" transform="rotate(-0 204.094488 40.993555)">Not met, n</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="36.056102" transform="rotate(-0 204.094488 36.056102)">Not met, n</ns0:text>
    </ns0:g>
    <ns0:g id="text_4">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="52.502821" transform="rotate(-0 8.503937 52.502821)">8088/hardware: identical vector states</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="49.525394" transform="rotate(-0 8.503937 49.525394)">8088/hardware: identical vector states</ns0:text>
    </ns0:g>
    <ns0:g id="text_5">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="52.502821" transform="rotate(-0 133.228346 52.502821)">3,126,917/3,137,000</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="49.525394" transform="rotate(-0 133.228346 49.525394)">3,126,917/3,137,000</ns0:text>
    </ns0:g>
    <ns0:g id="text_6">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="52.502821" transform="rotate(-0 204.094488 52.502821)">10,083</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="49.525394" transform="rotate(-0 204.094488 49.525394)">10,083</ns0:text>
    </ns0:g>
    <ns0:g id="text_7">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="62.808585" transform="rotate(-0 8.503937 62.808585)">Corrected/historical: below change-rate bound</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 62.378101)">Corrected/historical: below change-rate</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 68.884829)">bound</ns0:text>
    </ns0:g>
    <ns0:g id="text_8">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="62.939471" transform="rotate(-0 133.228346 62.939471)">643/690</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="62.281299" transform="rotate(-0 133.228346 62.281299)">643/690</ns0:text>
    </ns0:g>
    <ns0:g id="text_9">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="62.939471" transform="rotate(-0 204.094488 62.939471)">47</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="62.281299" transform="rotate(-0 204.094488 62.281299)">47</ns0:text>
    </ns0:g>
    <ns0:g id="text_10">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="73.262766" transform="rotate(-0 8.503937 73.262766)">Corrected/historical: identical assay metrics</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 81.379676)">Corrected/historical: identical assay</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 87.841717)">metrics</ns0:text>
    </ns0:g>
    <ns0:g id="text_11">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="73.376121" transform="rotate(-0 133.228346 73.376121)">407/417</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="81.282874" transform="rotate(-0 133.228346 81.282874)">407/417</ns0:text>
    </ns0:g>
    <ns0:g id="text_12">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="73.376121" transform="rotate(-0 204.094488 73.376121)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="81.282874" transform="rotate(-0 204.094488 81.282874)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_13">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="83.681884" transform="rotate(-0 8.503937 83.681884)">Corrected/historical: unchanged claim verdicts</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 100.381251)">Corrected/historical: unchanged claim</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 106.887979)">verdicts</ns0:text>
    </ns0:g>
    <ns0:g id="text_14">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="83.812771" transform="rotate(-0 133.228346 83.812771)">19/22</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="100.284449" transform="rotate(-0 133.228346 100.284449)">19/22</ns0:text>
    </ns0:g>
    <ns0:g id="text_15">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="83.812771" transform="rotate(-0 204.094488 83.812771)">3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="100.284449" transform="rotate(-0 204.094488 100.284449)">3</ns0:text>
    </ns0:g>
    <ns0:g id="text_16">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="94.118534" transform="rotate(-0 8.503937 94.118534)">Corrected/historical: unchanged components</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 119.382825)">Corrected/historical: unchanged</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 125.889554)">components</ns0:text>
    </ns0:g>
    <ns0:g id="text_17">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="94.249421" transform="rotate(-0 133.228346 94.249421)">32/36</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="133.228346" y="119.286024" transform="rotate(-0 133.228346 119.286024)">32/36</ns0:text>
    </ns0:g>
    <ns0:g id="text_18">
-    <ns0:text style="font-size: 5.1px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="94.249421" transform="rotate(-0 204.094488 94.249421)">4</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="204.094488" y="119.286024" transform="rotate(-0 204.094488 119.286024)">4</ns0:text>
    </ns0:g>
    <ns0:g id="text_19">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="112.778329" transform="rotate(-0 8.503937 112.778329)">All 10,083 hardware divergences were expected</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="144.807283" transform="rotate(-0 8.503937 144.807283)">All 10,083 hardware divergences were expected</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_2">
-   <ns0:g id="line2d_2">
-    <ns0:path d="M 269.291339 47.080888  L 498.897638 47.080888  " clip-path="url(#pa79db26faa)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
-   </ns0:g>
    <ns0:g id="text_20">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="41.109571" transform="rotate(-0 269.291339 41.109571)">Core</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="36.056102" transform="rotate(-0 269.291339 36.056102)">Core</ns0:text>
    </ns0:g>
    <ns0:g id="text_21">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="40.970688" transform="rotate(-0 303.307087 40.970688)">Flagged / conditions</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="36.056102" transform="rotate(-0 303.307087 36.056102)">Flagged / conditions</ns0:text>
    </ns0:g>
    <ns0:g id="text_22">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="40.970688" transform="rotate(-0 396.850394 40.970688)">Assays differing / tested</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="36.056102" transform="rotate(-0 396.850394 36.056102)">Assays differing / tested</ns0:text>
    </ns0:g>
    <ns0:g id="text_23">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="52.618837" transform="rotate(-0 269.291339 52.618837)">Corrected</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="49.525394" transform="rotate(-0 269.291339 49.525394)">Corrected</ns0:text>
    </ns0:g>
    <ns0:g id="text_24">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="52.618837" transform="rotate(-0 303.307087 52.618837)">47/690</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="49.525394" transform="rotate(-0 303.307087 49.525394)">47/690</ns0:text>
    </ns0:g>
    <ns0:g id="text_25">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="52.618837" transform="rotate(-0 396.850394 52.618837)">10/417</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="49.525394" transform="rotate(-0 396.850394 49.525394)">10/417</ns0:text>
    </ns0:g>
    <ns0:g id="text_26">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="63.055487" transform="rotate(-0 269.291339 63.055487)">C2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="62.281299" transform="rotate(-0 269.291339 62.281299)">C2</ns0:text>
    </ns0:g>
    <ns0:g id="text_27">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="63.055487" transform="rotate(-0 303.307087 63.055487)">114/690</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="62.281299" transform="rotate(-0 303.307087 62.281299)">114/690</ns0:text>
    </ns0:g>
    <ns0:g id="text_28">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="63.055487" transform="rotate(-0 396.850394 63.055487)">10/417</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="396.850394" y="62.281299" transform="rotate(-0 396.850394 62.281299)">10/417</ns0:text>
    </ns0:g>
    <ns0:g id="text_29">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="80.327657" transform="rotate(-0 269.291339 80.327657)">Comparator: historical compatibility core C0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="81.55689" transform="rotate(-0 269.291339 81.55689)">Comparator: historical compatibility core C0</ns0:text>
    </ns0:g>
    <ns0:g id="text_30">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="91.905029" transform="rotate(-0 269.291339 91.905029)">Corrected core (C1): classic; core C2: Zilog NMOS</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="91.47815" transform="rotate(-0 269.291339 91.47815)">Corrected core (C1): classic; core C2: Zilog NMOS</ns0:text>
    </ns0:g>
    <ns0:g id="text_31">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="103.501307" transform="rotate(-0 269.291339 103.501307)">Unchanged across both comparisons: criterion not met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="101.399409" transform="rotate(-0 269.291339 101.399409)">Overall stability verdict: criterion not met for either core</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_3">
-   <ns0:g id="line2d_3">
-    <ns0:path d="M 8.503937 209.428776  L 238.110236 209.428776  " clip-path="url(#p5cb716987a)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
-   </ns0:g>
    <ns0:g id="text_32">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="203.457459" transform="rotate(-0 8.503937 203.457459)">Claim</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="209.877113" transform="rotate(-0 8.503937 209.877113)">Claim</ns0:text>
    </ns0:g>
    <ns0:g id="text_33">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="203.457459" transform="rotate(-0 45.354331 203.457459)">vs archive</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="209.877113" transform="rotate(-0 45.354331 209.877113)">vs archive</ns0:text>
    </ns0:g>
    <ns0:g id="text_34">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="203.457459" transform="rotate(-0 127.559055 203.457459)">Claim</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="209.877113" transform="rotate(-0 127.559055 209.877113)">Claim</ns0:text>
    </ns0:g>
    <ns0:g id="text_35">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="203.457459" transform="rotate(-0 164.409449 203.457459)">vs archive</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="209.877113" transform="rotate(-0 164.409449 209.877113)">vs archive</ns0:text>
    </ns0:g>
    <ns0:g id="text_36">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="214.966725" transform="rotate(-0 8.503937 214.966725)">DZ1</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="223.346404" transform="rotate(-0 8.503937 223.346404)">DZ1</ns0:text>
    </ns0:g>
    <ns0:g id="text_37">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="214.966725" transform="rotate(-0 45.354331 214.966725)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="223.346404" transform="rotate(-0 45.354331 223.346404)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_38">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="214.966725" transform="rotate(-0 127.559055 214.966725)">C4b</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="223.346404" transform="rotate(-0 127.559055 223.346404)">C4b</ns0:text>
    </ns0:g>
    <ns0:g id="text_39">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="214.966725" transform="rotate(-0 164.409449 214.966725)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="223.346404" transform="rotate(-0 164.409449 223.346404)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_40">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="224.032906" transform="rotate(-0 8.503937 224.032906)">DZ2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="234.547979" transform="rotate(-0 8.503937 234.547979)">DZ2</ns0:text>
    </ns0:g>
    <ns0:g id="text_41">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e8431f" x="45.354331" y="223.901207" transform="rotate(-0 45.354331 223.901207)">changed</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e8431f" x="45.354331" y="234.547979" transform="rotate(-0 45.354331 234.547979)">changed</ns0:text>
    </ns0:g>
    <ns0:g id="text_42">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="224.032906" transform="rotate(-0 127.559055 224.032906)">C4c</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="234.547979" transform="rotate(-0 127.559055 234.547979)">C4c</ns0:text>
    </ns0:g>
    <ns0:g id="text_43">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="224.032906" transform="rotate(-0 164.409449 224.032906)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="234.547979" transform="rotate(-0 164.409449 234.547979)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_44">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="233.099087" transform="rotate(-0 8.503937 233.099087)">DZ3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="245.749554" transform="rotate(-0 8.503937 245.749554)">DZ3</ns0:text>
    </ns0:g>
    <ns0:g id="text_45">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e8431f" x="45.354331" y="232.967388" transform="rotate(-0 45.354331 232.967388)">changed</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e8431f" x="45.354331" y="245.749554" transform="rotate(-0 45.354331 245.749554)">changed</ns0:text>
    </ns0:g>
    <ns0:g id="text_46">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="233.099087" transform="rotate(-0 127.559055 233.099087)">F4c</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="245.749554" transform="rotate(-0 127.559055 245.749554)">F4c</ns0:text>
    </ns0:g>
    <ns0:g id="text_47">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="233.099087" transform="rotate(-0 164.409449 233.099087)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="245.749554" transform="rotate(-0 164.409449 245.749554)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_48">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="242.165268" transform="rotate(-0 8.503937 242.165268)">E1</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="256.951128" transform="rotate(-0 8.503937 256.951128)">E1</ns0:text>
    </ns0:g>
    <ns0:g id="text_49">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="242.165268" transform="rotate(-0 45.354331 242.165268)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="256.951128" transform="rotate(-0 45.354331 256.951128)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_50">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="242.165268" transform="rotate(-0 127.559055 242.165268)">S1</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="256.951128" transform="rotate(-0 127.559055 256.951128)">S1</ns0:text>
    </ns0:g>
    <ns0:g id="text_51">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="242.165268" transform="rotate(-0 164.409449 242.165268)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="256.951128" transform="rotate(-0 164.409449 256.951128)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_52">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="251.231448" transform="rotate(-0 8.503937 251.231448)">E2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="268.152703" transform="rotate(-0 8.503937 268.152703)">E2</ns0:text>
    </ns0:g>
    <ns0:g id="text_53">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="251.231448" transform="rotate(-0 45.354331 251.231448)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="268.152703" transform="rotate(-0 45.354331 268.152703)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_54">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="251.231448" transform="rotate(-0 127.559055 251.231448)">S2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="268.152703" transform="rotate(-0 127.559055 268.152703)">S2</ns0:text>
    </ns0:g>
    <ns0:g id="text_55">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="251.231448" transform="rotate(-0 164.409449 251.231448)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="268.152703" transform="rotate(-0 164.409449 268.152703)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_56">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="260.297629" transform="rotate(-0 8.503937 260.297629)">E3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="279.354278" transform="rotate(-0 8.503937 279.354278)">E3</ns0:text>
    </ns0:g>
    <ns0:g id="text_57">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="260.297629" transform="rotate(-0 45.354331 260.297629)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="279.354278" transform="rotate(-0 45.354331 279.354278)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_58">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="260.297629" transform="rotate(-0 127.559055 260.297629)">S3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="279.354278" transform="rotate(-0 127.559055 279.354278)">S3</ns0:text>
    </ns0:g>
    <ns0:g id="text_59">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="260.297629" transform="rotate(-0 164.409449 260.297629)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="279.354278" transform="rotate(-0 164.409449 279.354278)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_60">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="269.36381" transform="rotate(-0 8.503937 269.36381)">E-L32L</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="290.555853" transform="rotate(-0 8.503937 290.555853)">E-L32L</ns0:text>
    </ns0:g>
    <ns0:g id="text_61">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="269.36381" transform="rotate(-0 45.354331 269.36381)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="290.555853" transform="rotate(-0 45.354331 290.555853)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_62">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="269.36381" transform="rotate(-0 127.559055 269.36381)">S4</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="290.555853" transform="rotate(-0 127.559055 290.555853)">S4</ns0:text>
    </ns0:g>
    <ns0:g id="text_63">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="269.36381" transform="rotate(-0 164.409449 269.36381)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="290.555853" transform="rotate(-0 164.409449 290.555853)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_64">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="278.429991" transform="rotate(-0 8.503937 278.429991)">L1</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="301.757428" transform="rotate(-0 8.503937 301.757428)">L1</ns0:text>
    </ns0:g>
    <ns0:g id="text_65">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="278.429991" transform="rotate(-0 45.354331 278.429991)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="301.757428" transform="rotate(-0 45.354331 301.757428)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_66">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="278.429991" transform="rotate(-0 127.559055 278.429991)">S5</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="301.757428" transform="rotate(-0 127.559055 301.757428)">S5</ns0:text>
    </ns0:g>
    <ns0:g id="text_67">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="278.429991" transform="rotate(-0 164.409449 278.429991)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="301.757428" transform="rotate(-0 164.409449 301.757428)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_68">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="287.496171" transform="rotate(-0 8.503937 287.496171)">L2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="312.959002" transform="rotate(-0 8.503937 312.959002)">L2</ns0:text>
    </ns0:g>
    <ns0:g id="text_69">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e8431f" x="45.354331" y="287.364472" transform="rotate(-0 45.354331 287.364472)">changed</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #e8431f" x="45.354331" y="312.959002" transform="rotate(-0 45.354331 312.959002)">changed</ns0:text>
    </ns0:g>
    <ns0:g id="text_70">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="287.496171" transform="rotate(-0 127.559055 287.496171)">X1-1</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="312.959002" transform="rotate(-0 127.559055 312.959002)">X1-1</ns0:text>
    </ns0:g>
    <ns0:g id="text_71">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="287.496171" transform="rotate(-0 164.409449 287.496171)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="312.959002" transform="rotate(-0 164.409449 312.959002)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_72">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="296.562352" transform="rotate(-0 8.503937 296.562352)">L3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="324.160577" transform="rotate(-0 8.503937 324.160577)">L3</ns0:text>
    </ns0:g>
    <ns0:g id="text_73">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="296.562352" transform="rotate(-0 45.354331 296.562352)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="324.160577" transform="rotate(-0 45.354331 324.160577)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_74">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="296.562352" transform="rotate(-0 127.559055 296.562352)">X1-2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="324.160577" transform="rotate(-0 127.559055 324.160577)">X1-2</ns0:text>
    </ns0:g>
    <ns0:g id="text_75">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="296.562352" transform="rotate(-0 164.409449 296.562352)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="324.160577" transform="rotate(-0 164.409449 324.160577)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_76">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="305.628533" transform="rotate(-0 8.503937 305.628533)">L</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="335.362152" transform="rotate(-0 8.503937 335.362152)">L</ns0:text>
    </ns0:g>
    <ns0:g id="text_77">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="305.628533" transform="rotate(-0 45.354331 305.628533)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="45.354331" y="335.362152" transform="rotate(-0 45.354331 335.362152)">stands</ns0:text>
    </ns0:g>
    <ns0:g id="text_78">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="305.628533" transform="rotate(-0 127.559055 305.628533)">X1-3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="127.559055" y="335.362152" transform="rotate(-0 127.559055 335.362152)">X1-3</ns0:text>
    </ns0:g>
    <ns0:g id="text_79">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="305.628533" transform="rotate(-0 164.409449 305.628533)">stands</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="164.409449" y="335.362152" transform="rotate(-0 164.409449 335.362152)">stands</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_4">
-   <ns0:g id="line2d_4">
-    <ns0:path d="M 269.291339 209.428776  L 498.897638 209.428776  " clip-path="url(#p720ae9b418)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
-   </ns0:g>
    <ns0:g id="text_80">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="203.342592" transform="rotate(-0 269.291339 203.342592)">Component</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="209.877113" transform="rotate(-0 269.291339 209.877113)">Component</ns0:text>
    </ns0:g>
    <ns0:g id="text_81">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="203.457459" transform="rotate(-0 348.661417 203.457459)">Historical</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="209.877113" transform="rotate(-0 348.661417 209.877113)">Historical</ns0:text>
    </ns0:g>
    <ns0:g id="text_82">
-    <ns0:text style="font-weight: 700; font-size: 5.8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="203.457459" transform="rotate(-0 425.19685 203.457459)">Corrected core</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="209.877113" transform="rotate(-0 425.19685 209.877113)">Corrected core</ns0:text>
    </ns0:g>
    <ns0:g id="text_83">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="214.966725" transform="rotate(-0 269.291339 214.966725)">DZ2</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="223.346404" transform="rotate(-0 269.291339 223.346404)">DZ2</ns0:text>
    </ns0:g>
    <ns0:g id="text_84">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="214.966725" transform="rotate(-0 348.661417 214.966725)">not met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="223.346404" transform="rotate(-0 348.661417 223.346404)">not met</ns0:text>
    </ns0:g>
    <ns0:g id="text_85">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="214.966725" transform="rotate(-0 425.19685 214.966725)">met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="223.346404" transform="rotate(-0 425.19685 223.346404)">met</ns0:text>
    </ns0:g>
    <ns0:g id="text_86">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="225.403375" transform="rotate(-0 269.291339 225.403375)">DZ3</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="236.10231" transform="rotate(-0 269.291339 236.10231)">DZ3</ns0:text>
    </ns0:g>
    <ns0:g id="text_87">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="225.403375" transform="rotate(-0 348.661417 225.403375)">not met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="236.10231" transform="rotate(-0 348.661417 236.10231)">not met</ns0:text>
    </ns0:g>
    <ns0:g id="text_88">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="225.403375" transform="rotate(-0 425.19685 225.403375)">met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="236.10231" transform="rotate(-0 425.19685 236.10231)">met</ns0:text>
    </ns0:g>
    <ns0:g id="text_89">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="235.840025" transform="rotate(-0 269.291339 235.840025)">L2 L16</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="248.858215" transform="rotate(-0 269.291339 248.858215)">L2 L16</ns0:text>
    </ns0:g>
    <ns0:g id="text_90">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="235.840025" transform="rotate(-0 348.661417 235.840025)">not met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="248.858215" transform="rotate(-0 348.661417 248.858215)">not met</ns0:text>
    </ns0:g>
    <ns0:g id="text_91">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="235.840025" transform="rotate(-0 425.19685 235.840025)">n/a</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="248.858215" transform="rotate(-0 425.19685 248.858215)">n/a</ns0:text>
    </ns0:g>
    <ns0:g id="text_92">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="246.276675" transform="rotate(-0 269.291339 246.276675)">L2 L20</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="261.614121" transform="rotate(-0 269.291339 261.614121)">L2 L20</ns0:text>
    </ns0:g>
    <ns0:g id="text_93">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="246.276675" transform="rotate(-0 348.661417 246.276675)">n/a</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="348.661417" y="261.614121" transform="rotate(-0 348.661417 261.614121)">n/a</ns0:text>
    </ns0:g>
    <ns0:g id="text_94">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="246.276675" transform="rotate(-0 425.19685 246.276675)">not met</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="425.19685" y="261.614121" transform="rotate(-0 425.19685 261.614121)">not met</ns0:text>
    </ns0:g>
    <ns0:g id="text_95">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="268.16845" transform="rotate(-0 269.291339 268.16845)">n/a = not applicable: no recovered lineage</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="280.889711" transform="rotate(-0 269.291339 280.889711)">n/a = not applicable: no recovered lineage</ns0:text>
    </ns0:g>
    <ns0:g id="text_96">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="282.10289" transform="rotate(-0 269.291339 282.10289)">Component tests summarized in panel a; L = tape bytes</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="290.810971" transform="rotate(-0 269.291339 290.810971)">Component tests summarized in panel a; L = tape bytes</ns0:text>
    </ns0:g>
    <ns0:g id="text_97">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="295.999517" transform="rotate(-0 269.291339 295.999517)">DZ2/DZ3: criteria now met; L2: applicability changes</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="300.732231" transform="rotate(-0 269.291339 300.732231)">DZ2/DZ3: criteria now met; L2: applicability changes</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_5">
-   <ns0:g id="line2d_5">
-    <ns0:path d="M 8.503937 371.776664  L 238.110236 371.776664  " clip-path="url(#pa4425aa398)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
-   </ns0:g>
    <ns0:g id="text_98">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="365.718336" transform="rotate(-0 8.503937 365.718336)">Metric</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="400.227383" transform="rotate(-0 8.503937 400.227383)">Metric</ns0:text>
    </ns0:g>
    <ns0:g id="text_99">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 362.974942)">Differing</ns0:text>
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 368.461729)">corrected core</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 400.324184)">Differing</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 406.808569)">corrected</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(144.566929 412.981665)">core</ns0:text>
    </ns0:g>
    <ns0:g id="text_100">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="365.586637" transform="rotate(-0 192.755906 365.586637)">Differing C2</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="400.227383" transform="rotate(-0 192.755906 400.227383)">Differing C2</ns0:text>
    </ns0:g>
    <ns0:g id="text_101">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="377.112024" transform="rotate(-0 8.503937 377.112024)">Partner-copy fraction, parent A</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="429.296674" transform="rotate(-0 8.503937 429.296674)">Partner-copy fraction, parent A</ns0:text>
    </ns0:g>
    <ns0:g id="text_102">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="377.227602" transform="rotate(-0 144.566929 377.227602)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="429.296674" transform="rotate(-0 144.566929 429.296674)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_103">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="377.227602" transform="rotate(-0 192.755906 377.227602)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="429.296674" transform="rotate(-0 192.755906 429.296674)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_104">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="384.235451" transform="rotate(-0 8.503937 384.235451)">Partner-copy fraction, parent B</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="440.498249" transform="rotate(-0 8.503937 440.498249)">Partner-copy fraction, parent B</ns0:text>
    </ns0:g>
    <ns0:g id="text_105">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="384.35103" transform="rotate(-0 144.566929 384.35103)">6</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="440.498249" transform="rotate(-0 144.566929 440.498249)">6</ns0:text>
    </ns0:g>
    <ns0:g id="text_106">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="384.35103" transform="rotate(-0 192.755906 384.35103)">6</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="440.498249" transform="rotate(-0 192.755906 440.498249)">6</ns0:text>
    </ns0:g>
    <ns0:g id="text_107">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="391.358879" transform="rotate(-0 8.503937 391.358879)">Initial byte-match fraction</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="451.699824" transform="rotate(-0 8.503937 451.699824)">Initial byte-match fraction</ns0:text>
    </ns0:g>
    <ns0:g id="text_108">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="391.474457" transform="rotate(-0 144.566929 391.474457)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="451.699824" transform="rotate(-0 144.566929 451.699824)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_109">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="391.474457" transform="rotate(-0 192.755906 391.474457)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="451.699824" transform="rotate(-0 192.755906 451.699824)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_110">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="398.464432" transform="rotate(-0 8.503937 398.464432)">Informative partners, generation 1 (n)</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="462.901398" transform="rotate(-0 8.503937 462.901398)">Informative partners, generation 1 (n)</ns0:text>
    </ns0:g>
    <ns0:g id="text_111">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="398.597885" transform="rotate(-0 144.566929 398.597885)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="462.901398" transform="rotate(-0 144.566929 462.901398)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_112">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="398.597885" transform="rotate(-0 192.755906 398.597885)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="462.901398" transform="rotate(-0 192.755906 462.901398)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_113">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="405.58786" transform="rotate(-0 8.503937 405.58786)">Informative partners, generation 2 (n)</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="474.102973" transform="rotate(-0 8.503937 474.102973)">Informative partners, generation 2 (n)</ns0:text>
    </ns0:g>
    <ns0:g id="text_114">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="405.721313" transform="rotate(-0 144.566929 405.721313)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="474.102973" transform="rotate(-0 144.566929 474.102973)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_115">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="405.721313" transform="rotate(-0 192.755906 405.721313)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="474.102973" transform="rotate(-0 192.755906 474.102973)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_116">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="412.729162" transform="rotate(-0 8.503937 412.729162)">Cyclic copy offset (bytes)</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="485.304548" transform="rotate(-0 8.503937 485.304548)">Cyclic copy offset (bytes)</ns0:text>
    </ns0:g>
    <ns0:g id="text_117">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="412.844741" transform="rotate(-0 144.566929 412.844741)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="485.304548" transform="rotate(-0 144.566929 485.304548)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_118">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="412.844741" transform="rotate(-0 192.755906 412.844741)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="485.304548" transform="rotate(-0 192.755906 485.304548)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_119">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="419.85259" transform="rotate(-0 8.503937 419.85259)">Parent-byte fraction preserved, A</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="496.506123" transform="rotate(-0 8.503937 496.506123)">Parent-byte fraction preserved, A</ns0:text>
    </ns0:g>
    <ns0:g id="text_120">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="419.968168" transform="rotate(-0 144.566929 419.968168)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="496.506123" transform="rotate(-0 144.566929 496.506123)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_121">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="419.968168" transform="rotate(-0 192.755906 419.968168)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="496.506123" transform="rotate(-0 192.755906 496.506123)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_122">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="426.976018" transform="rotate(-0 8.503937 426.976018)">Parent-byte fraction preserved, B</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="507.707698" transform="rotate(-0 8.503937 507.707698)">Parent-byte fraction preserved, B</ns0:text>
    </ns0:g>
    <ns0:g id="text_123">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="427.091596" transform="rotate(-0 144.566929 427.091596)">9</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="507.707698" transform="rotate(-0 144.566929 507.707698)">9</ns0:text>
    </ns0:g>
    <ns0:g id="text_124">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="427.091596" transform="rotate(-0 192.755906 427.091596)">9</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="507.707698" transform="rotate(-0 192.755906 507.707698)">9</ns0:text>
    </ns0:g>
    <ns0:g id="text_125">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="434.081571" transform="rotate(-0 8.503937 434.081571)">Offspring ≥75% parent-match fraction</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="518.909272" transform="rotate(-0 8.503937 518.909272)">Offspring ≥75% parent-match fraction</ns0:text>
    </ns0:g>
    <ns0:g id="text_126">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="434.215024" transform="rotate(-0 144.566929 434.215024)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="518.909272" transform="rotate(-0 144.566929 518.909272)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_127">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="434.215024" transform="rotate(-0 192.755906 434.215024)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="518.909272" transform="rotate(-0 192.755906 518.909272)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_128">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="441.204998" transform="rotate(-0 8.503937 441.204998)">Generation-2 normalized gain</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="530.110847" transform="rotate(-0 8.503937 530.110847)">Generation-2 normalized gain</ns0:text>
    </ns0:g>
    <ns0:g id="text_129">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="441.338452" transform="rotate(-0 144.566929 441.338452)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="530.110847" transform="rotate(-0 144.566929 530.110847)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_130">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="441.338452" transform="rotate(-0 192.755906 441.338452)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="530.110847" transform="rotate(-0 192.755906 530.110847)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_131">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="448.328426" transform="rotate(-0 8.503937 448.328426)">Generation-2 conditional gain</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="541.312422" transform="rotate(-0 8.503937 541.312422)">Generation-2 conditional gain</ns0:text>
    </ns0:g>
    <ns0:g id="text_132">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="448.461879" transform="rotate(-0 144.566929 448.461879)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="541.312422" transform="rotate(-0 144.566929 541.312422)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_133">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="448.461879" transform="rotate(-0 192.755906 448.461879)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="541.312422" transform="rotate(-0 192.755906 541.312422)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_134">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="455.451854" transform="rotate(-0 8.503937 455.451854)">Normalized culture gain</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="552.513997" transform="rotate(-0 8.503937 552.513997)">Normalized culture gain</ns0:text>
    </ns0:g>
    <ns0:g id="text_135">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="455.585307" transform="rotate(-0 144.566929 455.585307)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="552.513997" transform="rotate(-0 144.566929 552.513997)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_136">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="455.585307" transform="rotate(-0 192.755906 455.585307)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="552.513997" transform="rotate(-0 192.755906 552.513997)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_137">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="462.575282" transform="rotate(-0 8.503937 462.575282)">Generation-2 gain ≥0.3 (yes/no)</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="563.715572" transform="rotate(-0 8.503937 563.715572)">Generation-2 gain ≥0.3 (yes/no)</ns0:text>
    </ns0:g>
    <ns0:g id="text_138">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="462.708735" transform="rotate(-0 144.566929 462.708735)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="563.715572" transform="rotate(-0 144.566929 563.715572)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_139">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="462.708735" transform="rotate(-0 192.755906 462.708735)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="563.715572" transform="rotate(-0 192.755906 563.715572)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_140">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="469.716585" transform="rotate(-0 8.503937 469.716585)">Faithful culture classification (yes/no)</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="8.503937" y="574.917146" transform="rotate(-0 8.503937 574.917146)">Faithful culture classification (yes/no)</ns0:text>
    </ns0:g>
    <ns0:g id="text_141">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="469.832163" transform="rotate(-0 144.566929 469.832163)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="144.566929" y="574.917146" transform="rotate(-0 144.566929 574.917146)">0</ns0:text>
    </ns0:g>
    <ns0:g id="text_142">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="469.832163" transform="rotate(-0 192.755906 469.832163)">0</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="192.755906" y="574.917146" transform="rotate(-0 192.755906 574.917146)">0</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="axes_6">
-   <ns0:g id="line2d_6">
-    <ns0:path d="M 269.291339 371.776664  L 498.897638 371.776664  " clip-path="url(#pd8697b1403)" style="fill: none; stroke: #b4bac1; stroke-width: 0.4; stroke-linecap: square" />
-   </ns0:g>
    <ns0:g id="text_143">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="365.593512" transform="rotate(-0 269.291339 365.593512)">L bytes</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="400.227383" transform="rotate(-0 269.291339 400.227383)">L bytes</ns0:text>
    </ns0:g>
    <ns0:g id="text_144">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="365.718336" transform="rotate(-0 303.307087 365.718336)">Worlds, n</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="400.227383" transform="rotate(-0 303.307087 400.227383)">Worlds, n</ns0:text>
    </ns0:g>
    <ns0:g id="text_145">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(342.992126 363.106641)">Scoreable from</ns0:text>
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(342.992126 368.33003)">final data, n</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(342.992126 400.324184)">Scoreable from</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(342.992126 406.49728)">final data, n</ns0:text>
    </ns0:g>
    <ns0:g id="text_146">
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(413.858268 362.866016)">Missing 7,500-update</ns0:text>
-    <ns0:text style="font-weight: 700; font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(413.858268 368.352804)">snapshot, worlds</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(413.858268 400.324184)">Missing 7,500-update</ns0:text>
+    <ns0:text style="font-weight: 700; font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(413.858268 406.808569)">snapshot, worlds</ns0:text>
    </ns0:g>
    <ns0:g id="text_147">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="377.227602" transform="rotate(-0 269.291339 377.227602)">16</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="421.496674" transform="rotate(-0 269.291339 421.496674)">16</ns0:text>
    </ns0:g>
    <ns0:g id="text_148">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="377.227602" transform="rotate(-0 303.307087 377.227602)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="421.496674" transform="rotate(-0 303.307087 421.496674)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_149">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="377.227602" transform="rotate(-0 342.992126 377.227602)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="421.496674" transform="rotate(-0 342.992126 421.496674)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_150">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="413.858268" y="377.227602" transform="rotate(-0 413.858268 377.227602)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="413.858268" y="421.496674" transform="rotate(-0 413.858268 421.496674)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_151">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="387.664252" transform="rotate(-0 269.291339 387.664252)">20</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="434.252579" transform="rotate(-0 269.291339 434.252579)">20</ns0:text>
    </ns0:g>
    <ns0:g id="text_152">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="387.664252" transform="rotate(-0 303.307087 387.664252)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="303.307087" y="434.252579" transform="rotate(-0 303.307087 434.252579)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_153">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="387.664252" transform="rotate(-0 342.992126 387.664252)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="342.992126" y="434.252579" transform="rotate(-0 342.992126 434.252579)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_154">
-    <ns0:text style="font-size: 5.2px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="413.858268" y="387.664252" transform="rotate(-0 413.858268 387.664252)">10</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="413.858268" y="434.252579" transform="rotate(-0 413.858268 434.252579)">10</ns0:text>
    </ns0:g>
    <ns0:g id="text_155">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="405.039762" transform="rotate(-0 269.291339 405.039762)">All worlds completed 10,000,000 updates</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="453.52817" transform="rotate(-0 269.291339 453.52817)">All worlds completed 10,000,000 updates</ns0:text>
    </ns0:g>
    <ns0:g id="text_156">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="416.600806" transform="rotate(-0 269.291339 416.600806)">Retained final bytes and journals support scoring</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="463.44943" transform="rotate(-0 269.291339 463.44943)">Retained final bytes and journals support scoring</ns0:text>
    </ns0:g>
    <ns0:g id="text_157">
-    <ns0:text style="font-size: 5.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="428.232318" transform="rotate(-0 269.291339 428.232318)">Applied-mutation/collision counts unavailable for these worlds</ns0:text>
+    <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="269.291339" y="473.37069" transform="rotate(-0 269.291339 473.37069)">Applied-mutation/collision counts unavailable for these worlds</ns0:text>
    </ns0:g>
   </ns0:g>
   <ns0:g id="panel-label">
-   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="19.915533" transform="rotate(-0 5.669291 19.915533)">a</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="17.338583" transform="rotate(-0 5.669291 17.338583)">a</ns0:text>
   </ns0:g>
   <ns0:g id="text_158">
-   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="19.629384" transform="rotate(-0 22.677165 19.629384)">Validation: distinct denominators</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="17.155512" transform="rotate(-0 22.677165 17.155512)">Validation: distinct denominators</ns0:text>
   </ns0:g>
   <ns0:g id="text_159">
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 160.545164)">Stable: upper 95% CI of changed-final-memory pair fraction &lt;0.01%</ns0:text>
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 167.030832)">100,000 encounter draws/condition; units named in each row</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 158.615952)">Stable: upper 95% CI of changed-final-memory pair fraction &lt;0.01%</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 166.271099)">100,000 encounter draws/condition; units named in each row</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
-   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="19.915533" transform="rotate(-0 266.456693 19.915533)">b</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="17.338583" transform="rotate(-0 266.456693 17.338583)">b</ns0:text>
   </ns0:g>
   <ns0:g id="text_160">
-   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="19.629384" transform="rotate(-0 283.464567 19.629384)">I1: flags remain flags</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="17.155512" transform="rotate(-0 283.464567 17.155512)">Stability flags and assay differences</ns0:text>
   </ns0:g>
   <ns0:g id="text_161">
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 160.545164)">Stable: upper 95% CI of changed-final-memory pair fraction &lt;0.01%</ns0:text>
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 166.883425)">Flag = stability criterion not met; assays compare with core C0</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 115.208078)">Stable: upper 95% CI of changed-final-memory pair fraction &lt;0.01%</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 122.682444)">Flag = stability criterion not met; assays compare with core C0</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
-   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="182.263422" transform="rotate(-0 5.669291 182.263422)">c</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="191.159593" transform="rotate(-0 5.669291 191.159593)">c</ns0:text>
   </ns0:g>
   <ns0:g id="text_162">
-   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="181.977273" transform="rotate(-0 22.677165 181.977273)">I1-T2: all 22 claim verdicts</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="190.976522" transform="rotate(-0 22.677165 190.976522)">I1-T2: all 22 claim verdicts</ns0:text>
   </ns0:g>
   <ns0:g id="text_163">
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 322.847505)">DZ2 timing; DZ3 transmitter trend; L2 recovery sites</ns0:text>
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 329.249533)">Stands = same as archive; E1 stability remains failed; 19/22 stand</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 348.910363)">DZ2 timing; DZ3 transmitter trend; L2 recovery sites</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 356.462931)">Stands = same as archive; E1 stability remains failed; 19/22 stand</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
-   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="182.263422" transform="rotate(-0 266.456693 182.263422)">d</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="191.159593" transform="rotate(-0 266.456693 191.159593)">d</ns0:text>
   </ns0:g>
   <ns0:g id="text_164">
-   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="181.977273" transform="rotate(-0 283.464567 181.977273)">Four changed components of 36</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="190.976522" transform="rotate(-0 283.464567 190.976522)">Four changed components of 36</ns0:text>
   </ns0:g>
   <ns0:g id="text_165">
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 322.847505)">Historical = published archive; DZ timing/share; L2 sites</ns0:text>
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 329.231314)">Complete 36-component ledger retained in Source Data</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 314.48504)">Historical = published archive; DZ timing/share; L2 sites</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 322.015265)">Complete 36-component ledger retained in Source Data</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
-   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="344.61131" transform="rotate(-0 5.669291 344.61131)">e</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="5.669291" y="381.509863" transform="rotate(-0 5.669291 381.509863)">e</ns0:text>
   </ns0:g>
   <ns0:g id="text_166">
-   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="344.325161" transform="rotate(-0 22.677165 344.325161)">Assay changes by measurement</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="22.677165" y="381.326792" transform="rotate(-0 22.677165 381.326792)">Assay changes by measurement</ns0:text>
   </ns0:g>
   <ns0:g id="text_167">
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 485.259159)">Counts /417 assays vs core C0; rows overlap (not additive)</ns0:text>
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 491.551874)">A/B = parent role; copy = ≥75% immediate-parent byte match</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 588.748159)">Counts /417 assays vs core C0; rows overlap (not additive)</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(8.503937 596.166665)">A/B = parent role; copy = ≥75% immediate-parent byte match</ns0:text>
   </ns0:g>
   <ns0:g id="panel-label">
-   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="344.61131" transform="rotate(-0 266.456693 344.61131)">f</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 8px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start" x="266.456693" y="381.509863" transform="rotate(-0 266.456693 381.509863)">f</ns0:text>
   </ns0:g>
   <ns0:g id="text_168">
-   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="344.325161" transform="rotate(-0 283.464567 344.325161)">Stage-L scoring and snapshot availability</ns0:text>
+   <ns0:text style="font-weight: 700; font-size: 7px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1c2733" x="283.464567" y="381.326792" transform="rotate(-0 283.464567 381.326792)">Stage-L scoring and snapshot availability</ns0:text>
   </ns0:g>
   <ns0:g id="text_169">
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 485.24094)">Stage L: closure-recovery worlds, 10 / tape length</ns0:text>
-   <ns0:text style="font-size: 5.3px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 491.533655)">The missing observation is a world snapshot at 7,500 updates</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 487.179359)">Stage L: closure-recovery worlds, 10 / tape length</ns0:text>
+   <ns0:text style="font-size: 6.5px; font-family: 'Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans', sans-serif; fill: #1c2733" transform="translate(269.291339 494.597865)">The missing observation is a world snapshot at 7,500 updates</ns0:text>
   </ns0:g>
  </ns0:g>
- <ns0:defs>
-  <ns0:clipPath id="p14e8c894c0">
-   <ns0:rect x="8.503937" y="32.469578" width="232.440945" height="118.282033" />
-  </ns0:clipPath>
-  <ns0:clipPath id="pa79db26faa">
-   <ns0:rect x="269.291339" y="32.469578" width="232.440945" height="118.282033" />
-  </ns0:clipPath>
-  <ns0:clipPath id="p5cb716987a">
-   <ns0:rect x="8.503937" y="194.817466" width="232.440945" height="118.282033" />
-  </ns0:clipPath>
-  <ns0:clipPath id="p720ae9b418">
-   <ns0:rect x="269.291339" y="194.817466" width="232.440945" height="118.282033" />
-  </ns0:clipPath>
-  <ns0:clipPath id="pa4425aa398">
-   <ns0:rect x="8.503937" y="357.165354" width="232.440945" height="118.282033" />
-  </ns0:clipPath>
-  <ns0:clipPath id="pd8697b1403">
-   <ns0:rect x="269.291339" y="357.165354" width="232.440945" height="118.282033" />
-  </ns0:clipPath>
- </ns0:defs>
 </ns0:svg>

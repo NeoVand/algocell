@@ -1,0 +1,42 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-y90w365w
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1331f-3d4d-7c92-bc7e-48be0658ee01
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_8. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+The new **ed8_8 meets the reference standard for an Extended Data evidence summary**. It is more text-heavy than the references, but its tables contain substantive results, the cohort and count labels are explicit, and the main findings are understandable without the separate proofs or full methods.
+
+**Substantive defects: none supported by the PNG.**
+
+- **a–b:** Cohorts, worlds, sampled lines and founder events are distinguished. The ancestry totals are consistent with 64 lines per confined world. First founders and repeatable later events have separate columns and explanations.
+- **c:** The 18/20 versus 2/20 mechanism result is explicit. The distinction between recorded mechanisms and causal source classifications prevents their being mistaken for interchangeable categories.
+- **d:** Both copier scopes have denominators and definitions. The failed executed-byte requirement is prominently identified: 11/20 against ≥12/20.
+- **e:** Both axes identify the quantities plotted; the note explains the observational unit and cohort size. The panel contains substantive individual-founder observations.
+- **f:** Requirements, observations and verdicts are aligned and directly comparable. The unmet component is conspicuous, and the carrier-share and mutation summaries have supporting definitions.
+
+There is no apparent clipping, text collision, broken glyph or empty panel. At the stated print width, the body text appears close to the requested substantive-label minimum and reasonably readable; exact point sizes cannot be certified from the image alone.
+
+**Optional polish**
+
+- **a–b:** Consolidate repeated explanations of sampled lines and first-versus-later founders. Preserve the direct definitions and denominators, but use the recovered space to separate results from explanatory notes more clearly.
+- **c:** Give “novel” and “damage” small horizontal proportion bars alongside the existing fractions. This would make the 18:2 comparison faster to read while retaining the precise numbers.
+- **e:** Several low-value observations crowd together. Slightly smaller hollow markers or a clearly marked inset would help distinguish coincident or nearby points without moving their coordinates. Retain the full-range plot.
+- **f:** Add a little more vertical separation between ledger rows, especially around N6-3 and N6-4. The multiline requirements and observations are readable, but tighter than the reference figure’s number columns.
+- **Across panels:** The hierarchy could be stronger: bold result statements and slightly lighter explanatory text would make the figure easier to scan without removing its dense supporting content.
+
+MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS
+tokens used
+11,221

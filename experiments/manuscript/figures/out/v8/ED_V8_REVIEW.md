@@ -1,39 +1,19 @@
-# Extended Data v8 review record
+# Extended Data final bounded round
 
-The nine displays use frozen source tables. The review archive preserves the two original references, the exact prompt, reviewed PNG, SHA-256 hashes, figcheck result and unedited Astra response for each round. Final clearance is calculated by `verify_v8.py` from the final verdict and equality of reviewed and delivered PNG hashes; `qa_manifest.json` and `FIGURES_V8.md` report that status.
+Every ED display received one final image-only gpt-6-astra/high review with the two reference PNGs. All final text is ≥6 pt (measured minimum 6.5 pt), all recorded evidence is retained, and heights follow actual content. ED6 was enlarged because its previous type was below 6 pt.
 
-| Display | Substantive corrections to the round-2 issues |
-|---|---|
-| ED1 | Row-specific agreement criteria and observational units; identical ring-stability definition in a/b; explicit flag meaning; worlds scoreable from final data versus worlds missing the 7,500-update snapshot; unavailable applied-mutation/collision counts stated directly. |
-| ED2 | Mutant-window carriage numerator and background comparator; serial versus branching carrier definitions; evolved transmitter and constructed 8080 labels; serial endpoint connected to the earlier marker definition; L16 and 65,280-start denominators; partner source, zero-opcode chemistry and update unit; all-zero byte partners in the erasure trace. |
-| ED3 | Free byte positions defined operationally; coincident-setting counts; mutually exclusive culture/eligibility classes with contrasting swatches and normalized gain definition; Z80 stage/motif cohort; immediate-parent match gate and retained alleles; serial denominator named as descendant-transfer records and shared separately by each check. |
-| ED4 | Separate Z80 L16 random-register-reset cohort; Z80 L50 matched-pair invasion cohort for the three-world marker result; consistent stage/length notation, explicit 170-world link, definite marker-point annotation and both-detected accounting. |
-| ED5 | Defined-ratio median distinguished from all-world core/tail medians including zeros; tail range tied to tape length; unchanged-host encounter fraction and 25,600 denominator; detoxification expanded; implementation/length/chemistry scopes for continuations, host controls and E1; mean T-share columns and continuation endpoint unit. |
-| ED6 | Constructed-census site measure and 296 copier/contract configurations identified; five coincident-coordinate counts; open/undetected route definitions; overlapping loop count separated; census headers and execution-step units; C2 sampling roles and coincident capacity observations identified. |
-| ED7 | Modal normalized parent-byte-match gain and population criterion; harmless bracket behavior and matching variant labels; collapse qualified by population detection; complete fetch/H pair counts replace overlapping bubbles; all-world final median; Z80 loop-final subset and pooled BFF literal variants named explicitly (12 worlds each, 36 total); registered support/reject boundaries beside observations. |
-| ED8 | Open-first ancestry and operational genealogy fetch classes; lines explicitly sampled from confined-world subsets; first versus later open-ancestry-to-confined-founder events; whole-tape and executed-byte copier scopes; founding executors identified as counted entities; abundance-null comparison; observed carrier share, baseline and fold ratio; every N6 requirement; mutation expectation and 0/20 observed founders distinguished from 55 point-mutation events on 20 pre-founder chains. |
-| ED9 | First heritable-copier detection endpoint and 16 traces per detection; geometry annotations separated from points; all candidate/admission/selected cohorts linked to the same S2 worlds; admission stages together; genotypes counted consistently; nonempty d4 erasure/d16 payload interventions distinguished from empty alternative sets; hexadecimal 5F A4 u v pattern and variable bytes explained; separate snapshot-fate block identifies target counts in 512 encounters, cohorts, donor tilings and contexts; earlier persistence expressed as worlds ever positive across samples combined. |
+| Display | Final round | Unedited verdict | Status | Height (mm) | Minimum text (pt) |
+|---|---|---|---|---|---|
+| [ed8_1](ed8_1.png) | [round5](critique_review/ed8_1/round5/critique.md) | No substantive defects | yes | 216 | 6.500 |
+| [ed8_2](ed8_2.png) | [round6](critique_review/ed8_2/round6/critique.md) | Substantive defects | fixed-after-final-review | 285 | 6.500 |
+| [ed8_3](ed8_3.png) | [round5](critique_review/ed8_3/round5/critique.md) | Substantive defects | fixed-after-final-review | 211 | 6.500 |
+| [ed8_4](ed8_4.png) | [round5](critique_review/ed8_4/round5/critique.md) | Substantive defects | fixed-after-final-review | 260 | 6.500 |
+| [ed8_5](ed8_5.png) | [round5](critique_review/ed8_5/round5/critique.md) | Substantive defects | fixed-after-final-review | 324 | 6.500 |
+| [ed8_6](ed8_6.png) | [round4](critique_review/ed8_6/round4/critique.md) | Substantive defects | fixed-after-final-review | 224 | 6.500 |
+| [ed8_7](ed8_7.png) | [round7](critique_review/ed8_7/round7/critique.md) | No substantive defects | yes | 228 | 6.500 |
+| [ed8_8](ed8_8.png) | [round7](critique_review/ed8_8/round7/critique.md) | No substantive defects | yes | 190 | 6.500 |
+| [ed8_9](ed8_9.png) | [round7](critique_review/ed8_9/round7/critique.md) | Substantive defects | fixed-after-final-review | 231 | 6.500 |
 
-All nine original ED legend titles differed from the SI_v8.md display map. The delivered titles are now exact matches, with PDF targets `ed8_1.pdf` through `ed8_9.pdf`; no title mismatch remains. Every legend describes the final panels and contains at most 250 words.
+ED1, ED7 and ED8 match their passing final review hashes. All other EDs received final wording/label fixes; ED2/ED3 also received export clipping repairs. They are fixed after final review, not re-reviewed. No verdict was overridden.
 
-Unavailable observations are labelled in their relevant figures: applied-mutation/collision counts for Stage L, pointer-randomization measurements, and the standard harmless-bracket BFF entropy panel. No corresponding values are invented.
-
-In the preceding revision, rounds 3 and 4 were the only new critique rounds. ED1, ED3, ED4, ED5 and ED6 clear in round 3; ED2 clears in round 4. Their preceding delivered PNGs matched their clearing reviews; terminology revisions below supersede those deliveries where noted. ED7, ED8 and ED9 receive below-standard round-4 verdicts; the newly identified label gaps are corrected afterward and the resulting files pass technical validation. Those final PNGs have no clearing review and are explicitly **not cleared**. That revision stopped at its four-round limit; the current task explicitly authorizes confirmation rounds 5 and 6.
-
-The final unreviewed corrections are: ED7 names entropy conditioning on the fixed parent, writes the Q3 subtraction explicitly, and identifies literal-no-wrap and wrap-plus-literal dial backgrounds; ED8 defines a counted genealogy trace as any partner opcode/operand fetch; ED9 defines copy displacement, names zero applicable perturbation coordinates and empty-assignment controls, and identifies snapshot medians as totals per 512-encounter batch. These changes do not alter frozen observations. All final verdicts remain the unedited archived reviewer verdicts.
-
-Two source-semantic checks affect interpretation. The constructed 6502 carriage census records same-position byte identity over three sampled bodies and 64 partners per body, rather than a mutant-value threshold. The N6 null prose in `results/lod_n6/REACH.md` contains a stale hard-coded count of 17; `founders2.csv` and `REACH.csv` each contain 20 first-founder rows, all 20 soup non-copier shares are defined, and their product is 0.061811822140904575 (displayed as P = 0.062). Frozen source files are preserved.
-
-The branch fast-forwarded to `7cab316` before these changes. Rendering and validation use CPU only; no simulation or GPU computation is performed.
-
-## Fresh-review confirmation and terminology revision
-
-The required runner merge did not fast-forward. The fallback `git merge --no-edit feat/experiments-runner` completed without conflicts as merge commit `37ff72a`.
-
-ED1–ED5 had displayed terminology corrections and were re-reviewed: corrected-core implementation labels in ED1/ED5; lethal chemistry and transmitter labels in ED2; lowercase Z80 bytes in ED3–ED5. ED1, ED3, ED4 and ED5 received round 4; ED2 received round 5. All five returned below-standard verdicts, principally for existing small type and additional label/definition concerns. Their reviewed/delivered PNG hashes match; they are **not cleared**. ED6 was unchanged and retains its earlier round-3 clearance.
-
-ED7–ED9 received the required round-5 review of the previously unreviewed delivered images. All three returned substantive defects. They were then enlarged to 180 × 220 mm while retaining every panel, data row and coordinate; body/table text was increased to at least 6.5 pt and remaining annotations to at least 6 pt. Cohort, denominator and encoding labels were expanded, and ED9’s 8086 opcode bytes were uppercased. Each received the final authorized round 6. All three remain **below standard / not cleared**, with exact reviewed/delivered PNG hash matches. No further ED7–ED9 image edits occurred after round 6.
-
-The unedited round-6 responses identify remaining print-readability and grouping concerns in all three displays; ED7 also needs clearer five-variant coverage and r ≥ 2 scope, ED8 needs improved column separation and an explicit mutation-founded outcome label, and ED9 needs clearer fetch-event/address-domain and perturbation-total definitions. These are retained as unresolved reviewer findings, not silently treated as clearance. Source font-size checks do not replace the image verdicts.
-
-See `FRESH_REVIEW.md`, `qa_manifest.json` and `FIGURES_V8.md` for the final per-image hashes and dispositions. All rendering and verification remained CPU-only.
+Remaining concerns and their bounded-round reasons are listed in [FRESH_REVIEW.md](FRESH_REVIEW.md). Exact post-review repairs are in [FINAL_REVIEW_FIXES.json](FINAL_REVIEW_FIXES.json). [ED_V8.md](ED_V8.md) supplies all legends and frozen sources.

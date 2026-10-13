@@ -1,0 +1,45 @@
+Reading additional input from stdin...
+OpenAI Codex v0.162.0-alpha.17.2
+--------
+workdir: /var/folders/gz/kmzkq37n5kd3zqj75h46ktww0000gn/T/v8-image-critic-l8w0g1as
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1331d-1bd3-7d91-beed-f6bed3b281aa
+--------
+user
+Act as an independent scientific art editor. Your ONLY evidence is the attached PNG images. Do not use tools, inspect files, read code, consult a repository, or infer hidden data. All images except the LAST are the previous reference figures that establish the required standard. The LAST is the new v8 figure, printed at 180 mm width, exported at 600 dpi. Does it meet or exceed the references in polish, information, and self-explanation? Rich direct labels, category headers, inline keys and number columns are required. Every panel must contain substantive content. Paragraph-like method notes were deliberately moved to separate manuscript legends; judge whether direct labels, units, encodings, cohorts and the main results remain understandable without requiring the full methods inside the image. Scientific content and panel counts differ intentionally. The evolved-8086-law statement is required only for Figure 3b, where it must say Registered 8086 law test: untested. Do not demand that statement in Figures 1, 2, 4 or 5, which have different subjects. No empty panel is permitted. The references establish the visual standard. The revised main figures require no text below 6 pt and substantive labels at least 6.5 pt where layout allows at 180 mm width. Judge actual print readability and retain dense content. List EVERY supported defect: apparent missing content, gaps, layout, typography, overlap, clipping, glyphs, misleading counts or areas, ambiguous symbols, missing denominators, unexplained units, or essential labels requiring a caption to understand the main result. Separate optional polish from substantive defects, and propose concrete panel-specific fixes. Be demanding, candid and specific. Do not infer unshown results or demand complete methods in the figure. If no substantive defect remains, explicitly state that the new figure meets or exceeds the references. Finish with exactly one line: MEETS OR EXCEEDS REFERENCES - NO SUBSTANTIVE DEFECTS, or BELOW STANDARD - SUBSTANTIVE DEFECTS. The new image is ed8_9. Apply requirements only to its scientific scope. Extended Data items summarize archived supporting evidence, with full ledgers and proofs supplied separately.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+warning: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/neo/.codex/config.toml): `experimental_use_rmcp_client` is ignored.
+codex
+**Below standard, although much of the figure is already strong.** All six panels contain substantive content. The detection and persistence results are clear, and the tables retain useful counts. The principal shortcomings are the readability of the smallest labels and incomplete explanation of the evidence summarized in panels e–f.
+
+**Substantive defects**
+
+- **Panel e: the zero-mismatch result needs a defined comparison.** “Byte/core/ancestry mismatches” identifies three categories but does not explain what is being compared. “Exact-law checks” does not supply that information. Add a short direct label naming the expected relation and the observed quantities being checked. This needs a compact result definition, not a proof or full methods.
+
+- **Panel e: the encounter totals obscure the amount of substantive testing.** The figure explicitly includes empty-assignment controls in 538,240 and 1,686,400 encounters, but does not separate those controls from nonempty perturbations. Consequently, readers cannot determine how much of the zero-mismatch result comes from actual perturbations. Add counts for **nonempty perturbation encounters** and **empty-assignment controls**, either as adjacent columns or compact subrows. Retain the existing zero-applicability statements; those are useful qualifications.
+
+- **Panel f, lower table: the partner conditions are not assigned to the reported results.** “Partners (soup or uniform)” leaves unclear which condition produced each median, or whether both were pooled. Because 94.5 and 214.5 invite comparison, this is an essential cohort label. Identify the partner condition beside each cohort, or explicitly label the medians as pooled across both conditions.
+
+- **Panel f: the smallest explanatory labels are marginal at the specified print width.** The bottom batch-definition and Stage G/motif-definition lines are visibly smaller than the principal body text and appear around the 6 pt range at 180 mm. These contain substantive interpretation, so they should reach the requested 6.5 pt target. Redistribute the lower content and shorten redundant wording to enlarge them. Exact point sizes cannot be certified from the PNG alone, but this is the clearest print-readability weakness.
+
+**Optional polish**
+
+- **Panel a:** replace long repeated world-seed prefixes with short seed suffixes and a shared prefix label. This would reduce visual weight without losing identification. A miniature dot-and-censor key would also make the existing text key faster to use.
+- **Panel b:** the 0/20 result is immediately understandable. Its large unused plotting area could be reduced to give the lower panels more room; the panel is not empty.
+- **Panel c:** make the shared candidate pool explicit in the column heading or a short table note. Repeated 1,337 values across overlapping tests are not necessarily incorrect, but “same candidate pool; rows overlap” would prevent accidental addition.
+- **Panel d:** the total and unresolved counts are repeated beneath the ledger. Consolidate them into one summary line. Preserve the opcode rows and number column.
+- **Panel e:** improve the first-column wrapping. “16 / single/joint payload” currently breaks into a narrow stack that is harder to scan than the other columns. Separate displacement and edit class into two columns.
+- **Panel f:** strengthen the visual separation between the address plot and the independent snapshot table, using spacing or a light rule. The present “Separate snapshot fates” heading helps, but the panel-wide title describes only the upper result.
+
+The displayed arithmetic is internally consistent: panel d’s unresolved rows sum to 724 and its categories to 1,337; panel e’s encounter totals sum to 2,224,640. I see no evident clipping, overlapping labels, broken glyphs, or missing panels. No additional evolved-8086-law statement is required for this Extended Data scope.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
+tokens used
+12,982

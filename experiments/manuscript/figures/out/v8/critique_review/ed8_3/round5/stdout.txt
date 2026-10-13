@@ -1,0 +1,28 @@
+**ed8_3 is below the references overall.** All six panels contain substantive content, and the numerical summaries are useful. The principal weaknesses are an incomplete encoding key, unclear links between evidence cohorts, and small supporting text. Full methods or proofs need not be restored to the figure.
+
+**Substantive defects**
+
+1. **Panel c: the ancestry key lacks visible color swatches.** “Fixed core,” “Ancestry lost,” and “Ancestry retained” appear as plain text beneath the strips. Their placement does not unambiguously associate them with gray, orange, and teal. Add a colored square immediately beside each label. This is essential because ancestry is the panel’s main result.
+
+2. **Panel d: the byte-match comparison is unspecified.** “Byte-match fraction before/after encounter” identifies timing but does not say which two sequences are compared. Consequently, the normalized gain formula remains scientifically ambiguous. Add a short label naming the comparison target and make explicit whether the mean is across the 16 partners. Neither requires a methods paragraph.
+
+3. **Panel d: the biological status of the three categories is unclear.** Gray is explicitly “not culture-positive,” whereas white and teal are described only through gain and “prefix/offset/phase conditions.” The reader cannot confidently tell whether the 11 teal values are eligible candidates or demonstrated positive outcomes. Give each category a short outcome name reflecting the evidence actually shown, followed by the existing threshold and condition qualifiers. Retain all three counts.
+
+4. **Panel b: the tested cohort is not identified.** “All passage directions” describes coverage of directions, but does not connect the 1,067,608 intervention cases to a defined set of parents or settings. Several distinct populations appear elsewhere in this figure. Add a compact cohort label stating which settings or parents supplied these interventions. The existing explanation of 17 partners is useful and should remain.
+
+5. **Panel c: the examples need an experiment or cohort identifier.** “Lineage 0, transfer 8,” the parent bytes, and copy offsets identify the examples locally, but do not establish their relationship to the registered experiment or archived populations elsewhere. Add a brief source tag and explicit system/tape-length label. Preserve the descendant byte strings.
+
+6. **Panel a: counts and coordinates are linguistically confounded.** “Free byte positions” and especially “Free positions: 0, 1, 4…” can read as byte indices, while the plotted quantity appears to be the **number** of free positions. Label both axes “Number of … free byte positions.” Present the supporting enumeration as two aligned rows, “Free-position count” and “Settings,” so the eight multiplicities map immediately to the eight plotted values.
+
+7. **Print readability is marginal in the supporting text.** At the specified 180 mm width, the explanatory blocks in a, b, e and f, the hexadecimal strings in c, and the category descriptions in d appear around the 6–6.5 pt range. Some substantive labels appear below the requested 6.5 pt target; exact point sizes cannot be certified from this displayed PNG. Enlarge these labels using the available whitespace, with particular attention to d’s long legend and the bottom-row notes. Retain the information rather than shrinking or removing it.
+
+**Optional polish**
+
+- **a:** Move the eight count/multiplicity pairs nearer the plot; the current prose block makes the reader repeatedly look between the chart and its supporting numbers.
+- **b, e, f:** Right-align numeric columns and distinguish totals or final eligibility outcomes through restrained weight or spacing.
+- **d:** Bring the category key closer to the heatmap. The large separation weakens the connection between the colored cells and their meanings.
+- **Across panels:** More consistent spacing between headings, displays and explanatory labels would bring the page closer to the references’ visual organization.
+
+I see no empty panel, obvious clipping, overlapping labels, malformed glyphs, or demonstrable arithmetic inconsistency. Panel b’s rows sum to its total; d’s categories sum to 256; and the 2,347-to-2,343 eligibility accounting is consistent. The required changes concern interpretation and presentation, not additional scientific results.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS

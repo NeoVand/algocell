@@ -1,6 +1,6 @@
-# Legend updates for the fresh main-figure review
+# Legend updates for the final main figures
 
-Exact sentence replacements for the manuscript editor. `MAIN_v8.md` was not edited by this job. The canonical legend exports retain its current text until the manuscript editor incorporates these changes.
+Every required final sentence replacement, exact old → exact new. MAIN_v8.md remains unedited. The delivered LEGENDS_V8.md applies these changes; compact replacements keep every final legend within 250 words.
 
 ## Figure 1
 
@@ -19,12 +19,6 @@ Core C1 denotes corrected Z80 semantics; rows must not be pooled as one accuracy
 **New sentence:**
 
 Corrected core denotes core C1; rows must not be pooled as one accuracy estimate.
-
-**M4 insertion:** After “The ring criterion is a 95% upper bound on changed-memory rate below 0.01%.” add this exact sentence:
-
-For the ring comparison, meeting the criterion permits a small nonzero observed change rate; it does not denote identical memory in every encounter.
-
-**Additional compact replacements:** These preserve the numerical content while keeping the corrected legend within 250 words.
 
 **Old sentence:**
 
@@ -50,6 +44,30 @@ The 10,083 hardware divergences are expected; none is unexpected.
 
 All 10,083 hardware divergences are expected.
 
+**Old sentence:**
+
+Execution can enter the partner; a separate return-containing design redirects execution into its own tape.
+
+**New sentence:**
+
+Execution can enter the partner; separate RET NZ copying returns to A’s start if the zero flag is clear.
+
+**Old sentence:**
+
+Ellipses abbreviate tapes; `e3` exchanges HL with stack memory.
+
+**New sentence:**
+
+Selected bytes are shown; ellipses omit positions; `e3` exchanges HL with stack memory.
+
+**Old sentence:**
+
+The ring criterion is a 95% upper bound on changed-memory rate below 0.01%.
+
+**New sentence:**
+
+Ring stability requires a 95% upper bound <0.01% changed-memory pairs; small nonzero observed changes are permitted.
+
 ## Figure 2
 
 **Old sentence:**
@@ -68,8 +86,6 @@ The L50 pusher uses 32 alternatives/site; others use 255.
 
 The lethal-chemistry L16 tape is a confined transmitter with nine scored sites at transfer eight. The L50 pusher uses 32 alternatives/site; others use 255.
 
-**Additional compact replacements:** These preserve the numerical content while keeping the corrected legend within 250 words.
-
 **Old sentence:**
 
 Each member meets two fresh partners; only ≥ 75% best-cyclic-shift matches to the immediate parent continue, uniformly capped at 32 members.
@@ -84,7 +100,7 @@ Sites score when carriage among surviving mutant populations exceeds surviving-c
 
 **New sentence:**
 
-Sites score when surviving-mutant carriage exceeds surviving-control carriage by ≥0.5 for ≥half identifiable alternatives.
+Sites score when surviving-mutant carrier fraction minus surviving-unmutated carrier fraction is ≥0.5 for ≥half identifiable alternatives.
 
 **Old sentence:**
 
@@ -110,6 +126,14 @@ At zero-based execution step 6, address 4 supplies ancestry from original byte 0
 
 At zero-based execution step 6, address 4 supplies original-byte-0 ancestry, overwriting 0xA7 at address 8 and erasing its last ancestry label.
 
+**Old sentence:**
+
+Generation-eight bars partition mutant starts: lost, alive with < 50% marker carriage or alive with ≥ 50% carriage.
+
+**New sentence:**
+
+Transfer-eight bars partition starts: lost, alive with <50% or ≥50% of members carrying the marker window.
+
 ## Figure 3
 
 **Old sentence:**
@@ -127,8 +151,6 @@ An exploratory 256-value scan finds 157 nonworking, 88 working outside sampled e
 **New sentence:**
 
 An exploratory 256-value scan finds 157 nonworking, 88 working outside the sampled screen and 11 that pass the sampled screen, shaded by predicted payload.
-
-**Additional compact replacements:** These preserve the numerical content while keeping the corrected legend within 250 words.
 
 **Old sentence:**
 
@@ -170,7 +192,7 @@ Styles/markers identify starting mixtures; light/open denotes historical impleme
 
 **New sentence:**
 
-Styles/markers identify starting mixtures; light/open denotes Historical and dark/filled Corrected, where Corrected denotes the corrected Z80 core (core C1).
+Styles/markers identify starts; light/open = Historical, dark/filled = Corrected (Z80 core C1).
 
 **Old sentence:**
 
@@ -188,6 +210,14 @@ Endpoint columns give core C1 then historical medians.
 
 Endpoint columns give Corrected then Historical medians.
 
+**Old sentence:**
+
+Transmitter majority requires estimated share > 50% of heritable cells in the confined ≥ 5-site class.
+
+**New sentence:**
+
+Transmitter majority means >50% of heritable cells are confined with ≥5 byte sites retaining introduced values under the carriage-excess criterion.
+
 ## Figure 5
 
 **Old sentence:**
@@ -196,13 +226,7 @@ Frozen mechanism labels hold in 16/16 encounters: eight one-pass and two copy-lo
 
 **New sentence:**
 
-Frozen full-address classes hold in 16/16 encounters: eight One-pass class and two Loop class classifications.
-
-**N3 insertion:** After the new full-address classification sentence add these exact sentences:
-
-These classes use full instruction-start addresses. Post hoc traces show repeated copying of mapped ring positions at d = 4 in all ten tapes.
-
-**Additional compact replacements:** These preserve the numerical content while keeping the corrected legend within 250 words.
+Frozen full-address classes hold in 16/16 encounters: eight One-pass class and two Loop class classifications. Classes use full instruction-start addresses; all ten post hoc tapes repeatedly copy mapped ring positions at displacement d = 4 bytes.
 
 **Old sentence:**
 
@@ -268,14 +292,6 @@ Later overlap analysis is exploratory and does not change registered verdicts.
 
 Exploratory overlap analysis leaves registered verdicts unchanged.
 
-## Already aligned sentences
-
-Figure 1a already describes a separate return-containing design and retains “These are not a documented ancestor–descendant pair.” Figure 2d already names execution step 6. Figure 3b already says the registered 8086 tests remain untested; the image now uses “admitted” for the frozen extractor. Figure 4 already uses lowercase `5e ed b0` and Kaplan–Meier. These sentences need no replacement.
-
-## Evidence for the lethal-chemistry transmitter label
-
-`results/exectrace/per_replicator.csv:219` records the exact L16 world-4009 final tape with `entered_frac = 0.0` and `partner_exec_mean = 0.0`. `results/serial_retention/sr_summary.csv:9` and the corrected-core rerun `results/tier2/scored/Serial/sr_summary.csv:10` each record `sites_g1 = sites_g2 = sites_g4 = sites_g8 = 9` (eight unexecuted scored sites). `results/pe/pe_matrix.csv:6,12,18,24,30,36` explicitly classifies that tape as `transmitter`. Thus the confined ≥5-scored-site rule gives transmitter, despite the stale source name “lethal-tar closer.” Frozen source names and observations are retained.
-
 ## Integration check
 
-Applying every replacement and both review insertions to an in-memory copy gives Figure 1–5 legend word counts 245, 244, 250, 248, 248, respectively (all ≤250). The manuscript file was not modified.
+All old sentences match MAIN_v8.md exactly once. Applying all replacements in memory reproduces the delivered legends. Final Figure 1–5 word counts: 233, 244, 250, 245, 245. MAIN_v8.md was not edited.

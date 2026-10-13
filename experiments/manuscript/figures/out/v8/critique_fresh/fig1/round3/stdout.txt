@@ -1,0 +1,26 @@
+**Below standard.** Figure 1 contains substantive content in every panel, preserves rich labels and number columns, and substantially improves the explanation of the copying diagrams. However, print-scale typography and several local explanation problems remain below the references’ standard.
+
+**Substantive defects**
+
+- **Small text at 180 mm width.** The most vulnerable text is panel a’s inset instruction labels, `01 c5 × 8`, and `c0 = RET NZ`, plus panel d’s grey “Ring: upper 95% CI…” subtitle. These appear approximately at or below the 6 pt floor. Several explanatory notes also appear below the preferred 6.5 pt size for substantive labels. Exact font sizes cannot be certified from the PNG, but these are visibly weaker than the main labels. **Fix:** enlarge these elements, using the available whitespace; verify their final physical sizes. A 600 dpi export preserves edges but does not make small lettering readable.
+
+- **Panel a: the essential `e3` explanation is detached from its diagram.** Its definition appears at the bottom of the entire figure, beneath panel c, although the marked byte is in panel a. Readers must search across unrelated content to decode it. **Fix:** place `e3 = EX (SP), HL` and its short exchange explanation beside the lower tape or immediately beneath that example.
+
+- **Panel a: the orange return path is incompletely connected to its condition locally.** “Conditional return: RET NZ” identifies the instruction, but the explanation “if zero flag is clear” is buried in the three-line encoding paragraph. This makes the lower mechanism depend on reading prose beneath the diagram. **Fix:** label the orange arc directly, for example, “returns to A’s start if zero flag is clear.” Retain the byte label at its source.
+
+- **Panel d: the ring criterion is insufficiently attached to its row.** “Ring: upper 95% CI <0.01% changed-memory pairs” sits as a subtitle beneath the whole historical-versus-corrected comparison heading. It is therefore unclear on first reading whether this criterion applies only to “Stable ring conditions” or to the following comparisons as well. Its wording also compresses the measured quantity excessively. **Fix:** attach a readable qualifier directly to that row: “Stable ring conditions” / “upper 95% bound on changed-memory-pair fraction <0.01%.”
+
+- **Panel d: the hardware outcome and legend category are linguistically inconsistent.** The right-hand column says “Flagged / different,” while the hardware entry says “10,083 expected,” and the annotation calls these “expected differences.” The reader must reconcile the category across three locations. **Fix:** make the hardware entry “10,083 expected differences,” and use a column heading such as “Other outcomes” with explicit outcome names in the entries, or give the hardware comparison its own clearly labelled count line. Preserve the exact counts and proportional bar.
+
+**Optional polish**
+
+- **Panel a:** replace the three-line encoding paragraph with a compact inline key for block colours and arrow meanings. Keep the useful statement that ellipses omit tape positions close to the lower example.
+- **Panel a:** increase the separation between `LD BC,nn` and `PUSH BC` in the inset; their current spacing weakens the distinction between the two instruction spans.
+- **Panel b:** expand “Z80 historical” to “Historical Z80 core.” The existing tape-length definition and `n = 10 per L` are useful and should remain.
+- **Panel c:** move the “Modal similarity rises” leader endpoint onto the rising teal segment. Its current endpoint is near the transition but does not clearly select that curve.
+- **Panels c–d:** align the lower-panel titles and tighten the large gap above the bottom notes. This would improve the reading order and provide room for larger text.
+- **Panel d:** place the expected-difference annotation closer to the hardware bar’s endpoint. The tiny proportional segment is appropriate for 0.32%; it should not be artificially enlarged.
+
+There is no apparent empty panel, clipped content, missing glyph, or arithmetic contradiction in the displayed validation counts. The five comparisons are present. Panel b supplies its cohort size and length units, and panel c supplies useful denominators and the example seed. Full methods and supporting ledgers need not be added. The remaining work is chiefly to make the existing explanations readable and locally connected.
+
+BELOW STANDARD - SUBSTANTIVE DEFECTS
