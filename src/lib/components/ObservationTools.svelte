@@ -1720,7 +1720,7 @@
 		}
 		.observation-dock header {
 			position: sticky;
-			top: 0;
+			top: -11px;
 			z-index: 1;
 			margin: -11px -11px 0;
 			padding: 11px 11px 10px;

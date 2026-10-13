@@ -176,6 +176,8 @@ for (const viewport of [
 				const center = page.getByRole('button', { name: 'Center probe', exact: true });
 				await expect(center).toBeVisible();
 				const panelBox = (await dock.boundingBox())!;
+				const headerBox = (await dock.locator(':scope > header').boundingBox())!;
+				expect(Math.abs(headerBox.y - (panelBox.y + 1))).toBeLessThanOrEqual(2);
 				const buttonBox = (await center.boundingBox())!;
 				expect(buttonBox.y).toBeGreaterThanOrEqual(panelBox.y);
 				expect(buttonBox.y + buttonBox.height).toBeLessThanOrEqual(panelBox.y + 60);
