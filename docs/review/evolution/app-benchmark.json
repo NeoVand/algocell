@@ -1,0 +1,1421 @@
+{
+	"capturedAt": "2026-10-13T16:40:17.258Z",
+	"sources": [
+		{
+			"name": "baseline",
+			"revision": "ee67698dd7b743e838eacd684855a3d9fcefb362"
+		},
+		{
+			"name": "candidate",
+			"revision": "70184f1f5e79507d68d4067b9c1e7a3c194228e4"
+		}
+	],
+	"environment": {
+		"cpu": "Apple M4",
+		"memoryGiB": 32,
+		"release": "25.3.0",
+		"browser": "155.0.8059.40"
+	},
+	"method": "Actual full applications in matching Vite development servers. Both apps preloaded before timing. Native 8x UI loop, 1440x900 canvas, 200x200 L16/P32, seed 6, 8192 pairs, 128 steps, mutation exponent 4, benign zero. One completed warmup then reset. Five-second bursts with final GPU drain; real UI and periodic statistics remain active. requestAnimationFrame observer counts presented opportunities. Three repeats with alternating build order; pages closed before idle pauses. Normal readback calls counted without changing their implementation.",
+	"burstMs": 5000,
+	"pauseMs": 3000,
+	"repeats": 3,
+	"errors": [],
+	"results": [
+		{
+			"build": "baseline",
+			"repeat": 0,
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.024800000011921,
+			"fps": 59.90288170659248,
+			"updatesPerSecond": 479.22305365273985,
+			"instructionSlotsPerSecond": 502501792.70697534,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 0,
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.019400000035763,
+			"fps": 59.9673267716969,
+			"updatesPerSecond": 479.7386141735752,
+			"instructionSlotsPerSecond": 503042397.09567076,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 0,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"frames": 302,
+			"updates": 2416,
+			"seconds": 5.029799999952316,
+			"fps": 60.04214879376179,
+			"updatesPerSecond": 480.3371903500943,
+			"instructionSlotsPerSecond": 503670049.7085405,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 0,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.017399999976158,
+			"fps": 59.991230518083135,
+			"updatesPerSecond": 479.9298441446651,
+			"instructionSlotsPerSecond": 503242916.25383633,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 0,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"frames": 302,
+			"updates": 2416,
+			"seconds": 5.031400000035763,
+			"fps": 60.02305521283408,
+			"updatesPerSecond": 480.18444170267264,
+			"instructionSlotsPerSecond": 503509881.14282167,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 0,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.032799999952316,
+			"fps": 59.80766173955887,
+			"updatesPerSecond": 478.46129391647094,
+			"instructionSlotsPerSecond": 501703029.7297574,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 0,
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.022699999988079,
+			"fps": 59.927927210606725,
+			"updatesPerSecond": 479.4234176848538,
+			"instructionSlotsPerSecond": 502711889.62231326,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 0,
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.0179000000357625,
+			"fps": 59.98525279456641,
+			"updatesPerSecond": 479.88202235653125,
+			"instructionSlotsPerSecond": 503192771.4745221,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 0,
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 288,
+			"updates": 2304,
+			"seconds": 5.013899999976158,
+			"fps": 57.440315922010704,
+			"updatesPerSecond": 459.52252737608563,
+			"instructionSlotsPerSecond": 481844293.66590637,
+			"maxFrameGapMs": 33.399999999999636,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 0,
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 287,
+			"updates": 2296,
+			"seconds": 5.030700000047684,
+			"fps": 57.04971475088549,
+			"updatesPerSecond": 456.39771800708394,
+			"instructionSlotsPerSecond": 478567693.55699605,
+			"maxFrameGapMs": 50,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 1,
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.020600000023842,
+			"fps": 59.95299366581098,
+			"updatesPerSecond": 479.62394932648783,
+			"instructionSlotsPerSecond": 502922162.2889713,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 1,
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.031199999988079,
+			"fps": 59.82668150753562,
+			"updatesPerSecond": 478.61345206028494,
+			"instructionSlotsPerSecond": 501862579.10756534,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 1,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.023900000035763,
+			"fps": 59.913612929767176,
+			"updatesPerSecond": 479.3089034381374,
+			"instructionSlotsPerSecond": 502591812.73154837,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 1,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.017399999976158,
+			"fps": 59.991230518083135,
+			"updatesPerSecond": 479.9298441446651,
+			"instructionSlotsPerSecond": 503242916.25383633,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 1,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.0266000000238416,
+			"fps": 59.88143078792272,
+			"updatesPerSecond": 479.05144630338174,
+			"instructionSlotsPerSecond": 502321849.3590148,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 1,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.016900000035763,
+			"fps": 59.99720943169174,
+			"updatesPerSecond": 479.97767545353395,
+			"instructionSlotsPerSecond": 503293071.0163648,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 1,
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.022600000023842,
+			"fps": 59.92912037561645,
+			"updatesPerSecond": 479.4329630049316,
+			"instructionSlotsPerSecond": 502721898.61585915,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 1,
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.019699999988079,
+			"fps": 59.96374285330096,
+			"updatesPerSecond": 479.70994282640766,
+			"instructionSlotsPerSecond": 503012333.00914323,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 1,
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 275,
+			"updates": 2200,
+			"seconds": 5.018300000011921,
+			"fps": 54.79943407116887,
+			"updatesPerSecond": 438.39547256935094,
+			"instructionSlotsPerSecond": 459690971.04487973,
+			"maxFrameGapMs": 66.69999999999982,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 1,
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 288,
+			"updates": 2304,
+			"seconds": 5.029700000047684,
+			"fps": 57.25987633402979,
+			"updatesPerSecond": 458.0790106722383,
+			"instructionSlotsPerSecond": 480330656.694653,
+			"maxFrameGapMs": 50,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 2,
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.0175,
+			"fps": 59.99003487792725,
+			"updatesPerSecond": 479.920279023418,
+			"instructionSlotsPerSecond": 503232886.49725956,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 2,
+			"isa": "z80",
+			"compat": "0.2",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.026599999964237,
+			"fps": 59.881430788632784,
+			"updatesPerSecond": 479.05144630906227,
+			"instructionSlotsPerSecond": 502321849.3649713,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.2",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 2,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.026399999976158,
+			"fps": 59.88381346518935,
+			"updatesPerSecond": 479.0705077215148,
+			"instructionSlotsPerSecond": 502341836.7045951,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 2,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "classic",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.024199999988079,
+			"fps": 59.91003542866808,
+			"updatesPerSecond": 479.28028342934465,
+			"instructionSlotsPerSecond": 502561802.4772085,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "classic",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 2,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.015900000035763,
+			"fps": 60.00917083631131,
+			"updatesPerSecond": 480.0733666904905,
+			"instructionSlotsPerSecond": 503393410.55084777,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 2,
+			"isa": "z80",
+			"compat": "0.3",
+			"variant": "zilog-nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.019399999976158,
+			"fps": 59.967326772409,
+			"updatesPerSecond": 479.738614179272,
+			"instructionSlotsPerSecond": 503042397.10164434,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "z80",
+				"compat": "0.3",
+				"variant": "zilog-nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "legacy-sp",
+				"dialMode": "historical-pcg"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 2,
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.030199999988079,
+			"fps": 59.83857500709979,
+			"updatesPerSecond": 478.70860005679833,
+			"instructionSlotsPerSecond": 501962349.01315737,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 2,
+			"isa": "m6502",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 301,
+			"updates": 2408,
+			"seconds": 5.014300000011921,
+			"fps": 60.02831900749545,
+			"updatesPerSecond": 480.2265520599636,
+			"instructionSlotsPerSecond": 503554037.0528284,
+			"maxFrameGapMs": 16.800000000000182,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "m6502",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "baseline",
+			"repeat": 2,
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 272,
+			"updates": 2176,
+			"seconds": 5.018599999964237,
+			"fps": 54.198382019275954,
+			"updatesPerSecond": 433.58705615420763,
+			"instructionSlotsPerSecond": 454648980.9939544,
+			"maxFrameGapMs": 50,
+			"calls": {
+				"readSoupData": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		},
+		{
+			"build": "candidate",
+			"repeat": 2,
+			"isa": "i8086",
+			"compat": "0.3",
+			"variant": "nmos",
+			"frames": 275,
+			"updates": 2200,
+			"seconds": 5.0244000000357625,
+			"fps": 54.732903430865896,
+			"updatesPerSecond": 437.86322744692717,
+			"instructionSlotsPerSecond": 459132871.5833891,
+			"maxFrameGapMs": 50.100000000000364,
+			"calls": {
+				"readSoupData": 0,
+				"readCell": 0,
+				"readCellHashes": 0
+			},
+			"settings": {
+				"isa": "i8086",
+				"compat": "0.3",
+				"variant": "nmos",
+				"length": 16,
+				"ring": 32,
+				"steps": 128,
+				"width": 200,
+				"height": 200,
+				"topology": "square",
+				"seed": 6,
+				"pairAttempts": 8192,
+				"mutationExponent": 4,
+				"lethalProbability": 0,
+				"randomRegisters": false,
+				"ablation": [],
+				"stack": "first-push",
+				"dialMode": "counter"
+			},
+			"view": {
+				"zoom": 320,
+				"offsetX": -60,
+				"offsetY": 0
+			},
+			"canvas": {
+				"width": 1440,
+				"height": 900
+			}
+		}
+	]
+}
