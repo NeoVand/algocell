@@ -1,0 +1,75 @@
+{
+ "settings": {
+  "isa": "z80",
+  "compat": "0.2",
+  "variant": "classic",
+  "length": 16,
+  "ring": 32,
+  "steps": 128,
+  "width": 128,
+  "height": 128,
+  "topology": "square",
+  "seed": 6,
+  "pairAttempts": 8192,
+  "mutationExponent": 31,
+  "lethalProbability": 0,
+  "randomRegisters": false,
+  "ablation": [],
+  "stack": "legacy-sp",
+  "dialMode": "historical-pcg",
+  "interaction": "free",
+  "dissipation": 1,
+  "boundary": "reflect",
+  "heads": 0.25,
+  "headDirections": "rows",
+  "haltRule": "wait"
+ },
+ "heads": 4096,
+ "rows": [
+  {
+   "tick": 0,
+   "seconds": 0.0005,
+   "zero": 0.0040130615234375,
+   "halts": 0.003910064697265625,
+   "entropy": 7.999289864785124,
+   "waitingHeads": 0,
+   "changedSinceLastMark": 0
+  },
+  {
+   "tick": 100,
+   "seconds": 0.037300000190734865,
+   "zero": 0.081939697265625,
+   "halts": 0.003391265869140625,
+   "entropy": 7.726361934928113,
+   "waitingHeads": 0.148681640625,
+   "changedSinceLastMark": 0.2225799560546875
+  },
+  {
+   "tick": 500,
+   "seconds": 0.11770000004768372,
+   "zero": 0.2368316650390625,
+   "halts": 0.0025634765625,
+   "entropy": 6.707375999015523,
+   "waitingHeads": 0.142822265625,
+   "changedSinceLastMark": 0.5194587707519531
+  },
+  {
+   "tick": 2000,
+   "seconds": 0.346,
+   "zero": 0.3196258544921875,
+   "halts": 0.00274658203125,
+   "entropy": 6.025565021144069,
+   "waitingHeads": 0.1533203125,
+   "changedSinceLastMark": 0.5616264343261719
+  },
+  {
+   "tick": 30000,
+   "seconds": 3.8915,
+   "zero": 0.3286552429199219,
+   "halts": 0.00508880615234375,
+   "entropy": 5.931972950009895,
+   "waitingHeads": 0.267333984375,
+   "changedSinceLastMark": 0.5035820007324219
+  }
+ ]
+}

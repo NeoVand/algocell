@@ -82,6 +82,9 @@
 	let interaction = $state<LabSettings['interaction']>('overwrite');
 	let dissipation = $state(1);
 	let boundary = $state<BoundaryRule>('reflect');
+	let heads = $state(0.25);
+	let headDirections = $state<LabSettings['headDirections']>('weave');
+	let haltRule = $state<LabSettings['haltRule']>('wait');
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -137,7 +140,10 @@
 			dialMode,
 			interaction,
 			dissipation,
-			boundary
+			boundary,
+			heads,
+			headDirections,
+			haltRule
 		};
 	}
 
@@ -202,6 +208,9 @@
 		dissipation = next.dissipation;
 		// Joined edges exist on the square lattice only.
 		boundary = next.topology === 'hex' ? 'reflect' : next.boundary;
+		heads = next.heads;
+		headDirections = next.headDirections;
+		haltRule = next.haltRule;
 		gridWidth = next.width;
 		gridHeight = next.height;
 		gridType = next.topology;
@@ -1602,6 +1611,24 @@
 			set: (v) => (boundary = v as BoundaryRule)
 		},
 		{
+			key: 'heads',
+			mode: 'live',
+			get: () => heads,
+			set: (v) => (heads = v as number)
+		},
+		{
+			key: 'headDirections',
+			mode: 'live',
+			get: () => headDirections,
+			set: (v) => (headDirections = v as LabSettings['headDirections'])
+		},
+		{
+			key: 'haltRule',
+			mode: 'live',
+			get: () => haltRule,
+			set: (v) => (haltRule = v as LabSettings['haltRule'])
+		},
+		{
 			key: 'initialCondition',
 			mode: 'grid',
 			get: () => JSON.stringify(initialCondition),
@@ -1748,6 +1775,9 @@
 			interaction: (values.interaction ?? 'overwrite') as LabSettings['interaction'],
 			dissipation: Number(values.dissipation ?? 1),
 			boundary: topology === 'hex' ? 'reflect' : ((values.boundary ?? 'reflect') as BoundaryRule),
+			heads: Number(values.heads ?? 0.25),
+			headDirections: (values.headDirections ?? 'weave') as LabSettings['headDirections'],
+			haltRule: (values.haltRule ?? 'wait') as LabSettings['haltRule'],
 			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
 		};
 		stagedInitial = values.initialCondition
@@ -2371,7 +2401,10 @@
 			'dialMode',
 			'interaction',
 			'dissipation',
-			'boundary'
+			'boundary',
+			'heads',
+			'headDirections',
+			'haltRule'
 		] as const) {
 			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
 				Object.assign(patch, { [key]: next[key] });
@@ -2390,6 +2423,50 @@
 		worldDraft.topology = topology;
 		// Back on square, the draft picks the running world's edges up again.
 		worldDraft.boundary = topology === 'hex' ? 'reflect' : applied.boundary;
+	}
+	// The free-running world reads the lattice as one sheet of bytes: square, 16-byte tiles and
+	// power-of-two sides (the same test as validateSettings).
+	function fitsFree(world: LabSettings): boolean {
+		const powerOfTwo = (n: number) => n >= 4 && (n & (n - 1)) === 0;
+		return (
+			world.topology === 'square' &&
+			world.length === 16 &&
+			powerOfTwo(world.width) &&
+			powerOfTwo(world.height)
+		);
+	}
+	// Nearest power of two between 16 and 256; a tie goes up.
+	function freeSide(n: number): number {
+		let side = 16;
+		while (side < 256 && n >= side * 1.5) side *= 2;
+		return side;
+	}
+	const draftBlocksFree = $derived(worldDraft.interaction === 'free' && !fitsFree(worldDraft));
+	async function chooseInteraction(next: LabSettings['interaction']) {
+		if (!engine || machineBusy || checkpointBusy) return;
+		// A running world that can hold the sheet switches live. Another processor is refused by the
+		// engine, which restores the controls and reports why.
+		if (next !== 'free' || applied.isa !== 'z80' || fitsFree(applied)) {
+			interaction = next;
+			await updateMachine();
+			return;
+		}
+		// Otherwise the lattice has to change shape, so this starts a new world.
+		const previous = $state.snapshot(worldDraft);
+		worldDraft = {
+			...previous,
+			interaction: 'free',
+			topology: 'square',
+			boundary: previous.topology === 'hex' ? applied.boundary : previous.boundary,
+			width: freeSide(previous.width),
+			height: freeSide(previous.height),
+			length: 16,
+			ring: Math.max(previous.ring, 32)
+		};
+		await startNewWorld();
+		if (machineError) worldDraft = previous;
+		else
+			worldNotice = `Free-running world started at ${applied.width} × ${applied.height}. It needs a square lattice with power-of-two sides.`;
 	}
 	function keyboard(event: KeyboardEvent) {
 		keyboardModality = true;
@@ -2676,12 +2753,10 @@
 								value={interaction}
 								options={[
 									{ value: 'overwrite', label: 'Overwrite (standard)' },
-									{ value: 'reversible', label: 'Reversible (now and before)' }
+									{ value: 'reversible', label: 'Reversible (now and before)' },
+									{ value: 'free', label: 'Free-running (no cells, no step budget)' }
 								]}
-								onchange={(value) => {
-									interaction = value as LabSettings['interaction'];
-									void updateMachine();
-								}}
+								onchange={(value) => void chooseInteraction(value as LabSettings['interaction'])}
 								disabled={machineBusy || checkpointBusy || !engine}
 							/>
 							<p class="control-note">
@@ -2712,6 +2787,63 @@
 									rule; 0% is a closed, fully reversible world.
 								</p>
 							</div>
+						{:else if interaction === 'free'}
+							<div class="control-field">
+								<label for="head-density">Heads</label><InstrumentSelect
+									id="head-density"
+									label="Heads"
+									value={String(heads)}
+									options={[
+										{ value: '0.015625', label: '1 per 64 tiles' },
+										{ value: '0.0625', label: '1 per 16 tiles' },
+										{ value: '0.25', label: '1 per 4 tiles' },
+										{ value: '1', label: '1 per tile' },
+										{ value: '2', label: '2 per tile' }
+									]}
+									onchange={(value) => {
+										heads = Number(value);
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
+							</div>
+							<div class="control-field">
+								<label for="head-directions">Lines</label><InstrumentSelect
+									id="head-directions"
+									label="Lines"
+									value={headDirections}
+									options={[
+										{ value: 'rows', label: 'Rows only' },
+										{ value: 'weave', label: 'Rows and columns' },
+										{ value: 'all', label: 'All four directions' }
+									]}
+									onchange={(value) => {
+										headDirections = value as LabSettings['headDirections'];
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
+							</div>
+							<div class="control-field">
+								<label for="halt-rule">HALT</label><InstrumentSelect
+									id="halt-rule"
+									label="HALT"
+									value={haltRule}
+									options={[
+										{ value: 'wait', label: 'Wait until the byte changes' },
+										{ value: 'pass', label: 'Pass over it' }
+									]}
+									onchange={(value) => {
+										haltRule = value as LabSettings['haltRule'];
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
+								<p class="control-note">
+									No cells and no step budget: every head runs one instruction per tick and never
+									resets. Steps, pair attempts, lethal zero and edges are not used; the sheet wraps.
+								</p>
+							</div>
 						{/if}
 						<div class="control-field">
 							<label for="boundary-rule">Edges</label><InstrumentSelect
@@ -2723,7 +2855,11 @@
 									boundary = value as BoundaryRule;
 									void updateMachine();
 								}}
-								disabled={machineBusy || checkpointBusy || !engine || gridType === 'hex'}
+								disabled={machineBusy ||
+									checkpointBusy ||
+									!engine ||
+									gridType === 'hex' ||
+									interaction === 'free'}
 							/>
 							<p class="control-note">
 								What a cell at the edge meets. Walls turn it inward; the others glue opposite edges,
@@ -2909,6 +3045,10 @@
 								/></label
 							>
 						</div>
+						{#if draftBlocksFree}<p class="control-note">
+								The free-running world needs the square lattice, 16-byte tapes and a width and
+								height that are powers of two, for example 128.
+							</p>{/if}
 						<details class="shell-disclosure">
 							<summary>Encounter reset</summary>
 							<div class="disclosure-body">
@@ -4981,7 +5121,10 @@ graph TD
 			class="status-item status-rate"
 			title="Completed population updates per second"
 			onclick={() => showMeasure('charts')}
-			><strong data-numeric>{(opsPerSec / Math.max(1, pairCount * z80Steps)).toFixed(0)}</strong
+			><strong data-numeric
+				>{(opsPerSec / Math.max(1, engine?.opsPerUpdate ?? pairCount * z80Steps)).toFixed(
+					0
+				)}</strong
 			><span>updates/s</span></button
 		>
 		<button
@@ -5014,7 +5157,9 @@ graph TD
 			><span>Zero</span><strong
 				>{Math.round(applied.lethalProbability * 100)}% lethal{applied.interaction === 'reversible'
 					? ` · reversible ${Math.round(applied.dissipation * 100)}%`
-					: ''}{boundaryStatus ? ` · ${boundaryStatus}` : ''}</strong
+					: applied.interaction === 'free'
+						? ' · free-running'
+						: ''}{boundaryStatus ? ` · ${boundaryStatus}` : ''}</strong
 			></button
 		>
 	</footer>

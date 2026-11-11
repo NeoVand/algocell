@@ -15,6 +15,7 @@ import {
 import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
 import { createSimShader, createRenderShader, createFieldShader } from './shaders';
+import { createFreeShader, createHeads, headCount, HEAD_WORDS, LOG_WORDS, NO_CLAIM } from './free';
 import { suppressionMasks, emptySuppression, type SuppressSets } from '$lib/z80-opcodes';
 import { ORIGINAL_SETTINGS, validateSettings, createInitialSoup } from './machine';
 import { ablationMasks } from '../lab/ablation';
@@ -65,6 +66,21 @@ export class GPUEngine {
 	private soupBuffer!: GPUBuffer;
 	/** Reversible rule: each cell's tape before its last event. Equal to the soup when at rest. */
 	private beforeBuffer!: GPUBuffer;
+	// Free-running world (interaction `free`): persistent processors on the sheet of bytes.
+	private freeModule: GPUShaderModule | null = null;
+	private freePipelines: {
+		step: GPUComputePipeline;
+		apply: GPUComputePipeline;
+		mutate: GPUComputePipeline;
+	} | null = null;
+	private freeBindGroup: GPUBindGroup | null = null;
+	private headsBuffer: GPUBuffer | null = null;
+	private headLogBuffer: GPUBuffer | null = null;
+	private claimsBuffer: GPUBuffer | null = null;
+	private freeParamsBuffer: GPUBuffer | null = null;
+	private freeHeads = 0;
+	private freeSignature = '';
+	private freeParams = new Uint32Array(8);
 	private pairsBuffer!: GPUBuffer;
 	private pairDataBuffer!: GPUBuffer;
 	private writeCountsBuffer!: GPUBuffer;
@@ -547,6 +563,172 @@ export class GPUEngine {
 				{ binding: 2, resource: { buffer: this.fieldBuffer } }
 			]
 		});
+		this.setupFree();
+	}
+
+	/** Instructions one update can execute: every head once, or every pair for its full budget. */
+	get opsPerUpdate(): number {
+		return this.free ? this.freeHeads : this._pairCount * this._z80Steps;
+	}
+
+	private get free(): boolean {
+		return this.machineSettings.interaction === 'free';
+	}
+
+	private dropFree(): void {
+		this.headsBuffer?.destroy();
+		this.headLogBuffer?.destroy();
+		this.claimsBuffer?.destroy();
+		this.freeParamsBuffer?.destroy();
+		this.headsBuffer = this.headLogBuffer = this.claimsBuffer = this.freeParamsBuffer = null;
+		this.freePipelines = null;
+		this.freeBindGroup = null;
+		this.freeModule = null;
+		this.freeSignature = '';
+	}
+
+	/**
+	 * Build the free-running world (interaction `free`): its three passes, the heads, their write log
+	 * and the per-byte bids. Heads survive a rebuild unless something that defines them changed.
+	 */
+	private setupFree(): void {
+		if (!this.free) {
+			this.dropFree();
+			return;
+		}
+		const dev = this.device;
+		const settings = this.settings;
+		const signature = [
+			this.soupWidth,
+			this.soupHeight,
+			settings.heads,
+			settings.headDirections,
+			settings.compat,
+			settings.variant,
+			this.lifecycle.bufferRevision
+		].join('|');
+		const keepHeads = signature === this.freeSignature && this.headsBuffer !== null;
+		if (!keepHeads) {
+			this.dropFree();
+			this.freeHeads = headCount(settings);
+			this.headsBuffer = dev.createBuffer({
+				size: this.freeHeads * HEAD_WORDS * 4,
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+			});
+			this.headLogBuffer = dev.createBuffer({
+				size: this.freeHeads * LOG_WORDS * 4,
+				usage: GPUBufferUsage.STORAGE
+			});
+			this.claimsBuffer = dev.createBuffer({
+				size: this.cellCount * 16 * 4,
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+			});
+			this.freeParamsBuffer = dev.createBuffer({
+				size: 32,
+				usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+			});
+			this.freeSignature = signature;
+		}
+		const module = dev.createShaderModule({ code: createFreeShader(settings) });
+		this.freeModule = module;
+		const layout = dev.createBindGroupLayout({
+			entries: [
+				{ binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } }
+			]
+		});
+		const pipelineLayout = dev.createPipelineLayout({ bindGroupLayouts: [layout] });
+		const pipeline = (entryPoint: string) =>
+			dev.createComputePipeline({ layout: pipelineLayout, compute: { module, entryPoint } });
+		this.freePipelines = {
+			step: pipeline('free_step'),
+			apply: pipeline('free_apply'),
+			mutate: pipeline('free_mutate')
+		};
+		this.freeBindGroup = dev.createBindGroup({
+			layout,
+			entries: [
+				{ binding: 0, resource: { buffer: this.soupBuffer } },
+				{ binding: 1, resource: { buffer: this.headsBuffer! } },
+				{ binding: 2, resource: { buffer: this.headLogBuffer! } },
+				{ binding: 3, resource: { buffer: this.claimsBuffer! } },
+				{ binding: 4, resource: { buffer: this.freeParamsBuffer! } }
+			]
+		});
+		if (!keepHeads) this.resetHeads();
+	}
+
+	/** Put every head back in its starting state and clear the bids. */
+	private resetHeads(): void {
+		if (!this.headsBuffer || !this.claimsBuffer) return;
+		this.device.queue.writeBuffer(this.headsBuffer, 0, createHeads(this.settings));
+		this.device.queue.writeBuffer(
+			this.claimsBuffer,
+			0,
+			new Uint32Array(this.cellCount * 16).fill(NO_CLAIM)
+		);
+	}
+
+	/** Free-running world: one tick, one instruction for every head. */
+	private simulateFreeTick(): void {
+		const mutationCount = Math.min(
+			this.cellCount * 16,
+			Math.floor(this.freeHeads / Math.pow(2, this._noiseExp))
+		);
+		this.freeParams.set([
+			this.soupWidth * 4,
+			this.soupHeight * 4,
+			this.freeHeads,
+			mutationCount,
+			this.cpuRng.nextU32(),
+			this.machineSettings.haltRule === 'pass' ? 1 : 0,
+			0,
+			0
+		]);
+		this.device.queue.writeBuffer(this.freeParamsBuffer!, 0, this.freeParams);
+		const encoder = this.device.createCommandEncoder();
+		const run = (pipeline: GPUComputePipeline, items: number) => {
+			const pass = encoder.beginComputePass();
+			pass.setPipeline(pipeline);
+			pass.setBindGroup(0, this.freeBindGroup!);
+			pass.dispatchWorkgroups(Math.ceil(items / 64));
+			pass.end();
+		};
+		run(this.freePipelines!.step, this.freeHeads);
+		run(this.freePipelines!.apply, this.freeHeads);
+		if (mutationCount > 0) run(this.freePipelines!.mutate, mutationCount);
+		this.device.queue.submit([encoder.finish()]);
+		this.batchIndex++;
+		const ops = this.freeHeads;
+		this.device.queue.onSubmittedWorkDone().then(() => this.onStepDone(ops));
+	}
+
+	/** Free-running world: every head's processor state, origin and direction (HEAD_WORDS each). */
+	async readHeads(): Promise<Uint32Array> {
+		if (!this.headsBuffer) throw new Error('This world has no heads.');
+		const size = this.headsBuffer.size;
+		const staging = this.device.createBuffer({
+			size,
+			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+		});
+		const encoder = this.device.createCommandEncoder();
+		encoder.copyBufferToBuffer(this.headsBuffer, 0, staging, 0, size);
+		this.device.queue.submit([encoder.finish()]);
+		await staging.mapAsync(GPUMapMode.READ);
+		const data = new Uint32Array(staging.getMappedRange().slice(0));
+		staging.unmap();
+		staging.destroy();
+		return data;
+	}
+
+	/** Free-running world: replace every head (for tests and restored states). */
+	writeHeads(data: Uint32Array<ArrayBuffer>): void {
+		if (!this.headsBuffer || data.byteLength !== this.headsBuffer.size)
+			throw new Error('Head data does not match this world.');
+		this.device.queue.writeBuffer(this.headsBuffer, 0, data);
 	}
 
 	private initSoup(): void {
@@ -573,6 +755,7 @@ export class GPUEngine {
 		this.device.queue.writeBuffer(this.fetchStatusBuffer, 0, new Uint32Array(this.cellCount));
 		this.batchIndex = 0;
 		this.restBefore();
+		this.resetHeads();
 	}
 
 	/** Put every cell at rest: its stored past becomes its present tape (reversible rule). */
@@ -655,7 +838,9 @@ export class GPUEngine {
 
 	private async checkShader(): Promise<void> {
 		const infos = await Promise.all(
-			[this.simModule, ...this.visualModules].map((module) => module.getCompilationInfo())
+			[this.simModule, ...this.visualModules, ...(this.freeModule ? [this.freeModule] : [])].map(
+				(module) => module.getCompilationInfo()
+			)
 		);
 		const errors = infos.flatMap((info) =>
 			info.messages.filter((message) => message.type === 'error')
@@ -881,6 +1066,10 @@ export class GPUEngine {
 
 	// Run one simulation step (all on GPU)
 	simulateStep(): void {
+		if (this.free && this.freePipelines) {
+			this.simulateFreeTick();
+			return;
+		}
 		const noiseCoef = 1 / Math.pow(2, this._noiseExp);
 		const mutationCount = Math.floor(this._pairCount * noiseCoef);
 
@@ -1532,6 +1721,7 @@ struct Patch { word: u32, shift: u32, value: u32, cell: u32 }
 		this.renderParamsBuffer?.destroy();
 		this.traceImageBuffer?.destroy();
 		this.byteCountsStagingBuffer?.destroy();
+		this.dropFree();
 		this.soupStagingBuffer?.destroy();
 		this.cellHashBuffer?.destroy();
 		this.fetchStatusBuffer?.destroy();

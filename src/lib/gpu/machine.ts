@@ -56,8 +56,25 @@ export function validateSettings(settings: LabSettings): void {
 		settings.lethalProbability > 1
 	)
 		throw new Error('Lethality must be between zero and one.');
-	if (!['overwrite', 'reversible'].includes(settings.interaction))
+	if (!['overwrite', 'reversible', 'free'].includes(settings.interaction))
 		throw new Error('Unknown interaction rule.');
+	if (!Number.isFinite(settings.heads) || settings.heads <= 0 || settings.heads > 4)
+		throw new Error('Heads per tile must be above zero and at most four.');
+	if (!['rows', 'weave', 'all'].includes(settings.headDirections))
+		throw new Error('Unknown head directions.');
+	if (!['wait', 'pass'].includes(settings.haltRule)) throw new Error('Unknown HALT rule.');
+	if (settings.interaction === 'free') {
+		if (settings.isa !== 'z80') throw new Error('The free-running world runs the Z80 only.');
+		if (settings.topology !== 'square' || settings.length !== 16)
+			throw new Error('The free-running world needs the square lattice with 16-byte tiles.');
+		// A line of the sheet must divide the 16-bit address space, or a program counter that wraps
+		// from 65535 to 0 would jump along its line.
+		const powerOfTwo = (n: number) => n >= 4 && (n & (n - 1)) === 0;
+		if (!powerOfTwo(settings.width) || !powerOfTwo(settings.height))
+			throw new Error(
+				'The free-running world needs a width and height that are powers of two, for example 128.'
+			);
+	}
 	if (
 		!Number.isFinite(settings.dissipation) ||
 		settings.dissipation < 0 ||
@@ -270,5 +287,8 @@ export const ORIGINAL_SETTINGS: LabSettings = {
 	dialMode: 'historical-pcg',
 	interaction: 'overwrite',
 	dissipation: 1,
-	boundary: 'reflect'
+	boundary: 'reflect',
+	heads: 0.25,
+	headDirections: 'weave',
+	haltRule: 'wait'
 };

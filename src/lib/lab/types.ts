@@ -43,9 +43,24 @@ export interface LabSettings {
 	 * pairs, `mobius` and `klein` join left to right with a flip, `projective` flips both pairs.
 	 */
 	boundary: BoundaryRule;
+	/**
+	 * Free-running world only: processors ("heads") per 16-byte tile of the sheet. Their number never
+	 * changes during a run, so this is a starting condition, not a rule.
+	 */
+	heads: number;
+	/** Free-running world only: which lines heads run along. `weave` is rows and columns. */
+	headDirections: HeadDirections;
+	/** Free-running world only: a head that meets HALT waits on that byte until it changes, or passes. */
+	haltRule: HaltRule;
 }
 
-export type InteractionRule = 'overwrite' | 'reversible';
+/**
+ * `free` is a different world, not a different write-back: no cells, no encounters and no step
+ * budget. Every processor keeps its state and executes one instruction per tick on the shared sheet.
+ */
+export type InteractionRule = 'overwrite' | 'reversible' | 'free';
+export type HeadDirections = 'rows' | 'weave' | 'all';
+export type HaltRule = 'wait' | 'pass';
 export type BoundaryRule = 'reflect' | 'cylinder' | 'torus' | 'mobius' | 'klein' | 'projective';
 export const BOUNDARY_RULES: BoundaryRule[] = [
 	'reflect',
@@ -61,13 +76,20 @@ export const BOUNDARY_RULES: BoundaryRule[] = [
  * They meant the historical rule, so fill it in instead of rejecting them.
  */
 export function withInteractionDefaults(
-	settings: Omit<LabSettings, 'interaction' | 'dissipation' | 'boundary'> & Partial<LabSettings>
+	settings: Omit<
+		LabSettings,
+		'interaction' | 'dissipation' | 'boundary' | 'heads' | 'headDirections' | 'haltRule'
+	> &
+		Partial<LabSettings>
 ): LabSettings {
 	return {
 		...settings,
 		interaction: settings.interaction ?? 'overwrite',
 		dissipation: settings.dissipation ?? 1,
-		boundary: settings.boundary ?? 'reflect'
+		boundary: settings.boundary ?? 'reflect',
+		heads: settings.heads ?? 0.25,
+		headDirections: settings.headDirections ?? 'weave',
+		haltRule: settings.haltRule ?? 'wait'
 	};
 }
 
@@ -102,7 +124,10 @@ export const DEFAULT_SETTINGS: LabSettings = {
 	dialMode: 'counter',
 	interaction: 'overwrite',
 	dissipation: 1,
-	boundary: 'reflect'
+	boundary: 'reflect',
+	heads: 0.25,
+	headDirections: 'weave',
+	haltRule: 'wait'
 };
 
 /** Unknown, no partner entry, partner entry in the last initiating encounter. */

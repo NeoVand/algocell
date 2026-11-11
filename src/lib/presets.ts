@@ -44,6 +44,9 @@ export const SETTING_KEYS = [
 	'interaction',
 	'dissipation',
 	'boundary',
+	'heads',
+	'headDirections',
+	'haltRule',
 	'initialCondition'
 ] as const;
 
