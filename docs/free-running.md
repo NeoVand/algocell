@@ -121,6 +121,11 @@ without mutation a pusher world never makes `18 f8` by itself.
 The same variant appeared with mutation off (seed 1), with the `wait` rule (seed 2), and, using `10 f8` (a counted
 jump) instead of `18 f8`, with a restart chance of 1/1,024 (seed 1).
 
+At the app's default size (576 × 576 bytes here, 5,184 processors; `h_app_size_s6` … `s8`, 600,000 ticks) all
+three seeds end in the looping variant, by 200,000 ticks in two and by 300,000 in the third, which first spent
+200,000 ticks in an `fc` world like seed 5's. One live test in the app was still in the waiting state after 274,000
+ticks.
+
 ### 3. Run length, now that nothing sets it
 
 Under the restart rule with no restart chance, the length of a finished run in the waiting state has a median of
