@@ -60,20 +60,15 @@ export function validateSettings(settings: LabSettings): void {
 		throw new Error('Unknown interaction rule.');
 	if (!Number.isFinite(settings.heads) || settings.heads <= 0 || settings.heads > 4)
 		throw new Error('Heads per tile must be above zero and at most four.');
-	if (!['rows', 'weave', 'all'].includes(settings.headDirections))
-		throw new Error('Unknown head directions.');
-	if (!['wait', 'pass'].includes(settings.haltRule)) throw new Error('Unknown HALT rule.');
+	if (!['restart', 'wait', 'pass'].includes(settings.haltRule))
+		throw new Error('Unknown HALT rule.');
+	if (!Number.isFinite(settings.turnover) || settings.turnover < 0 || settings.turnover >= 1)
+		throw new Error('The restart chance must be at least zero and below one.');
 	if (settings.interaction === 'free') {
 		if (settings.isa !== 'z80') throw new Error('The free-running world runs the Z80 only.');
+		// The sheet is the lattice's own bytes, each 16-byte tile drawn as four rows of four.
 		if (settings.topology !== 'square' || settings.length !== 16)
 			throw new Error('The free-running world needs the square lattice with 16-byte tiles.');
-		// A line of the sheet must divide the 16-bit address space, or a program counter that wraps
-		// from 65535 to 0 would jump along its line.
-		const powerOfTwo = (n: number) => n >= 4 && (n & (n - 1)) === 0;
-		if (!powerOfTwo(settings.width) || !powerOfTwo(settings.height))
-			throw new Error(
-				'The free-running world needs a width and height that are powers of two, for example 128.'
-			);
 	}
 	if (
 		!Number.isFinite(settings.dissipation) ||
@@ -289,6 +284,6 @@ export const ORIGINAL_SETTINGS: LabSettings = {
 	dissipation: 1,
 	boundary: 'reflect',
 	heads: 0.25,
-	headDirections: 'weave',
-	haltRule: 'wait'
+	haltRule: 'restart',
+	turnover: 0
 };

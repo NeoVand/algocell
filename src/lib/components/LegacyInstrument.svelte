@@ -83,8 +83,8 @@
 	let dissipation = $state(1);
 	let boundary = $state<BoundaryRule>('reflect');
 	let heads = $state(0.25);
-	let headDirections = $state<LabSettings['headDirections']>('weave');
-	let haltRule = $state<LabSettings['haltRule']>('wait');
+	let haltRule = $state<LabSettings['haltRule']>('restart');
+	let turnover = $state(0);
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -142,8 +142,8 @@
 			dissipation,
 			boundary,
 			heads,
-			headDirections,
-			haltRule
+			haltRule,
+			turnover
 		};
 	}
 
@@ -209,8 +209,8 @@
 		// Joined edges exist on the square lattice only.
 		boundary = next.topology === 'hex' ? 'reflect' : next.boundary;
 		heads = next.heads;
-		headDirections = next.headDirections;
 		haltRule = next.haltRule;
+		turnover = next.turnover;
 		gridWidth = next.width;
 		gridHeight = next.height;
 		gridType = next.topology;
@@ -1617,16 +1617,16 @@
 			set: (v) => (heads = v as number)
 		},
 		{
-			key: 'headDirections',
-			mode: 'live',
-			get: () => headDirections,
-			set: (v) => (headDirections = v as LabSettings['headDirections'])
-		},
-		{
 			key: 'haltRule',
 			mode: 'live',
 			get: () => haltRule,
 			set: (v) => (haltRule = v as LabSettings['haltRule'])
+		},
+		{
+			key: 'turnover',
+			mode: 'live',
+			get: () => turnover,
+			set: (v) => (turnover = v as number)
 		},
 		{
 			key: 'initialCondition',
@@ -1776,8 +1776,8 @@
 			dissipation: Number(values.dissipation ?? 1),
 			boundary: topology === 'hex' ? 'reflect' : ((values.boundary ?? 'reflect') as BoundaryRule),
 			heads: Number(values.heads ?? 0.25),
-			headDirections: (values.headDirections ?? 'weave') as LabSettings['headDirections'],
-			haltRule: (values.haltRule ?? 'wait') as LabSettings['haltRule'],
+			haltRule: (values.haltRule ?? 'restart') as LabSettings['haltRule'],
+			turnover: Number(values.turnover ?? 0),
 			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
 		};
 		stagedInitial = values.initialCondition
@@ -2403,8 +2403,8 @@
 			'dissipation',
 			'boundary',
 			'heads',
-			'headDirections',
-			'haltRule'
+			'haltRule',
+			'turnover'
 		] as const) {
 			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
 				Object.assign(patch, { [key]: next[key] });
@@ -2424,22 +2424,10 @@
 		// Back on square, the draft picks the running world's edges up again.
 		worldDraft.boundary = topology === 'hex' ? 'reflect' : applied.boundary;
 	}
-	// The free-running world reads the lattice as one sheet of bytes: square, 16-byte tiles and
-	// power-of-two sides (the same test as validateSettings).
+	// The free-running world reads the lattice as one sheet of bytes: square, with 16-byte tiles
+	// (the same test as validateSettings). Any width and height will do.
 	function fitsFree(world: LabSettings): boolean {
-		const powerOfTwo = (n: number) => n >= 4 && (n & (n - 1)) === 0;
-		return (
-			world.topology === 'square' &&
-			world.length === 16 &&
-			powerOfTwo(world.width) &&
-			powerOfTwo(world.height)
-		);
-	}
-	// Nearest power of two between 16 and 256; a tie goes up.
-	function freeSide(n: number): number {
-		let side = 16;
-		while (side < 256 && n >= side * 1.5) side *= 2;
-		return side;
+		return world.topology === 'square' && world.length === 16;
 	}
 	const draftBlocksFree = $derived(worldDraft.interaction === 'free' && !fitsFree(worldDraft));
 	async function chooseInteraction(next: LabSettings['interaction']) {
@@ -2458,15 +2446,13 @@
 			interaction: 'free',
 			topology: 'square',
 			boundary: previous.topology === 'hex' ? applied.boundary : previous.boundary,
-			width: freeSide(previous.width),
-			height: freeSide(previous.height),
 			length: 16,
 			ring: Math.max(previous.ring, 32)
 		};
 		await startNewWorld();
 		if (machineError) worldDraft = previous;
 		else
-			worldNotice = `Free-running world started at ${applied.width} × ${applied.height}. It needs a square lattice with power-of-two sides.`;
+			worldNotice = `Free-running world started at ${applied.width} × ${applied.height}. It needs the square lattice and 16-byte tapes.`;
 	}
 	function keyboard(event: KeyboardEvent) {
 		keyboardModality = true;
@@ -2808,28 +2794,12 @@
 								/>
 							</div>
 							<div class="control-field">
-								<label for="head-directions">Lines</label><InstrumentSelect
-									id="head-directions"
-									label="Lines"
-									value={headDirections}
-									options={[
-										{ value: 'rows', label: 'Rows only' },
-										{ value: 'weave', label: 'Rows and columns' },
-										{ value: 'all', label: 'All four directions' }
-									]}
-									onchange={(value) => {
-										headDirections = value as LabSettings['headDirections'];
-										void updateMachine();
-									}}
-									disabled={machineBusy || checkpointBusy || !engine}
-								/>
-							</div>
-							<div class="control-field">
 								<label for="halt-rule">HALT</label><InstrumentSelect
 									id="halt-rule"
 									label="HALT"
 									value={haltRule}
 									options={[
+										{ value: 'restart', label: 'Land somewhere else' },
 										{ value: 'wait', label: 'Wait until the byte changes' },
 										{ value: 'pass', label: 'Pass over it' }
 									]}
@@ -2839,9 +2809,29 @@
 									}}
 									disabled={machineBusy || checkpointBusy || !engine}
 								/>
+							</div>
+							<div class="control-field">
+								<label for="restart-chance">Restart chance</label><InstrumentSelect
+									id="restart-chance"
+									label="Restart chance"
+									value={String(turnover)}
+									options={[
+										{ value: '0', label: 'Never (only HALT ends a run)' },
+										{ value: '0.000244140625', label: '1 in 4,096 instructions' },
+										{ value: '0.0009765625', label: '1 in 1,024 instructions' },
+										{ value: '0.00390625', label: '1 in 256 instructions' },
+										{ value: '0.015625', label: '1 in 64 instructions' }
+									]}
+									onchange={(value) => {
+										turnover = Number(value);
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
 								<p class="control-note">
-									No cells and no step budget: every head runs one instruction per tick and never
-									resets. Steps, pair attempts, lethal zero and edges are not used; the sheet wraps.
+									No cells and no step budget. Processors land on random bytes with a blank mind and
+									run one instruction per tick; addresses are measured from where they landed.
+									Steps, pair attempts, lethal zero and edges are not used; the sheet wraps.
 								</p>
 							</div>
 						{/if}
@@ -3046,8 +3036,7 @@
 							>
 						</div>
 						{#if draftBlocksFree}<p class="control-note">
-								The free-running world needs the square lattice, 16-byte tapes and a width and
-								height that are powers of two, for example 128.
+								The free-running world needs the square lattice and 16-byte tapes.
 							</p>{/if}
 						<details class="shell-disclosure">
 							<summary>Encounter reset</summary>

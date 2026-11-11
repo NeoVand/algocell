@@ -15,7 +15,17 @@ import {
 import { SplitMix64 } from '$lib/sim/prng';
 import { createColormap } from '$lib/colormap';
 import { createSimShader, createRenderShader, createFieldShader } from './shaders';
-import { createFreeShader, createHeads, headCount, HEAD_WORDS, LOG_WORDS, NO_CLAIM } from './free';
+import {
+	chanceThreshold,
+	createFreeShader,
+	createHeads,
+	HALT_RULES,
+	headCount,
+	HEAD_WORDS,
+	LOG_WORDS,
+	mutationChance,
+	NO_CLAIM
+} from './free';
 import { suppressionMasks, emptySuppression, type SuppressSets } from '$lib/z80-opcodes';
 import { ORIGINAL_SETTINGS, validateSettings, createInitialSoup } from './machine';
 import { ablationMasks } from '../lab/ablation';
@@ -68,11 +78,7 @@ export class GPUEngine {
 	private beforeBuffer!: GPUBuffer;
 	// Free-running world (interaction `free`): persistent processors on the sheet of bytes.
 	private freeModule: GPUShaderModule | null = null;
-	private freePipelines: {
-		step: GPUComputePipeline;
-		apply: GPUComputePipeline;
-		mutate: GPUComputePipeline;
-	} | null = null;
+	private freePipelines: { step: GPUComputePipeline; apply: GPUComputePipeline } | null = null;
 	private freeBindGroup: GPUBindGroup | null = null;
 	private headsBuffer: GPUBuffer | null = null;
 	private headLogBuffer: GPUBuffer | null = null;
@@ -81,6 +87,12 @@ export class GPUEngine {
 	private freeHeads = 0;
 	private freeSignature = '';
 	private freeParams = new Uint32Array(8);
+	/**
+	 * Free-running world: ticks queued by one `simulateStep`. A tick is only a few thousand
+	 * instructions, so the app's frame loop asks for them in bunches. It changes nothing about the
+	 * world, only how often the screen is redrawn per tick.
+	 */
+	freeTicksPerStep = 32;
 	private pairsBuffer!: GPUBuffer;
 	private pairDataBuffer!: GPUBuffer;
 	private writeCountsBuffer!: GPUBuffer;
@@ -566,7 +578,7 @@ export class GPUEngine {
 		this.setupFree();
 	}
 
-	/** Instructions one update can execute: every head once, or every pair for its full budget. */
+	/** Instructions per counted update: every head once (a tick), or every pair for its full budget. */
 	get opsPerUpdate(): number {
 		return this.free ? this.freeHeads : this._pairCount * this._z80Steps;
 	}
@@ -602,7 +614,6 @@ export class GPUEngine {
 			this.soupWidth,
 			this.soupHeight,
 			settings.heads,
-			settings.headDirections,
 			settings.compat,
 			settings.variant,
 			this.lifecycle.bufferRevision
@@ -645,8 +656,7 @@ export class GPUEngine {
 			dev.createComputePipeline({ layout: pipelineLayout, compute: { module, entryPoint } });
 		this.freePipelines = {
 			step: pipeline('free_step'),
-			apply: pipeline('free_apply'),
-			mutate: pipeline('free_mutate')
+			apply: pipeline('free_apply')
 		};
 		this.freeBindGroup = dev.createBindGroup({
 			layout,
@@ -672,41 +682,42 @@ export class GPUEngine {
 		);
 	}
 
-	/** Free-running world: one tick, one instruction for every head. */
-	private simulateFreeTick(): void {
-		const mutationCount = Math.min(
-			this.cellCount * 16,
-			Math.floor(this.freeHeads / Math.pow(2, this._noiseExp))
-		);
+	/**
+	 * Free-running world: queue `ticks` ticks. One tick is one instruction for every head. All the
+	 * randomness of a tick comes from counters the heads carry, so the ticks need nothing from here
+	 * between them.
+	 */
+	simulateTicks(ticks: number): void {
+		if (!this.free || !this.freePipelines) throw new Error('This world has no heads.');
 		this.freeParams.set([
 			this.soupWidth * 4,
 			this.soupHeight * 4,
 			this.freeHeads,
-			mutationCount,
-			this.cpuRng.nextU32(),
-			this.machineSettings.haltRule === 'pass' ? 1 : 0,
+			HALT_RULES[this.machineSettings.haltRule],
+			chanceThreshold(this.machineSettings.turnover),
+			chanceThreshold(mutationChance(this._noiseExp)),
 			0,
 			0
 		]);
 		this.device.queue.writeBuffer(this.freeParamsBuffer!, 0, this.freeParams);
 		const encoder = this.device.createCommandEncoder();
-		const run = (pipeline: GPUComputePipeline, items: number) => {
-			const pass = encoder.beginComputePass();
-			pass.setPipeline(pipeline);
-			pass.setBindGroup(0, this.freeBindGroup!);
-			pass.dispatchWorkgroups(Math.ceil(items / 64));
-			pass.end();
-		};
-		run(this.freePipelines!.step, this.freeHeads);
-		run(this.freePipelines!.apply, this.freeHeads);
-		if (mutationCount > 0) run(this.freePipelines!.mutate, mutationCount);
+		const groups = Math.ceil(this.freeHeads / 64);
+		for (let t = 0; t < ticks; t++) {
+			for (const pipeline of [this.freePipelines.step, this.freePipelines.apply]) {
+				const pass = encoder.beginComputePass();
+				pass.setPipeline(pipeline);
+				pass.setBindGroup(0, this.freeBindGroup!);
+				pass.dispatchWorkgroups(groups);
+				pass.end();
+			}
+		}
 		this.device.queue.submit([encoder.finish()]);
-		this.batchIndex++;
-		const ops = this.freeHeads;
+		this.batchIndex += ticks;
+		const ops = this.freeHeads * ticks;
 		this.device.queue.onSubmittedWorkDone().then(() => this.onStepDone(ops));
 	}
 
-	/** Free-running world: every head's processor state, origin and direction (HEAD_WORDS each). */
+	/** Free-running world: every head's processor state, landing site and counters (HEAD_WORDS each). */
 	async readHeads(): Promise<Uint32Array> {
 		if (!this.headsBuffer) throw new Error('This world has no heads.');
 		const size = this.headsBuffer.size;
@@ -1067,7 +1078,7 @@ export class GPUEngine {
 	// Run one simulation step (all on GPU)
 	simulateStep(): void {
 		if (this.free && this.freePipelines) {
-			this.simulateFreeTick();
+			this.simulateTicks(this.freeTicksPerStep);
 			return;
 		}
 		const noiseCoef = 1 / Math.pow(2, this._noiseExp);

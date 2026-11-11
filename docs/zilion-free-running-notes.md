@@ -1,7 +1,8 @@
 # Notes for Zilion from the free-running world
 
 Zilion 0.3.1 already did the hard part. These are the places where Algocell had to adapt it, written as possible
-upgrades. Nothing in Zilion was changed.
+upgrades. Nothing in Zilion was changed. The second design of the world (processors that land, addresses measured
+from the landing byte, see `free-running.md`) needed nothing more from Zilion than the first.
 
 ## What worked as shipped
 
@@ -29,6 +30,11 @@ upgrades. Nothing in Zilion was changed.
 4. **HALT policy.** The host clears the Z80-private `cpu_halted` after each step. Other cores expose only
    `zil_halt_reason()`. Upgrade: `halting: { onHaltInstruction: 'stop' | 'wait' | 'pass' }`, or a `zil_clear_halt()`.
 5. **Unused required fields.** A segments memory and a step budget have to be declared although neither is used.
+6. **Restart in place.** When a processor lifts off, the host zeroes its state words by hand, because
+   `zil_reset_lane` belongs to the run loop. Upgrade: a `zil_reset_state()` that sets the private registers to the
+   world's declared reset state, so the host stays ignorant of what "reset" means on each chip.
+7. **Per-lane random numbers.** The host keeps one counter per processor and hashes it with `zil_mix32`. A
+   documented `zil_random(lane_counter)` would make this the same on every world.
 
 ## What a next step would need
 
@@ -39,9 +45,9 @@ upgrades. Nothing in Zilion was changed.
   the two cores split prefix chains differently, and undocumented flag bits differ. A CPU-side single-step
   reference that matches the WGSL core exactly (from the same source as zilion-vectors) would let a shared-memory
   world be checked for as long as one likes.
-- **Other chips.** The 6502 and 8086 cores have not been tried in this world. The 8086's segment registers would
-  need a decision about what a segment means on a line.
-- **A chip with relative addressing.** The Z80's absolute addresses force every head to carry a fixed origin, so a
-  head never truly moves. A core whose data pointers are relative to the program counter (BFF-style heads) would
-  make a program mean the same thing wherever it sits, and would allow a two-dimensional sheet without tying each
-  head to a line.
+- **Other chips.** The 6502 and 8086 cores have not been tried in this world. The address map is the same for any
+  chip with 16-bit addresses (low byte = column, high byte = row). The 6502's stack is fixed at page 1, which here
+  is the row below the landing byte. The 8086's segment registers would need a decision.
+- **Position-independent chips.** The landing origin makes a program mean the same thing wherever it sits, as long
+  as a processor starts at its beginning. A program still cannot move its own origin. A core whose data pointers are
+  relative to the program counter (BFF-style heads) would remove the origin altogether.
