@@ -36,21 +36,38 @@ export interface LabSettings {
 	 * reversible world.
 	 */
 	dissipation: number;
+	/**
+	 * What a cell at the edge of the lattice meets. `reflect` is the historical rule: a draw that
+	 * points off the lattice is turned inward, so the world has walls. The other rules glue opposite
+	 * edges together so that no cell is special: `cylinder` joins left to right, `torus` joins both
+	 * pairs, `mobius` and `klein` join left to right with a flip, `projective` flips both pairs.
+	 */
+	boundary: BoundaryRule;
 }
 
 export type InteractionRule = 'overwrite' | 'reversible';
+export type BoundaryRule = 'reflect' | 'cylinder' | 'torus' | 'mobius' | 'klein' | 'projective';
+export const BOUNDARY_RULES: BoundaryRule[] = [
+	'reflect',
+	'cylinder',
+	'torus',
+	'mobius',
+	'klein',
+	'projective'
+];
 
 /**
  * Settings saved before the interaction rule existed (checkpoints, presets) carry neither field.
  * They meant the historical rule, so fill it in instead of rejecting them.
  */
 export function withInteractionDefaults(
-	settings: Omit<LabSettings, 'interaction' | 'dissipation'> & Partial<LabSettings>
+	settings: Omit<LabSettings, 'interaction' | 'dissipation' | 'boundary'> & Partial<LabSettings>
 ): LabSettings {
 	return {
 		...settings,
 		interaction: settings.interaction ?? 'overwrite',
-		dissipation: settings.dissipation ?? 1
+		dissipation: settings.dissipation ?? 1,
+		boundary: settings.boundary ?? 'reflect'
 	};
 }
 
@@ -84,7 +101,8 @@ export const DEFAULT_SETTINGS: LabSettings = {
 	stack: 'top',
 	dialMode: 'counter',
 	interaction: 'overwrite',
-	dissipation: 1
+	dissipation: 1,
+	boundary: 'reflect'
 };
 
 /** Unknown, no partner entry, partner entry in the last initiating encounter. */

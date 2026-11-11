@@ -1,0 +1,62 @@
+{
+ "settings": {
+  "isa": "z80",
+  "compat": "0.2",
+  "variant": "classic",
+  "length": 16,
+  "ring": 32,
+  "steps": 128,
+  "width": 148,
+  "height": 135,
+  "topology": "square",
+  "seed": 77,
+  "pairAttempts": 8192,
+  "mutationExponent": 31,
+  "lethalProbability": 0,
+  "randomRegisters": false,
+  "ablation": [],
+  "stack": "legacy-sp",
+  "dialMode": "historical-pcg",
+  "interaction": "reversible",
+  "dissipation": 0,
+  "boundary": "torus"
+ },
+ "radius": 12,
+ "rows": [
+  {
+   "update": 0,
+   "zeroBytes": 0.9774618368368369,
+   "hotBytes": 0,
+   "blankCells": 0.9773773773773774,
+   "restCells": 1
+  },
+  {
+   "update": 250,
+   "zeroBytes": 0.9690440440440441,
+   "hotBytes": 0.031393893893893896,
+   "blankCells": 0.9664664664664665,
+   "restCells": 0.965915915915916
+  },
+  {
+   "update": 1000,
+   "zeroBytes": 0.9358264514514515,
+   "hotBytes": 0.0651244994994995,
+   "blankCells": 0.9324324324324325,
+   "restCells": 0.9314314314314315
+  },
+  {
+   "update": 4000,
+   "zeroBytes": 0.003947697697697697,
+   "hotBytes": 0.9962368618618619,
+   "blankCells": 0,
+   "restCells": 0
+  },
+  {
+   "update": 12000,
+   "zeroBytes": 0.0038726226226226228,
+   "hotBytes": 0.9959021521521522,
+   "blankCells": 0,
+   "restCells": 0
+  }
+ ]
+}

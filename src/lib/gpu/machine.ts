@@ -8,6 +8,7 @@ import {
 } from '@neovand/zilion';
 import { SplitMix64 } from '../sim/prng';
 import { ablationMasks } from '../lab/ablation';
+import { BOUNDARY_RULES } from '../lab/types';
 import type { LabSettings, InitialCondition } from '../lab/types';
 
 export function validateSettings(settings: LabSettings): void {
@@ -63,6 +64,9 @@ export function validateSettings(settings: LabSettings): void {
 		settings.dissipation > 1
 	)
 		throw new Error('Dissipation must be between zero and one.');
+	if (!BOUNDARY_RULES.includes(settings.boundary)) throw new Error('Unknown boundary rule.');
+	if (settings.boundary !== 'reflect' && settings.topology !== 'square')
+		throw new Error('Joined edges are available on the square lattice only.');
 	if (
 		typeof settings.randomRegisters !== 'boolean' ||
 		!Array.isArray(settings.ablation) ||
@@ -265,5 +269,6 @@ export const ORIGINAL_SETTINGS: LabSettings = {
 	stack: 'legacy-sp',
 	dialMode: 'historical-pcg',
 	interaction: 'overwrite',
-	dissipation: 1
+	dissipation: 1,
+	boundary: 'reflect'
 };

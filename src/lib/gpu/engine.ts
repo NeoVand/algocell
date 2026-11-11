@@ -1059,6 +1059,22 @@ export class GPUEngine {
 		this.restBefore();
 	}
 
+	/**
+	 * Load the hidden layer of the reversible rule (each cell's tape before its last event). Call it
+	 * after `writeSoupData`, which puts every cell at rest; together they restore a two-layer state.
+	 */
+	writeBeforeData(data: Uint8Array): void {
+		if (data.byteLength !== this.beforeBuffer.size)
+			throw new Error('The hidden layer must be the size of the lattice.');
+		this.device.queue.writeBuffer(
+			this.beforeBuffer,
+			0,
+			data.buffer,
+			data.byteOffset,
+			data.byteLength
+		);
+	}
+
 	// Read soup data from GPU for CPU-side trace/disassembly
 	private _soupMapPending = false;
 	async readSoupData(): Promise<Uint8Array> {
@@ -1072,6 +1088,30 @@ export class GPUEngine {
 			encoder.copyBufferToBuffer(this.soupBuffer, 0, this.soupStagingBuffer, 0, soupBytes);
 			this.device.queue.submit([encoder.finish()]);
 
+			await this.soupStagingBuffer.mapAsync(GPUMapMode.READ);
+			const data = new Uint8Array(this.soupStagingBuffer.getMappedRange().slice(0));
+			this.soupStagingBuffer.unmap();
+			return data;
+		} finally {
+			this._soupMapPending = false;
+			this.finishReadback();
+		}
+	}
+
+	/**
+	 * Read the hidden layer of the reversible rule: each cell's tape before its last event. Under the
+	 * overwrite rule the layer is not maintained and the bytes mean nothing.
+	 */
+	async readBeforeData(): Promise<Uint8Array> {
+		if (this.readbackBarrier) return this.readbackBarrier.then(() => this.readBeforeData());
+		while (this._soupMapPending) await new Promise((resolve) => setTimeout(resolve, 0));
+		this._soupMapPending = true;
+		this.pendingReadbacks++;
+		try {
+			const soupBytes = this.cellCount * this.wordsPerCell * 4;
+			const encoder = this.device.createCommandEncoder();
+			encoder.copyBufferToBuffer(this.beforeBuffer, 0, this.soupStagingBuffer, 0, soupBytes);
+			this.device.queue.submit([encoder.finish()]);
 			await this.soupStagingBuffer.mapAsync(GPUMapMode.READ);
 			const data = new Uint8Array(this.soupStagingBuffer.getMappedRange().slice(0));
 			this.soupStagingBuffer.unmap();

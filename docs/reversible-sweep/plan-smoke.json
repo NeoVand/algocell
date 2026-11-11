@@ -1,0 +1,5 @@
+[
+ {"interaction":"overwrite","dissipation":1,"mutationExponent":4,"boundary":"reflect","seed":6,"updates":2000,"checkpoints":[1000,2000]},
+ {"interaction":"reversible","dissipation":1,"mutationExponent":4,"boundary":"reflect","seed":6,"updates":2000,"checkpoints":[1000,2000]},
+ {"interaction":"reversible","dissipation":0.7,"mutationExponent":4,"boundary":"torus","seed":6,"updates":2000,"checkpoints":[1000,2000]}
+]

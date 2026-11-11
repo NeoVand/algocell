@@ -43,6 +43,7 @@ export const SETTING_KEYS = [
 	'dialMode',
 	'interaction',
 	'dissipation',
+	'boundary',
 	'initialCondition'
 ] as const;
 

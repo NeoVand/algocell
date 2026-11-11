@@ -23,7 +23,7 @@
 	import ObservationTools from '$lib/components/ObservationTools.svelte';
 	import EncounterBench from '$lib/components/EncounterBench.svelte';
 	import { ABOUT_SECTIONS, GUIDE_SECTIONS, type DocumentationSection } from '$lib/lab/content';
-	import type { LabSettings, LabIsa, InitialCondition } from '$lib/lab/types';
+	import type { LabSettings, LabIsa, InitialCondition, BoundaryRule } from '$lib/lab/types';
 	import { ORIGINAL_SETTINGS } from '$lib/gpu/machine';
 	import {
 		resolveSuppression,
@@ -81,6 +81,7 @@
 	let dialMode = $state<LabSettings['dialMode']>('historical-pcg');
 	let interaction = $state<LabSettings['interaction']>('overwrite');
 	let dissipation = $state(1);
+	let boundary = $state<BoundaryRule>('reflect');
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -135,7 +136,8 @@
 			stack: stackConvention,
 			dialMode,
 			interaction,
-			dissipation
+			dissipation,
+			boundary
 		};
 	}
 
@@ -198,6 +200,8 @@
 		dialMode = next.dialMode;
 		interaction = next.interaction;
 		dissipation = next.dissipation;
+		// Joined edges exist on the square lattice only.
+		boundary = next.topology === 'hex' ? 'reflect' : next.boundary;
 		gridWidth = next.width;
 		gridHeight = next.height;
 		gridType = next.topology;
@@ -265,7 +269,7 @@
 	}
 
 	function applyExperimentPreset(preset: ExperimentPreset) {
-		worldDraft = structuredClone(preset.config);
+		worldDraft = hexSafe(structuredClone(preset.config));
 		stagedInitial = preset.initialCondition;
 		stagedPreset = null;
 		selectedExperimentId = preset.id;
@@ -1592,6 +1596,12 @@
 			set: (v) => (dissipation = v as number)
 		},
 		{
+			key: 'boundary',
+			mode: 'live',
+			get: () => boundary,
+			set: (v) => (boundary = v as BoundaryRule)
+		},
+		{
 			key: 'initialCondition',
 			mode: 'grid',
 			get: () => JSON.stringify(initialCondition),
@@ -1737,6 +1747,7 @@
 			dialMode: (values.dialMode ?? 'historical-pcg') as LabSettings['dialMode'],
 			interaction: (values.interaction ?? 'overwrite') as LabSettings['interaction'],
 			dissipation: Number(values.dissipation ?? 1),
+			boundary: topology === 'hex' ? 'reflect' : ((values.boundary ?? 'reflect') as BoundaryRule),
 			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
 		};
 		stagedInitial = values.initialCondition
@@ -2171,6 +2182,18 @@
 			Boolean(stagedPreset) ||
 			stagedExperimentPending
 	);
+	// `status` is the short name the footer appends when the edges are not walls.
+	const boundaryOptions: { value: BoundaryRule; label: string; status: string }[] = [
+		{ value: 'reflect', label: 'Walls (standard)', status: '' },
+		{ value: 'cylinder', label: 'Cylinder', status: 'cylinder' },
+		{ value: 'torus', label: 'Torus', status: 'torus' },
+		{ value: 'mobius', label: 'Möbius strip', status: 'Möbius' },
+		{ value: 'klein', label: 'Klein bottle', status: 'Klein' },
+		{ value: 'projective', label: 'Projective plane', status: 'projective' }
+	];
+	const boundaryStatus = $derived(
+		boundaryOptions.find((option) => option.value === applied.boundary)?.status ?? ''
+	);
 	const machineOptions = [
 		{ value: 'z80-0.2', label: 'Z80 · compat 0.2' },
 		{ value: 'z80-0.3', label: 'Z80 · 0.3 classic' },
@@ -2347,12 +2370,26 @@
 			'stack',
 			'dialMode',
 			'interaction',
-			'dissipation'
+			'dissipation',
+			'boundary'
 		] as const) {
 			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
 				Object.assign(patch, { [key]: next[key] });
 		}
-		worldDraft = { ...$state.snapshot(worldDraft), ...patch };
+		// The draft may already be staged as hex while the running square world changes its edges.
+		worldDraft = hexSafe({ ...$state.snapshot(worldDraft), ...patch });
+	}
+	// Only walls exist on a hex lattice; any other edge rule would fail validation.
+	function hexSafe(next: LabSettings): LabSettings {
+		return next.topology === 'hex' && next.boundary !== 'reflect'
+			? { ...next, boundary: 'reflect' }
+			: next;
+	}
+	function setDraftTopology(topology: GridType) {
+		if (worldDraft.topology === topology) return;
+		worldDraft.topology = topology;
+		// Back on square, the draft picks the running world's edges up again.
+		worldDraft.boundary = topology === 'hex' ? 'reflect' : applied.boundary;
 	}
 	function keyboard(event: KeyboardEvent) {
 		keyboardModality = true;
@@ -2677,6 +2714,25 @@
 							</div>
 						{/if}
 						<div class="control-field">
+							<label for="boundary-rule">Edges</label><InstrumentSelect
+								id="boundary-rule"
+								label="Edges"
+								value={boundary}
+								options={gridType === 'hex' ? boundaryOptions.slice(0, 1) : boundaryOptions}
+								onchange={(value) => {
+									boundary = value as BoundaryRule;
+									void updateMachine();
+								}}
+								disabled={machineBusy || checkpointBusy || !engine || gridType === 'hex'}
+							/>
+							<p class="control-note">
+								What a cell at the edge meets. Walls turn it inward; the others glue opposite edges,
+								some with a flip.{gridType === 'hex'
+									? ' Joined edges need the square lattice.'
+									: ''}
+							</p>
+						</div>
+						<div class="control-field">
 							<div class="label-row">
 								<label for="noise-input">Mutation rate</label><output
 									>{noiseExp >= 31 ? 'Off' : `1 / ${2 ** noiseExp}`}</output
@@ -2797,10 +2853,10 @@
 							<div class="segmented">
 								<button
 									class:active={worldDraft.topology === 'square'}
-									onclick={() => (worldDraft.topology = 'square')}>Square</button
+									onclick={() => setDraftTopology('square')}>Square</button
 								><button
 									class:active={worldDraft.topology === 'hex'}
-									onclick={() => (worldDraft.topology = 'hex')}>Hexagonal</button
+									onclick={() => setDraftTopology('hex')}>Hexagonal</button
 								>
 							</div>
 						</div>
@@ -4958,7 +5014,7 @@ graph TD
 			><span>Zero</span><strong
 				>{Math.round(applied.lethalProbability * 100)}% lethal{applied.interaction === 'reversible'
 					? ` · reversible ${Math.round(applied.dissipation * 100)}%`
-					: ''}</strong
+					: ''}{boundaryStatus ? ` · ${boundaryStatus}` : ''}</strong
 			></button
 		>
 	</footer>

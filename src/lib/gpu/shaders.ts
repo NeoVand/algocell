@@ -3,7 +3,7 @@ import type { GridType } from '$lib/sim/constants';
 import { buildMachine, Z80_CORE_WGSL } from '@neovand/zilion';
 
 import { machineSpec, ORIGINAL_SETTINGS } from './machine';
-import type { LabSettings } from '../lab/types';
+import type { BoundaryRule, LabSettings } from '../lab/types';
 
 // ============================================================
 // SIMULATION COMPUTE SHADER
@@ -28,6 +28,36 @@ const SQUARE_NEIGHBOR_SELECTION = /* wgsl */ `
     }
     let j = ny * w + nx;
 `;
+
+/**
+ * Square lattice with opposite edges glued instead of walled. Left and right are always joined;
+ * `flipX` reverses the row on crossing that seam (Mobius, Klein, projective). `joinY` also joins top
+ * and bottom, and `flipY` reverses the column on crossing it (projective). Every rule is a symmetric
+ * neighbour relation and never pairs a cell with itself on a lattice at least two cells wide and high.
+ */
+function squareNeighborSelection(boundary: BoundaryRule): string {
+	if (boundary === 'reflect') return SQUARE_NEIGHBOR_SELECTION;
+	const flipX = boundary === 'mobius' || boundary === 'klein' || boundary === 'projective';
+	const joinY = boundary === 'torus' || boundary === 'klein' || boundary === 'projective';
+	const flipY = boundary === 'projective';
+	const fx = flipX ? ' ny = h - 1u - y;' : '';
+	const fy = flipY ? ' nx = w - 1u - x;' : '';
+	const down = joinY ? `ny = 0u;${fy}` : 'ny = y - 1u;';
+	const up = joinY ? `ny = h - 1u;${fy}` : 'ny = y + 1u;';
+	return /* wgsl */ `
+    let dir = rand_bounded(4u);
+    var nx = x;
+    var ny = y;
+    switch(dir) {
+        case 0u: { if (x + 1u < w) { nx = x + 1u; } else { nx = 0u;${fx} } }
+        case 1u: { if (y + 1u < h) { ny = y + 1u; } else { ${down} } }
+        case 2u: { if (x > 0u) { nx = x - 1u; } else { nx = w - 1u;${fx} } }
+        case 3u: { if (y > 0u) { ny = y - 1u; } else { ${up} } }
+        default: {}
+    }
+    let j = ny * w + nx;
+`;
+}
 
 // Neighbor selection for hex grid: cells on axial lattice (6 axial neighbors, no parity needed)
 const HEX_NEIGHBOR_SELECTION = /* wgsl */ `
@@ -114,7 +144,10 @@ export function createSimShader(
 	settings: LabSettings = ORIGINAL_SETTINGS,
 	measureFetch = false
 ): string {
-	const neighborBlock = gridType === 'hex' ? HEX_NEIGHBOR_SELECTION : SQUARE_NEIGHBOR_SELECTION;
+	const neighborBlock =
+		gridType === 'hex'
+			? HEX_NEIGHBOR_SELECTION
+			: squareNeighborSelection(settings.boundary ?? 'reflect');
 	const spec = machineSpec(settings);
 	const { wgsl: builtMachine } = buildMachine({
 		...spec,

@@ -1,0 +1,1730 @@
+[
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 101,
+"updates": 2000,
+"checkpoints": [
+500,
+1000,
+2000
+],
+"width": 148,
+"height": 135,
+"initial": "pusher"
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 2,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 4,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 6,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 8,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 10,
+"boundary": "reflect",
+"seed": 202,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 4,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.3,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.6,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.8,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.9,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.95,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 0.99,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "reversible",
+"dissipation": 1,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+},
+{
+"interaction": "overwrite",
+"dissipation": 1,
+"mutationExponent": 6,
+"boundary": "torus",
+"seed": 101,
+"updates": 4000,
+"checkpoints": [
+500,
+1000,
+2000,
+4000
+],
+"width": 148,
+"height": 135
+}
+]
