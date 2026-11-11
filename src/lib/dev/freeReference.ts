@@ -9,6 +9,8 @@
 import { Z80, type Hal } from 'z80-emulator';
 import {
 	FACING_MASKS,
+	FACING_RULES,
+	FACING_UNDECIDED,
 	FREE_RNG,
 	HEAD_FACING,
 	HEAD_ORIGIN_X,
@@ -16,7 +18,8 @@ import {
 	HEAD_RNG,
 	HEAD_WORDS,
 	chanceThreshold,
-	faceOffset
+	faceOffset,
+	facingFromNeighbours
 } from '../gpu/free';
 
 // z80-emulator announces DD/FD-prefixed opcodes it treats as NOPs; keep the console quiet.
@@ -49,6 +52,8 @@ export interface ReferenceRules {
 
 export interface ReferenceWorld {
 	sheet: Uint8Array;
+	/** The facing of the head that wrote each byte last. */
+	grain: Uint8Array;
 	tick(): void;
 	registers(head: number): Record<string, number>;
 	origin(head: number): { x: number; y: number; facing: number };
@@ -81,13 +86,15 @@ export function createReference(
 	sheetH: number,
 	sheet: Uint8Array,
 	heads: Uint32Array,
-	rules: ReferenceRules
+	rules: ReferenceRules,
+	grain?: ArrayLike<number>
 ): ReferenceWorld {
 	const count = heads.length / HEAD_WORDS;
 	const turnover = chanceThreshold(rules.turnover);
 	const mutation = chanceThreshold(rules.mutation);
 	const world: ReferenceWorld = {
 		sheet: new Uint8Array(sheet),
+		grain: grain ? Uint8Array.from(grain) : new Uint8Array(sheet.length),
 		contested: 0,
 		halts: 0,
 		restarts: 0,
@@ -103,7 +110,23 @@ export function createReference(
 			facing: machines[head].facing
 		})
 	};
+	// Position -> value; a mutation carries bit 8 (it leaves the grain of the byte alone).
 	let log = new Map<number, number>();
+	const MUTATION = 0x100;
+	// The facing of a head landing on (x, y), by the rule; `random` is a random word of its own.
+	const landingFace = (x: number, y: number, random: number): number => {
+		const rule = FACING_RULES[rules.facing];
+		if (rule === 1) return world.grain[y * sheetW + x] & 7;
+		if (rule !== 2) return random & FACING_MASKS[rules.facing];
+		return facingFromNeighbours(
+			world.sheet[y * sheetW + ((x + 1) % sheetW)],
+			world.sheet[y * sheetW + ((x + sheetW - 1) % sheetW)],
+			world.sheet[((y + 1) % sheetH) * sheetW + x],
+			world.sheet[((y + sheetH - 1) % sheetH) * sheetW + x],
+			random,
+			mix32
+		);
+	};
 	interface Machine {
 		z80: Z80;
 		ox: number;
@@ -146,7 +169,8 @@ export function createReference(
 			tStateCount: 0,
 			readMemory: (address: number) => {
 				const p = place(address);
-				return log.get(p) ?? world.sheet[p];
+				const own = log.get(p);
+				return own === undefined ? world.sheet[p] : own & 0xff;
 			},
 			writeMemory: (address: number, value: number) => {
 				log.set(place(address), value & 0xff);
@@ -162,12 +186,21 @@ export function createReference(
 	}
 
 	function tick(): void {
-		const writes = new Map<number, number>(); // position -> value of the lowest-numbered writer
+		// Position -> value and facing of the lowest-numbered writer.
+		const writes = new Map<number, { value: number; facing: number }>();
 		const writers = new Map<number, number>();
 		for (let h = 0; h < count; h++) {
 			const machine = machines[h];
 			const r = machine.z80.regs;
 			const pc = r.pc;
+			// A head that has only been placed takes its facing from the rule before its first instruction.
+			if (machine.facing === FACING_UNDECIDED)
+				machine.facing = landingFace(
+					machine.ox,
+					machine.oy,
+					mix32((machine.rng ^ FREE_RNG.face) >>> 0)
+				);
+			const wroteFacing = machine.facing;
 			const first = world.sheet[machine.place(pc)];
 			if ((first === 0xdd || first === 0xfd) && world.firstIndexPrefixTick === null)
 				world.firstIndexPrefixTick = world.ticks;
@@ -195,23 +228,27 @@ export function createReference(
 				const b = mix32(a ^ FREE_RNG.landY);
 				machine.ox = a % sheetW;
 				machine.oy = b % sheetH;
-				machine.facing = mix32(b ^ FREE_RNG.face) & FACING_MASKS[rules.facing];
+				machine.facing = landingFace(machine.ox, machine.oy, mix32((b ^ FREE_RNG.face) >>> 0));
 				world.restarts++;
 			}
 			if (mutation !== 0 && mix32(random ^ FREE_RNG.mutate) < mutation) {
 				log.set(
 					mix32(random ^ FREE_RNG.mutatePlace) % (sheetW * sheetH),
-					mix32(random ^ FREE_RNG.mutateValue) & 0xff
+					(mix32(random ^ FREE_RNG.mutateValue) & 0xff) | MUTATION
 				);
 				world.mutations++;
 			}
 			for (const [p, value] of log) {
 				writers.set(p, (writers.get(p) ?? 0) + 1);
-				if (!writes.has(p)) writes.set(p, value); // heads run in ascending order
+				// Heads run in ascending order, so the first writer of a byte is the lowest-numbered.
+				if (!writes.has(p)) writes.set(p, { value, facing: wroteFacing });
 			}
 		}
 		for (const n of writers.values()) if (n > 1) world.contested++;
-		for (const [p, value] of writes) world.sheet[p] = value;
+		for (const [p, { value, facing }] of writes) {
+			world.sheet[p] = value & 0xff;
+			if (!(value & MUTATION)) world.grain[p] = facing;
+		}
 		world.ticks++;
 	}
 

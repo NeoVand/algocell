@@ -18,8 +18,10 @@ import { createSimShader, createRenderShader, createFieldShader } from './shader
 import {
 	chanceThreshold,
 	createFreeShader,
+	createGrain,
 	createHeads,
 	FACING_MASKS,
+	FACING_RULES,
 	HALT_RULES,
 	headCount,
 	HEAD_WORDS,
@@ -84,6 +86,7 @@ export class GPUEngine {
 	private headsBuffer: GPUBuffer | null = null;
 	private headLogBuffer: GPUBuffer | null = null;
 	private claimsBuffer: GPUBuffer | null = null;
+	private grainBuffer: GPUBuffer | null = null;
 	private freeParamsBuffer: GPUBuffer | null = null;
 	private freeHeads = 0;
 	private freeSignature = '';
@@ -592,6 +595,8 @@ export class GPUEngine {
 		this.headsBuffer?.destroy();
 		this.headLogBuffer?.destroy();
 		this.claimsBuffer?.destroy();
+		this.grainBuffer?.destroy();
+		this.grainBuffer = null;
 		this.freeParamsBuffer?.destroy();
 		this.headsBuffer = this.headLogBuffer = this.claimsBuffer = this.freeParamsBuffer = null;
 		this.freePipelines = null;
@@ -636,6 +641,10 @@ export class GPUEngine {
 				size: this.cellCount * 16 * 4,
 				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 			});
+			this.grainBuffer = dev.createBuffer({
+				size: this.cellCount * 16 * 4,
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+			});
 			this.freeParamsBuffer = dev.createBuffer({
 				size: 32,
 				usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
@@ -650,7 +659,8 @@ export class GPUEngine {
 				{ binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-				{ binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } }
+				{ binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+				{ binding: 5, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
 			]
 		});
 		const pipelineLayout = dev.createPipelineLayout({ bindGroupLayouts: [layout] });
@@ -667,7 +677,8 @@ export class GPUEngine {
 				{ binding: 1, resource: { buffer: this.headsBuffer! } },
 				{ binding: 2, resource: { buffer: this.headLogBuffer! } },
 				{ binding: 3, resource: { buffer: this.claimsBuffer! } },
-				{ binding: 4, resource: { buffer: this.freeParamsBuffer! } }
+				{ binding: 4, resource: { buffer: this.freeParamsBuffer! } },
+				{ binding: 5, resource: { buffer: this.grainBuffer! } }
 			]
 		});
 		if (!keepHeads) this.resetHeads();
@@ -677,6 +688,8 @@ export class GPUEngine {
 	private resetHeads(): void {
 		if (!this.headsBuffer || !this.claimsBuffer) return;
 		this.device.queue.writeBuffer(this.headsBuffer, 0, createHeads(this.settings));
+		if (this.grainBuffer)
+			this.device.queue.writeBuffer(this.grainBuffer, 0, createGrain(this.settings));
 		this.device.queue.writeBuffer(
 			this.claimsBuffer,
 			0,
@@ -699,7 +712,7 @@ export class GPUEngine {
 			chanceThreshold(this.machineSettings.turnover),
 			chanceThreshold(mutationChance(this._noiseExp)),
 			FACING_MASKS[this.machineSettings.facing],
-			0
+			FACING_RULES[this.machineSettings.facing]
 		]);
 		this.device.queue.writeBuffer(this.freeParamsBuffer!, 0, this.freeParams);
 		const encoder = this.device.createCommandEncoder();
@@ -735,6 +748,31 @@ export class GPUEngine {
 		staging.unmap();
 		staging.destroy();
 		return data;
+	}
+
+	/** Free-running world: the facing of the head that wrote each byte last (row-major, one per byte). */
+	async readGrain(): Promise<Uint32Array> {
+		if (!this.grainBuffer) throw new Error('This world has no heads.');
+		const size = this.grainBuffer.size;
+		const staging = this.device.createBuffer({
+			size,
+			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+		});
+		const encoder = this.device.createCommandEncoder();
+		encoder.copyBufferToBuffer(this.grainBuffer, 0, staging, 0, size);
+		this.device.queue.submit([encoder.finish()]);
+		await staging.mapAsync(GPUMapMode.READ);
+		const data = new Uint32Array(staging.getMappedRange().slice(0));
+		staging.unmap();
+		staging.destroy();
+		return data;
+	}
+
+	/** Free-running world: replace the grain (for tests). */
+	writeGrain(data: Uint32Array<ArrayBuffer>): void {
+		if (!this.grainBuffer || data.byteLength !== this.grainBuffer.size)
+			throw new Error('Grain data does not match this world.');
+		this.device.queue.writeBuffer(this.grainBuffer, 0, data);
 	}
 
 	/** Free-running world: replace every head (for tests and restored states). */

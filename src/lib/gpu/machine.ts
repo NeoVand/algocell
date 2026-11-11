@@ -64,7 +64,7 @@ export function validateSettings(settings: LabSettings): void {
 		throw new Error('Unknown HALT rule.');
 	if (!Number.isFinite(settings.turnover) || settings.turnover < 0 || settings.turnover >= 1)
 		throw new Error('The restart chance must be at least zero and below one.');
-	if (!['any', 'rows', 'two-axes', 'same'].includes(settings.facing))
+	if (!['any', 'written', 'bytes', 'rows', 'two-axes', 'same'].includes(settings.facing))
 		throw new Error('Unknown facing rule.');
 	if (settings.interaction === 'free') {
 		if (settings.isa !== 'z80') throw new Error('The free-running world runs the Z80 only.');

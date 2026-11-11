@@ -1,7 +1,9 @@
 // Open the app, choose the free-running world, and take three screenshots (after 1.5 s, 6.5 s and 18.5 s).
-//   node scripts/free-app-look.mjs <app url> <output path prefix>
+//   node scripts/free-app-look.mjs <app url> <output path prefix> [facing label] [extra seconds]
+// With a facing label (the text of an option of the Facing control) that facing is chosen first;
+// with extra seconds a fourth screenshot is taken that much later.
 import { chromium } from '@playwright/test';
-const [url, out] = process.argv.slice(2);
+const [url, out, facingLabel, extraSeconds] = process.argv.slice(2);
 const browser = await chromium.launch({
 	channel: 'chrome',
 	headless: true,
@@ -32,6 +34,13 @@ if (!(await control.isVisible().catch(() => false))) {
 console.log('interaction control visible:', await control.isVisible());
 await control.click();
 await page.getByText('Free-running (no cells, no step budget)').click();
+if (facingLabel) {
+	const facing = page.locator('#facing-rule');
+	await facing.scrollIntoViewIfNeeded();
+	await facing.click();
+	await page.getByText(facingLabel, { exact: true }).click();
+	console.log('facing now:', (await facing.innerText()).replace(/\s+/g, ' '));
+}
 await page.waitForTimeout(1500);
 const text = async () => (await page.locator('body').innerText()).replace(/\s+/g, ' ');
 const grab = async (label) => {
@@ -57,6 +66,10 @@ await page.waitForTimeout(5000);
 await grab('b');
 await page.waitForTimeout(12000);
 await grab('c');
+if (extraSeconds) {
+	await page.waitForTimeout(Number(extraSeconds) * 1000);
+	await grab('d');
+}
 const stats = await page.evaluate(() => {
 	const t = document.body.innerText;
 	return t

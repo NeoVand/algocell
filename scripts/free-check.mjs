@@ -13,7 +13,8 @@
 // 3. The rule has no preferred direction: turning or mirroring the whole world (sheet, landing sites
 //    and facings) by any of the seven non-trivial symmetries of the square and running it gives the
 //    turned or mirrored result, byte for byte.
-// 4. Landing heads face the eight ways equally often.
+// 4. Landing heads face the eight ways equally often; the `bytes` rule faces the largest neighbour
+//    and favours no direction in a tie.
 // 5. A known replicator of the pair worlds (the pusher, `01 c5`) spreads on the sheet.
 import { chromium } from '@playwright/test';
 
@@ -33,13 +34,15 @@ const report = await page.evaluate(async () => {
 		freeLayout,
 		mutationChance,
 		faceOffset,
+		facingFromNeighbours,
+		FACING_UNDECIDED,
 		HEAD_WORDS,
 		HEAD_ORIGIN_X,
 		HEAD_ORIGIN_Y,
 		HEAD_RUNS,
 		HEAD_FACING
 	} = await import('/src/lib/gpu/free.ts');
-	const { createReference } = await import('/src/lib/dev/freeReference.ts');
+	const { createReference, mix32 } = await import('/src/lib/dev/freeReference.ts');
 	const canvas = document.createElement('canvas');
 	canvas.width = 64;
 	canvas.height = 64;
@@ -89,17 +92,37 @@ const report = await page.evaluate(async () => {
 			turnover: 0,
 			exponent: 31
 		});
+	// The sheet sets the facing: the grain of the landing byte (`written`), or the neighbouring bytes
+	// (`bytes`). Heads start undecided and take their facing from the rule.
+	for (const facing of ['written', 'bytes'])
+		for (const seed of [3, 4])
+			cases.push({
+				haltRule: 'restart',
+				facing,
+				seed,
+				tilesW: 8,
+				tilesH: 8,
+				heads: 1,
+				turnover: 0,
+				exponent: 31
+			});
 	// Restart chance and mutation on; a sheet wider than a head's window (280 bytes) and not a power of two.
-	for (const seed of [6, 7, 8])
-		cases.push({
-			haltRule: 'restart',
-			seed,
-			tilesW: 70,
-			tilesH: 9,
-			heads: 0.1,
-			turnover: 1 / 64,
-			exponent: 0
-		});
+	for (const [facing, seeds] of [
+		['any', [6, 7, 8]],
+		['written', [7, 8]],
+		['bytes', [7, 8]]
+	])
+		for (const seed of seeds)
+			cases.push({
+				haltRule: 'restart',
+				facing,
+				seed,
+				tilesW: 70,
+				tilesH: 9,
+				heads: 0.1,
+				turnover: 1 / 64,
+				exponent: 0
+			});
 	for (const c of cases) {
 		const settings = {
 			...base,
@@ -122,12 +145,19 @@ const report = await page.evaluate(async () => {
 		const heads = await engine.readHeads();
 		const count = heads.length / HEAD_WORDS;
 		const layout = freeLayout(settings);
-		const reference = createReference(w, h, start, heads, {
-			haltRule: c.haltRule,
-			turnover: c.turnover,
-			mutation: c.exponent >= 31 ? 0 : mutationChance(c.exponent),
-			facing: settings.facing
-		});
+		const reference = createReference(
+			w,
+			h,
+			start,
+			heads,
+			{
+				haltRule: c.haltRule,
+				turnover: c.turnover,
+				mutation: c.exponent >= 31 ? 0 : mutationChance(c.exponent),
+				facing: settings.facing
+			},
+			await engine.readGrain()
+		);
 		const facingsAtStart = new Set();
 		for (let k = 0; k < count; k++) facingsAtStart.add(heads[k * HEAD_WORDS + HEAD_FACING]);
 		const ticks = 400;
@@ -141,8 +171,13 @@ const report = await page.evaluate(async () => {
 			await engine.waitForIdle();
 			const sheet = toSheet(await engine.readSoupData(), w, h);
 			const gpuHeads = await engine.readHeads();
+			const gpuGrain = await engine.readGrain();
 			let bytes = 0;
-			for (let i = 0; i < sheet.length; i++) if (sheet[i] !== reference.sheet[i]) bytes++;
+			let grains = 0;
+			for (let i = 0; i < sheet.length; i++) {
+				if (sheet[i] !== reference.sheet[i]) bytes++;
+				if (gpuGrain[i] !== reference.grain[i]) grains++;
+			}
 			let registers = 0;
 			let example = null;
 			for (let k = 0; k < count; k++) {
@@ -178,7 +213,8 @@ const report = await page.evaluate(async () => {
 			for (let k = 0; k < count; k++) runs += gpuHeads[k * HEAD_WORDS + HEAD_RUNS];
 			if (runs !== reference.restarts)
 				mismatch = { tick: t, restartsWanted: reference.restarts, restartsGot: runs };
-			else if (bytes || registers) mismatch = { tick: t, bytes, registers, example };
+			else if (bytes || grains || registers)
+				mismatch = { tick: t, bytes, grains, registers, example };
 			else agreed = t;
 		}
 		let changed = 0;
@@ -187,7 +223,11 @@ const report = await page.evaluate(async () => {
 			reference.contested > 0 &&
 			(c.haltRule !== 'restart' || reference.restarts > 0) &&
 			(c.exponent >= 31 || reference.mutations > 0) &&
-			facingsAtStart.size === (settings.facing === 'any' ? 8 : 1);
+			(settings.facing === 'any'
+				? facingsAtStart.size === 8
+				: settings.facing === 'same'
+					? facingsAtStart.size === 1
+					: facingsAtStart.has(FACING_UNDECIDED) && facingsAtStart.size === 1);
 		check(
 			`GPU world equals the reference: facing ${settings.facing}, HALT ${c.haltRule}, ${w} x ${h} bytes, restart chance ${c.turnover}, mutation ${c.exponent >= 31 ? 'off' : 'on'}, seed ${c.seed}`,
 			!mismatch && agreed >= 10,
@@ -214,8 +254,8 @@ const report = await page.evaluate(async () => {
 		(r) => r.pass && r.detail.ticksAgreed >= 40 && r.detail.everyFeatureExercised
 	).length;
 	check(
-		`at least ten of the ${cases.length} comparisons lasted 40 ticks or more and exercised contested bytes, restarts and mutation where switched on`,
-		long >= 10,
+		`at least two thirds of the ${cases.length} comparisons lasted 40 ticks or more and exercised contested bytes, restarts and mutation where switched on`,
+		long >= (2 * cases.length) / 3,
 		{ longComparisons: long, ticksAgreedInAll: out.reduce((s, r) => s + r.detail.ticksAgreed, 0) }
 	);
 
@@ -287,26 +327,37 @@ const report = await page.evaluate(async () => {
 		await engine.configure(settings, { kind: 'random' });
 		const startSheet = toSheet(await engine.readSoupData(), w, w);
 		const startHeads = await engine.readHeads();
+		const startGrain = await engine.readGrain();
 		const count = startHeads.length / HEAD_WORDS;
-		const runFrom = async (sheet, heads) => {
+		const runFrom = async (sheet, heads, grain) => {
 			await engine.configure(settings, { kind: 'random' });
 			engine.writeSoupData(fromSheet(sheet, w, w));
 			engine.writeHeads(heads);
+			engine.writeGrain(grain);
 			for (let t = 0; t < ticks; t += 50) engine.simulateTicks(50);
 			await engine.waitForIdle();
-			return { sheet: toSheet(await engine.readSoupData(), w, w), heads: await engine.readHeads() };
+			return {
+				sheet: toSheet(await engine.readSoupData(), w, w),
+				heads: await engine.readHeads(),
+				grain: await engine.readGrain()
+			};
 		};
-		const plain = await runFrom(startSheet, startHeads);
+		const plain = await runFrom(startSheet, startHeads, startGrain);
+		let grainChanged = 0;
+		for (let i = 0; i < startGrain.length; i++)
+			if (startGrain[i] !== plain.grain[i]) grainChanged++;
 		let changed = 0;
 		for (let i = 0; i < startSheet.length; i++) if (startSheet[i] !== plain.sheet[i]) changed++;
 		const stateWords = freeLayout(settings).stateWords;
 		const results = [];
 		for (let g = 1; g < 8; g++) {
 			const sheet = new Uint8Array(w * w);
+			const grain = new Uint32Array(w * w);
 			for (let y = 0; y < w; y++)
 				for (let x = 0; x < w; x++) {
 					const [nx, ny] = moved(g, x, y);
 					sheet[ny * w + nx] = startSheet[y * w + x];
+					grain[ny * w + nx] = compose(g, startGrain[y * w + x]);
 				}
 			const heads = new Uint32Array(startHeads);
 			for (let k = 0; k < count; k++) {
@@ -316,24 +367,34 @@ const report = await page.evaluate(async () => {
 				heads[o + HEAD_ORIGIN_Y] = ny;
 				heads[o + HEAD_FACING] = compose(g, startHeads[o + HEAD_FACING]);
 			}
-			const turned = await runFrom(sheet, heads);
+			const turned = await runFrom(sheet, heads, grain);
 			let bytes = 0;
+			let grains = 0;
 			for (let y = 0; y < w; y++)
 				for (let x = 0; x < w; x++) {
 					const [nx, ny] = moved(g, x, y);
 					if (turned.sheet[ny * w + nx] !== plain.sheet[y * w + x]) bytes++;
+					if (turned.grain[ny * w + nx] !== compose(g, plain.grain[y * w + x])) grains++;
 				}
 			let registers = 0;
 			for (let k = 0; k < count; k++)
 				for (let i = 0; i < stateWords; i++)
 					if (turned.heads[k * HEAD_WORDS + i] !== plain.heads[k * HEAD_WORDS + i]) registers++;
-			results.push({ symmetry: g, differingBytes: bytes, differingRegisterWords: registers });
+			results.push({
+				symmetry: g,
+				differingBytes: bytes,
+				differingGrains: grains,
+				differingRegisterWords: registers
+			});
 		}
 		check(
 			`turning or mirroring the world commutes with running it (${w} x ${w} bytes, ${count} heads, ${ticks} ticks, all seven symmetries)`,
 			changed > 1000 &&
-				results.every((r) => r.differingBytes === 0 && r.differingRegisterWords === 0),
-			{ bytesChangedByTheRun: changed, results }
+				grainChanged > 1000 &&
+				results.every(
+					(r) => r.differingBytes === 0 && r.differingGrains === 0 && r.differingRegisterWords === 0
+				),
+			{ bytesChangedByTheRun: changed, grainsChangedByTheRun: grainChanged, results }
 		);
 	}
 
@@ -381,6 +442,46 @@ const report = await page.evaluate(async () => {
 				chiSquaredFacings: +chi(counts).toFixed(2),
 				chiSquaredColumns: +chi(columns).toFixed(2),
 				chiSquaredRows: +chi(rows).toFixed(2)
+			}
+		);
+	}
+
+	// The `bytes` rule by itself: forward points at the largest neighbour whenever there is one, and
+	// when all four are equal the eight facings come out equally often.
+	{
+		const unit = [
+			[1, 0],
+			[-1, 0],
+			[0, 1],
+			[0, -1]
+		]; // east, west, south, north
+		let wrongForward = 0;
+		let draws = 0;
+		const tied = new Array(8).fill(0);
+		let state = 12345;
+		const next = () => (state = mix32((state + 0x9e3779b9) >>> 0));
+		for (let i = 0; i < 80000; i++) {
+			const v = [next() & 0xff, next() & 0xff, next() & 0xff, next() & 0xff];
+			const top = Math.max(...v);
+			const rnd = next();
+			if (v.filter((x) => x === top).length === 1) {
+				const facing = facingFromNeighbours(v[0], v[1], v[2], v[3], rnd, mix32);
+				const [dx, dy] = faceOffset(facing, 1, 0);
+				const want = unit[v.indexOf(top)];
+				if (dx !== want[0] || dy !== want[1]) wrongForward++;
+				draws++;
+			}
+			tied[facingFromNeighbours(7, 7, 7, 7, rnd, mix32)]++;
+		}
+		const chi = tied.reduce((s, n) => s + (n - 10000) ** 2 / 10000, 0);
+		check(
+			'the `bytes` rule faces the largest neighbouring byte, and with four equal neighbours the eight facings are equally likely',
+			wrongForward === 0 && draws > 70000 && chi < 24.3,
+			{
+				drawsWithOneLargest: draws,
+				wrongForward,
+				facingsWhenTied: tied,
+				chiSquared: +chi.toFixed(2)
 			}
 		);
 	}

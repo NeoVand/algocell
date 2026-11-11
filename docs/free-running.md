@@ -25,9 +25,7 @@ budget (128), the cell (16 bytes) as the unit that runs, and the list of who mee
 Mutation: with a small chance per instruction, one random byte anywhere on the sheet is replaced.
 
 What is left to choose: how many processors there are (`heads`, per tile), and the mutation dial. Three optional
-switches exist for comparison: `facing` (`any` as above; `same`: every processor reads rightwards with its stack
-on the row above, which was the rule until this revision; `rows`: rightwards or leftwards, stack above or below;
-`two-axes`: rightwards or downwards), `haltRule` (`restart` as above; `wait`: the processor stays on the HALT byte until
+switches exist: `facing` (see the next two sections), `haltRule` (`restart` as above; `wait`: the processor stays on the HALT byte until
 something changes it; `pass`: it steps over it) and `turnover` (a chance per instruction of lifting off without a
 HALT; 0 by default).
 
@@ -91,6 +89,60 @@ under the symmetric rule: the runs are short and few, and nothing here lets a pa
 to read it. In the two-cell soups and in BFF the shared axis is given silently (a tape has a first byte and a
 direction).
 
+## Letting the sheet set the facing
+
+Two further values of `facing` let the sheet, not a coin, decide which way a landing processor reads. Both rules
+have no preferred direction themselves.
+
+- **`written`: a byte remembers how it was written.** Every byte carries, besides its value, the facing of the
+  processor that wrote it last (its grain; random at the start). A processor takes the grain of the byte it lands
+  on. A mutation changes a byte's value and leaves its grain. This is a second, hidden layer: three bits per byte.
+- **`bytes`: the values decide.** Forward is towards the largest of the four neighbouring bytes, ties broken at
+  random with no direction favoured; the side of the stack is random. No hidden layer.
+
+First look, five seeds each, the defaults of "First look" below (`runs/sheet_*`):
+
+| facing    | left the waiting state                                                                                    |
+| --------- | --------------------------------------------------------------------------------------------------------- |
+| `written` | 1 of 5 by 100,000 ticks, 4 of 5 by 200,000, 5 of 5 by 300,000; with eight more seeds, 13 of 13 by 400,000 |
+| `bytes`   | 0 of 5 by 100,000 ticks; seeds 1 and 2 still in the waiting state at 400,000                              |
+
+Under `written`:
+
+- **Each sheet chooses an axis by itself, and the choice differs between runs.** At 400,000 ticks 96–99% of bytes
+  were last written along rows in seeds 1, 2 and 5, and 100% along columns in seeds 3 and 4
+  (`free-running/free_written.png`). Eight more seeds (6 to 13, `sheet_wm_*`) all left the waiting state by
+  400,000 ticks as well: rows in six, columns in two. In all thirteen: rows nine times, columns four, which is
+  what a fair coin does about one time in four. Whether the losing axis kept some of the bytes (0.4–4.9%; seeds 1, 2, 5, 6, 7, 8, 11) or none (the other six) does not go with the axis chosen. On a sheet four times the area (1,024 × 1,024 bytes, 16,384 processors, one
+  run) the whole sheet again chose one axis (95% rows at 300,000 ticks): no patchwork of regions was seen.
+  Processors land anywhere on the sheet, so there is nothing to keep one region's choice from spreading.
+- **The axis is chosen before any replicator appears.** In seed 4 the sheet was 96% column-written at 100,000
+  ticks and still in the waiting state (43% blank bytes); the pusher had the sheet by 200,000. In seed 1, 91%
+  row-written at 100,000 ticks, still waiting.
+- **Then the replicators of the second design appear**, along the chosen axis: `01 c5` in seeds 2, 4 and 5,
+  `11 d5` in seed 1, and the `fc` pattern in seed 3. Within the axis, all four facings (either direction, stack
+  on either side) stay in use.
+- **In the app** (default world, seed 6) the same happened: a replicator had the sheet by 680,000 ticks.
+
+Under `bytes` nothing but the waiting state was seen. That is one rule of many possible ones, tried at one
+setting.
+
+### Straight lines
+
+The author's second objection: this physics loves straight lines, and it is not isotropic. Both are true, and the
+facing rules do not change it.
+
+- A program is a string, and the rule lays a string along a row or a column, up to 256 bytes at a stretch. A
+  square grid has four directions. So the most any of these rules can have is the symmetry of the square, which
+  they now have exactly; they cannot treat a diagonal like an axis.
+- Measured at 400,000 ticks under `written`, in the four pusher runs: a byte equals the byte two places along the
+  chosen axis 91–94% of the time, two places across it 55–58%, and two places along a diagonal 55–58%.
+- Under `any` and `bytes` the sheet shows short stripes along both axes; under `written` and under the three
+  built-in facings, long stripes along one.
+- What would change it is a different way of laying a string on the sheet, not another facing rule: for example
+  strings that can bend, or regions that choose different axes (which needs processors to land near where they
+  lifted off, so that a region's choice stays local). Neither is built.
+
 ## Why the first design looked dead
 
 The first design (commit 32f7fcb) tied each processor to one row or one column and laid its 64K address space
@@ -102,15 +154,16 @@ the `wait` and `pass` rules (no processor is ever reset) still grow replicators 
 
 ## What was checked
 
-`node scripts/free-check.mjs`: 19 checks, all pass.
+`node scripts/free-check.mjs`: 28 checks, all pass.
 
 - **Against an independent reference.** The rule is written a second time in TypeScript with the third-party
   `z80-emulator` executing instructions. Sheet bytes, registers, landing sites, facings and the number of restarts
-  agree at every fifth tick for as long as the comparison is meaningful, in fourteen runs: all three HALT rules on
-  a 32 × 32-byte sheet with 64 processors facing all eight ways (15 to 315 ticks), two runs with every processor
-  facing the same way (65 ticks each), and the restart rule with a restart chance of 1/64 and mutation on, on a
-  280 × 36-byte sheet (wider than a window, sides not powers of two; 45 to 135 ticks). 1,090 ticks in all; ten of
-  the fourteen lasted 40 ticks or more and included bytes that two processors wanted in the same tick.
+  agree at every fifth tick for as long as the comparison is meaningful, in 22 runs: all three HALT rules on
+  a 32 × 32-byte sheet with 64 processors facing all eight ways, two runs with every processor facing the same
+  way, two each under `written` and `bytes`, and the restart rule with a restart chance of 1/64 and mutation on,
+  on a 280 × 36-byte sheet (wider than a window, sides not powers of two) under `any`, `written` and `bytes`. The
+  grain of every byte is compared as well. 15 to 320 ticks per run, 1,950 in all; 15 of the 22 lasted 40 ticks or
+  more and included bytes that two processors wanted in the same tick.
 - **Why a comparison stops.** It ends at the first tick on which a processor fetches a `DD` or `FD` prefix,
   because Zilion and `z80-emulator` split prefix chains into steps differently, or a repeating block input or
   output instruction (`ED B2`, `B3`, `BA`, `BB`). On those the two disagree about two flags (H and P/V): this
@@ -120,10 +173,15 @@ the `wait` and `pass` rules (no processor is ever reset) still grow replicators 
 - **No preferred direction.** With the `pass` rule and no restart chance or mutation a tick uses no random
   numbers. On a 96 × 96-byte sheet with 576 processors, turning or mirroring the whole world (sheet, landing
   sites, facings) by each of the seven non-trivial symmetries of the square and running 600 ticks gives the turned
-  or mirrored result: 0 differing bytes and 0 differing register words in all seven (9,071 bytes changed by the
-  run).
+  or mirrored result: 0 differing bytes, 0 differing grains and 0 differing register words in all seven (9,071
+  bytes and 7,952 grains changed by the run). This covers execution and writing. It cannot cover landing, whose
+  random draws are made in sheet coordinates; landing is covered by the comparison with the reference and by the
+  two checks that follow.
 - **Facings are drawn evenly.** 102,400 landings: 12,717 to 12,889 per facing (chi-squared 2.87 on 7 degrees of
   freedom); landing sites are even across the quarters of each axis (1.09 and 9.45 on 3).
+- **The `bytes` rule favours no direction.** In 79,347 random neighbourhoods with one largest neighbour, forward
+  pointed at it every time; with four equal neighbours, 80,000 draws gave 9,830 to 10,098 per facing
+  (chi-squared 5.78 on 7).
 - **Repeatability.** Two runs of one seed with 4,096 processors, 500 ticks, restart chance and mutation on give
   identical sheets (63,490 bytes changed by the run, 0 differ).
 - **A known replicator works where nothing competes.** On a sheet of HALT bytes with one 512-byte block of the
@@ -227,20 +285,25 @@ speed 8× the default world (160 × 126 tiles, 5,040 processors) showed 15,340 t
 
 ## Pictures
 
-- `free-running/free_facing.png`: one starting sheet under the four facing rules at 100,000 ticks
+- `free-running/free_written.png`: two runs under `written`, each byte coloured by the axis along which it was
+  last written, with the bytes at the end (`figures_written.py`).
+- `free-running/free_facing.png`: one starting sheet under the four random facing rules at 100,000 ticks
   (`figures_facing.py`).
 - The three below show the second design (`facing: same`).
 - `free-running/free_takeover.png`: the sheet at 2,000, 4,000, 4,500 and 5,500 ticks (seed 1).
 - `free-running/free_closeups.png`: 32 × 10 bytes written out, with processors outlined: waiting state, pushers,
   looping variant.
-- `free-running/in_the_app.png`: the app 18 s after choosing Free-running.
+- `free-running/in_the_app.png`: the app 18 s after choosing Free-running (`any`);
+  `in_the_app_written.png`: 44 s after choosing `written`.
 - `free-running/figures.py` draws the first two from the saved sheets (`scripts/free-look.mjs` writes them).
 
 ## Known gaps
 
-- Under the symmetric rule the world has only been seen in its waiting state. Not tried: other processor
-  densities, the `wait` and `pass` rules, a restart chance, sheets of other sizes, runs beyond 1,000,000 ticks,
-  the 0.3 core, and any rule by which the bytes themselves set the way a landing processor faces.
+- Under `any` and `bytes` the world has only been seen in its waiting state. Not tried under any of the three
+  symmetric rules: other processor densities, the `wait` and `pass` rules, a restart chance, mutation levels
+  other than the default (for `written` and `bytes`), runs beyond 1,000,000 ticks, the 0.3 core.
+- Why the axis orders under `written` while the sheet is still in its waiting state is not explained.
+- The grain is not drawn in the app, and checkpoints do not store it.
 - The reading of the waiting state (restart-at-38 loops) rests on counts, not on a trace.
 - No view of the processors in the app. The close-up picture is drawn offline.
 - No measure of heredity. "Replicator" here means a pattern that spreads and that, seeded as a block, invades.

@@ -2846,7 +2846,9 @@
 									label="Facing"
 									value={facing}
 									options={[
-										{ value: 'any', label: 'Any of eight ways (no direction is special)' },
+										{ value: 'any', label: 'Any of eight ways, at random' },
+										{ value: 'written', label: 'The way the byte it lands on was written' },
+										{ value: 'bytes', label: 'Towards the largest neighbouring byte' },
 										{ value: 'rows', label: 'Along rows, either way round' },
 										{ value: 'two-axes', label: 'Rightwards or downwards' },
 										{ value: 'same', label: 'All rightwards (the first version)' }
@@ -2860,9 +2862,9 @@
 								<p class="control-note">
 									No cells and no step budget. Processors land on random bytes, facing a random way,
 									with a blank mind, and run one instruction per tick; addresses are measured from
-									where they landed. Only "any of eight ways" treats every direction alike; the
-									other facings build one in, for comparison. Steps, pair attempts, lethal zero and
-									edges are not used; the sheet wraps.
+									where they landed. The first three facings treat every direction alike; the last
+									three build one in, for comparison. Steps, pair attempts, lethal zero and edges
+									are not used; the sheet wraps.
 								</p>
 							</div>
 						{/if}

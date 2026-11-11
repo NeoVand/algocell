@@ -2,8 +2,10 @@
 // numbers. Needs the dev server on 5176.
 //   node scripts/free-look.mjs <out dir> key=value ...
 // Keys (defaults): tiles=128 (side, in 16-byte tiles) heads=0.25 (per tile) halt=restart turnover=0
-//   facing=any|rows|two-axes|same (any: a landing processor faces one of eight ways; same: all read
-//   rightwards; rows: rightwards or leftwards, stack above or below; two-axes: rightwards or downwards)
+//   facing=any|written|bytes|rows|two-axes|same (any: a landing processor faces one of eight ways at
+//   random; written: the way the byte it lands on was written; bytes: towards its largest neighbour;
+//   same: all read rightwards; rows: rightwards or leftwards, stack above or below; two-axes:
+//   rightwards or downwards)
 //   mutation=4 (exponent; 31 is off) ticks=20000 seed=6 start=random|halt-with-pusher|zero
 //   marks=0,1000,5000,20000 (ticks at which to save)
 //   start=pattern fill=01c5 block=c501c50118f8 : the sheet tiled with `fill` (hex), and a 32 x 16-byte
@@ -11,7 +13,8 @@
 //   start=checker : a chessboard of 01 and c5 (every row and every column reads `01 c5 01 c5 ...`).
 //   patch=checker|rows side=32 : after any start, a square in the middle holding the chessboard, or
 //   rows of `01 c5` all in step. With start=random this is an invasion test of the waiting state.
-// Writes sheet_<tick>.u8 (row-major bytes), heads_<tick>.u32 and look.json.
+// Writes sheet_<tick>.u8 (row-major bytes), grain_<tick>.u8 (the facing of each byte's last writer),
+// heads_<tick>.u32 and look.json.
 import { chromium } from '@playwright/test';
 import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -177,6 +180,13 @@ const result = await page.evaluate(async (q) => {
 		const chance = hist.reduce((s, c) => s + (c / sheet.length) ** 2, 0);
 		const right = [];
 		for (let k = 1; k <= 32; k++) right.push(same(k, 0));
+		// The same at equal distance along the two diagonals (k steps of one row and one column).
+		const diagonal = [];
+		for (let k = 1; k <= 8; k++) diagonal.push(+((same(k, k) + same(w - k, k)) / 2).toFixed(4));
+		const grain = await engine.readGrain();
+		const grainBytes = Uint8Array.from(grain);
+		const grainCounts = new Array(8).fill(0);
+		for (const g of grainBytes) grainCounts[g]++;
 		const down = [];
 		for (let k = 1; k <= 32; k++) down.push(same(0, k));
 		const pairsSeen = new Map();
@@ -213,6 +223,8 @@ const result = await page.evaluate(async (q) => {
 			sameRight: right,
 			sameDown: down,
 			facings,
+			sameDiagonal: diagonal,
+			grainShares: grainCounts.map((n) => +(n / grainBytes.length).toFixed(4)),
 			topBytes,
 			share: Object.fromEntries(
 				['01', 'c5', '11', 'd5', '18', 'f8'].map((b) => [
@@ -223,6 +235,7 @@ const result = await page.evaluate(async (q) => {
 			topPairs,
 			changedSinceLastMark: +(changed / sheet.length).toFixed(4),
 			sheet: b64(sheet),
+			grain: b64(grainBytes),
 			heads: b64(new Uint8Array(hd.buffer))
 		});
 	}
@@ -232,6 +245,8 @@ const result = await page.evaluate(async (q) => {
 }, q);
 for (const r of result.rows) {
 	await writeFile(path.join(out, `sheet_${r.tick}.u8`), Buffer.from(r.sheet, 'base64'));
+	await writeFile(path.join(out, `grain_${r.tick}.u8`), Buffer.from(r.grain, 'base64'));
+	delete r.grain;
 	await writeFile(path.join(out, `heads_${r.tick}.u32`), Buffer.from(r.heads, 'base64'));
 	delete r.sheet;
 	delete r.heads;

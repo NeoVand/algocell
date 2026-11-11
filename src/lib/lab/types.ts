@@ -62,9 +62,11 @@ export interface LabSettings {
 	/**
 	 * Free-running world only: which way a landing head faces. `any`: one of the eight symmetries of
 	 * the square, drawn at random, so that the rule has no preferred direction and no handedness.
-	 * `same`: every head reads to the right with its stack on the row above. `rows` (right or left,
-	 * stack above or below) and `two-axes` (right or down) lie in between. All but `any` build a
-	 * direction into the rule and exist for comparison.
+	 * `written`: every byte remembers the facing of the head that wrote it last, and a head takes the
+	 * facing of the byte it lands on. `bytes`: forward is towards the largest neighbouring byte. These
+	 * three treat every direction alike. `same`: every head reads to the right with its stack on the
+	 * row above. `rows` (right or left, stack above or below) and `two-axes` (right or down) lie in
+	 * between; these three build a direction into the rule and exist for comparison.
 	 */
 	facing: Facing;
 }
@@ -76,7 +78,7 @@ export interface LabSettings {
  */
 export type InteractionRule = 'overwrite' | 'reversible' | 'free';
 export type HaltRule = 'restart' | 'wait' | 'pass';
-export type Facing = 'any' | 'rows' | 'two-axes' | 'same';
+export type Facing = 'any' | 'written' | 'bytes' | 'rows' | 'two-axes' | 'same';
 export type BoundaryRule = 'reflect' | 'cylinder' | 'torus' | 'mobius' | 'klein' | 'projective';
 export const BOUNDARY_RULES: BoundaryRule[] = [
 	'reflect',
