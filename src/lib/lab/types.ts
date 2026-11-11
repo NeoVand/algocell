@@ -24,6 +24,34 @@ export interface LabSettings {
 	ablation: string[];
 	stack: StackConvention;
 	dialMode: 'historical-pcg' | 'counter';
+	/**
+	 * How an encounter's result reaches the lattice. `overwrite` is the historical rule: the pair's
+	 * memory after execution replaces both tapes. `reversible` keeps a second layer per cell (the tape
+	 * before its last event) and applies the programs' change on top of it, so an event can be undone.
+	 */
+	interaction: InteractionRule;
+	/**
+	 * Reversible rule only: the chance, per cell and event, that the cell's stored past is discarded
+	 * (before := now) ahead of the event. 1 reproduces `overwrite` exactly; 0 is a closed, fully
+	 * reversible world.
+	 */
+	dissipation: number;
+}
+
+export type InteractionRule = 'overwrite' | 'reversible';
+
+/**
+ * Settings saved before the interaction rule existed (checkpoints, presets) carry neither field.
+ * They meant the historical rule, so fill it in instead of rejecting them.
+ */
+export function withInteractionDefaults(
+	settings: Omit<LabSettings, 'interaction' | 'dissipation'> & Partial<LabSettings>
+): LabSettings {
+	return {
+		...settings,
+		interaction: settings.interaction ?? 'overwrite',
+		dissipation: settings.dissipation ?? 1
+	};
 }
 
 export type InitialCondition =
@@ -54,7 +82,9 @@ export const DEFAULT_SETTINGS: LabSettings = {
 	randomRegisters: false,
 	ablation: [],
 	stack: 'top',
-	dialMode: 'counter'
+	dialMode: 'counter',
+	interaction: 'overwrite',
+	dissipation: 1
 };
 
 /** Unknown, no partner entry, partner entry in the last initiating encounter. */

@@ -41,6 +41,8 @@ export const SETTING_KEYS = [
 	'randomRegisters',
 	'stackConvention',
 	'dialMode',
+	'interaction',
+	'dissipation',
 	'initialCondition'
 ] as const;
 

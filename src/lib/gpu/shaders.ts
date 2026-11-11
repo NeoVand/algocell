@@ -166,6 +166,68 @@ export function createSimShader(
       changed_b = changed_b || ((soup[j * words_per_cell + w] ^ pair_data[base + words_per_cell + w]) & mask) != 0u;
     }`
 		: '';
+	// The historical write-back, kept byte for byte: the pair's memory replaces both tapes.
+	const overwriteWrite = `
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        soup[i * words_per_cell + w_idx] = pair_data[base + w_idx];
+    }
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        soup[j * words_per_cell + w_idx] = pair_data[base + words_per_cell + w_idx];
+    }`;
+	// Two-layer reversible write-back. Each cell keeps the tape it held before its last event
+	// (soup_before). The change the programs made, out ^ now, is applied on top of that layer, and
+	// "now" becomes the new "before":
+	//     now'    = out ^ now ^ before
+	//     before' = now
+	// Given (now', before') the event can be undone: before' is the old now, the programs can be run
+	// on it again, and before = now' ^ out ^ before'. A cell is at rest when before == now; then
+	// now' = out, the ordinary write. Dissipation discards a cell's stored past (before := now) ahead
+	// of the event with the given probability, so at full dissipation this is the overwrite rule.
+	const reversible = settings.interaction === 'reversible';
+	const reversibleParams = reversible
+		? `
+    // Reversible rule: a draw below this threshold discards the cell's stored past (2^32 - 1 = always).
+    dissipation: u32,
+    rev_pad0: u32,
+    rev_pad1: u32,
+    rev_pad2: u32,`
+		: '';
+	// The device allows ten storage buffers per stage and the simulation already binds ten. Binding 4
+	// (rng_states) is declared but never read, so the reversible rule takes that slot for its second
+	// layer; the overwrite shader keeps its historical declaration unchanged.
+	const bindingFour = reversible
+		? '@group(0) @binding(4) var<storage, read_write> soup_before: array<u32>;'
+		: '@group(0) @binding(4) var<storage, read_write> rng_states: array<u32>;';
+	const reversibleBinding = reversible
+		? `
+
+fn rev_draw(k: u32) -> u32 {
+    var s = params.batch_seed * 747796405u + k * 2891336453u + 0x9e3779b9u;
+    s ^= s >> 16u; s *= 0x7feb352du; s ^= s >> 15u; s *= 0x846ca68bu; s ^= s >> 16u;
+    return s;
+}
+fn rev_cools(k: u32) -> bool {
+    return params.dissipation == 0xffffffffu || rev_draw(k) < params.dissipation;
+}`
+		: '';
+	const reversibleWrite = `
+    let cool_a = rev_cools(pair_id * 2u);
+    let cool_b = rev_cools(pair_id * 2u + 1u);
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        let a_idx = i * words_per_cell + w_idx;
+        let now_a = soup[a_idx];
+        let past_a = select(soup_before[a_idx], now_a, cool_a);
+        soup[a_idx] = pair_data[base + w_idx] ^ now_a ^ past_a;
+        soup_before[a_idx] = now_a;
+    }
+    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
+        let b_idx = j * words_per_cell + w_idx;
+        let now_b = soup[b_idx];
+        let past_b = select(soup_before[b_idx], now_b, cool_b);
+        soup[b_idx] = pair_data[base + words_per_cell + w_idx] ^ now_b ^ past_b;
+        soup_before[b_idx] = now_b;
+    }`;
+	const absorbWrite = reversible ? reversibleWrite : overwriteWrite;
 	const fetchAbsorb = measureFetch
 		? `
     // This is the last initiating encounter, not a permanent tape property.
@@ -194,20 +256,20 @@ struct Params {
     // Instruction suppression: three 256-bit sets, one per opcode page
     // (0 = base, 1 = CB, 2 = ED), two vec4<u32> each. Bit (op & 31) of
     // u32 word (op >> 5). Packed on the host by suppressionMasks().
-    suppress: array<vec4<u32>, 6>,
+    suppress: array<vec4<u32>, 6>,${reversibleParams}
 }
 
 @group(0) @binding(0) var<storage, read_write> soup: array<u32>;
 @group(0) @binding(1) var<storage, read_write> pairs: array<u32>;       // [cell_i, cell_j] per pair
 @group(0) @binding(2) var<storage, read_write> pair_data: array<u32>;   // 8 u32s (32 bytes) per pair
 @group(0) @binding(3) var<storage, read_write> write_counts: array<u32>; // 2 per pair (tape A, tape B)
-@group(0) @binding(4) var<storage, read_write> rng_states: array<u32>;
+${bindingFour}
 @group(0) @binding(5) var<uniform> params: Params;
 @group(0) @binding(6) var<storage, read_write> pair_active: array<u32>;
 @group(0) @binding(7) var<storage, read_write> byte_counts: array<atomic<u32>>;
 @group(0) @binding(8) var<storage, read_write> collision_mask: array<atomic<u32>>;
 @group(0) @binding(9) var<storage, read_write> cell_hashes: array<u32>;
-@group(0) @binding(10) var<storage, read_write> fetch_status: array<u32>;
+@group(0) @binding(10) var<storage, read_write> fetch_status: array<u32>;${reversibleBinding}
 
 // === PRNG (PCG-based) ===
 fn pcg(state: ptr<private, u32>) -> u32 {
@@ -350,13 +412,7 @@ fn absorb_results(@builtin(global_invocation_id) id: vec3u) {
     let words_per_pair = words_per_cell * 2u;
     let base = pair_id * words_per_pair;
 
-    ${fetchCompare}
-    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
-        soup[i * words_per_cell + w_idx] = pair_data[base + w_idx];
-    }
-    for (var w_idx = 0u; w_idx < words_per_cell; w_idx++) {
-        soup[j * words_per_cell + w_idx] = pair_data[base + words_per_cell + w_idx];
-    }
+    ${fetchCompare}${absorbWrite}
     ${fetchAbsorb}
 }
 

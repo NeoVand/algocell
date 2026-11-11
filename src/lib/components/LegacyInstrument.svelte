@@ -79,6 +79,8 @@
 	let randomRegisters = $state(false);
 	let stackConvention = $state<LabSettings['stack']>('legacy-sp');
 	let dialMode = $state<LabSettings['dialMode']>('historical-pcg');
+	let interaction = $state<LabSettings['interaction']>('overwrite');
+	let dissipation = $state(1);
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -131,7 +133,9 @@
 			randomRegisters,
 			ablation: [...suppressPatterns],
 			stack: stackConvention,
-			dialMode
+			dialMode,
+			interaction,
+			dissipation
 		};
 	}
 
@@ -192,6 +196,8 @@
 		randomRegisters = next.randomRegisters;
 		stackConvention = next.stack;
 		dialMode = next.dialMode;
+		interaction = next.interaction;
+		dissipation = next.dissipation;
 		gridWidth = next.width;
 		gridHeight = next.height;
 		gridType = next.topology;
@@ -1574,6 +1580,18 @@
 			set: (v) => (dialMode = v as LabSettings['dialMode'])
 		},
 		{
+			key: 'interaction',
+			mode: 'live',
+			get: () => interaction,
+			set: (v) => (interaction = v as LabSettings['interaction'])
+		},
+		{
+			key: 'dissipation',
+			mode: 'live',
+			get: () => dissipation,
+			set: (v) => (dissipation = v as number)
+		},
+		{
 			key: 'initialCondition',
 			mode: 'grid',
 			get: () => JSON.stringify(initialCondition),
@@ -1717,6 +1735,8 @@
 			randomRegisters: Boolean(values.randomRegisters ?? false),
 			stack: (values.stackConvention ?? 'legacy-sp') as LabSettings['stack'],
 			dialMode: (values.dialMode ?? 'historical-pcg') as LabSettings['dialMode'],
+			interaction: (values.interaction ?? 'overwrite') as LabSettings['interaction'],
+			dissipation: Number(values.dissipation ?? 1),
 			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
 		};
 		stagedInitial = values.initialCondition
@@ -2325,7 +2345,9 @@
 			'lethalProbability',
 			'ablation',
 			'stack',
-			'dialMode'
+			'dialMode',
+			'interaction',
+			'dissipation'
 		] as const) {
 			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
 				Object.assign(patch, { [key]: next[key] });
@@ -2610,6 +2632,50 @@
 							/>
 							<p class="control-note">Chance that a zero instruction stops an encounter.</p>
 						</div>
+						<div class="control-field">
+							<label for="interaction-rule">Interaction</label><InstrumentSelect
+								id="interaction-rule"
+								label="Interaction"
+								value={interaction}
+								options={[
+									{ value: 'overwrite', label: 'Overwrite (standard)' },
+									{ value: 'reversible', label: 'Reversible (now and before)' }
+								]}
+								onchange={(value) => {
+									interaction = value as LabSettings['interaction'];
+									void updateMachine();
+								}}
+								disabled={machineBusy || checkpointBusy || !engine}
+							/>
+							<p class="control-note">
+								Overwrite replaces both tapes with the result. Reversible keeps each cell's previous
+								tape and applies the change on top of it, so every event can be undone.
+							</p>
+						</div>
+						{#if interaction === 'reversible'}
+							<div class="control-field">
+								<div class="label-row">
+									<label for="dissipation">Dissipation</label><output
+										>{Math.round(dissipation * 100)}%</output
+									>
+								</div>
+								<input
+									id="dissipation"
+									aria-label="Dissipation"
+									type="range"
+									min="0"
+									max="1"
+									step="0.01"
+									bind:value={dissipation}
+									onchange={() => void updateMachine()}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
+								<p class="control-note">
+									Chance that a cell forgets its previous tape before an event. 100% is the standard
+									rule; 0% is a closed, fully reversible world.
+								</p>
+							</div>
+						{/if}
 						<div class="control-field">
 							<div class="label-row">
 								<label for="noise-input">Mutation rate</label><output
@@ -4889,7 +4955,10 @@ graph TD
 		<button
 			class="status-item status-chemistry"
 			onclick={() => jumpWorld('condition', 'lethal-probability')}
-			><span>Zero</span><strong>{Math.round(applied.lethalProbability * 100)}% lethal</strong
+			><span>Zero</span><strong
+				>{Math.round(applied.lethalProbability * 100)}% lethal{applied.interaction === 'reversible'
+					? ` · reversible ${Math.round(applied.dissipation * 100)}%`
+					: ''}</strong
 			></button
 		>
 	</footer>

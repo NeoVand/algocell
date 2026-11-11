@@ -55,6 +55,14 @@ export function validateSettings(settings: LabSettings): void {
 		settings.lethalProbability > 1
 	)
 		throw new Error('Lethality must be between zero and one.');
+	if (!['overwrite', 'reversible'].includes(settings.interaction))
+		throw new Error('Unknown interaction rule.');
+	if (
+		!Number.isFinite(settings.dissipation) ||
+		settings.dissipation < 0 ||
+		settings.dissipation > 1
+	)
+		throw new Error('Dissipation must be between zero and one.');
 	if (
 		typeof settings.randomRegisters !== 'boolean' ||
 		!Array.isArray(settings.ablation) ||
@@ -255,5 +263,7 @@ export const ORIGINAL_SETTINGS: LabSettings = {
 	randomRegisters: false,
 	ablation: [],
 	stack: 'legacy-sp',
-	dialMode: 'historical-pcg'
+	dialMode: 'historical-pcg',
+	interaction: 'overwrite',
+	dissipation: 1
 };

@@ -29,6 +29,7 @@ import {
 	type RegionMeasurement
 } from '../observation';
 import type { LabSettings, InitialCondition, CultureResult } from '../lab/types';
+import { withInteractionDefaults } from '../lab/types';
 
 let nextEngineId = 0;
 let nextDeviceId = 0;
@@ -62,6 +63,8 @@ export class GPUEngine {
 
 	// Storage buffers
 	private soupBuffer!: GPUBuffer;
+	/** Reversible rule: each cell's tape before its last event. Equal to the soup when at rest. */
+	private beforeBuffer!: GPUBuffer;
 	private pairsBuffer!: GPUBuffer;
 	private pairDataBuffer!: GPUBuffer;
 	private writeCountsBuffer!: GPUBuffer;
@@ -82,7 +85,9 @@ export class GPUEngine {
 	private fieldDirty = true;
 	private fieldUpdate = -1;
 	private masks = new Uint32Array(24);
-	private paramsData = new Uint32Array(32);
+	// 8 scalars, 24 suppression words, then the reversible rule's dissipation threshold and padding.
+	private paramsData = new Uint32Array(36);
+	private dissipationThreshold = 0xffffffff;
 
 	// Render buffers
 	private colormapBuffer!: GPUBuffer;
@@ -285,6 +290,10 @@ export class GPUEngine {
 			size: soupWords * 4,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
 		});
+		this.beforeBuffer = dev.createBuffer({
+			size: soupWords * 4,
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+		});
 
 		// Pairs: 2 u32s per pair
 		this.pairsBuffer = dev.createBuffer({
@@ -320,9 +329,10 @@ export class GPUEngine {
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
-		// Params uniform (8 scalars + 6 × vec4<u32> suppression masks = 32 u32s = 128 bytes)
+		// Params uniform: 8 scalars + 6 × vec4<u32> suppression masks = 128 bytes, then one vec4-sized
+		// slot the reversible rule reads (the overwrite shader's struct ends at 128 and ignores it).
 		this.paramsBuffer = dev.createBuffer({
-			size: 128,
+			size: 144,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -430,7 +440,16 @@ export class GPUEngine {
 				{ binding: 1, resource: { buffer: this.pairsBuffer } },
 				{ binding: 2, resource: { buffer: this.pairDataBuffer } },
 				{ binding: 3, resource: { buffer: this.writeCountsBuffer } },
-				{ binding: 4, resource: { buffer: this.rngStatesBuffer } },
+				// Slot 4 is unused by the overwrite shader; the reversible rule keeps its second layer there.
+				{
+					binding: 4,
+					resource: {
+						buffer:
+							this.machineSettings.interaction === 'reversible'
+								? this.beforeBuffer
+								: this.rngStatesBuffer
+					}
+				},
 				{ binding: 5, resource: { buffer: this.paramsBuffer } },
 				{ binding: 6, resource: { buffer: this.pairActiveBuffer } },
 				{ binding: 7, resource: { buffer: this.byteCountsBuffer } },
@@ -553,6 +572,26 @@ export class GPUEngine {
 		this.device.queue.writeBuffer(this.soupBuffer, 0, soupData);
 		this.device.queue.writeBuffer(this.fetchStatusBuffer, 0, new Uint32Array(this.cellCount));
 		this.batchIndex = 0;
+		this.restBefore();
+	}
+
+	/** Put every cell at rest: its stored past becomes its present tape (reversible rule). */
+	private restBefore(): void {
+		const encoder = this.device.createCommandEncoder();
+		encoder.copyBufferToBuffer(this.soupBuffer, 0, this.beforeBuffer, 0, this.soupBuffer.size);
+		this.device.queue.submit([encoder.finish()]);
+	}
+
+	private static thresholdOf(dissipation: number): number {
+		return Math.min(0xffffffff, Math.floor(dissipation * 4294967296));
+	}
+
+	/** Change the reversible rule's dissipation without rebuilding the pipelines. */
+	setDissipation(value: number): void {
+		if (!Number.isFinite(value) || value < 0 || value > 1)
+			throw new Error('Dissipation must be between zero and one.');
+		this.machineSettings.dissipation = value;
+		this.dissipationThreshold = GPUEngine.thresholdOf(value);
 	}
 
 	private uploadColormap(): void {
@@ -651,7 +690,7 @@ export class GPUEngine {
 
 	/** World/ISA edits are explicit events; no host memory round-trip between updates. */
 	setMachine(settings: LabSettings): Promise<void> {
-		const next = structuredClone(settings);
+		const next = withInteractionDefaults(structuredClone(settings));
 		return this.queueConfiguration(() => this.applyMachine(next));
 	}
 
@@ -673,7 +712,10 @@ export class GPUEngine {
 		try {
 			await this.waitForIdle();
 			if (geometryChanged) await this.waitForReadbacks();
+			const enteringReversible =
+				settings.interaction === 'reversible' && this.machineSettings.interaction !== 'reversible';
 			this.machineSettings = structuredClone(settings);
+			this.dissipationThreshold = GPUEngine.thresholdOf(settings.dissipation);
 			this.z80Steps = settings.steps;
 			this.pairCount = settings.pairAttempts;
 			this.noiseExp = settings.mutationExponent;
@@ -695,6 +737,8 @@ export class GPUEngine {
 				this.createPipelines();
 				this.flushSuppressMask();
 				this.resetRate();
+				// A world switched to the reversible rule starts with every cell at rest.
+				if (enteringReversible) this.restBefore();
 			}
 			await this.checkShader();
 		} finally {
@@ -706,7 +750,7 @@ export class GPUEngine {
 	}
 
 	configure(settings: LabSettings, initial: InitialCondition = { kind: 'random' }): Promise<void> {
-		const next = structuredClone(settings);
+		const next = withInteractionDefaults(structuredClone(settings));
 		const condition = structuredClone(initial);
 		return this.queueConfiguration(async () => {
 			// Validate initial bytes before changing the live condition.
@@ -727,6 +771,7 @@ export class GPUEngine {
 							c * this.wordsPerCell * 4
 						);
 					this.device.queue.writeBuffer(this.soupBuffer, 0, padded);
+					this.restBefore();
 				}
 			} finally {
 				this.readbackBarrier = null;
@@ -852,6 +897,7 @@ export class GPUEngine {
 			this.cpuRng.nextU32() // batch_seed - different each batch
 		]);
 		paramsData.set(this.masks, 8);
+		paramsData[32] = this.dissipationThreshold;
 		this.device.queue.writeBuffer(this.paramsBuffer, 0, paramsData);
 
 		const encoder = this.device.createCommandEncoder();
@@ -1010,6 +1056,7 @@ export class GPUEngine {
 			data.byteOffset,
 			data.byteLength
 		);
+		this.restBefore();
 	}
 
 	// Read soup data from GPU for CPU-side trace/disassembly
@@ -1432,6 +1479,7 @@ struct Patch { word: u32, shift: u32, value: u32, cell: u32 }
 
 	destroy(): void {
 		this.soupBuffer?.destroy();
+		this.beforeBuffer?.destroy();
 		this.pairsBuffer?.destroy();
 		this.pairDataBuffer?.destroy();
 		this.writeCountsBuffer?.destroy();
