@@ -8,12 +8,15 @@
 
 import { Z80, type Hal } from 'z80-emulator';
 import {
+	FACING_MASKS,
 	FREE_RNG,
+	HEAD_FACING,
 	HEAD_ORIGIN_X,
 	HEAD_ORIGIN_Y,
 	HEAD_RNG,
 	HEAD_WORDS,
-	chanceThreshold
+	chanceThreshold,
+	faceOffset
 } from '../gpu/free';
 
 // z80-emulator announces DD/FD-prefixed opcodes it treats as NOPs; keep the console quiet.
@@ -40,13 +43,15 @@ export interface ReferenceRules {
 	turnover: number;
 	/** Chance per instruction of one random byte. */
 	mutation: number;
+	/** Which ways a landing head may face (see FACING_MASKS). */
+	facing: keyof typeof FACING_MASKS;
 }
 
 export interface ReferenceWorld {
 	sheet: Uint8Array;
 	tick(): void;
 	registers(head: number): Record<string, number>;
-	origin(head: number): { x: number; y: number };
+	origin(head: number): { x: number; y: number; facing: number };
 	/** Bytes two or more heads tried to write in the same tick, summed over ticks. */
 	contested: number;
 	/** Head-ticks on which a HALT was executed. */
@@ -61,6 +66,13 @@ export interface ReferenceWorld {
 	 * meaningful up to the first such tick.
 	 */
 	firstIndexPrefixTick: number | null;
+	/**
+	 * Ticks on which some head fetched a repeating block input or output instruction (INIR, OTIR,
+	 * INDR, OTDR: ED B2, B3, BA, BB). Zilion's 0.3 core adjusts H and P/V on a repeating step, as its
+	 * test vectors require; z80-emulator does not. A comparison is only meaningful up to the first
+	 * such tick as well.
+	 */
+	firstRepeatIoTick: number | null;
 	ticks: number;
 }
 
@@ -81,17 +93,24 @@ export function createReference(
 		restarts: 0,
 		mutations: 0,
 		firstIndexPrefixTick: null,
+		firstRepeatIoTick: null,
 		ticks: 0,
 		tick,
 		registers,
-		origin: (head) => ({ x: machines[head].ox, y: machines[head].oy })
+		origin: (head) => ({
+			x: machines[head].ox,
+			y: machines[head].oy,
+			facing: machines[head].facing
+		})
 	};
 	let log = new Map<number, number>();
 	interface Machine {
 		z80: Z80;
 		ox: number;
 		oy: number;
+		facing: number;
 		rng: number;
+		place(address: number): number;
 	}
 	const machines: Machine[] = [];
 	const signed = (byte: number) => (byte >= 128 ? byte - 256 : byte);
@@ -109,12 +128,20 @@ export function createReference(
 			z80: null as unknown as Z80,
 			ox: heads[h * HEAD_WORDS + HEAD_ORIGIN_X],
 			oy: heads[h * HEAD_WORDS + HEAD_ORIGIN_Y],
-			rng: heads[h * HEAD_WORDS + HEAD_RNG]
+			facing: heads[h * HEAD_WORDS + HEAD_FACING],
+			rng: heads[h * HEAD_WORDS + HEAD_RNG],
+			// An address is an offset from where the head landed, in the head's own frame: the low byte
+			// counts bytes along the way it faces, the high byte counts lines across, each a signed byte.
+			place(address: number) {
+				const [dx, dy] = faceOffset(
+					machine.facing,
+					signed(address & 0xff),
+					signed((address >> 8) & 0xff)
+				);
+				return wrap(machine.oy + dy, sheetH) * sheetW + wrap(machine.ox + dx, sheetW);
+			}
 		};
-		// An address is (row, column) measured from where the head landed, each a signed byte.
-		const place = (address: number) =>
-			wrap(machine.oy + signed((address >> 8) & 0xff), sheetH) * sheetW +
-			wrap(machine.ox + signed(address & 0xff), sheetW);
+		const place = machine.place;
 		const hal: Hal = {
 			tStateCount: 0,
 			readMemory: (address: number) => {
@@ -141,13 +168,14 @@ export function createReference(
 			const machine = machines[h];
 			const r = machine.z80.regs;
 			const pc = r.pc;
-			const first =
-				world.sheet[
-					wrap(machine.oy + signed((pc >> 8) & 0xff), sheetH) * sheetW +
-						wrap(machine.ox + signed(pc & 0xff), sheetW)
-				];
+			const first = world.sheet[machine.place(pc)];
 			if ((first === 0xdd || first === 0xfd) && world.firstIndexPrefixTick === null)
 				world.firstIndexPrefixTick = world.ticks;
+			if (first === 0xed && world.firstRepeatIoTick === null) {
+				const second = world.sheet[machine.place((pc + 1) & 0xffff)];
+				if (second === 0xb2 || second === 0xb3 || second === 0xba || second === 0xbb)
+					world.firstRepeatIoTick = world.ticks;
+			}
 			log = new Map();
 			machine.z80.step();
 
@@ -167,6 +195,7 @@ export function createReference(
 				const b = mix32(a ^ FREE_RNG.landY);
 				machine.ox = a % sheetW;
 				machine.oy = b % sheetH;
+				machine.facing = mix32(b ^ FREE_RNG.face) & FACING_MASKS[rules.facing];
 				world.restarts++;
 			}
 			if (mutation !== 0 && mix32(random ^ FREE_RNG.mutate) < mutation) {

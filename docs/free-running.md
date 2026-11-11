@@ -1,6 +1,7 @@
 # The free-running world
 
-11 November 2026, second design. A first look, not a result: one to five runs per setting.
+11 November 2026, third design (the facing rule; see "A direction was built in"). A first look, not a
+result: one to five runs per setting.
 
 ## The rule
 
@@ -9,19 +10,24 @@ budget (128), the cell (16 bytes) as the unit that runs, and the list of who mee
 
 1. **The world is a sheet of bytes and nothing else**, wrapped as a torus. The 16-byte tiles are only how the
    renderer draws it. Any width and height.
-2. **A processor lands on a random byte with every register at zero** and starts executing there.
-3. **Addresses are measured from where it landed.** A Z80 address is two bytes, so the low byte is the column and
-   the high byte is the row, each read as a signed offset (−128…127). Address 0 is the landing byte; the program
-   counter walks to the right; the stack starts at address 0, so the first push writes just above and to the left
-   and the stack grows leftwards along the row above. A processor can reach a 256 × 256 window around its landing
-   byte and nothing outside it.
+2. **A processor lands on a random byte, facing a random way, with every register at zero**, and starts
+   executing there.
+3. **Addresses are measured from where it landed, in its own frame.** A Z80 address is two bytes: the low byte
+   counts bytes along the way the processor faces, the high byte counts lines across, each read as a signed offset
+   (−128…127). Address 0 is the landing byte; the program counter walks forward; the stack starts at address 0,
+   so the first push writes on the neighbouring line just behind the landing byte, and the stack grows backwards
+   along that line. "Facing" is one of the eight symmetries of the square: forward is one of four directions and
+   the stack is on either side. A processor can reach a 256 × 256 window around its landing byte and nothing
+   outside it.
 4. **One tick is one instruction for every processor**, all at once.
 5. **A processor that executes HALT lifts off and lands somewhere else** (rule 2). Nothing else ends a run.
 
 Mutation: with a small chance per instruction, one random byte anywhere on the sheet is replaced.
 
-What is left to choose: how many processors there are (`heads`, per tile), and the mutation dial. Two optional
-switches exist for comparison: `haltRule` (`restart` as above; `wait`: the processor stays on the HALT byte until
+What is left to choose: how many processors there are (`heads`, per tile), and the mutation dial. Three optional
+switches exist for comparison: `facing` (`any` as above; `same`: every processor reads rightwards with its stack
+on the row above, which was the rule until this revision; `rows`: rightwards or leftwards, stack above or below;
+`two-axes`: rightwards or downwards), `haltRule` (`restart` as above; `wait`: the processor stays on the HALT byte until
 something changes it; `pass`: it steps over it) and `turnover` (a chance per instruction of lifting off without a
 HALT; 0 by default).
 
@@ -36,6 +42,55 @@ world every time, and many ticks can be queued at once.
 Code: `src/lib/gpu/free.ts` (shader and starting processors), `src/lib/gpu/engine.ts` (`setupFree`,
 `simulateTicks`, `readHeads`), reference `src/lib/dev/freeReference.ts`. Z80 only, square lattice, 16-byte tiles.
 
+## A direction was built in (the author's objection to the second design)
+
+The second design (commit c5ff5fa) was this rule with every processor facing the same way: the program counter
+always walked right and the stack was always the row above. The pictures were full of horizontal lines, and the
+author objected that the rule broke the symmetry of space. That was correct, and it was not cosmetic.
+
+- **The asymmetry was in the rule.** In the second design a byte equals the byte two places along its row 94% of
+  the time after a takeover and the byte two places down its column 53% of the time (chance level); in the waiting
+  state, 59–64% against 24–29% (seeds 1 and 2). Under `any` both are 36–37% (`free-running/free_facing.png`).
+- **The rule now commutes with every symmetry of the square, exactly**, and landing processors face the eight
+  ways equally often (both under "What was checked").
+- **The replicators of the second design needed the built-in direction.** Five seeds per rule, 100,000 ticks,
+  otherwise the defaults of "First look" below (`sym_f_*`, `sym_a_seed*`):
+
+| facing                                       | left the waiting state by 100,000 ticks | by                                   |
+| -------------------------------------------- | --------------------------------------- | ------------------------------------ |
+| `same` (rightwards; the second design)       | 5 of 5                                  | `01 c5`, `11 d5`, looping, `fc` rows |
+| `rows` (right or left, stack above or below) | 5 of 5                                  | `01 c5` in all five                  |
+| `two-axes` (rightwards or downwards)         | 0 of 5                                  |                                      |
+| `any` (eight ways; the rule now)             | 0 of 5                                  |                                      |
+
+The `rows` and `two-axes` arms were run to test a prediction written down before running them: a pusher row
+reads the same forwards and backwards, so what should matter is whether all processors share one axis, not
+whether they share a direction along it or a side for the stack. Both arms came out as predicted. The `same`
+arm reproduces the second design's five runs.
+
+- **Under `any`, nothing else was seen either**, in the few settings tried (seed 1 and 2 each): mutation off and
+  mutation exponent 8 to 300,000 ticks, exponent 4 to 1,000,000 ticks. All stay in the waiting state.
+- **A pusher world does not survive mutation under `any`.** A sheet that is a chessboard of `01` and `c5` (every
+  row and every column reads `01 c5 01 c5 …`), or rows of `01 c5`, stays a pusher world for 50,000 ticks with
+  mutation off (`c5` 81–83% of bytes, no processor halts). With mutation it falls to the waiting state: by 10,000
+  ticks at exponent 4, by 20,000 at exponent 8, between 100,000 and 300,000 at exponent 12 (one run each). A
+  64 × 64-byte patch of either pattern placed in a random sheet is gone by 2,000 ticks (one run each); under
+  `same` the same patch spreads (`c5` 40% of bytes at 2,000 ticks).
+- **So the waiting state is the winner here, not an absence.** In it 40.8–42.0% of processors are about to
+  execute a blank byte and 3.3–3.5% an `ff` (three seeds at 100,000 ticks, `runs/sym_waiting.jsonl`); 136–160 of
+  the 4,096 processors sit exactly at address 0x38, one address in 65,536. `ff` is "restart at 38": push the
+  address of the next byte and jump to address 0x38. The commonest non-blank bytes are `39`, `3a`, `3b`, `3c` in
+  that order in all five seeds. A reading that fits all three facts, not traced on the machine: a processor that
+  meets an `ff` a few bytes after address 0x38 jumps back to 0x38, slides over blank bytes to the same `ff`, and
+  writes the return address (`39 00`, `3a 00`, …) further along its stack each time round. It copies nothing;
+  it writes blanks and small numbers, which are slides and landing strips for the next processor.
+
+What this does and does not say. In this world, with this chip, at one density and three mutation levels, the
+patterns that copy themselves need every reader to share one axis. It does not say that no heredity is possible
+under the symmetric rule: the runs are short and few, and nothing here lets a pattern tell a processor which way
+to read it. In the two-cell soups and in BFF the shared axis is given silently (a tape has a first byte and a
+direction).
+
 ## Why the first design looked dead
 
 The first design (commit 32f7fcb) tied each processor to one row or one column and laid its 64K address space
@@ -47,28 +102,43 @@ the `wait` and `pass` rules (no processor is ever reset) still grow replicators 
 
 ## What was checked
 
-`node scripts/free-check.mjs`: 14 checks, all pass.
+`node scripts/free-check.mjs`: 19 checks, all pass.
 
 - **Against an independent reference.** The rule is written a second time in TypeScript with the third-party
-  `z80-emulator` executing instructions. Sheet bytes, registers, landing sites and the number of restarts agree at
-  every fifth tick for as long as the comparison is meaningful, in twelve runs: all three HALT rules on a
-  32 × 32-byte sheet with 64 processors (40 to 360 ticks), and the restart rule with a restart chance of 1/64 and
-  mutation on, on a 280 × 36-byte sheet (wider than a window, sides not powers of two; 90 to 185 ticks). Every run
-  included bytes that two processors wanted in the same tick.
-- **Why the comparison stops.** It ends at the first tick on which a processor fetches a `DD` or `FD` prefix,
-  because Zilion and `z80-emulator` split prefix chains into steps differently. Bits 3 and 5 of the flag register
-  (undocumented) are not compared.
+  `z80-emulator` executing instructions. Sheet bytes, registers, landing sites, facings and the number of restarts
+  agree at every fifth tick for as long as the comparison is meaningful, in fourteen runs: all three HALT rules on
+  a 32 × 32-byte sheet with 64 processors facing all eight ways (15 to 315 ticks), two runs with every processor
+  facing the same way (65 ticks each), and the restart rule with a restart chance of 1/64 and mutation on, on a
+  280 × 36-byte sheet (wider than a window, sides not powers of two; 45 to 135 ticks). 1,090 ticks in all; ten of
+  the fourteen lasted 40 ticks or more and included bytes that two processors wanted in the same tick.
+- **Why a comparison stops.** It ends at the first tick on which a processor fetches a `DD` or `FD` prefix,
+  because Zilion and `z80-emulator` split prefix chains into steps differently, or a repeating block input or
+  output instruction (`ED B2`, `B3`, `BA`, `BB`). On those the two disagree about two flags (H and P/V): this
+  showed up as four failed comparisons when the facings changed which instructions the test runs met. Zilion's
+  documentation says its 0.3 core follows the hardware test vectors there; I did not test which of the two is
+  right. Bits 3 and 5 of the flag register (undocumented) are not compared.
+- **No preferred direction.** With the `pass` rule and no restart chance or mutation a tick uses no random
+  numbers. On a 96 × 96-byte sheet with 576 processors, turning or mirroring the whole world (sheet, landing
+  sites, facings) by each of the seven non-trivial symmetries of the square and running 600 ticks gives the turned
+  or mirrored result: 0 differing bytes and 0 differing register words in all seven (9,071 bytes changed by the
+  run).
+- **Facings are drawn evenly.** 102,400 landings: 12,717 to 12,889 per facing (chi-squared 2.87 on 7 degrees of
+  freedom); landing sites are even across the quarters of each axis (1.09 and 9.45 on 3).
 - **Repeatability.** Two runs of one seed with 4,096 processors, 500 ticks, restart chance and mutation on give
   identical sheets (63,490 bytes changed by the run, 0 differ).
-- **A known replicator works.** On a sheet of HALT bytes with one 512-byte block of the pair worlds' pusher
-  (`01 c5`), the count of pusher bytes rises at every mark over 2,000 ticks (512 → 4,503 in the first run of the
-  check).
+- **A known replicator works where nothing competes.** On a sheet of HALT bytes with one 512-byte block of the
+  pair worlds' pusher (`01 c5`), the count of pusher bytes rises at every mark over 2,000 ticks (512 → 20,796
+  under `any`; it was 512 → 4,503 under the second design).
 
 Not checked: more than 360 ticks against the reference; the 0.2 `classic` core against the reference (the
 comparison uses 0.3 `zilog-nmos`; the app's default is 0.2); whether an instruction ever needs more distinct
 writes than the log holds (five entries; the Z80 should need two, plus one for a mutation).
 
-## First look
+## First look under the second design (`facing: same`)
+
+Everything in this section was run before the facing rule existed, with every processor reading rightwards. It
+describes that rule, which builds a direction in; under `any` none of it has been seen. The five seeds of part 1
+were run again as `facing: same` after the change and gave the same outcomes.
 
 All runs: 512 × 512 bytes, random start, Z80 0.2 core, headless. Unless stated: 4,096 processors (1 per 4 tiles),
 HALT restarts, restart chance 0, mutation exponent 4 (1 byte per 2,048 instructions). Data: `free-running/runs/`,
@@ -157,6 +227,9 @@ speed 8× the default world (160 × 126 tiles, 5,040 processors) showed 15,340 t
 
 ## Pictures
 
+- `free-running/free_facing.png`: one starting sheet under the four facing rules at 100,000 ticks
+  (`figures_facing.py`).
+- The three below show the second design (`facing: same`).
 - `free-running/free_takeover.png`: the sheet at 2,000, 4,000, 4,500 and 5,500 ticks (seed 1).
 - `free-running/free_closeups.png`: 32 × 10 bytes written out, with processors outlined: waiting state, pushers,
   looping variant.
@@ -165,6 +238,10 @@ speed 8× the default world (160 × 126 tiles, 5,040 processors) showed 15,340 t
 
 ## Known gaps
 
+- Under the symmetric rule the world has only been seen in its waiting state. Not tried: other processor
+  densities, the `wait` and `pass` rules, a restart chance, sheets of other sizes, runs beyond 1,000,000 ticks,
+  the 0.3 core, and any rule by which the bytes themselves set the way a landing processor faces.
+- The reading of the waiting state (restart-at-38 loops) rests on counts, not on a trace.
 - No view of the processors in the app. The close-up picture is drawn offline.
 - No measure of heredity. "Replicator" here means a pattern that spreads and that, seeded as a block, invades.
 - The app's counter and rate are in ticks but still labelled "Epoch" and "updates/s"; the takeover is over in

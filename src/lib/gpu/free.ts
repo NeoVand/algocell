@@ -3,11 +3,16 @@
 // The world is a sheet of bytes (the same bytes the renderer draws, wrapped as a torus) and nothing
 // else. Processors land on it:
 //
-//   1. A processor lands on a random byte with every register at zero and starts executing there.
-//   2. Its addresses are measured from where it landed. A Z80 address is two bytes, so the low byte is
-//      the column and the high byte is the row, each read as a signed offset (-128..127). Address 0 is
-//      the landing byte, the program counter walks to the right, and the stack (SP = 0, so the first
-//      push writes 0xFFFF and 0xFFFE) grows leftwards along the row above.
+//   1. A processor lands on a random byte, facing a random way, with every register at zero, and
+//      starts executing there.
+//   2. Its addresses are measured from where it landed, in its own frame. A Z80 address is two bytes:
+//      the low byte counts bytes along the way it faces, the high byte counts lines across, each read
+//      as a signed offset (-128..127). Address 0 is the landing byte, the program counter walks
+//      forward, and the stack (SP = 0, so the first push writes 0xFFFF and 0xFFFE) grows backwards
+//      along the neighbouring line. "Facing" is one of the eight symmetries of the square (four
+//      directions, the stack on either side), so the rule itself has no preferred direction and no
+//      handedness. (`facing: 'same'` gives every processor the same frame, for comparison: forward is
+//      right and the stack is the row above.)
 //   3. One tick is one instruction for every processor, all at once.
 //   4. A processor that executes HALT lifts off and lands somewhere else (rule 1). Nothing else ends a
 //      run: there is no step budget. (`turnover` adds an optional chance of lifting off per
@@ -45,6 +50,11 @@ export const HEAD_RUNS = 36;
 export const HEAD_LAST_RUN = 37;
 /** Its random counter. */
 export const HEAD_RNG = 38;
+/**
+ * The way it faces: bit 0 swaps the two axes, bit 1 negates x, bit 2 negates y (applied in that
+ * order to the offset "along, across"). The eight values are the eight symmetries of the square.
+ */
+export const HEAD_FACING = 39;
 /** Words per head in the write log: count, then up to five (position, value) pairs. */
 export const LOG_WORDS = 12;
 const LOG_ENTRIES = 5;
@@ -57,13 +67,31 @@ export const FREE_RNG = {
 	mutatePlace: 0x2545f491,
 	mutateValue: 0x7f4a7c15,
 	landX: 0x85ebca6b,
-	landY: 0xc2b2ae35
+	landY: 0xc2b2ae35,
+	face: 0x27d4eb2f
 } as const;
 
 /** One mutation per this many instructions at mutation exponent 0, so the dial reads like the pair worlds'. */
 export const FREE_MUTATION_UNIT = 128;
 
 export const HALT_RULES = { restart: 0, wait: 1, pass: 2 } as const;
+
+/**
+ * The mask applied to a random word to draw a facing. `any`: all eight. `same`: always the first
+ * (forward is right, stack on the row above). Two in-between rules exist to find out which part of
+ * the symmetry matters: `rows` (forward is right or left, stack above or below: one axis, no
+ * direction along it and no handedness) and `two-axes` (forward is right or down).
+ */
+export const FACING_MASKS = { any: 7, rows: 6, 'two-axes': 1, same: 0 } as const;
+
+/** A facing applied to an offset (along, across): the offset on the sheet as [dx, dy]. */
+export function faceOffset(facing: number, along: number, across: number): [number, number] {
+	let dx = facing & 1 ? across : along;
+	let dy = facing & 1 ? along : across;
+	if (facing & 2) dx = -dx;
+	if (facing & 4) dy = -dy;
+	return [dx, dy];
+}
 
 /** A chance in [0, 1] as the 32-bit threshold the shader compares a random word against. */
 export function chanceThreshold(chance: number): number {
@@ -127,6 +155,9 @@ export function createHeads(settings: LabSettings): Uint32Array<ArrayBuffer> {
 	const count = headCount(settings);
 	const heads = new Uint32Array(count * HEAD_WORDS);
 	const rng = new SplitMix64((settings.seed ^ 0x5eed1e55) >>> 0);
+	// A separate stream, so that `same` starts from the same landing sites as `any`.
+	const faces = new SplitMix64((settings.seed ^ 0x0fac1e55) >>> 0);
+	const mask = FACING_MASKS[settings.facing];
 	const sheetW = settings.width * 4;
 	const sheetH = settings.height * 4;
 	for (let h = 0; h < count; h++) {
@@ -134,6 +165,7 @@ export function createHeads(settings: LabSettings): Uint32Array<ArrayBuffer> {
 		heads[o + HEAD_ORIGIN_X] = rng.nextU32() % sheetW;
 		heads[o + HEAD_ORIGIN_Y] = rng.nextU32() % sheetH;
 		heads[o + HEAD_RNG] = rng.nextU32();
+		heads[o + HEAD_FACING] = faces.nextU32() & mask;
 	}
 	return heads;
 }
@@ -151,13 +183,21 @@ export function createFreeShader(settings: LabSettings): string {
 		generated,
 		/* wgsl */ `
 // --- Host memory: the shared sheet, read in place; writes are logged and applied after the step ---
-// An address is (row, column) measured from where the head landed, each a signed byte.
+// An address is an offset from where the head landed, in the head's own frame: the low byte counts
+// bytes along the way it faces, the high byte counts lines across, each a signed byte.
 fn free_place(addr: u32) -> u32 {
-    let dx = addr & 0xffu;
-    let dy = (addr >> 8u) & 0xffu;
+    let lo = i32(addr & 0xffu);
+    let hi = i32((addr >> 8u) & 0xffu);
+    let along = lo - select(0, 256, lo >= 128);
+    let across = hi - select(0, 256, hi >= 128);
+    let swap = (free_face & 1u) != 0u;
+    var dx = select(along, across, swap);
+    var dy = select(across, along, swap);
+    if ((free_face & 2u) != 0u) { dx = -dx; }
+    if ((free_face & 4u) != 0u) { dy = -dy; }
     // "+ 256 * size" keeps the sum positive and is a whole number of turns round the torus.
-    let x = (free_ox + dx + 256u * fp.sheet_w - select(0u, 256u, dx >= 128u)) % fp.sheet_w;
-    let y = (free_oy + dy + 256u * fp.sheet_h - select(0u, 256u, dy >= 128u)) % fp.sheet_h;
+    let x = u32(i32(free_ox) + dx + i32(256u * fp.sheet_w)) % fp.sheet_w;
+    let y = u32(i32(free_oy) + dy + i32(256u * fp.sheet_h)) % fp.sheet_h;
     return y * fp.sheet_w + x;
 }
 // Sheet position to the lattice's storage: tile (x/4, y/4), one word per row of four bytes.
@@ -207,7 +247,7 @@ struct FreeParams {
     halt_rule: u32,      // 0 restart, 1 wait, 2 pass
     turnover: u32,       // chance per instruction of lifting off, as a 32-bit threshold
     mutation: u32,       // chance per instruction of one random byte, as a 32-bit threshold
-    pad0: u32,
+    facing_mask: u32,    // a landing head's facing is a random word under this mask (7: any of eight)
     pad1: u32,
 }
 
@@ -219,6 +259,7 @@ struct FreeParams {
 
 var<private> free_ox: u32;
 var<private> free_oy: u32;
+var<private> free_face: u32;
 var<private> free_n: u32;
 var<private> free_dropped: u32;
 var<private> free_pos: array<u32, ${LOG_ENTRIES}>;
@@ -238,6 +279,7 @@ fn free_step(@builtin(global_invocation_id) id: vec3u) {
     idx_uses_mem = 0u;
     free_ox = heads[o + ${HEAD_ORIGIN_X}u];
     free_oy = heads[o + ${HEAD_ORIGIN_Y}u];
+    free_face = heads[o + ${HEAD_FACING}u];
     free_n = 0u;
     free_dropped = 0u;
 
@@ -265,6 +307,7 @@ fn free_step(@builtin(global_invocation_id) id: vec3u) {
         let b = zil_mix32(a ^ ${hex(FREE_RNG.landY)});
         heads[o + ${HEAD_ORIGIN_X}u] = a % fp.sheet_w;
         heads[o + ${HEAD_ORIGIN_Y}u] = b % fp.sheet_h;
+        heads[o + ${HEAD_FACING}u] = zil_mix32(b ^ ${hex(FREE_RNG.face)}) & fp.facing_mask;
         heads[o + ${HEAD_AGE}u] = 0u;
         heads[o + ${HEAD_RUNS}u] = heads[o + ${HEAD_RUNS}u] + 1u;
         heads[o + ${HEAD_LAST_RUN}u] = age;

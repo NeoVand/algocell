@@ -19,6 +19,7 @@ import {
 	chanceThreshold,
 	createFreeShader,
 	createHeads,
+	FACING_MASKS,
 	HALT_RULES,
 	headCount,
 	HEAD_WORDS,
@@ -614,6 +615,7 @@ export class GPUEngine {
 			this.soupWidth,
 			this.soupHeight,
 			settings.heads,
+			settings.facing,
 			settings.compat,
 			settings.variant,
 			this.lifecycle.bufferRevision
@@ -696,7 +698,7 @@ export class GPUEngine {
 			HALT_RULES[this.machineSettings.haltRule],
 			chanceThreshold(this.machineSettings.turnover),
 			chanceThreshold(mutationChance(this._noiseExp)),
-			0,
+			FACING_MASKS[this.machineSettings.facing],
 			0
 		]);
 		this.device.queue.writeBuffer(this.freeParamsBuffer!, 0, this.freeParams);

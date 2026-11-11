@@ -10,6 +10,9 @@ const browser = await chromium.launch({
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
+page.on('response', (r) => {
+	if (r.status() >= 400) errors.push(`http ${r.status()}: ${r.url()}`);
+});
 page.on('console', (m) => {
 	if (m.type() === 'error') errors.push('console: ' + m.text());
 });

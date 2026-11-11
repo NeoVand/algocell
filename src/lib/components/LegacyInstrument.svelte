@@ -85,6 +85,7 @@
 	let heads = $state(0.25);
 	let haltRule = $state<LabSettings['haltRule']>('restart');
 	let turnover = $state(0);
+	let facing = $state<LabSettings['facing']>('any');
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -143,7 +144,8 @@
 			boundary,
 			heads,
 			haltRule,
-			turnover
+			turnover,
+			facing
 		};
 	}
 
@@ -211,6 +213,7 @@
 		heads = next.heads;
 		haltRule = next.haltRule;
 		turnover = next.turnover;
+		facing = next.facing;
 		gridWidth = next.width;
 		gridHeight = next.height;
 		gridType = next.topology;
@@ -1629,6 +1632,12 @@
 			set: (v) => (turnover = v as number)
 		},
 		{
+			key: 'facing',
+			mode: 'live',
+			get: () => facing,
+			set: (v) => (facing = v as LabSettings['facing'])
+		},
+		{
 			key: 'initialCondition',
 			mode: 'grid',
 			get: () => JSON.stringify(initialCondition),
@@ -1778,6 +1787,7 @@
 			heads: Number(values.heads ?? 0.25),
 			haltRule: (values.haltRule ?? 'restart') as LabSettings['haltRule'],
 			turnover: Number(values.turnover ?? 0),
+			facing: (values.facing ?? 'any') as LabSettings['facing'],
 			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
 		};
 		stagedInitial = values.initialCondition
@@ -2404,7 +2414,8 @@
 			'boundary',
 			'heads',
 			'haltRule',
-			'turnover'
+			'turnover',
+			'facing'
 		] as const) {
 			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
 				Object.assign(patch, { [key]: next[key] });
@@ -2828,10 +2839,30 @@
 									}}
 									disabled={machineBusy || checkpointBusy || !engine}
 								/>
+							</div>
+							<div class="control-field">
+								<label for="facing-rule">Facing</label><InstrumentSelect
+									id="facing-rule"
+									label="Facing"
+									value={facing}
+									options={[
+										{ value: 'any', label: 'Any of eight ways (no direction is special)' },
+										{ value: 'rows', label: 'Along rows, either way round' },
+										{ value: 'two-axes', label: 'Rightwards or downwards' },
+										{ value: 'same', label: 'All rightwards (the first version)' }
+									]}
+									onchange={(value) => {
+										facing = value as LabSettings['facing'];
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
 								<p class="control-note">
-									No cells and no step budget. Processors land on random bytes with a blank mind and
-									run one instruction per tick; addresses are measured from where they landed.
-									Steps, pair attempts, lethal zero and edges are not used; the sheet wraps.
+									No cells and no step budget. Processors land on random bytes, facing a random way,
+									with a blank mind, and run one instruction per tick; addresses are measured from
+									where they landed. Only "any of eight ways" treats every direction alike; the
+									other facings build one in, for comparison. Steps, pair attempts, lethal zero and
+									edges are not used; the sheet wraps.
 								</p>
 							</div>
 						{/if}

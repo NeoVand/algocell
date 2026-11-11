@@ -2,10 +2,15 @@
 // numbers. Needs the dev server on 5176.
 //   node scripts/free-look.mjs <out dir> key=value ...
 // Keys (defaults): tiles=128 (side, in 16-byte tiles) heads=0.25 (per tile) halt=restart turnover=0
+//   facing=any|rows|two-axes|same (any: a landing processor faces one of eight ways; same: all read
+//   rightwards; rows: rightwards or leftwards, stack above or below; two-axes: rightwards or downwards)
 //   mutation=4 (exponent; 31 is off) ticks=20000 seed=6 start=random|halt-with-pusher|zero
 //   marks=0,1000,5000,20000 (ticks at which to save)
 //   start=pattern fill=01c5 block=c501c50118f8 : the sheet tiled with `fill` (hex), and a 32 x 16-byte
 //   block of `block` in the middle. Each row is tiled from its left end.
+//   start=checker : a chessboard of 01 and c5 (every row and every column reads `01 c5 01 c5 ...`).
+//   patch=checker|rows side=32 : after any start, a square in the middle holding the chessboard, or
+//   rows of `01 c5` all in step. With start=random this is an invasion test of the waiting state.
 // Writes sheet_<tick>.u8 (row-major bytes), heads_<tick>.u32 and look.json.
 import { chromium } from '@playwright/test';
 import { writeFile, mkdir } from 'node:fs/promises';
@@ -18,13 +23,16 @@ const q = {
 	heads: 0.25,
 	halt: 'restart',
 	turnover: 0,
+	facing: 'any',
 	mutation: 4,
 	ticks: 20000,
 	seed: 6,
 	start: 'random',
 	marks: '',
 	fill: '76',
-	block: ''
+	block: '',
+	patch: '',
+	side: 32
 };
 for (const pair of pairs) {
 	const [k, v] = pair.split('=');
@@ -46,7 +54,7 @@ await page.goto('http://127.0.0.1:5176/demo/playwright');
 const result = await page.evaluate(async (q) => {
 	const { GPUEngine } = await import('/src/lib/gpu/engine.ts');
 	const { ORIGINAL_SETTINGS } = await import('/src/lib/gpu/machine.ts');
-	const { HEAD_WORDS, HEAD_WAITING, HEAD_AGE, HEAD_RUNS, HEAD_LAST_RUN } =
+	const { HEAD_WORDS, HEAD_WAITING, HEAD_AGE, HEAD_RUNS, HEAD_LAST_RUN, HEAD_FACING } =
 		await import('/src/lib/gpu/free.ts');
 	const canvas = document.createElement('canvas');
 	canvas.width = 64;
@@ -63,6 +71,7 @@ const result = await page.evaluate(async (q) => {
 		heads: q.heads,
 		haltRule: q.halt,
 		turnover: q.turnover,
+		facing: q.facing,
 		mutationExponent: q.mutation
 	};
 	await engine.configure(settings, { kind: 'random' });
@@ -93,6 +102,11 @@ const result = await page.evaluate(async (q) => {
 			for (let y = c - 8; y < c + 8; y++)
 				for (let x = c - 16; x < c + 16; x++) sheet[y * w + x] = block[(x - c + 16) % block.length];
 		engine.writeSoupData(fromSheet(sheet));
+	} else if (q.start === 'checker') {
+		const sheet = new Uint8Array(w * w);
+		for (let y = 0; y < w; y++)
+			for (let x = 0; x < w; x++) sheet[y * w + x] = (x + y) & 1 ? 0xc5 : 0x01;
+		engine.writeSoupData(fromSheet(sheet));
 	} else if (q.start !== 'random') {
 		const sheet = new Uint8Array(w * w).fill(q.start === 'zero' ? 0 : 0x76);
 		if (q.start === 'halt-with-pusher') {
@@ -100,6 +114,15 @@ const result = await page.evaluate(async (q) => {
 			for (let y = c - 8; y < c + 8; y++)
 				for (let x = c - 16; x < c + 16; x++) sheet[y * w + x] = x & 1 ? 0xc5 : 0x01;
 		}
+		engine.writeSoupData(fromSheet(sheet));
+	}
+	if (q.patch) {
+		const sheet = toSheet(await engine.readSoupData());
+		const c = w >> 1;
+		const half = q.side >> 1;
+		for (let y = c - half; y < c + half; y++)
+			for (let x = c - half; x < c + half; x++)
+				sheet[y * w + x] = (q.patch === 'checker' ? x + y : x) & 1 ? 0xc5 : 0x01;
 		engine.writeSoupData(fromSheet(sheet));
 	}
 	const b64 = (u8) => {
@@ -128,7 +151,9 @@ const result = await page.evaluate(async (q) => {
 		let runs = 0;
 		const ages = [];
 		const last = [];
+		const facings = new Array(8).fill(0);
 		for (let k = 0; k < count; k++) {
+			facings[hd[k * HEAD_WORDS + HEAD_FACING]]++;
 			waiting += hd[k * HEAD_WORDS + HEAD_WAITING];
 			runs += hd[k * HEAD_WORDS + HEAD_RUNS];
 			ages.push(hd[k * HEAD_WORDS + HEAD_AGE]);
@@ -153,7 +178,7 @@ const result = await page.evaluate(async (q) => {
 		const right = [];
 		for (let k = 1; k <= 32; k++) right.push(same(k, 0));
 		const down = [];
-		for (let k = 1; k <= 8; k++) down.push(same(0, k));
+		for (let k = 1; k <= 32; k++) down.push(same(0, k));
 		const pairsSeen = new Map();
 		for (let i = 0; i + 1 < sheet.length; i++) {
 			const key = (sheet[i] << 8) | sheet[i + 1];
@@ -187,6 +212,7 @@ const result = await page.evaluate(async (q) => {
 			sameByChance: +chance.toFixed(4),
 			sameRight: right,
 			sameDown: down,
+			facings,
 			topBytes,
 			share: Object.fromEntries(
 				['01', 'c5', '11', 'd5', '18', 'f8'].map((b) => [

@@ -59,6 +59,14 @@ export interface LabSettings {
 	 * though it met no HALT. 0 means only the programs end a run.
 	 */
 	turnover: number;
+	/**
+	 * Free-running world only: which way a landing head faces. `any`: one of the eight symmetries of
+	 * the square, drawn at random, so that the rule has no preferred direction and no handedness.
+	 * `same`: every head reads to the right with its stack on the row above. `rows` (right or left,
+	 * stack above or below) and `two-axes` (right or down) lie in between. All but `any` build a
+	 * direction into the rule and exist for comparison.
+	 */
+	facing: Facing;
 }
 
 /**
@@ -68,6 +76,7 @@ export interface LabSettings {
  */
 export type InteractionRule = 'overwrite' | 'reversible' | 'free';
 export type HaltRule = 'restart' | 'wait' | 'pass';
+export type Facing = 'any' | 'rows' | 'two-axes' | 'same';
 export type BoundaryRule = 'reflect' | 'cylinder' | 'torus' | 'mobius' | 'klein' | 'projective';
 export const BOUNDARY_RULES: BoundaryRule[] = [
 	'reflect',
@@ -85,7 +94,7 @@ export const BOUNDARY_RULES: BoundaryRule[] = [
 export function withInteractionDefaults(
 	settings: Omit<
 		LabSettings,
-		'interaction' | 'dissipation' | 'boundary' | 'heads' | 'haltRule' | 'turnover'
+		'interaction' | 'dissipation' | 'boundary' | 'heads' | 'haltRule' | 'turnover' | 'facing'
 	> &
 		Partial<LabSettings>
 ): LabSettings {
@@ -96,7 +105,8 @@ export function withInteractionDefaults(
 		boundary: settings.boundary ?? 'reflect',
 		heads: settings.heads ?? 0.25,
 		haltRule: settings.haltRule ?? 'restart',
-		turnover: settings.turnover ?? 0
+		turnover: settings.turnover ?? 0,
+		facing: settings.facing ?? 'any'
 	};
 }
 
@@ -134,7 +144,8 @@ export const DEFAULT_SETTINGS: LabSettings = {
 	boundary: 'reflect',
 	heads: 0.25,
 	haltRule: 'restart',
-	turnover: 0
+	turnover: 0,
+	facing: 'any'
 };
 
 /** Unknown, no partner entry, partner entry in the last initiating encounter. */
