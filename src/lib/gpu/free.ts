@@ -147,6 +147,25 @@ export function facingFromNeighbours(
 	return facing;
 }
 
+/**
+ * How far a head reaches: the side, in bytes, of the square of sheet it can address around its
+ * landing byte. 256 uses a whole Z80 address (one byte along, one across). A smaller reach uses
+ * fewer bits of each and ignores the rest of the address, so the square is the head's whole memory,
+ * wrapped: with reach 16, addresses 0x0000, 0x0100, 0x0200 ... all name the landing byte.
+ */
+export const REACHES = [16, 32, 64, 128, 256] as const;
+export function reachBits(reach: number): number {
+	const bits = Math.log2(reach);
+	if (!REACHES.includes(reach as (typeof REACHES)[number])) throw new Error('Unknown reach.');
+	return bits;
+}
+/** An address as the offset (along, across) from the landing byte, for a reach of 2^bits bytes. */
+export function addressOffset(address: number, bits: number): [number, number] {
+	const mask = (1 << bits) - 1;
+	const signed = (v: number) => (v >= 1 << (bits - 1) ? v - (1 << bits) : v);
+	return [signed(address & mask), signed((address >> bits) & mask)];
+}
+
 /** A facing applied to an offset (along, across): the offset on the sheet as [dx, dy]. */
 export function faceOffset(facing: number, along: number, across: number): [number, number] {
 	let dx = facing & 1 ? across : along;
@@ -262,13 +281,15 @@ export function createFreeShader(settings: LabSettings): string {
 		generated,
 		/* wgsl */ `
 // --- Host memory: the shared sheet, read in place; writes are logged and applied after the step ---
-// An address is an offset from where the head landed, in the head's own frame: the low byte counts
-// bytes along the way it faces, the high byte counts lines across, each a signed byte.
+// An address is an offset from where the head landed, in the head's own frame: the low bits count
+// bytes along the way it faces, the next bits count lines across, each a signed number of
+// fp.reach_bits bits (8: a byte each, the whole address).
 fn free_place(addr: u32) -> u32 {
-    let lo = i32(addr & 0xffu);
-    let hi = i32((addr >> 8u) & 0xffu);
-    let along = lo - select(0, 256, lo >= 128);
-    let across = hi - select(0, 256, hi >= 128);
+    let span = 1u << fp.reach_bits;
+    let lo = i32(addr & (span - 1u));
+    let hi = i32((addr >> fp.reach_bits) & (span - 1u));
+    let along = lo - select(0, i32(span), lo >= i32(span >> 1u));
+    let across = hi - select(0, i32(span), hi >= i32(span >> 1u));
     let swap = (free_face & 1u) != 0u;
     var dx = select(along, across, swap);
     var dy = select(across, along, swap);
@@ -350,6 +371,10 @@ struct FreeParams {
     mutation: u32,       // chance per instruction of one random byte, as a 32-bit threshold
     facing_mask: u32,    // facing rule 0: a random word under this mask (7: any of eight)
     facing_rule: u32,    // 0 random under the mask, 1 the grain of the landing byte, 2 from the bytes
+    reach_bits: u32,     // a head addresses a square of 2^reach_bits bytes a side (8: the whole address)
+    pad0: u32,
+    pad1: u32,
+    pad2: u32,
 }
 
 @group(0) @binding(0) var<storage, read_write> soup: array<atomic<u32>>;

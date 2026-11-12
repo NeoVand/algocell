@@ -1,5 +1,6 @@
 // Open the app, choose the free-running world, and take three screenshots (after 1.5 s, 6.5 s and 18.5 s).
 //   node scripts/free-app-look.mjs <app url> <output path prefix> [facing label] [extra seconds]
+// INTERACTION=<label of an option of the Interaction control> chooses another rule.
 // With a facing label (the text of an option of the Facing control) that facing is chosen first;
 // with extra seconds a fourth screenshot is taken that much later.
 import { chromium } from '@playwright/test';
@@ -33,7 +34,9 @@ if (!(await control.isVisible().catch(() => false))) {
 }
 console.log('interaction control visible:', await control.isVisible());
 await control.click();
-await page.getByText('Free-running (no cells, no step budget)').click();
+await page
+	.getByText(process.env.INTERACTION ?? 'Free-running (no cells, no step budget)', { exact: true })
+	.click();
 if (facingLabel) {
 	const facing = page.locator('#facing-rule');
 	await facing.scrollIntoViewIfNeeded();

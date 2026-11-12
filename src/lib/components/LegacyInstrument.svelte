@@ -86,6 +86,8 @@
 	let haltRule = $state<LabSettings['haltRule']>('restart');
 	let turnover = $state(0);
 	let facing = $state<LabSettings['facing']>('any');
+	let reach = $state(256);
+	let gather = $state(4);
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -145,7 +147,9 @@
 			heads,
 			haltRule,
 			turnover,
-			facing
+			facing,
+			reach,
+			gather
 		};
 	}
 
@@ -214,6 +218,8 @@
 		haltRule = next.haltRule;
 		turnover = next.turnover;
 		facing = next.facing;
+		reach = next.reach;
+		gather = next.gather;
 		gridWidth = next.width;
 		gridHeight = next.height;
 		gridType = next.topology;
@@ -1638,6 +1644,18 @@
 			set: (v) => (facing = v as LabSettings['facing'])
 		},
 		{
+			key: 'reach',
+			mode: 'live',
+			get: () => reach,
+			set: (v) => (reach = v as number)
+		},
+		{
+			key: 'gather',
+			mode: 'live',
+			get: () => gather,
+			set: (v) => (gather = v as number)
+		},
+		{
 			key: 'initialCondition',
 			mode: 'grid',
 			get: () => JSON.stringify(initialCondition),
@@ -1788,6 +1806,8 @@
 			haltRule: (values.haltRule ?? 'restart') as LabSettings['haltRule'],
 			turnover: Number(values.turnover ?? 0),
 			facing: (values.facing ?? 'any') as LabSettings['facing'],
+			reach: Number(values.reach ?? 256),
+			gather: Number(values.gather ?? 4),
 			ablation: (values.suppressPatterns ?? applied.ablation) as string[]
 		};
 		stagedInitial = values.initialCondition
@@ -2415,7 +2435,9 @@
 			'heads',
 			'haltRule',
 			'turnover',
-			'facing'
+			'facing',
+			'reach',
+			'gather'
 		] as const) {
 			if (JSON.stringify(worldDraft[key]) === JSON.stringify(previous[key]))
 				Object.assign(patch, { [key]: next[key] });
@@ -2440,12 +2462,15 @@
 	function fitsFree(world: LabSettings): boolean {
 		return world.topology === 'square' && world.length === 16;
 	}
-	const draftBlocksFree = $derived(worldDraft.interaction === 'free' && !fitsFree(worldDraft));
+	// The cell-wise worlds have the same two needs.
+	const needsSheet = (rule: LabSettings['interaction']) =>
+		rule === 'free' || rule === 'neighbourhood' || rule === 'cells';
+	const draftBlocksFree = $derived(needsSheet(worldDraft.interaction) && !fitsFree(worldDraft));
 	async function chooseInteraction(next: LabSettings['interaction']) {
 		if (!engine || machineBusy || checkpointBusy) return;
 		// A running world that can hold the sheet switches live. Another processor is refused by the
 		// engine, which restores the controls and reports why.
-		if (next !== 'free' || applied.isa !== 'z80' || fitsFree(applied)) {
+		if (!needsSheet(next) || applied.isa !== 'z80' || fitsFree(applied)) {
 			interaction = next;
 			await updateMachine();
 			return;
@@ -2454,7 +2479,7 @@
 		const previous = $state.snapshot(worldDraft);
 		worldDraft = {
 			...previous,
-			interaction: 'free',
+			interaction: next,
 			topology: 'square',
 			boundary: previous.topology === 'hex' ? applied.boundary : previous.boundary,
 			length: 16,
@@ -2463,7 +2488,7 @@
 		await startNewWorld();
 		if (machineError) worldDraft = previous;
 		else
-			worldNotice = `Free-running world started at ${applied.width} × ${applied.height}. It needs the square lattice and 16-byte tapes.`;
+			worldNotice = `New world started at ${applied.width} × ${applied.height}. This rule needs the square lattice and 16-byte tapes.`;
 	}
 	function keyboard(event: KeyboardEvent) {
 		keyboardModality = true;
@@ -2751,6 +2776,11 @@
 								options={[
 									{ value: 'overwrite', label: 'Overwrite (standard)' },
 									{ value: 'reversible', label: 'Reversible (now and before)' },
+									{
+										value: 'neighbourhood',
+										label: 'Neighbourhood (each cell rewritten from around it)'
+									},
+									{ value: 'cells', label: 'Free-running cells (one instruction per tick)' },
 									{ value: 'free', label: 'Free-running (no cells, no step budget)' }
 								]}
 								onchange={(value) => void chooseInteraction(value as LabSettings['interaction'])}
@@ -2782,6 +2812,38 @@
 								<p class="control-note">
 									Chance that a cell forgets its previous tape before an event. 100% is the standard
 									rule; 0% is a closed, fully reversible world.
+								</p>
+							</div>
+						{:else if interaction === 'neighbourhood' || interaction === 'cells'}
+							<div class="control-field">
+								<label for="gather">Neighbours gathered</label><InstrumentSelect
+									id="gather"
+									label="Neighbours gathered"
+									value={String(gather)}
+									options={[
+										{ value: '4', label: 'All four' },
+										{ value: '2', label: 'Two' },
+										{ value: '1', label: 'One' }
+									]}
+									onchange={(value) => {
+										gather = Number(value);
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
+								<p class="control-note">
+									{#if interaction === 'neighbourhood'}
+										Every cell has its own processor. At each update it runs the tapes of the cells
+										around it as one program, met in a random order, and keeps only what that
+										program writes into the cell itself. A run ends when the cell is full, at HALT,
+										or after "Steps" instructions if it is caught in a loop. All cells update at
+										once.
+									{:else}
+										The same rule spread over time: every processor does one instruction per tick,
+										reads its neighbours as they are at that tick, and starts afresh when its cell
+										is full, at HALT, or after "Steps" instructions.
+									{/if}
+									Pair attempts, lethal zero and edges are not used; the lattice wraps.
 								</p>
 							</div>
 						{:else if interaction === 'free'}
@@ -2841,6 +2903,25 @@
 								/>
 							</div>
 							<div class="control-field">
+								<label for="reach">Reach</label><InstrumentSelect
+									id="reach"
+									label="Reach"
+									value={String(reach)}
+									options={[
+										{ value: '256', label: '256 × 256 bytes (a whole Z80 address)' },
+										{ value: '128', label: '128 × 128 bytes' },
+										{ value: '64', label: '64 × 64 bytes' },
+										{ value: '32', label: '32 × 32 bytes' },
+										{ value: '16', label: '16 × 16 bytes' }
+									]}
+									onchange={(value) => {
+										reach = Number(value);
+										void updateMachine();
+									}}
+									disabled={machineBusy || checkpointBusy || !engine}
+								/>
+							</div>
+							<div class="control-field">
 								<label for="facing-rule">Facing</label><InstrumentSelect
 									id="facing-rule"
 									label="Facing"
@@ -2882,7 +2963,7 @@
 									checkpointBusy ||
 									!engine ||
 									gridType === 'hex' ||
-									interaction === 'free'}
+									needsSheet(interaction)}
 							/>
 							<p class="control-note">
 								What a cell at the edge meets. Walls turn it inward; the others glue opposite edges,
@@ -3069,7 +3150,7 @@
 							>
 						</div>
 						{#if draftBlocksFree}<p class="control-note">
-								The free-running world needs the square lattice and 16-byte tapes.
+								This rule needs the square lattice and 16-byte tapes.
 							</p>{/if}
 						<details class="shell-disclosure">
 							<summary>Encounter reset</summary>
@@ -5181,7 +5262,11 @@ graph TD
 					? ` · reversible ${Math.round(applied.dissipation * 100)}%`
 					: applied.interaction === 'free'
 						? ' · free-running'
-						: ''}{boundaryStatus ? ` · ${boundaryStatus}` : ''}</strong
+						: applied.interaction === 'neighbourhood'
+							? ' · neighbourhood'
+							: applied.interaction === 'cells'
+								? ' · free-running cells'
+								: ''}{boundaryStatus ? ` · ${boundaryStatus}` : ''}</strong
 			></button
 		>
 	</footer>

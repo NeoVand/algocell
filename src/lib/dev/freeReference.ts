@@ -17,6 +17,7 @@ import {
 	HEAD_ORIGIN_Y,
 	HEAD_RNG,
 	HEAD_WORDS,
+	addressOffset,
 	chanceThreshold,
 	faceOffset,
 	facingFromNeighbours
@@ -46,6 +47,8 @@ export interface ReferenceRules {
 	turnover: number;
 	/** Chance per instruction of one random byte. */
 	mutation: number;
+	/** Side of the square a head can address, in bytes (see REACHES); 256 if omitted. */
+	reach?: number;
 	/** Which ways a landing head may face (see FACING_MASKS). */
 	facing: keyof typeof FACING_MASKS;
 }
@@ -74,8 +77,9 @@ export interface ReferenceWorld {
 	/**
 	 * Ticks on which some head fetched a repeating block input or output instruction (INIR, OTIR,
 	 * INDR, OTDR: ED B2, B3, BA, BB). Zilion's 0.3 core adjusts H and P/V on a repeating step, as its
-	 * test vectors require; z80-emulator does not. A comparison is only meaningful up to the first
-	 * such tick as well.
+	 * test vectors require; z80-emulator does not. The same field records the first LD A,R
+	 * (ED 5F), where z80-emulator returns the refresh register with bit 3 cleared. A comparison is
+	 * only meaningful up to the first such tick as well.
 	 */
 	firstRepeatIoTick: number | null;
 	ticks: number;
@@ -136,7 +140,7 @@ export function createReference(
 		place(address: number): number;
 	}
 	const machines: Machine[] = [];
-	const signed = (byte: number) => (byte >= 128 ? byte - 256 : byte);
+	const bits = Math.log2(rules.reach ?? 256);
 	const wrap = (v: number, n: number) => ((v % n) + n) % n;
 	const blank = (z80: Z80) => {
 		z80.reset();
@@ -156,11 +160,7 @@ export function createReference(
 			// An address is an offset from where the head landed, in the head's own frame: the low byte
 			// counts bytes along the way it faces, the high byte counts lines across, each a signed byte.
 			place(address: number) {
-				const [dx, dy] = faceOffset(
-					machine.facing,
-					signed(address & 0xff),
-					signed((address >> 8) & 0xff)
-				);
+				const [dx, dy] = faceOffset(machine.facing, ...addressOffset(address, bits));
 				return wrap(machine.oy + dy, sheetH) * sheetW + wrap(machine.ox + dx, sheetW);
 			}
 		};
@@ -204,9 +204,16 @@ export function createReference(
 			const first = world.sheet[machine.place(pc)];
 			if ((first === 0xdd || first === 0xfd) && world.firstIndexPrefixTick === null)
 				world.firstIndexPrefixTick = world.ticks;
-			if (first === 0xed && world.firstRepeatIoTick === null) {
+			if (world.firstRepeatIoTick === null) {
 				const second = world.sheet[machine.place((pc + 1) & 0xffff)];
-				if (second === 0xb2 || second === 0xb3 || second === 0xba || second === 0xbb)
+				if (
+					first === 0xed &&
+					(second === 0xb2 ||
+						second === 0xb3 ||
+						second === 0xba ||
+						second === 0xbb ||
+						second === 0x5f)
+				)
 					world.firstRepeatIoTick = world.ticks;
 			}
 			log = new Map();

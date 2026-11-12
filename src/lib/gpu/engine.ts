@@ -27,8 +27,16 @@ import {
 	HEAD_WORDS,
 	LOG_WORDS,
 	mutationChance,
-	NO_CLAIM
+	NO_CLAIM,
+	reachBits
 } from './free';
+import {
+	AROUND_MODES,
+	aroundMutationChance,
+	createAroundShader,
+	createCellHeads,
+	isAround
+} from './around';
 import { suppressionMasks, emptySuppression, type SuppressSets } from '$lib/z80-opcodes';
 import { ORIGINAL_SETTINGS, validateSettings, createInitialSoup } from './machine';
 import { ablationMasks } from '../lab/ablation';
@@ -90,13 +98,22 @@ export class GPUEngine {
 	private freeParamsBuffer: GPUBuffer | null = null;
 	private freeHeads = 0;
 	private freeSignature = '';
-	private freeParams = new Uint32Array(8);
+	private freeParams = new Uint32Array(12);
 	/**
 	 * Free-running world: ticks queued by one `simulateStep`. A tick is only a few thousand
 	 * instructions, so the app's frame loop asks for them in bunches. It changes nothing about the
 	 * world, only how often the screen is redrawn per tick.
 	 */
 	freeTicksPerStep = 32;
+	// The two cell-wise worlds (interactions `neighbourhood` and `cells`): one processor per cell.
+	private aroundModule: GPUShaderModule | null = null;
+	private aroundPipeline: GPUComputePipeline | null = null;
+	private aroundBindGroup: GPUBindGroup | null = null;
+	private cellHeadsBuffer: GPUBuffer | null = null;
+	private nextSoupBuffer: GPUBuffer | null = null;
+	private aroundParamsBuffer: GPUBuffer | null = null;
+	private aroundSignature = '';
+	private aroundParams = new Uint32Array(8);
 	private pairsBuffer!: GPUBuffer;
 	private pairDataBuffer!: GPUBuffer;
 	private writeCountsBuffer!: GPUBuffer;
@@ -580,11 +597,128 @@ export class GPUEngine {
 			]
 		});
 		this.setupFree();
+		this.setupAround();
 	}
 
 	/** Instructions per counted update: every head once (a tick), or every pair for its full budget. */
 	get opsPerUpdate(): number {
+		if (this.around)
+			return this.cellCount * (this.machineSettings.interaction === 'cells' ? 1 : this._z80Steps);
 		return this.free ? this.freeHeads : this._pairCount * this._z80Steps;
+	}
+
+	private get around(): boolean {
+		return isAround(this.machineSettings.interaction);
+	}
+
+	private dropAround(): void {
+		this.cellHeadsBuffer?.destroy();
+		this.nextSoupBuffer?.destroy();
+		this.aroundParamsBuffer?.destroy();
+		this.cellHeadsBuffer = this.nextSoupBuffer = this.aroundParamsBuffer = null;
+		this.aroundPipeline = null;
+		this.aroundBindGroup = null;
+		this.aroundModule = null;
+		this.aroundSignature = '';
+	}
+
+	/**
+	 * Build the cell-wise worlds: one processor per cell, a second lattice to write the next tapes
+	 * into, and the one pass that updates every cell from the old lattice.
+	 */
+	private setupAround(): void {
+		if (!this.around) {
+			this.dropAround();
+			return;
+		}
+		const dev = this.device;
+		const settings = this.settings;
+		const signature = [
+			this.soupWidth,
+			this.soupHeight,
+			settings.interaction,
+			settings.gather,
+			settings.compat,
+			settings.variant,
+			this.lifecycle.bufferRevision
+		].join('|');
+		const keep = signature === this.aroundSignature && this.cellHeadsBuffer !== null;
+		if (!keep) {
+			this.dropAround();
+			const heads = createCellHeads(settings);
+			this.cellHeadsBuffer = dev.createBuffer({
+				size: heads.byteLength,
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+			});
+			dev.queue.writeBuffer(this.cellHeadsBuffer, 0, heads);
+			this.nextSoupBuffer = dev.createBuffer({
+				size: this.cellCount * 16,
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+			});
+			this.aroundParamsBuffer = dev.createBuffer({
+				size: 32,
+				usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+			});
+			this.aroundSignature = signature;
+		}
+		const module = dev.createShaderModule({ code: createAroundShader(settings) });
+		this.aroundModule = module;
+		const layout = dev.createBindGroupLayout({
+			entries: [
+				{ binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+				{ binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } }
+			]
+		});
+		this.aroundPipeline = dev.createComputePipeline({
+			layout: dev.createPipelineLayout({ bindGroupLayouts: [layout] }),
+			compute: { module, entryPoint: 'around_update' }
+		});
+		this.aroundBindGroup = dev.createBindGroup({
+			layout,
+			entries: [
+				{ binding: 0, resource: { buffer: this.soupBuffer } },
+				{ binding: 1, resource: { buffer: this.cellHeadsBuffer! } },
+				{ binding: 2, resource: { buffer: this.nextSoupBuffer! } },
+				{ binding: 3, resource: { buffer: this.aroundParamsBuffer! } }
+			]
+		});
+	}
+
+	/**
+	 * Cell-wise worlds: queue `updates` updates. In one update every cell's processor reads the old
+	 * lattice and writes its own cell's next tape; then the next lattice becomes the lattice. Under
+	 * `neighbourhood` an update is a whole run per cell, under `cells` one instruction per cell.
+	 */
+	simulateUpdates(updates: number): void {
+		if (!this.around || !this.aroundPipeline) throw new Error('This world is not cell-wise.');
+		const rule = this.machineSettings.interaction as keyof typeof AROUND_MODES;
+		this.aroundParams.set([
+			this.soupWidth,
+			this.soupHeight,
+			this.machineSettings.gather,
+			this._z80Steps,
+			chanceThreshold(aroundMutationChance(rule, this._noiseExp)),
+			AROUND_MODES[rule],
+			0,
+			0
+		]);
+		this.device.queue.writeBuffer(this.aroundParamsBuffer!, 0, this.aroundParams);
+		const encoder = this.device.createCommandEncoder();
+		const groups = Math.ceil(this.cellCount / 64);
+		for (let t = 0; t < updates; t++) {
+			const pass = encoder.beginComputePass();
+			pass.setPipeline(this.aroundPipeline);
+			pass.setBindGroup(0, this.aroundBindGroup!);
+			pass.dispatchWorkgroups(groups);
+			pass.end();
+			encoder.copyBufferToBuffer(this.nextSoupBuffer!, 0, this.soupBuffer, 0, this.cellCount * 16);
+		}
+		this.device.queue.submit([encoder.finish()]);
+		this.batchIndex += updates;
+		const ops = this.opsPerUpdate * updates;
+		this.device.queue.onSubmittedWorkDone().then(() => this.onStepDone(ops));
 	}
 
 	private get free(): boolean {
@@ -646,7 +780,7 @@ export class GPUEngine {
 				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
 			});
 			this.freeParamsBuffer = dev.createBuffer({
-				size: 32,
+				size: 48,
 				usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 			});
 			this.freeSignature = signature;
@@ -712,7 +846,8 @@ export class GPUEngine {
 			chanceThreshold(this.machineSettings.turnover),
 			chanceThreshold(mutationChance(this._noiseExp)),
 			FACING_MASKS[this.machineSettings.facing],
-			FACING_RULES[this.machineSettings.facing]
+			FACING_RULES[this.machineSettings.facing],
+			reachBits(this.machineSettings.reach)
 		]);
 		this.device.queue.writeBuffer(this.freeParamsBuffer!, 0, this.freeParams);
 		const encoder = this.device.createCommandEncoder();
@@ -734,14 +869,15 @@ export class GPUEngine {
 
 	/** Free-running world: every head's processor state, landing site and counters (HEAD_WORDS each). */
 	async readHeads(): Promise<Uint32Array> {
-		if (!this.headsBuffer) throw new Error('This world has no heads.');
-		const size = this.headsBuffer.size;
+		const source = this.around ? this.cellHeadsBuffer : this.headsBuffer;
+		if (!source) throw new Error('This world has no heads.');
+		const size = source.size;
 		const staging = this.device.createBuffer({
 			size,
 			usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
 		});
 		const encoder = this.device.createCommandEncoder();
-		encoder.copyBufferToBuffer(this.headsBuffer, 0, staging, 0, size);
+		encoder.copyBufferToBuffer(source, 0, staging, 0, size);
 		this.device.queue.submit([encoder.finish()]);
 		await staging.mapAsync(GPUMapMode.READ);
 		const data = new Uint32Array(staging.getMappedRange().slice(0));
@@ -777,9 +913,10 @@ export class GPUEngine {
 
 	/** Free-running world: replace every head (for tests and restored states). */
 	writeHeads(data: Uint32Array<ArrayBuffer>): void {
-		if (!this.headsBuffer || data.byteLength !== this.headsBuffer.size)
+		const target = this.around ? this.cellHeadsBuffer : this.headsBuffer;
+		if (!target || data.byteLength !== target.size)
 			throw new Error('Head data does not match this world.');
-		this.device.queue.writeBuffer(this.headsBuffer, 0, data);
+		this.device.queue.writeBuffer(target, 0, data);
 	}
 
 	private initSoup(): void {
@@ -807,6 +944,8 @@ export class GPUEngine {
 		this.batchIndex = 0;
 		this.restBefore();
 		this.resetHeads();
+		if (this.cellHeadsBuffer)
+			this.device.queue.writeBuffer(this.cellHeadsBuffer, 0, createCellHeads(this.settings));
 	}
 
 	/** Put every cell at rest: its stored past becomes its present tape (reversible rule). */
@@ -889,9 +1028,12 @@ export class GPUEngine {
 
 	private async checkShader(): Promise<void> {
 		const infos = await Promise.all(
-			[this.simModule, ...this.visualModules, ...(this.freeModule ? [this.freeModule] : [])].map(
-				(module) => module.getCompilationInfo()
-			)
+			[
+				this.simModule,
+				...this.visualModules,
+				...(this.freeModule ? [this.freeModule] : []),
+				...(this.aroundModule ? [this.aroundModule] : [])
+			].map((module) => module.getCompilationInfo())
 		);
 		const errors = infos.flatMap((info) =>
 			info.messages.filter((message) => message.type === 'error')
@@ -1119,6 +1261,12 @@ export class GPUEngine {
 	simulateStep(): void {
 		if (this.free && this.freePipelines) {
 			this.simulateTicks(this.freeTicksPerStep);
+			return;
+		}
+		if (this.around && this.aroundPipeline) {
+			this.simulateUpdates(
+				this.machineSettings.interaction === 'cells' ? this.freeTicksPerStep : 1
+			);
 			return;
 		}
 		const noiseCoef = 1 / Math.pow(2, this._noiseExp);
@@ -1773,6 +1921,7 @@ struct Patch { word: u32, shift: u32, value: u32, cell: u32 }
 		this.traceImageBuffer?.destroy();
 		this.byteCountsStagingBuffer?.destroy();
 		this.dropFree();
+		this.dropAround();
 		this.soupStagingBuffer?.destroy();
 		this.cellHashBuffer?.destroy();
 		this.fetchStatusBuffer?.destroy();

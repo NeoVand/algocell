@@ -56,7 +56,7 @@ export function validateSettings(settings: LabSettings): void {
 		settings.lethalProbability > 1
 	)
 		throw new Error('Lethality must be between zero and one.');
-	if (!['overwrite', 'reversible', 'free'].includes(settings.interaction))
+	if (!['overwrite', 'reversible', 'free', 'neighbourhood', 'cells'].includes(settings.interaction))
 		throw new Error('Unknown interaction rule.');
 	if (!Number.isFinite(settings.heads) || settings.heads <= 0 || settings.heads > 4)
 		throw new Error('Heads per tile must be above zero and at most four.');
@@ -66,6 +66,15 @@ export function validateSettings(settings: LabSettings): void {
 		throw new Error('The restart chance must be at least zero and below one.');
 	if (!['any', 'written', 'bytes', 'rows', 'two-axes', 'same'].includes(settings.facing))
 		throw new Error('Unknown facing rule.');
+	if (![16, 32, 64, 128, 256].includes(settings.reach))
+		throw new Error('The reach must be 16, 32, 64, 128 or 256 bytes.');
+	if (![1, 2, 4].includes(settings.gather))
+		throw new Error('A cell gathers one, two or four of its neighbours.');
+	if (settings.interaction === 'neighbourhood' || settings.interaction === 'cells') {
+		if (settings.isa !== 'z80') throw new Error('This world runs the Z80 only.');
+		if (settings.topology !== 'square' || settings.length !== 16)
+			throw new Error('This world needs the square lattice with 16-byte tapes.');
+	}
 	if (settings.interaction === 'free') {
 		if (settings.isa !== 'z80') throw new Error('The free-running world runs the Z80 only.');
 		// The sheet is the lattice's own bytes, each 16-byte tile drawn as four rows of four.
@@ -288,5 +297,7 @@ export const ORIGINAL_SETTINGS: LabSettings = {
 	heads: 0.25,
 	haltRule: 'restart',
 	turnover: 0,
-	facing: 'any'
+	facing: 'any',
+	reach: 256,
+	gather: 4
 };

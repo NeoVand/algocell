@@ -69,6 +69,17 @@ export interface LabSettings {
 	 * between; these three build a direction into the rule and exist for comparison.
 	 */
 	facing: Facing;
+	/**
+	 * Free-running world only: the side, in bytes, of the square of sheet a head can address around
+	 * its landing byte (16, 32, 64, 128 or 256). 256 uses a whole Z80 address. With less, the square
+	 * is the head's whole memory, wrapped, as the two tapes are in the cell worlds.
+	 */
+	reach: number;
+	/**
+	 * `neighbourhood` and `cells` only: how many of a cell's four neighbours supply the program its
+	 * processor runs (1, 2 or 4).
+	 */
+	gather: number;
 }
 
 /**
@@ -76,7 +87,7 @@ export interface LabSettings {
  * budget. Processors land on the shared sheet of bytes and execute one instruction per tick until
  * the program they are running halts.
  */
-export type InteractionRule = 'overwrite' | 'reversible' | 'free';
+export type InteractionRule = 'overwrite' | 'reversible' | 'free' | 'neighbourhood' | 'cells';
 export type HaltRule = 'restart' | 'wait' | 'pass';
 export type Facing = 'any' | 'written' | 'bytes' | 'rows' | 'two-axes' | 'same';
 export type BoundaryRule = 'reflect' | 'cylinder' | 'torus' | 'mobius' | 'klein' | 'projective';
@@ -96,7 +107,15 @@ export const BOUNDARY_RULES: BoundaryRule[] = [
 export function withInteractionDefaults(
 	settings: Omit<
 		LabSettings,
-		'interaction' | 'dissipation' | 'boundary' | 'heads' | 'haltRule' | 'turnover' | 'facing'
+		| 'interaction'
+		| 'dissipation'
+		| 'boundary'
+		| 'heads'
+		| 'haltRule'
+		| 'turnover'
+		| 'facing'
+		| 'reach'
+		| 'gather'
 	> &
 		Partial<LabSettings>
 ): LabSettings {
@@ -108,7 +127,9 @@ export function withInteractionDefaults(
 		heads: settings.heads ?? 0.25,
 		haltRule: settings.haltRule ?? 'restart',
 		turnover: settings.turnover ?? 0,
-		facing: settings.facing ?? 'any'
+		facing: settings.facing ?? 'any',
+		reach: settings.reach ?? 256,
+		gather: settings.gather ?? 4
 	};
 }
 
@@ -147,7 +168,9 @@ export const DEFAULT_SETTINGS: LabSettings = {
 	heads: 0.25,
 	haltRule: 'restart',
 	turnover: 0,
-	facing: 'any'
+	facing: 'any',
+	reach: 256,
+	gather: 4
 };
 
 /** Unknown, no partner entry, partner entry in the last initiating encounter. */

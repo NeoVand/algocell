@@ -48,6 +48,8 @@ export const SETTING_KEYS = [
 	'haltRule',
 	'turnover',
 	'facing',
+	'reach',
+	'gather',
 	'initialCondition'
 ] as const;
 

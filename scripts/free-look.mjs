@@ -6,6 +6,7 @@
 //   random; written: the way the byte it lands on was written; bytes: towards its largest neighbour;
 //   same: all read rightwards; rows: rightwards or leftwards, stack above or below; two-axes:
 //   rightwards or downwards)
+//   reach=256 (side of the square a processor can address: 16, 32, 64, 128 or 256)
 //   mutation=4 (exponent; 31 is off) ticks=20000 seed=6 start=random|halt-with-pusher|zero
 //   marks=0,1000,5000,20000 (ticks at which to save)
 //   start=pattern fill=01c5 block=c501c50118f8 : the sheet tiled with `fill` (hex), and a 32 x 16-byte
@@ -27,6 +28,7 @@ const q = {
 	halt: 'restart',
 	turnover: 0,
 	facing: 'any',
+	reach: 256,
 	mutation: 4,
 	ticks: 20000,
 	seed: 6,
@@ -75,6 +77,7 @@ const result = await page.evaluate(async (q) => {
 		haltRule: q.halt,
 		turnover: q.turnover,
 		facing: q.facing,
+		reach: q.reach,
 		mutationExponent: q.mutation
 	};
 	await engine.configure(settings, { kind: 'random' });
@@ -127,6 +130,11 @@ const result = await page.evaluate(async (q) => {
 			for (let x = c - half; x < c + half; x++)
 				sheet[y * w + x] = (q.patch === 'checker' ? x + y : x) & 1 ? 0xc5 : 0x01;
 		engine.writeSoupData(fromSheet(sheet));
+		// The patch counts as written by processors reading rightwards with the stack above.
+		const grain = new Uint32Array(await engine.readGrain());
+		for (let y = c - half; y < c + half; y++)
+			for (let x = c - half; x < c + half; x++) grain[y * w + x] = 0;
+		engine.writeGrain(grain);
 	}
 	const b64 = (u8) => {
 		let t = '';
