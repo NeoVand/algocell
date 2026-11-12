@@ -1,0 +1,183 @@
+{
+ "q": {
+  "rule": "neighbourhood",
+  "gather": 4,
+  "steps": 128,
+  "dissipation": 0.5,
+  "mutation": 4,
+  "width": 96,
+  "height": 96,
+  "seed": 1,
+  "updates": 3000,
+  "marks": [
+   0,
+   500,
+   3000
+  ],
+  "patch": 0
+ },
+ "rows": [
+  {
+   "update": 0,
+   "seconds": 0,
+   "entropy": 7.999,
+   "zero": 0.0039,
+   "heat": 0,
+   "distinctTapes": 9216,
+   "topTapes": [
+    [
+     "c15c028967ec8e655e5532fb0bc942ee",
+     0.0001
+    ],
+    [
+     "b9b501d180021590a53c36d775852712",
+     0.0001
+    ],
+    [
+     "a83d7e3596676174614f5601fe8bcf14",
+     0.0001
+    ],
+    [
+     "c05daa4b8aa2d790a8574c6f3b4a79a5",
+     0.0001
+    ]
+   ],
+   "sameTapeAsEast": 0,
+   "sameTapeAsSouth": 0,
+   "topBytes": [
+    [
+     "5a",
+     0.0043
+    ],
+    [
+     "c9",
+     0.0043
+    ],
+    [
+     "45",
+     0.0043
+    ],
+    [
+     "4f",
+     0.0043
+    ],
+    [
+     "a3",
+     0.0042
+    ]
+   ],
+   "endedByHalt": 0,
+   "endedByFullCell": 0,
+   "endedByBudget": 0,
+   "meanSteps": 0
+  },
+  {
+   "update": 500,
+   "seconds": 0.56,
+   "entropy": 3.533,
+   "zero": 0.0154,
+   "heat": 0.4415,
+   "distinctTapes": 1544,
+   "topTapes": [
+    [
+     "e1e3e1e3e1e3e1e3e1e3e1e3e1e3e1e3",
+     0.4417
+    ],
+    [
+     "e2fee2fee2fee2fee2fee2fee2fee2fe",
+     0.1718
+    ],
+    [
+     "18fc18fc18fc18fc18fc18fc18fc18fc",
+     0.0327
+    ],
+    [
+     "207c207c207c207c207c207c207c207c",
+     0.0315
+    ]
+   ],
+   "sameTapeAsEast": 0.3178,
+   "sameTapeAsSouth": 0.3214,
+   "topBytes": [
+    [
+     "e1",
+     0.2614
+    ],
+    [
+     "e3",
+     0.2536
+    ],
+    [
+     "e2",
+     0.123
+    ],
+    [
+     "fe",
+     0.108
+    ],
+    [
+     "fc",
+     0.0287
+    ]
+   ],
+   "endedByHalt": 0.0003,
+   "endedByFullCell": 0.6918,
+   "endedByBudget": 0.3078,
+   "meanSteps": 100.1
+  },
+  {
+   "update": 3000,
+   "seconds": 2.41,
+   "entropy": 3.526,
+   "zero": 0.0097,
+   "heat": 0.4451,
+   "distinctTapes": 1897,
+   "topTapes": [
+    [
+     "e1e3e1e3e1e3e1e3e1e3e1e3e1e3e1e3",
+     0.3916
+    ],
+    [
+     "c37ec37ec37ec37ec37ec37ec37ec37e",
+     0.0798
+    ],
+    [
+     "e2fee2fee2fee2fee2fee2fee2fee2fe",
+     0.0668
+    ],
+    [
+     "c3fec3fec3fec3fec3fec3fec3fec3fe",
+     0.0477
+    ]
+   ],
+   "sameTapeAsEast": 0.2434,
+   "sameTapeAsSouth": 0.2399,
+   "topBytes": [
+    [
+     "e1",
+     0.2417
+    ],
+    [
+     "e3",
+     0.2365
+    ],
+    [
+     "c3",
+     0.1087
+    ],
+    [
+     "e2",
+     0.0982
+    ],
+    [
+     "7e",
+     0.0836
+    ]
+   ],
+   "endedByHalt": 0.0002,
+   "endedByFullCell": 0.6355,
+   "endedByBudget": 0.3643,
+   "meanSteps": 102
+  }
+ ]
+}

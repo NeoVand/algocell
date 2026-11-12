@@ -19,7 +19,7 @@ import {
 	HEAD_WORDS,
 	chanceThreshold
 } from '../gpu/free';
-import { NEIGHBOUR_STEPS, STOP, neighbourMet } from '../gpu/around';
+import { AROUND_RNG, NEIGHBOUR_STEPS, STOP, neighbourMet } from '../gpu/around';
 import { mix32 } from './freeReference';
 
 export interface AroundRules {
@@ -29,10 +29,17 @@ export interface AroundRules {
 	budget: number;
 	/** Chance of one random byte: per update (`neighbourhood`) or per instruction (`cells`). */
 	mutation: number;
+	/** `neighbourhood`: chance that a cell forgets its previous tape first (1 if omitted). */
+	dissipation?: number;
+	/** `neighbourhood`: the update undoes an earlier one (the random words are drawn in reverse). */
+	backward?: boolean;
 }
 
 export interface AroundCell {
+	/** The cell's tape after the update. */
 	tape: Uint8Array;
+	/** The cell's remembered tape after the update (`neighbourhood`: its tape before it). */
+	before: Uint8Array;
 	flagged: boolean;
 	/** `neighbourhood`: instructions executed and why the run ended. */
 	steps: number;
@@ -52,16 +59,21 @@ export function referenceUpdate(
 	tapes: Uint8Array,
 	heads: Uint32Array,
 	state: Record<string, number>,
-	rules: AroundRules
+	rules: AroundRules,
+	before?: Uint8Array
 ): AroundCell[] {
+	const dissipation = rules.dissipation ?? 1;
+	// The engine's threshold for a chance of forgetting.
+	const forgetBelow = Math.min(0xffffffff, Math.floor(dissipation * 4294967296));
 	const mutation = chanceThreshold(rules.mutation);
 	const half = rules.gather * 16;
 	const out: AroundCell[] = [];
 	for (let c = 0; c < width * height; c++) {
 		const o = c * HEAD_WORDS;
-		const counter = (heads[o + HEAD_RNG] + FREE_RNG.step) >>> 0;
-		const random = mix32(counter);
 		const fresh = rules.rule === 'neighbourhood';
+		const counter =
+			fresh && rules.backward ? heads[o + HEAD_RNG] : (heads[o + HEAD_RNG] + FREE_RNG.step) >>> 0;
+		const random = mix32(counter);
 		const drawn = mix32((random ^ FREE_RNG.face) >>> 0) & 7;
 		let order = fresh ? drawn : heads[o + HEAD_FACING] & 7;
 
@@ -175,11 +187,23 @@ export function referenceUpdate(
 				order = drawn;
 			}
 		}
+		// The two-layer law: now' = out xor now xor before, before' = now; a cell that forgets first
+		// (before := now) gets now' = out. Free-running cells keep the plain rule.
+		const now = tapes.subarray(c * 16, c * 16 + 16);
+		const forgets =
+			!fresh ||
+			!before ||
+			forgetBelow === 0xffffffff ||
+			mix32((random ^ AROUND_RNG.forget) >>> 0) < forgetBelow;
+		const next = new Uint8Array(16);
+		for (let i = 0; i < 16; i++)
+			next[i] = tape[i] ^ now[i] ^ (forgets ? now[i] : before![c * 16 + i]);
 		if (mutation !== 0 && mix32((random ^ FREE_RNG.mutate) >>> 0) < mutation)
-			tape[mix32((random ^ FREE_RNG.mutatePlace) >>> 0) & 15] =
+			next[mix32((random ^ FREE_RNG.mutatePlace) >>> 0) & 15] =
 				mix32((random ^ FREE_RNG.mutateValue) >>> 0) & 0xff;
 		out.push({
-			tape,
+			tape: next,
+			before: fresh ? now.slice() : (before?.slice(c * 16, c * 16 + 16) ?? now.slice()),
 			flagged,
 			steps,
 			reason,

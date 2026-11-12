@@ -2,6 +2,7 @@
 // numbers. Needs the dev server on 5176.
 //   node scripts/around-look.mjs <out dir> key=value ...
 // Keys (defaults): rule=neighbourhood|cells gather=4 steps=128 (loop cut-off, neighbourhood only)
+//   dissipation=1 (neighbourhood: chance that a cell forgets its previous tape; 0 is a closed world)
 //   mutation=4 (exponent; 31 is off) width=96 height=96 (cells) seed=1 updates=2000
 //   marks=0,500,2000 (updates at which to save) patch=0 (side, in cells, of a square of the pusher
 //   tape `01 c5 ...` placed in the middle at the start)
@@ -16,6 +17,7 @@ const q = {
 	rule: 'neighbourhood',
 	gather: 4,
 	steps: 128,
+	dissipation: 1,
 	mutation: 4,
 	width: 96,
 	height: 96,
@@ -60,6 +62,7 @@ const result = await page.evaluate(async (q) => {
 		interaction: q.rule,
 		gather: q.gather,
 		steps: q.steps,
+		dissipation: q.dissipation,
 		mutationExponent: q.mutation
 	};
 	await engine.configure(settings, { kind: 'random' });
@@ -94,6 +97,9 @@ const result = await page.evaluate(async (q) => {
 		const seconds = (performance.now() - t0) / 1000;
 		const tapes = await engine.readSoupData();
 		const heads = await engine.readHeads();
+		const remembered = await engine.readBeforeData();
+		let heat = 0;
+		for (let i = 0; i < tapes.length; i++) if (tapes[i] !== remembered[i]) heat++;
 		const hist = new Float64Array(256);
 		for (const v of tapes) hist[v]++;
 		let entropy = 0;
@@ -135,6 +141,8 @@ const result = await page.evaluate(async (q) => {
 			seconds: +seconds.toFixed(2),
 			entropy: +entropy.toFixed(3),
 			zero: +(hist[0] / tapes.length).toFixed(4),
+			// Share of bytes that differ between a cell's tape and the tape it remembers.
+			heat: +(heat / tapes.length).toFixed(4),
 			distinctTapes: seen.size,
 			topTapes: top.map(([k, n]) => [k, +(n / cells).toFixed(4)]),
 			sameTapeAsEast: +(sameEast / cells).toFixed(4),

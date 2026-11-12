@@ -88,6 +88,8 @@
 	let facing = $state<LabSettings['facing']>('any');
 	let reach = $state(256);
 	let gather = $state(4);
+	// Neighbourhood rule: whether the engine is undoing earlier updates (read back every frame).
+	let timeBackward = $state(false);
 	let machineBusy = $state(false);
 	let observationBusy = $state(false);
 	let checkpointBusy = $state(false);
@@ -752,6 +754,7 @@
 			frameCount++;
 			if (frameCount % 15 === 0) {
 				epoch = engine.batchCount;
+				timeBackward = engine.runsBackward;
 				opsPerSec = engine.opsPerSec;
 			}
 
@@ -2846,6 +2849,50 @@
 									Pair attempts, lethal zero and edges are not used; the lattice wraps.
 								</p>
 							</div>
+							{#if interaction === 'neighbourhood'}
+								<div class="control-field">
+									<div class="label-row">
+										<label for="dissipation">Dissipation</label><output
+											>{Math.round(dissipation * 100)}%</output
+										>
+									</div>
+									<input
+										id="dissipation"
+										aria-label="Dissipation"
+										type="range"
+										min="0"
+										max="1"
+										step="0.01"
+										bind:value={dissipation}
+										onchange={() => void updateMachine()}
+										disabled={machineBusy || checkpointBusy || !engine}
+									/>
+									<p class="control-note">
+										Every cell also remembers the tape it had one update ago, and the change its
+										program makes is applied on top of that remembered tape. Dissipation is the
+										chance that a cell forgets first. 100% is the plain rule; 0% is a closed world
+										that can be run backwards exactly (with mutation off).
+									</p>
+								</div>
+								<div class="control-field">
+									<button
+										type="button"
+										id="reverse-time"
+										class="quiet-button"
+										onclick={() => {
+											if (engine) timeBackward = engine.reverseTime();
+										}}
+										disabled={machineBusy || checkpointBusy || !engine}
+									>
+										{timeBackward ? 'Run time forwards' : 'Run time backwards'}
+									</button>
+									<p class="control-note">
+										{timeBackward
+											? 'Running backwards: each update undoes an earlier one, and the world stops where this rule began.'
+											: 'Exchanges the two layers and replays the random choices in reverse.'}
+									</p>
+								</div>
+							{/if}
 						{:else if interaction === 'free'}
 							<div class="control-field">
 								<label for="head-density">Heads</label><InstrumentSelect
@@ -5263,7 +5310,7 @@ graph TD
 					: applied.interaction === 'free'
 						? ' · free-running'
 						: applied.interaction === 'neighbourhood'
-							? ' · neighbourhood'
+							? ` · neighbourhood${applied.dissipation < 1 ? ` ${Math.round(applied.dissipation * 100)}%` : ''}${timeBackward ? ' · backwards' : ''}`
 							: applied.interaction === 'cells'
 								? ' · free-running cells'
 								: ''}{boundaryStatus ? ` · ${boundaryStatus}` : ''}</strong

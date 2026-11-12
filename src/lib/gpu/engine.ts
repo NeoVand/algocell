@@ -114,6 +114,10 @@ export class GPUEngine {
 	private aroundParamsBuffer: GPUBuffer | null = null;
 	private aroundSignature = '';
 	private aroundParams = new Uint32Array(8);
+	/** Neighbourhood rule: whether updates undo earlier ones (see reverseTime). */
+	private timeBackward = false;
+	/** The update count at which the neighbourhood rule last started from rest. */
+	private aroundOrigin = 0;
 	private pairsBuffer!: GPUBuffer;
 	private pairDataBuffer!: GPUBuffer;
 	private writeCountsBuffer!: GPUBuffer;
@@ -653,7 +657,7 @@ export class GPUEngine {
 			dev.queue.writeBuffer(this.cellHeadsBuffer, 0, heads);
 			this.nextSoupBuffer = dev.createBuffer({
 				size: this.cellCount * 16,
-				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
 			});
 			this.aroundParamsBuffer = dev.createBuffer({
 				size: 32,
@@ -668,7 +672,8 @@ export class GPUEngine {
 				{ binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
 				{ binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-				{ binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } }
+				{ binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+				{ binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
 			]
 		});
 		this.aroundPipeline = dev.createComputePipeline({
@@ -681,9 +686,34 @@ export class GPUEngine {
 				{ binding: 0, resource: { buffer: this.soupBuffer } },
 				{ binding: 1, resource: { buffer: this.cellHeadsBuffer! } },
 				{ binding: 2, resource: { buffer: this.nextSoupBuffer! } },
-				{ binding: 3, resource: { buffer: this.aroundParamsBuffer! } }
+				{ binding: 3, resource: { buffer: this.aroundParamsBuffer! } },
+				{ binding: 4, resource: { buffer: this.beforeBuffer } }
 			]
 		});
+	}
+
+	/** Neighbourhood rule: true while updates undo earlier ones. */
+	get runsBackward(): boolean {
+		return this.timeBackward;
+	}
+
+	/**
+	 * Neighbourhood rule: turn time round. The two layers change places and the random words are
+	 * drawn in the opposite order from here on, so with dissipation 0, mutation off and nothing else
+	 * changed, each update now undoes one earlier update exactly. Running backwards stops at the
+	 * update where the rule started from rest. Calling it again turns time forwards.
+	 */
+	reverseTime(): boolean {
+		if (this.machineSettings.interaction !== 'neighbourhood' || !this.nextSoupBuffer)
+			throw new Error('Only the neighbourhood rule can be run backwards.');
+		const bytes = this.cellCount * 16;
+		const encoder = this.device.createCommandEncoder();
+		encoder.copyBufferToBuffer(this.soupBuffer, 0, this.nextSoupBuffer, 0, bytes);
+		encoder.copyBufferToBuffer(this.beforeBuffer, 0, this.soupBuffer, 0, bytes);
+		encoder.copyBufferToBuffer(this.nextSoupBuffer, 0, this.beforeBuffer, 0, bytes);
+		this.device.queue.submit([encoder.finish()]);
+		this.timeBackward = !this.timeBackward;
+		return this.timeBackward;
 	}
 
 	/**
@@ -694,6 +724,13 @@ export class GPUEngine {
 	simulateUpdates(updates: number): void {
 		if (!this.around || !this.aroundPipeline) throw new Error('This world is not cell-wise.');
 		const rule = this.machineSettings.interaction as keyof typeof AROUND_MODES;
+		const backward = this.timeBackward && rule === 'neighbourhood';
+		// Backwards there is nothing to undo before the update at which the rule started from rest.
+		if (backward) updates = Math.min(updates, this.batchIndex - this.aroundOrigin);
+		if (updates <= 0) {
+			this.device.queue.onSubmittedWorkDone().then(() => this.onStepDone(0));
+			return;
+		}
 		this.aroundParams.set([
 			this.soupWidth,
 			this.soupHeight,
@@ -701,8 +738,8 @@ export class GPUEngine {
 			this._z80Steps,
 			chanceThreshold(aroundMutationChance(rule, this._noiseExp)),
 			AROUND_MODES[rule],
-			0,
-			0
+			this.dissipationThreshold,
+			backward ? 1 : 0
 		]);
 		this.device.queue.writeBuffer(this.aroundParamsBuffer!, 0, this.aroundParams);
 		const encoder = this.device.createCommandEncoder();
@@ -716,7 +753,7 @@ export class GPUEngine {
 			encoder.copyBufferToBuffer(this.nextSoupBuffer!, 0, this.soupBuffer, 0, this.cellCount * 16);
 		}
 		this.device.queue.submit([encoder.finish()]);
-		this.batchIndex += updates;
+		this.batchIndex += backward ? -updates : updates;
 		const ops = this.opsPerUpdate * updates;
 		this.device.queue.onSubmittedWorkDone().then(() => this.onStepDone(ops));
 	}
@@ -942,6 +979,8 @@ export class GPUEngine {
 		this.device.queue.writeBuffer(this.soupBuffer, 0, soupData);
 		this.device.queue.writeBuffer(this.fetchStatusBuffer, 0, new Uint32Array(this.cellCount));
 		this.batchIndex = 0;
+		this.timeBackward = false;
+		this.aroundOrigin = 0;
 		this.restBefore();
 		this.resetHeads();
 		if (this.cellHeadsBuffer)
@@ -1090,8 +1129,11 @@ export class GPUEngine {
 		try {
 			await this.waitForIdle();
 			if (geometryChanged) await this.waitForReadbacks();
+			// Both two-layer rules start from rest: every cell's remembered tape is its present one.
 			const enteringReversible =
-				settings.interaction === 'reversible' && this.machineSettings.interaction !== 'reversible';
+				(settings.interaction === 'reversible' || settings.interaction === 'neighbourhood') &&
+				this.machineSettings.interaction !== settings.interaction;
+			if (this.machineSettings.interaction !== settings.interaction) this.timeBackward = false;
 			this.machineSettings = structuredClone(settings);
 			this.dissipationThreshold = GPUEngine.thresholdOf(settings.dissipation);
 			this.z80Steps = settings.steps;
@@ -1116,7 +1158,10 @@ export class GPUEngine {
 				this.flushSuppressMask();
 				this.resetRate();
 				// A world switched to the reversible rule starts with every cell at rest.
-				if (enteringReversible) this.restBefore();
+				if (enteringReversible) {
+					this.restBefore();
+					this.aroundOrigin = this.batchIndex;
+				}
 			}
 			await this.checkShader();
 		} finally {

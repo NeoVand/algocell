@@ -33,6 +33,27 @@ so the rule has no preferred direction. The lattice wraps.
 Code: `src/lib/gpu/around.ts`, engine `setupAround` and `simulateUpdates`, reference
 `src/lib/dev/aroundReference.ts`. Z80 only, square lattice, 16-byte tapes.
 
+## The two-layer law and running backwards
+
+Every cell also remembers the tape it had before the last update (`before`). If `out` is the tape its run
+produces from the lattice as it is now, the cell's next tape is
+
+    now' = out xor now xor before,     before' = now.
+
+`out xor now` is the change the run makes; the law applies it on top of the remembered tape. Because `out`
+depends only on the present lattice and on the order of neighbours, an update can be undone exactly: exchange the
+two layers and draw the orders in reverse (each cell's random counter is stepped back).
+
+- **Dissipation** (the existing dial, 0 to 1) is the chance, per cell and update, that a cell forgets first
+  (`before := now`). A cell that has forgotten gets `now' = out`, the plain rule. So dissipation 1 is the plain
+  rule above, and dissipation 0 is a closed, reversible world.
+- **Mutation** is written into `now'` only, so it is heating; with mutation on, running backwards does not
+  retrace.
+- **Running backwards** (`engine.reverseTime()`, a button in the app) exchanges the layers and reverses the
+  draws. It stops at the update where the rule began (the start of the world, or the moment the rule was chosen).
+
+`cells` keeps the plain rule.
+
 ## Free-running cells (`interaction: 'cells'`)
 
 The same rule spread over time. Each processor keeps its registers and executes one instruction per tick. It
@@ -41,7 +62,7 @@ reads its neighbours as they are at that tick, writes outside its own tape are d
 
 ## What was checked
 
-`node scripts/around-check.mjs`: 15 checks, all pass.
+`node scripts/around-check.mjs`: 25 checks, all pass.
 
 - **Against an independent reference.** The rule is written a second time in TypeScript with the third-party
   `z80-emulator`. One GPU update is compared with one reference update cell by cell, each comparison starting
@@ -54,6 +75,15 @@ reads its neighbours as they are at that tick, writes outside its own tape are d
   memory) and `LD A,R`. On the last, `z80-emulator` returns the refresh register with bit 3 cleared (set to 13,
   it loads 7 where the count is 15); this showed up as one mismatch in 76,343 and was traced to that
   instruction. 5–14% of cell updates are left out under `neighbourhood`, at most 1% under `cells`.
+- **The two-layer law against the reference.** The same comparison at dissipation 0.5 and 0, with 1 and 4
+  neighbours gathered, mutation off and on (eight settings), now including each cell's remembered tape: 5,417 to
+  6,959 cell updates compared per setting, no mismatch.
+- **Forwards, then backwards.** A closed world (dissipation 0, mutation off, 64 × 48 cells, four gathered) run
+  300 updates forwards and 300 backwards is back at its start: 0 bytes differ in either layer, and every random
+  counter is back (48,949 bytes had changed on the way out). With dissipation 0.5 the same procedure leaves 93,915
+  bytes unrestored, as it should.
+- **In the app** (`scripts/around-app-reverse.mjs`): rule chosen at update 952, world closed, 912 updates
+  forwards, then the button: it ran back to update 952 and stopped, and both layers were as they had been.
 - **Repeatability.** Two runs of one seed give the same lattice under both rules.
 - **Orders of neighbours.** 61,440 draws, 7,534 to 7,757 per order (chi-squared 5.22 on 7 degrees of freedom).
 
@@ -78,6 +108,39 @@ Random start, Z80 0.2 core, mutation exponent 4, `steps` 128, headless. Data: `n
   neighbour and as their southern neighbour differ by at most 0.003 in all ten runs (for example 0.8892 and 0.8884).
 - **Speed.** 3,000 updates of 9,216 cells took 1.0–1.5 s headless. In the app at 8× it showed 482 updates a
   second: the takeover is over in under a second, so use 1× to watch it.
+
+## First look: the dissipation dial
+
+One run per setting: 96 × 96 cells, seed 1, mutation exponent 4, 3,000 updates (`r_g*_d*`). "Replicator" is the
+share of cells holding `e1 e3` repeated; "heat" is the share of bytes that differ between a cell's tape and the
+tape it remembers.
+
+| dissipation | 1 gathered: replicator | heat | 4 gathered: replicator | heat |
+| ----------- | ---------------------- | ---- | ---------------------- | ---- |
+| 0           | 0%                     | 100% | 0%                     | 100% |
+| 0.1         | 0%                     | 42%  | 0%                     | 71%  |
+| 0.3         | 14%                    | 54%  | 35%                    | 46%  |
+| 0.5         | 30%                    | 49%  | 39%                    | 45%  |
+| 0.7         | 39%                    | 46%  | 47%                    | 44%  |
+| 0.9         | 51%                    | 43%  | 53%                    | 42%  |
+| 0.95        | 55%                    | 42%  | 57%                    | 42%  |
+| 0.99        | 80%                    | 26%  | 94%                    | 6%   |
+| 1           | 84%                    | 21%  | 0% (blank-byte state)  | 39%  |
+
+- **A closed world is indistinguishable from random bytes** (entropy 8.0 bits, 99.6% of bytes differ between the
+  layers), as in the pair soup.
+- **Between 0.1 and 0.3 the replicator appears, and its share then rises with dissipation** in both columns,
+  without a jump until the last step to 0.99. At intermediate settings the replicator holds a steady part of the
+  lattice among cells that are not it (`neighbourhood/dial_one.png`); its share at 500 and at 3,000 updates is
+  about the same (for example 34.7% and 34.8% at dissipation 0.3 with four gathered).
+- **The pair soup did not show this middle range** in its pilot (0 of 10 runs taken over at dissipation 0.3;
+  `docs/reversible-phase-pilot.md`). The two differ in more than one way, so this is an observation, not a
+  comparison.
+- One run per setting. The blank-byte outcome at dissipation 1 with four gathered is the alternative state seen
+  in one seed of five in the plain rule.
+
+Unlike the pair engine, this rule is repeatable for a seed and a 3,000-update run takes about a second, so a
+replicated map of dissipation against mutation can be run locally.
 
 ## How long to run
 
@@ -129,5 +192,6 @@ program read it back. Which of the two matters has not been tested.
 - No measure of heredity; "replicator" means a tape that spreads.
 - The app's Steps, pair-attempt and lethal-zero controls stay visible; only Steps is used. Checkpoints do not
   store the processors (only `cells` needs them).
-- The reversible law is not combined with this rule. The rule is synchronous and writes one cell from five, so
-  the two-layer construction should apply directly; not tried.
+- The dissipation dial has one run per setting, at one mutation level and one lattice size, to 3,000 updates.
+- Running backwards retraces only while nothing else is changed; the app does not prevent a dial being moved
+  between the forward and the backward run. Checkpoints do not store the direction of time.

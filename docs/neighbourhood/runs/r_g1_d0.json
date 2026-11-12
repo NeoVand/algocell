@@ -1,0 +1,183 @@
+{
+ "q": {
+  "rule": "neighbourhood",
+  "gather": 1,
+  "steps": 128,
+  "dissipation": 0,
+  "mutation": 4,
+  "width": 96,
+  "height": 96,
+  "seed": 1,
+  "updates": 3000,
+  "marks": [
+   0,
+   500,
+   3000
+  ],
+  "patch": 0
+ },
+ "rows": [
+  {
+   "update": 0,
+   "seconds": 0,
+   "entropy": 7.999,
+   "zero": 0.0039,
+   "heat": 0,
+   "distinctTapes": 9216,
+   "topTapes": [
+    [
+     "c15c028967ec8e655e5532fb0bc942ee",
+     0.0001
+    ],
+    [
+     "b9b501d180021590a53c36d775852712",
+     0.0001
+    ],
+    [
+     "a83d7e3596676174614f5601fe8bcf14",
+     0.0001
+    ],
+    [
+     "c05daa4b8aa2d790a8574c6f3b4a79a5",
+     0.0001
+    ]
+   ],
+   "sameTapeAsEast": 0,
+   "sameTapeAsSouth": 0,
+   "topBytes": [
+    [
+     "5a",
+     0.0043
+    ],
+    [
+     "c9",
+     0.0043
+    ],
+    [
+     "45",
+     0.0043
+    ],
+    [
+     "4f",
+     0.0043
+    ],
+    [
+     "a3",
+     0.0042
+    ]
+   ],
+   "endedByHalt": 0,
+   "endedByFullCell": 0,
+   "endedByBudget": 0,
+   "meanSteps": 0
+  },
+  {
+   "update": 500,
+   "seconds": 0.95,
+   "entropy": 7.999,
+   "zero": 0.0038,
+   "heat": 0.9959,
+   "distinctTapes": 9216,
+   "topTapes": [
+    [
+     "bae902f1f2d586bb1657354514dfbddc",
+     0.0001
+    ],
+    [
+     "f81948032864784d36c94e4bc515ea82",
+     0.0001
+    ],
+    [
+     "dc32615753a13aa086fbd15ea5115901",
+     0.0001
+    ],
+    [
+     "dd3e583f446261a70f1b32b9ce9b3109",
+     0.0001
+    ]
+   ],
+   "sameTapeAsEast": 0,
+   "sameTapeAsSouth": 0,
+   "topBytes": [
+    [
+     "87",
+     0.0044
+    ],
+    [
+     "ca",
+     0.0043
+    ],
+    [
+     "9e",
+     0.0043
+    ],
+    [
+     "b1",
+     0.0043
+    ],
+    [
+     "c4",
+     0.0043
+    ]
+   ],
+   "endedByHalt": 0.0626,
+   "endedByFullCell": 0.2969,
+   "endedByBudget": 0.6405,
+   "meanSteps": 100.2
+  },
+  {
+   "update": 3000,
+   "seconds": 5.79,
+   "entropy": 7.999,
+   "zero": 0.0036,
+   "heat": 0.9959,
+   "distinctTapes": 9216,
+   "topTapes": [
+    [
+     "d0a1bd53434483abb4426edc9a71e0e6",
+     0.0001
+    ],
+    [
+     "c26934f04f0abed455fdbc8aaead6360",
+     0.0001
+    ],
+    [
+     "023d96c737add84e35da61ede89cce96",
+     0.0001
+    ],
+    [
+     "4eb7a47ca6c1a67e9c3ce937dd171175",
+     0.0001
+    ]
+   ],
+   "sameTapeAsEast": 0,
+   "sameTapeAsSouth": 0,
+   "topBytes": [
+    [
+     "30",
+     0.0043
+    ],
+    [
+     "82",
+     0.0043
+    ],
+    [
+     "dd",
+     0.0043
+    ],
+    [
+     "a4",
+     0.0043
+    ],
+    [
+     "4a",
+     0.0042
+    ]
+   ],
+   "endedByHalt": 0.0649,
+   "endedByFullCell": 0.3193,
+   "endedByBudget": 0.6158,
+   "meanSteps": 98.2
+  }
+ ]
+}

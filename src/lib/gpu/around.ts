@@ -26,6 +26,18 @@
 // Mutation: a chance per update (`neighbourhood`) or per instruction (`cells`) that one random
 // byte of the cell is replaced.
 //
+// The two-layer law (`neighbourhood` only). Every cell also remembers the tape it had before the
+// update (`before`). If `out` is the tape its run produced from the lattice as it is now, then
+//
+//     now' = out xor now xor before,     before' = now.
+//
+// `out xor now` is the change the run makes; it is applied on top of the remembered tape instead
+// of the present one. `out` depends only on the present lattice and on the order of neighbours, so
+// the law can be run backwards exactly: swap the two layers and draw the orders in reverse.
+// Dissipation is the chance, per cell and update, that the cell forgets (before := now) first; a
+// cell that has forgotten gets now' = out, the plain rule. At dissipation 1 the law is the plain
+// rule; at 0 the world is closed and reversible. Mutation is written into now' only.
+//
 // The order in which a processor meets its neighbours is drawn among the eight symmetries of the
 // square each time, so the rule has no preferred direction.
 
@@ -46,6 +58,8 @@ import {
 } from './free';
 
 export const AROUND_MODES = { neighbourhood: 0, cells: 1 } as const;
+/** The constant of the per-cell draw that decides whether a cell forgets its previous tape. */
+export const AROUND_RNG = { forget: 0x3c6ef372 } as const;
 export type AroundRule = keyof typeof AROUND_MODES;
 export const GATHERS = [1, 2, 4] as const;
 /** Why the last run of a `neighbourhood` cell ended (stored in HEAD_WAITING). */
@@ -157,14 +171,16 @@ struct AroundParams {
     budget: u32,     // instructions after which a run is cut off
     mutation: u32,   // chance of one random byte, as a 32-bit threshold
     mode: u32,       // 0 neighbourhood (a whole run per update), 1 cells (one instruction per tick)
-    pad0: u32,
-    pad1: u32,
+    dissipation: u32, // neighbourhood: chance that a cell forgets its previous tape, as a threshold
+    backward: u32,   // neighbourhood: 1 draws the random words of earlier updates, latest first
 }
 
 @group(0) @binding(0) var<storage, read_write> soup: array<u32>;
 @group(0) @binding(1) var<storage, read_write> heads: array<u32>;
 @group(0) @binding(2) var<storage, read_write> next_soup: array<u32>;
 @group(0) @binding(3) var<uniform> ap: AroundParams;
+// Each cell's tape before its last update (the second layer of the two-layer law).
+@group(0) @binding(4) var<storage, read_write> before_soup: array<u32>;
 
 var<private> around_mem: array<u32, 80>;
 var<private> around_written: u32;
@@ -181,8 +197,12 @@ fn around_update(@builtin(global_invocation_id) id: vec3u) {
     let cells = ap.width * ap.height;
     if (c >= cells) { return; }
     let o = c * ${HEAD_WORDS}u;
-    let counter = heads[o + ${HEAD_RNG}u] + ${hex(FREE_RNG.step)};
-    heads[o + ${HEAD_RNG}u] = counter;
+    // Forwards: advance the counter and use it. Backwards: use it, then step it back, so that the
+    // update being undone is met with the random word it was made with.
+    let back = ap.backward != 0u && ap.mode == 0u;
+    let stored = heads[o + ${HEAD_RNG}u];
+    let counter = select(stored + ${hex(FREE_RNG.step)}, stored, back);
+    heads[o + ${HEAD_RNG}u] = select(counter, stored - ${hex(FREE_RNG.step)}, back);
     let r = zil_mix32(counter);
 
     // The order of neighbours: drawn afresh for a whole run, kept by a free-running processor.
@@ -244,14 +264,25 @@ fn around_update(@builtin(global_invocation_id) id: vec3u) {
         }
     }
 
-    if (ap.mutation != 0u && zil_mix32(r ^ ${hex(FREE_RNG.mutate)}) < ap.mutation) {
-        around_mem[64u + (zil_mix32(r ^ ${hex(FREE_RNG.mutatePlace)}) & 15u)] =
-            zil_mix32(r ^ ${hex(FREE_RNG.mutateValue)}) & 0xffu;
-    }
+    // The two-layer law, word by word (free-running cells keep the plain rule).
+    let forgets = ap.mode != 0u || ap.dissipation == 0xffffffffu
+        || zil_mix32(r ^ ${hex(AROUND_RNG.forget)}) < ap.dissipation;
+    let mutates = ap.mutation != 0u && zil_mix32(r ^ ${hex(FREE_RNG.mutate)}) < ap.mutation;
+    let place = zil_mix32(r ^ ${hex(FREE_RNG.mutatePlace)}) & 15u;
+    let value = zil_mix32(r ^ ${hex(FREE_RNG.mutateValue)}) & 0xffu;
     for (var w = 0u; w < 4u; w++) {
         let b = 64u + w * 4u;
-        next_soup[c * 4u + w] = around_mem[b] | (around_mem[b + 1u] << 8u)
+        let out = around_mem[b] | (around_mem[b + 1u] << 8u)
             | (around_mem[b + 2u] << 16u) | (around_mem[b + 3u] << 24u);
+        let now = soup[c * 4u + w];
+        let before = select(before_soup[c * 4u + w], now, forgets);
+        var next = out ^ now ^ before;
+        if (mutates && (place >> 2u) == w) {
+            let shift = (place & 3u) * 8u;
+            next = (next & ~(0xffu << shift)) | (value << shift);
+        }
+        next_soup[c * 4u + w] = next;
+        if (ap.mode == 0u) { before_soup[c * 4u + w] = now; }
     }
 }
 `;
